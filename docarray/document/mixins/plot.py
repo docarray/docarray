@@ -13,16 +13,8 @@ class PlotMixin:
             self.__mermaid_id = random_identity()
         return self.__mermaid_id
 
-    @_mermaid_id.setter
-    def _mermaid_id(self, m_id):
-        self.__mermaid_id = m_id
-
     def __mermaid_str__(self):
         results = []
-        from google.protobuf.json_format import MessageToDict
-
-        content = MessageToDict(self._pb_body, preserving_proto_field_name=True)
-
         _id = f'{self._mermaid_id[:3]}~Document~'
 
         for idx, c in enumerate(self.chunks):
@@ -36,6 +28,8 @@ class PlotMixin:
                 f'{_id} ..> "{idx + 1}/{len(self.matches)}" {c._mermaid_id[:3]}~Document~: matches'
             )
             results.append(c.__mermaid_str__())
+
+        content = self.to_dict()
         if 'chunks' in content:
             content.pop('chunks')
         if 'matches' in content:

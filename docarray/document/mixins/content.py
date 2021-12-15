@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from ...typing import T, DocumentContentType
 
 _DIGEST_SIZE = 8
 
@@ -10,13 +10,33 @@ class ContentPropertyMixin:
     """Provide helper functions for :class:`Document` to allow universal content property access. """
 
     @property
+    def content(self) -> Optional['DocumentContentType']:
+        ct = self.content_type
+        if ct:
+            return getattr(self, ct)
+
+    @content.setter
+    def content(self, value: Optional['DocumentContentType']):
+        if value is None:
+            self.text = None
+            self.blob = None
+            self.buffer = None
+        elif isinstance(value, bytes):
+            self.buffer = value
+        elif isinstance(value, str):
+            self.text = value
+        else:
+            self.blob = value
+
+    @property
     def content_type(self) -> Optional[str]:
-        if self._pb_body.text is not None:
+        nf = self.non_empty_fields
+        if 'text' in nf:
             return 'text'
-        if self._pb_body.buffer is not None:
-            return 'buffer'
-        if self._pb_body.blob is not None:
+        elif 'blob' in nf:
             return 'blob'
+        elif 'buffer' in nf:
+            return 'buffer'
 
     @property
     def content_hash(self) -> int:
@@ -38,8 +58,3 @@ class ContentPropertyMixin:
         elif self.content_type:
             raise NotImplementedError
         return self
-
-    def _clear_content(self):
-        self._doc_data.text = None
-        self._doc_data.blob = None
-        self._doc_data.buffer = None

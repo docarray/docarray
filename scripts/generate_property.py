@@ -9,11 +9,21 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 if TYPE_CHECKING:
     from ..score import NamedScore
     from ... import DocumentArray
-    from ...typing import ArrayType, DocumentContentType, StructValueType
+    from ...typing import ArrayType, StructValueType
     from datetime import datetime
 
 
-class PropertyMixin:    
+class PropertyMixin:
+
+    @property
+    def non_empty_fields(self) -> Tuple[str]:
+        """Get all non-emtpy fields of this :class:`Document`.
+
+        Non-empty fields are the fields with not-`None` and not-default values.
+
+        :return: field names in a tuple.
+        """
+        return self._doc_data.non_empty_fields
     ''')
     for f in fields(DocumentData):
         ftype = str(f.type).replace('typing.Dict', 'Dict').replace('typing.List', 'List').replace('datetime.datetime', '\'datetime\'')
@@ -24,7 +34,7 @@ class PropertyMixin:
         fp.write(f'''
     @property
     def {f.name}(self) -> {ftype}:
-        self._set_default_value_if_none('{f.name}')
+        self._doc_data._set_default_value_if_none('{f.name}')
         return self._doc_data.{f.name}
 
     @{f.name}.setter

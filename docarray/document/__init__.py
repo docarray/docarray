@@ -1,4 +1,3 @@
-import copy as cp
 from typing import TYPE_CHECKING, Optional
 
 from .data import DocumentData
@@ -15,7 +14,7 @@ class Document(AllMixins):
         self._doc_data = None
         if isinstance(obj, Document):
             if copy:
-                self._doc_data = cp.deepcopy(obj._doc_data)
+                self.copy_from(obj)
             else:
                 self._doc_data = obj._doc_data
         if kwargs:

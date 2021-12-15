@@ -1,91 +1,35 @@
 import copy as cp
-from dataclasses import fields
-from typing import TYPE_CHECKING, Dict, Tuple, Any
+from typing import TYPE_CHECKING
 
-from ...helper import typename, cached_property
+from ...helper import typename
 
 if TYPE_CHECKING:
     from ...typing import T
     from google.protobuf.message import Message
 
-default_values = dict(
-    granularity=0,
-    adjacency=0,
-    parent_id='',
-    buffer=b'',
-    text='',
-    weight=0.0,
-    uri='',
-    mime_type='',
-    tags=dict,
-    offset=0.0,
-    location=list,
-    modality='',
-    evaluations=list,
-    scores=dict,
-    chunks='DocumentArray',
-    matches='DocumentArray',
-    timestamps=dict,
-)
-
 
 class BaseDocumentMixin:
-    def __eq__(self, other):
-        return self._doc_data == self._doc_data
-
-    def _set_default_value_if_none(self, key):
-        if getattr(self._doc_data, key) is None:
-            v = default_values.get(key, None)
-            if v is not None:
-                if v == 'DocumentArray':
-                    from ... import DocumentArray
-
-                    setattr(self._doc_data, key, DocumentArray())
-                else:
-                    setattr(self._doc_data, key, v() if callable(v) else v)
-
-    @property
-    def non_empty_fields(self) -> Tuple[str]:
-        r = []
-        for f in fields(self._doc_data):
-            f_name = f.name
-            v = getattr(self._doc_data, f_name)
-            if v is not None:
-                if f.name not in default_values:
-                    r.append(f_name)
-                elif v != default_values[f_name]:
-                    r.append(f_name)
-        return tuple(r)
-
-    def __copy__(self):
-        return type(self)(self)
-
-    def __deepcopy__(self, memodict={}):
-        return type(self)(self, copy=True)
-
-    def __repr__(self):
-        content = str(self.non_empty_fields)
-        content += f' at {id(self)}'
-        return f'<{typename(self)} {content.strip()}>'
 
     def copy_from(self: 'T', other: 'T') -> None:
-        """Copy the content of target
+        """Overwrite self by copying from another :class:`Document`.
 
-        :param other: the document to copy from
+        :param other: the other Document to copy from
         """
         self._doc_data = cp.deepcopy(other._doc_data)
 
-    @cached_property
-    def _default_values(self) -> Dict[str, Any]:
-        return {f.name: f.default for f in fields(self._doc_data)}
-
     def clear(self) -> None:
-        for f in self.non_empty_fields:
-            setattr(self._doc_data, f, self._default_values[f])
+        """Clear all fields from this :class:`Document` to their default values."""
+        for f in self._doc_data.non_empty_fields:
+            setattr(self._doc_data, f, None)
 
     def pop(self, *fields) -> None:
+        """Clear some fields from this :class:`Document` to their default values.
+
+        :param fields: field names to clear.
+        """
         for f in fields:
-            setattr(self._doc_data, f, self._default_values[f])
+            if hasattr(self, f):
+                setattr(self._doc_data, f, None)
 
     def to_dict(self):
         from google.protobuf.json_format import MessageToDict
@@ -96,7 +40,16 @@ class BaseDocumentMixin:
         )
 
     def to_protobuf(self) -> 'Message':
-        ...
+        if not hasattr(self, '_pb_body'):
+            from ...proto.docarray_pb2 import DocumentProto
+            self._pb_body = DocumentProto()
+        self._pb_body.Clear()
+        from ...proto.flush import flush_proto
+        # only flush those non-empty fields to Protobuf
+        for k in self._doc_data.non_empty_fields:
+            v = getattr(self, k)
+            flush_proto(self._pb_body, k, v)
+        return self._pb_body
 
     def to_bytes(self) -> bytes:
         return self.to_protobuf().SerializePartialToString()
@@ -108,9 +61,6 @@ class BaseDocumentMixin:
             self.to_protobuf(), preserving_proto_field_name=True, sort_keys=True
         )
 
-    def __bytes__(self):
-        return self.to_bytes()
-
     @property
     def nbytes(self) -> int:
         """Return total bytes consumed by protobuf.
@@ -121,3 +71,20 @@ class BaseDocumentMixin:
 
     def __hash__(self):
         return hash(self._doc_data)
+
+    def __copy__(self):
+        return type(self)(self)
+
+    def __deepcopy__(self, memodict={}):
+        return type(self)(self, copy=True)
+
+    def __repr__(self):
+        content = str(self._doc_data.non_empty_fields)
+        content += f' at {id(self)}'
+        return f'<{typename(self)} {content.strip()}>'
+
+    def __bytes__(self):
+        return self.to_bytes()
+
+    def __eq__(self, other):
+        return self._doc_data == other._doc_data
