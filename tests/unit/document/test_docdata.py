@@ -7,7 +7,7 @@ from docarray import Document, DocumentArray
 @pytest.mark.parametrize('init_args', [None, dict(id=123), Document()])
 @pytest.mark.parametrize('copy', [True, False])
 def test_construct_doc(init_args, copy):
-    d = Document(init_args, copy)
+    Document(init_args, copy)
 
 
 def test_doc_hash_identical():

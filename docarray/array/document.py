@@ -23,24 +23,24 @@ class DocumentArray(MutableSequence):
         self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         super().__init__()
-        self._pb_body = []
+        self._data = []
         if docs is None:
             return
         elif isinstance(
             docs, (DocumentArray, list, tuple, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self._pb_body.extend(Document(d, copy=True) for d in docs)
+                self._data.extend(Document(d, copy=True) for d in docs)
             elif isinstance(docs, DocumentArray):
-                self._pb_body = docs._pb_body
+                self._data = docs._data
             else:
-                self._pb_body.extend(docs)
+                self._data.extend(docs)
         else:
             if isinstance(docs, Document):
                 if copy:
-                    self._pb_body.append(Document(docs, copy=True))
+                    self._data.append(Document(docs, copy=True))
                 else:
-                    self._pb_body.append(docs)
+                    self._data.append(docs)
 
     @property
     def _index_map(self) -> Dict:
@@ -53,13 +53,13 @@ class DocumentArray(MutableSequence):
         return self._id_to_index
 
     def _rebuild_index_map(self) -> None:
-        """Update the id_to_index map by enumerating all Documents in self._pb_body.
+        """Update the id_to_index map by enumerating all Documents in self._data.
 
-        Very costy! Only use this function when self._pb_body is dramtically changed.
+        Very costy! Only use this function when self._data is dramtically changed.
         """
 
         self._id_to_index = {
-            d.id: i for i, d in enumerate(self._pb_body)
+            d.id: i for i, d in enumerate(self._data)
         }  # type: Dict[str, int]
 
     def insert(self, index: int, doc: 'Document'):
@@ -68,7 +68,7 @@ class DocumentArray(MutableSequence):
         :param index: Position of the insertion.
         :param doc: The doc needs to be inserted.
         """
-        self._pb_body.insert(index, doc)
+        self._data.insert(index, doc)
         self._index_map[doc.id] = index
 
     def __setitem__(self, key, value: 'Document'):
@@ -82,12 +82,12 @@ class DocumentArray(MutableSequence):
 
     def __delitem__(self, index: Union[int, str, slice]):
         if isinstance(index, int):
-            del self._pb_body[index]
+            del self._data[index]
         elif isinstance(index, str):
             del self[self._index_map[index]]
             self._index_map.pop(index)
         elif isinstance(index, slice):
-            del self._pb_body[index]
+            del self._data[index]
         else:
             raise IndexError(
                 f'do not support this index type {typename(index)}: {index}'
@@ -96,28 +96,28 @@ class DocumentArray(MutableSequence):
     def __eq__(self, other):
         return (
             type(self) is type(other)
-            and type(self._pb_body) is type(other._pb_body)
-            and self._pb_body == other._pb_body
+            and type(self._data) is type(other._data)
+            and self._data == other._data
         )
 
     def __len__(self):
-        return len(self._pb_body)
+        return len(self._data)
 
     def __iter__(self) -> Iterator['Document']:
-        yield from self._pb_body
+        yield from self._data
 
     def __contains__(self, item: str):
         return item in self._index_map
 
     def __getitem__(self, index: Union[int, str, slice, Sequence[int]]):
         if isinstance(index, int):
-            return self._pb_body[index]
+            return self._data[index]
         elif isinstance(index, str):
             return self[self._index_map[index]]
         elif isinstance(index, slice):
-            return DocumentArray(self._pb_body[index])
+            return DocumentArray(self._data[index])
         elif isinstance(index, (list, tuple)):
-            return DocumentArray(self._pb_body[t] for t in index)
+            return DocumentArray(self._data[t] for t in index)
         else:
             IndexError(f'do not support this index type {typename(index)}: {index}')
 
@@ -127,8 +127,8 @@ class DocumentArray(MutableSequence):
 
         :param doc: The doc needs to be appended.
         """
-        self._index_map[doc.id] = len(self._pb_body)
-        self._pb_body.append(doc)
+        self._index_map[doc.id] = len(self._data)
+        self._data.append(doc)
 
     def extend(self, docs: Iterable['Document']):
         """
@@ -144,5 +144,5 @@ class DocumentArray(MutableSequence):
 
     def clear(self):
         """Clear the data of :class:`DocumentArray`"""
-        self._pb_body.clear()
+        self._data.clear()
         self._index_map.clear()

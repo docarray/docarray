@@ -15,12 +15,12 @@ class BaseDocumentMixin:
 
         :param other: the other Document to copy from
         """
-        self._doc_data = cp.deepcopy(other._doc_data)
+        self._data = cp.deepcopy(other._data)
 
     def clear(self) -> None:
         """Clear all fields from this :class:`Document` to their default values."""
-        for f in self._doc_data.non_empty_fields:
-            setattr(self._doc_data, f, None)
+        for f in self._data.non_empty_fields:
+            setattr(self._data, f, None)
 
     def pop(self, *fields) -> None:
         """Clear some fields from this :class:`Document` to their default values.
@@ -29,7 +29,7 @@ class BaseDocumentMixin:
         """
         for f in fields:
             if hasattr(self, f):
-                setattr(self._doc_data, f, None)
+                setattr(self._data, f, None)
 
     def to_dict(self):
         from google.protobuf.json_format import MessageToDict
@@ -46,7 +46,7 @@ class BaseDocumentMixin:
         self._pb_body.Clear()
         from ...proto.flush import flush_proto
         # only flush those non-empty fields to Protobuf
-        for k in self._doc_data.non_empty_fields:
+        for k in self._data.non_empty_fields:
             v = getattr(self, k)
             flush_proto(self._pb_body, k, v)
         return self._pb_body
@@ -70,7 +70,7 @@ class BaseDocumentMixin:
         return len(bytes(self))
 
     def __hash__(self):
-        return hash(self._doc_data)
+        return hash(self._data)
 
     def __copy__(self):
         return type(self)(self)
@@ -79,7 +79,7 @@ class BaseDocumentMixin:
         return type(self)(self, copy=True)
 
     def __repr__(self):
-        content = str(self._doc_data.non_empty_fields)
+        content = str(self._data.non_empty_fields)
         content += f' at {id(self)}'
         return f'<{typename(self)} {content.strip()}>'
 
@@ -87,4 +87,4 @@ class BaseDocumentMixin:
         return self.to_bytes()
 
     def __eq__(self, other):
-        return self._doc_data == other._doc_data
+        return self._data == other._data

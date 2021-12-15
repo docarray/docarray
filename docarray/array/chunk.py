@@ -35,10 +35,9 @@ class ChunkArray(DocumentArray):
             make sure the added chunk is legit.
         """
 
+        document.parent_id = self._ref_doc.id
+        document.granularity = self._ref_doc.granularity + 1
         super().append(document)
-        proto = self._pb_body[-1]
-        proto.parent_id = self._ref_doc.id
-        proto.granularity = self._ref_doc.granularity + 1
 
     @property
     def reference_doc(self) -> 'Document':

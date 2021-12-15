@@ -28,6 +28,7 @@ default_values = dict(
     timestamps=dict,
 )
 
+
 @dataclass(unsafe_hash=True)
 class DocumentData:
     id: str = field(default_factory=lambda: uuid.uuid1().hex)

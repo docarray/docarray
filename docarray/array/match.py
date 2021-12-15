@@ -24,10 +24,9 @@ class MatchArray(DocumentArray):
 
         :param document: Sub-document to be added
         """
+        document.granularity = self._ref_doc.granularity
+        document.adjacency = self._ref_doc.adjacency + 1
         super().append(document)
-        proto = self._pb_body[-1]
-        proto.granularity = self._ref_doc._pb_body.granularity
-        proto.adjacency = self._ref_doc._pb_body.adjacency + 1
 
     @property
     def reference_doc(self) -> 'Document':

@@ -4,7 +4,7 @@ from docarray.document.data import DocumentData
 
 with open('../docarray/document/mixins/property.py', 'w') as fp:
     fp.write(f'''# auto-generated from {__file__}
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 if TYPE_CHECKING:
     from ..score import NamedScore
@@ -23,7 +23,7 @@ class PropertyMixin:
 
         :return: field names in a tuple.
         """
-        return self._doc_data.non_empty_fields
+        return self._data.non_empty_fields
     ''')
     for f in fields(DocumentData):
         ftype = str(f.type).replace('typing.Dict', 'Dict').replace('typing.List', 'List').replace('datetime.datetime', '\'datetime\'')
@@ -34,10 +34,10 @@ class PropertyMixin:
         fp.write(f'''
     @property
     def {f.name}(self) -> {ftype}:
-        self._doc_data._set_default_value_if_none('{f.name}')
-        return self._doc_data.{f.name}
+        self._data._set_default_value_if_none('{f.name}')
+        return self._data.{f.name}
 
     @{f.name}.setter
     def {f.name}(self, value: {ftype}):
-        self._doc_data.{f.name} = value
+        self._data.{f.name} = value
         ''')

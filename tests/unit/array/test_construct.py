@@ -1,6 +1,6 @@
 import pytest
 
-from docarray3 import Document, DocumentArray
+from docarray import Document, DocumentArray
 
 
 @pytest.mark.parametrize('da_cls', [DocumentArray])
