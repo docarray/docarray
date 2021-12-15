@@ -1,4 +1,14 @@
-from typing import Union, TYPE_CHECKING, TypeVar, Sequence, Optional, List, Dict, Generator, Iterable
+from typing import (
+    Union,
+    TYPE_CHECKING,
+    TypeVar,
+    Sequence,
+    Optional,
+    List,
+    Dict,
+    Generator,
+    Iterable,
+)
 
 if TYPE_CHECKING:
     import scipy.sparse
@@ -20,7 +30,11 @@ if TYPE_CHECKING:
 
     DocumentContentType = Union[bytes, str, ArrayType]
     ProtoValueType = Optional[Union[str, bool, float]]
-    StructValueType = Union[ProtoValueType, List[ProtoValueType], Dict[str, ProtoValueType]]
+    StructValueType = Union[
+        ProtoValueType, List[ProtoValueType], Dict[str, ProtoValueType]
+    ]
 
-    DocumentArraySourceType = Union[Sequence[Document], Document, Generator[Document], Iterable[Document]]
+    DocumentArraySourceType = Union[
+        Sequence[Document], Document, Generator[Document], Iterable[Document]
+    ]
     T = TypeVar('T')

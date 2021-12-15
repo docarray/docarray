@@ -10,7 +10,7 @@ class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud. """
 
     def load_uri_to_point_cloud_blob(
-            self: 'T', samples: int, as_chunks: bool = False
+        self: 'T', samples: int, as_chunks: bool = False
     ) -> 'T':
         """Convert a 3d mesh-like :attr:`.uri` into :attr:`.blob`
 

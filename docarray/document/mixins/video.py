@@ -31,7 +31,7 @@ class VideoDataMixin:
         return self
 
     def dump_video_blob_to_file(
-            self: 'T', file: Union[str, BinaryIO], frame_rate: int = 30, codec: str = 'h264'
+        self: 'T', file: Union[str, BinaryIO], frame_rate: int = 30, codec: str = 'h264'
     ) -> 'T':
         """Save :attr:`.blob` as a video mp4/h264 file.
 
@@ -41,9 +41,9 @@ class VideoDataMixin:
         :return: itself after processed
         """
         if (
-                self.blob.ndim != 4
-                or self.blob.shape[-1] != 3
-                or self.blob.dtype != np.uint8
+            self.blob.ndim != 4
+            or self.blob.shape[-1] != 3
+            or self.blob.dtype != np.uint8
         ):
             raise ValueError(
                 f'expects `.blob` with dtype=uint8 and ndim=4 and the last dimension is 3, '

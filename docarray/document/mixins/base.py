@@ -1,53 +1,61 @@
 import copy as cp
-from dataclasses import dataclass
 from dataclasses import fields
-from datetime import datetime
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Any
+from typing import TYPE_CHECKING, Dict, Tuple, Any
 
-from ..helper import typename, cached_property
+from ...helper import typename, cached_property
 
 if TYPE_CHECKING:
-    from .score import NamedScore
-    from .. import DocumentArray
-    from ..typing import ArrayType, DocumentContentType, StructValueType, T
+    from ...typing import T
     from google.protobuf.message import Message
 
-
-@dataclass
-class DocumentData:
-    id: Optional[str] = None
-    granularity: Optional[int] = None
-    adjacency: Optional[int] = None
-    parent_id: Optional[str] = None
-    buffer: Optional[bytes] = None
-    blob: Optional['ArrayType'] = None
-    text: Optional[str] = None
-    content: Optional['DocumentContentType'] = None
-    weight: Optional[float] = None
-    uri: Optional[str] = None
-    mime_type: Optional[str] = None
-    tags: Optional[Dict[str, 'StructValueType']] = None
-    offset: Optional[float] = None
-    location: Optional[List[float]] = None
-    embedding: Optional['ArrayType'] = None
-    modality: Optional[str] = None
-    evaluations: Optional[Dict[str, 'NamedScore']] = None
-    scores: Optional[Dict[str, 'NamedScore']] = None
-    chunks: Optional['DocumentArray'] = None
-    matches: Optional['DocumentArray'] = None
-    timestamps: Optional[Dict[str, datetime]] = None
+default_values = dict(
+    granularity=0,
+    adjacency=0,
+    parent_id='',
+    buffer=b'',
+    text='',
+    weight=0.0,
+    uri='',
+    mime_type='',
+    tags=dict,
+    offset=0.0,
+    location=list,
+    modality='',
+    evaluations=list,
+    scores=dict,
+    chunks='DocumentArray',
+    matches='DocumentArray',
+    timestamps=dict,
+)
 
 
-
-
-class BaseDocument:
-
+class BaseDocumentMixin:
     def __eq__(self, other):
         return self._doc_data == self._doc_data
 
+    def _set_default_value_if_none(self, key):
+        if getattr(self._doc_data, key) is None:
+            v = default_values.get(key, None)
+            if v is not None:
+                if v == 'DocumentArray':
+                    from ... import DocumentArray
+
+                    setattr(self._doc_data, key, DocumentArray())
+                else:
+                    setattr(self._doc_data, key, v() if callable(v) else v)
+
     @property
-    def non_empty_fields(self) -> Tuple[str, ...]:
-        return tuple(f.name for f in fields(self._doc_data) if getattr(self, f.name) is not None)
+    def non_empty_fields(self) -> Tuple[str]:
+        r = []
+        for f in fields(self._doc_data):
+            f_name = f.name
+            v = getattr(self._doc_data, f_name)
+            if v is not None:
+                if f.name not in default_values:
+                    r.append(f_name)
+                elif v != default_values[f_name]:
+                    r.append(f_name)
+        return tuple(r)
 
     def __copy__(self):
         return type(self)(self)

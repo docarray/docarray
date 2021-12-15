@@ -38,3 +38,8 @@ class ContentPropertyMixin:
         elif self.content_type:
             raise NotImplementedError
         return self
+
+    def _clear_content(self):
+        self._doc_data.text = None
+        self._doc_data.blob = None
+        self._doc_data.buffer = None

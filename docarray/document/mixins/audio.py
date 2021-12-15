@@ -3,8 +3,6 @@ from typing import Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-from ...helper import deprecate_by
-
 if TYPE_CHECKING:
     from ...typing import T
 
@@ -13,10 +11,10 @@ class AudioDataMixin:
     """Provide helper functions for :class:`Document` to support audio data. """
 
     def dump_audio_blob_to_file(
-            self: 'T',
-            file: Union[str, BinaryIO],
-            sample_rate: int = 44100,
-            sample_width: int = 2,
+        self: 'T',
+        file: Union[str, BinaryIO],
+        sample_rate: int = 44100,
+        sample_width: int = 2,
     ) -> 'T':
         """Save :attr:`.blob` into an wav file. Mono/stereo is preserved.
 

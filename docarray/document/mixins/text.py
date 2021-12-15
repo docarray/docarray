@@ -36,10 +36,10 @@ class TextDataMixin:
         return all_tokens
 
     def convert_text_to_blob(
-            self: 'T',
-            vocab: Dict[str, int],
-            max_length: Optional[int] = None,
-            dtype: str = 'int64',
+        self: 'T',
+        vocab: Dict[str, int],
+        max_length: Optional[int] = None,
+        dtype: str = 'int64',
     ) -> 'T':
         """Convert :attr:`.text` to :attr:`.blob` inplace.
 
@@ -60,7 +60,7 @@ class TextDataMixin:
         return self
 
     def convert_blob_to_text(
-            self: 'T', vocab: Union[Dict[str, int], Dict[int, str]], delimiter: str = ' '
+        self: 'T', vocab: Union[Dict[str, int], Dict[int, str]], delimiter: str = ' '
     ) -> 'T':
         """Convert :attr:`.blob` to :attr:`.text` inplace.
 
@@ -85,7 +85,7 @@ class TextDataMixin:
         return self
 
     def dump_text_to_datauri(
-            self: 'T', charset: str = 'utf-8', base64: bool = False
+        self: 'T', charset: str = 'utf-8', base64: bool = False
     ) -> 'T':
         """Convert :attr:`.text` to data :attr:`.uri`.
 
@@ -102,7 +102,7 @@ class TextDataMixin:
 
 
 def _text_to_word_sequence(
-        text, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n', split=' '
+    text, filters='!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n', split=' '
 ):
     translate_dict = {c: split for c in filters}
     translate_map = str.maketrans(translate_dict)

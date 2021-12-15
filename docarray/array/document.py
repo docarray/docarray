@@ -1,6 +1,15 @@
 import itertools
 from collections.abc import MutableSequence
-from typing import Optional, TYPE_CHECKING, Generator, Iterator, Dict, Union, Iterable, Sequence
+from typing import (
+    Optional,
+    TYPE_CHECKING,
+    Generator,
+    Iterator,
+    Dict,
+    Union,
+    Iterable,
+    Sequence,
+)
 
 from .. import Document
 from ..helper import typename
@@ -10,13 +19,16 @@ if TYPE_CHECKING:
 
 
 class DocumentArray(MutableSequence):
-
-    def __init__(self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False):
+    def __init__(
+        self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+    ):
         super().__init__()
         self._pb_body = []
         if docs is None:
             return
-        elif isinstance(docs, (DocumentArray, list, tuple, Generator, Iterator, itertools.chain)):
+        elif isinstance(
+            docs, (DocumentArray, list, tuple, Generator, Iterator, itertools.chain)
+        ):
             if copy:
                 self._pb_body.extend(Document(d, copy=True) for d in docs)
             elif isinstance(docs, DocumentArray):
@@ -66,9 +78,7 @@ class DocumentArray(MutableSequence):
         elif isinstance(key, str):
             self[self._index_map[key]].copy_from(value)
         else:
-            raise IndexError(
-                f'do not support this index type {typename(key)}: {key}'
-            )
+            raise IndexError(f'do not support this index type {typename(key)}: {key}')
 
     def __delitem__(self, index: Union[int, str, slice]):
         if isinstance(index, int):
@@ -85,9 +95,9 @@ class DocumentArray(MutableSequence):
 
     def __eq__(self, other):
         return (
-                type(self) is type(other)
-                and type(self._pb_body) is type(other._pb_body)
-                and self._pb_body == other._pb_body
+            type(self) is type(other)
+            and type(self._pb_body) is type(other._pb_body)
+            and self._pb_body == other._pb_body
         )
 
     def __len__(self):
@@ -109,9 +119,7 @@ class DocumentArray(MutableSequence):
         elif isinstance(index, (list, tuple)):
             return DocumentArray(self._pb_body[t] for t in index)
         else:
-            IndexError(
-                f'do not support this index type {typename(index)}: {index}'
-            )
+            IndexError(f'do not support this index type {typename(index)}: {index}')
 
     def append(self, doc: 'Document'):
         """
