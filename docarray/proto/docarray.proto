@@ -1,6 +1,5 @@
 syntax = "proto3";
 import "google/protobuf/struct.proto";
-import "google/protobuf/timestamp.proto";
 
 package docarray;
 

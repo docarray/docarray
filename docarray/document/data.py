@@ -86,10 +86,22 @@ class DocumentData:
             if not f_name.startswith('_'):
                 v = getattr(self, f_name)
                 if v is not None:
-                    if f.name not in default_values:
+                    if f_name not in default_values:
                         r.append(f_name)
-                    elif v != default_values[f_name]:
-                        r.append(f_name)
+                    else:
+                        dv = default_values[f_name]
+                        if (
+                            dv == 'ChunkArray'
+                            or dv == 'MatchArray'
+                            or dv == 'DocumentArray'
+                            or dv == list
+                            or dv == dict
+                        ):
+                            if v:
+                                r.append(f_name)
+                        elif v != dv:
+                            r.append(f_name)
+
         return tuple(r)
 
     def _set_default_value_if_none(self, key):

@@ -7,24 +7,21 @@ if TYPE_CHECKING:
 
 class IOMixin:
 
-    def to_protobuf(self) -> 'DocumentProto':
-        if not hasattr(self, '_pb_body'):
-            from ...proto.docarray_pb2 import DocumentProto
+    @classmethod
+    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentProto') -> 'T':
+        from ...proto.io import parse_proto
 
-            self._pb_body = DocumentProto()
-        self._pb_body.Clear()
+        return parse_proto(pb_msg)
+
+    def to_protobuf(self) -> 'DocumentProto':
+        from ...proto.docarray_pb2 import DocumentProto
         from ...proto.io import flush_proto
+        pb_msg = DocumentProto()
 
         # only flush those non-empty fields to Protobuf
         for k in self._data.non_empty_fields:
-            v = getattr(self, k)
-            flush_proto(self._pb_body, k, v)
-        return self._pb_body
-
-    @classmethod
-    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentProto') -> 'T':
-        ...
-
+            flush_proto(pb_msg, k, getattr(self, k))
+        return pb_msg
 
     def to_dict(self):
         from google.protobuf.json_format import MessageToDict

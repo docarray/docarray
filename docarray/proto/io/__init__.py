@@ -1,1 +1,1 @@
-from .flush import flush_proto
+from .flush import flush_proto, parse_proto
