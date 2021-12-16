@@ -44,7 +44,7 @@ class PropertyMixin:
         fp.write(f'''
     @property
     def {f.name}(self) -> {r_ftype}:
-        self._set_default_value_if_none('{f.name}')
+        self._data._set_default_value_if_none('{f.name}')
         return self._data.{f.name}
 
     @{f.name}.setter

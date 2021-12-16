@@ -53,17 +53,15 @@ class DocumentData:
     matches: Optional['DocumentArray'] = None
     timestamps: Optional[Dict[str, 'datetime']] = None
 
-    def _clear_content(self):
-        self.text = None
-        self.blob = None
-        self.buffer = None
 
     def __setattr__(self, key, value):
         if value is not None:
             if key == 'text' or key == 'blob' or key == 'buffer':
                 # enable mutual exclusivity for content field
                 if value != default_values.get(key):
-                    self._clear_content()
+                    self.text = None
+                    self.blob = None
+                    self.buffer = None
             elif key == 'chunks':
                 from ..array.chunk import ChunkArray
                 if not isinstance(value, ChunkArray):
@@ -107,3 +105,5 @@ class DocumentData:
                 elif v == 'MatchArray':
                     from ..array.match import MatchArray
                     setattr(self, key, MatchArray(None, reference_doc=self._reference_doc))
+                else:
+                    setattr(self, key, v() if callable(v) else v)
