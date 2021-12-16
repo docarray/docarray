@@ -1,5 +1,4 @@
 import numpy as np
-import numpy as np
 import paddle
 import pytest
 import tensorflow as tf

@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from .score import NamedScore
     from .. import DocumentArray, Document
     from ..types import ArrayType, StructValueType
-    from datetime import datetime
 
 default_values = dict(
     granularity=0,
@@ -51,7 +50,6 @@ class DocumentData:
     scores: Optional[Dict[str, 'NamedScore']] = None
     chunks: Optional['DocumentArray'] = None
     matches: Optional['DocumentArray'] = None
-    timestamps: Optional[Dict[str, 'datetime']] = None
 
     def __setattr__(self, key, value):
         if value is not None:
