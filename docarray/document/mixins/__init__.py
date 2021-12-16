@@ -6,6 +6,7 @@ from .content import ContentPropertyMixin
 from .convert import ConvertMixin
 from .dump import DumpFileMixin
 from .image import ImageDataMixin
+from .io import IOMixin
 from .mesh import MeshDataMixin
 from .plot import PlotMixin
 from .property import PropertyMixin
@@ -16,6 +17,7 @@ from .video import VideoDataMixin
 
 class AllMixins(
     BaseDocumentMixin,
+    IOMixin,
     PropertyMixin,
     ContentPropertyMixin,
     ConvertMixin,

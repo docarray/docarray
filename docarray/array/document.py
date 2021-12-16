@@ -15,7 +15,7 @@ from .. import Document
 from ..helper import typename
 
 if TYPE_CHECKING:
-    from ..typing import DocumentArraySourceType
+    from ..types import DocumentArraySourceType
 
 
 class DocumentArray(MutableSequence):

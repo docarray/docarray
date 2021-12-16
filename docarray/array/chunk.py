@@ -34,7 +34,6 @@ class ChunkArray(DocumentArray):
             Comparing to :attr:`DocumentArray.append()`, this method adds more safeguard to
             make sure the added chunk is legit.
         """
-
         document.parent_id = self._ref_doc.id
         document.granularity = self._ref_doc.granularity + 1
         super().append(document)
