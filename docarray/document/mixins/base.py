@@ -44,7 +44,7 @@ class BaseDocumentMixin:
 
             self._pb_body = DocumentProto()
         self._pb_body.Clear()
-        from ...proto.flush import flush_proto
+        from ...proto.io import flush_proto
 
         # only flush those non-empty fields to Protobuf
         for k in self._data.non_empty_fields:

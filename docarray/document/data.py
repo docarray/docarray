@@ -57,7 +57,8 @@ class DocumentData:
         if value is not None:
             if key == 'text' or key == 'blob' or key == 'buffer':
                 # enable mutual exclusivity for content field
-                if value != default_values.get(key):
+                dv = default_values.get(key)
+                if type(value) != type(dv) or value != dv:
                     self.text = None
                     self.blob = None
                     self.buffer = None
