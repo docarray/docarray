@@ -193,12 +193,3 @@ class PropertyMixin:
     def matches(self, value: Optional['DocumentArray']):
         self._data.matches = value
         
-    @property
-    def timestamps(self) -> Optional[Dict[str, 'datetime']]:
-        self._data._set_default_value_if_none('timestamps')
-        return self._data.timestamps
-
-    @timestamps.setter
-    def timestamps(self, value: Optional[Dict[str, 'datetime']]):
-        self._data.timestamps = value
-        
