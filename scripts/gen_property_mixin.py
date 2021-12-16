@@ -12,7 +12,6 @@ if TYPE_CHECKING:
     from ...array.chunk import ChunkArray
     from ... import DocumentArray
     from ...types import ArrayType, StructValueType
-    from datetime import datetime
 
 
 class PropertyMixin:
