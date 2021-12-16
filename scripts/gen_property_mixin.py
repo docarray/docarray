@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from ..score import NamedScore
     from ...array.match import MatchArray
     from ...array.chunk import ChunkArray
+    from ... import DocumentArray
     from ...typing import ArrayType, StructValueType
     from datetime import datetime
 
