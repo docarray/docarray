@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 
 
 class PropertyMixin:
-
     @property
     def non_empty_fields(self) -> Tuple[str]:
         """Get all non-emtpy fields of this :class:`Document`.
@@ -21,7 +20,7 @@ class PropertyMixin:
         :return: field names in a tuple.
         """
         return self._data.non_empty_fields
-    
+
     @property
     def id(self) -> str:
         self._data._set_default_value_if_none('id')
@@ -30,7 +29,7 @@ class PropertyMixin:
     @id.setter
     def id(self, value: str):
         self._data.id = value
-        
+
     @property
     def granularity(self) -> Optional[int]:
         self._data._set_default_value_if_none('granularity')
@@ -39,7 +38,7 @@ class PropertyMixin:
     @granularity.setter
     def granularity(self, value: Optional[int]):
         self._data.granularity = value
-        
+
     @property
     def adjacency(self) -> Optional[int]:
         self._data._set_default_value_if_none('adjacency')
@@ -48,7 +47,7 @@ class PropertyMixin:
     @adjacency.setter
     def adjacency(self, value: Optional[int]):
         self._data.adjacency = value
-        
+
     @property
     def parent_id(self) -> Optional[str]:
         self._data._set_default_value_if_none('parent_id')
@@ -57,7 +56,7 @@ class PropertyMixin:
     @parent_id.setter
     def parent_id(self, value: Optional[str]):
         self._data.parent_id = value
-        
+
     @property
     def buffer(self) -> Optional[bytes]:
         self._data._set_default_value_if_none('buffer')
@@ -66,7 +65,7 @@ class PropertyMixin:
     @buffer.setter
     def buffer(self, value: Optional[bytes]):
         self._data.buffer = value
-        
+
     @property
     def blob(self) -> Optional['ArrayType']:
         self._data._set_default_value_if_none('blob')
@@ -75,7 +74,7 @@ class PropertyMixin:
     @blob.setter
     def blob(self, value: Optional['ArrayType']):
         self._data.blob = value
-        
+
     @property
     def text(self) -> Optional[str]:
         self._data._set_default_value_if_none('text')
@@ -84,7 +83,7 @@ class PropertyMixin:
     @text.setter
     def text(self, value: Optional[str]):
         self._data.text = value
-        
+
     @property
     def weight(self) -> Optional[float]:
         self._data._set_default_value_if_none('weight')
@@ -93,7 +92,7 @@ class PropertyMixin:
     @weight.setter
     def weight(self, value: Optional[float]):
         self._data.weight = value
-        
+
     @property
     def uri(self) -> Optional[str]:
         self._data._set_default_value_if_none('uri')
@@ -102,7 +101,7 @@ class PropertyMixin:
     @uri.setter
     def uri(self, value: Optional[str]):
         self._data.uri = value
-        
+
     @property
     def mime_type(self) -> Optional[str]:
         self._data._set_default_value_if_none('mime_type')
@@ -111,7 +110,7 @@ class PropertyMixin:
     @mime_type.setter
     def mime_type(self, value: Optional[str]):
         self._data.mime_type = value
-        
+
     @property
     def tags(self) -> Optional[Dict[str, 'StructValueType']]:
         self._data._set_default_value_if_none('tags')
@@ -120,7 +119,7 @@ class PropertyMixin:
     @tags.setter
     def tags(self, value: Optional[Dict[str, 'StructValueType']]):
         self._data.tags = value
-        
+
     @property
     def offset(self) -> Optional[float]:
         self._data._set_default_value_if_none('offset')
@@ -129,7 +128,7 @@ class PropertyMixin:
     @offset.setter
     def offset(self, value: Optional[float]):
         self._data.offset = value
-        
+
     @property
     def location(self) -> Optional[List[float]]:
         self._data._set_default_value_if_none('location')
@@ -138,7 +137,7 @@ class PropertyMixin:
     @location.setter
     def location(self, value: Optional[List[float]]):
         self._data.location = value
-        
+
     @property
     def embedding(self) -> Optional['ArrayType']:
         self._data._set_default_value_if_none('embedding')
@@ -147,7 +146,7 @@ class PropertyMixin:
     @embedding.setter
     def embedding(self, value: Optional['ArrayType']):
         self._data.embedding = value
-        
+
     @property
     def modality(self) -> Optional[str]:
         self._data._set_default_value_if_none('modality')
@@ -156,7 +155,7 @@ class PropertyMixin:
     @modality.setter
     def modality(self, value: Optional[str]):
         self._data.modality = value
-        
+
     @property
     def evaluations(self) -> Optional[Dict[str, 'NamedScore']]:
         self._data._set_default_value_if_none('evaluations')
@@ -165,7 +164,7 @@ class PropertyMixin:
     @evaluations.setter
     def evaluations(self, value: Optional[Dict[str, 'NamedScore']]):
         self._data.evaluations = value
-        
+
     @property
     def scores(self) -> Optional[Dict[str, 'NamedScore']]:
         self._data._set_default_value_if_none('scores')
@@ -174,7 +173,7 @@ class PropertyMixin:
     @scores.setter
     def scores(self, value: Optional[Dict[str, 'NamedScore']]):
         self._data.scores = value
-        
+
     @property
     def chunks(self) -> Optional['ChunkArray']:
         self._data._set_default_value_if_none('chunks')
@@ -183,7 +182,7 @@ class PropertyMixin:
     @chunks.setter
     def chunks(self, value: Optional['DocumentArray']):
         self._data.chunks = value
-        
+
     @property
     def matches(self) -> Optional['MatchArray']:
         self._data._set_default_value_if_none('matches')
@@ -192,7 +191,7 @@ class PropertyMixin:
     @matches.setter
     def matches(self, value: Optional['DocumentArray']):
         self._data.matches = value
-        
+
     @property
     def timestamps(self) -> Optional[Dict[str, 'datetime']]:
         self._data._set_default_value_if_none('timestamps')
@@ -201,4 +200,3 @@ class PropertyMixin:
     @timestamps.setter
     def timestamps(self, value: Optional[Dict[str, 'datetime']]):
         self._data.timestamps = value
-        

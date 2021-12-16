@@ -30,4 +30,6 @@ class Document(AllMixins):
             self._data = DocumentData(self)
 
         if self._data is None:
-            raise ValueError(f'Failed to initialize Document from obj={obj}, kwargs={kwargs}')
+            raise ValueError(
+                f'Failed to initialize Document from obj={obj}, kwargs={kwargs}'
+            )

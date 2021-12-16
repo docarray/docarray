@@ -53,7 +53,6 @@ class DocumentData:
     matches: Optional['DocumentArray'] = None
     timestamps: Optional[Dict[str, 'datetime']] = None
 
-
     def __setattr__(self, key, value):
         if value is not None:
             if key == 'text' or key == 'blob' or key == 'buffer':
@@ -64,10 +63,12 @@ class DocumentData:
                     self.buffer = None
             elif key == 'chunks':
                 from ..array.chunk import ChunkArray
+
                 if not isinstance(value, ChunkArray):
                     value = ChunkArray(value, reference_doc=self._reference_doc)
             elif key == 'matches':
                 from ..array.match import MatchArray
+
                 if not isinstance(value, MatchArray):
                     value = MatchArray(value, reference_doc=self._reference_doc)
         super().__setattr__(key, value)
@@ -98,12 +99,19 @@ class DocumentData:
             if v is not None:
                 if v == 'DocumentArray':
                     from .. import DocumentArray
+
                     setattr(self, key, DocumentArray())
                 elif v == 'ChunkArray':
                     from ..array.chunk import ChunkArray
-                    setattr(self, key, ChunkArray(None, reference_doc=self._reference_doc))
+
+                    setattr(
+                        self, key, ChunkArray(None, reference_doc=self._reference_doc)
+                    )
                 elif v == 'MatchArray':
                     from ..array.match import MatchArray
-                    setattr(self, key, MatchArray(None, reference_doc=self._reference_doc))
+
+                    setattr(
+                        self, key, MatchArray(None, reference_doc=self._reference_doc)
+                    )
                 else:
                     setattr(self, key, v() if callable(v) else v)

@@ -9,7 +9,6 @@ if TYPE_CHECKING:
 
 
 class BaseDocumentMixin:
-
     def copy_from(self: 'T', other: 'T') -> None:
         """Overwrite self by copying from another :class:`Document`.
 
@@ -42,9 +41,11 @@ class BaseDocumentMixin:
     def to_protobuf(self) -> 'Message':
         if not hasattr(self, '_pb_body'):
             from ...proto.docarray_pb2 import DocumentProto
+
             self._pb_body = DocumentProto()
         self._pb_body.Clear()
         from ...proto.flush import flush_proto
+
         # only flush those non-empty fields to Protobuf
         for k in self._data.non_empty_fields:
             v = getattr(self, k)
