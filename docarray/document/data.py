@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 if TYPE_CHECKING:
     from .score import NamedScore
-    from .. import DocumentArray
+    from .. import DocumentArray, Document
     from ..typing import ArrayType, StructValueType
     from datetime import datetime
 
@@ -23,14 +23,15 @@ default_values = dict(
     modality='',
     evaluations=list,
     scores=dict,
-    chunks='DocumentArray',
-    matches='DocumentArray',
+    chunks='ChunkArray',
+    matches='MatchArray',
     timestamps=dict,
 )
 
 
 @dataclass(unsafe_hash=True)
 class DocumentData:
+    _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(default_factory=lambda: uuid.uuid1().hex)
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
@@ -63,10 +64,14 @@ class DocumentData:
                 # enable mutual exclusivity for content field
                 if value != default_values.get(key):
                     self._clear_content()
-            elif key == 'chunks' or key == 'matches':
-                # force setter to DocumentArray
-                from .. import DocumentArray
-                value = DocumentArray(value)
+            elif key == 'chunks':
+                from ..array.chunk import ChunkArray
+                if not isinstance(value, ChunkArray):
+                    value = ChunkArray(value, reference_doc=self._reference_doc)
+            elif key == 'matches':
+                from ..array.match import MatchArray
+                if not isinstance(value, MatchArray):
+                    value = MatchArray(value, reference_doc=self._reference_doc)
         super().__setattr__(key, value)
 
     @property
@@ -80,12 +85,13 @@ class DocumentData:
         r = []
         for f in fields(self):
             f_name = f.name
-            v = getattr(self, f_name)
-            if v is not None:
-                if f.name not in default_values:
-                    r.append(f_name)
-                elif v != default_values[f_name]:
-                    r.append(f_name)
+            if not f_name.startswith('_'):
+                v = getattr(self, f_name)
+                if v is not None:
+                    if f.name not in default_values:
+                        r.append(f_name)
+                    elif v != default_values[f_name]:
+                        r.append(f_name)
         return tuple(r)
 
     def _set_default_value_if_none(self, key):
@@ -93,8 +99,11 @@ class DocumentData:
             v = default_values.get(key, None)
             if v is not None:
                 if v == 'DocumentArray':
-                    from ... import DocumentArray
-
+                    from .. import DocumentArray
                     setattr(self, key, DocumentArray())
-                else:
-                    setattr(self, key, v() if callable(v) else v)
+                elif v == 'ChunkArray':
+                    from ..array.chunk import ChunkArray
+                    setattr(self, key, ChunkArray(None, reference_doc=self._reference_doc))
+                elif v == 'MatchArray':
+                    from ..array.match import MatchArray
+                    setattr(self, key, MatchArray(None, reference_doc=self._reference_doc))

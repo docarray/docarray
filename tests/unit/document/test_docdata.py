@@ -2,6 +2,8 @@ import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
+from docarray.array.chunk import ChunkArray
+from docarray.array.match import MatchArray
 
 
 @pytest.mark.parametrize('init_args', [None, dict(id=123), Document()])
@@ -88,6 +90,43 @@ def test_content_setter():
 
 
 def test_chunks_matches_setter():
-    d = Document(chunks=[Document()])
+    d = Document(chunks=[Document()], matches=[Document(), Document()])
     assert len(d.chunks) == 1
+    assert len(d.matches) == 2
     assert isinstance(d.chunks, DocumentArray)
+    assert isinstance(d.chunks, ChunkArray)
+    assert isinstance(d.matches, DocumentArray)
+    assert isinstance(d.matches, MatchArray)
+
+
+def test_empty_doc_chunks_matches():
+    assert isinstance(Document().chunks, DocumentArray)
+    assert isinstance(Document().matches, DocumentArray)
+    assert isinstance(Document().matches, MatchArray)
+    assert isinstance(Document().chunks, ChunkArray)
+
+    d = Document()
+    d.chunks.append(Document())
+    assert isinstance(d.chunks, ChunkArray)
+
+    d.chunks = [Document(), Document()]
+    assert isinstance(d.chunks, ChunkArray)
+
+
+def test_chunk_match_increase_granularity():
+    d = Document()
+    d.chunks.append(Document())
+    assert d.chunks[0].granularity == 1
+    assert id(d.chunks.reference_doc) == id(d)
+    d.matches.append(Document())
+    assert d.matches[0].adjacency == 1
+    assert id(d.matches.reference_doc) == id(d)
+
+    d = d.chunks[0]
+    d.chunks.append(Document())
+    assert d.chunks[0].granularity == 2
+    assert id(d.chunks.reference_doc) == id(d)
+
+    d.matches.append(Document())
+    assert d.matches[0].adjacency == 1
+    assert id(d.matches.reference_doc) == id(d)

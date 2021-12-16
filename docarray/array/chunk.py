@@ -1,4 +1,4 @@
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .document import DocumentArray
 
@@ -11,7 +11,7 @@ class ChunkArray(DocumentArray):
     :class:`ChunkArray` inherits from :class:`DocumentArray`.
     It's a subset of Documents.
 
-    :param doc_views: Set of sub-documents (i.e chunks) of `reference_doc`
+    :param docs: Set of sub-documents (i.e chunks) of `reference_doc`
     :param reference_doc: Reference :class:`Document` for the sub-documents
     """
 

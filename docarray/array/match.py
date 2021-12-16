@@ -11,13 +11,13 @@ class MatchArray(DocumentArray):
     :class:`MatchArray` inherits from :class:`DocumentArray`.
     It's a subset of Documents that represents the matches
 
-    :param doc_views: Set of matches of the `reference_doc`
+    :param docs: Set of matches of the `reference_doc`
     :param reference_doc: Reference :class:`Document` for the sub-documents
     """
 
-    def __init__(self, doc_views, reference_doc: 'Document'):
+    def __init__(self, docs, reference_doc: 'Document'):
         self._ref_doc = reference_doc
-        super().__init__(doc_views)
+        super().__init__(docs)
 
     def append(self, document: 'Document'):
         """Add a matched document to the current Document.

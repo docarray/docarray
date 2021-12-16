@@ -72,12 +72,6 @@ class BaseDocumentMixin:
     def __hash__(self):
         return hash(self._data)
 
-    def __copy__(self):
-        return type(self)(self)
-
-    def __deepcopy__(self, memodict={}):
-        return type(self)(self, copy=True)
-
     def __repr__(self):
         content = str(self._data.non_empty_fields)
         content += f' at {id(self)}'
