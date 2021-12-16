@@ -1,9 +1,9 @@
-from .helper import _uri_to_buffer, _to_datauri
-from ...helper import deprecate_by
 from typing import TYPE_CHECKING
 
+from .helper import _uri_to_buffer, _to_datauri
+
 if TYPE_CHECKING:
-    from ...typing import T
+    from ...types import T
 
 
 class BufferDataMixin:
@@ -19,7 +19,7 @@ class BufferDataMixin:
         return self
 
     def dump_buffer_to_datauri(
-        self: 'T', charset: str = 'utf-8', base64: bool = False
+            self: 'T', charset: str = 'utf-8', base64: bool = False
     ) -> 'T':
         """Convert :attr:`.buffer` to data :attr:`.uri` in place.
         Internally it first reads into buffer and then converts it to data URI.

@@ -38,3 +38,7 @@ if TYPE_CHECKING:
         Sequence[Document], Document, Generator[Document], Iterable[Document]
     ]
     T = TypeVar('T')
+
+    AnyDNN = TypeVar(
+        'AnyDNN'
+    )  #: The type of any implementation of a Deep Neural Network object

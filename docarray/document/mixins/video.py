@@ -3,7 +3,7 @@ from typing import Union, BinaryIO, TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from ...types import T
 
 
 class VideoDataMixin:

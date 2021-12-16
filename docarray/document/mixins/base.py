@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from ...helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from ...types import T
     from google.protobuf.message import Message
 
 

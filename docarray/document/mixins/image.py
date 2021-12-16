@@ -9,7 +9,7 @@ from .helper import _get_file_context, _uri_to_buffer
 from ...helper import deprecate_by
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from ...types import T
 
 
 class ImageDataMixin:

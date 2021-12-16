@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from ...typing import T, DocumentContentType
+    from ...types import T, DocumentContentType
 
 _DIGEST_SIZE = 8
 

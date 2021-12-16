@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 if TYPE_CHECKING:
     from .score import NamedScore
     from .. import DocumentArray, Document
-    from ..typing import ArrayType, StructValueType
+    from ..types import ArrayType, StructValueType
     from datetime import datetime
 
 default_values = dict(

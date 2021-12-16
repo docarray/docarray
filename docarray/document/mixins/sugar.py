@@ -3,8 +3,7 @@ from typing import overload, TYPE_CHECKING, Union, Callable, Optional, Tuple
 if TYPE_CHECKING:
     from ... import DocumentArray, DocumentArrayMemmap
     from ...ndarray import ArrayType
-    from ...array.mixins.embed import AnyDNN
-    from ...helper import T
+    from ...types import AnyDNN, T
 
     import numpy as np
 
