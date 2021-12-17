@@ -48,18 +48,6 @@ def test_clear_fields():
     assert d1.non_empty_fields == tuple()
 
 
-def test_to_protobuf():
-    with pytest.raises(TypeError):
-        Document(text='hello', embedding=np.array([1, 2, 3]), id=1).to_protobuf()
-
-    with pytest.raises(AttributeError):
-        Document(tags=1).to_protobuf()
-
-    assert Document(text='hello', embedding=np.array([1, 2, 3])).to_protobuf().text == 'hello'
-    assert Document(tags={'hello': 'world'}).to_protobuf().tags
-    assert len(Document(chunks=[Document(), Document()]).to_protobuf().chunks) == 2
-
-
 def test_exclusive_content():
     d = Document(text='hello')
     assert d.content_type == 'text'

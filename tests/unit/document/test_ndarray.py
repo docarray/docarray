@@ -30,4 +30,4 @@ def get_ndarrays():
 def test_ndarray_force_numpy(ndarray_val, attr, is_sparse):
     d = Document()
     setattr(d, attr, ndarray_val)
-    d.to_protobuf()
+    assert type(getattr(Document.from_protobuf(d.to_protobuf()), attr)) is type(ndarray_val)
