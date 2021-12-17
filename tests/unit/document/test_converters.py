@@ -4,24 +4,10 @@ import numpy as np
 import pytest
 
 from docarray import Document
-from docarray.helper import __windows__
 from docarray.document.generators import from_files
+from docarray.helper import __windows__
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-
-
-# def test_self_as_return():
-#     num_fn = 0
-#     for f in inspect.getmembers(ContentConversionMixin):
-#         if (
-#             callable(f[1])
-#             and not f[1].__name__.startswith('_')
-#             and not f[0].startswith('_')
-#         ):
-#             print(f[1])
-#             assert inspect.getfullargspec(f[1]).annotations['return'] == 'Document'
-#             num_fn += 1
-#     assert num_fn
 
 
 def test_video_convert_pipe(pytestconfig, tmpdir):
@@ -39,7 +25,7 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     for d in from_files(f'{pytestconfig.rootdir}/docs/**/*.wav'):
         fname = str(tmpdir / f'tmp{num_d}.wav')
-        d.convert_uri_to_audio_blob()
+        d.load_uri_to_audio_blob()
         d.blob = d.blob[::-1]
         d.dump_audio_blob_to_file(fname)
         assert os.path.exists(fname)
@@ -51,10 +37,10 @@ def test_image_convert_pipe(pytestconfig):
     for d in from_files(f'{pytestconfig.rootdir}/.github/**/*.png'):
         (
             d.convert_uri_to_image_blob()
-            .convert_uri_to_datauri()
-            .set_image_blob_shape((64, 64))
-            .set_image_blob_normalization()
-            .set_image_blob_channel_axis(-1, 0)
+                .convert_uri_to_datauri()
+                .set_image_blob_shape((64, 64))
+                .set_image_blob_normalization()
+                .set_image_blob_channel_axis(-1, 0)
         )
         assert d.blob.shape == (3, 64, 64)
         assert d.uri
@@ -77,7 +63,7 @@ def test_datauri_to_blob():
 
 def test_buffer_to_blob():
     doc = Document(uri=os.path.join(cur_dir, 'test.png'))
-    doc.convert_uri_to_buffer()
+    doc.load_uri_to_buffer()
     doc.convert_buffer_to_image_blob()
     assert isinstance(doc.blob, np.ndarray)
     assert doc.mime_type == 'image/png'
@@ -142,13 +128,13 @@ def test_convert_image_blob_to_uri(arr_size, channel_axis, width, height):
 def test_convert_uri_to_buffer(uri, mimetype):
     d = Document(uri=uri)
     assert not d.buffer
-    d.convert_uri_to_buffer()
+    d.load_uri_to_buffer()
     assert d.buffer
     assert d.mime_type == mimetype
 
 
 @pytest.mark.parametrize(
-    'converter', ['convert_buffer_to_uri', 'convert_content_to_uri']
+    'converter', ['dump_buffer_to_datauri', 'dump_content_to_datauri']
 )
 def test_convert_buffer_to_uri(converter):
     d = Document(content=open(__file__).read().encode(), mime_type='text/x-python')
@@ -157,7 +143,7 @@ def test_convert_buffer_to_uri(converter):
     assert d.uri.startswith('data:text/x-python;')
 
 
-@pytest.mark.parametrize('converter', ['convert_text_to_uri', 'convert_content_to_uri'])
+@pytest.mark.parametrize('converter', ['dump_text_to_datauri', 'dump_content_to_datauri'])
 def test_convert_text_to_uri(converter):
     d = Document(content=open(__file__).read(), mime_type='text/x-python')
     assert d.text
@@ -184,7 +170,7 @@ def test_convert_text_to_uri(converter):
 )
 def test_convert_uri_to_text(uri, mimetype):
     doc = Document(uri=uri, mime_type=mimetype)
-    doc.convert_uri_to_text()
+    doc.load_uri_to_text()
     if mimetype == 'text/html':
         assert '<!doctype html>' in doc.text
     elif mimetype == 'text/x-python':
@@ -197,8 +183,8 @@ def test_convert_text_to_uri_and_back():
     doc = Document(content=text_from_file, mime_type='text/x-python')
     assert doc.text
     assert doc.mime_type == 'text/x-python'
-    doc.convert_text_to_uri()
-    doc.convert_uri_to_text()
+    doc.dump_text_to_datauri()
+    doc.load_uri_to_text()
     assert doc.mime_type == 'text/plain'
     assert doc.text == text_from_file
 
@@ -209,17 +195,17 @@ def test_convert_text_diff_encoding(tmpfile):
     with open(tmpfile, 'wb') as fp:
         fp.write(text)
     with pytest.raises(UnicodeDecodeError):
-        d = Document(uri=str(tmpfile)).convert_uri_to_text()
+        d = Document(uri=str(tmpfile)).load_uri_to_text()
 
-    d = Document(uri=str(tmpfile)).convert_uri_to_text(charset='iso8859')
+    d = Document(uri=str(tmpfile)).load_uri_to_text(charset='iso8859')
     assert d.text == otext
 
     with open(tmpfile, 'w', encoding='iso8859') as fp:
         fp.write(otext)
     with pytest.raises(UnicodeDecodeError):
-        d = Document(uri=str(tmpfile)).convert_uri_to_text()
+        d = Document(uri=str(tmpfile)).load_uri_to_text()
 
-    d = Document(uri=str(tmpfile)).convert_uri_to_text(charset='iso8859')
+    d = Document(uri=str(tmpfile)).load_uri_to_text(charset='iso8859')
     assert d.text == otext
 
 

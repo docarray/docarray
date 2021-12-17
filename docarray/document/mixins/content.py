@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...types import T, DocumentContentType
-
-_DIGEST_SIZE = 8
+    from ...types import T
 
 
 class ContentPropertyMixin:
@@ -23,9 +21,9 @@ class ContentPropertyMixin:
         :return: itself after processed
         """
         if self.text:
-            self.convert_text_to_uri()
+            self.dump_text_to_datauri()
         elif self.buffer:
-            self.convert_buffer_to_uri()
+            self.dump_buffer_to_datauri()
         elif self.content_type:
             raise NotImplementedError
         return self
