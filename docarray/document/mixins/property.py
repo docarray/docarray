@@ -16,19 +16,6 @@ class PropertyMixin(_PropertyMixin):
         self._data.blob = None
         self._data.buffer = None
 
-    @_PropertyMixin.mime_type.setter
-    def mime_type(self, value: str):
-        if value in _all_mime_types:
-            self._data.mime_type = value
-        elif value:
-            r = mimetypes.guess_type(f'*.{value}')[0]
-            self._data.mime_type = r or value
-
-    @_PropertyMixin.uri.setter
-    def uri(self, value: str):
-        mime_type = mimetypes.guess_type(value)[0]
-        if mime_type:
-            self._data.mime_type = mime_type
 
     @property
     def content(self) -> Optional['DocumentContentType']:

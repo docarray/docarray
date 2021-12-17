@@ -1,3 +1,4 @@
+import mimetypes
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
@@ -28,21 +29,23 @@ default_values = dict(
     timestamps=dict,
 )
 
+_all_mime_types = set(mimetypes.types_map.values())
+
 
 @dataclass(unsafe_hash=True)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(default_factory=lambda: uuid.uuid1().hex)
+    parent_id: Optional[str] = None
+    mime_type: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
-    parent_id: Optional[str] = None
     buffer: Optional[bytes] = None
     blob: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
     text: Optional[str] = None
     content: Optional['DocumentContentType'] = None
     weight: Optional[float] = None
     uri: Optional[str] = None
-    mime_type: Optional[str] = None
     tags: Optional[Dict[str, 'StructValueType']] = None
     offset: Optional[float] = None
     location: Optional[List[float]] = None
@@ -62,7 +65,17 @@ class DocumentData:
                     self.text = None
                     self.blob = None
                     self.buffer = None
-            if key == 'content':
+            elif key == 'uri':
+                mime_type = mimetypes.guess_type(value)[0]
+
+                if mime_type:
+                    self.mime_type = mime_type
+            elif key == 'mime_type':
+                if value not in _all_mime_types:
+                    # given but not recognizable, do best guess
+                    r = mimetypes.guess_type(f'*.{value}')[0]
+                    value = r or value
+            elif key == 'content':
                 if isinstance(value, bytes):
                     self.buffer = value
                 elif isinstance(value, str):
