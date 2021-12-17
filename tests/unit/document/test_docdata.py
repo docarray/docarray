@@ -130,7 +130,6 @@ def test_offset():
 def test_exclusive_content_2():
     d = Document(text='hello', buffer=b'sda')
     assert len(d.non_empty_fields) == 2
-    assert d.content == 'hello'
     d.content = b'sda'
     assert d.content == b'sda'
     assert 'buffer' in d.non_empty_fields

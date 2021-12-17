@@ -63,6 +63,9 @@ class DocumentData:
                     self.blob = None
                     self.buffer = None
             if key == 'content':
+                self.text = None
+                self.blob = None
+                self.buffer = None
                 if isinstance(value, bytes):
                     self.buffer = value
                 elif isinstance(value, str):
@@ -79,7 +82,7 @@ class DocumentData:
 
                 if not isinstance(value, MatchArray):
                     value = MatchArray(value, reference_doc=self._reference_doc)
-        super().__setattr__(key, value)
+        self.__dict__[key] = value
 
     @property
     def _non_empty_fields(self) -> Tuple[str]:

@@ -1,4 +1,4 @@
-from .data import DocumentData
+from .data import DocumentData, default_values
 from .mixins import AllMixins
 from ..base import BaseDCType
 
