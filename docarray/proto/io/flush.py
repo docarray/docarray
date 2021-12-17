@@ -1,12 +1,11 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from google.protobuf.struct_pb2 import Struct
 
 from .ndarray import flush_ndarray, read_ndarray
-from ..docarray_pb2 import NdArrayProto, NamedScoreProto
+from ..docarray_pb2 import NdArrayProto, DocumentProto
 
 if TYPE_CHECKING:
-    from ..docarray_pb2 import DocumentProto
     from ... import Document
 
 
@@ -30,35 +29,34 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
     return Document(**fields)
 
 
-def flush_proto(pb_msg: 'DocumentProto', key: str, value: Any) -> None:
-    try:
-        if key == 'blob' or key == 'embedding':
-            pb_msg = getattr(pb_msg, key)
-            flush_ndarray(pb_msg, value)
-        elif key == 'chunks' or key == 'matches':
-            # pb_msg.ClearField(key)
-            for d in value:
-                d: Document
-                docs = getattr(pb_msg, key)
-                docs.append(d.to_protobuf())
-        elif key == 'tags':
-            # pb_msg.tags.Clear()
-            pb_msg.tags.update(value)
-        elif key in ('scores', 'evaluations'):
-            pb_msg = getattr(pb_msg, key)
-            for kk, vv in value.items():
-                for ff in vv.non_empty_fields:
-                    setattr(pb_msg[kk], ff, getattr(vv, ff))
-        else:
-            # other simple fields
-            setattr(pb_msg, key, value)
-    except RecursionError as ex:
-        if len(ex.args) >= 1:
-            ex.args = (f'Field `{key}` contains cyclic reference in memory. '
-                       f'Could it be your Document is referring to itself?',)
-        raise
-    except Exception as ex:
-        if len(ex.args) >= 1:
-            ex.args = (f'Field `{key}`',) + ex.args
-        raise
-
+def flush_proto(doc: 'Document') -> 'DocumentProto':
+    pb_msg = DocumentProto()
+    for key in doc.non_empty_fields:
+        try:
+            value = getattr(doc, key)
+            if key == 'blob' or key == 'embedding':
+                flush_ndarray(getattr(pb_msg, key), value)
+            elif key == 'chunks' or key == 'matches':
+                for d in value:
+                    d: Document
+                    docs = getattr(pb_msg, key)
+                    docs.append(d.to_protobuf())
+            elif key == 'tags':
+                pb_msg.tags.update(value)
+            elif key in ('scores', 'evaluations'):
+                for kk, vv in value.items():
+                    for ff in vv.non_empty_fields:
+                        setattr(getattr(pb_msg, key)[kk], ff, getattr(vv, ff))
+            else:
+                # other simple fields
+                setattr(pb_msg, key, value)
+        except RecursionError as ex:
+            if len(ex.args) >= 1:
+                ex.args = (f'Field `{key}` contains cyclic reference in memory. '
+                           f'Could it be your Document is referring to itself?',)
+            raise
+        except Exception as ex:
+            if len(ex.args) >= 1:
+                ex.args = (f'Field `{key}`',) + ex.args
+            raise
+    return pb_msg

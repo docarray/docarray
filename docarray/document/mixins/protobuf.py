@@ -14,14 +14,8 @@ class ProtobufMixin:
         return parse_proto(pb_msg)
 
     def to_protobuf(self) -> 'DocumentProto':
-        from ...proto.docarray_pb2 import DocumentProto
         from ...proto.io import flush_proto
-        pb_msg = DocumentProto()
-
-        # only flush those non-empty fields to Protobuf
-        for k in self.non_empty_fields:
-            flush_proto(pb_msg, k, getattr(self, k))
-        return pb_msg
+        return flush_proto(self)
 
     def to_dict(self):
         from google.protobuf.json_format import MessageToDict
