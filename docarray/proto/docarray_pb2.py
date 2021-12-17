@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"\xb6\x01\n\x0cNdArrayProto\x12,\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProtoH\x00\x12.\n\x06sparse\x18\x02 \x01(\x0b\x32\x1c.docarray.SparseNdArrayProtoH\x00\x12\x10\n\x08\x63ls_name\x18\x03 \x01(\t\x12+\n\nparameters\x18\x04 \x01(\x0b\x32\x17.google.protobuf.StructB\t\n\x07\x63ontent\"~\n\x12SparseNdArrayProto\x12,\n\x07indices\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\x06values\x18\x02 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12\r\n\x05shape\x18\x03 \x03(\r\"\x83\x01\n\x0fNamedScoreProto\x12\r\n\x05value\x18\x01 \x01(\x02\x12\x0f\n\x07op_name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12+\n\x08operands\x18\x04 \x03(\x0b\x32\x19.docarray.NamedScoreProto\x12\x0e\n\x06ref_id\x18\x05 \x01(\t\"\xc1\x05\n\rDocumentProto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x06\x62uffer\x18\x02 \x01(\x0cH\x00\x12&\n\x04\x62lob\x18\x03 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x0e\n\x04text\x18\x04 \x01(\tH\x00\x12\x13\n\x0bgranularity\x18\x05 \x01(\r\x12\x11\n\tadjacency\x18\x06 \x01(\r\x12\x11\n\tparent_id\x18\x07 \x01(\t\x12\x0e\n\x06weight\x18\x08 \x01(\x02\x12\x0b\n\x03uri\x18\t \x01(\t\x12\x10\n\x08modality\x18\n \x01(\t\x12\x11\n\tmime_type\x18\x0b \x01(\t\x12\x0e\n\x06offset\x18\x0c \x01(\x02\x12\x10\n\x08location\x18\r \x03(\x02\x12\'\n\x06\x63hunks\x18\x0e \x03(\x0b\x32\x17.docarray.DocumentProto\x12(\n\x07matches\x18\x0f \x03(\x0b\x32\x17.docarray.DocumentProto\x12)\n\tembedding\x18\x10 \x01(\x0b\x32\x16.docarray.NdArrayProto\x12%\n\x04tags\x18\x11 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x33\n\x06scores\x18\x12 \x03(\x0b\x32#.docarray.DocumentProto.ScoresEntry\x12=\n\x0b\x65valuations\x18\x13 \x03(\x0b\x32(.docarray.DocumentProto.EvaluationsEntry\x1aH\n\x0bScoresEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.NamedScoreProto:\x02\x38\x01\x1aM\n\x10\x45valuationsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.NamedScoreProto:\x02\x38\x01\x42\t\n\x07\x63ontent\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProtob\x06proto3'
+  serialized_pb=b'\n\x0e\x64ocarray.proto\x12\x08\x64ocarray\x1a\x1cgoogle/protobuf/struct.proto\"A\n\x11\x44\x65nseNdArrayProto\x12\x0e\n\x06\x62uffer\x18\x01 \x01(\x0c\x12\r\n\x05shape\x18\x02 \x03(\r\x12\r\n\x05\x64type\x18\x03 \x01(\t\"\xb6\x01\n\x0cNdArrayProto\x12,\n\x05\x64\x65nse\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProtoH\x00\x12.\n\x06sparse\x18\x02 \x01(\x0b\x32\x1c.docarray.SparseNdArrayProtoH\x00\x12\x10\n\x08\x63ls_name\x18\x03 \x01(\t\x12+\n\nparameters\x18\x04 \x01(\x0b\x32\x17.google.protobuf.StructB\t\n\x07\x63ontent\"~\n\x12SparseNdArrayProto\x12,\n\x07indices\x18\x01 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12+\n\x06values\x18\x02 \x01(\x0b\x32\x1b.docarray.DenseNdArrayProto\x12\r\n\x05shape\x18\x03 \x03(\r\"V\n\x0fNamedScoreProto\x12\r\n\x05value\x18\x01 \x01(\x02\x12\x0f\n\x07op_name\x18\x02 \x01(\t\x12\x13\n\x0b\x64\x65scription\x18\x03 \x01(\t\x12\x0e\n\x06ref_id\x18\x04 \x01(\t\"\xc1\x05\n\rDocumentProto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x06\x62uffer\x18\x02 \x01(\x0cH\x00\x12&\n\x04\x62lob\x18\x03 \x01(\x0b\x32\x16.docarray.NdArrayProtoH\x00\x12\x0e\n\x04text\x18\x04 \x01(\tH\x00\x12\x13\n\x0bgranularity\x18\x05 \x01(\r\x12\x11\n\tadjacency\x18\x06 \x01(\r\x12\x11\n\tparent_id\x18\x07 \x01(\t\x12\x0e\n\x06weight\x18\x08 \x01(\x02\x12\x0b\n\x03uri\x18\t \x01(\t\x12\x10\n\x08modality\x18\n \x01(\t\x12\x11\n\tmime_type\x18\x0b \x01(\t\x12\x0e\n\x06offset\x18\x0c \x01(\x02\x12\x10\n\x08location\x18\r \x03(\x02\x12\'\n\x06\x63hunks\x18\x0e \x03(\x0b\x32\x17.docarray.DocumentProto\x12(\n\x07matches\x18\x0f \x03(\x0b\x32\x17.docarray.DocumentProto\x12)\n\tembedding\x18\x10 \x01(\x0b\x32\x16.docarray.NdArrayProto\x12%\n\x04tags\x18\x11 \x01(\x0b\x32\x17.google.protobuf.Struct\x12\x33\n\x06scores\x18\x12 \x03(\x0b\x32#.docarray.DocumentProto.ScoresEntry\x12=\n\x0b\x65valuations\x18\x13 \x03(\x0b\x32(.docarray.DocumentProto.EvaluationsEntry\x1aH\n\x0bScoresEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.NamedScoreProto:\x02\x38\x01\x1aM\n\x10\x45valuationsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12(\n\x05value\x18\x02 \x01(\x0b\x32\x19.docarray.NamedScoreProto:\x02\x38\x01\x42\t\n\x07\x63ontent\";\n\x12\x44ocumentArrayProto\x12%\n\x04\x64ocs\x18\x01 \x03(\x0b\x32\x17.docarray.DocumentProtob\x06proto3'
   ,
   dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
 
@@ -207,15 +207,8 @@ _NAMEDSCOREPROTO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='operands', full_name='docarray.NamedScoreProto.operands', index=3,
-      number=4, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='ref_id', full_name='docarray.NamedScoreProto.ref_id', index=4,
-      number=5, type=9, cpp_type=9, label=1,
+      name='ref_id', full_name='docarray.NamedScoreProto.ref_id', index=3,
+      number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -232,8 +225,8 @@ _NAMEDSCOREPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=439,
-  serialized_end=570,
+  serialized_start=438,
+  serialized_end=524,
 )
 
 
@@ -271,8 +264,8 @@ _DOCUMENTPROTO_SCORESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1116,
-  serialized_end=1188,
+  serialized_start=1070,
+  serialized_end=1142,
 )
 
 _DOCUMENTPROTO_EVALUATIONSENTRY = _descriptor.Descriptor(
@@ -309,8 +302,8 @@ _DOCUMENTPROTO_EVALUATIONSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1190,
-  serialized_end=1267,
+  serialized_start=1144,
+  serialized_end=1221,
 )
 
 _DOCUMENTPROTO = _descriptor.Descriptor(
@@ -471,8 +464,8 @@ _DOCUMENTPROTO = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=573,
-  serialized_end=1278,
+  serialized_start=527,
+  serialized_end=1232,
 )
 
 
@@ -503,8 +496,8 @@ _DOCUMENTARRAYPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1280,
-  serialized_end=1339,
+  serialized_start=1234,
+  serialized_end=1293,
 )
 
 _NDARRAYPROTO.fields_by_name['dense'].message_type = _DENSENDARRAYPROTO
@@ -518,7 +511,6 @@ _NDARRAYPROTO.oneofs_by_name['content'].fields.append(
 _NDARRAYPROTO.fields_by_name['sparse'].containing_oneof = _NDARRAYPROTO.oneofs_by_name['content']
 _SPARSENDARRAYPROTO.fields_by_name['indices'].message_type = _DENSENDARRAYPROTO
 _SPARSENDARRAYPROTO.fields_by_name['values'].message_type = _DENSENDARRAYPROTO
-_NAMEDSCOREPROTO.fields_by_name['operands'].message_type = _NAMEDSCOREPROTO
 _DOCUMENTPROTO_SCORESENTRY.fields_by_name['value'].message_type = _NAMEDSCOREPROTO
 _DOCUMENTPROTO_SCORESENTRY.containing_type = _DOCUMENTPROTO
 _DOCUMENTPROTO_EVALUATIONSENTRY.fields_by_name['value'].message_type = _NAMEDSCOREPROTO
