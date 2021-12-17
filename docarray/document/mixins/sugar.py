@@ -2,8 +2,7 @@ from typing import overload, TYPE_CHECKING, Union, Callable, Optional, Tuple
 
 if TYPE_CHECKING:
     from ... import DocumentArray, DocumentArrayMemmap
-    from ...ndarray import ArrayType
-    from ...types import AnyDNN, T
+    from ...types import AnyDNN, T, ArrayType
 
     import numpy as np
 

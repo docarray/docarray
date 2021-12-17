@@ -16,7 +16,6 @@ class PropertyMixin(_PropertyMixin):
         self._data.blob = None
         self._data.buffer = None
 
-
     @property
     def content(self) -> Optional['DocumentContentType']:
         ct = self.content_type
