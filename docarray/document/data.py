@@ -37,13 +37,13 @@ class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(default_factory=lambda: uuid.uuid1().hex)
     parent_id: Optional[str] = None
-    mime_type: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
     buffer: Optional[bytes] = None
     blob: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
     text: Optional[str] = None
     content: Optional['DocumentContentType'] = None
+    mime_type: Optional[str] = None
     weight: Optional[float] = None
     uri: Optional[str] = None
     tags: Optional[Dict[str, 'StructValueType']] = None
@@ -65,6 +65,8 @@ class DocumentData:
                     self.text = None
                     self.blob = None
                     self.buffer = None
+                    if key == 'text':
+                        self.mime_type = 'text/plain'
             elif key == 'uri':
                 mime_type = mimetypes.guess_type(value)[0]
 
