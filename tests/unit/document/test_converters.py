@@ -48,10 +48,10 @@ def test_image_convert_pipe(pytestconfig):
 
 def test_uri_to_blob():
     doc = Document(uri=os.path.join(cur_dir, 'test.png'))
-    doc.convert_uri_to_image_blob()
+    doc.load_uri_to_image_blob()
     assert isinstance(doc.blob, np.ndarray)
-    assert doc.mime_type == 'image/png'
     assert doc.blob.shape == (85, 152, 3)  # h,w,c
+    assert doc.mime_type == 'image/png'
 
 
 def test_datauri_to_blob():

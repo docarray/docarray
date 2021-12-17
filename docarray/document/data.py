@@ -63,9 +63,6 @@ class DocumentData:
                     self.blob = None
                     self.buffer = None
             if key == 'content':
-                self.text = None
-                self.blob = None
-                self.buffer = None
                 if isinstance(value, bytes):
                     self.buffer = value
                 elif isinstance(value, str):

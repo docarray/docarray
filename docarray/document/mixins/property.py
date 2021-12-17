@@ -1,9 +1,12 @@
+import mimetypes
 from typing import TYPE_CHECKING, Optional
 
 from ._property import _PropertyMixin
 
 if TYPE_CHECKING:
-    from ...types import ArrayType, DocumentContentType
+    from ...types import DocumentContentType
+
+_all_mime_types = set(mimetypes.types_map.values())
 
 
 class PropertyMixin(_PropertyMixin):
@@ -13,20 +16,19 @@ class PropertyMixin(_PropertyMixin):
         self._data.blob = None
         self._data.buffer = None
 
-    @_PropertyMixin.text.setter
-    def text(self, value: str):
-        self._clear_content()
-        self._data.text = value
+    @_PropertyMixin.mime_type.setter
+    def mime_type(self, value: str):
+        if value in _all_mime_types:
+            self._data.mime_type = value
+        elif value:
+            r = mimetypes.guess_type(f'*.{value}')[0]
+            self._data.mime_type = r or value
 
-    @_PropertyMixin.blob.setter
-    def blob(self, value: 'ArrayType'):
-        self._clear_content()
-        self._data.blob = value
-
-    @_PropertyMixin.buffer.setter
-    def buffer(self, value: bytes):
-        self._clear_content()
-        self._data.buffer = value
+    @_PropertyMixin.uri.setter
+    def uri(self, value: str):
+        mime_type = mimetypes.guess_type(value)[0]
+        if mime_type:
+            self._data.mime_type = mime_type
 
     @property
     def content(self) -> Optional['DocumentContentType']:
