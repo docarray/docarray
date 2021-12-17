@@ -12,18 +12,16 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 def test_video_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
-    for d in from_files(f'{pytestconfig.rootdir}/docs/**/*.mp4'):
-        fname = str(tmpdir / f'tmp{num_d}.mp4')
-        d.load_uri_to_video_blob()
-        d.dump_video_blob_to_file(fname)
-        assert os.path.exists(fname)
-        num_d += 1
-    assert num_d
+    fname = str(tmpdir / f'tmp{num_d}.mp4')
+    d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
+    d.load_uri_to_video_blob()
+    d.dump_video_blob_to_file(fname)
+    assert os.path.exists(fname)
 
 
 def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
-    for d in from_files(f'{pytestconfig.rootdir}/docs/**/*.wav'):
+    for d in from_files(f'{cur_dir}/toydata/*.wav'):
         fname = str(tmpdir / f'tmp{num_d}.wav')
         d.load_uri_to_audio_blob()
         d.blob = d.blob[::-1]
@@ -47,7 +45,7 @@ def test_image_convert_pipe(pytestconfig):
 
 
 def test_uri_to_blob():
-    doc = Document(uri=os.path.join(cur_dir, 'test.png'))
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     doc.load_uri_to_image_blob()
     assert isinstance(doc.blob, np.ndarray)
     assert doc.blob.shape == (85, 152, 3)  # h,w,c
@@ -55,14 +53,14 @@ def test_uri_to_blob():
 
 
 def test_datauri_to_blob():
-    doc = Document(uri=os.path.join(cur_dir, 'test.png'))
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     doc.convert_uri_to_datauri()
     assert not doc.blob
     assert doc.mime_type == 'image/png'
 
 
 def test_buffer_to_blob():
-    doc = Document(uri=os.path.join(cur_dir, 'test.png'))
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     doc.load_uri_to_buffer()
     doc.convert_buffer_to_image_blob()
     assert isinstance(doc.blob, np.ndarray)
@@ -231,6 +229,6 @@ def test_convert_uri_to_data_uri(uri, mimetype):
 
 
 def test_glb_converters():
-    doc = Document(uri=os.path.join(cur_dir, 'test.glb'))
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/test.glb'))
     doc.load_uri_to_point_cloud_blob(2000)
     assert doc.blob.shape == (2000, 3)
