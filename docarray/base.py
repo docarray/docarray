@@ -1,5 +1,6 @@
 import copy as cp
-from typing import TYPE_CHECKING, Optional, Tuple
+from dataclasses import fields
+from typing import TYPE_CHECKING, Optional, Tuple, Dict
 from .helper import typename
 
 if TYPE_CHECKING:
@@ -19,7 +20,13 @@ class BaseDCType:
         """
         return self._data._non_empty_fields
 
-    def __init__(self: 'T', _obj: Optional['T'] = None, copy: bool = False, **kwargs):
+    def __init__(
+        self: 'T',
+        _obj: Optional['T'] = None,
+        copy: bool = False,
+        field_resolver: Optional[Dict[str, str]] = None,
+        **kwargs,
+    ):
         self._data = None
         if isinstance(_obj, type(self)):
             if copy:
@@ -28,8 +35,26 @@ class BaseDCType:
                 self._data = _obj._data
         elif isinstance(_obj, dict):
             kwargs.update(_obj)
+
         if kwargs:
+            if field_resolver:
+                kwargs = {field_resolver.get(k, k): v for k, v in kwargs.items()}
+
+            _unknown_kwargs = None
+            if hasattr(self, '_unresolved_fields_dest'):
+                _unresolved = set(kwargs.keys()).difference(
+                    {f.name for f in fields(self._data_class)}
+                )
+                if _unresolved:
+                    _unknown_kwargs = {k: kwargs[k] for k in _unresolved}
+                    for k in _unresolved:
+                        kwargs.pop(k)
+
             self._data = self._data_class(self, **kwargs)
+
+            if _unknown_kwargs:
+                getattr(self._data, self._unresolved_fields_dest).update(_unknown_kwargs)
+
         if _obj is None and not kwargs:
             self._data = self._data_class(self)
 

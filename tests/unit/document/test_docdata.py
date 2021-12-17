@@ -4,6 +4,7 @@ import pytest
 from docarray import Document, DocumentArray
 from docarray.array.chunk import ChunkArray
 from docarray.array.match import MatchArray
+from docarray.score import NamedScore
 
 
 @pytest.mark.parametrize('init_args', [None, dict(id=123), Document()])
@@ -140,3 +141,54 @@ def test_exclusive_content_2():
     d = Document(content=[1,2,3])
     assert d.content_type == 'blob'
 
+def test_get_attr_values():
+    d = Document(
+        **{
+            'id': '123',
+            'text': 'document',
+            'feature1': 121,
+            'name': 'name',
+            'tags': {'id': 'identity', 'a': 'b', 'c': 'd', 'e': [0, 1, {'f': 'g'}]},
+        }
+    )
+    d.scores['metric'] = NamedScore(value=42)
+
+    required_keys = [
+        'id',
+        'text',
+        'tags__name',
+        'tags__feature1',
+        'scores__metric__value',
+        'tags__c',
+        'tags__id',
+        'tags__inexistant',
+        'tags__e__2__f',
+        'inexistant',
+    ]
+    res = d.get_attributes(*required_keys)
+    assert len(res) == len(required_keys)
+    assert res[required_keys.index('id')] == '123'
+    assert res[required_keys.index('tags__feature1')] == 121
+    assert res[required_keys.index('tags__name')] == 'name'
+    assert res[required_keys.index('text')] == 'document'
+    assert res[required_keys.index('tags__c')] == 'd'
+    assert res[required_keys.index('tags__id')] == 'identity'
+    assert res[required_keys.index('scores__metric__value')] == 42
+    assert res[required_keys.index('tags__inexistant')] is None
+    assert res[required_keys.index('inexistant')] is None
+    assert res[required_keys.index('tags__e__2__f')] == 'g'
+
+    required_keys_2 = ['tags', 'text']
+    res2 = d.get_attributes(*required_keys_2)
+    assert len(res2) == 2
+    assert res2[required_keys_2.index('text')] == 'document'
+    assert res2[required_keys_2.index('tags')] == d.tags
+
+    d = Document({'id': '123', 'tags': {'outterkey': {'innerkey': 'real_value'}}})
+    required_keys_3 = ['tags__outterkey__innerkey']
+    res3 = d.get_attributes(*required_keys_3)
+    assert res3 == 'real_value'
+
+    d = Document(content=np.array([1, 2, 3]))
+    res4 = np.stack(d.get_attributes(*['blob']))
+    np.testing.assert_equal(res4, np.array([1, 2, 3]))

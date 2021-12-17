@@ -3,7 +3,7 @@ import random
 import sys
 import uuid
 import warnings
-from typing import Iterable, Any, Dict, Optional
+from typing import Any, Dict, Optional, Sequence
 
 __windows__ = sys.platform == 'win32'
 
@@ -67,6 +67,9 @@ def dunder_get(_dict: Any, key: str) -> Any:
     :return: (mixed) value corresponding to the key
     """
 
+    if not _dict:
+        return None
+
     try:
         part1, part2 = key.split('__', 1)
     except ValueError:
@@ -77,19 +80,14 @@ def dunder_get(_dict: Any, key: str) -> Any:
     except ValueError:
         pass
 
-    from google.protobuf.struct_pb2 import ListValue
-    from google.protobuf.struct_pb2 import Struct
-    from google.protobuf.pyext._message import MessageMapContainer
-    from .simple.struct import StructView
-
     if isinstance(part1, int):
         result = _dict[part1]
-    elif isinstance(_dict, (dict, Struct, MessageMapContainer, StructView)):
+    elif isinstance(_dict, dict):
         if part1 in _dict:
             result = _dict[part1]
         else:
             result = None
-    elif isinstance(_dict, (Iterable, ListValue)):
+    elif isinstance(_dict, Sequence):
         result = _dict[part1]
     else:
         result = getattr(_dict, part1)
