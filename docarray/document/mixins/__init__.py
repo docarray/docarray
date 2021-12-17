@@ -1,23 +1,21 @@
 from .attribute import GetAttributesMixin
 from .audio import AudioDataMixin
-from .base import BaseDocumentMixin
 from .buffer import BufferDataMixin
 from .content import ContentPropertyMixin
 from .convert import ConvertMixin
 from .dump import DumpFileMixin
 from .image import ImageDataMixin
-from .io import IOMixin
 from .mesh import MeshDataMixin
 from .plot import PlotMixin
 from .property import PropertyMixin
+from .protobuf import ProtobufMixin
 from .sugar import SingletonSugarMixin
 from .text import TextDataMixin
 from .video import VideoDataMixin
 
 
 class AllMixins(
-    BaseDocumentMixin,
-    IOMixin,
+    ProtobufMixin,
     PropertyMixin,
     ContentPropertyMixin,
     ConvertMixin,

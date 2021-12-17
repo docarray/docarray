@@ -43,42 +43,6 @@ class NdArray(BaseProtoView):
             v = v.numpy()
         return v
 
-    @property
-    def value(self) -> 'ArrayType':
-        """Return the value in original framework type
-
-        :return: the value of in numpy, scipy, tensorflow, pytorch type."""
-
-        if self.is_sparse:
-            if self.framework == 'scipy':
-                idx, val, shape = self._get_raw_sparse_array()
-                from scipy.sparse import coo_matrix
-
-                x = coo_matrix((val, idx.T), shape=shape)
-                sp_format = self._pb_body.parameters['sparse_format']
-                if sp_format == 'bsr':
-                    return x.tobsr()
-                elif sp_format == 'csc':
-                    return x.tocsc()
-                elif sp_format == 'csr':
-                    return x.tocsr()
-                elif sp_format == 'coo':
-                    return x
-            elif self.framework == 'tensorflow':
-                idx, val, shape = self._get_raw_sparse_array()
-                from tensorflow import SparseTensor
-
-                return SparseTensor(idx, val, shape)
-            elif self.framework == 'torch':
-                idx, val, shape = self._get_raw_sparse_array()
-                from torch import sparse_coo_tensor
-
-                return sparse_coo_tensor(idx, val, shape)
-        else:
-            if self.framework in {'numpy', 'torch', 'paddle', 'tensorflow'}:
-                x = _get_dense_array(self._pb_body.dense)
-                return _to_framework_array(x, self.framework)
-
     @staticmethod
     def ravel(value: 'ArrayType', docs: Iterator['Document'], field: str) -> None:
         """Ravel :attr:`value` into ``doc.field`` of each documents

@@ -1,9 +1,10 @@
 import uuid
+from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 if TYPE_CHECKING:
-    from .score import NamedScore
+    from ..score import NamedScore
     from .. import DocumentArray, Document
     from ..types import ArrayType, StructValueType
 
@@ -20,8 +21,8 @@ default_values = dict(
     offset=0.0,
     location=list,
     modality='',
-    evaluations=list,
-    scores=dict,
+    evaluations='Dict[str, NamedScore]',
+    scores='Dict[str, NamedScore]',
     chunks='ChunkArray',
     matches='MatchArray',
     timestamps=dict,
@@ -73,13 +74,7 @@ class DocumentData:
         super().__setattr__(key, value)
 
     @property
-    def non_empty_fields(self) -> Tuple[str]:
-        """Get all non-emtpy fields of this :class:`Document`.
-
-        Non-empty fields are the fields with not-`None` and not-default values.
-
-        :return: field names in a tuple.
-        """
+    def _non_empty_fields(self) -> Tuple[str]:
         r = []
         for f in fields(self):
             f_name = f.name
@@ -90,13 +85,7 @@ class DocumentData:
                         r.append(f_name)
                     else:
                         dv = default_values[f_name]
-                        if (
-                            dv == 'ChunkArray'
-                            or dv == 'MatchArray'
-                            or dv == 'DocumentArray'
-                            or dv == list
-                            or dv == dict
-                        ):
+                        if dv in ('ChunkArray', 'MatchArray', 'DocumentArray', list, dict, 'Dict[str, NamedScore]'):
                             if v:
                                 r.append(f_name)
                         elif v != dv:
@@ -124,5 +113,8 @@ class DocumentData:
                     setattr(
                         self, key, MatchArray(None, reference_doc=self._reference_doc)
                     )
+                elif v == 'Dict[str, NamedScore]':
+                    from ..score import NamedScore
+                    setattr(self, key, defaultdict(NamedScore))
                 else:
                     setattr(self, key, v() if callable(v) else v)

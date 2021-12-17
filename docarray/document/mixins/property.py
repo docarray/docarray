@@ -1,8 +1,8 @@
-# auto-generated from /Users/hanxiao/Documents/docarray/scripts/gen_property_mixin.py
+# auto-generated from /Users/hanxiao/Documents/docarray/scripts/gen_doc_property_mixin.py
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 if TYPE_CHECKING:
-    from ..score import NamedScore
+    from ...score import NamedScore
     from ...array.match import MatchArray
     from ...array.chunk import ChunkArray
     from ... import DocumentArray
@@ -11,15 +11,6 @@ if TYPE_CHECKING:
 
 class PropertyMixin:
 
-    @property
-    def non_empty_fields(self) -> Tuple[str]:
-        """Get all non-emtpy fields of this :class:`Document`.
-
-        Non-empty fields are the fields with not-`None` and not-default values.
-
-        :return: field names in a tuple.
-        """
-        return self._data.non_empty_fields
     
     @property
     def id(self) -> str:

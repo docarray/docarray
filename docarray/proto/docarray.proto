@@ -53,8 +53,7 @@ message NamedScoreProto {
   float value = 1; // value
   string op_name = 2; // the name of the operator/score function
   string description = 3; // text description of the score
-  repeated NamedScoreProto operands = 4; // the score can be nested
-  string ref_id = 5; // the score is computed between doc `id` and `ref_id`
+  string ref_id = 4; // the score is computed between doc `id` and `ref_id`
 }
 
 

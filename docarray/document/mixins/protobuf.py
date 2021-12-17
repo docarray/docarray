@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from ...proto.docarray_pb2 import DocumentProto
 
 
-class IOMixin:
+class ProtobufMixin:
 
     @classmethod
     def from_protobuf(cls: Type['T'], pb_msg: 'DocumentProto') -> 'T':
@@ -19,7 +19,7 @@ class IOMixin:
         pb_msg = DocumentProto()
 
         # only flush those non-empty fields to Protobuf
-        for k in self._data.non_empty_fields:
+        for k in self.non_empty_fields:
             flush_proto(pb_msg, k, getattr(self, k))
         return pb_msg
 
