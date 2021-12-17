@@ -118,3 +118,26 @@ def test_chunk_match_increase_granularity():
     d.matches.append(Document())
     assert d.matches[0].adjacency == 1
     assert id(d.matches.reference_doc) == id(d)
+
+
+def test_offset():
+    d1 = Document(offset=1.0)
+    d2 = Document()
+    d2.offset = 1.0
+    assert d1.offset == d2.offset == 1.0
+
+
+def test_exclusive_content_2():
+    d = Document(text='hello', buffer=b'sda')
+    assert len(d.non_empty_fields) == 2
+    assert d.content == 'hello'
+    d.content = b'sda'
+    assert d.content == b'sda'
+    assert 'buffer' in d.non_empty_fields
+    d = Document(content='hello')
+    assert d.content_type == 'text'
+    d = Document(content=b'hello')
+    assert d.content_type == 'buffer'
+    d = Document(content=[1,2,3])
+    assert d.content_type == 'blob'
+

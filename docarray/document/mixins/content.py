@@ -10,35 +10,6 @@ class ContentPropertyMixin:
     """Provide helper functions for :class:`Document` to allow universal content property access. """
 
     @property
-    def content(self) -> Optional['DocumentContentType']:
-        ct = self.content_type
-        if ct:
-            return getattr(self, ct)
-
-    @content.setter
-    def content(self, value: Optional['DocumentContentType']):
-        if value is None:
-            self.text = None
-            self.blob = None
-            self.buffer = None
-        elif isinstance(value, bytes):
-            self.buffer = value
-        elif isinstance(value, str):
-            self.text = value
-        else:
-            self.blob = value
-
-    @property
-    def content_type(self) -> Optional[str]:
-        nf = self.non_empty_fields
-        if 'text' in nf:
-            return 'text'
-        elif 'blob' in nf:
-            return 'blob'
-        elif 'buffer' in nf:
-            return 'buffer'
-
-    @property
     def content_hash(self) -> int:
         """Get the document hash according to its content.
 

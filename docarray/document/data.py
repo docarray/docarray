@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 if TYPE_CHECKING:
     from ..score import NamedScore
     from .. import DocumentArray, Document
-    from ..types import ArrayType, StructValueType
+    from ..types import ArrayType, StructValueType, DocumentContentType
 
 default_values = dict(
     granularity=0,
@@ -39,6 +39,7 @@ class DocumentData:
     buffer: Optional[bytes] = None
     blob: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
     text: Optional[str] = None
+    content: Optional['DocumentContentType'] = None
     weight: Optional[float] = None
     uri: Optional[str] = None
     mime_type: Optional[str] = None
@@ -61,6 +62,13 @@ class DocumentData:
                     self.text = None
                     self.blob = None
                     self.buffer = None
+            if key == 'content':
+                if isinstance(value, bytes):
+                    self.buffer = value
+                elif isinstance(value, str):
+                    self.text = value
+                else:
+                    self.blob = value
             elif key == 'chunks':
                 from ..array.chunk import ChunkArray
 
