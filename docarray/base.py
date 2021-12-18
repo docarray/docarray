@@ -104,4 +104,6 @@ class BaseDCType:
         return self.to_bytes()
 
     def __eq__(self, other):
-        return self._data == other._data
+        if type(self) is type(other):
+            return self._data == other._data
+        return False
