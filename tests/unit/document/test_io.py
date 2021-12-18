@@ -48,7 +48,7 @@ def test_input_lines_with_filepath(filepath):
 
 
 def test_input_csv_from_file():
-    with open(os.path.join(cur_dir, 'docs.csv')) as fp:
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
         result = list(from_csv(fp))
     assert len(result) == 2
     assert isinstance(result[0], Document)
@@ -56,7 +56,7 @@ def test_input_csv_from_file():
 
 
 def test_input_csv_from_lines():
-    with open(os.path.join(cur_dir, 'docs.csv')) as fp:
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
         result = list(from_lines(fp, line_format='csv'))
     assert len(result) == 2
     assert isinstance(result[0], Document)
@@ -64,7 +64,7 @@ def test_input_csv_from_lines():
 
 
 def test_input_csv_from_lines_field_resolver():
-    with open(os.path.join(cur_dir, 'docs.csv')) as fp:
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
         result = list(
             from_lines(fp, line_format='csv', field_resolver={'question': 'text'})
         )
@@ -77,7 +77,7 @@ def test_input_csv_from_lines_field_resolver():
 
 @pytest.mark.parametrize('da', [DocumentArray, ])
 def test_input_csv_from_strings(da):
-    result = da.from_csv(os.path.join(cur_dir, 'docs.csv'))
+    result = da.from_csv(os.path.join(cur_dir, 'toydata/docs.csv'))
     assert len(result) == 2
     assert isinstance(result[0], Document)
     assert result[0].tags['source'] == 'testsrc'
@@ -91,7 +91,7 @@ def test_input_lines_with_empty_filepath_and_lines():
 
 
 def test_input_lines_with_jsonlines_docs():
-    result = list(from_lines(filepath=os.path.join(cur_dir, 'docs.jsonlines')))
+    result = list(from_lines(filepath=os.path.join(cur_dir, 'toydata/docs.jsonlines')))
     assert len(result) == 2
     assert result[0].text == "a"
     assert result[1].text == "b"
@@ -108,7 +108,7 @@ def test_input_lines_with_jsonlines_docs():
 @pytest.mark.parametrize('da', [DocumentArray, ])
 def test_input_lines_with_jsonlines_file(size, sampling_rate, da):
     result = da.from_lines(
-        filepath=os.path.join(cur_dir, 'docs.jsonlines'),
+        filepath=os.path.join(cur_dir, 'toydata/docs.jsonlines'),
         size=size,
         sampling_rate=sampling_rate,
     )
@@ -129,7 +129,7 @@ def test_input_lines_with_jsonlines_file(size, sampling_rate, da):
     ],
 )
 def test_input_lines_with_jsonslines(size, sampling_rate):
-    with open(os.path.join(cur_dir, 'docs.jsonlines')) as fp:
+    with open(os.path.join(cur_dir, 'toydata/docs.jsonlines')) as fp:
         lines = fp.readlines()
     result = list(
         from_lines(
@@ -145,7 +145,7 @@ def test_input_lines_with_jsonslines(size, sampling_rate):
 
 def test_input_lines_with_jsonlines_docs_groundtruth():
     result = list(
-        from_lines(filepath='tests/unit/clients/python/docs_groundtruth.jsonlines')
+        from_lines(filepath=os.path.join(cur_dir, 'toydata/docs_groundtruth.jsonlines'))
     )
     assert len(result) == 2
     assert result[0][0].text == "a"

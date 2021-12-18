@@ -147,11 +147,11 @@ def from_csv(
         lines = csv.DictReader(fp, dialect=dialect)
         for value in _subsample(lines, size, sampling_rate):
             if 'groundtruth' in value and 'document' in value:
-                yield Document(value['document'], field_resolver), Document(
-                    value['groundtruth'], field_resolver
+                yield Document(value['document'], field_resolver=field_resolver), Document(
+                    value['groundtruth'], field_resolver=field_resolver
                 )
             else:
-                yield Document(value, field_resolver)
+                yield Document(value, field_resolver=field_resolver)
 
 
 def from_huggingface_datasets(
@@ -209,7 +209,7 @@ def from_huggingface_datasets(
 
     # Return documents from dataset instances with subsampling if required
     for value in _subsample(data, size, sampling_rate):
-        yield Document(value, field_resolver)
+        yield Document(value, field_resolver=field_resolver)
 
 
 def from_ndjson(
@@ -234,11 +234,11 @@ def from_ndjson(
     for line in _subsample(fp, size, sampling_rate):
         value = json.loads(line)
         if 'groundtruth' in value and 'document' in value:
-            yield Document(value['document'], field_resolver), Document(
-                value['groundtruth'], field_resolver
+            yield Document(value['document'], field_resolver=field_resolver), Document(
+                value['groundtruth'], field_resolver=field_resolver
             )
         else:
-            yield Document(value, field_resolver)
+            yield Document(value, field_resolver=field_resolver)
 
 
 def from_lines(

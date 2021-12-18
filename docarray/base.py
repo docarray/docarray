@@ -53,7 +53,7 @@ class BaseDCType:
             self._data = self._data_class(self, **kwargs)
 
             if _unknown_kwargs:
-                getattr(self._data, self._unresolved_fields_dest).update(_unknown_kwargs)
+                getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
 
         if _obj is None and not kwargs:
             self._data = self._data_class(self)
