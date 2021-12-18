@@ -138,8 +138,9 @@ def test_exclusive_content_2():
     assert d.content_type == 'text'
     d = Document(content=b'hello')
     assert d.content_type == 'buffer'
-    d = Document(content=[1,2,3])
+    d = Document(content=[1, 2, 3])
     assert d.content_type == 'blob'
+
 
 def test_get_attr_values():
     d = Document(
@@ -192,3 +193,27 @@ def test_get_attr_values():
     d = Document(content=np.array([1, 2, 3]))
     res4 = np.stack(d.get_attributes(*['blob']))
     np.testing.assert_equal(res4, np.array([1, 2, 3]))
+
+
+def test_set_get_mime():
+    a = Document()
+    a.mime_type = 'jpg'
+    assert a.mime_type == 'image/jpeg'
+    b = Document()
+    b.mime_type = 'jpeg'
+    assert b.mime_type == 'image/jpeg'
+    c = Document()
+    c.mime_type = '.jpg'
+    assert c.mime_type == 'image/jpeg'
+
+
+def test_doc_content():
+    d = Document()
+    assert d.content is None
+    d.text = 'abc'
+    assert d.content == 'abc'
+    c = np.random.random([10, 10])
+    d.blob = c
+    np.testing.assert_equal(d.content, c)
+    d.buffer = b'123'
+    assert d.buffer == b'123'
