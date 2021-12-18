@@ -11,6 +11,7 @@ from typing import (
     Sequence,
 )
 
+from .mixins import AllMixins
 from .. import Document
 from ..helper import typename
 
@@ -18,16 +19,16 @@ if TYPE_CHECKING:
     from ..types import DocumentArraySourceType, DocumentArrayIndexType
 
 
-class DocumentArray(MutableSequence[Document]):
+class DocumentArray(AllMixins, MutableSequence[Document]):
     def __init__(
-        self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+            self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         super().__init__()
         self._data = []
         if docs is None:
             return
         elif isinstance(
-            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+                docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
                 self._data.extend(Document(d, copy=True) for d in docs)
@@ -73,9 +74,9 @@ class DocumentArray(MutableSequence[Document]):
 
     def __eq__(self, other):
         return (
-            type(self) is type(other)
-            and type(self._data) is type(other._data)
-            and self._data == other._data
+                type(self) is type(other)
+                and type(self._data) is type(other._data)
+                and self._data == other._data
         )
 
     def __len__(self):
@@ -93,7 +94,7 @@ class DocumentArray(MutableSequence[Document]):
             return False
 
     def __getitem__(
-        self, index: 'DocumentArrayIndexType'
+            self, index: 'DocumentArrayIndexType'
     ) -> Union['Document', 'DocumentArray']:
         if isinstance(index, int):
             return self._data[index]
@@ -114,9 +115,9 @@ class DocumentArray(MutableSequence[Document]):
         raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def __setitem__(
-        self,
-        index: 'DocumentArrayIndexType',
-        value: Union['Document', Sequence['Document']],
+            self,
+            index: 'DocumentArrayIndexType',
+            value: Union['Document', Sequence['Document']],
     ):
         if isinstance(index, int):
             self._data[index] = value
