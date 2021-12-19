@@ -52,16 +52,13 @@ class PlotMixin:
         :param img_type: the type of image to be generated
         :return: the url pointing to a SVG
         """
-        if img_type == 'jpg':
-            img_type = 'img'
-
         mermaid_str = (
-            """
-                                                                    %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFC666'}}}%%
-                                                                    classDiagram
-                
-                                                                            """
-            + self.__mermaid_str__()
+                """
+                                                                        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFC666'}}}%%
+                                                                        classDiagram
+                    
+                                                                                """
+                + self.__mermaid_str__()
         )
 
         encoded_str = base64.b64encode(bytes(mermaid_str.strip(), 'utf-8')).decode(
@@ -83,8 +80,10 @@ class PlotMixin:
         :param inline_display: show image directly inside the Jupyter Notebook
         """
         image_type = 'svg'
-        if output and output.endswith('jpg'):
-            image_type = 'jpg'
+        if not output.endswith('.svg') and not output.endswith('.jpg') and not output.endswith('.jpeg'):
+            raise ValueError('`output` can be only SVG/JPG format')
+        elif output.endswith('.jpg') or output.endswith('.jpeg'):
+            image_type = 'img'
 
         url = self._mermaid_to_url(image_type)
         showed = False
