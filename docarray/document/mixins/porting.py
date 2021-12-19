@@ -1,0 +1,48 @@
+import pickle
+from typing import Union, Optional, TYPE_CHECKING, Type
+
+from ...helper import compress_bytes, decompress_bytes
+
+if TYPE_CHECKING:
+    from ...types import T
+
+
+class PortingMixin:
+
+    def to_dict(self):
+        from google.protobuf.json_format import MessageToDict
+
+        return MessageToDict(
+            self.to_protobuf(),
+            preserving_proto_field_name=True,
+        )
+
+    def to_bytes(self, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None) -> bytes:
+        if isinstance(protocol, int):
+            bstr = pickle.dumps(self, protocol=protocol)
+        elif protocol == 'protobuf':
+            bstr = self.to_protobuf().SerializePartialToString()
+        else:
+            raise ValueError(f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.')
+        return compress_bytes(bstr, algorithm=compress)
+
+    @classmethod
+    def from_bytes(cls: Type['T'], data: bytes, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None) -> 'T':
+        bstr = decompress_bytes(data, algorithm=compress)
+        if isinstance(protocol, int):
+            d = pickle.loads(bstr)
+        elif protocol == 'protobuf':
+            from ...proto.docarray_pb2 import DocumentProto
+            pb_msg = DocumentProto()
+            pb_msg.ParseFromString(bstr)
+            d = cls.from_protobuf(pb_msg)
+        else:
+            raise ValueError(f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.')
+        return d
+
+    def to_json(self):
+        from google.protobuf.json_format import MessageToJson
+
+        return MessageToJson(
+            self.to_protobuf(), preserving_proto_field_name=True, sort_keys=True
+        )

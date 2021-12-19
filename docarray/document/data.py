@@ -41,9 +41,9 @@ class DocumentData:
     adjacency: Optional[int] = None
     buffer: Optional[bytes] = None
     blob: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
+    mime_type: Optional[str] = None  # must be put in front of `text` `content`
     text: Optional[str] = None
     content: Optional['DocumentContentType'] = None
-    mime_type: Optional[str] = None
     weight: Optional[float] = None
     uri: Optional[str] = None
     tags: Optional[Dict[str, 'StructValueType']] = None

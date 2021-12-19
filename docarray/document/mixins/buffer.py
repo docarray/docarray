@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, BinaryIO
 
-from .helper import _uri_to_buffer, _to_datauri
+from .helper import _uri_to_buffer, _to_datauri, _get_file_context
 
 if TYPE_CHECKING:
     from ...types import T
@@ -18,8 +18,8 @@ class BufferDataMixin:
         self.buffer = _uri_to_buffer(self.uri)
         return self
 
-    def dump_buffer_to_datauri(
-            self: 'T', charset: str = 'utf-8', base64: bool = False
+    def convert_buffer_to_datauri(
+        self: 'T', charset: str = 'utf-8', base64: bool = False
     ) -> 'T':
         """Convert :attr:`.buffer` to data :attr:`.uri` in place.
         Internally it first reads into buffer and then converts it to data URI.
@@ -40,4 +40,15 @@ class BufferDataMixin:
         self.uri = _to_datauri(
             self.mime_type, self.buffer, charset, base64, binary=True
         )
+        return self
+
+    def save_buffer_to_file(self: 'T', file: Union[str, BinaryIO]) -> 'T':
+        """Save :attr:`.buffer` into a file
+
+        :param file: File or filename to which the data is saved.
+        :return: itself after processed
+        """
+        fp = _get_file_context(file)
+        with fp:
+            fp.write(self.buffer)
         return self

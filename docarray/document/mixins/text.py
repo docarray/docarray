@@ -84,7 +84,7 @@ class TextDataMixin:
         self.text = delimiter.join(_text)
         return self
 
-    def dump_text_to_datauri(
+    def convert_text_to_datauri(
         self: 'T', charset: str = 'utf-8', base64: bool = False
     ) -> 'T':
         """Convert :attr:`.text` to data :attr:`.uri`.

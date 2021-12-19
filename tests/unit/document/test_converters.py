@@ -15,7 +15,7 @@ def test_video_convert_pipe(pytestconfig, tmpdir):
     fname = str(tmpdir / f'tmp{num_d}.mp4')
     d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
     d.load_uri_to_video_blob()
-    d.dump_video_blob_to_file(fname)
+    d.save_video_blob_to_file(fname)
     assert os.path.exists(fname)
 
 
@@ -25,7 +25,7 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
         fname = str(tmpdir / f'tmp{num_d}.wav')
         d.load_uri_to_audio_blob()
         d.blob = d.blob[::-1]
-        d.dump_audio_blob_to_file(fname)
+        d.save_audio_blob_to_file(fname)
         assert os.path.exists(fname)
         num_d += 1
     assert num_d
@@ -132,7 +132,7 @@ def test_convert_uri_to_buffer(uri, mimetype):
 
 
 @pytest.mark.parametrize(
-    'converter', ['dump_buffer_to_datauri', 'dump_content_to_datauri']
+    'converter', ['convert_buffer_to_datauri', 'convert_content_to_datauri']
 )
 def test_convert_buffer_to_uri(converter):
     d = Document(content=open(__file__).read().encode(), mime_type='text/x-python')
@@ -141,7 +141,7 @@ def test_convert_buffer_to_uri(converter):
     assert d.uri.startswith('data:text/x-python;')
 
 
-@pytest.mark.parametrize('converter', ['dump_text_to_datauri', 'dump_content_to_datauri'])
+@pytest.mark.parametrize('converter', ['convert_text_to_datauri', 'convert_content_to_datauri'])
 def test_convert_text_to_uri(converter):
     d = Document(content=open(__file__).read(), mime_type='text/x-python')
     assert d.text
@@ -181,7 +181,7 @@ def test_convert_text_to_uri_and_back():
     doc = Document(content=text_from_file, mime_type='text/x-python')
     assert doc.text
     assert doc.mime_type == 'text/x-python'
-    doc.dump_text_to_datauri()
+    doc.convert_text_to_datauri()
     doc.load_uri_to_text()
     assert doc.mime_type == 'text/plain'
     assert doc.text == text_from_file
@@ -210,7 +210,7 @@ def test_convert_text_diff_encoding(tmpfile):
 def test_convert_content_to_uri():
     d = Document(content=np.random.random([10, 10]))
     with pytest.raises(NotImplementedError):
-        d.dump_content_to_datauri()
+        d.convert_content_to_datauri()
 
 
 @pytest.mark.parametrize(

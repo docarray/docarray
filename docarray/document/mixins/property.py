@@ -10,7 +10,6 @@ _all_mime_types = set(mimetypes.types_map.values())
 
 
 class PropertyMixin(_PropertyMixin):
-
     def _clear_content(self):
         self._data.text = None
         self._data.blob = None

@@ -30,7 +30,7 @@ class VideoDataMixin:
         self.blob = np.moveaxis(np.stack(frames), 1, 2)
         return self
 
-    def dump_video_blob_to_file(
+    def save_video_blob_to_file(
         self: 'T', file: Union[str, BinaryIO], frame_rate: int = 30, codec: str = 'h264'
     ) -> 'T':
         """Save :attr:`.blob` as a video mp4/h264 file.

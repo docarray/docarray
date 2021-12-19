@@ -6,7 +6,6 @@ from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 import numpy as np
 
 from .helper import _get_file_context, _uri_to_buffer
-from ...helper import deprecate_by
 
 if TYPE_CHECKING:
     from ...types import T
@@ -99,7 +98,7 @@ class ImageDataMixin:
 
         return self
 
-    def dump_image_blob_to_file(
+    def save_image_blob_to_file(
         self: 'T',
         file: Union[str, BinaryIO],
         channel_axis: int = -1,
@@ -282,7 +281,6 @@ class ImageDataMixin:
         else:
             self.blob = _move_channel_axis(expanded_img, -1, channel_axis)
         return self
-
 
 
 def _move_channel_axis(

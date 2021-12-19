@@ -32,10 +32,10 @@ def test_doc_hash_complicate_content():
 
 def test_pop_field():
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
-    assert d1.non_empty_fields == ('id', 'text', 'embedding')
+    assert d1.non_empty_fields == ('id', 'mime_type', 'text', 'embedding')
     d1.pop('text')
-    assert d1.non_empty_fields == ('id', 'embedding')
-    d1.pop('id', 'embedding')
+    assert d1.non_empty_fields == ('id', 'mime_type', 'embedding')
+    d1.pop('id', 'embedding', 'mime_type')
     assert d1.non_empty_fields == tuple()
 
     d1.pop('foobar')
@@ -130,7 +130,7 @@ def test_offset():
 
 def test_exclusive_content_2():
     d = Document(text='hello', buffer=b'sda')
-    assert len(d.non_empty_fields) == 2
+    assert len(d.non_empty_fields) == 3
     d.content = b'sda'
     assert d.content == b'sda'
     assert 'buffer' in d.non_empty_fields

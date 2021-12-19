@@ -17,6 +17,4 @@ class EmptyMixin:
         :param size: the number of empty Documents in this container
         :return: a :class:`DocumentArray` or :class:`DocumentArrayMemmap` object
         """
-        r = cls()
-        r.extend(Document() for _ in range(size))
-        return r
+        return cls(Document() for _ in range(size))

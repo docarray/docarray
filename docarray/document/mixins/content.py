@@ -15,15 +15,15 @@ class ContentPropertyMixin:
         """
         return hash(self)
 
-    def dump_content_to_datauri(self: 'T') -> 'T':
+    def convert_content_to_datauri(self: 'T') -> 'T':
         """Convert :attr:`.content` in :attr:`.uri` inplace with best effort
 
         :return: itself after processed
         """
         if self.text:
-            self.dump_text_to_datauri()
+            self.convert_text_to_datauri()
         elif self.buffer:
-            self.dump_buffer_to_datauri()
+            self.convert_buffer_to_datauri()
         elif self.content_type:
             raise NotImplementedError
         return self
