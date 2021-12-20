@@ -15,7 +15,7 @@ class MatchMixin:
 
     def match(
         self,
-        darray: Union['DocumentArray', 'DocumentArrayMemmap'],
+        darray: 'DocumentArray',
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -23,8 +23,8 @@ class MatchMixin:
         normalization: Optional[Tuple[float, float]] = None,
         metric_name: Optional[str] = None,
         batch_size: Optional[int] = None,
-        traversal_ldarray: Optional[Sequence[str]] = None,
-        traversal_rdarray: Optional[Sequence[str]] = None,
+        traversal_ldarray: Optional[str] = None,
+        traversal_rdarray: Optional[str] = None,
         exclude_self: bool = False,
         filter_fn: Optional[Callable[['Document'], bool]] = None,
         only_id: bool = False,
@@ -145,18 +145,11 @@ class MatchMixin:
             dist, idx = lhv._match(rhv, cdist, _limit, normalization, metric_name)
 
         def _get_id_from_da(rhv, int_offset):
-            return rhv._pb_body[int_offset].id
+            return rhv[int_offset].id
 
-        def _get_id_from_dam(rhv, int_offset):
-            return rhv._int2str_id(int_offset)
-
-        from ...memmap import DocumentArrayMemmap
         from ... import Document
 
-        if isinstance(rhv, DocumentArrayMemmap):
-            _get_id = _get_id_from_dam
-        else:
-            _get_id = _get_id_from_da
+        _get_id = _get_id_from_da
 
         for _q, _ids, _dists in zip(lhv, idx, dist):
             _q.matches.clear()

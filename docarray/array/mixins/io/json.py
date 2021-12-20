@@ -46,9 +46,7 @@ class JsonIOMixin:
         from ....document import Document
 
         with file_ctx as fp:
-            da = cls()
-            da.extend(Document(v) for v in fp)
-            return da
+            return cls(Document.from_json(v) for v in fp)
 
     def to_list(self) -> List:
         """Convert the object into a Python list.

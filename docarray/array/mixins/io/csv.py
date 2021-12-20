@@ -68,7 +68,7 @@ class CsvIOMixin:
             writer = csv.DictWriter(fp, fieldnames=keys, dialect=dialect)
 
             writer.writeheader()
-            from jina import Document
+            from docarray import Document
 
             for d in self:
                 _d = d

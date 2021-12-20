@@ -1,7 +1,7 @@
 from abc import ABC
 
 from .content import ContentPropertyMixin
-# from .embed import EmbedMixin
+from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
 from .getattr import GetAttributeMixin
@@ -33,7 +33,7 @@ class AllMixins(
     JsonIOMixin,
     BinaryIOMixin,
     CommonIOMixin,
-    # EmbedMixin,
+    EmbedMixin,
     PushPullMixin,
     FromGeneratorMixin,
     MatchMixin,

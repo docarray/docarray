@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple, Sequence
+from typing import TYPE_CHECKING, Tuple, Sequence, Optional
 
 import numpy as np
 
@@ -7,10 +7,13 @@ if TYPE_CHECKING:
     from .. import Document
 
 
-def unravel(docs: Sequence['Document'], field: str) -> 'ArrayType':
-    framework, is_sparse = get_array_type(getattr(docs[0], field))
+def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
+    _first = getattr(docs[0], field)
+    if _first is None:
+        return None
+    framework, is_sparse = get_array_type(_first)
     all_fields = [getattr(d, field) for d in docs]
-    cls_type = type(getattr(docs[0], field))
+    cls_type = type(_first)
 
     if framework == 'python':
         return cls_type(all_fields)

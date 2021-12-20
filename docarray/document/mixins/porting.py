@@ -1,5 +1,5 @@
 import pickle
-from typing import Union, Optional, TYPE_CHECKING, Type
+from typing import Union, Optional, TYPE_CHECKING, Type, Dict
 
 from ...helper import compress_bytes, decompress_bytes
 
@@ -8,6 +8,22 @@ if TYPE_CHECKING:
 
 
 class PortingMixin:
+
+    @classmethod
+    def from_dict(cls: Type['T'], obj: Dict) -> 'T':
+        from google.protobuf import json_format
+        from ...proto.docarray_pb2 import DocumentProto
+        pb_msg = DocumentProto()
+        json_format.ParseDict(obj, pb_msg)
+        return cls.from_protobuf(pb_msg)
+
+    @classmethod
+    def from_json(cls: Type['T'], obj: str) -> 'T':
+        from google.protobuf import json_format
+        from ...proto.docarray_pb2 import DocumentProto
+        pb_msg = DocumentProto()
+        json_format.Parse(obj, pb_msg)
+        return cls.from_protobuf(pb_msg)
 
     def to_dict(self):
         from google.protobuf.json_format import MessageToDict
@@ -27,7 +43,8 @@ class PortingMixin:
         return compress_bytes(bstr, algorithm=compress)
 
     @classmethod
-    def from_bytes(cls: Type['T'], data: bytes, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None) -> 'T':
+    def from_bytes(cls: Type['T'], data: bytes, protocol: Union[str, int] = 'protobuf',
+                   compress: Optional[str] = None) -> 'T':
         bstr = decompress_bytes(data, algorithm=compress)
         if isinstance(protocol, int):
             d = pickle.loads(bstr)
@@ -40,7 +57,7 @@ class PortingMixin:
             raise ValueError(f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.')
         return d
 
-    def to_json(self):
+    def to_json(self) -> str:
         from google.protobuf.json_format import MessageToJson
 
         return MessageToJson(

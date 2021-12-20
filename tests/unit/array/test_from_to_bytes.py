@@ -13,6 +13,7 @@ def test_to_from_bytes(target_da, protocol, compress):
     da2 = DocumentArray.from_bytes(bstr, protocol=protocol, compress=compress)
     assert len(da2) == len(target_da)
 
+
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
 @pytest.mark.parametrize('protocol', ['protobuf', 0, 1, 2, 3, 4])
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])

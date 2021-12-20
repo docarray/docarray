@@ -1,3 +1,4 @@
+import itertools
 import warnings
 from typing import (
     Iterable,
@@ -93,7 +94,7 @@ class TraverseMixin:
         elif filter_fn is None:
             yield docs
         else:
-            from ..document import DocumentArray
+            from .. import DocumentArray
 
             yield DocumentArray(list(filter(filter_fn, docs)))
 
@@ -152,14 +153,14 @@ class TraverseMixin:
         :param copy: copy the document (DAM only supports copy=True), otherwise returns a view of the original
         :return: a flattened :class:`DocumentArray` object.
         """
-        from ..document import DocumentArray
+        from .. import DocumentArray
 
         def _yield_all():
             for d in self:
                 yield from _yield_nest(d)
 
         def _yield_nest(doc: 'Document'):
-            from ...document import Document
+            from ... import Document
 
             for d in doc.chunks:
                 yield from _yield_nest(d)
@@ -177,3 +178,8 @@ class TraverseMixin:
                 yield doc
 
         return DocumentArray(_yield_all())
+
+    @staticmethod
+    def _flatten(sequence) -> 'DocumentArray':
+        from ... import DocumentArray
+        return DocumentArray(list(itertools.chain.from_iterable(sequence)))

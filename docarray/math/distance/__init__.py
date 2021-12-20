@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from ...ndarray import get_array_type
+from ..ndarray import get_array_type
 
 if TYPE_CHECKING:
-    from ...ndarray import ArrayType
+    from ...types import ArrayType
     import numpy as np
 
 

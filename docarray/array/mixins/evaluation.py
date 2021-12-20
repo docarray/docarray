@@ -3,8 +3,10 @@ from typing import Optional, Union, TYPE_CHECKING, Callable
 
 import numpy as np
 
+from ...score import NamedScore
+
 if TYPE_CHECKING:
-    from ... import Document, DocumentArray, DocumentArrayMemmap
+    from ... import Document, DocumentArray
 
 
 class EvaluationMixin:
@@ -12,7 +14,7 @@ class EvaluationMixin:
 
     def evaluate(
         self,
-        other: Union['DocumentArray', 'DocumentArrayMemmap'],
+        other: 'DocumentArray',
         metric: Union[str, Callable[..., float]],
         hash_fn: Optional[Callable[['Document'], str]] = None,
         metric_name: Optional[str] = None,
@@ -73,7 +75,7 @@ class EvaluationMixin:
             binary_relevance = [1 if hash_fn(m) in desired else 0 for m in d.matches]
 
             r = metric_fn(binary_relevance, **kwargs)
-            d.evaluations[metric_name] = r
+            d.evaluations[metric_name] = NamedScore(value=r, op_name=str(metric_fn), ref_id=d.id)
             results.append(r)
         if results:
             return float(np.mean(results))
