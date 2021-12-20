@@ -141,16 +141,12 @@ class TraverseMixin:
         leaves = self.traverse(traversal_paths, filter_fn=filter_fn)
         return self._flatten(leaves)
 
-    def flatten(self, copy: bool = True) -> 'DocumentArray':
+    def flatten(self) -> 'DocumentArray':
         """Flatten all nested chunks and matches into one :class:`DocumentArray`.
 
         .. note::
             Flatten an already flattened DocumentArray will have no effect.
 
-        .. warning::
-            DocumentArrayMemmap do not support `copy=False`.
-
-        :param copy: copy the document (DAM only supports copy=True), otherwise returns a view of the original
         :return: a flattened :class:`DocumentArray` object.
         """
         from .. import DocumentArray
@@ -160,22 +156,15 @@ class TraverseMixin:
                 yield from _yield_nest(d)
 
         def _yield_nest(doc: 'Document'):
-            from ... import Document
 
             for d in doc.chunks:
                 yield from _yield_nest(d)
             for m in doc.matches:
                 yield from _yield_nest(m)
 
-            if copy:
-                d = Document(doc, copy=True)
-                d.chunks.clear()
-                d.matches.clear()
-                yield d
-            else:
-                doc.matches.clear()
-                doc.chunks.clear()
-                yield doc
+            doc.matches.clear()
+            doc.chunks.clear()
+            yield doc
 
         return DocumentArray(_yield_all())
 

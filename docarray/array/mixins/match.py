@@ -1,9 +1,9 @@
-import warnings
-from typing import Optional, Union, Callable, Tuple, Sequence, TYPE_CHECKING
+from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING
 
 import numpy as np
 
 from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
+from ...score import NamedScore
 
 if TYPE_CHECKING:
     from ...types import Document, ArrayType
@@ -14,24 +14,21 @@ class MatchMixin:
     """ A mixin that provides match functionality to DocumentArrays """
 
     def match(
-        self,
-        darray: 'DocumentArray',
-        metric: Union[
-            str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
-        ] = 'cosine',
-        limit: Optional[Union[int, float]] = 20,
-        normalization: Optional[Tuple[float, float]] = None,
-        metric_name: Optional[str] = None,
-        batch_size: Optional[int] = None,
-        traversal_ldarray: Optional[str] = None,
-        traversal_rdarray: Optional[str] = None,
-        exclude_self: bool = False,
-        filter_fn: Optional[Callable[['Document'], bool]] = None,
-        only_id: bool = False,
-        use_scipy: bool = False,
-        device: str = 'cpu',
-        num_worker: Optional[int] = 1,
-        **kwargs,
+            self,
+            darray: 'DocumentArray',
+            metric: Union[
+                str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
+            ] = 'cosine',
+            limit: Optional[Union[int, float]] = 20,
+            normalization: Optional[Tuple[float, float]] = None,
+            metric_name: Optional[str] = None,
+            batch_size: Optional[int] = None,
+            exclude_self: bool = False,
+            only_id: bool = False,
+            use_scipy: bool = False,
+            device: str = 'cpu',
+            num_worker: Optional[int] = 1,
+            **kwargs,
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
         and store results in `matches`.
@@ -55,11 +52,6 @@ class MatchMixin:
         :param metric_name: if provided, then match result will be marked with this string.
         :param batch_size: if provided, then ``darray`` is loaded in batches, where each of them is at most ``batch_size``
             elements. When `darray` is big, this can significantly speedup the computation.
-        :param traversal_ldarray: DEPRECATED. if set, then matching is applied along the `traversal_path` of the
-                left-hand ``DocumentArray``.
-        :param traversal_rdarray: DEPRECATED. if set, then matching is applied along the `traversal_path` of the
-                right-hand ``DocumentArray``.
-        :param filter_fn: DEPRECATED. if set, apply the filter function to filter docs on the right hand side (rhv) to be matched
         :param exclude_self: if set, Documents in ``darray`` with same ``id`` as the left-hand values will not be
                         considered as matches.
         :param only_id: if set, then returning matches will only contain ``id``
@@ -90,33 +82,6 @@ class MatchMixin:
         lhv = self
         rhv = darray
 
-        if traversal_rdarray or traversal_ldarray or filter_fn:
-            warnings.warn(
-                '''
-            `traversal_ldarray` and `traversal_rdarray` will be removed soon. 
-            Instead of doing `da.match(..., traveral_ldarray=[...])`, you can achieve the same via 
-            `da.traverse_flat(traversal_paths=[...]).match(...)`.
-            Same goes with `da.match(..., traveral_rdarray=[...])`, you can do it via: 
-            `da.match(da2.traverse_flat(traversal_paths=[...]))`.             
-            '''
-            )
-
-        if traversal_ldarray:
-            lhv = self.traverse_flat(traversal_ldarray)
-
-            from ..document import DocumentArray
-
-            if not isinstance(lhv, DocumentArray):
-                lhv = DocumentArray(lhv)
-
-        if traversal_rdarray or filter_fn:
-            rhv = darray.traverse_flat(traversal_rdarray or ['r'], filter_fn=filter_fn)
-
-            from ..document import DocumentArray
-
-            if not isinstance(rhv, DocumentArray):
-                rhv = DocumentArray(rhv)
-
         if not (lhv and rhv):
             return
 
@@ -144,12 +109,7 @@ class MatchMixin:
         else:
             dist, idx = lhv._match(rhv, cdist, _limit, normalization, metric_name)
 
-        def _get_id_from_da(rhv, int_offset):
-            return rhv[int_offset].id
-
         from ... import Document
-
-        _get_id = _get_id_from_da
 
         for _q, _ids, _dists in zip(lhv, idx, dist):
             _q.matches.clear()
@@ -159,15 +119,14 @@ class MatchMixin:
                 # we might have recursive matches .
                 # checkout https://github.com/jina-ai/jina/issues/3034
                 if only_id:
-                    d = Document(id=_get_id(rhv, _id))
+                    d = Document(id=rhv[_id].id)
                 else:
                     d = rhv[int(_id)]  # type: Document
 
                 if d.id in lhv:
-                    d = Document(d, copy=True)
                     d.pop('matches')
                 if not (d.id == _q.id and exclude_self):
-                    d.scores = {metric_name: _dist}
+                    d.scores[metric_name] = NamedScore(value=_dist, ref_id=_q.id)
                     _q.matches.append(d)
                     num_matches += 1
                     if num_matches >= (limit or _limit):
@@ -201,14 +160,14 @@ class MatchMixin:
         return dist, idx
 
     def _match_online(
-        self,
-        darray,
-        cdist,
-        limit,
-        normalization,
-        metric_name,
-        batch_size,
-        num_worker,
+            self,
+            darray,
+            cdist,
+            limit,
+            normalization,
+            metric_name,
+            batch_size,
+            num_worker,
     ):
         """
         Computes the matches between self and `darray` loading `darray` into main memory in chunks of size `batch_size`.

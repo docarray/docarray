@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
@@ -11,6 +12,7 @@ def docarray100():
 def test_getter_int_str(docarray100):
     # getter
     assert docarray100[99].text == 99
+    assert docarray100[np.int(99)].text == 99
     assert docarray100[-1].text == 99
     assert docarray100[0].text == 0
     # string index
@@ -101,11 +103,11 @@ def test_sequence_bool_index(docarray100):
     assert len(docarray100) == 25
 
 
-def test_sequence_int(docarray100):
+@pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
+def test_sequence_int(docarray100, nparray):
     # getter
-    idx = [1, 3, 5, 7, -1, -2]
+    idx = nparray([1, 3, 5, 7, -1, -2])
     assert len(docarray100[idx]) == len(idx)
-    assert len(docarray100[tuple(idx)]) == len(idx)
 
     # setter
     docarray100[idx] = [Document(text='repl') for _ in range(len(idx))]

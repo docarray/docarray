@@ -13,7 +13,6 @@ from .io.dataframe import DataframeIOMixin
 from .io.from_gen import FromGeneratorMixin
 from .io.json import JsonIOMixin
 from .io.pushpull import PushPullMixin
-from .magic import MagicMixin
 from .match import MatchMixin
 from .parallel import ParallelMixin
 from .plot import PlotMixin
@@ -28,7 +27,6 @@ class AllMixins(
     ContentPropertyMixin,
     GroupMixin,
     EmptyMixin,
-    MagicMixin,
     CsvIOMixin,
     JsonIOMixin,
     BinaryIOMixin,
