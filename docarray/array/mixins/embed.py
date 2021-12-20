@@ -1,18 +1,19 @@
 import warnings
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ...types import T, AnyDNN
+
 
 class EmbedMixin:
     """Helper functions for embedding with a model"""
 
     def embed(
-        self: 'T',
-        embed_model: 'AnyDNN',
-        device: str = 'cpu',
-        batch_size: int = 256,
-        to_numpy: bool = False,
+            self: 'T',
+            embed_model: 'AnyDNN',
+            device: str = 'cpu',
+            batch_size: int = 256,
+            to_numpy: bool = False,
     ) -> 'T':
         """Fill :attr:`.embedding` of Documents inplace by using `embed_model`
 
@@ -31,11 +32,11 @@ class EmbedMixin:
         return self
 
     def _set_embeddings_keras(
-        self: 'T',
-        embed_model: 'AnyDNN',
-        device: str = 'cpu',
-        batch_size: int = 256,
-        to_numpy: bool = False,
+            self: 'T',
+            embed_model: 'AnyDNN',
+            device: str = 'cpu',
+            batch_size: int = 256,
+            to_numpy: bool = False,
     ):
         import tensorflow as tf
 
@@ -46,11 +47,11 @@ class EmbedMixin:
                 b.embeddings = r.numpy() if to_numpy else r
 
     def _set_embeddings_torch(
-        self: 'T',
-        embed_model: 'AnyDNN',
-        device: str = 'cpu',
-        batch_size: int = 256,
-        to_numpy: bool = False,
+            self: 'T',
+            embed_model: 'AnyDNN',
+            device: str = 'cpu',
+            batch_size: int = 256,
+            to_numpy: bool = False,
     ):
         import torch
 
@@ -66,11 +67,11 @@ class EmbedMixin:
             embed_model.train()
 
     def _set_embeddings_paddle(
-        self: 'T',
-        embed_model,
-        device: str = 'cpu',
-        batch_size: int = 256,
-        to_numpy: bool = False,
+            self: 'T',
+            embed_model,
+            device: str = 'cpu',
+            batch_size: int = 256,
+            to_numpy: bool = False,
     ):
         import paddle
 
@@ -85,12 +86,12 @@ class EmbedMixin:
             embed_model.train()
 
     def _set_embeddings_onnx(
-        self: 'T',
-        embed_model,
-        device: str = 'cpu',
-        batch_size: int = 256,
-        *args,
-        **kwargs,
+            self: 'T',
+            embed_model,
+            device: str = 'cpu',
+            batch_size: int = 256,
+            *args,
+            **kwargs,
     ):
         # embed_model is always an onnx.InferenceSession
         if device != 'cpu':

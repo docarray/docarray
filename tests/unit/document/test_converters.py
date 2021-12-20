@@ -143,10 +143,10 @@ def test_convert_buffer_to_uri(converter):
 
 @pytest.mark.parametrize('converter', ['convert_text_to_datauri', 'convert_content_to_datauri'])
 def test_convert_text_to_uri(converter):
-    d = Document(content=open(__file__).read(), mime_type='text/x-python')
+    d = Document(content=open(__file__).read())
     assert d.text
     getattr(d, converter)()
-    assert d.uri.startswith('data:text/x-python;')
+    assert d.uri.startswith('data:text/plain;')
 
 
 @pytest.mark.xfail(

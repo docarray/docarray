@@ -7,10 +7,10 @@ if TYPE_CHECKING:
 
 def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):
     doc1_fields = set(
-        field_descriptor.name for field_descriptor, _ in doc1._pb_body.ListFields()
+        doc1.non_empty_fields
     )
     doc2_fields = set(
-        field_descriptor.name for field_descriptor, _ in doc2._pb_body.ListFields()
+        doc2.non_empty_fields
     )
 
     # update only fields that are set in doc2 and not set in doc1

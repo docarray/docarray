@@ -1,6 +1,8 @@
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import numpy as np
+
+from ...math.ndarray import get_array_type
 
 if TYPE_CHECKING:
     from ...types import ArrayType
@@ -110,49 +112,6 @@ def _set_torch_sparse(pb_msg, value):
     pb_msg.sparse.ClearField('shape')
     pb_msg.sparse.shape.extend(list(value.size()))
     pb_msg.cls_name = 'torch'
-
-
-def get_array_type(array: 'ArrayType') -> Tuple[str, bool]:
-    """Get the type of ndarray without importing the framework
-
-    :param array: any array, scipy, numpy, tf, torch, etc.
-    :return: a tuple where the first element represents the framework, the second represents if it is sparse array
-    """
-    module_tags = array.__class__.__module__.split('.')
-    class_name = array.__class__.__name__
-
-    if isinstance(array, (list, tuple)):
-        return 'python', False
-
-    if 'numpy' in module_tags:
-        return 'numpy', False
-
-    if 'jina' in module_tags:
-        if class_name == 'NdArray':
-            return 'jina', False  # sparse or not is irrelevant
-
-    if 'docarray_pb2' in module_tags:
-        if class_name == 'NdArrayProto':
-            return 'jina_proto', False  # sparse or not is irrelevant
-
-    if 'tensorflow' in module_tags:
-        if class_name == 'SparseTensor':
-            return 'tensorflow', True
-        if class_name == 'Tensor' or class_name == 'EagerTensor':
-            return 'tensorflow', False
-
-    if 'torch' in module_tags and class_name == 'Tensor':
-        return 'torch', array.is_sparse
-
-    if 'paddle' in module_tags and class_name == 'Tensor':
-        # Paddle does not support sparse tensor on 11/8/2021
-        # https://github.com/PaddlePaddle/Paddle/issues/36697
-        return 'paddle', False
-
-    if 'scipy' in module_tags and 'sparse' in module_tags:
-        return 'scipy', True
-
-    raise TypeError(f'can not determine the array type: {module_tags}.{class_name}')
 
 
 def _get_raw_sparse_array(pb_msg):

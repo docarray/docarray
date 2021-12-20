@@ -1,6 +1,6 @@
 from abc import ABC
 
-# from .content import ContentPropertyMixin
+from .content import ContentPropertyMixin
 # from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
@@ -25,7 +25,7 @@ from .traverse import TraverseMixin
 
 class AllMixins(
     GetAttributeMixin,
-    # ContentPropertyMixin,
+    ContentPropertyMixin,
     GroupMixin,
     EmptyMixin,
     MagicMixin,

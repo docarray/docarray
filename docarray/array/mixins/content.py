@@ -1,6 +1,6 @@
 from typing import List, Sequence, TYPE_CHECKING, Optional, Union
 
-from ...ndarray import NdArray
+from ...math.ndarray import ravel, unravel
 
 if TYPE_CHECKING:
     from ...types import ArrayType, DocumentContentType
@@ -22,7 +22,7 @@ class ContentPropertyMixin:
         :return: a :class:`ArrayType` of embedding
         """
         if self:
-            return NdArray.unravel([d.embedding for d in self._pb_body])
+            return unravel(self, 'embedding')
 
     @embeddings.setter
     def embeddings(self, value: 'ArrayType'):
@@ -38,12 +38,12 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self._pb_body:
-                d.ClearField('embedding')
+            for d in self:
+                d.embedding = None
         else:
             emb_shape0 = _get_len(value)
             self._check_length(emb_shape0)
-            NdArray.ravel(value, self, 'embedding')
+            ravel(value, self, 'embedding')
 
     @property
     def blobs(self) -> Optional['ArrayType']:
@@ -59,7 +59,7 @@ class ContentPropertyMixin:
         :return: a :class:`ArrayType` of blobs
         """
         if self:
-            return NdArray.unravel([d.blob for d in self._pb_body])
+            return unravel(self, 'blob')
 
     @blobs.setter
     def blobs(self, value: 'ArrayType'):
@@ -69,13 +69,13 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self._pb_body:
-                d.ClearField('blob')
+            for d in self:
+                d.blob = None
         else:
             blobs_shape0 = _get_len(value)
             self._check_length(blobs_shape0)
 
-            NdArray.ravel(value, self, 'blob')
+            ravel(value, self, 'blob')
 
     @property
     def texts(self) -> Optional[List[str]]:
@@ -84,7 +84,7 @@ class ContentPropertyMixin:
         :return: a list of texts
         """
         if self:
-            return [d.text for d in self._pb_body]
+            return [d.text for d in self]
 
     @texts.setter
     def texts(self, value: Sequence[str]):
@@ -94,12 +94,12 @@ class ContentPropertyMixin:
             number of Documents
         """
         if value is None:
-            for d in self._pb_body:
-                d.ClearField('text')
+            for d in self:
+                d.text = None
         else:
             self._check_length(len(value))
 
-            for doc, text in zip(self._pb_body, value):
+            for doc, text in zip(self, value):
                 doc.text = text
 
     @property
@@ -109,7 +109,7 @@ class ContentPropertyMixin:
         :return: a list of buffers
         """
         if self:
-            return [d.buffer for d in self._pb_body]
+            return [d.buffer for d in self]
 
     @buffers.setter
     def buffers(self, value: List[bytes]):
@@ -120,12 +120,12 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self._pb_body:
-                d.ClearField('buffer')
+            for d in self:
+                d.buffer = None
         else:
             self._check_length(len(value))
 
-            for doc, buffer in zip(self._pb_body, value):
+            for doc, buffer in zip(self, value):
                 doc.buffer = buffer
 
     @property
@@ -141,7 +141,7 @@ class ContentPropertyMixin:
 
     @contents.setter
     def contents(
-        self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
+            self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
     ):
         """Set the :attr:`.content` of all Documents.
 
