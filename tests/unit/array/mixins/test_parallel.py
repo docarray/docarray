@@ -27,13 +27,13 @@ def foo_batch(da: DocumentArray):
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
     for d in da.map(foo, backend, num_worker=num_worker):
         assert d.blob.shape == (3, 222, 222)
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use as list, here the caveat is when using process backend you can not modify thing in-place
     list(da.map(foo, backend, num_worker=num_worker))
@@ -42,7 +42,7 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
     else:
         assert da.blobs is None
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
     da_new = da.apply(foo)
     assert da_new.blobs.shape == (len(da_new), 3, 222, 222)
 
@@ -56,7 +56,7 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
 def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/docs/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
     for _da in da.map_batch(
@@ -65,7 +65,7 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
         for d in _da:
             assert d.blob.shape == (3, 222, 222)
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/docs/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use as list, here the caveat is when using process backend you can not modify thing in-place
     list(
@@ -88,7 +88,7 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
 )
 @pytest.mark.parametrize('da_cls', [DocumentArray,])
 def test_map_lambda(pytestconfig, da_cls):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/docs/**/*.png')[:10]
+    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     for d in da:
         assert d.blob is None
