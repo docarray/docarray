@@ -124,6 +124,7 @@ class MatchMixin:
                     d = rhv[int(_id)]  # type: Document
 
                 if d.id in lhv:
+                    d = Document(d, copy=True)  # to prevent self-reference and override on matches
                     d.pop('matches')
                 if not (d.id == _q.id and exclude_self):
                     d.scores[metric_name] = NamedScore(value=_dist, ref_id=_q.id)
