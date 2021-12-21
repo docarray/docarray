@@ -377,7 +377,7 @@ def test_flatten(da):
 
 def test_flatten_no_copy():
     da = da_and_dam(100)[0]
-    daf = da.flatten(copy=False)
+    daf = da.flatten()
     new_text = 'hi i changed it!'
     daf[53].text = new_text
     assert da[daf[53].id].text == new_text

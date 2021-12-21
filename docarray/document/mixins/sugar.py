@@ -94,14 +94,3 @@ class SingletonSugarMixin:
         _tmp = DocumentArray([self])
         _tmp.embed(*args, **kwargs)
         return self
-
-    def __getitem__(self, item: str):
-        if item.startswith('@'):
-            from ... import DocumentArray
-            return DocumentArray(self).traverse_flat(item[1:])
-
-    def __setitem__(self, key, value):
-        if key.startswith('@'):
-            from ... import DocumentArray
-            for _d, _v in zip(DocumentArray(self).traverse_flat(key[1:]), value):
-                _d._data = _v._data
