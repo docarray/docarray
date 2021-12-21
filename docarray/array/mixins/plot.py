@@ -72,10 +72,17 @@ class PlotMixin:
             )
 
         self.save_embeddings_csv(os.path.join(path, emb_fn), delimiter='\t')
+
+        _exclude_fields = ('embedding', 'blob', 'scores')
+        with_header = True
+        if len(set(self[0].non_empty_fields).difference(set(_exclude_fields))) <= 1:
+            with_header = False
+
         self.save_csv(
             os.path.join(path, meta_fn),
-            exclude_fields=('embedding', 'blob', 'scores'),
+            exclude_fields=_exclude_fields,
             dialect='excel-tab',
+            with_header=with_header,
         )
 
         _epj_config = {
@@ -103,10 +110,12 @@ class PlotMixin:
         with open(os.path.join(path, config_fn), 'w') as fp:
             json.dump(_epj_config, fp)
 
-        shutil.copyfile(
-            os.path.join(__resources_path__, 'embedding-projector/index.html'),
-            os.path.join(path, 'index.html'),
-        )
+        import gzip
+
+        with gzip.open(
+            os.path.join(__resources_path__, 'embedding-projector/index.html.gz'), 'rt'
+        ) as fr, open(os.path.join(path, 'index.html'), 'w') as fp:
+            fp.write(fr.read())
 
         if start_server:
 
@@ -152,7 +161,6 @@ class PlotMixin:
                 )
             t_m.join()
         return path
-
 
     def plot_image_sprites(
         self,

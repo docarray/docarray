@@ -109,3 +109,7 @@ class BaseDCType:
         if type(self) is type(other):
             return self._data == other._data
         return False
+
+    def __iter__(self):
+        for f in self.non_empty_fields:
+            yield f, getattr(self, f)

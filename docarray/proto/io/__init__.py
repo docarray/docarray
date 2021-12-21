@@ -35,9 +35,8 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
 
 def flush_proto(doc: 'Document') -> 'DocumentProto':
     pb_msg = DocumentProto()
-    for key in doc.non_empty_fields:
+    for key, value in doc:
         try:
-            value = getattr(doc, key)
             if key in ('blob', 'embedding'):
                 flush_ndarray(getattr(pb_msg, key), value)
             elif key in ('chunks', 'matches'):
