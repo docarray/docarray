@@ -69,5 +69,5 @@ setup(
         'Tracker': 'https://github.com/jina-ai/docarray/issues',
     },
     keywords='jina cloud-native neural-search query search index elastic neural-network encoding '
-             'embedding serving docker container image video audio deep-learning',
+    'embedding serving docker container image video audio deep-learning',
 )
