@@ -304,4 +304,3 @@ def test_input_files(patterns, recursive, size, sampling_rate, read_mode):
 def test_from_files_with_uri():
     for d in from_files(patterns='*.*', to_dataturi=True, size=10):
         assert d.uri.startswith('data:')
-

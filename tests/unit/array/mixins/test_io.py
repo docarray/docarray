@@ -48,6 +48,7 @@ def test_from_ndarray(da):
 def test_from_files(da):
     assert len(da.from_files(patterns='*.*', to_dataturi=True, size=1)) == 1
 
+
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
