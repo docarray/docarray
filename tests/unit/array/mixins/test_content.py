@@ -49,6 +49,7 @@ def test_content_getter_setter(cls, content_attr):
     da.contents = None
     assert da.contents is None
 
+
 @pytest.mark.parametrize('da_len', [0, 1, 2])
 def test_content_empty(da_len):
     da = DocumentArray.empty(da_len)

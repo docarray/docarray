@@ -5,7 +5,7 @@ from docarray import DocumentArray, Document
 
 def da_for_batching():
     da = DocumentArray.empty(100)
-    return (da, )
+    return (da,)
 
 
 def docarray_for_split():
@@ -25,7 +25,7 @@ def docarray_for_split_at_zero():
     da.append(Document(tags={'category': 1.0}))
     da.append(Document(tags={'category': 2.0}))
     da.append(Document(tags={'category': 2.0}))
-    return (da, )
+    return (da,)
 
 
 def docarray_for_nest_split():
@@ -35,7 +35,7 @@ def docarray_for_nest_split():
     da.append(Document(tags={'nest': {'category': 'b'}}))
     da.append(Document(tags={'nest': {'category': 'a'}}))
     da.append(Document(tags={'nest': {'category': 'a'}}))
-    return (da, )
+    return (da,)
 
 
 @pytest.mark.parametrize('da', docarray_for_split())

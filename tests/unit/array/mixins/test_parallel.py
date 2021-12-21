@@ -23,7 +23,12 @@ def foo_batch(da: DocumentArray):
     'GITHUB_WORKFLOW' in os.environ,
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
-@pytest.mark.parametrize('da_cls', [DocumentArray,])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
@@ -51,7 +56,12 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
     'GITHUB_WORKFLOW' in os.environ,
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
-@pytest.mark.parametrize('da_cls', [DocumentArray,])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
@@ -86,7 +96,12 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
     'GITHUB_WORKFLOW' in os.environ,
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
-@pytest.mark.parametrize('da_cls', [DocumentArray,])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 def test_map_lambda(pytestconfig, da_cls):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 

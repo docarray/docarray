@@ -5,7 +5,7 @@ from docarray import DocumentArray
 
 def da_and_dam(N):
     da = DocumentArray.empty(N)
-    return da,
+    return (da,)
 
 
 @pytest.mark.parametrize('da', da_and_dam(100))

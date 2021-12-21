@@ -10,7 +10,7 @@ from tests import random_docs
 
 def da_and_dam():
     da = DocumentArray(random_docs(100))
-    return (da, )
+    return (da,)
 
 
 @pytest.mark.slow

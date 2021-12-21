@@ -144,7 +144,7 @@ class ContentPropertyMixin:
 
     @contents.setter
     def contents(
-            self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
+        self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
     ):
         """Set the :attr:`.content` of all Documents.
 

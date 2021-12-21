@@ -4,12 +4,7 @@ from typing import Optional, Tuple, TYPE_CHECKING
 if TYPE_CHECKING:
     from . import NamedScore
 
-default_values = dict(
-    value=0.0,
-    op_name='',
-    description='',
-    ref_id=''
-)
+default_values = dict(value=0.0, op_name='', description='', ref_id='')
 
 
 @dataclass(unsafe_hash=True)
