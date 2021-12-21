@@ -46,9 +46,7 @@ def test_from_ndarray(da):
 
 @pytest.mark.parametrize('da', [DocumentArray])
 def test_from_files(da):
-    _da = da.from_files(patterns='*.*', to_dataturi=True, size=10)
-    assert len(_da) == 10
-
+    assert len(da.from_files(patterns='*.*', to_dataturi=True, size=1)) == 1
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
