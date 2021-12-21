@@ -34,7 +34,7 @@ def _check_traversal_path_type(tp):
 
 class TraverseMixin:
     """
-    A mixin used for traversing :class:`DocumentArray` or :class:`DocumentArrayMemmap`.
+    A mixin used for traversing :class:`DocumentArray`.
     """
 
     def traverse(

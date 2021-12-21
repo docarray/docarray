@@ -22,9 +22,8 @@ class SampleMixin:
             random.seed(seed)
         # NOTE, this could simplified to random.sample(self, k)
         # without getting indices and itemgetter etc.
-        # however it's only work on DocumentArray, not DocumentArrayMemmap.
-        indices = random.sample(range(len(self)), k)
-        sampled = operator.itemgetter(*indices)(self)
+        # however it's only work on DocumentArray.
+        sampled = random.sample(self, k)
 
         from ..document import DocumentArray
 

@@ -11,10 +11,10 @@ class EmptyMixin:
 
     @classmethod
     def empty(cls: Type['T'], size: int = 0) -> 'T':
-        """Create a :class:`DocumentArray` or :class:`DocumentArrayMemmap` object with :attr:`size` empty
+        """Create a :class:`DocumentArray`  object with :attr:`size` empty
         :class:`Document` objects.
 
         :param size: the number of empty Documents in this container
-        :return: a :class:`DocumentArray` or :class:`DocumentArrayMemmap` object
+        :return: a :class:`DocumentArray` object
         """
         return cls(Document() for _ in range(size))

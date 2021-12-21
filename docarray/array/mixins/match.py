@@ -43,7 +43,7 @@ class MatchMixin:
         - To invert the distance as score and make all values in range [0, 1],
             use ``dA.match(dB, normalization=(1, 0))``. Note, how ``normalization`` differs from the previous.
         - If a custom metric distance is provided. Make sure that it returns scores as distances and not similarity, meaning the smaller the better.
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray  to match against
         :param metric: the distance metric
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
@@ -136,7 +136,7 @@ class MatchMixin:
     def _match(self, darray, cdist, limit, normalization, metric_name):
         """
         Computes the matches between self and `darray` loading `darray` into main memory.
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray or  to match against
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `darray` are considered as matches
@@ -173,7 +173,7 @@ class MatchMixin:
         """
         Computes the matches between self and `darray` loading `darray` into main memory in chunks of size `batch_size`.
 
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray or  to match against
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `another` are considered as matches

@@ -54,7 +54,7 @@ class ContentPropertyMixin:
 
         .. warning:: This operation assumes all blobs have the same shape and dtype.
                  All dtype and shape values are assumed to be equal to the values of the
-                 first element in the DocumentArray / DocumentArrayMemmap
+                 first element in the DocumentArray
 
         :return: a :class:`ArrayType` of blobs
         """

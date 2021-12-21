@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class GroupMixin:
     """These helpers yield groups of :class:`DocumentArray` from
-    a source :class:`DocumentArray` or :class:`DocumentArrayMemmap`."""
+    a source :class:`DocumentArray`."""
 
     def split(self, tag: str) -> Dict[Any, 'DocumentArray']:
         """Split the `DocumentArray` into multiple DocumentArray according to the tag value of each `Document`.

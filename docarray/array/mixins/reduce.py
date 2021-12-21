@@ -23,7 +23,7 @@ def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):
 
 class ReduceMixin:
     """
-    A mixin that provides reducing logic for :class:`DocumentArray` or :class:`DocumentArrayMemmap`
+    A mixin that provides reducing logic for :class:`DocumentArray`
     Reducing 2 or more DocumentArrays consists in merging all Documents into the same DocumentArray.
     If a Document belongs to 2 or more DocumentArrays, it is added once and data attributes are merged with priority to
     the Document belonging to the left-most DocumentArray. Matches and chunks are also reduced in the same way.

@@ -10,7 +10,7 @@ T_DA = TypeVar('T_DA')
 
 
 class ParallelMixin:
-    """Helper functions that provide parallel map to :class:`DocumentArray` or :class:`DocumentArrayMemmap`."""
+    """Helper functions that provide parallel map to :class:`DocumentArray`"""
 
     @overload
     def apply(
@@ -42,7 +42,7 @@ class ParallelMixin:
         # noqa: DAR102
         # noqa: DAR101
         # noqa: DAR201
-        :return: a new :class:`DocumentArray` or :class:`DocumentArrayMemmap`
+        :return: a new :class:`DocumentArray`
         """
         new_da = type(self)()
         new_da.extend(self.map(*args, **kwargs))
@@ -60,7 +60,7 @@ class ParallelMixin:
 
         .. seealso::
             - To process on a batch of elements, please use :meth:`.map_batch`;
-            - To return a :class:`DocumentArray`/:class:`DocumentArrayMemmap`, please use :meth:`.apply`.
+            - To return a :class:`DocumentArray`, please use :meth:`.apply`.
 
         :param func: a function that takes :class:`Document` as input and outputs anything. You can either modify elements
             in-place (only with `thread` backend) or work later on return elements.
@@ -116,7 +116,7 @@ class ParallelMixin:
         # noqa: DAR102
         # noqa: DAR101
         # noqa: DAR201
-        :return: a new :class:`DocumentArray` or :class:`DocumentArrayMemmap`
+        :return: a new :class:`DocumentArray`
         """
         new_da = type(self)()
         for _b in self.map_batch(*args, **kwargs):
@@ -138,7 +138,7 @@ class ParallelMixin:
 
         .. seealso::
             - To process single element, please use :meth:`.map`;
-            - To return :class:`DocumentArray` or :class:`DocumentArrayMemmap`, please use :meth:`.apply_batch`.
+            - To return :class:`DocumentArray`, please use :meth:`.apply_batch`.
 
         :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.

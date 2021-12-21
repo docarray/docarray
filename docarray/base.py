@@ -1,6 +1,7 @@
 import copy as cp
 from dataclasses import fields
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
+
 from .helper import typename
 
 if TYPE_CHECKING:
@@ -109,7 +110,3 @@ class BaseDCType:
         if type(self) is type(other):
             return self._data == other._data
         return False
-
-    def __iter__(self):
-        for f in self.non_empty_fields:
-            yield f, getattr(self, f)

@@ -98,7 +98,10 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         if isinstance(index, (int, np.generic)):
             return self._data[int(index)]
         elif isinstance(index, str):
-            return self._data[self._id2offset[index]]
+            if index.startswith('@'):
+                return self.traverse_flat(index[1:])
+            else:
+                return self._data[self._id2offset[index]]
         elif isinstance(index, slice):
             return DocumentArray(self._data[index])
         elif index is Ellipsis:
@@ -129,9 +132,14 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._data[index] = value
             self._id2offset[value.id] = index
         elif isinstance(index, str):
-            old_idx = self._id2offset.pop(index)
-            self._data[old_idx] = value
-            self._id2offset[value.id] = old_idx
+            if index.startswith('@'):
+                for _d, _v in zip(self.traverse_flat(index[1:]), value):
+                    _d._data = _v._data
+                self._rebuild_id2offset()
+            else:
+                old_idx = self._id2offset.pop(index)
+                self._data[old_idx] = value
+                self._id2offset[value.id] = old_idx
         elif isinstance(index, slice):
             self._data[index] = value
             self._rebuild_id2offset()
@@ -177,7 +185,10 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._id2offset.pop(self._data[index].id)
             del self._data[index]
         elif isinstance(index, str):
-            del self._data[self._id2offset[index]]
+            if index.startswith('@'):
+                raise NotImplementedError('Delete elements along traversal paths is not implemented')
+            else:
+                del self._data[self._id2offset[index]]
             self._id2offset.pop(index)
         elif isinstance(index, slice):
             del self._data[index]
