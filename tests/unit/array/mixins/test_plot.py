@@ -29,7 +29,7 @@ def da_and_dam():
         ]
     )
 
-    return doc_array,
+    return (doc_array,)
 
 
 @pytest.mark.parametrize('da', da_and_dam())

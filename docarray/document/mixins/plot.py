@@ -53,12 +53,12 @@ class PlotMixin:
         :return: the url pointing to a SVG
         """
         mermaid_str = (
-                """
+            """
                                                                         %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFC666'}}}%%
                                                                         classDiagram
                     
                                                                                 """
-                + self.__mermaid_str__()
+            + self.__mermaid_str__()
         )
 
         encoded_str = base64.b64encode(bytes(mermaid_str.strip(), 'utf-8')).decode(
@@ -80,7 +80,11 @@ class PlotMixin:
         :param inline_display: show image directly inside the Jupyter Notebook
         """
         image_type = 'svg'
-        if not output.endswith('.svg') and not output.endswith('.jpg') and not output.endswith('.jpeg'):
+        if (
+            not output.endswith('.svg')
+            and not output.endswith('.jpg')
+            and not output.endswith('.jpeg')
+        ):
             raise ValueError('`output` can be only SVG/JPG format')
         elif output.endswith('.jpg') or output.endswith('.jpeg'):
             image_type = 'img'

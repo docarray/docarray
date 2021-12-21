@@ -8,11 +8,11 @@ if TYPE_CHECKING:
 
 
 class PortingMixin:
-
     @classmethod
     def from_dict(cls: Type['T'], obj: Dict) -> 'T':
         from google.protobuf import json_format
         from ...proto.docarray_pb2 import DocumentProto
+
         pb_msg = DocumentProto()
         json_format.ParseDict(obj, pb_msg)
         return cls.from_protobuf(pb_msg)
@@ -21,6 +21,7 @@ class PortingMixin:
     def from_json(cls: Type['T'], obj: str) -> 'T':
         from google.protobuf import json_format
         from ...proto.docarray_pb2 import DocumentProto
+
         pb_msg = DocumentProto()
         json_format.Parse(obj, pb_msg)
         return cls.from_protobuf(pb_msg)
@@ -33,28 +34,39 @@ class PortingMixin:
             preserving_proto_field_name=True,
         )
 
-    def to_bytes(self, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None) -> bytes:
+    def to_bytes(
+        self, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None
+    ) -> bytes:
         if isinstance(protocol, int):
             bstr = pickle.dumps(self, protocol=protocol)
         elif protocol == 'protobuf':
             bstr = self.to_protobuf().SerializePartialToString()
         else:
-            raise ValueError(f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.')
+            raise ValueError(
+                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+            )
         return compress_bytes(bstr, algorithm=compress)
 
     @classmethod
-    def from_bytes(cls: Type['T'], data: bytes, protocol: Union[str, int] = 'protobuf',
-                   compress: Optional[str] = None) -> 'T':
+    def from_bytes(
+        cls: Type['T'],
+        data: bytes,
+        protocol: Union[str, int] = 'protobuf',
+        compress: Optional[str] = None,
+    ) -> 'T':
         bstr = decompress_bytes(data, algorithm=compress)
         if isinstance(protocol, int):
             d = pickle.loads(bstr)
         elif protocol == 'protobuf':
             from ...proto.docarray_pb2 import DocumentProto
+
             pb_msg = DocumentProto()
             pb_msg.ParseFromString(bstr)
             d = cls.from_protobuf(pb_msg)
         else:
-            raise ValueError(f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.')
+            raise ValueError(
+                f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
+            )
         return d
 
     def to_json(self) -> str:

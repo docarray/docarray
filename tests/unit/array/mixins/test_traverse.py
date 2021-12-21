@@ -106,25 +106,25 @@ def test_traverse_flatten_chunk(doc_req, filter_fn):
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flatten_root_plus_chunk(doc_req, filter_fn):
-    ds = list(doc_req.traverse_flat(['c', 'r'], filter_fn=filter_fn))
+    ds = list(doc_req.traverse_flat('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + num_docs * num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flatten_match(doc_req, filter_fn):
-    ds = list(doc_req.traverse_flat(['m'], filter_fn=filter_fn))
+    ds = list(doc_req.traverse_flat('m', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_matches_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flatten_match_chunk(doc_req, filter_fn):
-    ds = list(doc_req.traverse_flat(['cm'], filter_fn=filter_fn))
+    ds = list(doc_req.traverse_flat('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc * num_matches_per_chunk
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flatten_root_match_chunk(doc_req, filter_fn):
-    ds = list(doc_req.traverse_flat(['r', 'c', 'm', 'cm'], filter_fn=filter_fn))
+    ds = list(doc_req.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
     assert (
         len(ds)
         == num_docs
@@ -136,9 +136,7 @@ def test_traverse_flatten_root_match_chunk(doc_req, filter_fn):
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flattened_per_path_embedding(doc_req, filter_fn):
-    flattened_results = list(
-        doc_req.traverse_flat_per_path(['r', 'c'], filter_fn=filter_fn)
-    )
+    flattened_results = list(doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn))
     ds = np.stack(flattened_results[0].get_attributes('embedding'))
     assert ds.shape == (num_docs, 10)
 
@@ -338,19 +336,6 @@ def test_traversal_path():
 
     da.traverse_flat('r')
 
-    with pytest.warns(DeprecationWarning):
-        da.traverse_flat(['r'])
-
-    da.traverse('r')
-    with pytest.warns(DeprecationWarning):
-        for _ in da.traverse(['r']):
-            pass
-
-    da.traverse('r')
-    with pytest.warns(DeprecationWarning):
-        for _ in da.traverse(['r']):
-            pass
-
 
 def test_traverse_flat_root_itself():
     da = DocumentArray([Document() for _ in range(100)])
@@ -360,7 +345,7 @@ def test_traverse_flat_root_itself():
 
 def da_and_dam(N):
     da = DocumentArray(random_docs(N))
-    return da,
+    return (da,)
 
 
 @pytest.mark.parametrize('da', da_and_dam(100))
@@ -377,7 +362,7 @@ def test_flatten(da):
 
 def test_flatten_no_copy():
     da = da_and_dam(100)[0]
-    daf = da.flatten(copy=False)
+    daf = da.flatten()
     new_text = 'hi i changed it!'
     daf[53].text = new_text
     assert da[daf[53].id].text == new_text

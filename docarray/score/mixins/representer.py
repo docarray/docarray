@@ -3,4 +3,4 @@ class RepresentMixin:
         return repr(self.to_dict())
 
     def to_dict(self):
-        return {f: v for f, v in self}
+        return {f: getattr(self, f) for f in self.non_empty_fields}

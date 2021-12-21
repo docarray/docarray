@@ -60,17 +60,3 @@ def test_docarray_copy_list(da_cls, is_copy):
         assert da[0].id != 'hello'
     else:
         assert da[0].id == 'hello'
-
-
-@pytest.mark.parametrize('da_cls', [DocumentArray])
-@pytest.mark.parametrize('is_copy', [True, False])
-def test_docarray_copy_da(da_cls, is_copy):
-    d1 = Document()
-    d2 = Document()
-    da1 = da_cls([d1, d2], copy=is_copy)
-    da2 = da_cls(da1, copy=is_copy)
-    da1.clear()
-    if is_copy:
-        assert len(da2) == 2
-    else:
-        assert len(da2) == 0

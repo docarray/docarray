@@ -35,10 +35,10 @@ def test_image_convert_pipe(pytestconfig):
     for d in from_files(f'{pytestconfig.rootdir}/.github/**/*.png'):
         (
             d.convert_uri_to_image_blob()
-                .convert_uri_to_datauri()
-                .set_image_blob_shape((64, 64))
-                .set_image_blob_normalization()
-                .set_image_blob_channel_axis(-1, 0)
+            .convert_uri_to_datauri()
+            .set_image_blob_shape((64, 64))
+            .set_image_blob_normalization()
+            .set_image_blob_channel_axis(-1, 0)
         )
         assert d.blob.shape == (3, 64, 64)
         assert d.uri
@@ -141,7 +141,9 @@ def test_convert_buffer_to_uri(converter):
     assert d.uri.startswith('data:text/x-python;')
 
 
-@pytest.mark.parametrize('converter', ['convert_text_to_datauri', 'convert_content_to_datauri'])
+@pytest.mark.parametrize(
+    'converter', ['convert_text_to_datauri', 'convert_content_to_datauri']
+)
 def test_convert_text_to_uri(converter):
     d = Document(content=open(__file__).read())
     assert d.text

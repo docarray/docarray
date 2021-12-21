@@ -75,7 +75,12 @@ def test_input_csv_from_lines_field_resolver():
     assert result[0].text
 
 
-@pytest.mark.parametrize('da', [DocumentArray, ])
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray,
+    ],
+)
 def test_input_csv_from_strings(da):
     result = da.from_csv(os.path.join(cur_dir, 'toydata/docs.csv'))
     assert len(result) == 2
@@ -105,7 +110,12 @@ def test_input_lines_with_jsonlines_docs():
         (None, 0.5),
     ],
 )
-@pytest.mark.parametrize('da', [DocumentArray, ])
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray,
+    ],
+)
 def test_input_lines_with_jsonlines_file(size, sampling_rate, da):
     result = da.from_lines(
         filepath=os.path.join(cur_dir, 'toydata/docs.jsonlines'),
@@ -191,13 +201,18 @@ def test_input_huggingface_datasets_with_tweet_dataset(dataset_configs):
     assert result[0].text
 
 
-@pytest.mark.parametrize('da', [DocumentArray, ])
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray,
+    ],
+)
 def test_input_huggingface_datasets_from_csv_file(dataset_configs, da):
     field_resolver = {'question': 'text'}
     result = da.from_huggingface_datasets(
         'csv',
         field_resolver=field_resolver,
-        data_files=os.path.join(cur_dir, 'docs.csv'),
+        data_files=os.path.join(cur_dir, 'toydata/docs.csv'),
         split='train',
     )
 
@@ -207,7 +222,12 @@ def test_input_huggingface_datasets_from_csv_file(dataset_configs, da):
     assert result[0].tags['source'] == 'testsrc'
 
 
-@pytest.mark.parametrize('da', [DocumentArray, ])
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray,
+    ],
+)
 def test_input_huggingface_datasets_with_field_resolver(dataset_configs, da):
     field_resolver = {'question': 'text'}
     result = da.from_huggingface_datasets(
@@ -270,52 +290,17 @@ def test_input_huggingface_datasets_with_filter_fields_and_no_resolver(dataset_c
     ],
 )
 def test_input_files(patterns, recursive, size, sampling_rate, read_mode):
-    DocumentArray(from_files(
+    DocumentArray(
+        from_files(
             patterns=patterns,
             recursive=recursive,
             size=size,
             sampling_rate=sampling_rate,
             read_mode=read_mode,
-        ))
+        )
+    )
 
 
 def test_from_files_with_uri():
     for d in from_files(patterns='*.*', to_dataturi=True, size=10):
         assert d.uri.startswith('data:')
-
-
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' not in os.environ, reason='this test is only validate on CI'
-)
-def test_from_files_with_tilde():
-    shutil.copy(
-        os.path.join(cur_dir, 'docs_groundtruth.jsonlines'),
-        os.path.expanduser('~/'),
-    )
-    shutil.copy(
-        os.path.join(cur_dir, 'docs.csv'),
-        os.path.expanduser('~/'),
-    )
-    generator = from_files(patterns='~/*.*', to_dataturi=True, size=10)
-    first = next(generator)
-    assert first
-
-
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' not in os.environ, reason='this test is only validate on CI'
-)
-def test_from_lines_with_tilde():
-    if not os.path.exists(os.path.expanduser('~/.jina')):
-        os.mkdir(os.path.expanduser('~/.jina'))
-    shutil.copy(
-        os.path.join(cur_dir, 'docs_groundtruth.jsonlines'),
-        os.path.expanduser('~/.jina'),
-    )
-    result = list(from_lines(filepath='~/.jina/docs_groundtruth.jsonlines'))
-    assert len(result) == 2
-    assert result[0][0].text == "a"
-    assert result[0][1].text == "b"
-    assert result[1][0].text == "c"
-    assert result[1][1].text == "d"
-
-

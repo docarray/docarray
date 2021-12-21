@@ -59,9 +59,7 @@ def embeddings():
     return np.array([[1, 0, 0], [2, 0, 0], [3, 0, 0]])
 
 
-def doc_lists_to_doc_arrays(
-    doc_lists, *args, **kwargs
-):
+def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
     doc_list1, doc_list2 = doc_lists
     D1 = DocumentArray()
     D1.extend(doc_list1)
@@ -260,13 +258,13 @@ def test_match_inclusive(only_id):
 
     da1.match(da1, only_id=only_id)
     assert len(da1) == 3
-    traversed = da1.traverse_flat(traversal_paths=['m', 'mm', 'mmm'])
+    traversed = da1.traverse_flat(traversal_paths='m,mm,mmm')
     assert len(traversed) == 9
     # The document array da2 shares same documents with da1
     da2 = DocumentArray([Document(embedding=np.array([4, 1, 3])), da1[0], da1[1]])
     da1.match(da2, only_id=only_id)
     assert len(da2) == 3
-    traversed = da1.traverse_flat(traversal_paths=['m', 'mm', 'mmm'])
+    traversed = da1.traverse_flat(traversal_paths='m,mm,mmm')
     assert len(traversed) == 9
 
 
@@ -444,7 +442,6 @@ def test_exclude_self_should_keep_limit(limit, exclude_self):
         if exclude_self:
             for m in d.matches:
                 assert d.id != m.id
-
 
 
 @pytest.mark.parametrize('only_id', [True, False])

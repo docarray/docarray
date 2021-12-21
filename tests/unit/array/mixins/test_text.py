@@ -13,7 +13,7 @@ def da_and_dam():
         ]
     )
 
-    return da,
+    return (da,)
 
 
 @pytest.mark.parametrize('min_freq', [1, 2, 3])

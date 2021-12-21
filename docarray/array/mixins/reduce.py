@@ -6,12 +6,8 @@ if TYPE_CHECKING:
 
 
 def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):
-    doc1_fields = set(
-        doc1.non_empty_fields
-    )
-    doc2_fields = set(
-        doc2.non_empty_fields
-    )
+    doc1_fields = set(doc1.non_empty_fields)
+    doc2_fields = set(doc2.non_empty_fields)
 
     # update only fields that are set in doc2 and not set in doc1
     fields = doc2_fields - doc1_fields

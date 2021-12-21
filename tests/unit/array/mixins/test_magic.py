@@ -7,7 +7,7 @@ N = 100
 
 def da_and_dam():
     da = DocumentArray.empty(N)
-    return da,
+    return (da,)
 
 
 @pytest.mark.parametrize('da', da_and_dam())
