@@ -33,8 +33,6 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         ):
             if copy:
                 self.extend(Document(d, copy=True) for d in docs)
-            elif isinstance(docs, DocumentArray):
-                self.extend(docs._data)
             else:
                 self.extend(docs)
         else:

@@ -50,7 +50,9 @@ class BaseDCType:
                     for k in _unresolved:
                         kwargs.pop(k)
 
-            self._data = self._data_class(self, **kwargs)
+            self._data = self._data_class(self)
+            for k, v in kwargs.items():
+                setattr(self._data, k, v)
 
             if _unknown_kwargs:
                 getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
