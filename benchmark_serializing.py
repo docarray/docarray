@@ -56,7 +56,7 @@ proto_byte_array = serialize_doc_wrapper()
 end_dw_serializer = time.time()
 
 start_dw_deserializer = time.time()
-loaded_da = deserialize_doc_wrapper(proto_byte_array)
+loaded_da = DocumentArray(deserialize_doc_wrapper(proto_byte_array))
 end_dw_deserializer = time.time()
 
 print(
