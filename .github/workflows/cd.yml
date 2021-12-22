@@ -14,6 +14,9 @@ jobs:
       !endsWith(github.event.head_commit.message, 'reformatted by jina-dev-bot')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Manual Docs Build
@@ -21,9 +24,6 @@ jobs:
           token: ${{ secrets.JINA_DEV_BOT }}
         env:
           release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Check if there were changes to docs
         id: changed-files-docs
         uses: tj-actions/changed-files@v10
