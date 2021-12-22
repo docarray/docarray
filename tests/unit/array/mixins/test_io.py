@@ -85,8 +85,8 @@ def test_from_to_bytes(da_cls):
     da.blobs = [[1, 2], [2, 1]]
     da[0].tags = {'hello': 'world'}
     da2 = da_cls.load_binary(bytes(da))
-    assert da2.blobs.tolist() == [[1, 2], [2, 1]]
-    assert da2.embeddings.tolist() == [[1, 2, 3], [4, 5, 6]]
+    assert da2.blobs == [[1, 2], [2, 1]]
+    assert da2.embeddings == [[1, 2, 3], [4, 5, 6]]
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}
 
