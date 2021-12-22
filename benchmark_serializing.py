@@ -2,18 +2,21 @@ import os
 import sys
 import time
 
+from tests import random_docs
+
 from docarray import DocumentArray, Document
 
 from docarray.proto.dummy_pb2 import BytesWrapper, DocsWrapper
 
 DOC_SIZE = 1024 * 100
 DOC_COUNT = 10000
-da = DocumentArray(
-    [
-        Document(buffer=bytes(bytearray(os.urandom(DOC_SIZE))))
-        for _ in range(DOC_COUNT)
-    ]
-)
+# da = DocumentArray(
+#     [
+#         Document(buffer=bytes(bytearray(os.urandom(DOC_SIZE))))
+#         for _ in range(DOC_COUNT)
+#     ]
+# )
+da = random_docs(DOC_COUNT)
 
 
 def serialize_bytes_wrapper():
