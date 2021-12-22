@@ -71,7 +71,7 @@ class CsvIOMixin:
             if with_header:
                 writer.writeheader()
 
-            from docarray import Document
+            from .... import Document
 
             for d in self:
                 _d = d

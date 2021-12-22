@@ -1,4 +1,3 @@
-import operator
 import random
 from typing import Optional, TYPE_CHECKING
 

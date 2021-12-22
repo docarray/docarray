@@ -1,7 +1,6 @@
 import copy
 import json
 import os.path
-import shutil
 import tempfile
 import threading
 import warnings
@@ -9,9 +8,6 @@ from math import sqrt, ceil, floor
 from typing import Optional
 
 import numpy as np
-
-
-from ...helper import random_port, __resources_path__
 
 
 class PlotMixin:
@@ -40,6 +36,8 @@ class PlotMixin:
         :param start_server: if set, start a HTTP server and open the frontend directly. Otherwise, you need to rely on ``return`` path and serve by yourself.
         :return: the path to the embeddings visualization info.
         """
+        from ...helper import random_port, __resources_path__
+
         path = path or tempfile.mkdtemp()
         emb_fn = f'{title}.tsv'
         meta_fn = f'{title}.metas.tsv'

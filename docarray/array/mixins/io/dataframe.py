@@ -31,7 +31,7 @@ class DataframeIOMixin:
         :return: a :class:`DocumentArray` object
         """
         da = cls()
-        from ....document import Document
+        from .... import Document
 
         for m in df.to_dict(orient='records'):
             # drop nan

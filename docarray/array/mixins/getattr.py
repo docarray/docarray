@@ -42,6 +42,6 @@ class GetAttributeMixin:
         if len(fields) > 1:
             contents = list(map(list, zip(*contents)))
 
-        from ..document import DocumentArray
+        from ... import DocumentArray
 
         return contents, DocumentArray(docs_pts)

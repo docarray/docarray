@@ -43,7 +43,7 @@ class JsonIOMixin:
         else:
             file_ctx = nullcontext(json.loads(file))
 
-        from ....document import Document
+        from .... import Document
 
         with file_ctx as fp:
             return cls(Document.from_json(v) for v in fp)

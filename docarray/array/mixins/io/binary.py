@@ -35,7 +35,7 @@ class BinaryIOMixin:
         else:
             raise ValueError(f'unsupported input {file!r}')
 
-        from ...document import Document
+        from .... import Document
 
         with file_ctx as fp:
             d = fp.read() if hasattr(fp, 'read') else fp
