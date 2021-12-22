@@ -46,7 +46,7 @@ else
 
   docker run --rm \
     -v $(pwd)/proto:/out \
-    -v $(pwd)/../jina/proto:/protos \
+    -v $(pwd)/../docarray/proto:/protos \
     pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
   sphinx-multiversion . ${BUILD_DIR} -b dirhtml

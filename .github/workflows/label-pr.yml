@@ -49,7 +49,6 @@ jobs:
           pip install -r requirements.txt
           git fetch origin
           export NUM_RELEASES=2 # only 2 last tags to save build time
-          cd docs
           bash makedoc.sh development
           netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
