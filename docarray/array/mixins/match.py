@@ -14,21 +14,21 @@ class MatchMixin:
     """ A mixin that provides match functionality to DocumentArrays """
 
     def match(
-            self,
-            darray: 'DocumentArray',
-            metric: Union[
-                str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
-            ] = 'cosine',
-            limit: Optional[Union[int, float]] = 20,
-            normalization: Optional[Tuple[float, float]] = None,
-            metric_name: Optional[str] = None,
-            batch_size: Optional[int] = None,
-            exclude_self: bool = False,
-            only_id: bool = False,
-            use_scipy: bool = False,
-            device: str = 'cpu',
-            num_worker: Optional[int] = 1,
-            **kwargs,
+        self,
+        darray: 'DocumentArray',
+        metric: Union[
+            str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
+        ] = 'cosine',
+        limit: Optional[Union[int, float]] = 20,
+        normalization: Optional[Tuple[float, float]] = None,
+        metric_name: Optional[str] = None,
+        batch_size: Optional[int] = None,
+        exclude_self: bool = False,
+        only_id: bool = False,
+        use_scipy: bool = False,
+        device: str = 'cpu',
+        num_worker: Optional[int] = 1,
+        **kwargs,
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
         and store results in `matches`.
@@ -43,7 +43,7 @@ class MatchMixin:
         - To invert the distance as score and make all values in range [0, 1],
             use ``dA.match(dB, normalization=(1, 0))``. Note, how ``normalization`` differs from the previous.
         - If a custom metric distance is provided. Make sure that it returns scores as distances and not similarity, meaning the smaller the better.
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray  to match against
         :param metric: the distance metric
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
@@ -124,6 +124,9 @@ class MatchMixin:
                     d = rhv[int(_id)]  # type: Document
 
                 if d.id in lhv:
+                    d = Document(
+                        d, copy=True
+                    )  # to prevent self-reference and override on matches
                     d.pop('matches')
                 if not (d.id == _q.id and exclude_self):
                     d.scores[metric_name] = NamedScore(value=_dist, ref_id=_q.id)
@@ -135,7 +138,7 @@ class MatchMixin:
     def _match(self, darray, cdist, limit, normalization, metric_name):
         """
         Computes the matches between self and `darray` loading `darray` into main memory.
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray or  to match against
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `darray` are considered as matches
@@ -160,19 +163,19 @@ class MatchMixin:
         return dist, idx
 
     def _match_online(
-            self,
-            darray,
-            cdist,
-            limit,
-            normalization,
-            metric_name,
-            batch_size,
-            num_worker,
+        self,
+        darray,
+        cdist,
+        limit,
+        normalization,
+        metric_name,
+        batch_size,
+        num_worker,
     ):
         """
         Computes the matches between self and `darray` loading `darray` into main memory in chunks of size `batch_size`.
 
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray or  to match against
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `another` are considered as matches

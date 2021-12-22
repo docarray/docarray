@@ -45,6 +45,6 @@ class AllMixins(
     DataframeIOMixin,
     ABC,
 ):
-    """All plugins that can be used in :class:`DocumentArray` or :class:`DocumentArrayMemmap`. """
+    """All plugins that can be used in :class:`DocumentArray`. """
 
     ...

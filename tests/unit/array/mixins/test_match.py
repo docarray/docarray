@@ -59,13 +59,8 @@ def embeddings():
     return np.array([[1, 0, 0], [2, 0, 0], [3, 0, 0]])
 
 
-def doc_lists_to_doc_arrays(
-    doc_lists, tmpdir, first_memmap, second_memmap, buffer_pool_size
-):
+def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
     doc_list1, doc_list2 = doc_lists
-
-    tmpdir1, tmpdir2 = tmpdir / '1', tmpdir / '2'
-
     D1 = DocumentArray()
     D1.extend(doc_list1)
     D2 = DocumentArray()
@@ -73,9 +68,6 @@ def doc_lists_to_doc_arrays(
     return D1, D2
 
 
-@pytest.mark.parametrize('buffer_pool_size', [1000, 3])
-@pytest.mark.parametrize('first_memmap', [True, False])
-@pytest.mark.parametrize('second_memmap', [True, False])
 @pytest.mark.parametrize(
     'limit, batch_size', [(1, None), (2, None), (None, None), (1, 1), (1, 2), (2, 1)]
 )
@@ -84,18 +76,11 @@ def test_matching_retrieves_correct_number(
     doc_lists,
     limit,
     batch_size,
-    first_memmap,
-    second_memmap,
     tmpdir,
-    buffer_pool_size,
     only_id,
 ):
     D1, D2 = doc_lists_to_doc_arrays(
         doc_lists,
-        tmpdir,
-        first_memmap,
-        second_memmap,
-        buffer_pool_size=buffer_pool_size,
     )
     D1.match(
         D2, metric='sqeuclidean', limit=limit, batch_size=batch_size, only_id=only_id
@@ -190,13 +175,9 @@ def test_matching_scipy_cdist(
     np.testing.assert_equal(distances, distances_scipy)
 
 
-@pytest.mark.parametrize('buffer_pool_size', [1000, 3])
-@pytest.mark.parametrize('first_memmap', [True, False])
-@pytest.mark.parametrize('second_memmap', [True, False])
 @pytest.mark.parametrize(
     'normalization, metric',
     [
-        (None, 'sqeuclidean'),
         ((0, 1), 'sqeuclidean'),
         (None, 'euclidean'),
         ((0, 1), 'euclidean'),
@@ -208,13 +189,9 @@ def test_matching_scipy_cdist(
 @pytest.mark.parametrize('only_id', [True, False])
 def test_matching_retrieves_closest_matches(
     doc_lists,
-    tmpdir,
     normalization,
     metric,
     use_scipy,
-    first_memmap,
-    second_memmap,
-    buffer_pool_size,
     only_id,
 ):
     """
@@ -222,10 +199,6 @@ def test_matching_retrieves_closest_matches(
     """
     D1, D2 = doc_lists_to_doc_arrays(
         doc_lists,
-        tmpdir,
-        first_memmap,
-        second_memmap,
-        buffer_pool_size=buffer_pool_size,
     )
     D1.match(
         D2,
@@ -285,13 +258,13 @@ def test_match_inclusive(only_id):
 
     da1.match(da1, only_id=only_id)
     assert len(da1) == 3
-    traversed = da1.traverse_flat(traversal_paths=['m', 'mm', 'mmm'])
+    traversed = da1.traverse_flat(traversal_paths='m,mm,mmm')
     assert len(traversed) == 9
     # The document array da2 shares same documents with da1
     da2 = DocumentArray([Document(embedding=np.array([4, 1, 3])), da1[0], da1[1]])
     da1.match(da2, only_id=only_id)
     assert len(da2) == 3
-    traversed = da1.traverse_flat(traversal_paths=['m', 'mm', 'mmm'])
+    traversed = da1.traverse_flat(traversal_paths='m,mm,mmm')
     assert len(traversed) == 9
 
 
@@ -434,20 +407,20 @@ def get_two_docarray():
 
 def test_match_with_traversal_path(get_two_docarray):
     da1, da2 = get_two_docarray
-    da1.match(da2, traversal_rdarray=['c'])
+    da1.match(da2.traverse_flat('c'))
     assert len(da1[0].matches) == len(da2[0].chunks) + len(da2[1].chunks)
 
-    da2.match(da1, traversal_rdarray=['c'])
+    da2.match(da1.traverse_flat('c'))
     assert len(da2[0].matches) == len(da1[0].chunks) + len(da1[1].chunks)
 
 
 def test_match_on_two_sides_chunks(get_two_docarray):
     da1, da2 = get_two_docarray
-    da2.match(da1, traversal_ldarray=['c'], traversal_rdarray=['c'])
+    da2.traverse_flat('c').match(da1.traverse_flat('c'))
     assert len(da2[0].matches) == 0
     assert len(da2[0].chunks[0].matches) == len(da1[0].chunks) + len(da1[1].chunks)
 
-    da1.match(da2, traversal_ldarray=['c'], traversal_rdarray=['c'])
+    da1.traverse_flat('c').match(da2.traverse_flat('c'))
     assert len(da1[0].matches) == 0
     assert len(da1[0].chunks[0].matches) == len(da2[0].chunks) + len(da2[1].chunks)
 
@@ -469,53 +442,6 @@ def test_exclude_self_should_keep_limit(limit, exclude_self):
         if exclude_self:
             for m in d.matches:
                 assert d.id != m.id
-
-
-@pytest.mark.parametrize('first_memmap', [True, False])
-@pytest.mark.parametrize('second_memmap', [True, False])
-@pytest.mark.parametrize('buffer_pool_size', [1000, 3])
-def test_filter_fn(doc_lists, tmp_path, first_memmap, second_memmap, buffer_pool_size):
-    def filter_fn():
-        shape = None
-
-        def valid(doc):
-            nonlocal shape
-            if doc.embedding is None:
-                return False
-            if shape is None:
-                shape = doc.embedding.shape
-            return shape == doc.embedding.shape
-
-        return valid
-
-    docs1, docs2 = doc_lists_to_doc_arrays(
-        doc_lists, tmp_path, first_memmap, second_memmap, buffer_pool_size
-    )
-    expected_len = len(docs2)
-
-    # match valid docs1 against valid docs2
-    docs1.match(docs2, filter_fn=filter_fn(), limit=len(docs2))
-    assert all(len(d1.matches) == expected_len for d1 in docs1)
-
-    # insert a doc with no embedding and a doc with wrong embedding shape into docs2
-    docs2.extend([Document(), Document(embedding=np.array([1]))])
-    docs1.match(docs2, filter_fn=filter_fn(), limit=len(docs2))
-    assert all(len(d1.matches) == expected_len for d1 in docs1)
-
-    # match docs1 with a doc without embedding against docs2
-    docs1.append(Document())
-    with pytest.raises(ValueError, match='cannot reshape array'):
-        docs1.match(docs2, limit=len(docs2))
-
-    # match docs1 with a doc that has invalid embedding shape against docs2
-    docs1[len(docs1) - 1] = Document(embedding=np.array([1]))
-    with pytest.raises(ValueError, match='cannot reshape array'):
-        docs1.match(docs2, filter_fn=filter_fn(), limit=len(docs2))
-
-    # sanity check; if docs1 have valid embeddings, the following should work
-    docs1[len(docs1) - 1] = Document(embedding=np.array([1, 0, 1]))
-    docs1.match(docs2, filter_fn=filter_fn(), limit=len(docs2))
-    assert all(len(d1.matches) == expected_len for d1 in docs1)
 
 
 @pytest.mark.parametrize('only_id', [True, False])

@@ -34,6 +34,7 @@ class CsvIOMixin:
         flatten_tags: bool = True,
         exclude_fields: Optional[Sequence[str]] = None,
         dialect: Union[str, 'csv.Dialect'] = 'excel',
+        with_header: bool = True,
     ) -> None:
         """Save array elements into a CSV file.
 
@@ -52,13 +53,13 @@ class CsvIOMixin:
 
         with file_ctx as fp:
             if flatten_tags and self[0].tags:
-                keys = list(self[0].to_dict().keys()) + list(
+                keys = list(self[0].non_empty_fields) + list(
                     f'tag__{k}' for k in self[0].tags
                 )
                 keys.remove('tags')
             else:
                 flatten_tags = False
-                keys = list(self[0].to_dict().keys())
+                keys = list(self[0].non_empty_fields)
 
             if exclude_fields:
                 for k in exclude_fields:
@@ -67,8 +68,10 @@ class CsvIOMixin:
 
             writer = csv.DictWriter(fp, fieldnames=keys, dialect=dialect)
 
-            writer.writeheader()
-            from docarray import Document
+            if with_header:
+                writer.writeheader()
+
+            from .... import Document
 
             for d in self:
                 _d = d

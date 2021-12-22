@@ -48,3 +48,21 @@ def test_content_getter_setter(cls, content_attr):
     np.testing.assert_equal(getattr(da, content_attr[0]), content_attr[1])
     da.contents = None
     assert da.contents is None
+
+
+@pytest.mark.parametrize('da_len', [0, 1, 2])
+def test_content_empty(da_len):
+    da = DocumentArray.empty(da_len)
+    assert not da.texts
+    assert not da.contents
+    assert not da.blobs
+    assert not da.buffers
+
+    da.texts = ['hello'] * da_len
+    if da_len == 0:
+        assert not da.contents
+    else:
+        assert da.contents == ['hello'] * da_len
+        assert da.texts == ['hello'] * da_len
+        assert not da.blobs
+        assert not da.buffers

@@ -108,7 +108,14 @@ class DocumentData:
                         r.append(f_name)
                     else:
                         dv = default_values[f_name]
-                        if dv in ('ChunkArray', 'MatchArray', 'DocumentArray', list, dict, 'Dict[str, NamedScore]'):
+                        if dv in (
+                            'ChunkArray',
+                            'MatchArray',
+                            'DocumentArray',
+                            list,
+                            dict,
+                            'Dict[str, NamedScore]',
+                        ):
                             if v:
                                 r.append(f_name)
                         elif v != dv:
@@ -138,6 +145,7 @@ class DocumentData:
                     )
                 elif v == 'Dict[str, NamedScore]':
                     from ..score import NamedScore
+
                     setattr(self, key, defaultdict(NamedScore))
                 else:
                     setattr(self, key, v() if callable(v) else v)

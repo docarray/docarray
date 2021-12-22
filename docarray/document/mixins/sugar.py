@@ -1,7 +1,7 @@
 from typing import overload, TYPE_CHECKING, Union, Callable, Optional, Tuple
 
 if TYPE_CHECKING:
-    from ... import DocumentArray, DocumentArrayMemmap
+    from ... import DocumentArray
     from ...types import AnyDNN, T, ArrayType
 
     import numpy as np
@@ -13,7 +13,7 @@ class SingletonSugarMixin:
     @overload
     def match(
         self: 'T',
-        darray: Union['DocumentArray', 'DocumentArrayMemmap'],
+        darray: 'DocumentArray',
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -35,7 +35,7 @@ class SingletonSugarMixin:
             where you want to find for each element in `A` what are its nearest neighbours in `B`.
             Then you need :meth:`DocumentArray.match`
 
-        :param darray: the other DocumentArray or DocumentArrayMemmap to match against
+        :param darray: the other DocumentArray to match against
         :param metric: the distance metric
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,

@@ -1,8 +1,6 @@
 import itertools
-import warnings
 from typing import (
     Iterable,
-    Sequence,
     TYPE_CHECKING,
     Optional,
     Callable,
@@ -14,33 +12,15 @@ if TYPE_CHECKING:
     from ...types import T
 
 
-def _check_traversal_path_type(tp):
-    if isinstance(tp, str):
-        return tp
-    elif isinstance(tp, Sequence) and all(isinstance(p, str) for p in tp):
-        tp = ','.join(tp)
-        warnings.warn(
-            f'The syntax of traversal_path is changed to comma-separated string, '
-            f'that means your need to change {tp} into `{",".join(tp)}`. '
-            f'The old list of string syntax will be deprecated soon',
-            DeprecationWarning,
-        )
-        return tp
-    else:
-        raise TypeError(
-            '`traversal_paths` needs to be a string of comma-separated paths'
-        )
-
-
 class TraverseMixin:
     """
-    A mixin used for traversing :class:`DocumentArray` or :class:`DocumentArrayMemmap`.
+    A mixin used for traversing :class:`DocumentArray`.
     """
 
     def traverse(
-            self: 'T',
-            traversal_paths: str,
-            filter_fn: Optional[Callable[['Document'], bool]] = None,
+        self: 'T',
+        traversal_paths: str,
+        filter_fn: Optional[Callable[['Document'], bool]] = None,
     ) -> Iterable['T']:
         """
         Return an Iterator of :class:``TraversableSequence`` of the leaves when applying the traversal_paths.
@@ -61,16 +41,14 @@ class TraverseMixin:
             - `r,c`: docs in this TraversableSequence and all child-documents at granularity 1
 
         """
-        traversal_paths = _check_traversal_path_type(traversal_paths)
-
         for p in traversal_paths.split(','):
             yield from self._traverse(self, p, filter_fn=filter_fn)
 
     @staticmethod
     def _traverse(
-            docs: 'T',
-            path: str,
-            filter_fn: Optional[Callable[['Document'], bool]] = None,
+        docs: 'T',
+        path: str,
+        filter_fn: Optional[Callable[['Document'], bool]] = None,
     ):
         path = path.strip()
         if path:
@@ -99,9 +77,9 @@ class TraverseMixin:
             yield DocumentArray(list(filter(filter_fn, docs)))
 
     def traverse_flat_per_path(
-            self,
-            traversal_paths: str,
-            filter_fn: Optional[Callable[['Document'], bool]] = None,
+        self,
+        traversal_paths: str,
+        filter_fn: Optional[Callable[['Document'], bool]] = None,
     ):
         """
         Returns a flattened :class:``TraversableSequence`` per path in ``traversal_paths``
@@ -111,15 +89,13 @@ class TraverseMixin:
         :param filter_fn: function to filter docs during traversal
         :yield: :class:``TraversableSequence`` containing the document of all leaves per path.
         """
-        traversal_paths = _check_traversal_path_type(traversal_paths)
-
         for p in traversal_paths.split(','):
             yield self._flatten(self._traverse(self, p, filter_fn=filter_fn))
 
     def traverse_flat(
-            self,
-            traversal_paths: str,
-            filter_fn: Optional[Callable[['Document'], bool]] = None,
+        self,
+        traversal_paths: str,
+        filter_fn: Optional[Callable[['Document'], bool]] = None,
     ) -> Union['DocumentArray', Iterable['Document']]:
         """
         Returns a single flattened :class:``TraversableSequence`` with all Documents, that are reached
@@ -134,7 +110,6 @@ class TraverseMixin:
         :param filter_fn: function to filter docs during traversal
         :return: a single :class:``TraversableSequence`` containing the document of all leaves when applying the traversal_paths.
         """
-        traversal_paths = _check_traversal_path_type(traversal_paths)
         if traversal_paths == 'r' and filter_fn is None:
             return self
 
@@ -171,4 +146,5 @@ class TraverseMixin:
     @staticmethod
     def _flatten(sequence) -> 'DocumentArray':
         from ... import DocumentArray
+
         return DocumentArray(list(itertools.chain.from_iterable(sequence)))

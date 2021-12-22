@@ -23,18 +23,22 @@ def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
 
     elif framework == 'tensorflow':
         import tensorflow as tf
+
         return tf.stack(all_fields)
 
     elif framework == 'torch':
         import torch
+
         return torch.stack(all_fields)
 
     elif framework == 'paddle':
         import paddle
+
         return paddle.stack(all_fields)
 
     elif framework == 'scipy':
         import scipy.sparse
+
         return cls_type(scipy.sparse.vstack(all_fields))
 
 

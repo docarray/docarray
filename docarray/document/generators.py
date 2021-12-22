@@ -147,9 +147,9 @@ def from_csv(
         lines = csv.DictReader(fp, dialect=dialect)
         for value in _subsample(lines, size, sampling_rate):
             if 'groundtruth' in value and 'document' in value:
-                yield Document(value['document'], field_resolver=field_resolver), Document(
-                    value['groundtruth'], field_resolver=field_resolver
-                )
+                yield Document(
+                    value['document'], field_resolver=field_resolver
+                ), Document(value['groundtruth'], field_resolver=field_resolver)
             else:
                 yield Document(value, field_resolver=field_resolver)
 

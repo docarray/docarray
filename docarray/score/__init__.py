@@ -1,4 +1,4 @@
-from docarray.base import BaseDCType
+from ..base import BaseDCType
 from .data import NamedScoreData
 from .mixins import AllMixins
 

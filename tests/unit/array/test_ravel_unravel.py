@@ -57,6 +57,7 @@ def test_ravel_embeddings_blobs(ndarray_val, attr, is_sparse):
 
     np.testing.assert_almost_equal(ndav, ndarray_val)
 
+
 @pytest.mark.parametrize('sparse_cls', [csr_matrix, csc_matrix, bsr_matrix, coo_matrix])
 def test_bsr_coo_unravel(sparse_cls):
     a = np.random.random([10, 72])
@@ -67,6 +68,7 @@ def test_bsr_coo_unravel(sparse_cls):
         d.embedding = sparse_cls(a_row)
 
     np.testing.assert_almost_equal(a, da.embeddings.todense())
+
 
 def get_ndarrays():
     a = np.random.random([10, 3])

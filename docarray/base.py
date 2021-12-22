@@ -1,6 +1,7 @@
 import copy as cp
 from dataclasses import fields
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
+
 from .helper import typename
 
 if TYPE_CHECKING:
@@ -9,16 +10,6 @@ if TYPE_CHECKING:
 
 class BaseDCType:
     _data_class = None
-
-    @property
-    def non_empty_fields(self) -> Tuple[str]:
-        """Get all non-emtpy fields of this :class:`Document`.
-
-        Non-empty fields are the fields with not-`None` and not-default values.
-
-        :return: field names in a tuple.
-        """
-        return self._data._non_empty_fields
 
     def __init__(
         self: 'T',
@@ -50,7 +41,9 @@ class BaseDCType:
                     for k in _unresolved:
                         kwargs.pop(k)
 
-            self._data = self._data_class(self, **kwargs)
+            self._data = self._data_class(self)
+            for k, v in kwargs.items():
+                setattr(self._data, k, v)
 
             if _unknown_kwargs:
                 getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
@@ -83,6 +76,16 @@ class BaseDCType:
         for f in fields:
             if hasattr(self, f):
                 setattr(self._data, f, None)
+
+    @property
+    def non_empty_fields(self) -> Tuple[str]:
+        """Get all non-emtpy fields of this :class:`Document`.
+
+        Non-empty fields are the fields with not-`None` and not-default values.
+
+        :return: field names in a tuple.
+        """
+        return self._data._non_empty_fields
 
     @property
     def nbytes(self) -> int:

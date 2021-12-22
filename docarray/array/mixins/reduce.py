@@ -1,17 +1,12 @@
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...document import Document
-    from ...types import T
+    from ...types import T, Document
 
 
 def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):
-    doc1_fields = set(
-        doc1.non_empty_fields
-    )
-    doc2_fields = set(
-        doc2.non_empty_fields
-    )
+    doc1_fields = set(doc1.non_empty_fields)
+    doc2_fields = set(doc2.non_empty_fields)
 
     # update only fields that are set in doc2 and not set in doc1
     fields = doc2_fields - doc1_fields
@@ -23,7 +18,7 @@ def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):
 
 class ReduceMixin:
     """
-    A mixin that provides reducing logic for :class:`DocumentArray` or :class:`DocumentArrayMemmap`
+    A mixin that provides reducing logic for :class:`DocumentArray`
     Reducing 2 or more DocumentArrays consists in merging all Documents into the same DocumentArray.
     If a Document belongs to 2 or more DocumentArrays, it is added once and data attributes are merged with priority to
     the Document belonging to the left-most DocumentArray. Matches and chunks are also reduced in the same way.

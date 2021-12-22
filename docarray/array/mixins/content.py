@@ -54,11 +54,11 @@ class ContentPropertyMixin:
 
         .. warning:: This operation assumes all blobs have the same shape and dtype.
                  All dtype and shape values are assumed to be equal to the values of the
-                 first element in the DocumentArray / DocumentArrayMemmap
+                 first element in the DocumentArray
 
         :return: a :class:`ArrayType` of blobs
         """
-        if self[0].content_type == 'blob':
+        if self and self[0].content_type == 'blob':
             if self:
                 return unravel(self, 'blob')
 
@@ -84,7 +84,7 @@ class ContentPropertyMixin:
 
         :return: a list of texts
         """
-        if self[0].content_type == 'text':
+        if self and self[0].content_type == 'text':
             if self:
                 return [d.text for d in self]
 
@@ -110,7 +110,7 @@ class ContentPropertyMixin:
 
         :return: a list of buffers
         """
-        if self[0].content_type == 'buffer':
+        if self and self[0].content_type == 'buffer':
             if self:
                 return [d.buffer for d in self]
 
@@ -144,7 +144,7 @@ class ContentPropertyMixin:
 
     @contents.setter
     def contents(
-            self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
+        self, value: Sequence[Union[Sequence['DocumentContentType'], 'ArrayType']]
     ):
         """Set the :attr:`.content` of all Documents.
 

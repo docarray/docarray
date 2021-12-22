@@ -8,6 +8,7 @@ from typing import (
     Union,
     MutableSequence,
     Sequence,
+    Iterable,
 )
 
 import numpy as np
@@ -22,21 +23,24 @@ if TYPE_CHECKING:
 
 class DocumentArray(AllMixins, MutableSequence[Document]):
     def __init__(
-            self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+        self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         super().__init__()
         self._data = []
         if docs is None:
             return
         elif isinstance(
-                docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self.extend(Document(d, copy=True) for d in docs)
+                self._data = [Document(d, copy=True) for d in docs]
+                self._rebuild_id2offset()
             elif isinstance(docs, DocumentArray):
-                self.extend(docs._data)
+                self._data = docs._data
+                self._id_to_index = docs._id_to_index
             else:
-                self.extend(docs)
+                self._data = list(docs)
+                self._rebuild_id2offset()
         else:
             if isinstance(docs, Document):
                 if copy:
@@ -75,9 +79,9 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
 
     def __eq__(self, other):
         return (
-                type(self) is type(other)
-                and type(self._data) is type(other._data)
-                and self._data == other._data
+            type(self) is type(other)
+            and type(self._data) is type(other._data)
+            and self._data == other._data
         )
 
     def __len__(self):
@@ -95,12 +99,15 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             return False
 
     def __getitem__(
-            self, index: 'DocumentArrayIndexType'
+        self, index: 'DocumentArrayIndexType'
     ) -> Union['Document', 'DocumentArray']:
         if isinstance(index, (int, np.generic)):
             return self._data[int(index)]
         elif isinstance(index, str):
-            return self._data[self._id2offset[index]]
+            if index.startswith('@'):
+                return self.traverse_flat(index[1:])
+            else:
+                return self._data[self._id2offset[index]]
         elif isinstance(index, slice):
             return DocumentArray(self._data[index])
         elif index is Ellipsis:
@@ -118,22 +125,28 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 return self[index.tolist()]
             else:
                 raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}')
+                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
+                )
         raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def __setitem__(
-            self,
-            index: 'DocumentArrayIndexType',
-            value: Union['Document', Sequence['Document']],
+        self,
+        index: 'DocumentArrayIndexType',
+        value: Union['Document', Sequence['Document']],
     ):
         if isinstance(index, (int, np.generic)):
             index = int(index)
             self._data[index] = value
             self._id2offset[value.id] = index
         elif isinstance(index, str):
-            old_idx = self._id2offset.pop(index)
-            self._data[old_idx] = value
-            self._id2offset[value.id] = old_idx
+            if index.startswith('@'):
+                for _d, _v in zip(self.traverse_flat(index[1:]), value):
+                    _d._data = _v._data
+                self._rebuild_id2offset()
+            else:
+                old_idx = self._id2offset.pop(index)
+                self._data[old_idx] = value
+                self._id2offset[value.id] = old_idx
         elif isinstance(index, slice):
             self._data[index] = value
             self._rebuild_id2offset()
@@ -169,7 +182,8 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 self[index.tolist()] = value
             else:
                 raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}')
+                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
+                )
         else:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
@@ -179,7 +193,12 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._id2offset.pop(self._data[index].id)
             del self._data[index]
         elif isinstance(index, str):
-            del self._data[self._id2offset[index]]
+            if index.startswith('@'):
+                raise NotImplementedError(
+                    'Delete elements along traversal paths is not implemented'
+                )
+            else:
+                del self._data[self._id2offset[index]]
             self._id2offset.pop(index)
         elif isinstance(index, slice):
             del self._data[index]
@@ -205,7 +224,8 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 del self[index.tolist()]
             else:
                 raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}')
+                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
+                )
         else:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
@@ -231,3 +251,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         for doc in other:
             v.append(doc)
         return v
+
+    def extend(self, values: Iterable['Document']) -> None:
+        self._data.extend(values)
+        self._rebuild_id2offset()

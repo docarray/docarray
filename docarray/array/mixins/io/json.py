@@ -36,17 +36,19 @@ class JsonIOMixin:
         :return: a DocumentArrayLike object
         """
 
+        from .... import Document
+
+        constructor = Document.from_json
         if hasattr(file, 'read'):
             file_ctx = nullcontext(file)
         elif os.path.exists(file):
             file_ctx = open(file)
         else:
             file_ctx = nullcontext(json.loads(file))
-
-        from ....document import Document
+            constructor = Document.from_dict
 
         with file_ctx as fp:
-            return cls(Document.from_json(v) for v in fp)
+            return cls(constructor(v) for v in fp)
 
     def to_list(self) -> List:
         """Convert the object into a Python list.

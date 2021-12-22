@@ -75,7 +75,9 @@ class EvaluationMixin:
             binary_relevance = [1 if hash_fn(m) in desired else 0 for m in d.matches]
 
             r = metric_fn(binary_relevance, **kwargs)
-            d.evaluations[metric_name] = NamedScore(value=r, op_name=str(metric_fn), ref_id=d.id)
+            d.evaluations[metric_name] = NamedScore(
+                value=r, op_name=str(metric_fn), ref_id=d.id
+            )
             results.append(r)
         if results:
             return float(np.mean(results))

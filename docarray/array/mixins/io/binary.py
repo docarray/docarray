@@ -1,5 +1,6 @@
 import io
 import os.path
+import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional
 
@@ -7,6 +8,7 @@ from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_by
 
 if TYPE_CHECKING:
     from ....types import T
+    from ....proto.docarray_pb2 import DocumentArrayProto
 
 
 class BinaryIOMixin:
@@ -16,7 +18,7 @@ class BinaryIOMixin:
     def load_binary(
         cls: Type['T'],
         file: Union[str, BinaryIO, bytes],
-        protocol: Union[str, int] = 'protobuf',
+        protocol: str = 'pickle-once',
         compress: Optional[str] = None,
     ) -> 'T':
         """Load array elements from a LZ4-compressed binary file.
@@ -35,7 +37,7 @@ class BinaryIOMixin:
         else:
             raise ValueError(f'unsupported input {file!r}')
 
-        from ...document import Document
+        from .... import Document
 
         with file_ctx as fp:
             d = fp.read() if hasattr(fp, 'read') else fp
@@ -43,20 +45,28 @@ class BinaryIOMixin:
                 d = decompress_bytes(d, algorithm=compress)
                 compress = None
 
-            _len = len(random_uuid().bytes)
-            _binary_delimiter = d[:_len]  # first get delimiter
-            da = cls()
-            da.extend(
-                Document.from_bytes(od, protocol=protocol, compress=compress)
-                for od in d[_len:].split(_binary_delimiter)
-            )
-            return da
+            if protocol == 'protobuf-once':
+                from ....proto.docarray_pb2 import DocumentArrayProto
+
+                dap = DocumentArrayProto()
+                dap.ParseFromString(d)
+
+                return cls.from_protobuf(dap)
+            elif protocol == 'pickle-once':
+                return pickle.loads(d)
+            else:
+                _len = len(random_uuid().bytes)
+                _binary_delimiter = d[:_len]  # first get delimiter
+                return cls(
+                    Document.from_bytes(od, protocol=protocol, compress=compress)
+                    for od in d[_len:].split(_binary_delimiter)
+                )
 
     @classmethod
     def from_bytes(
         cls: Type['T'],
         data: bytes,
-        protocol: Union[str, int] = 'protobuf',
+        protocol: str = 'pickle-once',
         compress: Optional[str] = None,
     ) -> 'T':
         return cls.load_binary(data, protocol=protocol, compress=compress)
@@ -64,7 +74,7 @@ class BinaryIOMixin:
     def save_binary(
         self,
         file: Union[str, BinaryIO],
-        protocol: Union[str, int] = 'protobuf',
+        protocol: str = 'pickle-once',
         compress: Optional[str] = None,
     ) -> None:
         """Save array elements into a LZ4 compressed binary file.
@@ -88,7 +98,7 @@ class BinaryIOMixin:
 
     def to_bytes(
         self,
-        protocol: Union[str, int] = 'protobuf',
+        protocol: str = 'pickle-once',
         compress: Optional[str] = None,
         _file_ctx: Optional[BinaryIO] = None,
     ) -> bytes:
@@ -111,11 +121,30 @@ class BinaryIOMixin:
                 fc = f
                 compress = None
             with fc:
-                for d in self:
-                    f.write(_binary_delimiter)
-                    f.write(d.to_bytes(protocol=protocol, compress=compress))
+                if protocol == 'protobuf-once':
+                    f.write(self.to_protobuf().SerializePartialToString())
+                elif protocol == 'pickle-once':
+                    f.write(pickle.dumps(self))
+                else:
+                    for d in self:
+                        f.write(_binary_delimiter)
+                        f.write(d.to_bytes(protocol=protocol, compress=compress))
             if not _file_ctx:
                 return bf.getvalue()
+
+    def to_protobuf(self) -> 'DocumentArrayProto':
+        from ....proto.docarray_pb2 import DocumentArrayProto
+
+        dap = DocumentArrayProto()
+        for d in self:
+            dap.docs.append(d.to_protobuf())
+        return dap
+
+    @classmethod
+    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentArrayProto') -> 'T':
+        from .... import Document
+
+        return cls(Document.from_protobuf(od) for od in pb_msg.docs)
 
     def __bytes__(self):
         return self.to_bytes()

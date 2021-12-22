@@ -1,7 +1,7 @@
 import random
 from collections import defaultdict
 from typing import Dict, Any, TYPE_CHECKING, Generator
-
+from ...helper import dunder_get
 import numpy as np
 
 if TYPE_CHECKING:
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class GroupMixin:
     """These helpers yield groups of :class:`DocumentArray` from
-    a source :class:`DocumentArray` or :class:`DocumentArrayMemmap`."""
+    a source :class:`DocumentArray`."""
 
     def split(self, tag: str) -> Dict[Any, 'DocumentArray']:
         """Split the `DocumentArray` into multiple DocumentArray according to the tag value of each `Document`.
@@ -23,8 +23,7 @@ class GroupMixin:
             If the :attr:`tags` of :class:`Document` do not contains the specified :attr:`tag`,
             return an empty dict.
         """
-        from ..document import DocumentArray
-        from ...helper import dunder_get
+        from ... import DocumentArray
 
         rv = defaultdict(DocumentArray)
         for doc in self:

@@ -15,7 +15,7 @@ def da_and_dam():
     rand_docs = random_docs(100)
     da = DocumentArray()
     da.extend(rand_docs)
-    return (da, )
+    return (da,)
 
 
 @pytest.mark.parametrize(
@@ -91,7 +91,7 @@ def test_texts_getter_da(da):
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
-    assert da.texts == [''] * 100
+    assert not da.texts
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -124,7 +124,7 @@ def test_buffers_getter_setter(da):
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
-    assert da.buffers == [b''] * 100
+    assert not da.buffers
 
 
 def test_zero_embeddings():

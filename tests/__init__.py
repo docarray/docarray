@@ -4,14 +4,14 @@ from docarray import DocumentArray, Document
 
 
 def random_docs(
-        num_docs,
-        chunks_per_doc=5,
-        embed_dim=10,
-        jitter=1,
-        start_id=0,
-        embedding=True,
-        sparse_embedding=False,
-        text='hello world',
+    num_docs,
+    chunks_per_doc=5,
+    embed_dim=10,
+    jitter=1,
+    start_id=0,
+    embedding=True,
+    sparse_embedding=False,
+    text='hello world',
 ) -> DocumentArray:
     da = DocumentArray()
     next_chunk_doc_id = start_id + num_docs
