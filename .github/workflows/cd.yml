@@ -7,40 +7,12 @@ on:
 
 
 jobs:
-  update-doc:
+  prep-testbed:
     if: |
       !startsWith(github.event.head_commit.message, 'chore') &&
       !startsWith(github.event.head_commit.message, 'build: hotfix') &&
       !endsWith(github.event.head_commit.message, 'reformatted by jina-dev-bot')
     runs-on: ubuntu-latest
-    steps:
-      - uses: benc-uk/workflow-dispatch@v1.1
-        with:
-          workflow: Manual Docs Build
-          inputs: '{ "release_token": "${{ env.release_token }}", "triggered_by": "CD"}'
-          token: ${{ secrets.JINA_DEV_BOT }}
-        env:
-          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
-      - name: Check if there were changes to docs
-        id: changed-files-docs
-        uses: tj-actions/changed-files@v10
-        with:
-          files: |
-            docs/**
-#      - if: steps.changed-files-docs.outputs.any_changed == 'true'
-#        name: Deploy Jina Docsbot
-#        uses: benc-uk/workflow-dispatch@v1
-#        with:
-#          repo: jina-ai/cloud-ops
-#          workflow: Docsbot Deployment Pipeline
-#          inputs: '{ "environment": "prod", "project": "FINETUNER", "branch": "main" }'
-#          ref: "master"
-#          token: ${{ secrets.JINA_DEV_BOT }}
-
-
-  prep-testbed:
-    runs-on: ubuntu-latest
-    needs: update-doc
     steps:
       - uses: actions/checkout@v2
       - id: set-matrix
@@ -95,7 +67,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
   prerelease:
-    needs: [update-doc, core-test]
+    needs: core-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
