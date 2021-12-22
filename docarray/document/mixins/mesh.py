@@ -30,7 +30,7 @@ class MeshDataMixin:
             pcs.append(geo.sample(samples))
 
         if as_chunks:
-            from . import Document
+            from .. import Document
 
             for p in pcs:
                 self.chunks.append(Document(blob=p))

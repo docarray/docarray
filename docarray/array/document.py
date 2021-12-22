@@ -8,6 +8,7 @@ from typing import (
     Union,
     MutableSequence,
     Sequence,
+    Iterable,
 )
 
 import numpy as np
@@ -32,9 +33,14 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self.extend(Document(d, copy=True) for d in docs)
+                self._data = [Document(d, copy=True) for d in docs]
+                self._rebuild_id2offset()
+            elif isinstance(docs, DocumentArray):
+                self._data = docs._data
+                self._id_to_index = docs._id_to_index
             else:
-                self.extend(docs)
+                self._data = list(docs)
+                self._rebuild_id2offset()
         else:
             if isinstance(docs, Document):
                 if copy:
@@ -245,3 +251,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         for doc in other:
             v.append(doc)
         return v
+
+    def extend(self, values: Iterable['Document']) -> None:
+        self._data.extend(values)
+        self._rebuild_id2offset()

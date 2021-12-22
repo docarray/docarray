@@ -1,7 +1,7 @@
 import random
 from collections import defaultdict
 from typing import Dict, Any, TYPE_CHECKING, Generator
-
+from ...helper import dunder_get
 import numpy as np
 
 if TYPE_CHECKING:
@@ -23,8 +23,7 @@ class GroupMixin:
             If the :attr:`tags` of :class:`Document` do not contains the specified :attr:`tag`,
             return an empty dict.
         """
-        from ..document import DocumentArray
-        from ...helper import dunder_get
+        from ... import DocumentArray
 
         rv = defaultdict(DocumentArray)
         for doc in self:

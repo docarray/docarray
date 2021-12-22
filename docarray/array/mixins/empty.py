@@ -1,6 +1,6 @@
 from typing import Type, TYPE_CHECKING
 
-from ...document import Document
+from ... import Document
 
 if TYPE_CHECKING:
     from ...types import T
