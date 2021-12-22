@@ -5,7 +5,9 @@ from tests import random_docs
 
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
-@pytest.mark.parametrize('protocol', ['protobuf', 0, 1, 2, 3, 4])
+@pytest.mark.parametrize(
+    'protocol', ['protobuf', 'protobuf-once', 'pickle', 'pickle-once']
+)
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_bytes(target_da, protocol, compress):
     bstr = target_da.to_bytes(protocol=protocol, compress=compress)
@@ -15,7 +17,9 @@ def test_to_from_bytes(target_da, protocol, compress):
 
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
-@pytest.mark.parametrize('protocol', ['protobuf', 0, 1, 2, 3, 4])
+@pytest.mark.parametrize(
+    'protocol', ['protobuf', 'protobuf-once', 'pickle', 'pickle-once']
+)
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_save_bytes(target_da, protocol, compress, tmpfile):
     target_da.save_binary(tmpfile, protocol=protocol, compress=compress)
@@ -28,3 +32,8 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
     DocumentArray.load_binary(str(tmpfile), protocol=protocol, compress=compress)
     with open(tmpfile, 'rb') as fp:
         DocumentArray.load_binary(fp, protocol=protocol, compress=compress)
+
+
+@pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
+def test_from_to_protobuf(target_da):
+    DocumentArray.from_protobuf(target_da.to_protobuf())

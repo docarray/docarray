@@ -4,7 +4,7 @@ from docarray import Document, DocumentArray
 from tests import random_docs
 
 
-@pytest.mark.parametrize('protocol', ['protobuf', 0, 1, 2, 3, 4])
+@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_bytes(protocol, compress):
     d = Document(embedding=[1, 2, 3, 4, 5], text='hello')

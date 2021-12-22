@@ -35,10 +35,10 @@ class PortingMixin:
         )
 
     def to_bytes(
-        self, protocol: Union[str, int] = 'protobuf', compress: Optional[str] = None
+        self, protocol: str = 'pickle', compress: Optional[str] = None
     ) -> bytes:
-        if isinstance(protocol, int):
-            bstr = pickle.dumps(self, protocol=protocol)
+        if protocol == 'pickle':
+            bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
             bstr = self.to_protobuf().SerializePartialToString()
         else:
@@ -51,11 +51,11 @@ class PortingMixin:
     def from_bytes(
         cls: Type['T'],
         data: bytes,
-        protocol: Union[str, int] = 'protobuf',
+        protocol: str = 'pickle',
         compress: Optional[str] = None,
     ) -> 'T':
         bstr = decompress_bytes(data, algorithm=compress)
-        if isinstance(protocol, int):
+        if protocol == 'pickle':
             d = pickle.loads(bstr)
         elif protocol == 'protobuf':
             from ...proto.docarray_pb2 import DocumentProto
