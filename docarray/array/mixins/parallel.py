@@ -16,7 +16,7 @@ class ParallelMixin:
     def apply(
         self: 'T',
         func: Callable[['Document'], 'Document'],
-        backend: str = 'process',
+        backend: str = 'thread',
         num_worker: Optional[int] = None,
     ) -> 'T':
         """Apply each element in itself with ``func``, return itself after modified.
@@ -53,7 +53,7 @@ class ParallelMixin:
     def map(
         self,
         func: Callable[['Document'], 'T'],
-        backend: str = 'process',
+        backend: str = 'thread',
         num_worker: Optional[int] = None,
     ) -> Generator['T', None, None]:
         """Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.
@@ -88,7 +88,7 @@ class ParallelMixin:
         self: 'T',
         func: Callable[['DocumentArray'], 'DocumentArray'],
         batch_size: int,
-        backend: str = 'process',
+        backend: str = 'thread',
         num_worker: Optional[int] = None,
         shuffle: bool = False,
     ) -> 'T':
@@ -129,7 +129,7 @@ class ParallelMixin:
         self: 'T_DA',
         func: Callable[['DocumentArray'], 'T'],
         batch_size: int,
-        backend: str = 'process',
+        backend: str = 'thread',
         num_worker: Optional[int] = None,
         shuffle: bool = False,
     ) -> Generator['T', None, None]:
