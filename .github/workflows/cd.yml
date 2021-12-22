@@ -1,13 +1,10 @@
 name: CD
 
-#on:
-#  push:
-#    branches:
-#      - main
 on:
   push:
-    branches-ignore:
-      - '**'  # temporally disable this action
+    branches:
+      - main
+
 
 jobs:
   update-doc:
