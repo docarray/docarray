@@ -50,8 +50,10 @@ left_da.plot_image_sprites()
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/master/.github/images/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="70%"></a>
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/master/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="70%"></a>
 </p>
+
+### Apply preprocess
 
 Let's do some standard computer vision preprocessing:
 
@@ -64,7 +66,11 @@ def preproc(d: Document):
 left_da.apply(preproc)
 ```
 
-Did I mention `apply` work in parallel? Never mind. Now convert images into embeddings using a pretrained ResNet50:
+Did I mention `apply` work in parallel? Never mind. 
+
+### Embed images
+
+Now convert images into embeddings using a pretrained ResNet50:
 
 ```python
 import torchvision
@@ -72,10 +78,56 @@ model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 left_da.embed(model, device='cuda')  # embed via GPU to speedup
 ```
 
-You can visualize the embedding via an interactive embedding projector:
+### Visualize embeddings
+
+You can visualize the embeddings via tSNE in an interactive embedding projector:
 
 ```python
 left_da.plot_embeddings()
 ```
+
+<p align="center">
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/master/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
+</p>
+
+Fun is fun, but recall our goal is to match left images against right images and so far we have only handled the left. Let's repeat the same procedure for the right:
+
+```python
+right_da = (DocumentArray.from_files('right/*.jpg')
+                         .apply(preproc)
+                         .embed(model, device='cuda'))
+```
+
+### Match nearest neighbours
+
+We can now match the left to the right.
+
+```python
+left_da.match(right_da, limit=10)
+```
+
+Let's inspect what's inside `left_da` now:
+
+```python
+for d in left_da:
+    for m in d.matches:
+        print(d.uri, m.uri, m.scores['cosine'].value)
+```
+
+```text
+left/02262.jpg right/03459.jpg 0.21102
+left/02262.jpg right/02964.jpg 0.13871843
+left/02262.jpg right/02103.jpg 0.18265384
+left/02262.jpg right/04520.jpg 0.16477376
+...
+```
+
+Better see it with eyes.
+
+```python
+
+```
+
+### Quantitative evaluation
 
 
