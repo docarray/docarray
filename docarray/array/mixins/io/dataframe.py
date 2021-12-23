@@ -21,7 +21,7 @@ class DataframeIOMixin:
         """
         from pandas import DataFrame
 
-        return DataFrame.from_dict(self.to_list(), **kwargs)
+        return DataFrame.from_dict(self.to_list_safe(), **kwargs)
 
     @classmethod
     def from_dataframe(cls: Type['T'], df: 'DataFrame') -> 'T':
