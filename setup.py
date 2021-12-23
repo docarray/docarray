@@ -40,6 +40,20 @@ setup(
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
     install_requires=['numpy'],
+    extras_require={
+        'full': [
+            'protobuf>=3.13.0',
+            'lz4',
+            'requests',
+            'matplotlib',
+            'Pillow',
+            'rich',
+            'trimesh',
+            'scipy',
+            'av',
+            'fastapi',
+        ]
+    },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

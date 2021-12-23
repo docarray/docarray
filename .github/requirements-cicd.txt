@@ -12,3 +12,4 @@ matplotlib
 rich
 Pillow
 lz4
+fastapi
