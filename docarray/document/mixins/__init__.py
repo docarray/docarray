@@ -7,12 +7,12 @@ from .dump import UriFileMixin
 from .image import ImageDataMixin
 from .mesh import MeshDataMixin
 from .plot import PlotMixin
+from .porting import PortingMixin
 from .property import PropertyMixin
 from .protobuf import ProtobufMixin
 from .sugar import SingletonSugarMixin
 from .text import TextDataMixin
 from .video import VideoDataMixin
-from .porting import PortingMixin
 
 
 class AllMixins(

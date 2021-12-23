@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 class GetAttributeMixin:
     """Helpers that provide attributes getter in bulk """
 
-    def get_attributes(self, *fields: str) -> Union[List, List[List]]:
+    def get_attributes(self, *fields: str) -> List:
         """Return all nonempty values of the fields from all docs this array contains
 
         :param fields: Variable length argument with the name of the fields to extract
@@ -24,7 +24,7 @@ class GetAttributeMixin:
     def get_attributes_with_docs(
         self,
         *fields: str,
-    ) -> Tuple[Union[List, List[List]], 'DocumentArray']:
+    ) -> Tuple[List, 'DocumentArray']:
         """Return all nonempty values of the fields together with their nonempty docs
 
         :param fields: Variable length argument with the name of the fields to extract

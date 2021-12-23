@@ -32,7 +32,6 @@ def get_ndarrays_for_ravel():
 def test_ravel_embeddings_blobs(ndarray_val, attr, is_sparse):
     da = DocumentArray.empty(10)
     setattr(da, attr, ndarray_val)
-
     ndav = getattr(da, attr)
 
     # test read/getter
