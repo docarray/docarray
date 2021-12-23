@@ -50,7 +50,17 @@ class JsonIOMixin:
         with file_ctx as fp:
             return cls(constructor(v) for v in fp)
 
-    def to_list(self) -> List:
+    @classmethod
+    def from_json(cls: Type['T'], file: Union[str, TextIO]) -> 'T':
+        return cls.load_json(file)
+
+    @classmethod
+    def from_list_safe(cls: Type['T'], values: List) -> 'T':
+        from .... import Document
+
+        return cls(Document.from_dict(v) for v in values)
+
+    def to_list_safe(self) -> List:
         """Convert the object into a Python list.
 
         .. note::
@@ -65,4 +75,4 @@ class JsonIOMixin:
 
         :return: a Python list
         """
-        return json.dumps(self.to_list())
+        return json.dumps(self.to_list_safe())

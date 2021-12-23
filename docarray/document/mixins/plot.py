@@ -54,10 +54,10 @@ class PlotMixin:
         """
         mermaid_str = (
             """
-                                                                        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFC666'}}}%%
-                                                                        classDiagram
-                    
-                                                                                """
+                                                                            %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#FFC666'}}}%%
+                                                                            classDiagram
+                        
+                                                                                    """
             + self.__mermaid_str__()
         )
 

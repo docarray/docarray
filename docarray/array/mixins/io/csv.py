@@ -101,6 +101,4 @@ class CsvIOMixin:
 
         from ....document.generators import from_csv
 
-        da = cls()
-        da.extend(from_csv(file, field_resolver=field_resolver))
-        return da
+        return cls(from_csv(file, field_resolver=field_resolver))

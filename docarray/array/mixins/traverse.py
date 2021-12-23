@@ -96,7 +96,7 @@ class TraverseMixin:
         self,
         traversal_paths: str,
         filter_fn: Optional[Callable[['Document'], bool]] = None,
-    ) -> Union['DocumentArray', Iterable['Document']]:
+    ) -> 'DocumentArray':
         """
         Returns a single flattened :class:``TraversableSequence`` with all Documents, that are reached
         via the ``traversal_paths``.

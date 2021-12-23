@@ -20,6 +20,15 @@ class _PropertyMixin:
         self._data.id = value
 
     @property
+    def parent_id(self) -> Optional[str]:
+        self._data._set_default_value_if_none('parent_id')
+        return self._data.parent_id
+
+    @parent_id.setter
+    def parent_id(self, value: str):
+        self._data.parent_id = value
+
+    @property
     def granularity(self) -> Optional[int]:
         self._data._set_default_value_if_none('granularity')
         return self._data.granularity
@@ -38,15 +47,6 @@ class _PropertyMixin:
         self._data.adjacency = value
 
     @property
-    def parent_id(self) -> Optional[str]:
-        self._data._set_default_value_if_none('parent_id')
-        return self._data.parent_id
-
-    @parent_id.setter
-    def parent_id(self, value: str):
-        self._data.parent_id = value
-
-    @property
     def buffer(self) -> Optional[bytes]:
         self._data._set_default_value_if_none('buffer')
         return self._data.buffer
@@ -63,6 +63,15 @@ class _PropertyMixin:
     @blob.setter
     def blob(self, value: 'ArrayType'):
         self._data.blob = value
+
+    @property
+    def mime_type(self) -> Optional[str]:
+        self._data._set_default_value_if_none('mime_type')
+        return self._data.mime_type
+
+    @mime_type.setter
+    def mime_type(self, value: str):
+        self._data.mime_type = value
 
     @property
     def text(self) -> Optional[str]:
@@ -99,15 +108,6 @@ class _PropertyMixin:
     @uri.setter
     def uri(self, value: str):
         self._data.uri = value
-
-    @property
-    def mime_type(self) -> Optional[str]:
-        self._data._set_default_value_if_none('mime_type')
-        return self._data.mime_type
-
-    @mime_type.setter
-    def mime_type(self, value: str):
-        self._data.mime_type = value
 
     @property
     def tags(self) -> Optional[Dict[str, 'StructValueType']]:

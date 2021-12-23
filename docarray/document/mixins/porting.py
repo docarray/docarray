@@ -1,5 +1,5 @@
 import pickle
-from typing import Union, Optional, TYPE_CHECKING, Type, Dict
+from typing import Optional, TYPE_CHECKING, Type, Dict
 
 from ...helper import compress_bytes, decompress_bytes
 
