@@ -100,10 +100,10 @@ right_da = (DocumentArray.from_files('right/*.jpg')
 
 ### Match nearest neighbours
 
-We can now match the left to the right.
+We can now match the left to the right and take the top-9 results.
 
 ```python
-left_da.match(right_da, limit=10)
+left_da.match(right_da, limit=9)
 ```
 
 Let's inspect what's inside `left_da` now:
@@ -122,11 +122,18 @@ left/02262.jpg right/04520.jpg 0.16477376
 ...
 ```
 
-Better see it with eyes.
+Better see it.
 
 ```python
-
+(DocumentArray(left_da[12].matches, copy=True)
+    .apply(lambda d: d.set_image_blob_channel_axis(0, -1)
+                      .set_image_blob_inv_normalization())
+    .plot_image_sprites('result.png'))
 ```
+
+<p align="center">
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/master/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></a>
+</p>
 
 ### Quantitative evaluation
 
