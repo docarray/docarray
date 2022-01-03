@@ -41,6 +41,9 @@ The following dependencies will be installed to enable additional features:
 Alternatively, you can first do basic installation and then install missing dependencies on-demand. 
 ````
 
+```python
+from docarray import Document, DocumentArray
+```
 
 
 
