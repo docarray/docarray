@@ -25,7 +25,7 @@ Optional features can be enabled by installing the full dependencies: `pip insta
 
 ## Get Started
 
-Let's use DocArray and ResNet50 to build a meme image search on [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset). This dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are labeled as perceptually similar. For example, 
+Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example, 
 
 <table>
 <thead>
@@ -93,7 +93,7 @@ model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 left_da.embed(model, device='cuda')  # embed via GPU to speedup
 ```
 
-This step takes ~30 seconds on GPU. Beside Pytorch, you can also use Tensorflow, PaddlePaddle, ONNX models in `.embed(...)`.
+This step takes ~30 seconds on GPU. Beside PyTorch, you can also use Tensorflow, PaddlePaddle, ONNX models in `.embed(...)`.
 
 ### Visualize embeddings
 
@@ -161,8 +161,7 @@ Serious as you are, visual inspection is surely not enough. Let's calculate the 
 
 ```python
 groundtruth = DocumentArray(
-    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
-    for d in left_da)
+    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))]) for d in left_da)
 ```
 
 Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
@@ -189,3 +188,23 @@ recall@5 0.0573470744680851
 ```
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
+
+
+<!-- start support-pitch -->
+## Support
+
+- Use [Discussions](https://github.com/jina-ai/docarray/discussions) to talk about your use cases, questions, and
+  support queries.
+- Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
+- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
+    - **When?** The second Tuesday of every month
+    - **Where?**
+      Zoom ([see our public events calendar](https://calendar.google.com/calendar/embed?src=c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com&ctz=Europe%2FBerlin)/[.ical](https://calendar.google.com/calendar/ical/c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com/public/basic.ics))
+      and [live stream on YouTube](https://youtube.com/c/jina-ai)
+- Subscribe to the latest video tutorials on our [YouTube channel](https://youtube.com/c/jina-ai)
+
+## Join Us
+
+DocArray is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in opensource.
+
+<!-- end support-pitch -->
