@@ -8,7 +8,7 @@ The data structure for unstructured data.
 
 🧑‍🔬 **Data science powerhouse**: easy-to-use functions for facilitating data scientists work on embedding, matching, visualizing, evaluating unstructured data via Torch/Tensorflow/ONNX/PaddlePaddle.
 
-🚡 **Portable**: ready to wire with efficient conversion from/to Protobuf, binary, JSON, CSV, dataframe.
+🚡 **Portable**: ready to wire at any time with efficient serialization from/to Protobuf, binary, JSON, CSV, dataframe.
 
 <!-- end elevator-pitch -->
 
@@ -50,7 +50,7 @@ left_da.plot_image_sprites()
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="70%"></a>
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
 </p>
 
 ### Apply preprocessing
@@ -134,8 +134,8 @@ Better see it.
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="40%"></a>
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" width="40%"></a>
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
 What we did here is reversing the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
