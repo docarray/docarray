@@ -53,7 +53,7 @@ left_da.plot_image_sprites()
 <a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/master/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="70%"></a>
 </p>
 
-### Apply preprocess
+### Apply preprocessing
 
 Let's do some standard computer vision preprocessing:
 
@@ -66,7 +66,7 @@ def preproc(d: Document):
 left_da.apply(preproc)
 ```
 
-Did I mention `apply` work in parallel? Never mind. 
+Did I mention `apply` work in parallel?
 
 ### Embed images
 
