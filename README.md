@@ -1,14 +1,19 @@
-# docarray
+<p align="center">
+<img src="https://github.com/jina-ai/finetuner/blob/main/docs/_static/docarray-logo-ani.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
+</p>
+
+
+<p align="center">
+<b>The data structure for unstructured data</b>
+</p>
 
 <!-- start elevator-pitch -->
-
-The data structure for unstructured data.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
 🧑‍🔬 **Data science powerhouse**: easy-to-use functions for facilitating data scientists work on embedding, matching, visualizing, evaluating unstructured data via Torch/Tensorflow/ONNX/PaddlePaddle.
 
-🚡 **Portable**: ready to wire at any time with efficient serialization from/to Protobuf, binary, JSON, CSV, dataframe.
+🚡 **Portable**: ready to wire at any time with efficient and compact serialization from/to Protobuf, binary, JSON, CSV, dataframe.
 
 <!-- end elevator-pitch -->
 

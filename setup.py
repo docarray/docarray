@@ -29,7 +29,7 @@ setup(
     packages=find_packages(),
     version=__version__,
     include_package_data=True,
-    description='A lightweight data structure for unstructured data',
+    description='The data structure for unstructured data',
     author='Jina AI',
     author_email='hello@jina.ai',
     license='Apache 2.0',
