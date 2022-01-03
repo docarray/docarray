@@ -15,11 +15,11 @@ The data structure for unstructured data.
 
 ## Install 
 
-Requires Python 3.7+ and `numpy`:
+Requires Python 3.7+ and `numpy` only:
 ```
 pip install docarray
 ```
-To install full dependencies, please use `pip install docarray[full]`.
+Optional features can be enabled by installing the full dependencies: `pip install docarray[full]`.
 
 ## [Documentation](https://docarray.jina.ai)
 
