@@ -27,9 +27,24 @@ Optional features can be enabled by installing the full dependencies: `pip insta
 
 Let's use DocArray and ResNet50 to build a meme image search on [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset). This dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are labeled as perceptually similar. For example, 
 
-| `/left` | `/right` | `/left` | `/right` |
-|---------|----------|---------|----------|
-|
+<table>
+<thead>
+  <tr>
+    <th>left/00018.jpg</th>
+    <th>right/00018.jpg</th>
+    <th>left/00131.jpg</th>
+    <th>right/00131.jpg</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00018.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="100px"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00018.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="100px"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00131.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="100px"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00131.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="100px"></td>
+  </tr>
+</tbody>
+</table>
 
 Our problem is given an image from `/left` and find its most-similar image in `/right` (without looking at the filename of course).
 
