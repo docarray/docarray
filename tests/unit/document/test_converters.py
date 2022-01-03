@@ -34,7 +34,7 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
 def test_image_convert_pipe(pytestconfig):
     for d in from_files(f'{pytestconfig.rootdir}/.github/**/*.png'):
         (
-            d.convert_uri_to_image_blob()
+            d.load_uri_to_image_blob()
             .convert_uri_to_datauri()
             .set_image_blob_shape((64, 64))
             .set_image_blob_normalization()

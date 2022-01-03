@@ -44,8 +44,9 @@ class ParallelMixin:
         # noqa: DAR201
         :return: a new :class:`DocumentArray`
         """
-        new_da = type(self)()
-        new_da.extend(self.map(*args, **kwargs))
+        from ... import DocumentArray
+
+        new_da = DocumentArray(self.map(*args, **kwargs))
         self.clear()
         self.extend(new_da)
         return self
@@ -118,7 +119,9 @@ class ParallelMixin:
         # noqa: DAR201
         :return: a new :class:`DocumentArray`
         """
-        new_da = type(self)()
+        from ... import DocumentArray
+
+        new_da = DocumentArray()
         for _b in self.map_batch(*args, **kwargs):
             new_da.extend(_b)
         self.clear()

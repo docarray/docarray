@@ -50,7 +50,13 @@ class PushPullMixin:
                     self._p_bar.update(self._task_id, advance=len(chunk))
                 return chunk
 
-        dict_data = {'file': ('DocumentArray', bytes(self)), 'token': token}
+        dict_data = {
+            'file': (
+                'DocumentArray',
+                self.to_bytes(protocol='protobuf', compress='lz4'),
+            ),
+            'token': token,
+        }
 
         (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
             dict_data
@@ -97,7 +103,7 @@ class PushPullMixin:
                     if show_progress:
                         progress.update(task_id, advance=len(chunk))
 
-                return cls.load_binary(f.getvalue())
+                return cls.from_bytes(f.getvalue(), protocol='protobuf', compress='lz4')
 
 
 def _get_progressbar(show_progress):

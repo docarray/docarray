@@ -53,7 +53,7 @@ class EvaluationMixin:
         metric_name = metric_name or metric_fn.__name__
         results = []
         for d, gd in zip(self, other):
-            if not strict or hash_fn(d) != hash_fn(gd):
+            if strict and hash_fn(d) != hash_fn(gd):
                 raise ValueError(
                     f'Document {d} from the left-hand side and '
                     f'{gd} from the right-hand are not hashed to the same value. '
