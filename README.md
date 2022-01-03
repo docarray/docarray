@@ -9,7 +9,7 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a libaray for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily manipulate, embed, search, recommend and transfer the data.
+DocArray is a libaray for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
