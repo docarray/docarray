@@ -1,4 +1,4 @@
-# Set/unset Attributes
+# Set Attributes
 
 Set an attribute as you would with any Python object: 
 

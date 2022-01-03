@@ -202,7 +202,7 @@ More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
 
 ### Save results
 
-You can save a DocumentArray to binary, JSON, dict, dataframe, CSV or Protobuf message. In its simplest form,
+You can save a DocumentArray to binary, JSON, dict, dataframe, CSV or Protobuf message with/without compression. In its simplest form,
 
 ```python
 left_da.save('left_da.bin')
