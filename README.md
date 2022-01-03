@@ -9,13 +9,13 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a libaray for **nested, unstructured data**, including text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily manipulate, embed, search, recommend and transfer the data.
+DocArray is a libaray for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily manipulate, embed, search, recommend and transfer the data.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
-🧑‍🔬 **Data science powerhouse**: easy-to-use functions for facilitating data scientists work on embedding, matching, visualizing, evaluating unstructured data via Torch/Tensorflow/ONNX/PaddlePaddle.
+🧑‍🔬 **Data science powerhouse**: easy-to-use functions for facilitating data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle.
 
-🚡 **Portable**: ready to wire at any time with efficient and compact serialization from/to Protobuf, binary, JSON, CSV, dataframe.
+🚡 **Portable**: ready to wire at anytime with efficient and compact serialization from/to Protobuf, binary, JSON, CSV, dataframe.
 
 <!-- end elevator-pitch -->
 
@@ -160,7 +160,7 @@ Better see it.
 <a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
-What we did here is reversing the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
+What we did here is reverting the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
 
 ### Quantitative evaluation
 
