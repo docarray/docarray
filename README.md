@@ -9,11 +9,13 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
+DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
-🧑‍🔬 **Data science powerhouse**: easy-to-use functions for facilitating data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle.
+🐍 **Pythonic API**: easy-to-use idioms and interfaces just as the native Python List. If you know how to Python, you know how to DocArray.
+
+🧑‍🔬 **Data science powerhouse**: greatly facilitate data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle.
 
 🚡 **Portable**: ready to wire at anytime with efficient and compact serialization from/to Protobuf, binary, JSON, CSV, dataframe.
 
@@ -195,6 +197,31 @@ recall@5 0.0573470744680851
 ```
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
+
+
+
+### Save results
+
+You can save a DocumentArray to binary, JSON, dict, dataframe, CSV or Protobuf message. In its simplest form,
+
+```python
+left_da.save('left_da.bin')
+```
+
+To reuse it, do `left_da = DocumentArray.load('left_da.bin')`.
+
+If you want to transfer a DoucmentArray from one machine to another or share it with your colleagues, you can do:
+
+```python
+left_da.push(token='my_shared_da')
+```
+
+```python
+left_da = DocumentArray.pull(token='my_shared_da')
+```
+
+Anyone knows the token `my_shared_da` can pull and work on it.
+
 
 Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
 

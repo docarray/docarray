@@ -1,6 +1,6 @@
 import io
 from contextlib import nullcontext
-from typing import Type, TYPE_CHECKING
+from typing import Type, TYPE_CHECKING, Optional
 
 from ....helper import get_request_header
 
@@ -13,7 +13,9 @@ class PushPullMixin:
 
     _service_url = 'https://apihubble.jina.ai/v2/rpc/da.'
 
-    def push(self, token: str, show_progress: bool = False) -> None:
+    def push(
+        self, token: str, show_progress: bool = False, compress: Optional[str] = None
+    ) -> None:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -53,7 +55,7 @@ class PushPullMixin:
         dict_data = {
             'file': (
                 'DocumentArray',
-                self.to_bytes(protocol='protobuf', compress='gzip'),
+                self.to_bytes(protocol='protobuf', compress=compress),
             ),
             'token': token,
         }
@@ -69,7 +71,12 @@ class PushPullMixin:
             requests.post(self._service_url + 'push', data=body, headers=headers)
 
     @classmethod
-    def pull(cls: Type['T'], token: str, show_progress: bool = False) -> 'T':
+    def pull(
+        cls: Type['T'],
+        token: str,
+        show_progress: bool = False,
+        compress: Optional[str] = None,
+    ) -> 'T':
         """Pulling a :class:`DocumentArray` from Jina Cloud Service to local.
 
         :param token: the upload token set during :meth:`.push`
@@ -103,7 +110,9 @@ class PushPullMixin:
                     if show_progress:
                         progress.update(task_id, advance=len(chunk))
 
-                return cls.from_bytes(f.getvalue(), protocol='protobuf', compress='lz4')
+                return cls.from_bytes(
+                    f.getvalue(), protocol='protobuf', compress=compress
+                )
 
 
 def _get_progressbar(show_progress):

@@ -8,7 +8,7 @@ class CommonIOMixin:
     """The common IO helper function for arrays. """
 
     def save(
-        self, file: Union[str, TextIO, BinaryIO], file_format: str = 'json'
+        self, file: Union[str, TextIO, BinaryIO], file_format: str = 'binary'
     ) -> None:
         """Save array elements into a JSON, a binary file or a CSV file.
 
@@ -28,7 +28,7 @@ class CommonIOMixin:
 
     @classmethod
     def load(
-        cls: Type['T'], file: Union[str, TextIO, BinaryIO], file_format: str = 'json'
+        cls: Type['T'], file: Union[str, TextIO, BinaryIO], file_format: str = 'binary'
     ) -> 'T':
         """Load array elements from a JSON or a binary file, or a CSV file.
 
