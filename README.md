@@ -127,13 +127,14 @@ left/02262.jpg right/04520.jpg 0.16477376
 Better see it.
 
 ```python
-(DocumentArray(left_da[12].matches, copy=True)
+(DocumentArray(left_da[8].matches, copy=True)
     .apply(lambda d: d.set_image_blob_channel_axis(0, -1)
                       .set_image_blob_inv_normalization())
     .plot_image_sprites('result.png'))
 ```
 
 <p align="center">
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="40%"></a>
 <a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" width="40%"></a>
 </p>
 
@@ -150,7 +151,7 @@ groundtruth = DocumentArray(
 )
 ```
 
-Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need for evaluation.
+Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
 
 Now let's check recall rate from 1 to 5:
 
