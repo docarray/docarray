@@ -8,7 +8,7 @@
 ## Install
 
 ```{tip}
-Jina 3.x users do not need to install `docarray` separately, it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
+Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
 ```
 
 Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
@@ -68,8 +68,8 @@ not installing `docarray` correctly. You are probably still using an old `docarr
 :caption: Fundamentals
 :hidden:
 
-fundamentals/document-api.md
-fundamentals/documentarray-api.md
+fundamentals/document/index.md
+fundamentals/documentarray/index.md
 ```
 
 
