@@ -173,7 +173,7 @@ groundtruth = DocumentArray(
 
 Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
 
-Now let's check recall rate from 1 to 5:
+Now let's check recall rate from 1 to 5 over the full dataset:
 
 ```python
 for k in range(1, 6):
@@ -196,6 +196,7 @@ recall@5 0.0573470744680851
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
 
+Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
 
 <!-- start support-pitch -->
 ## Support
