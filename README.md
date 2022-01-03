@@ -61,7 +61,7 @@ Let's do some standard computer vision preprocessing:
 def preproc(d: Document):
     return (d.load_uri_to_image_blob()  # load
              .set_image_blob_normalization()  # normalize color 
-             .set_image_blob_channel_axis(-1, 0))  # switch color axis
+             .set_image_blob_channel_axis(-1, 0))  # switch color axis for the pytorch model later
 
 left_da.apply(preproc)
 ```
@@ -77,6 +77,8 @@ import torchvision
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 left_da.embed(model, device='cuda')  # embed via GPU to speedup
 ```
+
+This step takes ~30 seconds on GPU. Beside Pytorch, you can also use Tensorflow, PaddlePaddle, ONNX models in `.embed(...)`.
 
 ### Visualize embeddings
 
@@ -132,9 +134,46 @@ Better see it.
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></a>
+<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" width="40%"></a>
 </p>
+
+What we did here is reversing the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
 
 ### Quantitative evaluation
 
+Serious as you are, visual inspection is surely not enough. Let's calculate the recall@K. First we construct the groundtruth matches:
 
+```python
+groundtruth = DocumentArray(
+    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
+    for d in left_da
+)
+```
+
+Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need for evaluation.
+
+Now let's check recall rate from 1 to 5:
+
+```python
+for k in range(1, 6):
+    print(
+        f'recall@{k}',
+        left_da.evaluate(
+            groundtruth,
+            hash_fn=lambda d: d.uri,
+            metric='recall_at_k',
+            k=k,
+            max_rel=1,
+        ),
+    )
+```
+
+```text
+recall@1 0.02726063829787234
+recall@2 0.03873005319148936
+recall@3 0.04670877659574468
+recall@4 0.052194148936170214
+recall@5 0.0573470744680851
+```
+
+More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
