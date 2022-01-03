@@ -147,8 +147,7 @@ Serious as you are, visual inspection is surely not enough. Let's calculate the 
 ```python
 groundtruth = DocumentArray(
     Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
-    for d in left_da
-)
+    for d in left_da)
 ```
 
 Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
@@ -157,16 +156,13 @@ Now let's check recall rate from 1 to 5:
 
 ```python
 for k in range(1, 6):
-    print(
-        f'recall@{k}',
-        left_da.evaluate(
+    print(f'recall@{k}',
+          left_da.evaluate(
             groundtruth,
             hash_fn=lambda d: d.uri,
             metric='recall_at_k',
             k=k,
-            max_rel=1,
-        ),
-    )
+            max_rel=1))
 ```
 
 ```text
