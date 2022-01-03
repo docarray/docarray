@@ -53,7 +53,7 @@ class PushPullMixin:
         dict_data = {
             'file': (
                 'DocumentArray',
-                self.to_bytes(protocol='protobuf', compress='lz4'),
+                self.to_bytes(protocol='protobuf', compress='gzip'),
             ),
             'token': token,
         }

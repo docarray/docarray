@@ -9,7 +9,7 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a libaray for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
+DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. Its Pythonic interface allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
@@ -26,7 +26,7 @@ Requires Python 3.7+ and `numpy` only:
 ```
 pip install docarray
 ```
-[Additional features](https://tba) can be enabled by installing the full dependencies: `pip install docarray[full]`.
+[Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install docarray[full]`.
 
 ## [Documentation](https://docarray.jina.ai)
 
@@ -72,7 +72,7 @@ left_da.plot_image_sprites()
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
 </p>
 
 ### Apply preprocessing
@@ -111,7 +111,7 @@ left_da.plot_embeddings()
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
 </p>
 
 Fun is fun, but recall our goal is to match left images against right images and so far we have only handled the left. Let's repeat the same procedure for the right:
@@ -156,8 +156,8 @@ Better see it.
 ```
 
 <p align="center">
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-<a href="https://docs.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
 What we did here is reverting the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
