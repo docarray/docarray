@@ -7,6 +7,10 @@
 
 ## Install
 
+```{tip}
+Jina 3.x users do not need to install `docarray` separately, it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
+```
+
 Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 
 ````{tab} Basic install
@@ -41,9 +45,17 @@ The following dependencies will be installed to enable additional features:
 Alternatively, you can first do basic installation and then install missing dependencies on-demand. 
 ````
 
-```python
-from docarray import Document, DocumentArray
+```pycon
+>>> import docarray
+>>> docarray.__version__
+'0.1.0'
 ```
+
+```{attention}
+If the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 
+not installing `docarray` correctly. You are probably still using an old `docarray` shipped with Jina 2.x. 
+```
+
 
 
 

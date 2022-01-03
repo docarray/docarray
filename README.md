@@ -196,6 +196,31 @@ recall@5 0.0573470744680851
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
 
+
+
+### Save results
+
+You can save a DocumentArray to binary, JSON, dict, dataframe, CSV or Protobuf message. In its simplest form,
+
+```python
+left_da.save('left_da.bin')
+```
+
+To reuse it, do `left_da = DocumentArray.load('left_da.bin')`.
+
+If you want to transfer a DoucmentArray from one machine to another or share it with your colleagues, you can do:
+
+```python
+left_da.push(token='my_shared_da')
+```
+
+```python
+left_da = DocumentArray.pull(token='my_shared_da')
+```
+
+Anyone knows the token `my_shared_da` can pull and work on it.
+
+
 Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
 
 <!-- start support-pitch -->
