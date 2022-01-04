@@ -65,7 +65,7 @@ not installing `docarray` correctly. You are probably still using an old `docarr
 ```
 
 ```{toctree}
-:caption: Fundamentals
+:caption: User Guides
 :hidden:
 
 fundamentals/document/index.md
@@ -74,7 +74,7 @@ fundamentals/documentarray/index.md
 
 
 ```{toctree}
-:caption: API Reference
+:caption: Developer References
 :hidden:
 :maxdepth: 1
 

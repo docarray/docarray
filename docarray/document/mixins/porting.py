@@ -1,5 +1,6 @@
+import dataclasses
 import pickle
-from typing import Optional, TYPE_CHECKING, Type, Dict
+from typing import Optional, TYPE_CHECKING, Type, Dict, Any
 
 from ...helper import compress_bytes, decompress_bytes
 
@@ -26,13 +27,16 @@ class PortingMixin:
         json_format.Parse(obj, pb_msg)
         return cls.from_protobuf(pb_msg)
 
-    def to_dict(self):
-        from google.protobuf.json_format import MessageToDict
+    def to_dict(self, strict: bool = True) -> Dict[str, Any]:
+        if strict:
+            from google.protobuf.json_format import MessageToDict
 
-        return MessageToDict(
-            self.to_protobuf(),
-            preserving_proto_field_name=True,
-        )
+            return MessageToDict(
+                self.to_protobuf(),
+                preserving_proto_field_name=True,
+            )
+        else:
+            return dataclasses.asdict(self._data)
 
     def to_bytes(
         self, protocol: str = 'pickle', compress: Optional[str] = None
@@ -54,6 +58,13 @@ class PortingMixin:
         protocol: str = 'pickle',
         compress: Optional[str] = None,
     ) -> 'T':
+        """Build Document object from binary bytes
+
+        :param data: binary bytes
+        :param protocol: protocol to use
+        :param compress: compress method to use
+        :return: a Document object
+        """
         bstr = decompress_bytes(data, algorithm=compress)
         if protocol == 'pickle':
             d = pickle.loads(bstr)

@@ -1,104 +1,200 @@
 # Construct
 
-````{tab} Empty document
+Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced {ref}`in the next chapter<serialize>`.
+
+## Construct an empty Document
 
 ```python
-from jina import Document
+from docarray import Document
 
 d = Document()
 ```
 
-````
+```text
+<Document ('id',) at 5dd542406d3f11eca3241e008a366d49>
+```
 
-````{tab} From attributes 
+Every Document will have a unique random `id` that helps you identify this Document. It can be used to {ref}`access this Document inside a DocumentArray<access-elements>`. You can override this `id` or assign your own `id` during construction, as demonstrated below.
+
+## Construct with attributes
+
+This is the most common usage of the constructor: initializing a Document object with given attributes.
 
 ```python
-from jina import Document
+from docarray import Document
 import numpy
 
+d0 = Document(id='my_id')
 d1 = Document(text='hello')
 d2 = Document(buffer=b'\f1')
 d3 = Document(blob=numpy.array([1, 2, 3]))
 d4 = Document(uri='https://jina.ai',
-             mime_type='text/plain',
-             granularity=1,
-             adjacency=3,
-             tags={'foo': 'bar'})
+              mime_type='text/plain',
+              granularity=1,
+              adjacency=3,
+              tags={'foo': 'bar'})
 ```
 
-
-```console
-<jina.types.document.Document ('id', 'mime_type', 'text') at 4483297360>
-<jina.types.document.Document ('id', 'buffer') at 5710817424>
-<jina.types.document.Document ('id', 'blob') at 4483299536>
-<jina.types.document.Document id=e01a53bc-aedb-11eb-88e6-1e008a366d48 uri=https://jina.ai mimeType=text/plain tags={'foo': 'bar'} granularity=1 adjacency=3 at 6317309200>
+```text
+<Document ('id',) at my_id>
+<Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49>
+<Document ('id', 'buffer') at a14f00986d3e11ec8bde1e008a366d49> 
+<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49> 
+<Document ('id', 'granularity', 'adjacency', 'mime_type', 'uri', 'tags') at a14f023c6d3e11ec8bde1e008a366d49>
 ```
 
+````{tip}
+When you `print()` a Document, you get a string representation such as `<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49>`. It shows the non-empty attributes of that Document as well as its `id`, which helps you understand the content of that Document.
+
+```text
+<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49>
+          ^^^^^^^^^^^^^^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                 |                          |
+                 |                          |
+          non-empty fields                  |
+                                      Document.id
+```
 ````
 
-
-````{tab} From another Document
+One can also wrap the keyword arguments into `dict`. The following ways of initialization have the same effect:
 
 ```python
-from jina import Document
+d1 = Document(uri='https://jina.ai',
+              mime_type='text/plain',
+              granularity=1,
+              adjacency=3)
 
-d = Document(content='hello, world!')
-d1 = d
+d2 = Document(dict(uri='https://jina.ai',
+                   mime_type='text/plain',
+                   granularity=1,
+                   adjacency=3))
 
-assert id(d) == id(d1)  # True
+d3 = Document({'uri': 'https://jina.ai',
+               'mime_type': 'text/plain',
+               'granularity': 1,
+               'adjacency': 3})
 ```
 
-To make a deep copy, use `copy=True`:
+### Nested Document
+
+```{seealso}
+To learn more about nested Document, please read {ref}`recursive-nested-document`.
+```
+
+Document can be nested inside `.chunks` and `.matches`. The nested structure can be specified directly during construction:
 
 ```python
+from docarray import Document
+
+d = Document(
+    id='d0',
+    chunks=[Document(id='d1', chunks=Document(id='d2'))],
+    matches=[Document(id='d3')],
+)
+
+print(d)
+```
+
+```text
+<Document ('id', 'chunks', 'matches') at d0>
+```
+
+For a nested Document, print its root does not give you much information. You can use {meth}`~docarray.document.mixins.plot.PlotMixin.summary`. For example, `d.summary()` gives you a more intuitive overview of the structure.
+
+```text
+ <Document ('id', 'chunks', 'matches') at d0>
+    └─ matches
+          └─ <Document ('id',) at d3>
+    └─ chunks
+          └─ <Document ('id', 'chunks') at d1>
+              └─ chunks
+                    └─ <Document ('id', 'parent_id', 'granularity') at d2>
+```
+
+When using in Jupyter notebook/Google Colab, Document is automatically prettified.
+
+```{figure} images/doc-in-jupyter.png
+```
+
+
+### Unknown attributes handling
+
+If you give an unknown attribute (i.e. not one of the built-in Document attributes), they will be automatically "caught" into `.tags` attributes. For example,
+
+```python
+from docarray import Document
+
+d = Document(hello='world')
+
+print(d, d.tags)
+```
+
+```text
+<Document ('id', 'tags') at f957e84a6d4311ecbea21e008a366d49>
+{'hello': 'world'}
+```
+
+You can change this "`catch`" behavior to `drop` (silently drop unknown attributes) or `raise` (raise a `AttributeError`) by specifying `unknown_fields_handler`. 
+
+### Resolve unknown attributes with rules
+
+One can resolve external fields into built-in attributes by specifying a mapping in `field_resolver`. For example, to resolve the field `hello` as the `id` attribute:
+
+```python
+from docarray import Document
+
+d = Document(hello='world', field_resolver={'hello': 'id'})
+
+print(d)
+```
+
+```text
+<Document ('id',) at world>
+```
+
+One can see `id` of the Document object is set to `world`.
+
+
+## Copy from another Document
+
+To make a deep copy of a Document, use `copy=True`:
+
+```python
+from docarray import Document
+
+d = Document(text='hello')
 d1 = Document(d, copy=True)
 
-assert id(d) == id(d1)  # False
-```
-
-````
-
-`````{tab} From dict or JSON string
-
-```python
-from jina import Document
-import json
-
-d = {'id': 'hello123', 'content': 'world'}
-d1 = Document(d)
-
-d = json.dumps({'id': 'hello123', 'content': 'world'})
-d2 = Document(d)
-```
-
-````{admonition} Parsing unrecognized fields
-:class: tip
-
-Unrecognized fields in a `dict`/JSON string are automatically put into the Document's `.tags` field:
-
-```python
-from jina import Document
-
-d1 = Document({'id': 'hello123', 'foo': 'bar'})
+print(d==d1, id(d)==id(d1))
 ```
 
 ```text
-<jina.types.document.Document id=hello123 tags={'foo': 'bar'} at 6320791056>
+True False
 ```
 
-You can use `field_resolver` to map external field names to `Document` attributes:
+That indicates `d` and `d1` have identical content, but they are different objects in memory.
+
+
+If you want to keep the memory address of a Document object while only copying the content from another Document, you can use {meth}`~docarray.base.BaseDCType.copy_from`. 
 
 ```python
-from jina import Document
+from docarray import Document
 
-d1 = Document({'id': 'hello123', 'foo': 'bar'}, field_resolver={'foo': 'content'})
+d1 = Document(text='hello')
+d2 = Document(text='world')
+
+print(id(d1))
+d1.copy_from(d2)
+print(d1.text)
+print(id(d1))
 ```
 
 ```text
-<jina.types.document.Document id=hello123 mimeType=text/plain text=bar at 6246985488>
+4479829968
+world
+4479829968
 ```
 
-````
+## What's next?
 
-
-`````
+One can also construct Document from bytes, JSON, Protobuf message. These methods are introduced {ref}`in the next chapter<serialize>`.

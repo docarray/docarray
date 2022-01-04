@@ -242,7 +242,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         return len(self) > 0
 
     def __repr__(self):
-        return f'<{typename(self)} (length={len(self)}) at {id(self)}>'
+        return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
     def __add__(self, other: 'Document'):
         v = type(self)()

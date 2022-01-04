@@ -77,4 +77,4 @@ def test_from_to_protobuf(target_da):
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
 def test_from_to_safe_list(target_da):
-    DocumentArray.from_list_safe(target_da.to_list_safe())
+    DocumentArray.from_list(target_da.to_list())

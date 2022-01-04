@@ -55,12 +55,12 @@ class JsonIOMixin:
         return cls.load_json(file)
 
     @classmethod
-    def from_list_safe(cls: Type['T'], values: List) -> 'T':
+    def from_list(cls: Type['T'], values: List) -> 'T':
         from .... import Document
 
         return cls(Document.from_dict(v) for v in values)
 
-    def to_list_safe(self) -> List:
+    def to_list(self, strict: bool = True) -> List:
         """Convert the object into a Python list.
 
         .. note::
@@ -68,11 +68,11 @@ class JsonIOMixin:
 
         :return: a Python list
         """
-        return [d.to_dict() for d in self]
+        return [d.to_dict(strict=strict) for d in self]
 
     def to_json(self) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.load_json`.
 
         :return: a Python list
         """
-        return json.dumps(self.to_list_safe())
+        return json.dumps(self.to_list())

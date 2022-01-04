@@ -1,48 +1,162 @@
+(serialize)=
 # Serialization
 
-You can serialize a `Document` into JSON string via {meth}`~jina.types.mixin.ProtoTypeMixin.to_json` or Python dict via {meth}`~jina.types.mixin.ProtoTypeMixin.to_dict` or binary string via {meth}`bytes`:
-````{tab} JSON
-```python
-from jina import Document
+DocArray is designed to be "ready-to-wire": it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. 
 
-Document(content='hello, world', embedding=[1, 2, 3]).to_json()
+```{tip}
+One should use DocumentArray for serializing multiple Documents, instead of looping over Documents one by one. The former is much faster and yield more compact serialization. 
 ```
 
-```json
+
+## From/to JSON
+
+```{important}
+This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+```
+
+You can serialize a Document as a JSON string via {meth}`~docarray.document.mixins.porting.PortingMixin.to_json`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_json`.
+
+```python
+from docarray import Document
+import numpy as np
+
+d_as_json = Document(text='hello, world', embedding=np.array([1, 2, 3])).to_json()
+
+d = Document.from_json(d_as_json)
+
+print(d_as_json, d)
+```
+
+```text
 {
-  "embedding": [
-    1,
-    2,
-    3
-  ],
-  "id": "9e36927e576b11ec81971e008a366d48",
+  "embedding": {
+    "cls_name": "numpy",
+    "dense": {
+      "buffer": "AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA",
+      "dtype": "<i8",
+      "shape": [
+        3
+      ]
+    }
+  },
+  "id": "27d4fa4c6d5711ec8c831e008a366d49",
   "mime_type": "text/plain",
   "text": "hello, world"
-}
+} 
 
+<Document ('id', 'mime_type', 'text', 'embedding') at 27d4fa4c6d5711ec8c831e008a366d49>
 ```
-````
 
-````{tab} Binary
+
+## From/to dict
+
+```{important}
+This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+```
+
+You can serialize a Document as a Python `dict` via {meth}`~docarray.document.mixins.porting.PortingMixin.to_dict`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_dict`.
+
 ```python
-from jina import Document
+from docarray import Document
+import numpy as np
 
-bytes(Document(content='hello, world', embedding=[1, 2, 3]))
+d_as_dict = Document(text='hello, world', embedding=np.array([1, 2, 3])).to_dict()
+
+d = Document.from_dict(d_as_dict)
+
+print(d_as_dict, d)
 ```
 
-```
-b'\n aad94436576b11ec81551e008a366d48R\ntext/plainj\x0chello, world\x9a\x01+\n"\n\x18\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x12\x01\x03\x1a\x03<i8\x1a\x05numpy'
-```
-````
+```text
+{'id': 'b29d39066d5611ec87661e008a366d49', 'text': 'hello, world', 'mime_type': 'text/plain', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}, 'cls_name': 'numpy'}} 
 
-````{tab} Dict
+<Document ('id', 'mime_type', 'text', 'embedding') at b29d39066d5611ec87661e008a366d49>
+```
+
+```{note}
+Note that the result dict is very "stricted" in the sense that all fields and values boil down to very basic data type such as `int`, `float`, `string`. This behavior is designed due to the "serialization to `dict`" is often an intermediate step of serializing into JSON/YAML. Hence all values in `dict` must be schema-friendly. After all, a Python `dict` object means nothing if you are not working in Python. 
+
+You can use `to_dict(strict=False)` to override this behavior. This will preserve the original Python data type of every value, which may not be JSON-friendly. But hey, you want it.   
+```
+
+## From/to bytes
+
+```{important}
+Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install docarray[full]` to install it.
+```
+
+
+Bytes or binary or buffer, how ever you want to call it, it probably the most common & compact wire format. DocArray provides {meth}`~docarray.document.mixins.porting.PortingMixin.to_bytes` and {meth}`~docarray.document.mixins.porting.PortingMixin.from_bytes` to serialize Document object into bytes.
+
 ```python
-from jina import Document
+from docarray import Document
+import numpy as np
 
-Document(content='hello, world', embedding=[1, 2, 3]).to_dict()
+d = Document(text='hello, world', embedding=np.array([1, 2, 3]))
+d_bytes = d.to_bytes()
+
+d_r = Document.from_bytes(d_bytes)
+
+print(d_bytes, d_r)
 ```
 
+```text
+b'\x80\x03cdocarray.document\nDocument\nq\x00)\x81q\x01}q\x02X\x05\x00\x00\x00_dataq\x03cdocarray.document.data\nDocumentData\nq\x04)\x81q\x05}q\x06(X\x0e\x00\x00\x00_reference_docq\x07h\x01X\x02\x00\x00\x00idq\x08X \x00\x00\x005d29a9f26d5911ec88d51e008a366d49q\tX\t\x00\x00\x00parent_...
+
+<Document ('id', 'mime_type', 'text', 'embedding') at 3644c0fa6d5a11ecbb081e008a366d49>
 ```
-{'id': 'c742f7f2576b11ec89aa1e008a366d48', 'mime_type': 'text/plain', 'text': 'hello, world', 'embedding': [1, 2, 3]}
+
+Default serialization protocol is `pickle`, you can change it to `protobuf` by specifying `.to_bytes(protocol='protobuf')`. You can also add compression to it and make the result bytes smaller. For example, 
+
+```python
+d = Document(text='hello, world', embedding=np.array([1, 2, 3]))
+print(len(d.to_bytes(protocol='protobuf', compress='gzip')))
 ```
-````
+
+gives:
+
+```text
+110
+```
+
+whereas the default `.to_bytes()` gives `666` (spooky~).
+
+Note that when deserializing from a non-default binary serialization, you need to specify the correct `protocol` and `compress` arguments used at the serialization time:
+
+```python
+d = Document.from_bytes(d_bytes, protocol='protobuf', compress='gzip')
+```
+
+## From/to Protobuf
+
+```{important}
+This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+```
+
+You can also serialize a Document object into a Protobuf Message object. This is less frequently used as it is often an intermediate step when serializing into bytes, as in `to_dict()`. However, if you work with Python Protobuf API, having a Python Protobuf Message object at hand can be useful.
+
+
+```python
+from docarray import Document
+
+d_proto = Document(uri='apple.jpg').to_protobuf()
+print(type(d_proto), d_proto)
+d = Document.from_protobuf(d_proto)
+```
+
+```text
+<class 'docarray_pb2.DocumentProto'> 
+
+id: "d66463b46d6a11ecbf891e008a366d49"
+uri: "apple.jpg"
+mime_type: "image/jpeg"
+
+<Document ('id', 'mime_type', 'uri') at e4b215106d6a11ecb28b1e008a366d49>
+```
+
+One can refer to the [Protobuf specification of `Document`](../../proto/index.md) for details.  
+
+
+## What's next?
+
+Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes`, {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_json`, and {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_list` that allows one to serialize multiple Documents much faster and more compact.

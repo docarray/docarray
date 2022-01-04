@@ -217,3 +217,51 @@ def test_doc_content():
     np.testing.assert_equal(d.content, c)
     d.buffer = b'123'
     assert d.buffer == b'123'
+
+
+def test_dict_constructor():
+
+    d1 = Document(
+        uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3
+    )
+
+    d2 = Document(
+        dict(uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3)
+    )
+
+    d3 = Document(
+        {
+            'uri': 'https://jina.ai',
+            'mime_type': 'text/plain',
+            'granularity': 1,
+            'adjacency': 3,
+        }
+    )
+
+    assert d1 != d2
+    d1.id = None
+    d2.id = None
+    d3.id = None
+    assert d1 == d2 == d3
+
+
+def test_unknown_fields_behavior():
+    d = Document(hello='world')
+    assert d.tags == {'hello': 'world'}
+
+    d = Document(hello='world', unknown_fields_handler='drop')
+    assert d.tags == {}
+
+    with pytest.raises(AttributeError):
+        d = Document(hello='world', unknown_fields_handler='raise')
+
+
+def test_content_setter_as_proxy():
+    d = Document(content='hello')
+    assert d.content == 'hello'
+
+    assert 'content' not in d.non_empty_fields
+    assert 'text' in d.non_empty_fields
+    d.content = [1, 2, 3]
+    assert 'blob' in d.non_empty_fields
+    assert 'text' not in d.non_empty_fields

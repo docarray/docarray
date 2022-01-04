@@ -1,4 +1,4 @@
-# List-like Interface
+# Other List-like Features
 
 One can see `DocumentArray` as a Python list. Hence, many Python high-level iterator functions/tools can be used on `DocumentArray` as well.
 

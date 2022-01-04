@@ -1,3 +1,4 @@
+(access-elements)=
 # Access Elements
 
 Like a `List` *and* a `Dict`, elements in `DocumentArray` can be accessed via integer index, string `id` or `slice` indices:
