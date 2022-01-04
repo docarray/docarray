@@ -1,15 +1,17 @@
 (documentarray)=
 # DocumentArray
 
-```{toctree}
-:hidden:
+{class}`~docarray.array.document.DocumentArray` is a list-like container of {class}`~docarray.document.Document` objects. It is **the best way** when working with multiple Documents.
 
-documentarraymemmap-api
-```
+In a nutshell, you can simply consider it as a Python `list`, as it implements **all** list interfaces. That is, if you know how to use Python `list`, you already know how to use DocumentArray. 
 
-A {class}`~jina.types.arrays.document.DocumentArray` is a list of `Document` objects. You can construct, delete, insert, sort and traverse
-a `DocumentArray` like a Python `list`. It implements all Python List interface. 
+It is also powerful as Numpy's `ndarray`, where you can access its elements by {ref}`fancy slicing syntax<access-elements>`. 
 
+What makes it more exciting is those advanced features of DocumentArray. These features greatly facilitate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
+
+## What's next?
+
+Let's see how to construct a DocumentArray {ref}`in the next section<construct-array>`.
 
 ```{toctree}
 :hidden:
@@ -23,5 +25,6 @@ matching
 evaluation
 parallelization
 visualization
+sharing
 list-like
 ```

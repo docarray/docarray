@@ -1,3 +1,4 @@
+(construct-doc)=
 # Construct
 
 Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced {ref}`in the next chapter<serialize>`.

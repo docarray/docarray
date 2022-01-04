@@ -104,6 +104,7 @@ print(d)
 
 You can also check which content field is set by `.content_type`.
 
+(content-uri)=
 ## Load content from URI
 
 A quite common pattern is loading content from a URI instead of assigning them directly in the code.
