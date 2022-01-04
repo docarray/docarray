@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
     from ... import Document
     from ...score import NamedScore
+
     fields = {}
     for (field, value) in pb_msg.ListFields():
         f_name = field.name
@@ -27,7 +28,9 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
         elif f_name == 'scores' or f_name == 'evaluations':
             fields[f_name] = {}
             for k, v in value.items():
-                fields[f_name][k] = NamedScore({ff.name: vv for (ff, vv) in v.ListFields()})
+                fields[f_name][k] = NamedScore(
+                    {ff.name: vv for (ff, vv) in v.ListFields()}
+                )
         else:
             fields[f_name] = value
     return Document(**fields)
@@ -53,13 +56,17 @@ def flush_proto(doc: 'Document') -> 'DocumentProto':
                         setattr(getattr(pb_msg, key)[kk], ff, getattr(vv, ff))
             elif key == 'location':
                 pb_msg.location.extend(value)
+            elif key == 'content':
+                pass  # intentionally ignore `content` field as it is just a proxy
             else:
                 # other simple fields
                 setattr(pb_msg, key, value)
         except RecursionError as ex:
             if len(ex.args) >= 1:
-                ex.args = (f'Field `{key}` contains cyclic reference in memory. '
-                           f'Could it be your Document is referring to itself?',)
+                ex.args = (
+                    f'Field `{key}` contains cyclic reference in memory. '
+                    f'Could it be your Document is referring to itself?',
+                )
             raise
         except Exception as ex:
             if len(ex.args) >= 1:

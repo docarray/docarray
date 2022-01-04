@@ -1,8 +1,6 @@
 # Embedding
 
-Embedding is a multi-dimensional representation of a `Document` (often a `[1, D]` vector). It serves as a very important piece in the neural search. 
-
-Document has an attribute {attr}`~docarray.Document.embedding` to contain the embedding information.
+Embedding is a multi-dimensional representation of a Document (often a `[1, D]` vector). It serves as a very important piece in machine learning. The attribute {attr}`~docarray.Document.embedding` is designed to contain the embedding information of a Document.
 
 Like `.blob`, you can assign it with a Python (nested) List/Tuple, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
 
@@ -11,7 +9,8 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 import tensorflow as tf
-from jina import Document
+
+from docarray import Document
 
 d0 = Document(embedding=[1, 2, 3])
 d1 = Document(embedding=np.array([1, 2, 3]))
@@ -21,15 +20,23 @@ d4 = Document(embedding=torch.tensor([1, 2, 3]))
 d5 = Document(embedding=tf.sparse.from_dense(np.array([[1, 2, 3], [4, 5, 6]])))
 ```
 
-## Fill embedding from DNN model
+## Fill embedding via a DNN model
+
+Usually you don't want to assign embedding manually, but instead doing something like:
+
+```text
+d.blob   \
+d.text   ---> some DNN model ---> d.embedding
+d.buffer /
+```
 
 ```{admonition} On multiple Documents
 :class: tip
 
-This is a syntax sugar on single Document, which leverages {meth}`~jina.types.arrays.mixins.embed.EmbedMixin.embed` underneath. To embed multiple Documents, do not use this feature in a for-loop. Instead, read more details in {ref}`embed-via-model`.    
+To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call `.embed()`. You can find out more in {ref}`embed-via-model`.
 ```
 
-Once a `Document` has `.blob` set, you can use a deep neural network to {meth}`~jina.types.arrays.mixins.embed.EmbedMixin.embed` it, which means filling `Document.embedding`. For example, our `Document` looks like the following:
+Once a `Document` has content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling `Document.embedding`. For example, our `Document` looks like the following:
 
 ```python
 q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
@@ -38,7 +45,7 @@ q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
      .set_image_blob_channel_axis(-1, 0))
 ```
 
-Let's embed it into vector via ResNet:
+Let's embed it into vector via ResNet50:
 
 ```python
 import torchvision
@@ -51,13 +58,13 @@ q.embed(model)
 ```{admonition} On multiple Documents
 :class: tip
 
-This is a syntax sugar on single Document, which leverages  {meth}`~jina.types.arrays.mixins.match.MatchMixin.match` underneath. To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in {ref}`match-documentarray`.  
+To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in {ref}`match-documentarray`.  
 ```
 
-Once a Document has `.embedding` filled, it can be "matched". In this example, we build ten Documents and put them into a {ref}`DocumentArray<da-intro>`, and then use another Document to search against them.
+Documents have `.embedding` set can be "matched" against each other. In this example, we build ten Documents and put them into a {ref}`DocumentArray<da-intro>`, and then use another Document to search against them.
 
 ```python
-from jina import DocumentArray, Document
+from docarray import DocumentArray, Document
 import numpy as np
 
 da = DocumentArray.empty(10)
@@ -66,11 +73,22 @@ da.embeddings = np.random.random([10, 256])
 q = Document(embedding=np.random.random([256]))
 q.match(da)
 
-print(q.matches[0])
+q.summary()
 ```
 
-```console
-<jina.types.document.Document ('id', 'embedding', 'adjacency', 'scores') at 8256118608>
+```text
+ <Document ('id', 'embedding', 'matches') at 63a39fa86d6911eca6fa1e008a366d49>
+    └─ matches
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a39aee6d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a399d66d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a39b346d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a3999a6d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a39a626d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a397ba6d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a39a1c6d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a39ab26d6911eca6fa1e008a366d49>
+          ├─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a399046d6911eca6fa1e008a366d49>
+          └─ <Document ('id', 'adjacency', 'embedding', 'scores') at 63a399546d6911eca6fa1e008a366d49>
 ```
 
 

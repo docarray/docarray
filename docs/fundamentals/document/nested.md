@@ -1,17 +1,16 @@
 (recursive-nested-document)=
-## Nested Structure
+# Nested Structure
 
-`Document` can be nested both horizontally and vertically. The following graphic illustrates the recursive `Document` structure. Each `Document` can have multiple "chunks"
-and "matches", which are `Document` as well.
+Document can be nested both horizontally and vertically via `.matches` and `.chunks`. The picture below illustrates the recursive Document structure. 
 
 <img src="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg">
 
-|  Attribute   |   Description  |
-| --- | --- |
-| `doc.chunks` | The list of sub-Documents of this Document. They have `granularity + 1` but same `adjacency` |
+|  Attribute   | Description                                                                                     |
+| --- |-------------------------------------------------------------------------------------------------|
+| `doc.chunks` | The list of sub-Documents of this Document. They have `granularity + 1` but same `adjacency`    |
 | `doc.matches` | The list of matched Documents of this Document. They have `adjacency + 1` but same `granularity` |
-| `doc.granularity` | The recursion "depth" of the recursive chunks structure |
-| `doc.adjacency` | The recursion "width" of the recursive match structure |
+| `doc.granularity` | The "depth" of the nested chunks structure                                             |
+| `doc.adjacency` | The "width" of the nested match structure                                             |
 
 You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a `Document`:
 
@@ -37,45 +36,28 @@ You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a 
   d.matches.append(Document())
   ```
 
-````{admonition} Note
-:class: note
-Both `doc.chunks` and `doc.matches` return `ChunkArray` and `MatchArray`, which are sub-classes
-of {ref}`DocumentArray<documentarray>`. We will introduce `DocumentArray` later.
-````
+Both `doc.chunks` and `doc.matches` return {ref}`DocumentArray<documentarray>`.
 
-`````{admonition} Caveat: order matters
-:class: alert
+To get a clear picture of a nested Document, use {meth}`~docarray.document.mixins.plot.PlotMixin.summary`, e.g.:
 
-
-When adding sub-Documents to `Document.chunks`, avoid creating them in one line, otherwise the recursive Document structure will not be correct. This is because `chunks` use `ref_doc` to control their `granularity`. At `chunk` creation time the `chunk` doesn't know anything about its parent, and will get a wrong `granularity` value.
-
-````{tab} ✅ Do
 ```python
-from jina import Document
-
-root_document = Document(text='i am root')
-# add one chunk to root
-root_document.chunks.append(Document(text='i am chunk 1'))
-root_document.chunks.extend([
-   Document(text='i am chunk 2'),
-   Document(text='i am chunk 3'),
-])  # add multiple chunks to root
+d.summary()
 ```
-````
 
-````{tab} 😔 Don't
-```python
-from jina import Document
-
-root_document = Document(
-   text='i am root',
-   chunks=[
-      Document(text='i am chunk 2'),
-      Document(text='i am chunk 3'),
-   ]
-)
+```text
+ <Document ('id', 'chunks', 'matches') at 7f907d786d6c11ec840a1e008a366d49>
+    └─ matches
+          ├─ <Document ('id', 'adjacency') at 7f907c606d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'adjacency') at 7f907cba6d6c11ec840a1e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity') at 7f907ab26d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity') at 7f907c106d6c11ec840a1e008a366d49>
 ```
-````
+
+## What's next?
+
+When you have multiple Documents with nested structures, traversing over certain chunks and matches can be crucial. Fortunately, this is extremely simple thanks to DocumentArray as shown in {ref}`access-elements`.
+
+Note that some methods rely on these two attributes, some methods require these two attributes to be filled in advance. For example, {meth}`~docarray.array.mixins.match.MatchMixin.match` will fill `.matches`, whereas {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate` requires `.matches` to be filled.
 
 
-`````

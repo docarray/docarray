@@ -1,12 +1,16 @@
 # Visualization
 
-To better see the Document's nested structure, you can use {meth}`~jina.types.document.mixins.plot.PlotMixin.plot` function. If you are using JupyterLab/Notebook,
-all `Document` objects will be auto-rendered:
+If you have an image Document (with possible image data in `.uri`/`.blob`), you can directly visualize it via {meth}`~docarray.document.mixins.plot.PlotMixin.plot`.
 
+```{figure} images/doc-in-jupyter.png
+```
+
+
+To better see the Document's nested structure, you can use {meth}`~docarray.document.mixins.plot.PlotMixin.summary`.
 
 ```{code-block} python
 ---
-emphasize-lines: 13
+emphasize-lines: 13,14
 ---
 import numpy as np
 from docarray import Document
@@ -23,7 +27,17 @@ d0.matches.append(d3)
 d0.summary()
 ```
 
+```text
+ <Document ('id', 'embedding', 'chunks', 'matches') at 🐲>
+    └─ matches
+          └─ <Document ('id', 'adjacency', 'embedding') at 🐯>
+    └─ chunks
+          └─ <Document ('id', 'parent_id', 'granularity', 'embedding', 'chunks') at 🐦>
+              └─ chunks
+                    └─ <Document ('id', 'parent_id', 'granularity', 'embedding') at 🐢>
+```
 
-```{figure} ../../../.github/images/four-symbol-docs.svg
-:align: center
+When using Notebook/Colab, this is auto-rendered.
+
+```{figure} images/doc-auto-summary.png
 ```

@@ -84,6 +84,7 @@ class DocumentData:
                     self.text = value
                 else:
                     self.blob = value
+                value = None
             elif key == 'chunks':
                 from ..array.chunk import ChunkArray
 

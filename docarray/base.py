@@ -16,6 +16,7 @@ class BaseDCType:
         _obj: Optional['T'] = None,
         copy: bool = False,
         field_resolver: Optional[Dict[str, str]] = None,
+        unknown_fields_handler: str = 'catch',
         **kwargs,
     ):
         self._data = None
@@ -32,23 +33,26 @@ class BaseDCType:
                 kwargs = {field_resolver.get(k, k): v for k, v in kwargs.items()}
 
             _unknown_kwargs = None
-            if hasattr(self, '_unresolved_fields_dest'):
-                _unresolved = set(kwargs.keys()).difference(
-                    {f.name for f in fields(self._data_class)}
-                )
-                if _unresolved:
-                    _unknown_kwargs = {k: kwargs[k] for k in _unresolved}
-                    for k in _unresolved:
-                        kwargs.pop(k)
+            _unresolved = set(kwargs.keys()).difference(
+                {f.name for f in fields(self._data_class)}
+            )
+
+            if _unresolved:
+                if unknown_fields_handler == 'raise':
+                    raise AttributeError(f'unknown attributes: {_unresolved}')
+
+                _unknown_kwargs = {k: kwargs[k] for k in _unresolved}
+                for k in _unresolved:
+                    kwargs.pop(k)
 
             self._data = self._data_class(self)
             for k, v in kwargs.items():
                 setattr(self._data, k, v)
 
-            if _unknown_kwargs:
+            if _unknown_kwargs and unknown_fields_handler == 'catch':
                 getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
 
-        if _obj is None and not kwargs:
+        if _obj is None and not kwargs and self._data is None:
             self._data = self._data_class(self)
 
         if self._data is None:
@@ -100,8 +104,8 @@ class BaseDCType:
 
     def __repr__(self):
         content = str(self.non_empty_fields)
-        content += f' at {id(self)}'
-        return f'<{typename(self)} {content.strip()}>'
+        content += f' at {getattr(self, "id", id(self))}'
+        return f'<{self.__class__.__name__} {content.strip()}>'
 
     def __bytes__(self):
         return self.to_bytes()
