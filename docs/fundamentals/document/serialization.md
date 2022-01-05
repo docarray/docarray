@@ -4,7 +4,7 @@
 DocArray is designed to be "ready-to-wire": it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. 
 
 ```{tip}
-One should use DocumentArray for serializing multiple Documents, instead of looping over Documents one by one. The former is much faster and yield more compact serialization. 
+One should use {ref}`DocumentArray for serializing multiple Documents<docarray-serialization>`, instead of looping over Documents one by one. The former is much faster and yield more compact serialization. 
 ```
 
 
@@ -47,38 +47,7 @@ print(d_as_json, d)
 <Document ('id', 'mime_type', 'text', 'embedding') at 27d4fa4c6d5711ec8c831e008a366d49>
 ```
 
-
-## From/to dict
-
-```{important}
-This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
-```
-
-You can serialize a Document as a Python `dict` via {meth}`~docarray.document.mixins.porting.PortingMixin.to_dict`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_dict`.
-
-```python
-from docarray import Document
-import numpy as np
-
-d_as_dict = Document(text='hello, world', embedding=np.array([1, 2, 3])).to_dict()
-
-d = Document.from_dict(d_as_dict)
-
-print(d_as_dict, d)
-```
-
-```text
-{'id': 'b29d39066d5611ec87661e008a366d49', 'text': 'hello, world', 'mime_type': 'text/plain', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}, 'cls_name': 'numpy'}} 
-
-<Document ('id', 'mime_type', 'text', 'embedding') at b29d39066d5611ec87661e008a366d49>
-```
-
-```{note}
-Note that the result dict is very "stricted" in the sense that all fields and values boil down to very basic data type such as `int`, `float`, `string`. This behavior is designed due to the "serialization to `dict`" is often an intermediate step of serializing into JSON/YAML. Hence all values in `dict` must be schema-friendly. After all, a Python `dict` object means nothing if you are not working in Python. 
-
-You can use `to_dict(strict=False)` to override this behavior. This will preserve the original Python data type of every value, which may not be JSON-friendly. But hey, you want it.   
-```
-
+(doc-in-bytes)=
 ## From/to bytes
 
 ```{important}
@@ -125,6 +94,43 @@ Note that when deserializing from a non-default binary serialization, you need t
 
 ```python
 d = Document.from_bytes(d_bytes, protocol='protobuf', compress='gzip')
+```
+
+```{tip}
+If you go with default `protcol` and `compress` settings, you can simply use `bytes(d)`, which is more Pythonic.
+```
+
+
+## From/to dict
+
+```{important}
+This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+```
+
+You can serialize a Document as a Python `dict` via {meth}`~docarray.document.mixins.porting.PortingMixin.to_dict`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_dict`.
+
+```python
+from docarray import Document
+import numpy as np
+
+d_as_dict = Document(text='hello, world', embedding=np.array([1, 2, 3])).to_dict()
+
+d = Document.from_dict(d_as_dict)
+
+print(d_as_dict, d)
+```
+
+```text
+{'id': 'b29d39066d5611ec87661e008a366d49', 'text': 'hello, world', 'mime_type': 'text/plain', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}, 'cls_name': 'numpy'}} 
+
+<Document ('id', 'mime_type', 'text', 'embedding') at b29d39066d5611ec87661e008a366d49>
+```
+
+(strict-arg-explain)=
+```{note}
+Note that the result dict is very "stricted" in the sense that all fields and values boil down to very basic data type such as `int`, `float`, `string`. This behavior is designed due to the "serialization to `dict`" is often an intermediate step of serializing into JSON/YAML. Hence all values in `dict` must be schema-friendly. After all, a Python `dict` object means nothing if you are not working in Python. 
+
+You can use `to_dict(strict=False)` to override this behavior. This will preserve the original Python data type of every value, which may not be JSON-friendly. But hey, you want it.   
 ```
 
 ## From/to Protobuf

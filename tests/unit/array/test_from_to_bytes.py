@@ -28,7 +28,7 @@ def get_ndarrays_for_ravel():
 @pytest.mark.parametrize('ndarray_val, is_sparse', get_ndarrays_for_ravel())
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
 @pytest.mark.parametrize(
-    'protocol', ['protobuf', 'protobuf-once', 'pickle', 'pickle-once']
+    'protocol', ['protobuf', 'protobuf-array', 'pickle', 'pickle-array']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
@@ -54,7 +54,7 @@ def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
 @pytest.mark.parametrize(
-    'protocol', ['protobuf', 'protobuf-once', 'pickle', 'pickle-once']
+    'protocol', ['protobuf', 'protobuf-array', 'pickle', 'pickle-array']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_save_bytes(target_da, protocol, compress, tmpfile):
