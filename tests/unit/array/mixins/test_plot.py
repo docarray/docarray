@@ -55,3 +55,18 @@ def test_plot_embeddings_same_path(tmpdir):
     with open(os.path.join(p1, 'config.json')) as fp:
         config = json.load(fp)
         assert len(config['embeddings']) == 2
+
+
+def test_summary_homo_hetero():
+    da = DocumentArray.empty(100)
+    da.get_attributes()
+    da.summary()
+
+    da[0].pop('id')
+    da.summary()
+
+
+def test_empty_get_attributes():
+    da = DocumentArray.empty(10)
+    da[0].pop('id')
+    print(da.get_attributes('id'))
