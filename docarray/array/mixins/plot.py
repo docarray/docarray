@@ -4,6 +4,7 @@ import os.path
 import tempfile
 import threading
 import warnings
+from collections import Counter
 from math import sqrt, ceil, floor
 from typing import Optional
 
@@ -12,6 +13,57 @@ import numpy as np
 
 class PlotMixin:
     """Helper functions for plotting the arrays. """
+
+    def summary(self):
+        from rich.table import Table
+        from rich.console import Console
+        from rich import box
+
+        all_attrs = self.get_attributes('non_empty_fields')
+        attr_counter = Counter(all_attrs)
+
+        table = Table(box=box.SIMPLE, title='Documents Summary')
+        table.show_header = False
+        table.add_row('Length', str(len(self)))
+        is_homo = len(attr_counter) == 1
+        table.add_row('Homogenous Documents', str(is_homo))
+
+        if is_homo:
+            table.add_row('Common Attributes', str(list(attr_counter.items())[0][0]))
+        else:
+            for _a, _n in attr_counter.most_common():
+                if _n <= 1:
+                    _doc_text = f'{_n} Document has'
+                else:
+                    _doc_text = f'{_n} Documents have'
+                if len(_a) == 1:
+                    _text = f'{_doc_text} one attribute'
+                elif len(_a) == 0:
+                    _text = f'{_doc_text} no attribute'
+                else:
+                    _text = f'{_doc_text} attributes'
+                table.add_row(_text, str(_a))
+
+        attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
+        attr_table.add_column('Attribute')
+        attr_table.add_column('Data type')
+        attr_table.add_column('#Unique values')
+        attr_table.add_column('Has empty value')
+
+        all_attrs_names = tuple(sorted(set(v for k in all_attrs for v in k)))
+        all_attrs_values = self.get_attributes(*all_attrs_names)
+        if len(all_attrs_names) == 1:
+            all_attrs_values = [all_attrs_values]
+        for _a, _a_name in zip(all_attrs_values, all_attrs_names):
+            _counter_a = Counter(_a)
+            _set_a = set(_a)
+            _set_type_a = set(type(_aa).__name__ for _aa in _a)
+            attr_table.add_row(
+                _a_name, str(tuple(_set_type_a)), str(len(_set_a)), str(None in _set_a)
+            )
+
+        console = Console()
+        console.print(table, attr_table)
 
     def plot_embeddings(
         self,
