@@ -18,7 +18,7 @@ class BinaryIOMixin:
     def load_binary(
         cls: Type['T'],
         file: Union[str, BinaryIO, bytes],
-        protocol: str = 'pickle-once',
+        protocol: str = 'pickle-array',
         compress: Optional[str] = None,
     ) -> 'T':
         """Load array elements from a LZ4-compressed binary file.
@@ -45,14 +45,14 @@ class BinaryIOMixin:
                 d = decompress_bytes(d, algorithm=compress)
                 compress = None
 
-            if protocol == 'protobuf-once':
+            if protocol == 'protobuf-array':
                 from ....proto.docarray_pb2 import DocumentArrayProto
 
                 dap = DocumentArrayProto()
                 dap.ParseFromString(d)
 
                 return cls.from_protobuf(dap)
-            elif protocol == 'pickle-once':
+            elif protocol == 'pickle-array':
                 return pickle.loads(d)
             else:
                 _len = len(random_uuid().bytes)
@@ -66,7 +66,7 @@ class BinaryIOMixin:
     def from_bytes(
         cls: Type['T'],
         data: bytes,
-        protocol: str = 'pickle-once',
+        protocol: str = 'pickle-array',
         compress: Optional[str] = None,
     ) -> 'T':
         return cls.load_binary(data, protocol=protocol, compress=compress)
@@ -74,7 +74,7 @@ class BinaryIOMixin:
     def save_binary(
         self,
         file: Union[str, BinaryIO],
-        protocol: str = 'pickle-once',
+        protocol: str = 'pickle-array',
         compress: Optional[str] = None,
     ) -> None:
         """Save array elements into a LZ4 compressed binary file.
@@ -98,7 +98,7 @@ class BinaryIOMixin:
 
     def to_bytes(
         self,
-        protocol: str = 'pickle-once',
+        protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _file_ctx: Optional[BinaryIO] = None,
     ) -> bytes:
@@ -121,9 +121,9 @@ class BinaryIOMixin:
                 fc = f
                 compress = None
             with fc:
-                if protocol == 'protobuf-once':
+                if protocol == 'protobuf-array':
                     f.write(self.to_protobuf().SerializePartialToString())
-                elif protocol == 'pickle-once':
+                elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 else:
                     for d in self:

@@ -6,11 +6,62 @@
 ```python
 from docarray import DocumentArray
 
+da = DocumentArray()
+```
+
+```text
+<DocumentArray (length=0) at 4453362704>
+```
+
+Now you can use list-like interfaces such as `.append()` and `.extend()` as you would add elements to a Python List.
+
+```python
+da.append(Document(text='hello world!'))
+da.extend([Document(text='hello'), Document(text='world!')])
+```
+
+```text
+<DocumentArray (length=3) at 4446140816>
+```
+
+Directly printing a DocumentArray does not show you too much useful information, you can use {meth}`~docarray.array.mixins.plot.PlotMixin.summary`.
+
+```{important}
+This feature requires `rich` dependency. You can do `pip install docarray[full]` to install it.
+```
+
+```python
+da.summary()
+```
+
+```text
+                  Documents Summary                   
+                                                      
+  Length                 3                            
+  Homogenous Documents   True                         
+  Common Attributes      ('id', 'mime_type', 'text')  
+                                                      
+                     Attributes Summary                     
+                                                            
+  Attribute   Data type   #Unique values   Has empty value  
+ ────────────────────────────────────────────────────────── 
+  id          ('str',)    3                False            
+  mime_type   ('str',)    1                False            
+  text        ('str',)    3                False    
+```
+
+## Construct with empty Documents
+
+Like `numpy.zeros()`, you can quickly build a DocumentArray with only empty Documents:
+
+```python
+from docarray import DocumentArray
+
 da = DocumentArray.empty(10)
 ```
 
 ```text
-<DocumentArray (length=10) at 4456123280>
+<DocumentArray (length=10) at 4453362704>
 ```
 
 ## Construct from list-like objects
@@ -40,6 +91,7 @@ da = DocumentArray((Document() for _ in range(10)))
 <DocumentArray (length=10) at 4866772176>
 ```
 ````
+
 
 As DocumentArray itself is also a "list-like object that yields `Document`", you can also construct DocumentArray from another DocumentArray:
 
