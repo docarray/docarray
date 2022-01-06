@@ -144,7 +144,7 @@ for d in da:
 <class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
-## Access content and embedding attributes
+## Content and embedding attributes
 
 DocumentArray provides `.texts`, `.buffers`, `.blobs`, `.contents` and `.embeddings` attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
 
@@ -163,3 +163,27 @@ print(da.texts)
 
 This is same as `da[:, 'text'] = ['hello', 'world']` and then `print(da[:, 'text'])` but more compact and probably more Pythonic.
 
+Same for `.blobs` and `.embeddings`:
+
+```python
+import numpy as np
+from docarray import DocumentArray
+
+# build sparse matrix
+embed = np.random.random([3, 10])
+
+da = DocumentArray.empty(3)
+
+da.embeddings = embed
+
+print(type(da.embeddings), da.embeddings.shape)
+for d in da:
+    print(type(d.embedding), d.embedding.shape)
+```
+
+```text
+<class 'numpy.ndarray'> (3, 10)
+<class 'numpy.ndarray'> (10,)
+<class 'numpy.ndarray'> (10,)
+<class 'numpy.ndarray'> (10,)
+```
