@@ -193,6 +193,12 @@ Last but not the least, you can use integer, or integer slice to restrict the se
 :width: 60%
 ```
 
+This can be useful when you want to get top matches of all matches from all Documents, e.g.:
+
+```python
+da['@m:5']
+```
+
 You can add space in the path-string for a better readability. Alternatively, you may leverage {meth}`~docarray.array.mixins.traverse.TraverseMixin.traverse_flat` to do this more explicitly.
 
 ## Index by flatten
