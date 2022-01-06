@@ -1,9 +1,6 @@
 <p align="center">
 <img src="https://github.com/jina-ai/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
-</p>
-
-
-<p align="center">
+<br>
 <b>The data structure for unstructured data</b>
 </p>
 
