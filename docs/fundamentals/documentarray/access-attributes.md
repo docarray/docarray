@@ -132,16 +132,16 @@ da = DocumentArray.empty(3)
 
 da[:, 'embedding'] = sp_embed
 
-print('da.embeddings.shape=', da[:, 'embedding'].shape)
+print(type(da[:, 'embedding']), da[:, 'embedding'].shape)
 for d in da:
-    print('d.embedding.shape=', d.embedding.shape)
+    print(type(d.embedding), d.embedding.shape)
 ```
 
 ```text
-da.embeddings.shape= (3, 10)
-d.embedding.shape= (1, 10)
-d.embedding.shape= (1, 10)
-d.embedding.shape= (1, 10)
+<class 'scipy.sparse.coo.coo_matrix'> (3, 10)
+<class 'scipy.sparse.coo.coo_matrix'> (1, 10)
+<class 'scipy.sparse.coo.coo_matrix'> (1, 10)
+<class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
 ## Access content and embedding attributes
