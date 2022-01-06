@@ -1,5 +1,5 @@
 (bulk-access)=
-# Bulk Access Contents
+# Access Attributes
 
 You can quickly access `.text`, `.blob`, `.buffer`, `.embedding` of all Documents in the DocumentArray without writing a for-loop.
 

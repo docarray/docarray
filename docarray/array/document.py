@@ -9,6 +9,7 @@ from typing import (
     MutableSequence,
     Sequence,
     Iterable,
+    overload,
 )
 
 import numpy as np
@@ -18,7 +19,12 @@ from .. import Document
 from ..helper import typename
 
 if TYPE_CHECKING:
-    from ..types import DocumentArraySourceType, DocumentArrayIndexType
+    from ..types import (
+        DocumentArraySourceType,
+        DocumentArrayIndexType,
+        DocumentArraySingletonIndexType,
+        DocumentArrayMultipleIndexType,
+    )
 
 
 class DocumentArray(AllMixins, MutableSequence[Document]):
@@ -97,6 +103,14 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             return x.id in self._id2offset
         else:
             return False
+
+    @overload
+    def __getitem__(self, index: 'DocumentArraySingletonIndexType') -> 'Document':
+        ...
+
+    @overload
+    def __getitem__(self, index: 'DocumentArrayMultipleIndexType') -> 'Document':
+        ...
 
     def __getitem__(
         self, index: 'DocumentArrayIndexType'

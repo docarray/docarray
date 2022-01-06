@@ -25,6 +25,5 @@ matching
 evaluation
 parallelization
 visualization
-sharing
 list-like
 ```

@@ -43,4 +43,10 @@ if TYPE_CHECKING:
         'AnyDNN'
     )  #: The type of any implementation of a Deep Neural Network object
 
-    DocumentArrayIndexType = Union[int, str, slice, Sequence[int], Sequence[str], Sequence[bool], Ellipsis]
+    DocumentArraySingletonIndexType = Union[int, str]
+    DocumentArrayMultipleIndexType = Union[
+        slice, Sequence[int], Sequence[str], Sequence[bool], Ellipsis
+    ]
+    DocumentArrayIndexType = Union[
+        DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType
+    ]
