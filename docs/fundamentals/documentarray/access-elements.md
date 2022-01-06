@@ -103,6 +103,7 @@ print(da)
 <DocumentArray (length=50) at 4513619088>
 ```
 
+(path-string)=
 ## Index by nested structure
 
 From early chapter, we already know {ref}`Document can be nested<recursive-nested-document>`. DocumentArray provides very easy way to traverse over the nested structure and select Documents. All you need to do is following the syntax below:
@@ -273,3 +274,7 @@ da = DocumentArray.empty(1000).sample(10)
 ```text
 <DocumentArray (length=10) at 4887691536>
 ```
+
+## What's next?
+
+Now we know how to select Documents from DocumentArray, next we learn how to {ref}`select attributes from DocumentArray<bulk-access>`. Spoiler alert, it follows the same syntax. 

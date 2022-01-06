@@ -163,3 +163,50 @@ def test_path_syntax_indexing():
     assert len(da['@cc']) == 3 * 5 * 3
     assert len(da['@cc,m']) == 3 * 5 * 3 + 3 * 7
     assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
+
+
+def test_attribute_indexing():
+    da = DocumentArray.empty(10)
+    for v in da[:, 'id']:
+        assert v
+    da[:, 'mime_type'] = [f'type {j}' for j in range(10)]
+    for v in da[:, 'mime_type']:
+        assert v
+    del da[:, 'mime_type']
+    for v in da[:, 'mime_type']:
+        assert not v
+
+    da[:, ['text', 'mime_type']] = [
+        [f'hello {j}' for j in range(10)],
+        [f'type {j}' for j in range(10)],
+    ]
+    da.summary()
+
+    for v in da[:, ['mime_type', 'text']]:
+        for vv in v:
+            assert vv
+
+
+def test_blob_attribute_selector():
+    import scipy.sparse
+
+    sp_embed = np.random.random([3, 10])
+    sp_embed[sp_embed > 0.1] = 0
+    sp_embed = scipy.sparse.coo_matrix(sp_embed)
+
+    da = DocumentArray.empty(3)
+
+    da[:, 'embedding'] = sp_embed
+
+    assert da[:, 'embedding'].shape == (3, 10)
+
+    for d in da:
+        assert d.embedding.shape == (1, 10)
+
+    v1, v2 = da[:, ['embedding', 'id']]
+    assert isinstance(v1, scipy.sparse.coo_matrix)
+    assert isinstance(v2, list)
+
+    v1, v2 = da[:, ['id', 'embedding']]
+    assert isinstance(v2, scipy.sparse.coo_matrix)
+    assert isinstance(v1, list)

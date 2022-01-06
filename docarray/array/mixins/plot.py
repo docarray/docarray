@@ -55,13 +55,18 @@ class PlotMixin:
                     _text = f'{_doc_text} attributes'
                 table.add_row(_text, str(_a))
 
+        console = Console()
+        all_attrs_names = tuple(sorted(all_attrs_names))
+        if not all_attrs_names:
+            console.print(table)
+            return
+
         attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
         attr_table.add_column('Attribute')
         attr_table.add_column('Data type')
         attr_table.add_column('#Unique values')
         attr_table.add_column('Has empty value')
 
-        all_attrs_names = tuple(sorted(all_attrs_names))
         all_attrs_values = self.get_attributes(*all_attrs_names)
         if len(all_attrs_names) == 1:
             all_attrs_values = [all_attrs_values]
@@ -74,8 +79,6 @@ class PlotMixin:
             attr_table.add_row(
                 _a_name, str(tuple(_set_type_a)), str(len(_a)), str(None in _a)
             )
-
-        console = Console()
         console.print(table, attr_table)
 
     def plot_embeddings(
