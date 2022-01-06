@@ -51,6 +51,8 @@ Alternatively, you can first do basic installation and then install missing depe
 '0.1.0'
 ```
 
+The latest version of DocArray is {{ env.config.version }}.
+
 ```{attention}
 If the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 
 not installing `docarray` correctly. You are probably still using an old `docarray` shipped with Jina 2.x. 

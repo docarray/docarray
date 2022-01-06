@@ -1,7 +1,4 @@
-from typing import Union, List, Tuple, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from ... import DocumentArray
+from typing import List
 
 
 class GetAttributeMixin:
@@ -14,34 +11,40 @@ class GetAttributeMixin:
         :return: Returns a list of the values for these fields.
             When `fields` has multiple values, then it returns a list of list.
         """
-        contents = [doc.get_attributes(*fields) for doc in self]
+        e_index, b_index = None, None
+        fields = list(fields)
+        if 'embedding' in fields:
+            e_index = fields.index('embedding')
+        if 'blob' in fields:
+            b_index = fields.index('blob')
+            fields.remove('blob')
 
-        if len(fields) > 1:
-            contents = list(map(list, zip(*contents)))
+        if 'embedding' in fields:
+            fields.remove('embedding')
+        if 'blob' in fields:
+            fields.remove('blob')
 
-        return contents
+        if fields:
+            contents = [doc.get_attributes(*fields) for doc in self]
+            if len(fields) > 1:
+                contents = list(map(list, zip(*contents)))
+            if b_index is None and e_index is None:
+                return contents
 
-    def get_attributes_with_docs(
-        self,
-        *fields: str,
-    ) -> Tuple[List, 'DocumentArray']:
-        """Return all nonempty values of the fields together with their nonempty docs
+            contents = [contents]
+            if b_index is not None:
+                contents.insert(b_index, self.blobs)
+            if e_index is not None:
+                contents.insert(e_index, self.embeddings)
+            return contents
 
-        :param fields: Variable length argument with the name of the fields to extract
-        :return: Returns a tuple. The first element is  a list of the values for these fields.
-            When `fields` has multiple values, then it returns a list of list. The second element is the non-empty docs.
-        """
-
-        contents = []
-        docs_pts = []
-
-        for doc in self:
-            contents.append(doc.get_attributes(*fields))
-            docs_pts.append(doc)
-
-        if len(fields) > 1:
-            contents = list(map(list, zip(*contents)))
-
-        from ... import DocumentArray
-
-        return contents, DocumentArray(docs_pts)
+        if b_index is not None and e_index is None:
+            return self.blobs
+        if b_index is None and e_index is not None:
+            return self.embeddings
+        if b_index is not None and e_index is not None:
+            return (
+                [self.embeddings, self.blobs]
+                if b_index > e_index
+                else [self.blobs, self.embeddings]
+            )

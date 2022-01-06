@@ -8,6 +8,7 @@ from typing import (
     Dict,
     Generator,
     Iterable,
+    Tuple,
 )
 
 if TYPE_CHECKING:
@@ -47,6 +48,11 @@ if TYPE_CHECKING:
     DocumentArrayMultipleIndexType = Union[
         slice, Sequence[int], Sequence[str], Sequence[bool], Ellipsis
     ]
+    DocumentArraySingleAttributeType = Tuple[slice, str]
+    DocumentArrayMultipleAttributeType = Tuple[slice, Sequence[str]]
     DocumentArrayIndexType = Union[
-        DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType
+        DocumentArraySingletonIndexType,
+        DocumentArrayMultipleIndexType,
+        DocumentArraySingleAttributeType,
+        DocumentArrayMultipleAttributeType,
     ]

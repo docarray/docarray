@@ -28,6 +28,17 @@ class PlotMixin:
         is_homo = len(attr_counter) == 1
         table.add_row('Homogenous Documents', str(is_homo))
 
+        all_attrs_names = set(v for k in all_attrs for v in k)
+        _nested_in = []
+        if 'chunks' in all_attrs_names:
+            _nested_in.append('chunks')
+
+        if 'matches' in all_attrs_names:
+            _nested_in.append('matches')
+
+        if _nested_in:
+            table.add_row('Has nested Documents in', str(tuple(_nested_in)))
+
         if is_homo:
             table.add_row('Common Attributes', str(list(attr_counter.items())[0][0]))
         else:
@@ -44,25 +55,30 @@ class PlotMixin:
                     _text = f'{_doc_text} attributes'
                 table.add_row(_text, str(_a))
 
+        console = Console()
+        all_attrs_names = tuple(sorted(all_attrs_names))
+        if not all_attrs_names:
+            console.print(table)
+            return
+
         attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
         attr_table.add_column('Attribute')
         attr_table.add_column('Data type')
         attr_table.add_column('#Unique values')
         attr_table.add_column('Has empty value')
 
-        all_attrs_names = tuple(sorted(set(v for k in all_attrs for v in k)))
         all_attrs_values = self.get_attributes(*all_attrs_names)
         if len(all_attrs_names) == 1:
             all_attrs_values = [all_attrs_values]
         for _a, _a_name in zip(all_attrs_values, all_attrs_names):
-            _counter_a = Counter(_a)
-            _set_a = set(_a)
+            try:
+                _a = set(_a)
+            except:
+                pass
             _set_type_a = set(type(_aa).__name__ for _aa in _a)
             attr_table.add_row(
-                _a_name, str(tuple(_set_type_a)), str(len(_set_a)), str(None in _set_a)
+                _a_name, str(tuple(_set_type_a)), str(len(_a)), str(None in _a)
             )
-
-        console = Console()
         console.print(table, attr_table)
 
     def plot_embeddings(

@@ -2,7 +2,7 @@
 
 If you have an image Document (with possible image data in `.uri`/`.blob`), you can directly visualize it via {meth}`~docarray.document.mixins.plot.PlotMixin.plot`.
 
-```{figure} images/doc-in-jupyter.png
+```{figure} images/doc-plot-in-jupyter.png
 ```
 
 

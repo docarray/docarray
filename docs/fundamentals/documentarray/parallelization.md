@@ -1,4 +1,4 @@
-# Parallelization
+# Parallel Processing
 
 ```{seealso}
 - {meth}`~jina.types.arrays.mixins.parallel.ParallelMixin.map`: to parallel process element by element, return an interator of elements;

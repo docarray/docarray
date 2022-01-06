@@ -1,6 +1,5 @@
-# Other List-like Features
+# Other Handy Features
 
-One can see `DocumentArray` as a Python list. Hence, many Python high-level iterator functions/tools can be used on `DocumentArray` as well.
 
 ## Shuffle
 

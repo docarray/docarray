@@ -1,5 +1,5 @@
 (embed-via-model)=
-# Embedding
+# Embed via Deep Neural Network
 
 ```{important}
 

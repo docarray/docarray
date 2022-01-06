@@ -1,10 +1,11 @@
 import itertools
+import re
 from typing import (
     Iterable,
     TYPE_CHECKING,
     Optional,
     Callable,
-    Union,
+    Tuple,
 )
 
 if TYPE_CHECKING:
@@ -50,24 +51,26 @@ class TraverseMixin:
         path: str,
         filter_fn: Optional[Callable[['Document'], bool]] = None,
     ):
-        path = path.strip()
+        path = re.sub(r'\s+', '', path)
         if path:
-            loc = path[0]
-            if loc == 'r':
-                yield from TraverseMixin._traverse(docs, path[1:], filter_fn=filter_fn)
-            elif loc == 'm':
+            cur_loc, cur_slice, _left = _parse_path_string(path)
+            if cur_loc == 'r':
+                yield from TraverseMixin._traverse(
+                    docs[cur_slice], _left, filter_fn=filter_fn
+                )
+            elif cur_loc == 'm':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.matches, path[1:], filter_fn=filter_fn
+                        d.matches[cur_slice], _left, filter_fn=filter_fn
                     )
-            elif loc == 'c':
+            elif cur_loc == 'c':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.chunks, path[1:], filter_fn=filter_fn
+                        d.chunks[cur_slice], _left, filter_fn=filter_fn
                     )
             else:
                 raise ValueError(
-                    f'`path`:{loc} is invalid, must be one of `c`, `r`, `m`'
+                    f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
                 )
         elif filter_fn is None:
             yield docs
@@ -148,3 +151,27 @@ class TraverseMixin:
         from ... import DocumentArray
 
         return DocumentArray(list(itertools.chain.from_iterable(sequence)))
+
+
+def _parse_path_string(p: str) -> Tuple[str, slice, str]:
+    g = re.match(r'^([rcm])([-\d:]+)?([rcm].*)?$', p)
+    _this = g.group(1)
+    slice_str = g.group(2)
+    _next = g.group(3)
+    return _this, _parse_slice(slice_str or ':'), _next or ''
+
+
+def _parse_slice(value):
+    """
+    Parses a `slice()` from string, like `start:stop:step`.
+    """
+    if value:
+        parts = value.split(':')
+        if len(parts) == 1:
+            # slice(stop)
+            parts = [None, parts[0]]
+        # else: slice(start, stop[, step])
+    else:
+        # slice()
+        parts = []
+    return slice(*[int(p) if p else None for p in parts])

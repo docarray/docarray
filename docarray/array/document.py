@@ -10,6 +10,8 @@ from typing import (
     Sequence,
     Iterable,
     overload,
+    Any,
+    List,
 )
 
 import numpy as np
@@ -24,6 +26,8 @@ if TYPE_CHECKING:
         DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,
+        DocumentArrayMultipleAttributeType,
+        DocumentArraySingleAttributeType,
     )
 
 
@@ -109,7 +113,17 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         ...
 
     @overload
-    def __getitem__(self, index: 'DocumentArrayMultipleIndexType') -> 'Document':
+    def __getitem__(self, index: 'DocumentArrayMultipleIndexType') -> 'DocumentArray':
+        ...
+
+    @overload
+    def __getitem__(self, index: 'DocumentArraySingleAttributeType') -> List[Any]:
+        ...
+
+    @overload
+    def __getitem__(
+        self, index: 'DocumentArrayMultipleAttributeType'
+    ) -> List[List[Any]]:
         ...
 
     def __getitem__(
@@ -127,7 +141,18 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
-            if isinstance(index[0], bool):
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
+                _docs = self[index[0]]
+                _attrs = index[1]
+                if isinstance(_attrs, str):
+                    _attrs = (index[1],)
+
+                return _docs.get_attributes(*_attrs)
+            elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
             elif isinstance(index[0], int):
                 return DocumentArray(self._data[t] for t in index)
@@ -142,6 +167,38 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                     f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
                 )
         raise IndexError(f'Unsupported index type {typename(index)}: {index}')
+
+    @overload
+    def __setitem__(
+        self,
+        index: 'DocumentArrayMultipleAttributeType',
+        value: List[List['Any']],
+    ):
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        index: 'DocumentArraySingleAttributeType',
+        value: List['Any'],
+    ):
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        index: 'DocumentArraySingletonIndexType',
+        value: 'Document',
+    ):
+        ...
+
+    @overload
+    def __setitem__(
+        self,
+        index: 'DocumentArrayMultipleIndexType',
+        value: Sequence['Document'],
+    ):
+        ...
 
     def __setitem__(
         self,
@@ -169,7 +226,37 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 _d._data = _v._data
             self._rebuild_id2offset()
         elif isinstance(index, Sequence):
-            if isinstance(index[0], bool):
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
+                _docs = self[index[0]]
+                _attrs = index[1]
+
+                if isinstance(_attrs, str):
+                    # a -> [a]
+                    # [a, a] -> [a, a]
+                    _attrs = (index[1],)
+                if isinstance(value, (list, tuple)) and not any(
+                    isinstance(el, (tuple, list)) for el in value
+                ):
+                    # [x] -> [[x]]
+                    # [[x], [y]] -> [[x], [y]]
+                    value = (value,)
+                if not isinstance(value, (list, tuple)):
+                    # x -> [x]
+                    value = (value,)
+
+                for _a, _v in zip(_attrs, value):
+                    if _a == 'blob':
+                        _docs.blobs = _v
+                    elif _a == 'embedding':
+                        _docs.embeddings = _v
+                    else:
+                        for _d, _vv in zip(_docs, _v):
+                            setattr(_d, _a, _vv)
+            elif isinstance(index[0], bool):
                 if len(index) != len(self._data):
                     raise IndexError(
                         f'Boolean mask index is required to have the same length as {len(self._data)}, '
@@ -221,7 +308,18 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._data.clear()
             self._id2offset.clear()
         elif isinstance(index, Sequence):
-            if isinstance(index[0], bool):
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
+                _docs = self[index[0]]
+                _attrs = index[1]
+                if isinstance(_attrs, str):
+                    _attrs = (index[1],)
+                for _d in _docs:
+                    _d.pop(*_attrs)
+            elif isinstance(index[0], bool):
                 self._data = list(
                     itertools.compress(self._data, (not _i for _i in index))
                 )
