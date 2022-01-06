@@ -162,9 +162,7 @@ def test_get_attr_values():
         'scores__metric__value',
         'tags__c',
         'tags__id',
-        'tags__inexistant',
         'tags__e__2__f',
-        'inexistant',
     ]
     res = d.get_attributes(*required_keys)
     assert len(res) == len(required_keys)
@@ -175,8 +173,6 @@ def test_get_attr_values():
     assert res[required_keys.index('tags__c')] == 'd'
     assert res[required_keys.index('tags__id')] == 'identity'
     assert res[required_keys.index('scores__metric__value')] == 42
-    assert res[required_keys.index('tags__inexistant')] is None
-    assert res[required_keys.index('inexistant')] is None
     assert res[required_keys.index('tags__e__2__f')] == 'g'
 
     required_keys_2 = ['tags', 'text']

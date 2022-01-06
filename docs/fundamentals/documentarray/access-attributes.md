@@ -1,6 +1,8 @@
 (bulk-access)=
 # Access Attributes
 
+DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk.
+
 In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector.
 
 ## Attribute selector

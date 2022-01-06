@@ -7,8 +7,6 @@
 
 ## Install
 
-The latest version of DocArray is {{ env.config.version }}.
-
 ```{tip}
 Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
 ```
@@ -52,6 +50,8 @@ Alternatively, you can first do basic installation and then install missing depe
 >>> docarray.__version__
 '0.1.0'
 ```
+
+The latest version of DocArray is {{ env.config.version }}.
 
 ```{attention}
 If the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 

@@ -28,6 +28,9 @@ class GetAttributeMixin:
             contents = [doc.get_attributes(*fields) for doc in self]
             if len(fields) > 1:
                 contents = list(map(list, zip(*contents)))
+            if b_index is None and e_index is None:
+                return contents
+
             contents = [contents]
             if b_index is not None:
                 contents.insert(b_index, self.blobs)

@@ -109,7 +109,7 @@ extensions = [
     'sphinx_inline_tabs',
 ]
 
-myst_enable_extensions = ['colon_fence']
+myst_enable_extensions = ['colon_fence', 'substitution']
 
 # -- Custom 404 page
 

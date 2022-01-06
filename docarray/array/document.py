@@ -141,7 +141,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 _docs = self[index[0]]
                 _attrs = index[1]
                 if isinstance(_attrs, str):
@@ -222,7 +226,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 _d._data = _v._data
             self._rebuild_id2offset()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 _docs = self[index[0]]
                 _attrs = index[1]
 
@@ -300,7 +308,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._data.clear()
             self._id2offset.clear()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 _docs = self[index[0]]
                 _attrs = index[1]
                 if isinstance(_attrs, str):
