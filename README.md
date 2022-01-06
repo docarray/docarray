@@ -43,11 +43,11 @@ Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totall
   </tr>
 </thead>
 <tbody>
-  <tr>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="100%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="100%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="100%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="100%"></td>
+  <tr align="center">
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
   </tr>
 </tbody>
 </table>
