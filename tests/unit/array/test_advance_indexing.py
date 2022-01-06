@@ -142,3 +142,24 @@ def test_sequence_str(docarray100):
 def test_docarray_list_tuple(docarray100):
     assert isinstance(docarray100[99, 98], DocumentArray)
     assert len(docarray100[99, 98]) == 2
+
+
+def test_path_syntax_indexing():
+    da = DocumentArray().empty(3)
+    for d in da:
+        d.chunks = DocumentArray.empty(5)
+        d.matches = DocumentArray.empty(7)
+        for c in d.chunks:
+            c.chunks = DocumentArray.empty(3)
+    assert len(da['@c']) == 3 * 5
+    assert len(da['@c:1']) == 3
+    assert len(da['@c-1:']) == 3
+    assert len(da['@c1']) == 3
+    assert len(da['@c-2:']) == 3 * 2
+    assert len(da['@c1:3']) == 3 * 2
+    assert len(da['@c1:3c']) == (3 * 2) * 3
+    assert len(da['@c1:3,c1:3c']) == (3 * 2) + (3 * 2) * 3
+    assert len(da['@c 1:3 , c 1:3 c']) == (3 * 2) + (3 * 2) * 3
+    assert len(da['@cc']) == 3 * 5 * 3
+    assert len(da['@cc,m']) == 3 * 5 * 3 + 3 * 7
+    assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7

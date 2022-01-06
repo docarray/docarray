@@ -111,12 +111,89 @@ From early chapter, we already know {ref}`Document can be nested<recursive-neste
 da['@path1,path2,path3']
 ```
 
-Note that,
-- the path string must starts with `@`
-- multiple paths are separated by comma `,`;
-- a path is a string represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select matches of the chunks, `r` to select the top-level Documents.
-- a path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
+- The path-string must starts with `@`.
+- Multiple paths are separated by comma `,`.
+- A path represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select matches of the chunks, `r` to select the top-level Documents.
+- A path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
 
+Let's practice a bit. First construct a DocumentArray with nested Documents:
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray().empty(3)
+for d in da:
+    d.chunks = DocumentArray.empty(2)
+    d.matches = DocumentArray.empty(2)
+
+da.summary()
+```
+
+```text
+                    Documents Summary                    
+                                                         
+  Length                    3                            
+  Homogenous Documents      True                         
+  Has nested Documents in   ('chunks', 'matches')        
+  Common Attributes         ('id', 'chunks', 'matches')  
+                                                         
+                        Attributes Summary                        
+                                                                  
+  Attribute   Data type         #Unique values   Has empty value  
+ ──────────────────────────────────────────────────────────────── 
+  chunks      ('ChunkArray',)   3                False            
+  id          ('str',)          3                False            
+  matches     ('MatchArray',)   3                False  
+```
+
+This simple DocumentArray contains 3 Documents, each of which contains 2 matches and 2 chunks. Let's plot one of them.
+
+```text
+ <Document ('id', 'chunks', 'matches') at 2f94c1426ee511ecbb491e008a366d49>
+    └─ matches
+          ├─ <Document ('id', 'adjacency') at 2f94cd9a6ee511ecbb491e008a366d49>
+          └─ <Document ('id', 'adjacency') at 2f94cdfe6ee511ecbb491e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity') at 2f94c4086ee511ecbb491e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity') at 2f94c46c6ee511ecbb491e008a366d49>
+```
+
+That's still too much information, let's minimize it.
+
+```{figure} images/docarray-index-example.svg
+:width: 10%
+```
+
+Now let's use the red circle to depict our intended selection. Here is what you can with the path-syntax:
+
+```{figure} images/docarray-index-example-full1.svg
+```
+
+```python
+print(da['@m'])
+print(da['@c'])
+print(da['@c,m'])
+print(da['@c,m,r'])
+```
+
+```text
+<DocumentArray (length=6) at 4912623312>
+<DocumentArray (length=6) at 4905929552>
+<DocumentArray (length=12) at 4913359824>
+<DocumentArray (length=15) at 4912623312>
+```
+
+Let's now consider a deeper nested structure and use the path syntax to select Documents.
+
+```{figure} images/docarray-index-example-full2.svg
+```
+
+Last but not the least, you can use integer, or integer slice to restrict the selection.
+```{figure} images/docarray-index-example-full3.svg
+:width: 60%
+```
+
+You can add space in the path-string for a better readability. Alternatively, you may leverage {meth}`~docarray.array.mixins.traverse.TraverseMixin.traverse_flat` to do this more explicitly.
 
 ## Index by flatten
 
@@ -155,6 +232,9 @@ da[...].summary()
 ```
 
 Note that there is no `chunks` and `matches` in any of the Document from `da[...]` anymore. They are all flattened.
+
+Documents in `da[...]` are in the chunks-and-depth-first order, i.e depth-first traversing to all chunks and then to all matches.
+
 
 ## Batching
 
