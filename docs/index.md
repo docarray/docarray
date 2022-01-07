@@ -68,7 +68,7 @@ not installing `docarray` correctly. You are probably still using an old `docarr
 :caption: Get Started
 :hidden:
 
-get-started/what-is.md
+get-started/what-is
 ```
 
 ```{toctree}

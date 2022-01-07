@@ -11,7 +11,7 @@ One should use {ref}`DocumentArray for serializing multiple Documents<docarray-s
 ## From/to JSON
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 You can serialize a Document as a JSON string via {meth}`~docarray.document.mixins.porting.PortingMixin.to_json`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_json`.
@@ -51,7 +51,7 @@ print(d_as_json, d)
 ## From/to bytes
 
 ```{important}
-Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install docarray[full]` to install it.
+Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
 ```
 
 
@@ -104,7 +104,7 @@ If you go with default `protcol` and `compress` settings, you can simply use `by
 ## From/to dict
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 You can serialize a Document as a Python `dict` via {meth}`~docarray.document.mixins.porting.PortingMixin.to_dict`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_dict`.
@@ -136,7 +136,7 @@ You can use `to_dict(strict=False)` to override this behavior. This will preserv
 ## From/to Protobuf
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 You can also serialize a Document object into a Protobuf Message object. This is less frequently used as it is often an intermediate step when serializing into bytes, as in `to_dict()`. However, if you work with Python Protobuf API, having a Python Protobuf Message object at hand can be useful.

@@ -13,7 +13,7 @@ DocArray is designed to be "ready-to-wire" at anytime. Serialization is importan
 ## From/to JSON
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 ```python
@@ -55,7 +55,7 @@ da_r.summary()
 ## From/to bytes
 
 ```{important}
-Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install docarray[full]` to install it.
+Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
 ```
 
 Serialization into bytes often yield more compact representation than in JSON. Similar to {ref}`the Document serialization<doc-in-bytes>`, DocumentArray can be serialized with different `protocol` and `compress` combinations. In its most simple form,
@@ -185,7 +185,7 @@ There is an argument `strict` shares {ref}`the same semantic<strict-arg-explain>
 ## From/to dataframe
 
 ```{important}
-This feature requires `pandas` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `pandas` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 One can convert between a DocumentArray object and a `pandas.dataframe` object.
@@ -213,7 +213,7 @@ da = DocumentArray.from_dataframe(df)
 ## From/to cloud
 
 ```{important}
-This feature requires `rich` and `requests` dependency. You can do `pip install docarray[full]` to install it.
+This feature requires `rich` and `requests` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull` allows you to share a DocumentArray object across machines.

@@ -26,9 +26,6 @@ da.extend([Document(text='hello'), Document(text='world!')])
 
 Directly printing a DocumentArray does not show you too much useful information, you can use {meth}`~docarray.array.mixins.plot.PlotMixin.summary`.
 
-```{important}
-This feature requires `rich` dependency. You can do `pip install docarray[full]` to install it.
-```
 
 ```python
 da.summary()
