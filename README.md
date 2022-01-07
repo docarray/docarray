@@ -4,6 +4,12 @@
 <b>The data structure for unstructured data</b>
 </p>
 
+<p align=center>
+<a href="https://pypi.org/project/docarray/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9 3.10" title="DocArray supports Python 3.7 and above"></a>
+<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
+<a href="https://codecov.io/gh/jina-ai/docarray"><img src="https://codecov.io/gh/jina-ai/docarray/branch/master/graph/badge.svg?token=9WGcGyyqtI"/></a>
+</p>
+
 <!-- start elevator-pitch -->
 
 DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.

@@ -5,6 +5,7 @@ DocumentArray itself has no attribute. Accessing attributes in this context mean
 
 In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector.
 
+
 ## Attribute selector
 
 ```python
@@ -14,6 +15,14 @@ da[element_selector, attribute_selector]
 Here `element_selector` are the ones introduced {ref}`in the last chapter<access-elements>`. The attribute selector can be a string, or a list/tuple of string that represents the names of the attributes.
 
 As in element selector, one can use attribute selector to **get/set/delete** attributes in a DocumentArray.
+
+| Example                                      | Return                                                                                                                       |
+|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+| `da[:, 'id']`                                | all `.id` in a List                                                                                                          |
+| `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                      |
+| `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
+| `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                |
+| `da[:, 'blob']`, `da.blobs`                  | a NdArray-like object of the all top-level Documents blobs                                                                   |
 
 Let's see an example.
 
