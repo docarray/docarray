@@ -37,6 +37,12 @@ pip install docarray
 
 ## Get Started
 
+DocArray consists of two simple concepts:
+
+- **Document**: a data structure for easily representing nested, unstructured data.
+- **DocumentArray**: a container for efficiently accessing, processing, and understanding multiple Documents.
+
+
 Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example, 
 
 <table>
