@@ -39,15 +39,15 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
-    install_requires=['numpy'],
+    install_requires=['numpy', 'rich'],
     extras_require={
+        # req usage, please see https://docarray.jina.ai/#install
         'full': [
             'protobuf>=3.13.0',
             'lz4',
             'requests',
             'matplotlib',
             'Pillow',
-            'rich',
             'trimesh',
             'scipy',
             'av',

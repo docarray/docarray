@@ -79,7 +79,7 @@ html_css_files = [
 html_js_files = ['https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js', 'docbot.js']
 htmlhelp_basename = slug
 html_show_sourcelink = False
-html_favicon = '_static/favicon.ico'
+html_favicon = '_static/favicon.png'
 
 latex_documents = [(master_doc, f'{slug}.tex', project, author, 'manual')]
 man_pages = [(master_doc, slug, project, [author], 1)]
@@ -162,23 +162,23 @@ ogp_image = 'https://docarray.jina.ai/_static/banner.png'
 ogp_use_first_image = True
 ogp_description_length = 300
 ogp_type = 'website'
-ogp_site_name = f'Jina {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
+ogp_site_name = f'DocArray {os.environ.get("SPHINX_MULTIVERSION_VERSION", version)} Documentation'
 
 ogp_custom_meta_tags = [
     '<meta name="twitter:card" content="summary_large_image">',
     '<meta name="twitter:site" content="@JinaAI_">',
     '<meta name="twitter:creator" content="@JinaAI_">',
-    '<meta name="description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">',
-    '<meta property="og:description" content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">',
+    '<meta name="description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh.">',
+    '<meta property="og:description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.">',
     '''
     <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-48ZDWC8GT6"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-48ZDWC8GT6');
+  gtag('config', 'G-48WE9V68SD');
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>

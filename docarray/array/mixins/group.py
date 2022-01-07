@@ -12,7 +12,7 @@ class GroupMixin:
     """These helpers yield groups of :class:`DocumentArray` from
     a source :class:`DocumentArray`."""
 
-    def split(self, tag: str) -> Dict[Any, 'DocumentArray']:
+    def split_by_tag(self, tag: str) -> Dict[Any, 'DocumentArray']:
         """Split the `DocumentArray` into multiple DocumentArray according to the tag value of each `Document`.
 
         :param tag: the tag name to split stored in tags.

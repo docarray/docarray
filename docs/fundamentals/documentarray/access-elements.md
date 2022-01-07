@@ -243,7 +243,9 @@ Note that there is no `chunks` and `matches` in any of the Document from `da[...
 Documents in `da[...]` are in the chunks-and-depth-first order, i.e depth-first traversing to all chunks and then to all matches.
 
 
-## Batching
+## Other Handy Helpers
+
+### Batching
 
 One can batch a large DocumentArray into small ones via {meth}`~docarray.array.mixins.group.GroupMixin.batch`. This is useful when a DocumentArray is too big to process at once.
 
@@ -263,7 +265,7 @@ for b_da in da.batch(batch_size=256):
 <DocumentArray (length=232) at 4887691536>
 ```
 
-## Sampling
+### Sampling
 
 ```python
 from docarray import DocumentArray
@@ -274,6 +276,42 @@ da = DocumentArray.empty(1000).sample(10)
 ```text
 <DocumentArray (length=10) at 4887691536>
 ```
+
+
+### Shuffling
+
+Shuffling a DocumentArray inplace:
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray.empty(1000)
+da.shuffle()
+```
+
+## Splitting by `.tags`
+
+One can split a DocumentArray into multiple DocumentArrays according to the tag value (stored in `tags`) of each Document.
+It returns a Python `dict` where Documents with the same `tag` value are grouped together in a new DocumentArray, with their orders preserved from the original DocumentArray.
+
+```python
+from docarray import Document, DocumentArray
+
+da = DocumentArray([Document(tags={'category': 'c'}),
+                    Document(tags={'category': 'c'}),
+                    Document(tags={'category': 'b'}),
+                    Document(tags={'category': 'a'}),
+                    Document(tags={'category': 'a'})])
+
+rv = da.split(tag='category')
+```
+
+```text
+{'c': <DocumentArray (length=2) at 4869273936>, 
+ 'b': <DocumentArray (length=1) at 4876081680>, 
+ 'a': <DocumentArray (length=2) at 4876735056>}
+```
+
 
 ## What's next?
 

@@ -25,7 +25,7 @@ Requires Python 3.7+ and `numpy` only:
 ```
 pip install docarray
 ```
-[Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install docarray[full]`.
+[Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install "docarray[full]"`.
 
 ## [Documentation](https://docarray.jina.ai)
 

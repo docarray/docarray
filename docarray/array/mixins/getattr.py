@@ -31,7 +31,8 @@ class GetAttributeMixin:
             if b_index is None and e_index is None:
                 return contents
 
-            contents = [contents]
+            if len(fields) == 1:
+                contents = [contents]
             if b_index is not None:
                 contents.insert(b_index, self.blobs)
             if e_index is not None:

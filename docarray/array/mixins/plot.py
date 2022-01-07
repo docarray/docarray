@@ -15,6 +15,13 @@ class PlotMixin:
     """Helper functions for plotting the arrays. """
 
     def summary(self):
+        """Print the structure and attribute summary of this DocumentArray object.
+
+        .. warning::
+            Calling {meth}`.summary` on large DocumentArray can be slow.
+
+        """
+
         from rich.table import Table
         from rich.console import Console
         from rich import box
@@ -74,10 +81,13 @@ class PlotMixin:
             try:
                 _a = set(_a)
             except:
-                pass
+                pass  # intentional ignore as some fields are not hashable
             _set_type_a = set(type(_aa).__name__ for _aa in _a)
             attr_table.add_row(
-                _a_name, str(tuple(_set_type_a)), str(len(_a)), str(None in _a)
+                _a_name,
+                str(tuple(_set_type_a)),
+                str(len(_a)),
+                str(any(_aa is None for _aa in _a)),
             )
         console.print(table, attr_table)
 

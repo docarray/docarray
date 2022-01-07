@@ -40,7 +40,7 @@ def docarray_for_nest_split():
 
 @pytest.mark.parametrize('da', docarray_for_split())
 def test_split(da):
-    rv = da.split('category')
+    rv = da.split_by_tag('category')
     assert isinstance(rv, dict)
     assert sorted(list(rv.keys())) == ['a', 'b', 'c']
     # assure order is preserved c, b, a
@@ -49,20 +49,20 @@ def test_split(da):
     assert len(rv['c']) == 2
     assert len(rv['b']) == 1
     assert len(rv['a']) == 2
-    rv = da.split('random')
+    rv = da.split_by_tag('random')
     assert not rv  # wrong tag returns empty dict
 
 
 @pytest.mark.parametrize('da', docarray_for_split_at_zero())
 def test_split_at_zero(da):
-    rv = da.split('category')
+    rv = da.split_by_tag('category')
     assert isinstance(rv, dict)
     assert sorted(list(rv.keys())) == [0.0, 1.0, 2.0]
 
 
 @pytest.mark.parametrize('da', docarray_for_nest_split())
 def test_dunder_split(da):
-    rv = da.split('nest__category')
+    rv = da.split_by_tag('nest__category')
     assert isinstance(rv, dict)
     assert sorted(list(rv.keys())) == ['a', 'b', 'c']
     # assure order is preserved c, b, a
@@ -72,7 +72,7 @@ def test_dunder_split(da):
     assert len(rv['b']) == 1
     assert len(rv['a']) == 2
 
-    assert len(da.split('nest__random')) == 1
+    assert len(da.split_by_tag('nest__random')) == 1
 
 
 @pytest.mark.parametrize('da', da_for_batching())

@@ -20,7 +20,18 @@ d4 = Document(embedding=torch.tensor([1, 2, 3]))
 d5 = Document(embedding=tf.sparse.from_dense(np.array([[1, 2, 3], [4, 5, 6]])))
 ```
 
-## Fill embedding via a DNN model
+Unlike some other packages, DocArray will not actively cast `dtype` into `float32`. If the right-hand assigment `dtype` is `float64` in PyTorch, it will stay as a PyTorch `float64` tensor.
+
+To assign multiple Documents `.blob` and `.embedding` in bulk, you {ref}`should use DocumentArray<da-content-embedding>`. It is much faster and smarter than using for-loop.
+
+
+## Fill embedding via neural network
+
+```{admonition} On multiple Documents use DocumentArray
+:class: tip
+
+To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call `.embed()`. You can find out more in {ref}`embed-via-model`.
+```
 
 Usually you don't want to assign embedding manually, but instead doing something like:
 
@@ -30,13 +41,7 @@ d.text   ---> some DNN model ---> d.embedding
 d.buffer /
 ```
 
-```{admonition} On multiple Documents
-:class: tip
-
-To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call `.embed()`. You can find out more in {ref}`embed-via-model`.
-```
-
-Once a `Document` has content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling `Document.embedding`. For example, our `Document` looks like the following:
+Once a Document has content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling `.embedding`. For example, our Document looks like the following:
 
 ```python
 q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
@@ -55,7 +60,7 @@ q.embed(model)
 
 ## Find nearest-neighbours
 
-```{admonition} On multiple Documents
+```{admonition} On multiple Documents use DocumentArray
 :class: tip
 
 To match multiple Documents, do not use this feature in a for-loop. Instead, find out more in {ref}`match-documentarray`.  

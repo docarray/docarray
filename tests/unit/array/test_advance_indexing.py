@@ -210,3 +210,12 @@ def test_blob_attribute_selector():
     v1, v2 = da[:, ['id', 'embedding']]
     assert isinstance(v2, scipy.sparse.coo_matrix)
     assert isinstance(v1, list)
+
+
+def test_advance_selector_mixed():
+    da = DocumentArray.empty(10)
+    da.embeddings = np.random.random([10, 3])
+    da.match(da, exclude_self=True)
+
+    assert len(da[:, ('id', 'embedding', 'matches')]) == 3
+    assert len(da[:, ('id', 'embedding', 'matches')][0]) == 10

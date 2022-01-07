@@ -11,7 +11,7 @@ def _check_k(k):
         raise ValueError(f'`k` must be >=1 or `None`')
 
 
-def r_precision(binary_relevance: List[int]) -> float:
+def r_precision(binary_relevance: List[int], **kwargs) -> float:
     """R Precision after all relevant documents have been retrieved
     Relevance is binary (nonzero is relevant).
 
@@ -28,7 +28,9 @@ def r_precision(binary_relevance: List[int]) -> float:
     return float(np.mean(binary_relevance[: z[-1] + 1]))
 
 
-def precision_at_k(binary_relevance: List[int], k: Optional[int] = None) -> float:
+def precision_at_k(
+    binary_relevance: List[int], k: Optional[int] = None, **kwargs
+) -> float:
     """Precision @K.
 
     :param binary_relevance: binary relevancy in rank order
@@ -40,7 +42,7 @@ def precision_at_k(binary_relevance: List[int], k: Optional[int] = None) -> floa
     return float(np.mean(binary_relevance))
 
 
-def hit_at_k(binary_relevance: List[int], k: Optional[int] = None) -> int:
+def hit_at_k(binary_relevance: List[int], k: Optional[int] = None, **kwargs) -> int:
     """Score is percentage of first relevant item in list that occur
 
     :param binary_relevance: binary relevancy in rank order
@@ -51,7 +53,7 @@ def hit_at_k(binary_relevance: List[int], k: Optional[int] = None) -> int:
     return 1 if np.sum(binary_relevance[:k]) > 0 else 0
 
 
-def average_precision(binary_relevance: List[int]) -> float:
+def average_precision(binary_relevance: List[int], **kwargs) -> float:
     """Score is average precision (area under PR curve)
     Relevance is binary (nonzero is relevant).
 
@@ -65,7 +67,7 @@ def average_precision(binary_relevance: List[int]) -> float:
     return float(np.mean(out))
 
 
-def reciprocal_rank(binary_relevance: List[int]) -> float:
+def reciprocal_rank(binary_relevance: List[int], **kwargs) -> float:
     """Score is reciprocal of the rank of the first relevant item
 
     :param binary_relevance: binary relevancy in rank order
@@ -76,7 +78,7 @@ def reciprocal_rank(binary_relevance: List[int]) -> float:
 
 
 def recall_at_k(
-    binary_relevance: List[int], max_rel: int, k: Optional[int] = None
+    binary_relevance: List[int], max_rel: int, k: Optional[int] = None, **kwargs
 ) -> float:
     """Score is recall after all relevant documents have been retrieved
     Relevance is binary (nonzero is relevant).
@@ -94,7 +96,7 @@ def recall_at_k(
 
 
 def f1_score_at_k(
-    binary_relevance: List[int], max_rel: int, k: Optional[int] = None
+    binary_relevance: List[int], max_rel: int, k: Optional[int] = None, **kwargs
 ) -> float:
     """Score is harmonic mean of precision and recall
     Relevance is binary (nonzero is relevant).
@@ -113,7 +115,9 @@ def f1_score_at_k(
         return 0.0
 
 
-def dcg_at_k(relevance: List[float], method: int = 0, k: Optional[int] = None):
+def dcg_at_k(
+    relevance: List[float], method: int = 0, k: Optional[int] = None, **kwargs
+):
     """Score is discounted cumulative gain (dcg)
     Relevance is positive real values. Can use binary
     as the previous methods.
@@ -140,7 +144,9 @@ def dcg_at_k(relevance: List[float], method: int = 0, k: Optional[int] = None):
     return 0.0
 
 
-def ndcg_at_k(relevance: List[float], method: int = 0, k: Optional[int] = None):
+def ndcg_at_k(
+    relevance: List[float], method: int = 0, k: Optional[int] = None, **kwargs
+):
     """Score is normalized discounted cumulative gain (ndcg)
     Relevance is positive real values.  Can use binary
     as the previous methods.
