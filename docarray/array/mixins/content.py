@@ -22,11 +22,7 @@ class ContentPropertyMixin:
         :return: a :class:`ArrayType` of embedding
         """
         if self:
-            try:
-                return unravel(self, 'embedding')
-            except:
-                # failed to unravel, return as a list
-                return [d.embedding for d in self]
+            return unravel(self, 'embedding')
 
     @embeddings.setter
     def embeddings(self, value: 'ArrayType'):
@@ -64,11 +60,7 @@ class ContentPropertyMixin:
         """
         if self and self[0].content_type == 'blob':
             if self:
-                try:
-                    return unravel(self, 'embedding')
-                except:
-                    # failed to unravel, return as a list
-                    return [d.embedding for d in self]
+                return unravel(self, 'blob')
 
     @blobs.setter
     def blobs(self, value: 'ArrayType'):

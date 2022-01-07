@@ -9,6 +9,14 @@ if TYPE_CHECKING:
 
 def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
     _first = getattr(docs[0], field)
+    if _first is None:
+        # failed to unravel, return as a list
+        r = [getattr(d, field) for d in docs]
+        if any(_rr is not None for _rr in r):
+            return r
+        else:
+            return None
+
     framework, is_sparse = get_array_type(_first)
     all_fields = [getattr(d, field) for d in docs]
     cls_type = type(_first)
