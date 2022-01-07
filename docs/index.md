@@ -21,7 +21,7 @@ No extra dependency will be installed.
 ````{tab} Full install
 
 ```bash
-pip install docarray[full]
+pip install "docarray[full]"
 ```
 
 The following dependencies will be installed to enable additional features:
@@ -64,15 +64,22 @@ not installing `docarray` correctly. You are probably still using an old `docarr
 :end-before: <!-- end support-pitch -->
 ```
 
+```{toctree}
+:caption: Get Started
+:hidden:
 
+get-started/what-is.md
+```
 
 ```{toctree}
 :caption: User Guides
 :hidden:
 
-fundamentals/document/index.md
-fundamentals/documentarray/index.md
+fundamentals/document/index
+fundamentals/documentarray/index
+datatypes/index
 ```
+
 
 
 ```{toctree}
