@@ -146,6 +146,7 @@ for d in da:
 <class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
+(da-content-embedding)=
 ## Content and embedding attributes
 
 DocumentArray provides `.texts`, `.buffers`, `.blobs`, `.contents` and `.embeddings` attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.

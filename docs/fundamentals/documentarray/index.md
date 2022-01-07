@@ -5,7 +5,7 @@
 
 In a nutshell, you can simply consider it as a Python `list`, as it implements **all** list interfaces. That is, if you know how to use Python `list`, you already know how to use DocumentArray. 
 
-It is also powerful as Numpy's `ndarray`, where you can access its elements by {ref}`fancy slicing syntax<access-elements>`. 
+It is also powerful as Numpy `ndarray`, allowing you to access elements and attributes by {ref}`fancy slicing syntax<access-elements>`. 
 
 What makes it more exciting is those advanced features of DocumentArray. These features greatly facilitate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
 
@@ -25,5 +25,4 @@ matching
 evaluation
 parallelization
 visualization
-list-like
 ```

@@ -3,7 +3,8 @@
 
 Document can be nested both horizontally and vertically via `.matches` and `.chunks`. The picture below illustrates the recursive Document structure. 
 
-<img src="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg">
+```{figure} images/nested-structure.svg
+```
 
 |  Attribute   | Description                                                                                     |
 | --- |-------------------------------------------------------------------------------------------------|
@@ -12,7 +13,7 @@ Document can be nested both horizontally and vertically via `.matches` and `.chu
 | `doc.granularity` | The "depth" of the nested chunks structure                                             |
 | `doc.adjacency` | The "width" of the nested match structure                                             |
 
-You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a `Document`:
+You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a Document:
 
 - Add in constructor:
 
@@ -20,7 +21,7 @@ You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a 
   d = Document(chunks=[Document(), Document()], matches=[Document(), Document()])
   ```
 
-- Add to existing `Document`:
+- Add to existing Document:
 
   ```python
   d = Document()

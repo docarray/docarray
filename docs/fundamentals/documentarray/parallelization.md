@@ -1,10 +1,10 @@
 # Parallelization
 
 ```{seealso}
-- {meth}`~docarray.array.mixins.parallel.ParallelMixin.map`: to parallel process element by element, return an interator of elements;
-- {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch`: to parallel process batch by batch, return an iterator of batches;
-- {meth}`~docarray.array.mixins.parallel.ParallelMixin.apply`: like `.map()`, but return a DocumentArray;
-- {meth}`~docarray.array.mixins.parallel.ParallelMixin.apply_batch`: like `.map_batch()`, but return a DocumentArray;
+- {meth}`~docarray.array.mixins.parallel.ParallelMixin.map`: to parallel process Document by Document, return an interator of elements;
+- {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch`: to parallel process minibatch DocumentArray, return an iterator of DocumentArray;
+- {meth}`~docarray.array.mixins.parallel.ParallelMixin.apply`: like `.map()`, modify DocumentArray inplace;
+- {meth}`~docarray.array.mixins.parallel.ParallelMixin.apply_batch`: like `.map_batch()`, modify DocumentArray inplace.
 ```
 
 Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides {meth}`~docarray.array.mixins.parallel.ParallelMixin.map` to speed up things quite a lot. It is like Python 
