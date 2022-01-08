@@ -9,7 +9,7 @@ If you are a **data scientist** who works with image, text, video, audio data in
 
 If you are a **deep learning engineer** who works on scalable deep learning service, you should use DocArray: it can be the basic building block of your system. Its portable data structure can be wired in Protobuf, compressed bytes, JSON; allowing your engineer friends to happily integrate it into the production system.
 
-This is DocArray: a very unique one, aiming to be *the data structure for unstructured data*.
+This is DocArray: a unique one, aiming to be *your data structure for unstructured data*.
 
 ## Design 
 
@@ -49,11 +49,16 @@ The first good reason to use DocArray is its efficiency. Here is a side-by-side 
 
 The benchmark was conducted on 100K Documents/DocumentArray averaged over 5 repetitions with min & max values removed.
 
-Besides code refactoring and optimization, many features have been improved or redesigned including:
-- Advanced indexing for both elements and attributes;
-- Comprehensive serialization protocols;
-- Unified and improved Pythonic interface; 
-- Improved visualization on Document and DocumentArray;
+Beside code refactoring and optimization, many features have been improved or redesigned, including:
+- advanced indexing for both elements and attributes;
+- comprehensive serialization protocols;
+- unified and improved Pythonic interface; 
+- improved visualization on Document and DocumentArray;
+- revised documentations and examples
 - ... and many more.
 
-The new Jina 3.0 (expected in Feb. 2022) will fully rely on the new DocArray.
+To learn DocArray, the recommendation here is to forget about everything in Jina 2.x. Read the fundamental sections from beginning.
+
+```{important}
+The new Jina 3.0 (expected in Feb. 2022) will depend on the new DocArray. All Document & Document API from [Jina Docs](https://docs.jina.ai) will be removed. This documentation website of DocArray serves as the single source of truth. 
+```

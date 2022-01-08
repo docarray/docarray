@@ -24,6 +24,7 @@ DocArray is a library for nested, unstructured data such as text, image, audio, 
 
 <!-- end elevator-pitch -->
 
+Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
 
 ## Install 
 
