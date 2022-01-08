@@ -79,7 +79,7 @@ da = DocumentArray([Document(text='hello'), Document(text='world')])
 ````
 ````{tab} From generator
 ```python
-from jina import DocumentArray, Document
+from docarray import DocumentArray, Document
 
 da = DocumentArray((Document() for _ in range(10)))
 ```

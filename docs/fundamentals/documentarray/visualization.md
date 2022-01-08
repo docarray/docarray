@@ -31,7 +31,7 @@ da.summary()
 If a DocumentArray contains all image Documents, you can plot all images in one sprite image using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_image_sprites`.
 
 ```python
-from jina import DocumentArray
+from docarray import DocumentArray
 docs = DocumentArray.from_files('*.jpg')
 docs.plot_image_sprites()
 ```
@@ -42,6 +42,10 @@ docs.plot_image_sprites()
 
 (visualize-embeddings)=
 ## Embedding projector
+
+```{important}
+This feature requires `fastapi` dependency. You can do `pip install "docarray[full]"` to install it.
+```
 
 If a DocumentArray has `.embeddings`, you can visualize the embeddings interactively using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`.
 
