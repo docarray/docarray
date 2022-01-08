@@ -289,7 +289,7 @@ da = DocumentArray.empty(1000)
 da.shuffle()
 ```
 
-## Splitting by `.tags`
+### Splitting by `.tags`
 
 One can split a DocumentArray into multiple DocumentArrays according to the tag value (stored in `tags`) of each Document.
 It returns a Python `dict` where Documents with the same `tag` value are grouped together in a new DocumentArray, with their orders preserved from the original DocumentArray.

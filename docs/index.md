@@ -7,6 +7,8 @@
 
 ## Install
 
+The latest version of DocArray is {{ env.config.version }}.
+
 Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 
 ````{tab} Basic install
@@ -45,9 +47,9 @@ Alternatively, you can first do basic installation and then install missing depe
 >>> import docarray
 >>> docarray.__version__
 '0.1.0'
+>>> from docarray import Document, DocumentArray
 ```
 
-The latest version of DocArray is {{ env.config.version }}.
 
 ```{important}
 Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
