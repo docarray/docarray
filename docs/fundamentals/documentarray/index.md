@@ -1,13 +1,13 @@
 (documentarray)=
 # DocumentArray
 
-This is a Document, we already know it can be a mix in data types and nested in structure.
+This is a Document, we already know it can be a mix in data types and nested in structure:
 
 ```{figure} images/docarray-single.svg
 :width: 30%
 ```
 
-This is a DocumentArray.
+This is a DocumentArray:
 
 ```{figure} images/docarray-array.svg
 :width: 80%
