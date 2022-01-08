@@ -44,6 +44,37 @@ DocArray consists of two simple concepts:
 - **DocumentArray**: a container for efficiently accessing, processing, and understanding multiple Documents.
 
 
+### A 10-liners text matching
+
+We search for top-5 similar sentences of `she entered the room` in "Pride and Prejudice". 
+
+```python
+from docarray import Document, DocumentArray
+
+d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
+da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
+da.apply(lambda d: d.embed_feature_hashing())
+
+q = (Document(text='she entered the room')
+     .embed_feature_hashing()
+     .match(da, limit=5, metric='jaccard', use_scipy=True))
+
+print(q.matches[:, ('text', 'scores__jaccard')])
+```
+
+```text
+[['but she smiled too much.', 
+  '_little_, she might have fancied too _much_.', 
+  'She perfectly remembered everything that had passed in', 
+  'tolerably detached tone. While she spoke, an involuntary glance', 
+  'much as she chooses.”'], 
+  [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
+```
+
+Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric was measured by [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). I heard you got better embedding? Of course you do! Looking forward to seeing your results. 
+
+### A complete workflow of visual search 
+
 Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example, 
 
 <table>
@@ -142,7 +173,7 @@ We can now match the left to the right and take the top-9 results.
 left_da.match(right_da, limit=9)
 ```
 
-Let's inspect what's inside `left_da` now:
+Let's inspect what's inside `left_da` matches now:
 
 ```python
 for d in left_da:
@@ -156,6 +187,12 @@ left/02262.jpg right/02964.jpg 0.13871843
 left/02262.jpg right/02103.jpg 0.18265384
 left/02262.jpg right/04520.jpg 0.16477376
 ...
+```
+
+Or shorten the loop as one-liner:
+
+```python
+print(left_da['@m', ('uri', 'scores__cosine__value')])
 ```
 
 Better see it.
@@ -206,8 +243,9 @@ recall@4 0.052194148936170214
 recall@5 0.0573470744680851
 ```
 
-More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`. 
+More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
 
+If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) one could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/get-started/totally-looks-like/).
 
 
 ### Save results
@@ -233,30 +271,6 @@ left_da = DocumentArray.pull(token='my_shared_da')
 ```
 
 Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
-
-## Get Started for NLP Engineers
-
-In this 10-Line code example, we search over "Pride and Prejudice" for top-5 similar sentences as `she entered the room`. 
-
-```python
-from docarray import Document, DocumentArray
-
-d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
-da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
-da.apply(lambda d: d.embed_feature_hashing())
-
-q = (Document(text='she entered the room')
-     .embed_feature_hashing()
-     .match(da, limit=5, exclude_self=True, metric='jaccard', use_scipy=True))
-
-print(q.matches[:, ('text', 'scores__jaccard')])
-```
-
-```text
-[['staircase, than she entered the breakfast-room, and congratulated', 'of the room.', 'She entered the room with an air more than usually ungracious,', 'entered the breakfast-room, where Mrs. Bennet was alone, than she', 'those in the room.'], [{'value': 0.6, 'ref_id': '6559c1f6709811eca8811e008a366d49'}, {'value': 0.6666666666666666, 'ref_id': '6559c1f6709811eca8811e008a366d49'}, {'value': 0.6666666666666666, 'ref_id': '6559c1f6709811eca8811e008a366d49'}, {'value': 0.6666666666666666, 'ref_id': '6559c1f6709811eca8811e008a366d49'}, {'value': 0.7142857142857143, 'ref_id': '6559c1f6709811eca8811e008a366d49'}]]
-```
-
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric was measured by [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). For sure with your powerful deep learning models you can do much better, so go nuts!
 
 
 <!-- start support-pitch -->
