@@ -71,7 +71,7 @@ print(q.matches[:5, ('text', 'scores__jaccard__value')])
   [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
 ```
 
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric was measured by [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). I heard you got better embedding? Of course you do! Looking forward to seeing your results. 
+Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You got better embedding? Of course you do! Looking forward to seeing your results. 
 
 ### A complete workflow of visual search 
 
