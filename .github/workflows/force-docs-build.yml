@@ -39,8 +39,7 @@ jobs:
           cd docs
           pip install -r requirements.txt
           pip install --pre -U furo
-          export NUM_RELEASES=5
-          bash makedoc.sh local-only
+          bash makedoc.sh
           cd ./_build/dirhtml/
           cp -r ./ ../../../gen-html
           cd -  # back to ./docs
@@ -52,11 +51,13 @@ jobs:
           cp -r ./ ../docs
           cd ../docs
           ls -la
+          git add api
           touch .nojekyll
           cp 404/index.html 404.html
           sed -i 's/href="\.\./href="/' 404.html # fix asset urls that needs to be updated in 404.html
           echo docarray.jina.ai > CNAME
+          git add --all :/
           cd ..
           git status
-          git add docs && git commit -m "chore(docs): update docs due to ${{github.event_name}} on ${{github.repository}}"
+          git commit -m "chore(docs): update docs due to ${{github.event_name}} on ${{github.repository}}"
           git push --force origin gh-pages
