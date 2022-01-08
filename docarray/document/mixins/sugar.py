@@ -57,14 +57,9 @@ class SingletonSugarMixin:
         ...
 
     def match(self: 'T', *args, **kwargs) -> 'T':
-        """
-        # noqa: D102
-        # noqa: DAR101
-        :return: itself after modified
-        """
         from ... import DocumentArray
 
-        _tmp = DocumentArray([self])
+        _tmp = DocumentArray(self)
         _tmp.match(*args, **kwargs)
         return self
 
@@ -84,13 +79,8 @@ class SingletonSugarMixin:
         """
 
     def embed(self: 'T', *args, **kwargs) -> 'T':
-        """
-        # noqa: D102
-        # noqa: DAR101
-        :return: itself after modified.
-        """
         from ... import DocumentArray
 
-        _tmp = DocumentArray([self])
+        _tmp = DocumentArray(self)
         _tmp.embed(*args, **kwargs)
         return self

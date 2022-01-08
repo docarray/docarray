@@ -159,3 +159,35 @@ this is a much longer sentence
 ```
 
 
+## Simple text matching via feature hashing
+
+Let's search for `"she entered the room"` in *Pride and Prejudice*:
+
+```python
+from docarray import Document, DocumentArray
+
+d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
+da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
+da.apply(lambda d: d.embed_feature_hashing())
+
+q = (
+    Document(text='she entered the room')
+    .embed_feature_hashing()
+    .match(da, limit=5, exclude_self=True, metric='jaccard', use_scipy=True)
+)
+
+print(q.matches[:, ('text', 'scores__jaccard')])
+```
+
+```text
+[['staircase, than she entered the breakfast-room, and congratulated', 
+'of the room.', 
+'She entered the room with an air more than usually ungracious,', 
+'entered the breakfast-room, where Mrs. Bennet was alone, than she', 
+'those in the room.'], 
+[{'value': 0.6, 'ref_id': 'f47f7448709811ec960a1e008a366d49'}, 
+{'value': 0.6666666666666666, 'ref_id': 'f47f7448709811ec960a1e008a366d49'}, 
+{'value': 0.6666666666666666, 'ref_id': 'f47f7448709811ec960a1e008a366d49'}, 
+{'value': 0.6666666666666666, 'ref_id': 'f47f7448709811ec960a1e008a366d49'}, 
+{'value': 0.7142857142857143, 'ref_id': 'f47f7448709811ec960a1e008a366d49'}]]
+```

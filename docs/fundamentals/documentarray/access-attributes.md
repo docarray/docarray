@@ -16,13 +16,15 @@ Here `element_selector` are the ones introduced {ref}`in the last chapter<access
 
 As in element selector, one can use attribute selector to **get/set/delete** attributes in a DocumentArray.
 
-| Example                                      | Return                                                                                                                       |
-|----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `da[:, 'id']`                                | all `.id` in a List                                                                                                          |
-| `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                      |
+| Example                                      | Return                                                                                                                        |
+|----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `da[:, 'id']`                                | all `.id` in a List                                                                                                           |
+| `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                       |
 | `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
-| `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                |
-| `da[:, 'blob']`, `da.blobs`                  | a NdArray-like object of the all top-level Documents blobs                                                                   |
+| `da[:, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
+| `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                 |
+| `da[:, 'blob']`, `da.blobs`                  | a NdArray-like object of the all top-level Documents blobs                                                                    |
+
 
 Let's see an example.
 
@@ -155,10 +157,38 @@ for d in da:
 <class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
-(da-content-embedding)=
-## Content and embedding attributes
+## Dunder syntax for nested attributes
 
-DocumentArray provides `.texts`, `.buffers`, `.blobs`, `.contents` and `.embeddings` attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
+Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder syntax. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
+
+Let's see an example,
+
+```python
+import numpy as np
+
+from docarray import DocumentArray
+
+da = DocumentArray.empty(3)
+da.embeddings = np.random.random([3, 2])
+da.match(da)
+```
+
+Now to print `id` and matched score, one can simply do:
+
+```python
+print(da['@m', ('id', 'scores__cosine__value')])
+```
+
+```text
+[['5164d792709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d792709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d792709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49'], 
+[0.0, 0.006942970007385196, 0.48303283924326845, 0.0, 0.3859268166910603, 0.48303283924326845, 2.220446049250313e-16, 0.006942970007385196, 0.3859268166910603]]
+```
+
+
+(da-content-embedding)=
+## Content and embedding sugary attributes
+
+DocumentArray provides `.texts`, `.buffers`, `.blobs`, `.contents` and `.embeddings` sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
 
 ```python
 from docarray import DocumentArray
