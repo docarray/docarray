@@ -46,7 +46,7 @@ DocArray consists of two simple concepts:
 
 ### A 10-liners text matching
 
-We search for top-5 similar sentences of `she entered the room` in "Pride and Prejudice". 
+We search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
 
 ```python
 from docarray import Document, DocumentArray
@@ -55,11 +55,11 @@ d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_
 da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
 da.apply(lambda d: d.embed_feature_hashing())
 
-q = (Document(text='she entered the room')
+q = (Document(text='she smiled too much')
      .embed_feature_hashing()
-     .match(da, limit=5, metric='jaccard', use_scipy=True))
+     .match(da, metric='jaccard', use_scipy=True))
 
-print(q.matches[:, ('text', 'scores__jaccard')])
+print(q.matches[:5, ('text', 'scores__jaccard__value')])
 ```
 
 ```text
