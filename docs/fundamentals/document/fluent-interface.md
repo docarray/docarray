@@ -95,6 +95,11 @@ Provide sugary syntax for {class}`Document` by inheriting methods from {class}`D
 - {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.match`
 
 
+### FeatureHash
+Provide helper functions for feature hashing.
+- {meth}`~docarray.document.mixins.featurehash.FeatureHashMixin.embed_feature_hashing`
+
+
 ### Porting
 
 - {meth}`~docarray.document.mixins.porting.PortingMixin.from_bytes`

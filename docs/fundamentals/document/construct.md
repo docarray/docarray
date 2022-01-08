@@ -36,6 +36,12 @@ d4 = Document(uri='https://jina.ai',
               tags={'foo': 'bar'})
 ```
 
+Don't forget to leverage autocomplete in your IDE.
+
+```{figure} images/ide-autocomplete.png
+:width: 80%
+```
+
 ```text
 <Document ('id',) at my_id>
 <Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49>
@@ -56,6 +62,8 @@ When you `print()` a Document, you get a string representation such as `<Documen
                                       Document.id
 ```
 ````
+
+
 
 One can also wrap the keyword arguments into `dict`. The following ways of initialization have the same effect:
 

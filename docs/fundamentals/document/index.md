@@ -2,7 +2,7 @@
 
 {class}`~docarray.document.Document` is the basic data type in DocArray. Whether you're working with text, image, video, audio, 3D meshes or the nested or the combined of them, you can always represent them as Document.
 
-A Document object has a predefined data structure as below, each of the attributes can be set/get with the dot expression as you would do with any Python object.
+A Document object has a predefined data schema as below, each of the attributes can be set/get with the dot expression as you would do with any Python object.
 
 | Attribute   | Type               | Description |
 |-------------|--------------------| ----------- |
@@ -30,7 +30,7 @@ A Document object has a predefined data structure as below, each of the attribut
 An `ndarray`-like object can be a Python (nested) List/Tuple, Numpy ndarray, SciPy sparse matrix (spmatrix), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
 ```
 
-The data structure of the Document is comprehensive and well-organized. One can categorize those attributes into the following groups:
+The data schema of the Document is comprehensive and well-organized. One can categorize those attributes into the following groups:
 
 - Content related: `uri`, `text`, `blob`, `buffer`;
 - Nest structure related: `chunks`, `matches`, `granularity`, `adjacency`, `parent_id`;
