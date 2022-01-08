@@ -12,11 +12,11 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.
+DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to efficiently process, embed, search, recommend, store, transfer the data with Pythonic API.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
-🐍 **Pythonic API**: easy-to-use idioms and interfaces just as the native Python List. If you know how to Python, you know how to DocArray.
+🐍 **Pythonic API**: intuitive idioms and type annotation simplify the code you write. Designed to be as easy as Python list. If you know how to Python, you know how to DocArray.
 
 🧑‍🔬 **Data science powerhouse**: greatly facilitate data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle.
 
@@ -24,7 +24,7 @@ DocArray is a library for nested, unstructured data such as text, image, audio, 
 
 <!-- end elevator-pitch -->
 
-Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
+Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
 
 ## Install 
 
@@ -41,7 +41,7 @@ pip install docarray
 DocArray consists of two simple concepts:
 
 - **Document**: a data structure for easily representing nested, unstructured data.
-- **DocumentArray**: a container for efficiently accessing, processing, and understanding multiple Documents.
+- **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
 
 
 ### A 10-liners text matching
