@@ -51,7 +51,6 @@ jobs:
           cp -r ./ ../docs
           cd ../docs
           ls -la
-          git add api
           touch .nojekyll
           cp 404/index.html 404.html
           sed -i 's/href="\.\./href="/' 404.html # fix asset urls that needs to be updated in 404.html
