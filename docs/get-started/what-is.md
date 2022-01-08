@@ -40,7 +40,7 @@ DocArray is designed to maximize the local experience, with the requirement of c
 
 ## To Jina Users
 
-Jina 2.0-2.6 *kind of* have their own "DocArray", with very similar `Document` and `DocumentArray` interface. However, it is an old design and codebase. Since then, many redesigns and improvements have been made to improve its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as future Jina 3.x and Finetuner will rely on.
+Jina 2.0-2.6 *kind of* have their own "DocArray", with very similar `Document` and `DocumentArray` interface. However, it is an old design and codebase. Since then, many redesigns and improvements have been made to boost its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as future Jina 3.x and Finetuner will rely on.
 
 The first good reason to use DocArray is its efficiency. Here is a side-by-side speed comparison of Jina 2.6 vs. DocArray on some common tasks.
 

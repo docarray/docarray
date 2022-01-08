@@ -1,7 +1,7 @@
 (access-elements)=
 # Access Elements
 
-This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List via DocumentArray, what's the big deal?
+This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what's the big deal?
 
 If it is just a `list` and you can only access elements via `[1]`, `[-1]`, `[1:3]`, then it is no big deal. However, DocumentArray offers much more than simple indexing. It allows you to fully exploit the rich & nested data structure of Document in an easy and efficient way. 
 
