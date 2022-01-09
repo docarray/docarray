@@ -16,7 +16,7 @@ DocArray is a library for nested, unstructured data such as text, image, audio, 
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
-🐍 **Pythonic experience**: Designed to be as easy as Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
+🐍 **Pythonic experience**: designed to be as easy as Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
 
 🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle on CPU/GPU.
 
