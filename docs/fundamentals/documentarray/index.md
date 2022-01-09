@@ -20,7 +20,7 @@ In a nutshell, you can simply consider it as a Python `list`, as it implements *
 
 It is also powerful as Numpy `ndarray`, allowing you to [access elements](access-elements.md) and [attributes](access-attributes.md).
 
-What makes it more exciting is those advanced features of DocumentArray. These features greatly facilitate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
+What makes it more exciting is those advanced features of DocumentArray. These features greatly accelerate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
 
 ## What's next?
 
