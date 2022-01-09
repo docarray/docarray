@@ -82,6 +82,5 @@ setup(
         'Source': 'https://github.com/jina-ai/docarray/',
         'Tracker': 'https://github.com/jina-ai/docarray/issues',
     },
-    keywords='jina cloud-native neural-search query search index elastic neural-network encoding '
-    'embedding serving docker container image video audio deep-learning',
+    keywords='docarray deep-learning data-structures cross-modal multi-modal unstructured-data nested-data neural-search',
 )
