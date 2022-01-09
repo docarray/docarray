@@ -29,6 +29,8 @@ class PushPullMixin:
         """
         import requests
 
+        dict_data = self._get_dict_data(token, show_progress)
+
         progress = _get_progressbar(show_progress)
         task_id = progress.add_task('upload', start=False) if show_progress else None
 
@@ -50,23 +52,6 @@ class PushPullMixin:
                 if self._p_bar:
                     self._p_bar.update(self._task_id, advance=len(chunk))
                 return chunk
-
-        _serialized = self.to_bytes(
-            protocol='protobuf', compress='gzip', _show_progress=show_progress
-        )
-        if len(_serialized) > self._max_bytes:
-            raise ValueError(
-                f'DocumentArray is too big. '
-                f'Size of the serialization {len(_serialized)} is larger than {self._max_bytes}.'
-            )
-
-        dict_data = {
-            'file': (
-                'DocumentArray',
-                _serialized,
-            ),
-            'token': token,
-        }
 
         (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
             dict_data
@@ -117,12 +102,32 @@ class PushPullMixin:
                     if show_progress:
                         progress.update(task_id, advance=len(chunk))
 
+                if show_progress:
+                    progress.stop()
                 return cls.from_bytes(
                     f.getvalue(),
                     protocol='protobuf',
                     compress='gzip',
                     _show_progress=show_progress,
                 )
+
+    def _get_dict_data(self, token, show_progress):
+        _serialized = self.to_bytes(
+            protocol='protobuf', compress='gzip', _show_progress=show_progress
+        )
+        if len(_serialized) > self._max_bytes:
+            raise ValueError(
+                f'DocumentArray is too big. '
+                f'Size of the serialization {len(_serialized)} is larger than {self._max_bytes}.'
+            )
+
+        return {
+            'file': (
+                'DocumentArray',
+                _serialized,
+            ),
+            'token': token,
+        }
 
 
 def _get_progressbar(show_progress):
