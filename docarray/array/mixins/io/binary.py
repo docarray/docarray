@@ -20,10 +20,14 @@ class BinaryIOMixin:
         file: Union[str, BinaryIO, bytes],
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
+        _show_progress: bool = False,
     ) -> 'T':
         """Load array elements from a LZ4-compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
 
         :return: a DocumentArray object
         """
@@ -57,9 +61,15 @@ class BinaryIOMixin:
             else:
                 _len = len(random_uuid().bytes)
                 _binary_delimiter = d[:_len]  # first get delimiter
+                if _show_progress:
+                    from rich.progress import track as _track
+
+                    track = lambda x: _track(x, description='Deserializing')
+                else:
+                    track = lambda x: x
                 return cls(
                     Document.from_bytes(od, protocol=protocol, compress=compress)
-                    for od in d[_len:].split(_binary_delimiter)
+                    for od in track(d[_len:].split(_binary_delimiter))
                 )
 
     @classmethod
@@ -68,8 +78,11 @@ class BinaryIOMixin:
         data: bytes,
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
+        _show_progress: bool = False,
     ) -> 'T':
-        return cls.load_binary(data, protocol=protocol, compress=compress)
+        return cls.load_binary(
+            data, protocol=protocol, compress=compress, _show_progress=_show_progress
+        )
 
     def save_binary(
         self,
@@ -77,13 +90,15 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
     ) -> None:
-        """Save array elements into a LZ4 compressed binary file.
+        """Save array elements into a binary file.
 
         Comparing to :meth:`save_json`, it is faster and the file is smaller, but not human-readable.
 
         .. note::
             To get a binary presentation in memory, use ``bytes(...)``.
 
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
         :param file: File or filename to which the data is saved.
         """
         if isinstance(file, io.BufferedWriter):
@@ -101,11 +116,16 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _file_ctx: Optional[BinaryIO] = None,
+        _show_progress: bool = False,
     ) -> bytes:
-        """Serialize itself into bytes with LZ4 compression.
+        """Serialize itself into bytes.
 
         For more Pythonic code, please use ``bytes(...)``.
 
+        :param _file_ctx: File or filename or serialized bytes where the data is stored.
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: the binary serialization in bytes
         """
 
@@ -126,7 +146,14 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 else:
-                    for d in self:
+                    if _show_progress:
+                        from rich.progress import track as _track
+
+                        track = lambda x: _track(x, description='Serializing')
+                    else:
+                        track = lambda x: x
+
+                    for d in track(self):
                         f.write(_binary_delimiter)
                         f.write(d.to_bytes(protocol=protocol, compress=compress))
             if not _file_ctx:

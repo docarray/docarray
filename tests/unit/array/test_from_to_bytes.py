@@ -78,3 +78,12 @@ def test_from_to_protobuf(target_da):
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
 def test_from_to_safe_list(target_da):
     DocumentArray.from_list(target_da.to_list())
+
+
+@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
+@pytest.mark.parametrize('show_progress', [True, False])
+def test_push_pull_show_progress(show_progress, protocol):
+    da = DocumentArray.empty(1000)
+    r = da.to_bytes(_show_progress=show_progress, protocol=protocol)
+    da_r = DocumentArray.from_bytes(r, _show_progress=show_progress, protocol=protocol)
+    assert da == da_r
