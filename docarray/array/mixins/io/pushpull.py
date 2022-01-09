@@ -12,10 +12,9 @@ class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _service_url = 'https://apihubble.jina.ai/v2/rpc/da.'
+    _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(
-        self, token: str, show_progress: bool = False, compress: Optional[str] = None
-    ) -> None:
+    def push(self, token: str, show_progress: bool = False) -> None:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -29,6 +28,8 @@ class PushPullMixin:
         :param show_progress: if to show a progress bar on pulling
         """
         import requests
+
+        dict_data = self._get_dict_data(token, show_progress)
 
         progress = _get_progressbar(show_progress)
         task_id = progress.add_task('upload', start=False) if show_progress else None
@@ -52,14 +53,6 @@ class PushPullMixin:
                     self._p_bar.update(self._task_id, advance=len(chunk))
                 return chunk
 
-        dict_data = {
-            'file': (
-                'DocumentArray',
-                self.to_bytes(protocol='protobuf', compress=compress),
-            ),
-            'token': token,
-        }
-
         (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
             dict_data
         )
@@ -75,7 +68,6 @@ class PushPullMixin:
         cls: Type['T'],
         token: str,
         show_progress: bool = False,
-        compress: Optional[str] = None,
     ) -> 'T':
         """Pulling a :class:`DocumentArray` from Jina Cloud Service to local.
 
@@ -110,9 +102,32 @@ class PushPullMixin:
                     if show_progress:
                         progress.update(task_id, advance=len(chunk))
 
+                if show_progress:
+                    progress.stop()
                 return cls.from_bytes(
-                    f.getvalue(), protocol='protobuf', compress=compress
+                    f.getvalue(),
+                    protocol='protobuf',
+                    compress='gzip',
+                    _show_progress=show_progress,
                 )
+
+    def _get_dict_data(self, token, show_progress):
+        _serialized = self.to_bytes(
+            protocol='protobuf', compress='gzip', _show_progress=show_progress
+        )
+        if len(_serialized) > self._max_bytes:
+            raise ValueError(
+                f'DocumentArray is too big. '
+                f'Size of the serialization {len(_serialized)} is larger than {self._max_bytes}.'
+            )
+
+        return {
+            'file': (
+                'DocumentArray',
+                _serialized,
+            ),
+            'token': token,
+        }
 
 
 def _get_progressbar(show_progress):
