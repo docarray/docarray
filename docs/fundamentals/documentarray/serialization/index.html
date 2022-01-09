@@ -7,10 +7,10 @@
   <meta property="og:title" content="Serialization" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization.html" />
-  <meta property="og:site_name" content="DocArray 0.1.0 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.1.1 Documentation" />
   <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. JSON string:.from_json()/.to_json(), Bytes (compressed):.from_byt..." />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.1.0 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.1.1 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Serialization - DocArray 0.1.0 documentation</title>
+        <title>Serialization - DocArray 0.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.1.0 documentation</div>
+                <div class="brand">DocArray 0.1.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -615,8 +615,8 @@ docs {
 <p class="admonition-title">Important</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">rich</span></code> and <code class="docutils literal notranslate"><span class="pre">requests</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
 </div>
-<p><a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull" title="docarray.array.mixins.io.pushpull.PushPullMixin.pull"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pull()</span></code></a> allows you to share a DocumentArray object across machines.</p>
-<p>Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily transfer it to the local laptop via:</p>
+<p><a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull" title="docarray.array.mixins.io.pushpull.PushPullMixin.pull"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pull()</span></code></a> allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.</p>
+<p>Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily store it to the cloud via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># heavylifting, processing, GPU task, ...</span>
@@ -626,18 +626,14 @@ docs {
 <figure class="align-default">
 <img alt="../../../_images/da-push.png" src="../../../_images/da-push.png"/>
 </figure>
-<p>Then on your local laptop, simply</p>
+<p>Then on your local laptop, simply pull it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s1">'myda123'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now you can continue the work at local, analyzing <code class="docutils literal notranslate"><span class="pre">da</span></code> or visualizing it. Your friends &amp; colleagues who know the token <code class="docutils literal notranslate"><span class="pre">myda123</span></code> can also pull that DocumentArray. It’s useful when you want to quickly share the results with your colleagues &amp; friends.</p>
-<p>For more information of this feature, please refer to <code class="xref py py-class docutils literal notranslate"><span class="pre">PushPullMixin</span></code>.</p>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p>The lifetime of the storage is not promised at the momennt: could be a day, could be a week. Do not use it for persistence in production. Only consider this as temporary transmission or a clipboard.</p>
-</div>
+<p>The maximum size of an upload is 4GB under the <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> and <code class="docutils literal notranslate"><span class="pre">compress='gzip'</span></code> setting. The lifetime of an upload is one week after its creation.</p>
 </section>
 </section>
 
@@ -673,7 +669,7 @@ docs {
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 08, 2022.
+                    Last updated on Jan 09, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
