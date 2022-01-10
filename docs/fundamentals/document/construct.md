@@ -96,13 +96,10 @@ Document can be nested inside `.chunks` and `.matches`. The nested structure can
 from docarray import Document
 
 d = Document(id='d0')
-chunk = Document(id='d1')
-chunk_of_chunk = Document(id='d2')
-d.chunks.append(chunk)
-d.chunks[0].chunks.append(chunk_of_chunk)
+d.chunks.append(Document(id='d1'))
+d.chunks[0].chunks.append(Document(id='d2'))
 
-match = Document(id='d3')
-d.matches.append(match)
+d.matches.append(Document(id='d3'))
 
 print(d)
 ```
