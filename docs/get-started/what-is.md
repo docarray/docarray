@@ -25,16 +25,16 @@ DocArray is designed to maximize the local experience, with the requirement of c
 
 |                                 | DocArray     | `numpy.ndarray` | JSON | `pandas.DataFrame` | Protobuf |
 |---------------------------------|--------------|--- |------|--- | --- |
-| Tensor/matrix data              | ✅|✅| ❌    |✅|☑️|
+| Tensor/matrix data              |✅|✅| ❌    |✅|✅|
 | Text data                       |✅|❌| ✅    |✅|✅|
 | Media data                      |✅|❌| ❌    |❌|❌|
 | Nested data                     |✅|❌| ✅    |❌|✅|
 | Mixed data of the above four    |✅|❌| ❌    |❌|❌|
 | Easy to (de)serialize           |✅|❌| ✅    |✅|✅|
-| Pythonic experience             |✅|✅| ❌    |☑️|❌|
+| Pythonic experience             |✅|✅| ❌    |✅|❌|
 | IO support for filetypes        |✅|❌| ❌    |❌|❌|
 | Deep learning framework support |✅|✅| ❌    |❌|❌|
-| multi-core/GPU support          |✅|☑️| ❌    |❌|❌|
+| multi-core/GPU support          |✅|✅| ❌    |❌|❌|
 | Rich functions for data types   |✅|❌| ❌    |✅|❌|
 
 
