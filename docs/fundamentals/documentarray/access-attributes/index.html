@@ -561,7 +561,7 @@
 </section>
 <section id="dunder-syntax-for-nested-attributes">
 <h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this headline">¶</a></h2>
-<p>Some attributes are nested by nature, e.g. <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder syntax. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>.</p>
+<p>Some attributes are nested by nature, e.g. <code class="docutils literal notranslate"><span class="pre">.tags</span></code> and <code class="docutils literal notranslate"><span class="pre">.scores</span></code>. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access <code class="docutils literal notranslate"><span class="pre">.tags['key1']</span></code> via <code class="docutils literal notranslate"><span class="pre">d[:,</span> <span class="pre">'tags__key1']</span></code>.</p>
 <p>Let’s see an example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 

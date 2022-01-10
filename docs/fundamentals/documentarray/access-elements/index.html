@@ -515,6 +515,19 @@
 </pre></div>
 </div>
 <p>No need to worry about efficiency here, it is <code class="docutils literal notranslate"><span class="pre">O(1)</span></code>.</p>
+<p>Based on the same technique, one can check if a Document is inside a DocumentArray via Python <code class="docutils literal notranslate"><span class="pre">in</span></code> syntax:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">da</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">da</span>
+<span class="n">Document</span><span class="p">()</span> <span class="ow">in</span> <span class="n">da</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>True
+False
+</pre></div>
+</div>
 </section>
 <section id="index-by-boolean-mask">
 <h2>Index by boolean mask<a class="headerlink" href="#index-by-boolean-mask" title="Permalink to this headline">¶</a></h2>

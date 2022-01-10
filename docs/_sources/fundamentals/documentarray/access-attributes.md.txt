@@ -159,7 +159,7 @@ for d in da:
 
 ## Dunder syntax for nested attributes
 
-Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder syntax. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
+Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
 
 Let's see an example,
 

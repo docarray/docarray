@@ -1,8 +1,8 @@
 # What is DocArray?
 
-- It is like JSON, but for intensive computing.
+- It is like JSON, but for intensive computation.
 - It is like `numpy.ndarray`, but for unstructured data. 
-- It is like `pandas.DataFrame`, but for nested and mixed media data.
+- It is like `pandas.DataFrame`, but for nested and mixed media data with embeddings.
 - It is like Protobuf, but for data scientists and deep learning engineers. 
 
 If you are a **data scientist** who works with image, text, video, audio data in Python all day, you should use DocArray: it can greatly accelerate the work on representing, embedding, matching, visualizing, evaluating, sharing data; while stay close with your favorite toolkits, e.g. Torch, Tensorflow, ONNX, PaddlePaddle, JupyterLab, Google Colab.
