@@ -12,15 +12,15 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to efficiently process, embed, search, recommend, store, transfer the data with Pythonic API.
+DocArray is a library for nested, unstructured data such as text, image, audio, video, or 3D mesh. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
 
 🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
-🐍 **Pythonic experience**: designed to be as easy as Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
+🐍 **Pythonic experience**: designed to be as easy as a Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
 
-🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists work on embedding, matching, visualizing, evaluating via Torch/Tensorflow/ONNX/PaddlePaddle on CPU/GPU.
+🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, matching, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
 
-🚡 **Portable**: ready-to-wire at anytime with efficient and compact serialization from/to Protobuf, bytes, JSON, CSV, dataframe.
+🚡 **Portable**: ready-to-wire at anytime with efficient and compact serialization from/to Protobuf, bytes, JSON, CSV, DataFrame.
 
 <!-- end elevator-pitch -->
 
@@ -46,7 +46,7 @@ DocArray consists of two simple concepts:
 
 ### A 10-liners text matching
 
-We search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
+Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
 
 ```python
 from docarray import Document, DocumentArray
@@ -71,11 +71,11 @@ print(q.matches[:5, ('text', 'scores__jaccard__value')])
   [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
 ```
 
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You got better embedding? Of course you do! Looking forward to seeing your results. 
+Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
 
 ### A complete workflow of visual search 
 
-Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example, 
+Let's use DocArray and the [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build a simple meme image search. The dataset contains 6,016 image-pairs stored in `/left` and `/right`. Images that share the same filename are perceptually similar. For example:
 
 <table>
 <thead>
@@ -96,11 +96,11 @@ Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totall
 </tbody>
 </table>
 
-Our problem is given an image from `/left` and find its most-similar image in `/right` (without looking at the filename of course).
+Our problem is given an image from `/left`, can we find its most-similar image in `/right`? (without looking at the filename of course).
 
 ### Load images
 
-First load images and preprocess them with standard computer vision techniques:
+First load images and pre-process them with standard computer vision techniques:
 
 ```python
 from docarray import DocumentArray, Document
@@ -120,18 +120,18 @@ left_da.plot_image_sprites()
 
 ### Apply preprocessing
 
-Let's do some standard computer vision preprocessing:
+Let's do some standard computer vision pre-processing:
 
 ```python
 def preproc(d: Document):
     return (d.load_uri_to_image_blob()  # load
              .set_image_blob_normalization()  # normalize color 
-             .set_image_blob_channel_axis(-1, 0))  # switch color axis for the pytorch model later
+             .set_image_blob_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
 left_da.apply(preproc)
 ```
 
-Did I mention `apply` work in parallel?
+Did I mention `apply` works in parallel?
 
 ### Embed images
 
@@ -140,10 +140,10 @@ Now convert images into embeddings using a pretrained ResNet50:
 ```python
 import torchvision
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
-left_da.embed(model, device='cuda')  # embed via GPU to speedup
+left_da.embed(model, device='cuda')  # embed via GPU to speed up
 ```
 
-This step takes ~30 seconds on GPU. Beside PyTorch, you can also use Tensorflow, PaddlePaddle, ONNX models in `.embed(...)`.
+This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow, PaddlePaddle, or ONNX models in `.embed(...)`.
 
 ### Visualize embeddings
 
@@ -209,7 +209,7 @@ Better see it.
 <a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
-What we did here is reverting the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
+What we did here is revert the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that you can visualize them using image sprites.  
 
 ### Quantitative evaluation
 
@@ -220,7 +220,7 @@ groundtruth = DocumentArray(
     Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))]) for d in left_da)
 ```
 
-Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
+Here we create a new DocArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
 
 Now let's check recall rate from 1 to 5 over the full dataset:
 
@@ -245,12 +245,12 @@ recall@5 0.0573470744680851
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
 
-If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) one could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/get-started/totally-looks-like/).
+If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) you could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/get-started/totally-looks-like/).
 
 
 ### Save results
 
-You can save a DocumentArray to binary, JSON, dict, dataframe, CSV or Protobuf message with/without compression. In its simplest form,
+You can save a DocArray to binary, JSON, dict, DataFrame, CSV or Protobuf message with/without compression. In its simplest form,
 
 ```python
 left_da.save('left_da.bin')
@@ -258,7 +258,7 @@ left_da.save('left_da.bin')
 
 To reuse it, do `left_da = DocumentArray.load('left_da.bin')`.
 
-If you want to transfer a DoucmentArray from one machine to another or share it with your colleagues, you can do:
+If you want to transfer a DocArray from one machine to another or share it with your colleagues, you can do:
 
 ```python
 left_da.push(token='my_shared_da')
@@ -288,6 +288,6 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 
 ## Join Us
 
-DocArray is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in opensource.
+DocArray is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in open-source.
 
 <!-- end support-pitch -->
