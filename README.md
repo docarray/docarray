@@ -4,11 +4,17 @@
 <b>The data structure for unstructured data</b>
 </p>
 
+<!--- BADGES: START --->
 <p align=center>
+<a href="https://github.com/jina-ai/docarray/blob/main/LICENSE"><img src="https://img.shields.io/github/license/jina-ai/docarray?logo=github&style=flat&color=green"/></a>
 <a href="https://pypi.org/project/docarray/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9 3.10" title="DocArray supports Python 3.7 and above"></a>
 <a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
 <a href="https://codecov.io/gh/jina-ai/docarray"><img src="https://codecov.io/gh/jina-ai/docarray/branch/main/graph/badge.svg?token=9WGcGyyqtI"/></a>
+<a href="https://anaconda.org/conda-forge/docarray"><img src="https://img.shields.io/conda/pn/conda-forge/docarray?logo=anaconda&style=flat"/></a>
+<a href="https://anaconda.org/conda-forge/docarray"><img src="https://img.shields.io/conda/vn/conda-forge/genespeak?logo=anaconda&style=flat&color=orange"/></a>
+<a href="https://docarray.jina.ai/"><img src="https://img.shields.io/static/v1?logo=github&style=flat&color=pink&label=docs&message=docarray"/></a>
 </p>
+<!--- BADGES: END --->
 
 <!-- start elevator-pitch -->
 
@@ -26,13 +32,25 @@ DocArray is a library for nested, unstructured data such as text, image, audio, 
 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
 
-## Install 
+## Install
 
 Requires Python 3.7+ and `numpy` only:
-```
+
+**With pip**
+
+```sh
 pip install docarray
 ```
+
 [Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install "docarray[full]"`.
+
+**With conda**
+
+Installation is also possible with the basic requirements using conda from conda-forge channel.
+
+```sh
+conda install -c conda-forge docarray
+```
 
 ## [Documentation](https://docarray.jina.ai)
 
@@ -46,7 +64,7 @@ DocArray consists of two simple concepts:
 
 ### A 10-liners text matching
 
-We search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
+We search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice".
 
 ```python
 from docarray import Document, DocumentArray
@@ -63,19 +81,19 @@ print(q.matches[:5, ('text', 'scores__jaccard__value')])
 ```
 
 ```text
-[['but she smiled too much.', 
-  '_little_, she might have fancied too _much_.', 
-  'She perfectly remembered everything that had passed in', 
-  'tolerably detached tone. While she spoke, an involuntary glance', 
-  'much as she chooses.”'], 
+[['but she smiled too much.',
+  '_little_, she might have fancied too _much_.',
+  'She perfectly remembered everything that had passed in',
+  'tolerably detached tone. While she spoke, an involuntary glance',
+  'much as she chooses.”'],
   [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
 ```
 
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You got better embedding? Of course you do! Looking forward to seeing your results. 
+Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You got better embedding? Of course you do! Looking forward to seeing your results.
 
-### A complete workflow of visual search 
+### A complete workflow of visual search
 
-Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example, 
+Let's use DocArray and [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build simple meme image search. The dataset contains 6016 image-pairs stored in `/left` and `/right`. Images that shares the same filename are perceptually similar. For example,
 
 <table>
 <thead>
@@ -125,7 +143,7 @@ Let's do some standard computer vision preprocessing:
 ```python
 def preproc(d: Document):
     return (d.load_uri_to_image_blob()  # load
-             .set_image_blob_normalization()  # normalize color 
+             .set_image_blob_normalization()  # normalize color
              .set_image_blob_channel_axis(-1, 0))  # switch color axis for the pytorch model later
 
 left_da.apply(preproc)
@@ -209,7 +227,7 @@ Better see it.
 <a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
 </p>
 
-What we did here is reverting the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.  
+What we did here is reverting the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that one can visualize them using image sprites.
 
 ### Quantitative evaluation
 

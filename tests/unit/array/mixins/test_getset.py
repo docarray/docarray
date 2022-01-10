@@ -34,7 +34,8 @@ def test_set_embeddings_multi_kind(array):
 
 @pytest.mark.parametrize('da', da_and_dam())
 def test_da_get_embeddings(da):
-    np.testing.assert_almost_equal(da.get_attributes('embedding'), da.embeddings)
+    np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
+    np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -65,7 +66,6 @@ def test_blobs_getter_da(da):
     blobs = np.random.random((100, 10, 10))
     da.blobs = blobs
     assert len(da) == 100
-    np.testing.assert_almost_equal(da.get_attributes('blob'), da.blobs)
     np.testing.assert_almost_equal(da.blobs, blobs)
 
     da.blobs = None
@@ -77,7 +77,7 @@ def test_blobs_getter_da(da):
 @pytest.mark.parametrize('da', da_and_dam())
 def test_texts_getter_da(da):
     assert len(da.texts) == 100
-    assert da.texts == da.get_attributes('text')
+    assert da.texts == da[:, 'text']
     texts = ['text' for _ in range(100)]
     da.texts = texts
     assert da.texts == texts

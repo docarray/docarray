@@ -151,7 +151,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 if isinstance(_attrs, str):
                     _attrs = (index[1],)
 
-                return _docs.get_attributes(*_attrs)
+                return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
             elif isinstance(index[0], int):

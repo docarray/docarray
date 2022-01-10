@@ -13,8 +13,16 @@ Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 
 ````{tab} Basic install
 
+**With pip**
+
 ```bash
 pip install docarray
+```
+
+**With conda**
+
+```bash
+conda install -c conda-forge docarray
 ```
 
 No extra dependency will be installed.
