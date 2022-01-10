@@ -26,7 +26,7 @@ class PlotMixin:
         from rich.console import Console
         from rich import box
 
-        all_attrs = self.get_attributes('non_empty_fields')
+        all_attrs = self._get_attributes('non_empty_fields')
         attr_counter = Counter(all_attrs)
 
         table = Table(box=box.SIMPLE, title='Documents Summary')
@@ -74,7 +74,7 @@ class PlotMixin:
         attr_table.add_column('#Unique values')
         attr_table.add_column('Has empty value')
 
-        all_attrs_values = self.get_attributes(*all_attrs_names)
+        all_attrs_values = self._get_attributes(*all_attrs_names)
         if len(all_attrs_names) == 1:
             all_attrs_values = [all_attrs_values]
         for _a, _a_name in zip(all_attrs_values, all_attrs_names):

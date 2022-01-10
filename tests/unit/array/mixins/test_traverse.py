@@ -88,7 +88,7 @@ def test_traverse_root_match_chunk(doc_req, filter_fn):
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flatten_embedding(doc_req, filter_fn):
     flattened_results = doc_req.traverse_flat('r,c', filter_fn=filter_fn)
-    ds = np.stack(flattened_results.get_attributes('embedding'))
+    ds = flattened_results.embeddings
     assert ds.shape == (num_docs + num_chunks_per_doc * num_docs, 10)
 
 
@@ -137,10 +137,10 @@ def test_traverse_flatten_root_match_chunk(doc_req, filter_fn):
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
 def test_traverse_flattened_per_path_embedding(doc_req, filter_fn):
     flattened_results = list(doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn))
-    ds = np.stack(flattened_results[0].get_attributes('embedding'))
+    ds = flattened_results[0].embeddings
     assert ds.shape == (num_docs, 10)
 
-    ds = np.stack(flattened_results[1].get_attributes('embedding'))
+    ds = flattened_results[1].embeddings
     assert ds.shape == (num_docs * num_chunks_per_doc, 10)
 
 

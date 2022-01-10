@@ -164,7 +164,7 @@ def test_get_attr_values():
         'tags__id',
         'tags__e__2__f',
     ]
-    res = d.get_attributes(*required_keys)
+    res = d._get_attributes(*required_keys)
     assert len(res) == len(required_keys)
     assert res[required_keys.index('id')] == '123'
     assert res[required_keys.index('tags__feature1')] == 121
@@ -176,18 +176,18 @@ def test_get_attr_values():
     assert res[required_keys.index('tags__e__2__f')] == 'g'
 
     required_keys_2 = ['tags', 'text']
-    res2 = d.get_attributes(*required_keys_2)
+    res2 = d._get_attributes(*required_keys_2)
     assert len(res2) == 2
     assert res2[required_keys_2.index('text')] == 'document'
     assert res2[required_keys_2.index('tags')] == d.tags
 
     d = Document({'id': '123', 'tags': {'outterkey': {'innerkey': 'real_value'}}})
     required_keys_3 = ['tags__outterkey__innerkey']
-    res3 = d.get_attributes(*required_keys_3)
+    res3 = d._get_attributes(*required_keys_3)
     assert res3 == 'real_value'
 
     d = Document(content=np.array([1, 2, 3]))
-    res4 = np.stack(d.get_attributes(*['blob']))
+    res4 = np.stack(d._get_attributes(*['blob']))
     np.testing.assert_equal(res4, np.array([1, 2, 3]))
 
 

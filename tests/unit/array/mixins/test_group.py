@@ -82,9 +82,9 @@ def test_batching(da, batch_size, shuffle):
     all_ids = []
     for v in da.batch(batch_size=batch_size, shuffle=shuffle):
         assert len(v) <= batch_size
-        all_ids.extend(v.get_attributes('id'))
+        all_ids.extend(v[:, 'id'])
 
     if shuffle:
-        assert all_ids != da.get_attributes('id')
+        assert all_ids != da[:, 'id']
     else:
-        assert all_ids == da.get_attributes('id')
+        assert all_ids == da[:, 'id']
