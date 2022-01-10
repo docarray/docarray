@@ -85,7 +85,7 @@ def test_matching_retrieves_correct_number(
     D1.match(
         D2, metric='sqeuclidean', limit=limit, batch_size=batch_size, only_id=only_id
     )
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         if limit is None:
             assert len(m) == len(D2)
         else:
@@ -106,14 +106,14 @@ def test_matching_same_results_with_sparse(
     # use match with numpy arrays
     D1.match(D2, metric=metric, only_id=only_id)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
     # use match with sparse arrays
     D1_sp.match(D2_sp, metric=metric, is_sparse=True)
     distances_sparse = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_sparse.extend([d.scores[metric].value])
 
@@ -132,7 +132,7 @@ def test_matching_same_results_with_batch(
     # use match without batches
     D1.match(D2, metric=metric, only_id=only_id)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
@@ -140,7 +140,7 @@ def test_matching_same_results_with_batch(
     D1_batch.match(D2_batch, metric=metric, batch_size=10)
 
     distances_batch = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_batch.extend([d.scores[metric].value])
 
@@ -161,14 +161,14 @@ def test_matching_scipy_cdist(
     # match with our custom metric
     D1.match(D2, metric=metric)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
     # match with callable cdist function from scipy
     D1_scipy.match(D2, metric=scipy_cdist_metric, only_id=only_id)
     distances_scipy = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_scipy.extend([d.scores[metric].value])
 

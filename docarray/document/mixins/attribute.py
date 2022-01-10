@@ -7,7 +7,7 @@ from ...helper import typename, dunder_get
 class GetAttributesMixin:
     """Provide helper functions for :class:`Document` to allow advanced set and get attributes """
 
-    def get_attributes(self, *fields: str) -> Union[Any, List[Any]]:
+    def _get_attributes(self, *fields: str) -> Union[Any, List[Any]]:
         """Bulk fetch Document fields and return a list of the values of these fields
 
         :param fields: the variable length values to extract from the document

@@ -4,7 +4,7 @@ from typing import List
 class GetAttributeMixin:
     """Helpers that provide attributes getter in bulk """
 
-    def get_attributes(self, *fields: str) -> List:
+    def _get_attributes(self, *fields: str) -> List:
         """Return all nonempty values of the fields from all docs this array contains
 
         :param fields: Variable length argument with the name of the fields to extract
@@ -25,7 +25,7 @@ class GetAttributeMixin:
             fields.remove('blob')
 
         if fields:
-            contents = [doc.get_attributes(*fields) for doc in self]
+            contents = [doc._get_attributes(*fields) for doc in self]
             if len(fields) > 1:
                 contents = list(map(list, zip(*contents)))
             if b_index is None and e_index is None:
