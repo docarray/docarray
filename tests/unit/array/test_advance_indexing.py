@@ -24,7 +24,7 @@ def test_getter_int_str(docarray100):
         docarray100[100]
 
     with pytest.raises(KeyError):
-        docarray100[adsad]
+        docarray100['adsad']
 
 
 def test_setter_int_str(docarray100):
@@ -66,7 +66,7 @@ def test_slice(docarray100):
 
     docarray100[1:5] = [Document(text=f'repl{j}') for j in range(4)]
     for d in docarray100[1:5]:
-        assert d.text.startswith(repl)
+        assert d.text.startswith('repl')
     assert len(docarray100) == 100
 
     # del
@@ -155,7 +155,7 @@ def test_path_syntax_indexing():
     assert len(da['@c:1']) == 3
     assert len(da['@c-1:']) == 3
     assert len(da['@c1']) == 3
-    assert len(da[@c-2:]) == 3 * 2
+    assert len(da['@c-2:']) == 3 * 2
     assert len(da['@c1:3']) == 3 * 2
     assert len(da['@c1:3c']) == (3 * 2) * 3
     assert len(da['@c1:3,c1:3c']) == (3 * 2) + (3 * 2) * 3
@@ -169,7 +169,7 @@ def test_attribute_indexing():
     da = DocumentArray.empty(10)
     for v in da[:, 'id']:
         assert v
-    da[:, 'mime_type'] = [f'type {j} for j in range(10)]
+    da[:, 'mime_type'] = [f'type {j}' for j in range(10)]
     for v in da[:, 'mime_type']:
         assert v
     del da[:, 'mime_type']
@@ -182,7 +182,7 @@ def test_attribute_indexing():
     ]
     da.summary()
 
-    for v in da[:, ['mime_type', text]]:
+    for v in da[:, ['mime_type', 'text']]:
         for vv in v:
             assert vv
 
@@ -233,10 +233,13 @@ def test_single_boolean_and_padding():
     assert len(da[False, False]) == 0
 
 
-def test_sequence_ids():
+def test_ids():
     from docarray import DocumentArray
 
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
+    da = DocumentArray([Document(id='1'),
+                        Document(id='2'),
+                        Document(id='3')])
 
     assert len(da['1', '2']) == 2
     assert len(da['1', '2', '3']) == 3
+
