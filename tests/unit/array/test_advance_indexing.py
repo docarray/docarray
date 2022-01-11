@@ -231,3 +231,16 @@ def test_single_boolean_and_padding():
 
     assert len(da[True, False]) == 1
     assert len(da[False, False]) == 0
+
+
+def test_sequence_ids():
+    from docarray import DocumentArray
+
+    da = DocumentArray([Document(id='1'),
+                        Document(id='2'),
+                        Document(id='3')])
+
+    assert len(da['1']) == 1
+    assert len(da['1', '2']) == 2
+    assert len(da['1', '2', '3']) == 3
+

@@ -146,11 +146,15 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 and len(index) == 2
                 and isinstance(index[0], (slice, Sequence))
             ):
+
+                # edge case where 2 ids are passed
+                if isinstance(index[0], str) and index[0] in self._id2offset:
+                    return DocumentArray(self._data[self._id2offset[t]] for t in index)
+
                 _docs = self[index[0]]
                 _attrs = index[1]
                 if isinstance(_attrs, str):
                     _attrs = (index[1],)
-
                 return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
