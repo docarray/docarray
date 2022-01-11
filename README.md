@@ -29,8 +29,12 @@ Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/
 ## Install 
 
 Requires Python 3.7+ and `numpy` only:
-```
+```shell
 pip install docarray
+```
+or via Conda:
+```shell
+conda install -c conda-forge docarray
 ```
 [Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install "docarray[full]"`.
 
@@ -103,7 +107,7 @@ Our problem is given an image from `/left` and find its most-similar image in `/
 First load images and preprocess them with standard computer vision techniques:
 
 ```python
-from docarray import DocumentArray, Document
+from docarray import DocumentArray
 
 left_da = DocumentArray.from_files('left/*.jpg')
 ```
@@ -123,6 +127,8 @@ left_da.plot_image_sprites()
 Let's do some standard computer vision preprocessing:
 
 ```python
+from docarray import Document
+
 def preproc(d: Document):
     return (d.load_uri_to_image_blob()  # load
              .set_image_blob_normalization()  # normalize color 
@@ -189,7 +195,7 @@ left/02262.jpg right/04520.jpg 0.16477376
 ...
 ```
 
-Or shorten the loop as one-liner:
+Or shorten the loop as one-liner using the element & attribute selector:
 
 ```python
 print(left_da['@m', ('uri', 'scores__cosine__value')])
@@ -258,7 +264,7 @@ left_da.save('left_da.bin')
 
 To reuse it, do `left_da = DocumentArray.load('left_da.bin')`.
 
-If you want to transfer a DoucmentArray from one machine to another or share it with your colleagues, you can do:
+If you want to transfer a DocumentArray from one machine to another or share it with your colleagues, you can do:
 
 ```python
 left_da.push(token='my_shared_da')

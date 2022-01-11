@@ -7,7 +7,7 @@ This is a Document, we already know it can be a mix in data types and nested in 
 :width: 30%
 ```
 
-This is a DocumentArray:
+Then this is a DocumentArray:
 
 ```{figure} images/docarray-array.svg
 :width: 80%
