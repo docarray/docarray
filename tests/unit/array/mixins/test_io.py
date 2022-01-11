@@ -105,3 +105,15 @@ def test_push_pull_io(da_cls, show_progress):
 
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts
+
+
+@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
+@pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
+def test_from_to_base64(protocol, compress):
+    da = DocumentArray.empty(10)
+    da.embeddings = [[1, 2, 3]] * len(da)
+    da_r = DocumentArray.from_base64(
+        da.to_base64(protocol, compress), protocol, compress
+    )
+    assert da_r == da
+    assert da_r[0].embedding == [1, 2, 3]

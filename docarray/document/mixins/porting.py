@@ -102,7 +102,7 @@ class PortingMixin:
     @classmethod
     def from_base64(
         cls: Type['T'],
-        data: bytes,
+        data: str,
         protocol: str = 'pickle',
         compress: Optional[str] = None,
     ) -> 'T':
