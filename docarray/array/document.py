@@ -129,7 +129,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
     def __getitem__(
         self, index: 'DocumentArrayIndexType'
     ) -> Union['Document', 'DocumentArray']:
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             return self._data[int(index)]
         elif isinstance(index, str):
             if index.startswith('@'):

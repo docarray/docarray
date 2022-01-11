@@ -120,6 +120,8 @@ print(da)
 <DocumentArray (length=50) at 4513619088>
 ```
 
+Note that if the length of the boolean mask is smaller than the length of a DocumentArray, then the remaining part is padded to `False`. 
+
 (path-string)=
 ## Index by nested structure
 
