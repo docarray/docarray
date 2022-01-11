@@ -236,10 +236,7 @@ def test_single_boolean_and_padding():
 def test_ids():
     from docarray import DocumentArray
 
-    da = DocumentArray([Document(id='1'),
-                        Document(id='2'),
-                        Document(id='3')])
+    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
 
     assert len(da['1', '2']) == 2
     assert len(da['1', '2', '3']) == 3
-
