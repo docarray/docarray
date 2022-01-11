@@ -240,7 +240,6 @@ def test_sequence_ids():
                         Document(id='2'),
                         Document(id='3')])
 
-    assert len(da['1']) == 1
     assert len(da['1', '2']) == 2
     assert len(da['1', '2', '3']) == 3
 
