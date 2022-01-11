@@ -382,6 +382,7 @@
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">base64</span>
 
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">compress_bytes</span><span class="p">,</span> <span class="n">decompress_bytes</span>
 
@@ -466,7 +467,34 @@
 
         <span class="k">return</span> <span class="n">MessageToJson</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">(),</span> <span class="n">preserving_proto_field_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PortingMixin.to_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64">[docs]</a>    <span class="k">def</span> <span class="nf">to_base64</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Serialize a Document object into as base64 string</span>
+
+<span class="sd">        :param protocol: protocol to use</span>
+<span class="sd">        :param compress: compress method to use</span>
+<span class="sd">        :return: a base64 encoded string</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PortingMixin.from_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_base64</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span>
+        <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+        <span class="sd">"""Build Document object from binary bytes</span>
+
+<span class="sd">        :param data: a base64 encoded string</span>
+<span class="sd">        :param protocol: protocol to use</span>
+<span class="sd">        :param compress: compress method to use</span>
+<span class="sd">        :return: a Document object</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">)</span></div></div>
 </pre></div>
             </article>
             <footer>

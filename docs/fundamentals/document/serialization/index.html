@@ -490,6 +490,36 @@
 <p>If you go with default <code class="docutils literal notranslate"><span class="pre">protcol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> settings, you can simply use <code class="docutils literal notranslate"><span class="pre">bytes(d)</span></code>, which is more Pythonic.</p>
 </div>
 </section>
+<section id="from-to-base64">
+<h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+</div>
+<p>In some cases such as in REST API, you are allowed only to send/receive string not bytes. You can serialize Document into base64 string via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64" title="docarray.document.mixins.porting.PortingMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and load it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64" title="docarray.document.mixins.porting.PortingMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>gANjZG9jYXJyYXkuZG9jdW1lbnQKRG9jdW1lbnQKcQApgXEBfXECWAUAAABfZGF0YXEDY2RvY2FycmF5LmRvY3VtZW50LmRhdGEKRG9jdW1lbnREYXRhCnEEKYFxBX1xBihYDgAAAF9yZWZlcmVuY2VfZG9jcQdoAVgCAAAAaWRxCFggAAAAZmZjNTY3ODg3MzAyMTFlY2E4NjMxZTAwOGEzNjZkNDlxCVgJAAAAcGFyZW50X2lkcQpOWAsAAABncmFudWxhcml0eXELTlgJAAAAYWRqYWNlbmN5cQxOWAYAAABidWZmZXJxDU5YBAAAAGJsb2JxDk5YCQAAAG1pbWVfdHlwZXEPWAoAAAB0ZXh0L3BsYWlucRBYBAAAAHRleHRxEVgFAAAAaGVsbG9xElgHAAAAY29udGVudHETTlgGAAAAd2VpZ2h0cRROWAMAAAB1cmlxFU5YBAAAAHRhZ3NxFk5YBgAAAG9mZnNldHEXTlgIAAAAbG9jYXRpb25xGE5YCQAAAGVtYmVkZGluZ3EZXXEaKEsBSwJLA2VYCAAAAG1vZGFsaXR5cRtOWAsAAABldmFsdWF0aW9uc3EcTlgGAAAAc2NvcmVzcR1OWAYAAABjaHVua3NxHk5YBwAAAG1hdGNoZXNxH051YnNiLg==
+</pre></div>
+</div>
+<p>You can set <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> to get a more compact string:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>664
+156
+</pre></div>
+</div>
+<p>Note that the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> must be followed when using <code class="docutils literal notranslate"><span class="pre">.from_base64</span></code>.</p>
+</section>
 <section id="from-to-dict">
 <h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this headline">¶</a></h2>
 <div class="admonition important">
@@ -545,7 +575,7 @@ mime_type: "image/jpeg"
 </section>
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
-<p>Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list" title="docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_list()</span></code></a> that allows one to serialize multiple Documents much faster and more compact.</p>
+<p>Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and <a class="reference internal" href="../../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list" title="docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_list()</span></code></a> that allows one to <a class="reference internal" href="../../documentarray/serialization/"><span class="doc std std-doc">serialize multiple Documents much faster and more compact</span></a>.</p>
 </section>
 </section>
 
@@ -609,6 +639,7 @@ mime_type: "image/jpeg"
 <li><a class="reference internal" href="#">Serialization</a><ul>
 <li><a class="reference internal" href="#from-to-json">From/to JSON</a></li>
 <li><a class="reference internal" href="#from-to-bytes">From/to bytes</a></li>
+<li><a class="reference internal" href="#from-to-base64">From/to base64</a></li>
 <li><a class="reference internal" href="#from-to-dict">From/to dict</a></li>
 <li><a class="reference internal" href="#from-to-protobuf">From/to Protobuf</a></li>
 <li><a class="reference internal" href="#what-s-next">What’s next?</a></li>

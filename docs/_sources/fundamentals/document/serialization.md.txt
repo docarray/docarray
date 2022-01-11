@@ -101,6 +101,43 @@ If you go with default `protcol` and `compress` settings, you can simply use `by
 ```
 
 
+## From/to base64
+
+```{important}
+Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
+```
+
+In some cases such as in REST API, you are allowed only to send/receive string not bytes. You can serialize Document into base64 string via {meth}`~docarray.document.mixins.porting.PortingMixin.to_base64` and load it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_base64`.
+
+```python
+from docarray import Document
+d = Document(text='hello', embedding=[1, 2, 3])
+
+print(d.to_base64())
+```
+
+```text
+gANjZG9jYXJyYXkuZG9jdW1lbnQKRG9jdW1lbnQKcQApgXEBfXECWAUAAABfZGF0YXEDY2RvY2FycmF5LmRvY3VtZW50LmRhdGEKRG9jdW1lbnREYXRhCnEEKYFxBX1xBihYDgAAAF9yZWZlcmVuY2VfZG9jcQdoAVgCAAAAaWRxCFggAAAAZmZjNTY3ODg3MzAyMTFlY2E4NjMxZTAwOGEzNjZkNDlxCVgJAAAAcGFyZW50X2lkcQpOWAsAAABncmFudWxhcml0eXELTlgJAAAAYWRqYWNlbmN5cQxOWAYAAABidWZmZXJxDU5YBAAAAGJsb2JxDk5YCQAAAG1pbWVfdHlwZXEPWAoAAAB0ZXh0L3BsYWlucRBYBAAAAHRleHRxEVgFAAAAaGVsbG9xElgHAAAAY29udGVudHETTlgGAAAAd2VpZ2h0cRROWAMAAAB1cmlxFU5YBAAAAHRhZ3NxFk5YBgAAAG9mZnNldHEXTlgIAAAAbG9jYXRpb25xGE5YCQAAAGVtYmVkZGluZ3EZXXEaKEsBSwJLA2VYCAAAAG1vZGFsaXR5cRtOWAsAAABldmFsdWF0aW9uc3EcTlgGAAAAc2NvcmVzcR1OWAYAAABjaHVua3NxHk5YBwAAAG1hdGNoZXNxH051YnNiLg==
+```
+
+You can set `protocol` and `compress` to get a more compact string:
+
+```python
+from docarray import Document
+d = Document(text='hello', embedding=[1, 2, 3])
+
+print(len(d.to_base64()))
+print(len(d.to_base64(protocol='protobuf', compress='lz4')))
+```
+
+```text
+664
+156
+```
+
+Note that the same `protocol` and `compress` must be followed when using `.from_base64`.
+
+
 ## From/to dict
 
 ```{important}
@@ -165,4 +202,4 @@ One can refer to the [Protobuf specification of `Document`](../../proto/index.md
 
 ## What's next?
 
-Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes`, {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_json`, and {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_list` that allows one to serialize multiple Documents much faster and more compact.
+Serializing single Document can be useful but often we want to do things in bulk, say hundreds or one million Documents at once. In that case, looping over each Document and serializing one by one is inefficient. In DocumentArray, we will introduce the similar interfaces {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes`, {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_json`, and {meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_list` that allows one to [serialize multiple Documents much faster and more compact](../documentarray/serialization.md).

@@ -410,6 +410,7 @@
 <ul class="simple">
 <li><p>JSON string: <code class="docutils literal notranslate"><span class="pre">.from_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_json()</span></code></p></li>
 <li><p>Bytes (compressed): <code class="docutils literal notranslate"><span class="pre">.from_bytes()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code></p></li>
+<li><p>Base64 (compressed): <code class="docutils literal notranslate"><span class="pre">.from_base64()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_base64()</span></code></p></li>
 <li><p>Protobuf Message: <code class="docutils literal notranslate"><span class="pre">.from_protobuf()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_protobuf()</span></code></p></li>
 <li><p>Python List: <code class="docutils literal notranslate"><span class="pre">.from_list()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_list()</span></code></p></li>
 <li><p>Pandas Dataframe: <code class="docutils literal notranslate"><span class="pre">.from_dataframe()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_dataframe()</span></code></p></li>
@@ -548,6 +549,42 @@
 </div>
 <p>Here <code class="docutils literal notranslate"><span class="pre">Delimiter</span></code> is a 16-bytes separator such as <code class="docutils literal notranslate"><span class="pre">b'g\x81\xcc\x1c\x0f\x93L\xed\xa2\xb0s)\x9c\xf9\xf6\xf2'</span></code> used for setting the boundary of each Document’s serialization. Given a <code class="docutils literal notranslate"><span class="pre">to_bytes(protocol='pickle/protobuf')</span></code> binary string, once we know the first 16 bytes, the boundary is clear. Consequently, one can leverage this format to stream Documents, drop, skip, or early-stop, etc.</p>
 </section>
+</section>
+<section id="from-to-base64">
+<h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+</div>
+<p>Serialize into base64 can be useful when binary string is not allowed, e.g. in REST API. This can be easily done via <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_base64" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_base64" title="docarray.array.mixins.io.binary.BinaryIOMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>. Like in binary serialization, one can specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">d_str</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d_str</span><span class="p">),</span> <span class="n">d_str</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>176 BCJNGEBAwHUAAAD/Iw+uQdpL9UDNsfvomZb8m7sKIGRkNTIyOTQyNzMwMzExZWNiM2I1MWUwMDhhMzY2ZDQ5MgAEP2FiNDIAHD9iMTgyAB0vNWUyAB0fYTIAHh9myAAdP2MzYZYAHD9jODAyAB0fZDIAHT9kMTZkAABQNjZkNDkAAAAA
+</pre></div>
+</div>
+<p>To deserialize, remember to set the correct <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_base64</span><span class="p">(</span><span class="n">d_str</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span> 
+<span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>  Length                 10       
+  Homogenous Documents   True     
+  Common Attributes      ('id',)  
+                                  
+                     Attributes Summary                     
+                                                            
+  Attribute   Data type   #Unique values   Has empty value  
+ ────────────────────────────────────────────────────────── 
+  id          ('str',)    10               False                                                                    
+</pre></div>
+</div>
 </section>
 <section id="from-to-protobuf">
 <h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this headline">¶</a></h2>
@@ -700,6 +737,7 @@ docs {
 <li><a class="reference internal" href="#wire-format-of-pickle-and-protobuf">Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#from-to-base64">From/to base64</a></li>
 <li><a class="reference internal" href="#from-to-protobuf">From/to Protobuf</a></li>
 <li><a class="reference internal" href="#from-to-list">From/to list</a></li>
 <li><a class="reference internal" href="#from-to-dataframe">From/to dataframe</a></li>
