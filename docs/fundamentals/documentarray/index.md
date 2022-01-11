@@ -18,7 +18,7 @@ Then this is a DocumentArray:
 
 In a nutshell, you can simply consider it as a Python `list`, as it implements **all** list interfaces. That is, if you know how to use Python `list`, you already know how to use DocumentArray.
 
-It is also powerful as Numpy `ndarray`, allowing you to [access elements](access-elements.md) and [attributes](access-attributes.md).
+It is also powerful as Numpy `ndarray` and Pandas `DataFrame`, allowing you to efficiently [access elements](access-elements.md) and [attributes](access-attributes.md) of contained Documents.
 
 What makes it more exciting is those advanced features of DocumentArray. These features greatly accelerate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
 
