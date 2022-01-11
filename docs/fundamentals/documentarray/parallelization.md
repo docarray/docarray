@@ -69,7 +69,8 @@ By default, parallelization is conducted with `thread` backend, i.e. multi-threa
 ```{admonition} When to choose process or thread backend?
 :class: important
 
-It depends on how your `func` in `.apply(func)` look like:
+It depends on how your `func` in `.apply(func)` look like, here are some tips:
 - First, if you want `func` to modify elements inplace, the you can only use `thread` backend. With `process` backend you can only rely on the return values of `.map()`, the modification happens inside `func` is lost.
 - Second, follow what people often suggests: IO-bound `func` uses `thread`, CPU-bound `func` uses `process`.
+- Last, ignore the second rule and what people told you. Test it by yourself and use whatever faster. 
 ```
