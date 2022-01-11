@@ -3,6 +3,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -96,4 +97,30 @@
  - [[```a4b25698```](https://github.com/jina-ai/docarray/commit/a4b2569893b6d47c832dc0deda8ab7c8f70e552a)] __-__ remove super long filenames (*Han Xiao*)
  - [[```d703b2be```](https://github.com/jina-ai/docarray/commit/d703b2be3b507fdf218d472c45ff76aa7add4db4)] __-__ fix readme (*Han Xiao*)
  - [[```a571e003```](https://github.com/jina-ai/docarray/commit/a571e003c3961519a6eb93c8718d6929febb4110)] __-__ __version__: the next version will be 0.1.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-4></a>
+## Release Note (`0.1.4`)
+
+> Release time: 2022-01-11 17:59:01
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```74b9405a```](https://github.com/jina-ai/docarray/commit/74b9405a76707f04ac380b0e5883e82118896571)] __-__ add serialization to base64 (#33) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```5c1fb558```](https://github.com/jina-ai/docarray/commit/5c1fb5582a8645be7ebddc9f165670edede1a725)] __-__ fix match score (#32) (*Joan Fontanals*)
+ - [[```3a906db9```](https://github.com/jina-ai/docarray/commit/3a906db911c3b80b9adab07a1b591b08a6da6d1f)] __-__ __array__: remove the support of singleton boolean index (#31) (*Han Xiao*)
+ - [[```79ad2362```](https://github.com/jina-ai/docarray/commit/79ad2362df1e67d401dac19e1af5156c7959aaea)] __-__ __array__: fix edge case on single boolean index (#28) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```beeb3226```](https://github.com/jina-ai/docarray/commit/beeb3226b61f52c51d1c8c00d69fc5b1c47cd6cf)] __-__ __docs__: add comparision to awkarray and zarr (*Han Xiao*)
+ - [[```8c39f51c```](https://github.com/jina-ai/docarray/commit/8c39f51c933653ee21b476bf25ef1288c25d4f9a)] __-__ __version__: the next version will be 0.1.4 (*Jina Dev Bot*)
 
