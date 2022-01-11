@@ -10,11 +10,11 @@ The table below summarizes all indexing routines that DocumentArray supports. Yo
 | Indexing routine    | Example                                                                      | Return         |
 |---------------------|------------------------------------------------------------------------------|----------------|
 | by integer          | `da[1]`, `da[-1]`                                                            | Document       |
-| by integers         | `da[1,2,3]`                                                                  | DocumentArray  |
+| by integers         | `da[[1,2,3]]`                                                                  | DocumentArray  |
 | by slice            | `da[1:10:2]`, `da[5:]`                                                       | DocumentArray  |
 | by `id`             | `da['a04633546e6211ec8ad31e008a366d49']`                                     | Document       |
 | by `id`s            | `da['a04633546e6211ec8ad31e008a366d49', 'af7923406e6211ecbc811e008a366d49']` | DocumentArray  |
-| by boolean mask     | `da[True, False, True, False] `                                              | DocumentArray  |
+| by boolean mask     | `da[[True, False, True, False]] `                                              | DocumentArray  |
 | by Ellipsis         | `da[...]`                                                                    | DocumentArray |
 | by nested structure | `da['@cm,m,c']`, `da['@c1:3m']`                                              | DocumentArray |
 
