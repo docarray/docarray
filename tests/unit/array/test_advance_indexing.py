@@ -229,5 +229,11 @@ def test_single_boolean_and_padding():
     with pytest.raises(IndexError):
         da[True]
 
+    with pytest.raises(IndexError):
+        da[True] = Document()
+
+    with pytest.raises(IndexError):
+        del da[True]
+
     assert len(da[True, False]) == 1
     assert len(da[False, False]) == 0
