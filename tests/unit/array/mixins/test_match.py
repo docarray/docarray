@@ -515,3 +515,34 @@ def test_diff_framework_match(ndarray_val):
     da = DocumentArray.empty(10)
     da.embeddings = ndarray_val
     da.match(da)
+
+
+def test_match_ensure_scores_unique():
+    import numpy as np
+    from docarray import DocumentArray
+
+    da1 = DocumentArray.empty(4)
+    da1.embeddings = np.array(
+        [[0, 0, 0, 0, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 0], [1, 2, 2, 1, 0]]
+    )
+
+    da2 = DocumentArray.empty(5)
+    da2.embeddings = np.array(
+        [
+            [0.0, 0.1, 0.0, 0.0, 0.0],
+            [1.0, 0.1, 0.0, 0.0, 0.0],
+            [1.0, 1.2, 1.0, 1.0, 0.0],
+            [1.0, 2.2, 2.0, 1.0, 0.0],
+            [4.0, 5.2, 2.0, 1.0, 0.0],
+        ]
+    )
+
+    da1.match(da2, metric='euclidean', only_id=False, limit=5)
+
+    assert len(da1) == 4
+    for query in da1:
+        previous_score = -10000
+        assert len(query.matches) == 5
+        for m in query.matches:
+            assert m.scores['euclidean'].value >= previous_score
+            previous_score = m.scores['euclidean'].value

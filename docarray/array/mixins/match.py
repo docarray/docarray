@@ -121,7 +121,7 @@ class MatchMixin:
                 if only_id:
                     d = Document(id=rhv[_id].id)
                 else:
-                    d = rhv[int(_id)]  # type: Document
+                    d = Document(rhv[int(_id)], copy=True)  # type: Document
 
                 if d.id in lhv:
                     d = Document(
