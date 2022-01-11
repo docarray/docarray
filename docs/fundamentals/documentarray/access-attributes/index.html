@@ -353,7 +353,7 @@
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
     <ul>
         <li class="toctree-l1">
-            <a class="reference internal" href="#">
+            <a class="reference external" href="https://docs.jina.ai">
                 <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
                 Jina</a></li>
@@ -365,7 +365,7 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+        <li class="toctree-l1"><a class="reference internal" href="#">
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
             DocArray</a></li>
@@ -532,8 +532,8 @@
 </section>
 <section id="auto-ravel-on-ndarray">
 <h2>Auto-ravel on NdArray<a class="headerlink" href="#auto-ravel-on-ndarray" title="Permalink to this headline">¶</a></h2>
-<p>Attribute selectors <code class="docutils literal notranslate"><span class="pre">blob</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> behave a bit differently. Instead of relying on Python List for input &amp; return when get/set, they automatically ravel/unravel the NdArray-like object <a class="footnote-reference brackets" href="#id2" id="id1">1</a> for you.</p>
-<p>Here is an example,</p>
+<p>Attribute selectors <code class="docutils literal notranslate"><span class="pre">blob</span></code> and <code class="docutils literal notranslate"><span class="pre">embedding</span></code> behave a bit differently. Instead of relying on Python List for input &amp; return when get/set, they automatically ravel/unravel the NdArray-like object <a class="footnote-reference brackets" href="#id3" id="id1">1</a> for you.</p>
+<p>Here is an example, where one may expect that <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'embedding']</span></code> gives you a list of three <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">10)</span></code> COO matrices. But it auto ravels the results and returns as a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -558,6 +558,8 @@
 &lt;class 'scipy.sparse.coo.coo_matrix'&gt; (1, 10)
 </pre></div>
 </div>
+<p>Auto unravel works in a similar way, we just assign a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix as <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and it auto breaks into three and assign them into the three Documents.</p>
+<p>Of course, this is not limited to scipy sparse matrix. Any NdArray-like<a class="footnote-reference brackets" href="#id3" id="id2">1</a> object would work. The same logic applies also to <code class="docutils literal notranslate"><span class="pre">.blobs</span></code> attribute.</p>
 </section>
 <section id="dunder-syntax-for-nested-attributes">
 <h2>Dunder syntax for nested attributes<a class="headerlink" href="#dunder-syntax-for-nested-attributes" title="Permalink to this headline">¶</a></h2>
@@ -620,7 +622,7 @@
 </div>
 <hr class="footnotes docutils"/>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="id3"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
 <dd><p>NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse &amp; dense array.</p>
 </dd>
 </dl>
@@ -659,7 +661,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 10, 2022.
+                    Last updated on Jan 11, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

@@ -353,7 +353,7 @@
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
     <ul>
         <li class="toctree-l1">
-            <a class="reference internal" href="#">
+            <a class="reference external" href="https://docs.jina.ai">
                 <img class="sidebar-ecosys-logo only-light-line" src="_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="_static/search-dark.svg">
                 Jina</a></li>
@@ -365,7 +365,7 @@
             <img class="sidebar-ecosys-logo only-light-line" src="_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="_static/finetuner-dark.svg">
             Finetuner</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+        <li class="toctree-l1"><a class="reference internal" href="#">
             <img class="sidebar-ecosys-logo only-light-line" src="_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="_static/docarray-dark.svg">
             DocArray</a></li>
@@ -413,7 +413,7 @@
 <p>🚡 <strong>Portable</strong>: ready-to-wire at anytime with efficient and compact serialization from/to Protobuf, bytes, JSON, CSV, dataframe.</p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
-<p>The latest version of DocArray is 0.1.3.</p>
+<p><img alt="PyPI" src="https://img.shields.io/pypi/v/docarray?color=%23ffffff&amp;label=%20"/> is the latest version.</p>
 <p>Make sure you have Python 3.7+ and <code class="docutils literal notranslate"><span class="pre">numpy</span></code> installed on Linux/Mac/Windows:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Basic install</label><div class="tab-content docutils">
@@ -422,7 +422,13 @@
 </div>
 <p>No extra dependency will be installed.</p>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Full install</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Basic install via Conda</label><div class="tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge docarray
+</pre></div>
+</div>
+<p>No extra dependency will be installed.</p>
+</div>
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Full install</label><div class="tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">"docarray[full]"</span>
 </pre></div>
 </div>
@@ -484,7 +490,7 @@
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Jina 3.x users do not need to install <code class="docutils literal notranslate"><span class="pre">docarray</span></code> separately, as it is shipped with Jina. To check your Jina version, type <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">-vf</span></code> in the console.</p>
+<p>Jina 3.x<a class="footnote-reference brackets" href="#id2" id="id1">1</a> users do not need to install <code class="docutils literal notranslate"><span class="pre">docarray</span></code> separately, as it is shipped with Jina. To check your Jina version, type <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">-vf</span></code> in the console.</p>
 <p>However, if the printed version is smaller than <code class="docutils literal notranslate"><span class="pre">0.1.0</span></code>, say <code class="docutils literal notranslate"><span class="pre">0.0.x</span></code>, then you are
 not installing <code class="docutils literal notranslate"><span class="pre">docarray</span></code> correctly. You are probably still using an old <code class="docutils literal notranslate"><span class="pre">docarray</span></code> shipped with Jina 2.x.</p>
 </div>
@@ -517,6 +523,12 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
 </div>
 <hr class="docutils"/>
 <p><a class="reference internal" href="genindex/"><span class="std std-ref">Index</span></a> | <a class="reference internal" href="py-modindex/"><span class="std std-ref">Module Index</span></a></p>
+<hr class="footnotes docutils"/>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p>Jina 3.0rc will be released in Feb. 2022. Stay tune!</p>
+</dd>
+</dl>
 </section>
 </section>
 
@@ -540,7 +552,7 @@ and <a class="reference external" href="https://youtube.com/c/jina-ai">live stre
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 10, 2022.
+                    Last updated on Jan 11, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

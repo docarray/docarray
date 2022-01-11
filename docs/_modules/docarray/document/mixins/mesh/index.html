@@ -327,7 +327,7 @@
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
     <ul>
         <li class="toctree-l1">
-            <a class="reference internal" href="#">
+            <a class="reference external" href="https://docs.jina.ai">
                 <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/search-dark.svg">
                 Jina</a></li>
@@ -339,7 +339,7 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/finetuner-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/finetuner-dark.svg">
             Finetuner</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://docarray.jina.ai">
+        <li class="toctree-l1"><a class="reference internal" href="#">
             <img class="sidebar-ecosys-logo only-light-line" src="../../../../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../../../_static/docarray-dark.svg">
             DocArray</a></li>
@@ -403,20 +403,19 @@
 <span class="sd">        """</span>
         <span class="kn">import</span> <span class="nn">trimesh</span>
 
-        <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">deduplicated</span><span class="p">()</span>
-
-        <span class="n">pcs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">geo</span><span class="p">:</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span>
-            <span class="n">pcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
-
         <span class="k">if</span> <span class="n">as_chunks</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
 
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pcs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">p</span><span class="p">))</span>
+            <span class="c1"># try to coerce everything into a scene</span>
+            <span class="n">scene</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'scene'</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">scene</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">geo</span><span class="p">:</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">geo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">samples</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">pcs</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+            <span class="c1"># combine a scene into a single mesh</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'mesh'</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
             </article>
@@ -429,7 +428,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 10, 2022.
+                    Last updated on Jan 11, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
