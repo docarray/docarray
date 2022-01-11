@@ -205,7 +205,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         index: 'DocumentArrayIndexType',
         value: Union['Document', Sequence['Document']],
     ):
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
             self._data[index] = value
             self._id2offset[value.id] = index
@@ -289,7 +289,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def __delitem__(self, index: 'DocumentArrayIndexType'):
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
             self._id2offset.pop(self._data[index].id)
             del self._data[index]
