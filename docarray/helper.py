@@ -14,6 +14,8 @@ __resources_path__ = os.path.join(
     'resources',
 )
 
+__default_pickle_protocol__ = 4
+
 
 def typename(obj):
     """
@@ -294,15 +296,19 @@ def decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
 def get_compress_ctx(algorithm: Optional[str] = None, mode: str = 'wb'):
     if algorithm == 'lz4':
         import lz4.frame
+
         compress_ctx = lambda x: lz4.frame.LZ4FrameFile(x, mode)
     elif algorithm == 'gzip':
         import gzip
+
         compress_ctx = lambda x: gzip.GzipFile(fileobj=x, mode=mode)
     elif algorithm == 'bz2':
         import bz2
+
         compress_ctx = lambda x: bz2.BZ2File(x, mode)
     elif algorithm == 'lzma':
         import lzma
+
         compress_ctx = lambda x: lzma.LZMAFile(x, mode)
     else:
         compress_ctx = None

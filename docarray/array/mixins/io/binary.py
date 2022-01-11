@@ -4,7 +4,13 @@ import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional
 
-from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_bytes
+from ....helper import (
+    random_uuid,
+    __windows__,
+    __default_pickle_protocol__,
+    get_compress_ctx,
+    decompress_bytes,
+)
 
 if TYPE_CHECKING:
     from ....types import T
@@ -57,7 +63,7 @@ class BinaryIOMixin:
 
                 return cls.from_protobuf(dap)
             elif protocol == 'pickle-array':
-                return pickle.loads(d)
+                return pickle.loads(d, protocol=__default_pickle_protocol__)
             else:
                 _len = len(random_uuid().bytes)
                 _binary_delimiter = d[:_len]  # first get delimiter
@@ -144,7 +150,7 @@ class BinaryIOMixin:
                 if protocol == 'protobuf-array':
                     f.write(self.to_protobuf().SerializePartialToString())
                 elif protocol == 'pickle-array':
-                    f.write(pickle.dumps(self))
+                    f.write(pickle.dumps(self, protocol=__default_pickle_protocol__))
                 else:
                     if _show_progress:
                         from rich.progress import track as _track

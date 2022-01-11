@@ -2,7 +2,7 @@ import dataclasses
 import pickle
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any
 
-from ...helper import compress_bytes, decompress_bytes
+from ...helper import compress_bytes, decompress_bytes, __default_pickle_protocol__
 
 if TYPE_CHECKING:
     from ...types import T
@@ -42,7 +42,7 @@ class PortingMixin:
         self, protocol: str = 'pickle', compress: Optional[str] = None
     ) -> bytes:
         if protocol == 'pickle':
-            bstr = pickle.dumps(self)
+            bstr = pickle.dumps(self, protocol=__default_pickle_protocol__)
         elif protocol == 'protobuf':
             bstr = self.to_protobuf().SerializePartialToString()
         else:
@@ -67,7 +67,7 @@ class PortingMixin:
         """
         bstr = decompress_bytes(data, algorithm=compress)
         if protocol == 'pickle':
-            d = pickle.loads(bstr)
+            d = pickle.loads(bstr, protocol=__default_pickle_protocol__)
         elif protocol == 'protobuf':
             from ...proto.docarray_pb2 import DocumentProto
 
