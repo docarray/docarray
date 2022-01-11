@@ -4,7 +4,8 @@
 DocArray is designed to be "ready-to-wire" at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
 
 - JSON string: `.from_json()`/`.to_json()` 
-- Bytes (compressed): `.from_bytes()`/`.to_bytes()` 
+- Bytes (compressed): `.from_bytes()`/`.to_bytes()`
+- Base64 (compressed): `.from_base64()`/`.to_base64()` 
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
 - Python List: `.from_list()`/`.to_list()`
 - Pandas Dataframe: `.from_dataframe()`/`.to_dataframe()`
@@ -140,6 +141,47 @@ When set `protocol=pickle` or `protobuf`, the result binary string looks like th
 ```
 
 Here `Delimiter` is a 16-bytes separator such as `b'g\x81\xcc\x1c\x0f\x93L\xed\xa2\xb0s)\x9c\xf9\xf6\xf2'` used for setting the boundary of each Document's serialization. Given a `to_bytes(protocol='pickle/protobuf')` binary string, once we know the first 16 bytes, the boundary is clear. Consequently, one can leverage this format to stream Documents, drop, skip, or early-stop, etc.
+
+## From/to base64
+
+```{important}
+Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
+```
+
+Serialize into base64 can be useful when binary string is not allowed, e.g. in REST API. This can be easily done via {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_base64` and {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.from_base64`. Like in binary serialization, one can specify `protocol` and `compress`:
+
+```python
+from docarray import DocumentArray
+da = DocumentArray.empty(10)
+
+d_str = da.to_base64(protocol='protobuf', compress='lz4')
+print(len(d_str), d_str)
+```
+
+```text
+176 BCJNGEBAwHUAAAD/Iw+uQdpL9UDNsfvomZb8m7sKIGRkNTIyOTQyNzMwMzExZWNiM2I1MWUwMDhhMzY2ZDQ5MgAEP2FiNDIAHD9iMTgyAB0vNWUyAB0fYTIAHh9myAAdP2MzYZYAHD9jODAyAB0fZDIAHT9kMTZkAABQNjZkNDkAAAAA
+```
+
+To deserialize, remember to set the correct `protocol` and `compress`:
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray.from_base64(d_str, protocol='protobuf', compress='lz4') 
+da.summary()
+```
+
+```text
+  Length                 10       
+  Homogenous Documents   True     
+  Common Attributes      ('id',)  
+                                  
+                     Attributes Summary                     
+                                                            
+  Attribute   Data type   #Unique values   Has empty value  
+ ────────────────────────────────────────────────────────── 
+  id          ('str',)    10               False                                                                    
+```
 
 ## From/to Protobuf
 

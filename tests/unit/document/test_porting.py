@@ -20,3 +20,12 @@ def test_dict_json(target):
         d1 = Document.from_dict(d.to_dict())
         d2 = Document.from_json(d.to_json())
         assert d1 == d2
+
+
+@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
+@pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
+def test_to_from_base64(protocol, compress):
+    d = Document(text='hello', embedding=[1, 2, 3])
+    d_r = Document.from_base64(d.to_base64(protocol, compress), protocol, compress)
+    assert d_r == d
+    assert d_r.embedding == [1, 2, 3]

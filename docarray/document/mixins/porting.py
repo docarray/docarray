@@ -1,6 +1,7 @@
 import dataclasses
 import pickle
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any
+import base64
 
 from ...helper import compress_bytes, decompress_bytes
 
@@ -86,3 +87,30 @@ class PortingMixin:
         return MessageToJson(
             self.to_protobuf(), preserving_proto_field_name=True, sort_keys=True
         )
+
+    def to_base64(
+        self, protocol: str = 'pickle', compress: Optional[str] = None
+    ) -> str:
+        """Serialize a Document object into as base64 string
+
+        :param protocol: protocol to use
+        :param compress: compress method to use
+        :return: a base64 encoded string
+        """
+        return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
+
+    @classmethod
+    def from_base64(
+        cls: Type['T'],
+        data: str,
+        protocol: str = 'pickle',
+        compress: Optional[str] = None,
+    ) -> 'T':
+        """Build Document object from binary bytes
+
+        :param data: a base64 encoded string
+        :param protocol: protocol to use
+        :param compress: compress method to use
+        :return: a Document object
+        """
+        return cls.from_bytes(base64.b64decode(data), protocol, compress)
