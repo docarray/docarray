@@ -3,6 +3,7 @@ import json
 import os.path
 import tempfile
 import threading
+import time
 import warnings
 from collections import Counter
 from math import sqrt, ceil, floor
@@ -220,21 +221,57 @@ class PlotMixin:
                 kwargs=dict(app=app, port=port, log_level='error'),
                 daemon=True,
             )
-            t_m.start()
             url_html_path = (
                 f'http://localhost:{port}/static/index.html?config={config_fn}'
             )
+            t_m.start()
             try:
-                import webbrowser
-
-                webbrowser.open(url_html_path, new=2)
+                _env = str(get_ipython())  # noqa
+                if 'ZMQInteractiveShell' in _env:
+                    _env = 'jupyter'
+                elif 'google.colab' in _env:
+                    _env = 'colab'
             except:
-                pass  # intentional pass, browser support isn't cross-platform
-            finally:
-                print(
-                    f'You should see a webpage opened in your browser, '
-                    f'if not, you may open {url_html_path} manually'
+                _env = 'local'
+            if _env == 'jupyter':
+                warnings.warn(
+                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
+                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
                 )
+                time.sleep(
+                    1
+                )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
+                from IPython.display import IFrame, display  # noqa
+
+                display(IFrame(src=url_html_path, width="100%", height=600))
+            elif _env == 'colab':
+                from google.colab.output import eval_js  # noqa
+
+                colab_url = eval_js(f'google.colab.kernel.proxyPort({port})')
+                colab_url += f'/static/index.html?config={config_fn}'
+                warnings.warn(
+                    f'Showing iframe in cell, you may want to open {colab_url} in a new tab for better experience. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
+                )
+                time.sleep(
+                    1
+                )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
+                from IPython.display import IFrame, display
+
+                display(IFrame(src=colab_url, width="100%", height=600))
+            elif _env == 'local':
+                try:
+                    import webbrowser
+
+                    webbrowser.open(url_html_path, new=2)
+                except:
+                    pass  # intentional pass, browser support isn't cross-platform
+                finally:
+                    print(
+                        f'You should see a webpage opened in your browser, '
+                        f'if not, you may open {url_html_path} manually'
+                    )
             t_m.join()
         return path
 

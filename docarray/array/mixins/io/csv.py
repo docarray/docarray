@@ -26,7 +26,8 @@ class CsvIOMixin:
             file_ctx = nullcontext(file)
         else:
             file_ctx = open(file, 'w')
-        np.savetxt(file_ctx, self.embeddings, **kwargs)
+        with file_ctx:
+            np.savetxt(file_ctx, self.embeddings, **kwargs)
 
     def save_csv(
         self,
