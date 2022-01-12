@@ -93,6 +93,7 @@ def test_texts_getter_da(da):
     # so non-set str field in Pb is ''
     assert not da.texts
 
+
 @pytest.mark.parametrize('da', da_and_dam())
 def test_setter_by_sequences_in_selected_docs_da(da):
 
@@ -107,6 +108,7 @@ def test_setter_by_sequences_in_selected_docs_da(da):
 
     da[[0, 1], 'id'] = ['12', '34']
     assert ['12', '34'] == da[[0, 1], 'id']
+
 
 @pytest.mark.parametrize('da', da_and_dam())
 def test_texts_wrong_len(da):
