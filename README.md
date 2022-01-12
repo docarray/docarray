@@ -226,7 +226,7 @@ groundtruth = DocumentArray(
     Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))]) for d in left_da)
 ```
 
-Here we create a new DocArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
+Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
 
 Now let's check recall rate from 1 to 5 over the full dataset:
 
@@ -256,7 +256,7 @@ If you think a pretrained ResNet50 is good enough, let me tell you with [Finetun
 
 ### Save results
 
-You can save a DocArray to binary, JSON, dict, DataFrame, CSV or Protobuf message with/without compression. In its simplest form,
+You can save a DocumentArray to binary, JSON, dict, DataFrame, CSV or Protobuf message with/without compression. In its simplest form,
 
 ```python
 left_da.save('left_da.bin')
