@@ -5,6 +5,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -145,4 +146,25 @@
 ### 🍹 Other Improvements
 
  - [[```f0d222d5```](https://github.com/jina-ai/docarray/commit/f0d222d58848ef31e06b0ba62165a2197b83fa1f)] __-__ __version__: the next version will be 0.1.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-6></a>
+## Release Note (`0.1.6`)
+
+> Release time: 2022-01-12 15:51:07
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```699c041e```](https://github.com/jina-ai/docarray/commit/699c041e03bb6a499211226282ac188071f6baf1)] __-__ __array__: auto render in colab and jupyter (#40) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```934d57df```](https://github.com/jina-ai/docarray/commit/934d57df8fc65c3ddee992ef7e32410ee1562ef4)] __-__ __docs__: fix docs what-is banner (*Han Xiao*)
+ - [[```2761fff8```](https://github.com/jina-ai/docarray/commit/2761fff8e4d8bba620f3846d47ae877050ca74e5)] __-__ __docs__: fix docs what-is (*Han Xiao*)
+ - [[```f248a346```](https://github.com/jina-ai/docarray/commit/f248a346a50af5ffb654d9e4482ebcda45d8efa6)] __-__ __version__: the next version will be 0.1.6 (*Jina Dev Bot*)
 
