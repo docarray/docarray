@@ -59,7 +59,7 @@ def test_plot_embeddings_same_path(tmpdir):
 
 def test_summary_homo_hetero():
     da = DocumentArray.empty(100)
-    da.get_attributes()
+    da._get_attributes()
     da.summary()
 
     da[0].pop('id')
@@ -69,4 +69,4 @@ def test_summary_homo_hetero():
 def test_empty_get_attributes():
     da = DocumentArray.empty(10)
     da[0].pop('id')
-    print(da.get_attributes('id'))
+    print(da[:, 'id'])

@@ -84,6 +84,23 @@ print(da['7e27fa246e6611ec9a441e008a366d49', '7e27fb826e6611ec9a441e008a366d49']
 
 No need to worry about efficiency here, it is `O(1)`.
 
+Based on the same technique, one can check if a Document is inside a DocumentArray via Python `in` syntax:
+
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray.empty(10)
+
+da[0] in da
+Document() in da
+```
+
+```text
+True
+False
+```
+
+
 ## Index by boolean mask
 
 You can use a boolean mask to select Documents. This becomes useful when you want to update or filter our certain Documents:
@@ -102,6 +119,8 @@ print(da)
 ```text
 <DocumentArray (length=50) at 4513619088>
 ```
+
+Note that if the length of the boolean mask is smaller than the length of a DocumentArray, then the remaining part is padded to `False`. 
 
 (path-string)=
 ## Index by nested structure

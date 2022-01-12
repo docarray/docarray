@@ -22,18 +22,17 @@ class MeshDataMixin:
         """
         import trimesh
 
-        mesh = trimesh.load_mesh(self.uri).deduplicated()
-
-        pcs = []
-        for geo in mesh.geometry.values():
-            geo: trimesh.Trimesh
-            pcs.append(geo.sample(samples))
-
         if as_chunks:
             from .. import Document
 
-            for p in pcs:
-                self.chunks.append(Document(blob=p))
+            # try to coerce everything into a scene
+            scene = trimesh.load(self.uri, force='scene')
+            for geo in scene.geometry.values():
+                geo: trimesh.Trimesh
+                self.chunks.append(Document(blob=geo.sample(samples)))
         else:
-            self.blob = np.stack(pcs).squeeze()
+            # combine a scene into a single mesh
+            mesh = trimesh.load(self.uri, force='mesh')
+            self.blob = mesh.sample(samples)
+
         return self

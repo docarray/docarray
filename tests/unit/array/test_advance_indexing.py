@@ -219,3 +219,21 @@ def test_advance_selector_mixed():
 
     assert len(da[:, ('id', 'embedding', 'matches')]) == 3
     assert len(da[:, ('id', 'embedding', 'matches')][0]) == 10
+
+
+def test_single_boolean_and_padding():
+    from docarray import DocumentArray
+
+    da = DocumentArray.empty(3)
+
+    with pytest.raises(IndexError):
+        da[True]
+
+    with pytest.raises(IndexError):
+        da[True] = Document()
+
+    with pytest.raises(IndexError):
+        del da[True]
+
+    assert len(da[True, False]) == 1
+    assert len(da[False, False]) == 0

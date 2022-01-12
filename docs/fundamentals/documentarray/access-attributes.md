@@ -129,7 +129,7 @@ Attribute selectors `blob` and `embedding` behave a bit differently. Instead of 
 
 [^1]: NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse & dense array.
 
-Here is an example,
+Here is an example, where one may expect that `da[:, 'embedding']` gives you a list of three `(1, 10)` COO matrices. But it auto ravels the results and returns as a `(3, 10)` COO matrix:
 
 ```python
 import numpy as np
@@ -157,9 +157,13 @@ for d in da:
 <class 'scipy.sparse.coo.coo_matrix'> (1, 10)
 ```
 
+Auto unravel works in a similar way, we just assign a `(3, 10)` COO matrix as `.embeddings` and it auto breaks into three and assign them into the three Documents. 
+
+Of course, this is not limited to scipy sparse matrix. Any NdArray-like[^1] object would work. The same logic applies also to `.blobs` attribute.
+
 ## Dunder syntax for nested attributes
 
-Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder syntax. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
+Some attributes are nested by nature, e.g. `.tags` and `.scores`. Accessing the deep nested value is easy thanks to the dunder (double under) expression. You can access `.tags['key1']` via `d[:, 'tags__key1']`. 
 
 Let's see an example,
 

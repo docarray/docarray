@@ -7,7 +7,7 @@
 
 ## Install
 
-The latest version of DocArray is {{ env.config.version }}.
+![PyPI](https://img.shields.io/pypi/v/docarray?color=%23ffffff&label=%20) is the latest version.
 
 Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 
@@ -15,6 +15,15 @@ Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 
 ```bash
 pip install docarray
+```
+
+No extra dependency will be installed.
+````
+
+````{tab} Basic install via Conda
+
+```bash
+conda install -c conda-forge docarray
 ```
 
 No extra dependency will be installed.
@@ -43,6 +52,8 @@ The following dependencies will be installed to enable additional features:
 Alternatively, you can first do basic installation and then install missing dependencies on-demand. 
 ````
 
+
+
 ```pycon
 >>> import docarray
 >>> docarray.__version__
@@ -51,14 +62,16 @@ Alternatively, you can first do basic installation and then install missing depe
 ```
 
 
+
+
 ```{important}
-Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
+Jina 3.x[^1] users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
 
 However, if the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 
 not installing `docarray` correctly. You are probably still using an old `docarray` shipped with Jina 2.x. 
 ```
 
-
+[^1]: Jina 3.0rc will be released in Feb. 2022. Stay tune!
 
 
 ```{include} ../README.md

@@ -85,7 +85,7 @@ def test_matching_retrieves_correct_number(
     D1.match(
         D2, metric='sqeuclidean', limit=limit, batch_size=batch_size, only_id=only_id
     )
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         if limit is None:
             assert len(m) == len(D2)
         else:
@@ -106,14 +106,14 @@ def test_matching_same_results_with_sparse(
     # use match with numpy arrays
     D1.match(D2, metric=metric, only_id=only_id)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
     # use match with sparse arrays
     D1_sp.match(D2_sp, metric=metric, is_sparse=True)
     distances_sparse = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_sparse.extend([d.scores[metric].value])
 
@@ -132,7 +132,7 @@ def test_matching_same_results_with_batch(
     # use match without batches
     D1.match(D2, metric=metric, only_id=only_id)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
@@ -140,7 +140,7 @@ def test_matching_same_results_with_batch(
     D1_batch.match(D2_batch, metric=metric, batch_size=10)
 
     distances_batch = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_batch.extend([d.scores[metric].value])
 
@@ -161,14 +161,14 @@ def test_matching_scipy_cdist(
     # match with our custom metric
     D1.match(D2, metric=metric)
     distances = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances.extend([d.scores[metric].value])
 
     # match with callable cdist function from scipy
     D1_scipy.match(D2, metric=scipy_cdist_metric, only_id=only_id)
     distances_scipy = []
-    for m in D1.get_attributes('matches'):
+    for m in D1[:, 'matches']:
         for d in m:
             distances_scipy.extend([d.scores[metric].value])
 
@@ -515,3 +515,34 @@ def test_diff_framework_match(ndarray_val):
     da = DocumentArray.empty(10)
     da.embeddings = ndarray_val
     da.match(da)
+
+
+def test_match_ensure_scores_unique():
+    import numpy as np
+    from docarray import DocumentArray
+
+    da1 = DocumentArray.empty(4)
+    da1.embeddings = np.array(
+        [[0, 0, 0, 0, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 0], [1, 2, 2, 1, 0]]
+    )
+
+    da2 = DocumentArray.empty(5)
+    da2.embeddings = np.array(
+        [
+            [0.0, 0.1, 0.0, 0.0, 0.0],
+            [1.0, 0.1, 0.0, 0.0, 0.0],
+            [1.0, 1.2, 1.0, 1.0, 0.0],
+            [1.0, 2.2, 2.0, 1.0, 0.0],
+            [4.0, 5.2, 2.0, 1.0, 0.0],
+        ]
+    )
+
+    da1.match(da2, metric='euclidean', only_id=False, limit=5)
+
+    assert len(da1) == 4
+    for query in da1:
+        previous_score = -10000
+        assert len(query.matches) == 5
+        for m in query.matches:
+            assert m.scores['euclidean'].value >= previous_score
+            previous_score = m.scores['euclidean'].value

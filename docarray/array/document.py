@@ -129,7 +129,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
     def __getitem__(
         self, index: 'DocumentArrayIndexType'
     ) -> Union['Document', 'DocumentArray']:
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             return self._data[int(index)]
         elif isinstance(index, str):
             if index.startswith('@'):
@@ -151,7 +151,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 if isinstance(_attrs, str):
                     _attrs = (index[1],)
 
-                return _docs.get_attributes(*_attrs)
+                return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
             elif isinstance(index[0], int):
@@ -205,7 +205,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         index: 'DocumentArrayIndexType',
         value: Union['Document', Sequence['Document']],
     ):
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
             self._data[index] = value
             self._id2offset[value.id] = index
@@ -289,7 +289,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def __delitem__(self, index: 'DocumentArrayIndexType'):
-        if isinstance(index, (int, np.generic)):
+        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
             self._id2offset.pop(self._data[index].id)
             del self._data[index]

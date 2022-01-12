@@ -234,3 +234,7 @@ def test_glb_converters():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.glb'))
     doc.load_uri_to_point_cloud_blob(2000)
     assert doc.blob.shape == (2000, 3)
+
+    doc.load_uri_to_point_cloud_blob(2000, as_chunks=True)
+    assert len(doc.chunks) == 1
+    assert doc.chunks[0].blob.shape == (2000, 3)

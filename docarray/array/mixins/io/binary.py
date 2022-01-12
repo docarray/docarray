@@ -1,5 +1,6 @@
 import io
 import os.path
+import base64
 import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class BinaryIOMixin:
-    """Save/load an array to a binary file. """
+    """Save/load an array to a binary file."""
 
     @classmethod
     def load_binary(
@@ -175,3 +176,26 @@ class BinaryIOMixin:
 
     def __bytes__(self):
         return self.to_bytes()
+
+    @classmethod
+    def from_base64(
+        cls: Type['T'],
+        data: str,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
+    ) -> 'T':
+        return cls.load_binary(
+            base64.b64decode(data),
+            protocol=protocol,
+            compress=compress,
+            _show_progress=_show_progress,
+        )
+
+    def to_base64(
+        self,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
+    ) -> str:
+        return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')

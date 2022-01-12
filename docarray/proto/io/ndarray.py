@@ -39,7 +39,7 @@ def read_ndarray(pb_msg: 'NdArrayProto') -> 'ArrayType':
 
             return sparse_coo_tensor(idx, val, shape)
     else:
-        if framework in {'numpy', 'torch', 'paddle', 'tensorflow'}:
+        if framework in {'numpy', 'torch', 'paddle', 'tensorflow', 'list'}:
             x = _get_dense_array(pb_msg.dense)
             return _to_framework_array(x, framework)
 
@@ -68,7 +68,7 @@ def flush_ndarray(pb_msg: 'NdArrayProto', value: 'ArrayType'):
                 pb_msg.cls_name = 'numpy'
                 _set_dense_array(pb_msg.dense, value)
             if framework == 'python':
-                pb_msg.cls_name = 'numpy'
+                pb_msg.cls_name = 'list'
                 _set_dense_array(pb_msg.dense, np.array(value))
             if framework == 'tensorflow':
                 pb_msg.cls_name = 'tensorflow'
@@ -144,3 +144,5 @@ def _to_framework_array(x, framework):
         from paddle import to_tensor
 
         return to_tensor(x)
+    elif framework == 'list':
+        return x.tolist()
