@@ -235,7 +235,7 @@ class PlotMixin:
                 _env = 'local'
             if _env == 'jupyter':
                 print(
-                    f'For better experience, you may want to open {url_html_path} manually. '
+                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
                     f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
                     f'Click "stop" button in the toolbar to move to the next cell.'
                 )
@@ -249,8 +249,9 @@ class PlotMixin:
                 from google.colab.output import eval_js
 
                 colab_url = eval_js(f'google.colab.kernel.proxyPort({port})')
+                colab_url += f'/static/index.html?config={config_fn}'
                 print(
-                    f'For better experience, you may want to open {colab_url} manually. '
+                    f'Showing iframe in cell, you may want to open {colab_url} in a new tab for better experience. '
                     f'Click "stop" button in the toolbar to move to the next cell.'
                 )
                 time.sleep(
