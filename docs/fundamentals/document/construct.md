@@ -100,6 +100,7 @@ d.chunks.append(Document(id='d1'))
 d.chunks[0].chunks.append(Document(id='d2'))
 
 d.matches.append(Document(id='d3'))
+d.matches[0].matches.append(Document(id='d4'))
 
 print(d)
 ```
