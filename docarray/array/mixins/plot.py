@@ -226,7 +226,7 @@ class PlotMixin:
             )
             t_m.start()
             try:
-                _env = get_ipython().__class__.__name__
+                _env = str(get_ipython())
                 if 'ZMQInteractiveShell' in _env:
                     _env = 'jupyter'
                 elif 'google.colab' in _env:
