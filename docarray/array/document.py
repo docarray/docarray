@@ -47,7 +47,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 self._rebuild_id2offset()
             elif isinstance(docs, DocumentArray):
                 self._data = docs._data
-                self._id_to_index = docs._id_to_index
+                self._id_to_index = docs._id2offset
             else:
                 self._data = list(docs)
                 self._rebuild_id2offset()
