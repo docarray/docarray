@@ -93,6 +93,12 @@ def test_texts_getter_da(da):
     # so non-set str field in Pb is ''
     assert not da.texts
 
+    da[[0], 'text'] = 'jina'
+    assert 'jina' in da[[0], 'text']
+
+    da[[0, 1], 'text'] = ['jina', 'jana']
+    assert ['jina', 'jana'] == da[[0, 1], 'text']
+
 
 @pytest.mark.parametrize('da', da_and_dam())
 def test_texts_wrong_len(da):
