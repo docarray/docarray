@@ -91,7 +91,7 @@ As one can see, you can convert a DocumentArray into AwkwardArray via `.to_list(
 
 [Zarr](https://zarr.readthedocs.io/en/stable/) is a format for the storage of chunked, compressed, N-dimensional arrays. I know Zarr quite long time ago, to me it is the package when a `numpy.ndarray` is so big to fit into memory. Zarr provides a comprehensive set of functions that allows one to chunk, compress, stream large NdArray. Hence, from that perspective, Zarr like `numpy.ndarray` focuses on numerical representation and computation.
 
-In DocArray, the basic element one would work with is a Document, not `ndarray`. The support of `ndarray` is important, but not the full story: in the context of deep learning engineering, it is often an intermediate representation of Document for computing, then being thrown away. Therefore, having a consistent data structure that can live *long enough* to cover creating, storing, computing, transferring, returning and rendering is a motivation behind DocArray.
+In DocArray, the basic element one would work with is a Document, not `ndarray`. The support of `ndarray` is important, but not the full story: in the context of deep learning engineering, `ndarray` is often an intermediate representation of Document for computing, then throw away. Therefore, having a consistent data structure that lives *long enough* to cover creating, storing, computing, transferring, returning and rendering is one of the major motivations of DocArray.
 
 ## To Jina Users
 

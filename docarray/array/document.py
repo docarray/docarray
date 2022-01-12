@@ -141,7 +141,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
                     if index[1] in self._id2offset:
@@ -228,7 +232,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 _d._data = _v._data
             self._rebuild_id2offset()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
                     if index[1] in self._id2offset:
@@ -320,7 +328,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             self._data.clear()
             self._id2offset.clear()
         elif isinstance(index, Sequence):
-            if isinstance(index, tuple) and len(index) == 2:
+            if (
+                isinstance(index, tuple)
+                and len(index) == 2
+                and isinstance(index[0], (slice, Sequence))
+            ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
                     if index[1] in self._id2offset:
