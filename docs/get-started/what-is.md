@@ -1,5 +1,9 @@
 # What is DocArray?
 
+```{figure} docarray-vs-banner.gif
+:scale: 0 %
+```
+
 - It is like JSON, but for intensive computation.
 - It is like `numpy.ndarray`, but for unstructured data. 
 - It is like `pandas.DataFrame`, but for nested and mixed media data with embeddings.
