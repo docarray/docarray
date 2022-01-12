@@ -131,6 +131,7 @@ from docarray import Document
 
 def preproc(d: Document):
     return (d.load_uri_to_image_blob()  # load
+             .set_image_blob_shape((200, 200))  # resize all to 200x200
              .set_image_blob_normalization()  # normalize color 
              .set_image_blob_channel_axis(-1, 0))  # switch color axis for the pytorch model later
 
@@ -207,7 +208,7 @@ Better see it.
 (DocumentArray(left_da[8].matches, copy=True)
     .apply(lambda d: d.set_image_blob_channel_axis(0, -1)
                       .set_image_blob_inv_normalization())
-    .plot_image_sprites('result.png'))
+    .plot_image_sprites())
 ```
 
 <p align="center">
