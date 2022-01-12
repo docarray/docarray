@@ -238,5 +238,11 @@ def test_ids():
 
     da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
 
+    # da[id, attribute]
+    assert da['1', 'id'] == 1
+    # da[Sequence[id]]
     assert len(da['1', '2']) == 2
     assert len(da['1', '2', '3']) == 3
+    # da[Sequence[id], attribute]
+    assert len(da[['1', '2'], 'id']) == 2
+    assert len(da[['1', '2', '3'], 'id']) == 3
