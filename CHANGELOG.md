@@ -4,6 +4,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -123,4 +124,25 @@
 
  - [[```beeb3226```](https://github.com/jina-ai/docarray/commit/beeb3226b61f52c51d1c8c00d69fc5b1c47cd6cf)] __-__ __docs__: add comparision to awkarray and zarr (*Han Xiao*)
  - [[```8c39f51c```](https://github.com/jina-ai/docarray/commit/8c39f51c933653ee21b476bf25ef1288c25d4f9a)] __-__ __version__: the next version will be 0.1.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-5></a>
+## Release Note (`0.1.5`)
+
+> Release time: 2022-01-12 10:32:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```9646bed9```](https://github.com/jina-ai/docarray/commit/9646bed947692fcf7e2072f56e6525db6e896d61)] __-__ fix edge case when two elements are strings (#37) (*Han Xiao*)
+ - [[```e9ce570b```](https://github.com/jina-ai/docarray/commit/e9ce570bb9c2e3312d8ab814014b2cd29a0c249f)] __-__ fix setup manifest (#36) (*Han Xiao*)
+ - [[```0abf9748```](https://github.com/jina-ai/docarray/commit/0abf97488cbce2dc9e81c95a78032f0b03087839)] __-__ _id_to_index initialize (#35) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```f0d222d5```](https://github.com/jina-ai/docarray/commit/f0d222d58848ef31e06b0ba62165a2197b83fa1f)] __-__ __version__: the next version will be 0.1.5 (*Jina Dev Bot*)
 
