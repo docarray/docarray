@@ -146,12 +146,18 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 and len(index) == 2
                 and isinstance(index[0], (slice, Sequence))
             ):
-                _docs = self[index[0]]
-                _attrs = index[1]
-                if isinstance(_attrs, str):
-                    _attrs = (index[1],)
-
-                return _docs._get_attributes(*_attrs)
+                if isinstance(index[0], str) and isinstance(index[1], str):
+                    # ambiguity only comes from the second string
+                    if index[1] in self._id2offset:
+                        return DocumentArray([self[index[0]], self[index[1]]])
+                    else:
+                        return getattr(self[index[0]], index[1])
+                elif isinstance(index[0], (slice, Sequence)):
+                    _docs = self[index[0]]
+                    _attrs = index[1]
+                    if isinstance(_attrs, str):
+                        _attrs = (index[1],)
+                    return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
             elif isinstance(index[0], int):
@@ -231,31 +237,45 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 and len(index) == 2
                 and isinstance(index[0], (slice, Sequence))
             ):
-                _docs = self[index[0]]
-                _attrs = index[1]
-
-                if isinstance(_attrs, str):
-                    # a -> [a]
-                    # [a, a] -> [a, a]
-                    _attrs = (index[1],)
-                if isinstance(value, (list, tuple)) and not any(
-                    isinstance(el, (tuple, list)) for el in value
-                ):
-                    # [x] -> [[x]]
-                    # [[x], [y]] -> [[x], [y]]
-                    value = (value,)
-                if not isinstance(value, (list, tuple)):
-                    # x -> [x]
-                    value = (value,)
-
-                for _a, _v in zip(_attrs, value):
-                    if _a == 'blob':
-                        _docs.blobs = _v
-                    elif _a == 'embedding':
-                        _docs.embeddings = _v
+                if isinstance(index[0], str) and isinstance(index[1], str):
+                    # ambiguity only comes from the second string
+                    if index[1] in self._id2offset:
+                        for _d, _v in zip((self[index[0]], self[index[1]]), value):
+                            _d._data = _v._data
+                        self._rebuild_id2offset()
+                    elif hasattr(self[index[0]], index[1]):
+                        setattr(self[index[0]], index[1], value)
                     else:
-                        for _d, _vv in zip(_docs, _v):
-                            setattr(_d, _a, _vv)
+                        # to avoid accidentally add new unsupport attribute
+                        raise ValueError(
+                            f'`{index[1]}` is neither a valid id nor attribute name'
+                        )
+                elif isinstance(index[0], (slice, Sequence)):
+                    _docs = self[index[0]]
+                    _attrs = index[1]
+
+                    if isinstance(_attrs, str):
+                        # a -> [a]
+                        # [a, a] -> [a, a]
+                        _attrs = (index[1],)
+                    if isinstance(value, (list, tuple)) and not any(
+                        isinstance(el, (tuple, list)) for el in value
+                    ):
+                        # [x] -> [[x]]
+                        # [[x], [y]] -> [[x], [y]]
+                        value = (value,)
+                    if not isinstance(value, (list, tuple)):
+                        # x -> [x]
+                        value = (value,)
+
+                    for _a, _v in zip(_attrs, value):
+                        if _a == 'blob':
+                            _docs.blobs = _v
+                        elif _a == 'embedding':
+                            _docs.embeddings = _v
+                        else:
+                            for _d, _vv in zip(_docs, _v):
+                                setattr(_d, _a, _vv)
             elif isinstance(index[0], bool):
                 if len(index) != len(self._data):
                     raise IndexError(
@@ -313,12 +333,20 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                 and len(index) == 2
                 and isinstance(index[0], (slice, Sequence))
             ):
-                _docs = self[index[0]]
-                _attrs = index[1]
-                if isinstance(_attrs, str):
-                    _attrs = (index[1],)
-                for _d in _docs:
-                    _d.pop(*_attrs)
+                if isinstance(index[0], str) and isinstance(index[1], str):
+                    # ambiguity only comes from the second string
+                    if index[1] in self._id2offset:
+                        del self[index[0]]
+                        del self[index[1]]
+                    else:
+                        self[index[0]].pop(index[1])
+                elif isinstance(index[0], (slice, Sequence)):
+                    _docs = self[index[0]]
+                    _attrs = index[1]
+                    if isinstance(_attrs, str):
+                        _attrs = (index[1],)
+                    for _d in _docs:
+                        _d.pop(*_attrs)
             elif isinstance(index[0], bool):
                 self._data = list(
                     itertools.compress(self._data, (not _i for _i in index))
