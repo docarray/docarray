@@ -226,7 +226,7 @@ class PlotMixin:
             )
             t_m.start()
             try:
-                _env = str(get_ipython())
+                _env = str(get_ipython())  # noqa
                 if 'ZMQInteractiveShell' in _env:
                     _env = 'jupyter'
                 elif 'google.colab' in _env:
@@ -234,7 +234,7 @@ class PlotMixin:
             except:
                 _env = 'local'
             if _env == 'jupyter':
-                print(
+                warnings.warn(
                     f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
                     f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
                     f'Click "stop" button in the toolbar to move to the next cell.'
@@ -242,15 +242,15 @@ class PlotMixin:
                 time.sleep(
                     1
                 )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
-                from IPython.display import IFrame, display
+                from IPython.display import IFrame, display  # noqa
 
                 display(IFrame(src=url_html_path, width="100%", height=600))
             elif _env == 'colab':
-                from google.colab.output import eval_js
+                from google.colab.output import eval_js  # noqa
 
                 colab_url = eval_js(f'google.colab.kernel.proxyPort({port})')
                 colab_url += f'/static/index.html?config={config_fn}'
-                print(
+                warnings.warn(
                     f'Showing iframe in cell, you may want to open {colab_url} in a new tab for better experience. '
                     f'Click "stop" button in the toolbar to move to the next cell.'
                 )
