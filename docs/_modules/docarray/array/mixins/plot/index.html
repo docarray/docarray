@@ -384,6 +384,7 @@
 <span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">ceil</span><span class="p">,</span> <span class="n">floor</span>
@@ -601,21 +602,57 @@
                 <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">'error'</span><span class="p">),</span>
                 <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">t_m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="n">url_html_path</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s1">'http://localhost:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">'</span>
             <span class="p">)</span>
+            <span class="n">t_m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">webbrowser</span>
-
-                <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">_env</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_ipython</span><span class="p">())</span>  <span class="c1"># noqa</span>
+                <span class="k">if</span> <span class="s1">'ZMQInteractiveShell'</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
+                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">'jupyter'</span>
+                <span class="k">elif</span> <span class="s1">'google.colab'</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
+                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">'colab'</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn't cross-platform</span>
-            <span class="k">finally</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'You should see a webpage opened in your browser, '</span>
-                    <span class="sa">f</span><span class="s1">'if not, you may open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> manually'</span>
+                <span class="n">_env</span> <span class="o">=</span> <span class="s1">'local'</span>
+            <span class="k">if</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'jupyter'</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> in a new tab for better experience. '</span>
+                    <span class="sa">f</span><span class="s1">'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '</span>
+                    <span class="sa">f</span><span class="s1">'Click "stop" button in the toolbar to move to the next cell.'</span>
                 <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
+                    <span class="mi">1</span>
+                <span class="p">)</span>  <span class="c1"># jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser</span>
+                <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span><span class="p">,</span> <span class="n">display</span>  <span class="c1"># noqa</span>
+
+                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">"100%"</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'colab'</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">google.colab.output</span> <span class="kn">import</span> <span class="n">eval_js</span>  <span class="c1"># noqa</span>
+
+                <span class="n">colab_url</span> <span class="o">=</span> <span class="n">eval_js</span><span class="p">(</span><span class="sa">f</span><span class="s1">'google.colab.kernel.proxyPort(</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">)'</span><span class="p">)</span>
+                <span class="n">colab_url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">'</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">'Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">colab_url</span><span class="si">}</span><span class="s1"> in a new tab for better experience. '</span>
+                    <span class="sa">f</span><span class="s1">'Click "stop" button in the toolbar to move to the next cell.'</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
+                    <span class="mi">1</span>
+                <span class="p">)</span>  <span class="c1"># jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser</span>
+                <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span><span class="p">,</span> <span class="n">display</span>
+
+                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">colab_url</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">"100%"</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'local'</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="kn">import</span> <span class="nn">webbrowser</span>
+
+                    <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn't cross-platform</span>
+                <span class="k">finally</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">'You should see a webpage opened in your browser, '</span>
+                        <span class="sa">f</span><span class="s1">'if not, you may open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> manually'</span>
+                    <span class="p">)</span>
             <span class="n">t_m</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">path</span></div>
 
