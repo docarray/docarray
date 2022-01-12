@@ -7,10 +7,10 @@
   <meta property="og:title" content="Construct" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/construct.html" />
-  <meta property="og:site_name" content="DocArray 0.1.4 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.1.5 Documentation" />
   <meta property="og:description" content="Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced in the next chapter. Construct an empty Document: Every Document will have a unique rand..." />
   <meta property="og:image" content="https://docarray.jina.ai/_images/ide-autocomplete.png" />
-  <meta property="og:image:alt" content="DocArray 0.1.4 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.1.5 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Serialization" href="../serialization/" /><link rel="prev" title="Document" href="../" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Construct - DocArray 0.1.4 documentation</title>
+        <title>Construct - DocArray 0.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.1.4 documentation</div>
+                <div class="brand">DocArray 0.1.5 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -417,7 +417,16 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id',) at 5dd542406d3f11eca3241e008a366d49&gt;
 </pre></div>
 </div>
-<p>Every Document will have a unique random <code class="docutils literal notranslate"><span class="pre">id</span></code> that helps you identify this Document. It can be used to <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">access this Document inside a DocumentArray</span></a>. You can override this <code class="docutils literal notranslate"><span class="pre">id</span></code> or assign your own <code class="docutils literal notranslate"><span class="pre">id</span></code> during construction, as demonstrated below.</p>
+<p>Every Document will have a unique random <code class="docutils literal notranslate"><span class="pre">id</span></code> that helps you identify this Document. It can be used to <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">access this Document inside a DocumentArray</span></a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The random <code class="docutils literal notranslate"><span class="pre">id</span></code> is the hex value of <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.uuid1">UUID1</a>. To convert it into the string of UUID:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Though possible, it is not recommended modifying <code class="docutils literal notranslate"><span class="pre">.id</span></code> of a Document frequently, as this will lead to unexpected behavior.</p>
 </section>
 <section id="construct-with-attributes">
 <h2>Construct with attributes<a class="headerlink" href="#construct-with-attributes" title="Permalink to this headline">¶</a></h2>
@@ -425,7 +434,6 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="n">d0</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">'my_id'</span><span class="p">)</span>
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
 <span class="n">d2</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">buffer</span><span class="o">=</span><span class="sa">b</span><span class="s1">'</span><span class="se">\f</span><span class="s1">1'</span><span class="p">)</span>
 <span class="n">d3</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
@@ -440,8 +448,7 @@
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../../_images/ide-autocomplete.png"><img alt="../../../_images/ide-autocomplete.png" src="../../../_images/ide-autocomplete.png" style="width: 80%;"/></a>
 </figure>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id',) at my_id&gt;
-&lt;Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49&gt;
 &lt;Document ('id', 'buffer') at a14f00986d3e11ec8bde1e008a366d49&gt; 
 &lt;Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49&gt; 
 &lt;Document ('id', 'granularity', 'adjacency', 'mime_type', 'uri', 'tags') at a14f023c6d3e11ec8bde1e008a366d49&gt;
@@ -615,7 +622,7 @@ world
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 11, 2022.
+                    Last updated on Jan 12, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

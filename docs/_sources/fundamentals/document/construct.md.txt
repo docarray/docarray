@@ -15,7 +15,19 @@ d = Document()
 <Document ('id',) at 5dd542406d3f11eca3241e008a366d49>
 ```
 
-Every Document will have a unique random `id` that helps you identify this Document. It can be used to {ref}`access this Document inside a DocumentArray<access-elements>`. You can override this `id` or assign your own `id` during construction, as demonstrated below.
+Every Document will have a unique random `id` that helps you identify this Document. It can be used to {ref}`access this Document inside a DocumentArray<access-elements>`.
+
+````{tip}
+The random `id` is the hex value of [UUID1](https://docs.python.org/3/library/uuid.html#uuid.uuid1). To convert it into the string of UUID:
+
+```python
+import uuid
+str(uuid.UUID(d.id))
+```
+````
+
+Though possible, it is not recommended modifying `.id` of a Document frequently, as this will lead to unexpected behavior.
+
 
 ## Construct with attributes
 
@@ -25,7 +37,6 @@ This is the most common usage of the constructor: initializing a Document object
 from docarray import Document
 import numpy
 
-d0 = Document(id='my_id')
 d1 = Document(text='hello')
 d2 = Document(buffer=b'\f1')
 d3 = Document(blob=numpy.array([1, 2, 3]))
@@ -43,7 +54,6 @@ Don't forget to leverage autocomplete in your IDE.
 ```
 
 ```text
-<Document ('id',) at my_id>
 <Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49>
 <Document ('id', 'buffer') at a14f00986d3e11ec8bde1e008a366d49> 
 <Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49> 
