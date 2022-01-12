@@ -52,6 +52,7 @@ setup(
             'scipy',
             'av',
             'fastapi',
+            'uvicorn',
         ]
     },
     classifiers=[

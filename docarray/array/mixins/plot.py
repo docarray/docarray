@@ -3,6 +3,7 @@ import json
 import os.path
 import tempfile
 import threading
+import time
 import warnings
 from collections import Counter
 from math import sqrt, ceil, floor
@@ -220,21 +221,56 @@ class PlotMixin:
                 kwargs=dict(app=app, port=port, log_level='error'),
                 daemon=True,
             )
-            t_m.start()
             url_html_path = (
                 f'http://localhost:{port}/static/index.html?config={config_fn}'
             )
+            t_m.start()
             try:
-                import webbrowser
-
-                webbrowser.open(url_html_path, new=2)
+                _env = get_ipython().__class__.__name__
+                if 'ZMQInteractiveShell' in _env:
+                    _env = 'jupyter'
+                elif 'google.colab' in _env:
+                    _env = 'colab'
             except:
-                pass  # intentional pass, browser support isn't cross-platform
-            finally:
+                _env = 'local'
+            if _env == 'jupyter':
                 print(
-                    f'You should see a webpage opened in your browser, '
-                    f'if not, you may open {url_html_path} manually'
+                    f'For better experience, you may want to open {url_html_path} manually. '
+                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
                 )
+                time.sleep(
+                    1
+                )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
+                from IPython.display import IFrame, display
+
+                display(IFrame(src=url_html_path, width="100%", height=600))
+            elif _env == 'colab':
+                from google.colab.output import eval_js
+
+                colab_url = eval_js(f'google.colab.kernel.proxyPort({port})')
+                print(
+                    f'For better experience, you may want to open {colab_url} manually. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
+                )
+                time.sleep(
+                    1
+                )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
+                from IPython.display import IFrame, display
+
+                display(IFrame(src=colab_url, width="100%", height=600))
+            elif _env == 'local':
+                try:
+                    import webbrowser
+
+                    webbrowser.open(url_html_path, new=2)
+                except:
+                    pass  # intentional pass, browser support isn't cross-platform
+                finally:
+                    print(
+                        f'You should see a webpage opened in your browser, '
+                        f'if not, you may open {url_html_path} manually'
+                    )
             t_m.join()
         return path
 
