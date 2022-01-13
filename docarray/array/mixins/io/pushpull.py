@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @lru_cache()
-def get_cloud_api() -> str:
+def _get_cloud_api() -> str:
     """Get Cloud Api for transmiting data to the cloud.
 
     :raises RuntimeError: Encounter error when fetching the cloud Api Url.
