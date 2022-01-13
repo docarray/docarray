@@ -6,6 +6,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -167,4 +168,33 @@
  - [[```934d57df```](https://github.com/jina-ai/docarray/commit/934d57df8fc65c3ddee992ef7e32410ee1562ef4)] __-__ __docs__: fix docs what-is banner (*Han Xiao*)
  - [[```2761fff8```](https://github.com/jina-ai/docarray/commit/2761fff8e4d8bba620f3846d47ae877050ca74e5)] __-__ __docs__: fix docs what-is (*Han Xiao*)
  - [[```f248a346```](https://github.com/jina-ai/docarray/commit/f248a346a50af5ffb654d9e4482ebcda45d8efa6)] __-__ __version__: the next version will be 0.1.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-7></a>
+## Release Note (`0.1.7`)
+
+> Release time: 2022-01-13 11:49:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zhaofeng Miao,  David Buchaca Prats,  Han Xiao,  Alex Cureton-Griffiths,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```edf836d6```](https://github.com/jina-ai/docarray/commit/edf836d6f486dea25d146c0c37af0b9235ee6665)] __-__ better jupyter notebook support (#44) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```107d2276```](https://github.com/jina-ai/docarray/commit/107d227671fdbf714ecdc3986828e255ab453eff)] __-__ __pushpull__: allow uploading docarray max size 4GB (#43) (*Zhaofeng Miao*)
+ - [[```97725ed8```](https://github.com/jina-ai/docarray/commit/97725ed8c0585c3422c33b84c1584d5dcbd125ea)] __-__ single doc set in docarray (#42) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```995dbd3a```](https://github.com/jina-ai/docarray/commit/995dbd3a53ba3d4c172ea675b138049b9572676e)] __-__ __readme__: polish (#16) (*Alex Cureton-Griffiths*)
+
+### 🍹 Other Improvements
+
+ - [[```0a88bebc```](https://github.com/jina-ai/docarray/commit/0a88bebcb1957ef03e1c739704c349a37f15e206)] __-__ update readme (*Han Xiao*)
+ - [[```d41e271f```](https://github.com/jina-ai/docarray/commit/d41e271fd6660aa3b68afc7036f9796b3a3207fe)] __-__ __version__: the next version will be 0.1.7 (*Jina Dev Bot*)
 
