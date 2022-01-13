@@ -93,8 +93,7 @@ class BinaryIOMixin:
             while True:
                 b = current_bytes + fp.read(500)
                 if delimiter is None:
-                    _len = len(random_uuid().bytes)
-                    _binary_delimiter = b[:_len]
+                    _binary_delimiter = b[:16]  # 16 is the length of the delimiter
                 split = b.split(_binary_delimiter)
                 for d, _ in zip(split, range(len(split) - 1)):
                     if len(d) > 0:
