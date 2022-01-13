@@ -34,7 +34,7 @@ def get_cloud_api() -> str:
 class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
-    _service_url = get_cloud_api() + '/v2/rpc/da.'
+    _service_url = _get_cloud_api() + '/v2/rpc/da.'
     _max_bytes = 4 * 1024 * 1024 * 1024
 
     def push(self, token: str, show_progress: bool = False) -> None:
