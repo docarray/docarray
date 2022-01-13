@@ -1,7 +1,4 @@
-import base64
-from typing import Optional
-
-from ...helper import random_identity, download_mermaid_url
+from ...helper import deprecate_by
 
 
 class PlotMixin:
@@ -32,15 +29,58 @@ class PlotMixin:
                     _str_list, indent=len(prefix) + 4, box_char='└─'
                 )
 
-    def plot(self):
+    def display(self):
         """ Plot image data from :attr:`.blob` or :attr:`.uri`. """
         from IPython.display import Image, display
 
-        if self.blob is not None:
-            import PIL.Image
+        if self.uri:
+            if self.mime_type.startswith('audio'):
+                _html5_audio_player(self.uri)
+            elif self.mime_type.startswith('video'):
+                _html5_video_player(self.uri)
+            else:
+                display(Image(self.uri))
+        elif self.blob is not None:
+            try:
+                import PIL.Image
 
-            display(PIL.Image.fromarray(self.blob))
-        elif self.uri:
-            display(Image(self.uri))
+                p = PIL.Image.fromarray(self.blob)
+                if p.mode != 'RGB':
+                    raise
+                display(p)
+            except:
+                import matplotlib.pyplot as plt
+
+                plt.matshow(self.blob)
         else:
-            raise ValueError('`uri` and `blob` is empty')
+            self.summary()
+
+    plot = deprecate_by(display, removed_at='0.5')
+
+
+def _html5_video_player(uri):
+    from IPython.core.display import HTML
+
+    src = f'''
+    <body>
+    <video width="320" height="240" autoplay muted controls>
+    <source src="files/{uri}">
+    Your browser does not support the video tag.
+    </video>
+    </body>
+    '''
+    display(HTML(src))
+
+
+def _html5_audio_player(uri):
+    from IPython.core.display import HTML
+
+    src = f'''
+    <body>
+    <audio controls="controls" style="width:320px" >
+      <source src="files/{uri}"/>
+      Your browser does not support the audio element.
+    </audio>
+    </body>
+    '''
+    display(HTML(src))

@@ -157,7 +157,7 @@ This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow,
 You can visualize the embeddings via tSNE in an interactive embedding projector:
 
 ```python
-left_da.plot_embeddings()
+left_da.display_embeddings()
 ```
 
 <p align="center">

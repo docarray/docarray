@@ -11,9 +11,15 @@ from typing import Optional
 
 import numpy as np
 
+from ...helper import deprecate_by
+
 
 class PlotMixin:
     """Helper functions for plotting the arrays. """
+
+    def _ipython_display_(self):
+        """Displays the object in IPython as a side effect"""
+        self.summary()
 
     def summary(self):
         """Print the structure and attribute summary of this DocumentArray object.
@@ -92,7 +98,7 @@ class PlotMixin:
             )
         console.print(table, attr_table)
 
-    def plot_embeddings(
+    def display_embeddings(
         self,
         title: str = 'MyDocumentArray',
         path: Optional[str] = None,
@@ -135,9 +141,9 @@ class PlotMixin:
                     {self!r} has more than {max_docs} elements, which is the maximum number of image sprites can support. 
                     The resulting visualization may not be correct. You can do the following:
                     
-                    - use fewer images: `da[:10000].plot_embeddings()`
+                    - use fewer images: `da[:10000].display_embeddings()`
                     - reduce the `min_image_size` to a smaller number, say 8 or 4 (but bear in mind you can hardly recognize anything with a 4x4 image)
-                    - turn off `image_sprites` via `da.plot_embeddings(image_sprites=False)`
+                    - turn off `image_sprites` via `da.display_embeddings(image_sprites=False)`
                     '''
                 )
 
@@ -234,17 +240,17 @@ class PlotMixin:
             except:
                 _env = 'local'
             if _env == 'jupyter':
-                warnings.warn(
-                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
-                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
-                    f'Click "stop" button in the toolbar to move to the next cell.'
-                )
                 time.sleep(
                     1
                 )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
                 from IPython.display import IFrame, display  # noqa
 
                 display(IFrame(src=url_html_path, width="100%", height=600))
+                warnings.warn(
+                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
+                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
+                )
             elif _env == 'colab':
                 from google.colab.output import eval_js  # noqa
 
@@ -346,3 +352,5 @@ class PlotMixin:
             plt.gca().yaxis.set_major_locator(plt.NullLocator())
             plt.imshow(im)
             plt.show()
+
+    plot_embeddings = deprecate_by(display_embeddings, removed_at='0.5')
