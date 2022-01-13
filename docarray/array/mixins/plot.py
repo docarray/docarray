@@ -98,7 +98,7 @@ class PlotMixin:
             )
         console.print(table, attr_table)
 
-    def display_embeddings(
+    def plot_embeddings(
         self,
         title: str = 'MyDocumentArray',
         path: Optional[str] = None,
@@ -141,9 +141,9 @@ class PlotMixin:
                     {self!r} has more than {max_docs} elements, which is the maximum number of image sprites can support. 
                     The resulting visualization may not be correct. You can do the following:
                     
-                    - use fewer images: `da[:10000].display_embeddings()`
+                    - use fewer images: `da[:10000].plot_embeddings()`
                     - reduce the `min_image_size` to a smaller number, say 8 or 4 (but bear in mind you can hardly recognize anything with a 4x4 image)
-                    - turn off `image_sprites` via `da.display_embeddings(image_sprites=False)`
+                    - turn off `image_sprites` via `da.plot_embeddings(image_sprites=False)`
                     '''
                 )
 
@@ -352,5 +352,3 @@ class PlotMixin:
             plt.gca().yaxis.set_major_locator(plt.NullLocator())
             plt.imshow(im)
             plt.show()
-
-    plot_embeddings = deprecate_by(display_embeddings, removed_at='0.5')

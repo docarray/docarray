@@ -47,7 +47,7 @@ docs.plot_image_sprites()
 This feature requires `fastapi` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
-If a DocumentArray has `.embeddings`, you can visualize the embeddings interactively using {meth}`~docarray.array.mixins.plot.PlotMixin.display_embeddings`.
+If a DocumentArray has `.embeddings`, you can visualize the embeddings interactively using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`.
 
 ```python
 import numpy as np
@@ -56,7 +56,7 @@ from docarray import DocumentArray
 docs = DocumentArray.empty(1000)
 docs.embeddings = np.random.random([len(docs), 256])
 
-docs.display_embeddings()
+docs.plot_embeddings()
 ```
 
 ```{figure} images/embedding-projector-empty.gif
@@ -66,7 +66,7 @@ docs.display_embeddings()
 For image DocumentArray, you can do one step more to attach the image sprite on to the visualization points.
 
 ```python
-da.display_embeddings(image_sprites=True)
+da.plot_embeddings(image_sprites=True)
 ```
 
 ```{figure} images/embedding-projector.gif

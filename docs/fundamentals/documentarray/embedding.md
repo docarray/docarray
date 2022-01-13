@@ -118,7 +118,7 @@ model = torchvision.models.resnet50(pretrained=True)
 docs.embed(model)
 ```
 
-After getting `.embeddings`, you can visualize it using {meth}`~docarray.array.mixins.plot.PlotMixin.display_embeddings`, {ref}`find more details here<visualize-embeddings>`.
+After getting `.embeddings`, you can visualize it using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`, {ref}`find more details here<visualize-embeddings>`.
 
 Note that `.embed()` only works when you have `.blobs` set, if you have `.texts` set and your model function supports string as the input, then you can always do the following to get embeddings:
 

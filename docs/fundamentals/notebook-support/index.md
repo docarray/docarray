@@ -56,13 +56,13 @@ DocumentArray with all image Documents (image is either in `.uri` or `.blob`) ca
 
 ### Display embeddings
 
-DocumentArray with non-empty `.embeddings` can be visualized interactively via {meth}`~docarray.array.mixins.plot.PlotMixin.display_embeddings`
+DocumentArray with non-empty `.embeddings` can be visualized interactively via {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`
 
 ```{figure} embedding-ani1.gif
 ```
 
 
-DocumentArray with non-empty `.embeddings`  and image Documents can be visualized in a much richer way via `.display_embeddings(image_sprites=True)`.
+DocumentArray with non-empty `.embeddings`  and image Documents can be visualized in a much richer way via `.plot_embeddings(image_sprites=True)`.
 
 ```{figure} embedding-ani2.gif
 ```
