@@ -91,17 +91,20 @@ class BinaryIOMixin:
         current_bytes = b''
         with file_ctx as fp:
             while True:
-                b = current_bytes + fp.read(500)
+                new_bytes = fp.read(500)
+                if new_bytes == b'':
+                    break
+                b = current_bytes + new_bytes
                 if delimiter is None:
-                    _binary_delimiter = b[:16]  # 16 is the length of the delimiter
-                split = b.split(_binary_delimiter)
+                    delimiter = b[:16]  # 16 is the length of the delimiter
+                split = b.split(delimiter)
                 for d, _ in zip(split, range(len(split) - 1)):
                     if len(d) > 0:
                         d = Document.from_bytes(d)
                         print(d)
                         yield d
-                    current_bytes = split[-1]
-                if b == b'':
+                current_bytes = split[-1]
+                if new_bytes == b'':
                     break
 
 
