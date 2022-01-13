@@ -25,7 +25,7 @@ def _get_cloud_api() -> str:
         )
         with urlopen(req) as resp:
             u = json.load(resp)['url']
-    except Exeception as ex:
+    except Exception as ex:
         raise RuntimeError(f'Can not fetch Cloud API address from {req.full_url}') from ex
 
     return u
