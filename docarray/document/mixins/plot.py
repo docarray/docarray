@@ -59,7 +59,7 @@ class PlotMixin:
 
 
 def _html5_video_player(uri):
-    from IPython.core.display import HTML
+    from IPython.core.display import HTML  # noqa
 
     src = f'''
     <body>
@@ -69,11 +69,11 @@ def _html5_video_player(uri):
     </video>
     </body>
     '''
-    display(HTML(src))
+    display(HTML(src))  # noqa
 
 
 def _html5_audio_player(uri):
-    from IPython.core.display import HTML
+    from IPython.core.display import HTML  # noqa
 
     src = f'''
     <body>
@@ -83,4 +83,4 @@ def _html5_audio_player(uri):
     </audio>
     </body>
     '''
-    display(HTML(src))
+    display(HTML(src))  # noqa
