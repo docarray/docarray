@@ -73,6 +73,45 @@ class BinaryIOMixin:
                     for od in track(d[_len:].split(_binary_delimiter))
                 )
 
+
+    @classmethod
+    def load_binary_stream(
+        cls: Type['T'],
+        file: Union[str, BinaryIO, bytes],
+    ) -> 'T':
+
+        if os.path.exists(file):
+            file_ctx = open(file, 'rb')
+        else:
+            raise ValueError(f'unsupported input {file!r}')
+
+        from .... import Document
+
+        delimiter = None
+        current_bytes = b''
+        with file_ctx as fp:
+            while True:
+                b = current_bytes + fp.read(500)
+                if delimiter is None:
+                    _len = len(random_uuid().bytes)
+                    _binary_delimiter = b[:_len]
+                split = b.split(_binary_delimiter)
+                for d, _ in zip(split, range(len(split) - 1)):
+                    if len(d) > 0:
+                        d = Document.from_bytes(d)
+                        print(d)
+                        yield d
+                    current_bytes = split[-1]
+                if b == b'':
+                    break
+
+
+
+    @classmethod
+    def _get_batches(cls, gen, batch_size):
+        for i in range(0, len(gen), batch_size):
+            yield gen[i:i + batch_size]
+
     @classmethod
     def from_bytes(
         cls: Type['T'],
