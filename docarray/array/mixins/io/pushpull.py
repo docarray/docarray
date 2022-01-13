@@ -1,6 +1,9 @@
 import io
+import json
 from contextlib import nullcontext
-from typing import Type, TYPE_CHECKING, Optional
+from typing import Type, TYPE_CHECKING
+from functools import lru_cache
+from urllib.request import Request, urlopen
 
 from ....helper import get_request_header
 
@@ -8,10 +11,32 @@ if TYPE_CHECKING:
     from ....types import T
 
 
+@lru_cache()
+def _get_cloud_api() -> str:
+    """Get Cloud Api for transmiting data to the cloud.
+
+    :raises RuntimeError: Encounter error when fetching the cloud Api Url.
+    :return: Cloud Api Url
+    """
+    try:
+        req = Request(
+            'https://api.jina.ai/hub/hubble.json',
+            headers={'User-Agent': 'Mozilla/5.0'},
+        )
+        with urlopen(req) as resp:
+            u = json.load(resp)['url']
+    except Exception as ex:
+        raise RuntimeError(
+            f'Can not fetch Cloud API address from {req.full_url}'
+        ) from ex
+
+    return u
+
+
 class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
-    _service_url = 'https://apihubble.jina.ai/v2/rpc/da.'
+    _service_url = _get_cloud_api() + '/v2/rpc/da.'
     _max_bytes = 4 * 1024 * 1024 * 1024
 
     def push(self, token: str, show_progress: bool = False) -> None:
