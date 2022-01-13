@@ -48,8 +48,13 @@ if TYPE_CHECKING:
     DocumentArrayMultipleIndexType = Union[
         slice, Sequence[int], Sequence[str], Sequence[bool], Ellipsis
     ]
-    DocumentArraySingleAttributeType = Tuple[slice, str]
-    DocumentArrayMultipleAttributeType = Tuple[slice, Sequence[str]]
+    DocumentArraySingleAttributeType = Tuple[
+        Union[DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType], str
+    ]
+    DocumentArrayMultipleAttributeType = Tuple[
+        Union[DocumentArraySingletonIndexType, DocumentArrayMultipleIndexType],
+        Sequence[str],
+    ]
     DocumentArrayIndexType = Union[
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,

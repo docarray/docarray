@@ -95,6 +95,22 @@ def test_texts_getter_da(da):
 
 
 @pytest.mark.parametrize('da', da_and_dam())
+def test_setter_by_sequences_in_selected_docs_da(da):
+
+    da[[0], 'text'] = 'jina'
+    assert ['jina'] == da[[0], 'text']
+
+    da[[0, 1], 'text'] = ['jina', 'jana']
+    assert ['jina', 'jana'] == da[[0, 1], 'text']
+
+    da[[0], 'id'] = '12'
+    assert ['12'] == da[[0], 'id']
+
+    da[[0, 1], 'id'] = ['12', '34']
+    assert ['12', '34'] == da[[0, 1], 'id']
+
+
+@pytest.mark.parametrize('da', da_and_dam())
 def test_texts_wrong_len(da):
     texts = ['hello']
 

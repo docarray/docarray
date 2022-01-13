@@ -211,6 +211,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
         index: 'DocumentArrayIndexType',
         value: Union['Document', Sequence['Document']],
     ):
+
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
             self._data[index] = value
@@ -274,8 +275,11 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                         elif _a == 'embedding':
                             _docs.embeddings = _v
                         else:
-                            for _d, _vv in zip(_docs, _v):
-                                setattr(_d, _a, _vv)
+                            if len(_docs) == 1:
+                                setattr(_docs[0], _a, _v)
+                            else:
+                                for _d, _vv in zip(_docs, _v):
+                                    setattr(_d, _a, _vv)
             elif isinstance(index[0], bool):
                 if len(index) != len(self._data):
                     raise IndexError(
