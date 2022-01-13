@@ -30,12 +30,13 @@ def typename(obj):
         return str(obj)
 
 
-def deprecate_by(new_fn):
+def deprecate_by(new_fn, removed_at: str):
     """A helper function to label deprecated function
 
     Usage: old_fn_name = deprecate_by(new_fn)
 
     :param new_fn: the new function
+    :param removed_at: removed at which version
     :return: a wrapped function with old function name
     """
 
@@ -44,9 +45,8 @@ def deprecate_by(new_fn):
 
         old_fn_name = inspect.stack()[1][4][0].strip().split("=")[0].strip()
         warnings.warn(
-            f'`{old_fn_name}` is renamed to `{new_fn.__name__}` with the same usage, please use the latter instead. '
-            f'The old function will be removed soon.',
-            DeprecationWarning,
+            f'`{old_fn_name}` is renamed to `.{new_fn.__name__}()` with the same usage, please use the latter instead. The old function will be removed in {removed_at}.',
+            FutureWarning,
         )
         return new_fn(*args, **kwargs)
 
@@ -294,15 +294,19 @@ def decompress_bytes(data: bytes, algorithm: Optional[str] = None) -> bytes:
 def get_compress_ctx(algorithm: Optional[str] = None, mode: str = 'wb'):
     if algorithm == 'lz4':
         import lz4.frame
+
         compress_ctx = lambda x: lz4.frame.LZ4FrameFile(x, mode)
     elif algorithm == 'gzip':
         import gzip
+
         compress_ctx = lambda x: gzip.GzipFile(fileobj=x, mode=mode)
     elif algorithm == 'bz2':
         import bz2
+
         compress_ctx = lambda x: bz2.BZ2File(x, mode)
     elif algorithm == 'lzma':
         import lzma
+
         compress_ctx = lambda x: lzma.LZMAFile(x, mode)
     else:
         compress_ctx = None

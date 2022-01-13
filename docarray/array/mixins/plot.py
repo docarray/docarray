@@ -11,9 +11,15 @@ from typing import Optional
 
 import numpy as np
 
+from ...helper import deprecate_by
+
 
 class PlotMixin:
     """Helper functions for plotting the arrays. """
+
+    def _ipython_display_(self):
+        """Displays the object in IPython as a side effect"""
+        self.summary()
 
     def summary(self):
         """Print the structure and attribute summary of this DocumentArray object.
@@ -234,17 +240,17 @@ class PlotMixin:
             except:
                 _env = 'local'
             if _env == 'jupyter':
-                warnings.warn(
-                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
-                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
-                    f'Click "stop" button in the toolbar to move to the next cell.'
-                )
                 time.sleep(
                     1
                 )  # jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser
                 from IPython.display import IFrame, display  # noqa
 
                 display(IFrame(src=url_html_path, width="100%", height=600))
+                warnings.warn(
+                    f'Showing iframe in cell, you may want to open {url_html_path} in a new tab for better experience. '
+                    f'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '
+                    f'Click "stop" button in the toolbar to move to the next cell.'
+                )
             elif _env == 'colab':
                 from google.colab.output import eval_js  # noqa
 

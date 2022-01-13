@@ -21,9 +21,9 @@ def test_single_doc_summary():
 
 def test_plot_image():
     d = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
-    d.plot()
+    d.display()
 
     d.load_uri_to_image_blob()
     d.uri = None
 
-    d.plot()
+    d.display()
