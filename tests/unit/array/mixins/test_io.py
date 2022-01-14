@@ -1,16 +1,27 @@
 import os
 import uuid
+from collections import defaultdict
 
 import numpy as np
 import pytest
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from tests import random_docs
 
 
 def da_and_dam():
     da = DocumentArray(random_docs(100))
     return (da,)
+
+
+@pytest.mark.parametrize('attr', ['scores', 'evaluations'])
+def test_from_to_dict_namescore_default_dict(attr):
+    d = Document()
+    getattr(d, attr)['relevance'].value = 3.0
+    assert isinstance(d.scores, defaultdict)
+
+    r_d = Document.from_protobuf(d.to_protobuf())
+    assert isinstance(r_d.scores, defaultdict)
 
 
 @pytest.mark.slow
