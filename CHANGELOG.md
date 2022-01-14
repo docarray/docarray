@@ -7,6 +7,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -197,4 +198,30 @@
 
  - [[```0a88bebc```](https://github.com/jina-ai/docarray/commit/0a88bebcb1957ef03e1c739704c349a37f15e206)] __-__ update readme (*Han Xiao*)
  - [[```d41e271f```](https://github.com/jina-ai/docarray/commit/d41e271fd6660aa3b68afc7036f9796b3a3207fe)] __-__ __version__: the next version will be 0.1.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-1-8></a>
+## Release Note (`0.1.8`)
+
+> Release time: 2022-01-14 20:56:09
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Abdulelah Bin Mahfoodh,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```abb332b1```](https://github.com/jina-ai/docarray/commit/abb332b13705991f27a3cb293c8b47d2d4a02330)] __-__ support pydantic data model (#50) (*Han Xiao*)
+ - [[```b7e5ce7e```](https://github.com/jina-ai/docarray/commit/b7e5ce7ebf2e9590a857c8c193939d4748d73a91)] __-__ initial support on pydantic (#49) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```20276727```](https://github.com/jina-ai/docarray/commit/202767273302aa8dd36b8a08186f41fcc0dcd99f)] __-__ allow bind projector server to host (#48) (*Abdulelah Bin Mahfoodh*)
+ - [[```e0224632```](https://github.com/jina-ai/docarray/commit/e02246329dab3c0baed42a43167a9cc7507fead8)] __-__ default dict from/to protobuf (#47) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```b3debdea```](https://github.com/jina-ai/docarray/commit/b3debdeacb650e0b794fedf9ce92a3f6db559bc9)] __-__ __docs__: support pydantic data model (*Han Xiao*)
+ - [[```d764341e```](https://github.com/jina-ai/docarray/commit/d764341e0957d3f0732551cc841ad6c63cb9a0b2)] __-__ __version__: the next version will be 0.1.8 (*Jina Dev Bot*)
 
