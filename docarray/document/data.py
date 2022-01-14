@@ -2,7 +2,7 @@ import mimetypes
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
     from ..score import NamedScore
@@ -51,8 +51,8 @@ class DocumentData:
     location: Optional[List[float]] = None
     embedding: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
     modality: Optional[str] = None
-    evaluations: Optional[Dict[str, 'NamedScore']] = None
-    scores: Optional[Dict[str, 'NamedScore']] = None
+    evaluations: Optional[Dict[str, Union['NamedScore', Dict]]] = None
+    scores: Optional[Dict[str, Union['NamedScore', Dict]]] = None
     chunks: Optional['DocumentArray'] = None
     matches: Optional['DocumentArray'] = None
 
