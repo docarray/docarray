@@ -63,5 +63,7 @@ def test_read_main():
 
     r = response.json()
     assert isinstance(r, list)
+    assert len(r[0]) == 1
+    assert len(r[1]) == 1
     assert r[0]['text'] == 'hello_0'
     assert r[1]['text'] == 'hello_1'
