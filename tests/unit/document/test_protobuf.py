@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import numpy as np
 import pytest
 
@@ -32,3 +34,14 @@ def test_to_protobuf():
     )
     assert Document(tags={'hello': 'world'}).to_protobuf().tags
     assert len(Document(chunks=[Document(), Document()]).to_protobuf().chunks) == 2
+
+
+@pytest.mark.parametrize('meth', ['protobuf', 'dict'])
+@pytest.mark.parametrize('attr', ['scores', 'evaluations'])
+def test_from_to_namescore_default_dict(attr, meth):
+    d = Document()
+    getattr(d, attr)['relevance'].value = 3.0
+    assert isinstance(d.scores, defaultdict)
+
+    r_d = getattr(Document, f'from_{meth}')(getattr(d, f'to_{meth}')())
+    assert isinstance(r_d.scores, defaultdict)
