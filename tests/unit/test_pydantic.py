@@ -39,7 +39,7 @@ class TextOnly(BaseModel):
 
 @app.post('/single', response_model=IdOnly)
 async def create_item(item: PydanticDocument):
-    return item
+    return Document.from_pydantic_model(item).to_pydantic_model()
 
 
 @app.post('/multi', response_model=List[TextOnly])
@@ -54,11 +54,14 @@ client = TestClient(app)
 
 def test_read_main():
     response = client.post('/single', Document(text='hello').to_json())
-
-    assert response.json()['id']
+    r = response.json()
+    assert r['id']
+    assert 'text' not in r
+    assert len(r) == 1
 
     response = client.post('/multi', DocumentArray.empty(2).to_json())
 
-    assert isinstance(response.json(), list)
-    assert response.json()[0]['text'] == 'hello_0'
-    assert response.json()[1]['text'] == 'hello_1'
+    r = response.json()
+    assert isinstance(r, list)
+    assert r[0]['text'] == 'hello_0'
+    assert r[1]['text'] == 'hello_1'
