@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple, Sequence, Optional
+from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List
 
 import numpy as np
 
@@ -145,3 +145,13 @@ def to_numpy_array(value) -> 'np.ndarray':
     if hasattr(v, 'numpy'):
         v = v.numpy()
     return v
+
+
+def to_list(value) -> List[float]:
+    r = to_numpy_array(value)
+    if isinstance(r, np.ndarray):
+        return r.tolist()
+    elif isinstance(r, list):
+        return r
+    else:
+        raise TypeError(f'{r} can not be converted into list')
