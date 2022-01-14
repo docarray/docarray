@@ -3,7 +3,8 @@
 
 DocArray is designed to be "ready-to-wire" at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
 
-- JSON string: `.from_json()`/`.to_json()` 
+- JSON string: `.from_json()`/`.to_json()`
+  - Pydantic model: `.from_pydantic_model()`/`.to_pydantic_model()`
 - Bytes (compressed): `.from_bytes()`/`.to_bytes()`
 - Base64 (compressed): `.from_base64()`/`.to_base64()` 
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
@@ -13,9 +14,16 @@ DocArray is designed to be "ready-to-wire" at anytime. Serialization is importan
 
 ## From/to JSON
 
+
+```{tip}
+If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out {ref}`fastapi-support` and follow the methods there.   
+```
+
 ```{important}
 This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
+
+
 
 ```python
 from docarray import DocumentArray, Document

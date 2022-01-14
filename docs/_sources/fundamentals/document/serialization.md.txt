@@ -10,9 +10,15 @@ One should use {ref}`DocumentArray for serializing multiple Documents<docarray-s
 
 ## From/to JSON
 
+```{tip}
+If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out {ref}`fastapi-support` and follow the methods there.   
+```
+
 ```{important}
 This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
+
+
 
 You can serialize a Document as a JSON string via {meth}`~docarray.document.mixins.porting.PortingMixin.to_json`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_json`.
 
