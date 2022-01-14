@@ -1,10 +1,12 @@
+import types
+
 import numpy as np
 import pytest
 import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from docarray.math.ndarray import to_numpy_array
 from tests import random_docs
 
@@ -68,6 +70,14 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
     DocumentArray.load_binary(str(tmpfile), protocol=protocol, compress=compress)
     with open(tmpfile, 'rb') as fp:
         DocumentArray.load_binary(fp, protocol=protocol, compress=compress)
+
+
+def test_save_bytes_stream(tmpfile):
+    da = DocumentArray([Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})])
+    da.save_binary(tmpfile, protocol='pickle')
+    da_reconstructed = DocumentArray.load_binary(tmpfile, protocol='pickle', return_iterator=True)
+    assert isinstance(da_reconstructed, types.GeneratorType)
+    assert da == DocumentArray(da_reconstructed)
 
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
