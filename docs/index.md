@@ -92,8 +92,9 @@ get-started/what-is
 
 fundamentals/document/index
 fundamentals/documentarray/index
-fundamentals/notebook-support/index
 datatypes/index
+fundamentals/notebook-support/index
+fundamentals/fastapi-support/index
 ```
 
 

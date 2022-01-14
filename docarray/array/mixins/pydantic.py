@@ -33,4 +33,7 @@ class PydanticMixin:
         """
         from ... import Document
 
-        return cls(Document.from_pydantic_model(m, ndarray_as_list) for m in model)
+        return cls(
+            Document.from_pydantic_model(m, ndarray_as_list=ndarray_as_list)
+            for m in model
+        )

@@ -13,17 +13,28 @@ class PydanticMixin:
     """Provide helper functions to convert to/from a Pydantic model"""
 
     @classmethod
-    def json_schema(cls, indent: int = 2) -> str:
+    def get_json_schema(cls, indent: int = 2) -> str:
         """Return a JSON Schema of Document class."""
         from ..pydantic_model import PydanticDocument as DP
 
-        return DP.schema_json(indent=indent)
+        from pydantic import schema_json_of
+
+        return schema_json_of(DP, title='Document Schema', indent=indent)
 
     def to_pydantic_model(self) -> 'PydanticDocument':
         """Convert a Document object into a Pydantic model."""
         from ..pydantic_model import PydanticDocument as DP
 
-        return DP(**{f: getattr(self, f) for f in self.non_empty_fields})
+        _p_dict = {}
+        for f in self.non_empty_fields:
+            v = getattr(self, f)
+            if f in ('matches', 'chunks'):
+                _p_dict[f] = v.to_pydantic_model()
+            elif f in ('scores', 'evaluations'):
+                _p_dict[f] = {k: v.to_dict() for k, v in v.items()}
+            else:
+                _p_dict[f] = v
+        return DP(**_p_dict)
 
     @classmethod
     def from_pydantic_model(
@@ -47,6 +58,8 @@ class PydanticMixin:
             elif f_name == 'embedding' or f_name == 'blob':
                 if not ndarray_as_list:
                     fields[f_name] = np.array(value)
+                else:
+                    fields[f_name] = value
             else:
                 fields[f_name] = value
         return Document(**fields)
