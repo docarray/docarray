@@ -47,12 +47,21 @@ class PydanticMixin:
         from ... import Document
 
         fields = {}
-        for (field, value) in model.dict(exclude_none=True).items():
+        if model.chunks:
+            fields['chunks'] = [Document.from_pydantic_model(d) for d in model.chunks]
+        if model.matches:
+            fields['matches'] = [Document.from_pydantic_model(d) for d in model.matches]
+
+        for (field, value) in model.dict(
+            exclude_none=True, exclude={'chunks', 'matches'}
+        ).items():
             f_name = field
-            if f_name == 'chunks' or f_name == 'matches':
-                fields[f_name] = [Document.from_pydantic_model(d) for d in value]
-            elif f_name == 'scores' or f_name == 'evaluations':
-                fields[f_name] = defaultdict(value)
+            if f_name == 'scores' or f_name == 'evaluations':
+                from docarray.score import NamedScore
+
+                fields[f_name] = defaultdict(NamedScore)
+                for k, v in value.items():
+                    fields[f_name][k] = NamedScore(v)
             elif f_name == 'embedding' or f_name == 'blob':
                 fields[f_name] = np.array(value)
             else:
