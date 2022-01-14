@@ -37,9 +37,7 @@ class PydanticMixin:
         return DP(**_p_dict)
 
     @classmethod
-    def from_pydantic_model(
-        cls: Type['T'], model: 'BaseModel', ndarray_as_list: bool = False
-    ) -> 'T':
+    def from_pydantic_model(cls: Type['T'], model: 'BaseModel') -> 'T':
         """Build a Document object from a Pydantic model
 
         :param model: the pydantic data model object that represents a Document
@@ -56,10 +54,7 @@ class PydanticMixin:
             elif f_name == 'scores' or f_name == 'evaluations':
                 fields[f_name] = defaultdict(value)
             elif f_name == 'embedding' or f_name == 'blob':
-                if not ndarray_as_list:
-                    fields[f_name] = np.array(value)
-                else:
-                    fields[f_name] = value
+                fields[f_name] = np.array(value)
             else:
                 fields[f_name] = value
         return Document(**fields)

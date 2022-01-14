@@ -23,17 +23,14 @@ class PydanticMixin:
 
     @classmethod
     def from_pydantic_model(
-        cls: Type['T'], model: List['BaseModel'], ndarray_as_list: bool = False
+        cls: Type['T'],
+        model: List['BaseModel'],
     ) -> 'T':
         """Convert a list of PydanticDocument into
 
         :param model: the pydantic data model object that represents a DocumentArray
-        :param ndarray_as_list: if set to True, `embedding` and `blob` are auto-casted to ndarray.        :return:
         :return: a DocumentArray
         """
         from ... import Document
 
-        return cls(
-            Document.from_pydantic_model(m, ndarray_as_list=ndarray_as_list)
-            for m in model
-        )
+        return cls(Document.from_pydantic_model(m) for m in model)
