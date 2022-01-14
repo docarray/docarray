@@ -1,4 +1,4 @@
-from typing import overload, Dict, Optional, List, TYPE_CHECKING
+from typing import overload, Dict, Optional, List, TYPE_CHECKING, Union, Sequence
 
 from .data import DocumentData, default_values
 from .mixins import AllMixins
@@ -58,10 +58,10 @@ class Document(AllMixins, BaseDCType):
         location: Optional[List[float]] = None,
         embedding: Optional['ArrayType'] = None,
         modality: Optional[str] = None,
-        evaluations: Optional[Dict[str, 'NamedScore']] = None,
-        scores: Optional[Dict[str, 'NamedScore']] = None,
-        chunks: Optional['DocumentArray'] = None,
-        matches: Optional['DocumentArray'] = None,
+        evaluations: Optional[Dict[str, Dict[str, 'StructValueType']]] = None,
+        scores: Optional[Dict[str, Dict[str, 'StructValueType']]] = None,
+        chunks: Optional[Sequence['Document']] = None,
+        matches: Optional[Sequence['Document']] = None,
     ):
         ...
 

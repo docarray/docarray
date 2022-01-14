@@ -42,6 +42,8 @@ def test_from_to_namescore_default_dict(attr, meth):
     d = Document()
     getattr(d, attr)['relevance'].value = 3.0
     assert isinstance(d.scores, defaultdict)
+    assert isinstance(d.scores['random_score1'], NamedScore)
 
     r_d = getattr(Document, f'from_{meth}')(getattr(d, f'to_{meth}')())
     assert isinstance(r_d.scores, defaultdict)
+    assert isinstance(r_d.scores['random_score2'], NamedScore)

@@ -27,7 +27,7 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
         elif f_name == 'location':
             fields[f_name] = list(value)
         elif f_name == 'scores' or f_name == 'evaluations':
-            fields[f_name] = defaultdict()
+            fields[f_name] = defaultdict(NamedScore)
             for k, v in value.items():
                 fields[f_name][k] = NamedScore(
                     {ff.name: vv for (ff, vv) in v.ListFields()}
