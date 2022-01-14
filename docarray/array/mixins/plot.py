@@ -229,9 +229,7 @@ class PlotMixin:
                 kwargs=dict(app=app, host=host, port=port, log_level='error'),
                 daemon=True,
             )
-            url_html_path = (
-                f'http://{host}:{port}/static/index.html?config={config_fn}'
-            )
+            url_html_path = f'http://{host}:{port}/static/index.html?config={config_fn}'
             t_m.start()
             try:
                 _env = str(get_ipython())  # noqa
