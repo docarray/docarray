@@ -106,7 +106,7 @@ class PlotMixin:
         min_image_size: int = 16,
         channel_axis: int = -1,
         start_server: bool = True,
-        host: Optional[str] = "127.0.0.1",
+        host: str = '127.0.0.1',
         port: Optional[int] = None,
     ) -> str:
         """Interactively visualize :attr:`.embeddings` using the Embedding Projector.
