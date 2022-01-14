@@ -106,12 +106,14 @@ class PlotMixin:
         min_image_size: int = 16,
         channel_axis: int = -1,
         start_server: bool = True,
+        host: Optional[str] = "127.0.0.1",
         port: Optional[int] = None,
     ) -> str:
         """Interactively visualize :attr:`.embeddings` using the Embedding Projector.
 
         :param title: the title of this visualization. If you want to compare multiple embeddings at the same time,
                 make sure to give different names each time and set ``path`` to the same value.
+        :param host: if set, bind the embedding-projector frontend to given host. Otherwise `localhost` is used.
         :param port: if set, run the embedding-projector frontend at given port. Otherwise a random port is used.
         :param image_sprites: if set, visualize the dots using :attr:`.uri` and :attr:`.blob`.
         :param path: if set, then append the visualization to an existing folder, where you can compare multiple
@@ -224,11 +226,11 @@ class PlotMixin:
             port = port or random_port()
             t_m = threading.Thread(
                 target=uvicorn.run,
-                kwargs=dict(app=app, port=port, log_level='error'),
+                kwargs=dict(app=app, host=host, port=port, log_level='error'),
                 daemon=True,
             )
             url_html_path = (
-                f'http://localhost:{port}/static/index.html?config={config_fn}'
+                f'http://{host}:{port}/static/index.html?config={config_fn}'
             )
             t_m.start()
             try:
