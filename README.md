@@ -14,13 +14,13 @@
 
 DocArray is a library for nested, unstructured data such as text, image, audio, video, or 3D mesh. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
 
-🌌 **All data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
+🌌 **Rich data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
 🐍 **Pythonic experience**: designed to be as easy as a Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
 
 🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, matching, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
 
-🚡 **Portable**: ready-to-wire at anytime with efficient and compact serialization from/to Protobuf, bytes, base64, JSON, CSV, DataFrame.
+🚡 **Portable**: ready-to-wire at anytime with fast and compressed serialization from/to Protobuf, bytes, base64, JSON, CSV, DataFrame. Built-in data validation and JSON Schema (OpenAPI) help you build reliable webservices.
 
 <!-- end elevator-pitch -->
 

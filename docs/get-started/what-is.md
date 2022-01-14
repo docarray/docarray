@@ -37,6 +37,7 @@ DocArray is designed to maximize the local experience, with the requirement of c
 | Nested data                     |✅|❌| ✅    |❌|✅|
 | Mixed data of the above four    |✅|❌| ❌    |❌|❌|
 | Easy to (de)serialize           |✅|❌| ✅    |✅|✅|
+| Data validation (of the output) |✅|❌| ❌    |❌|✅|
 | Pythonic experience             |✅|✅| ❌    |✔️️|❌|
 | IO support for filetypes        |✅|❌| ❌    |❌|❌|
 | Deep learning framework support |✅|✅| ❌    |❌|❌|
@@ -117,6 +118,8 @@ Beside code refactoring and optimization, many features have been improved, incl
 - improved visualization on Document and DocumentArray;
 - revised documentations and examples
 - ... and many more.
+
+When first using DocArray, some Jina 2.x user may realize the static typing seems missing. This is due to a deliberate decision of DocArray: DocArray guarantees the types and constraints of the wire data, not the input data. In other words, only the functions that are listed under {ref}`docarray-serialization` chapter will trigger the data validation. 
 
 To learn DocArray, the recommendation here is to forget about everything in Jina 2.x, although some interfaces may look familiar. Read [the fundamental sections](../fundamentals/document/index.md) from beginning.
 
