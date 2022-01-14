@@ -13,7 +13,7 @@ Of course, you can include data validation inside your service logic, but it is 
 
 Modern web frameworks validate the data _before_ it enters the core logic. For example, [FastAPI](https://fastapi.tiangolo.com/) leverages [pydantic](https://pydantic-docs.helpmanual.io/) to validate input & output data.
 
-This chapter will introduce how to leverage DocArray's pydantic support in a FastAPI service to build a modern API service.
+This chapter will introduce how to leverage DocArray's pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won't repeat them here again.
 
 ```{tip}
 Features introduced in this chapter require `fastapi` and `pydantic` as dependency, please do `pip install "docarray[full]"` to enable it.
@@ -21,7 +21,7 @@ Features introduced in this chapter require `fastapi` and `pydantic` as dependen
 
 ## JSON Schema
 
-You can get the [JSON Schema](https://json-schema.org/) (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by {meth}`~docarray.array.mixins.pydantic.PydanticMixin.get_json_schema`.
+You can get [JSON Schema](https://json-schema.org/) (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by {meth}`~docarray.array.mixins.pydantic.PydanticMixin.get_json_schema`.
 
 ````{tab} Document
 ```python
@@ -65,13 +65,11 @@ DocumentArray.get_json_schema()
           "title": "Id",
 ```
 ````
-Hand them over to your engineer friends, they will be happy as now they can understand what data format you are working on. With these schemas, they can easily integrate DocArray into the system.
 
-## FastAPI usage
+Give them to your engineer friends, they will be happy as now they can understand what data format you are working with. These schemas also help them to easily integrate DocArray into any webservice.
 
-The fundamentals of FastAPI can be learned from its docs. I won't repeat them here again. 
 
-### Validate incoming Document and DocumentArray
+## Validate incoming Document and DocumentArray
 
 You can import {class}`~docarray.document.pydantic_model.PydanticDocument` and {class}`~docarray.document.pydantic_model.PydanticDocumentArray` pydantic data models, and use them to type hint your endpoint. This will enable the data validation.
 
