@@ -20,11 +20,13 @@ from .reduce import ReduceMixin
 from .sample import SampleMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
+from .pydantic import PydanticMixin
 
 
 class AllMixins(
     GetAttributeMixin,
     ContentPropertyMixin,
+    PydanticMixin,
     GroupMixin,
     EmptyMixin,
     CsvIOMixin,

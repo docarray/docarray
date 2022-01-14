@@ -11,6 +11,7 @@ from .plot import PlotMixin
 from .porting import PortingMixin
 from .property import PropertyMixin
 from .protobuf import ProtobufMixin
+from .pydantic import PydanticMixin
 from .sugar import SingletonSugarMixin
 from .text import TextDataMixin
 from .video import VideoDataMixin
@@ -18,6 +19,7 @@ from .video import VideoDataMixin
 
 class AllMixins(
     ProtobufMixin,
+    PydanticMixin,
     PropertyMixin,
     ContentPropertyMixin,
     ConvertMixin,
