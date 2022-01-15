@@ -388,12 +388,10 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
     def __repr__(self):
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
-    def __add__(self, other: 'Document'):
+    def __add__(self, other: Union['Document', Sequence['Document']]):
         v = type(self)()
-        for doc in self:
-            v.append(doc)
-        for doc in other:
-            v.append(doc)
+        v.extend(self)
+        v.extend(other)
         return v
 
     def extend(self, values: Iterable['Document']) -> None:
