@@ -7,6 +7,9 @@ DocArray is designed to be "ready-to-wire": it assumes you always want to send/r
 One should use {ref}`DocumentArray for serializing multiple Documents<docarray-serialization>`, instead of looping over Documents one by one. The former is much faster and yield more compact serialization. 
 ```
 
+```{hint}
+Some readers may wonder: why aren't serialization a part of constructor? They do have similarity. Nonetheless, serialization often contains elements that do not really fit into constructor: input & output model, data schema, compression, extra-dependencies. DocArray made a decision to separate the constructor and serialization for the sake of clarity and maintainability. 
+```
 
 ## From/to JSON
 

@@ -12,6 +12,10 @@ DocArray is designed to be "ready-to-wire" at anytime. Serialization is importan
 - Pandas Dataframe: `.from_dataframe()`/`.to_dataframe()`
 - Cloud: `.push()`/`.pull()`
 
+
+
+
+
 ## From/to JSON
 
 
