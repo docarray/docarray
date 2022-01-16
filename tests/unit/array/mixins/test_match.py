@@ -218,12 +218,12 @@ def test_matching_retrieves_closest_matches(
         assert expected_sorted_values == sorted(expected_sorted_values)
 
 
-@pytest.mark.parametrize('buffer_pool_size', [1000, 3])
+@pytest.mark.parametrize('blob_pool_size', [1000, 3])
 @pytest.mark.parametrize('first_memmap', [True, False])
 @pytest.mark.parametrize('second_memmap', [True, False])
 @pytest.mark.parametrize('only_id', [True, False])
 def test_2arity_function(
-    first_memmap, second_memmap, doc_lists, tmpdir, buffer_pool_size, only_id
+    first_memmap, second_memmap, doc_lists, tmpdir, blob_pool_size, only_id
 ):
     def dotp(x, y, *args):
         return np.dot(x, np.transpose(y))
@@ -233,7 +233,7 @@ def test_2arity_function(
         tmpdir,
         first_memmap,
         second_memmap,
-        buffer_pool_size=buffer_pool_size,
+        blob_pool_size=blob_pool_size,
     )
     D1.match(D2, metric=dotp, use_scipy=True, only_id=only_id)
 

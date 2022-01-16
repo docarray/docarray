@@ -14,8 +14,8 @@ def test_video_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     fname = str(tmpdir / f'tmp{num_d}.mp4')
     d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
-    d.load_uri_to_video_blob()
-    d.save_video_blob_to_file(fname)
+    d.load_uri_to_video_tensor()
+    d.save_video_tensor_to_file(fname)
     assert os.path.exists(fname)
 
 
@@ -23,9 +23,9 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     for d in from_files(f'{cur_dir}/toydata/*.wav'):
         fname = str(tmpdir / f'tmp{num_d}.wav')
-        d.load_uri_to_audio_blob()
-        d.blob = d.blob[::-1]
-        d.save_audio_blob_to_file(fname)
+        d.load_uri_to_audio_tensor()
+        d.tensor = d.tensor[::-1]
+        d.save_audio_tensor_to_file(fname)
         assert os.path.exists(fname)
         num_d += 1
     assert num_d
@@ -34,61 +34,61 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
 def test_image_convert_pipe(pytestconfig):
     for d in from_files(f'{pytestconfig.rootdir}/.github/**/*.png'):
         (
-            d.load_uri_to_image_blob()
+            d.load_uri_to_image_tensor()
             .convert_uri_to_datauri()
-            .set_image_blob_shape((64, 64))
-            .set_image_blob_normalization()
-            .set_image_blob_channel_axis(-1, 0)
+            .set_image_tensor_shape((64, 64))
+            .set_image_tensor_normalization()
+            .set_image_tensor_channel_axis(-1, 0)
         )
-        assert d.blob.shape == (3, 64, 64)
+        assert d.tensor.shape == (3, 64, 64)
         assert d.uri
 
 
-def test_uri_to_blob():
+def test_uri_to_tensor():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
-    doc.load_uri_to_image_blob()
-    assert isinstance(doc.blob, np.ndarray)
-    assert doc.blob.shape == (85, 152, 3)  # h,w,c
+    doc.load_uri_to_image_tensor()
+    assert isinstance(doc.tensor, np.ndarray)
+    assert doc.tensor.shape == (85, 152, 3)  # h,w,c
     assert doc.mime_type == 'image/png'
 
 
-def test_datauri_to_blob():
+def test_datauri_to_tensor():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     doc.convert_uri_to_datauri()
-    assert not doc.blob
+    assert not doc.tensor
     assert doc.mime_type == 'image/png'
 
 
-def test_buffer_to_blob():
+def test_blob_to_tensor():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
-    doc.load_uri_to_buffer()
-    doc.convert_buffer_to_image_blob()
-    assert isinstance(doc.blob, np.ndarray)
+    doc.load_uri_to_blob()
+    doc.convert_blob_to_image_tensor()
+    assert isinstance(doc.tensor, np.ndarray)
     assert doc.mime_type == 'image/png'
-    assert doc.blob.shape == (85, 152, 3)  # h,w,c
+    assert doc.tensor.shape == (85, 152, 3)  # h,w,c
 
 
-def test_convert_buffer_to_blob():
+def test_convert_blob_to_tensor():
     rand_state = np.random.RandomState(0)
     array = rand_state.random([10, 10])
     doc = Document(content=array.tobytes())
-    assert doc.content_type == 'buffer'
-    intialiazed_buffer = doc.buffer
-
-    doc.convert_buffer_to_blob()
     assert doc.content_type == 'blob'
-    converted_buffer_in_one_of = doc.buffer
-    assert intialiazed_buffer != converted_buffer_in_one_of
+    intialiazed_blob = doc.blob
+
+    doc.convert_blob_to_tensor()
+    assert doc.content_type == 'tensor'
+    converted_blob_in_one_of = doc.blob
+    assert intialiazed_blob != converted_blob_in_one_of
     np.testing.assert_almost_equal(doc.content.reshape([10, 10]), array)
 
 
 @pytest.mark.parametrize('shape, channel_axis', [((3, 32, 32), 0), ((32, 32, 3), -1)])
 def test_image_normalize(shape, channel_axis):
     doc = Document(content=np.random.randint(0, 255, shape, dtype=np.uint8))
-    doc.set_image_blob_normalization(channel_axis=channel_axis)
-    assert doc.blob.ndim == 3
-    assert doc.blob.shape == shape
-    assert doc.blob.dtype == np.float32
+    doc.set_image_tensor_normalization(channel_axis=channel_axis)
+    assert doc.tensor.ndim == 3
+    assert doc.tensor.shape == shape
+    assert doc.tensor.dtype == np.float32
 
 
 @pytest.mark.parametrize(
@@ -100,16 +100,16 @@ def test_image_normalize(shape, channel_axis):
         ([32, 28, 1], -1, 32, 28),  # h, w, c, (greyscale)
     ],
 )
-def test_convert_image_blob_to_uri(arr_size, channel_axis, width, height):
+def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height):
     doc = Document(content=np.random.randint(0, 255, arr_size))
-    assert doc.blob.any()
+    assert doc.tensor.any()
     assert not doc.uri
-    doc.set_image_blob_shape(channel_axis=channel_axis, shape=(width, height))
+    doc.set_image_tensor_shape(channel_axis=channel_axis, shape=(width, height))
 
-    doc.convert_image_blob_to_uri(channel_axis=channel_axis)
+    doc.convert_image_tensor_to_uri(channel_axis=channel_axis)
     assert doc.uri.startswith('data:image/png;base64,')
     assert doc.mime_type == 'image/png'
-    assert doc.blob.any()  # assure after conversion blob still exist.
+    assert doc.tensor.any()  # assure after conversion tensor still exist.
 
 
 @pytest.mark.xfail(
@@ -123,20 +123,20 @@ def test_convert_image_blob_to_uri(arr_size, channel_axis, width, height):
         ('https://google.com/index.html', 'text/html'),
     ],
 )
-def test_convert_uri_to_buffer(uri, mimetype):
+def test_convert_uri_to_blob(uri, mimetype):
     d = Document(uri=uri)
-    assert not d.buffer
-    d.load_uri_to_buffer()
-    assert d.buffer
+    assert not d.blob
+    d.load_uri_to_blob()
+    assert d.blob
     assert d.mime_type == mimetype
 
 
 @pytest.mark.parametrize(
-    'converter', ['convert_buffer_to_datauri', 'convert_content_to_datauri']
+    'converter', ['convert_blob_to_datauri', 'convert_content_to_datauri']
 )
-def test_convert_buffer_to_uri(converter):
+def test_convert_blob_to_uri(converter):
     d = Document(content=open(__file__).read().encode(), mime_type='text/x-python')
-    assert d.buffer
+    assert d.blob
     getattr(d, converter)()
     assert d.uri.startswith('data:text/x-python;')
 
@@ -232,9 +232,9 @@ def test_convert_uri_to_data_uri(uri, mimetype):
 
 def test_glb_converters():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.glb'))
-    doc.load_uri_to_point_cloud_blob(2000)
-    assert doc.blob.shape == (2000, 3)
+    doc.load_uri_to_point_cloud_tensor(2000)
+    assert doc.tensor.shape == (2000, 3)
 
-    doc.load_uri_to_point_cloud_blob(2000, as_chunks=True)
+    doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
     assert len(doc.chunks) == 1
-    assert doc.chunks[0].blob.shape == (2000, 3)
+    assert doc.chunks[0].tensor.shape == (2000, 3)

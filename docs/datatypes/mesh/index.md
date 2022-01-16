@@ -13,9 +13,9 @@ Point cloud is a representation of a 3D mesh. It is made by repeated and uniform
 
 ```python
 from docarray import Document
-doc = Document(uri='viking.glb').load_uri_to_point_cloud_blob(1000)
+doc = Document(uri='viking.glb').load_uri_to_point_cloud_tensor(1000)
 
-print(doc.blob.shape)
+print(doc.tensor.shape)
 ```
 
 ```text

@@ -7,8 +7,8 @@ A Document object has a predefined data schema as below, each of the attributes 
 | Attribute   | Type               | Description |
 |-------------|--------------------| ----------- |
 | id          | string             | A hexdigest that represents a unique document ID |
-| buffer      | bytes              | the raw binary content of this document, which often represents the original document when comes into jina |
-| blob        | `ndarray`-like | the ndarray of the image/audio/video document |
+| blob      | bytes              | the raw binary content of this document, which often represents the original document when comes into jina |
+| tensor        | `ndarray`-like | the ndarray of the image/audio/video document |
 | text        | string             | a text document |
 | granularity | int                | the depth of the recursive chunk structure |
 | adjacency   | int                | the width of the recursive match structure |
@@ -16,7 +16,7 @@ A Document object has a predefined data schema as below, each of the attributes 
 | weight      | float              | The weight of this document |
 | uri         | string             | a uri of the document could be: a local file path, a remote url starts with http or https or data URI scheme |
 | modality    | string             | modality, an identifier to the modality this document belongs to. In the scope of multi/cross modal search |
-| mime_type   | string             | mime type of this document, for buffer content, this is required; for other contents, this can be guessed |
+| mime_type   | string             | mime type of this document, for blob content, this is required; for other contents, this can be guessed |
 | offset      | float              | the offset of the doc |
 | location    | float              | the position of the doc, could be start and end index of a string; could be x,y (top, left) coordinate of an image crop; could be timestamp of an audio clip |
 | chunks      | `DocumentArray`    | list of the sub-documents of this document (recursive structure) |
@@ -32,7 +32,7 @@ An `ndarray`-like object can be a Python (nested) List/Tuple, Numpy ndarray, Sci
 
 The data schema of the Document is comprehensive and well-organized. One can categorize those attributes into the following groups:
 
-- Content related: `uri`, `text`, `blob`, `buffer`;
+- Content related: `uri`, `text`, `tensor`, `blob`;
 - Nest structure related: `chunks`, `matches`, `granularity`, `adjacency`, `parent_id`;
 - Common side information or metadata: `id`, `modality`, `mime_type`, `offset`, `location`, `weight`;
   - Further information: `tags`;
