@@ -32,15 +32,15 @@ def test_da_vocabulary(da, min_freq):
 
 
 @pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_blob_non_max_len(test_docs):
+def test_da_text_to_tensor_non_max_len(test_docs):
     vocab = test_docs.get_vocabulary()
     for d in test_docs:
-        d.convert_text_to_blob(vocab)
-    np.testing.assert_array_equal(test_docs[0].blob, [2])
-    np.testing.assert_array_equal(test_docs[1].blob, [2, 3])
-    np.testing.assert_array_equal(test_docs[2].blob, [4, 3])
+        d.convert_text_to_tensor(vocab)
+    np.testing.assert_array_equal(test_docs[0].tensor, [2])
+    np.testing.assert_array_equal(test_docs[1].tensor, [2, 3])
+    np.testing.assert_array_equal(test_docs[2].tensor, [4, 3])
     for d in test_docs:
-        d.convert_blob_to_text(vocab)
+        d.convert_tensor_to_text(vocab)
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'hello world'
@@ -48,15 +48,15 @@ def test_da_text_to_blob_non_max_len(test_docs):
 
 
 @pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_blob_max_len_3(test_docs):
+def test_da_text_to_tensor_max_len_3(test_docs):
     vocab = test_docs.get_vocabulary()
     for d in test_docs:
-        d.convert_text_to_blob(vocab, max_length=3)
-    np.testing.assert_array_equal(test_docs[0].blob, [0, 0, 2])
-    np.testing.assert_array_equal(test_docs[1].blob, [0, 2, 3])
-    np.testing.assert_array_equal(test_docs[2].blob, [0, 4, 3])
+        d.convert_text_to_tensor(vocab, max_length=3)
+    np.testing.assert_array_equal(test_docs[0].tensor, [0, 0, 2])
+    np.testing.assert_array_equal(test_docs[1].tensor, [0, 2, 3])
+    np.testing.assert_array_equal(test_docs[2].tensor, [0, 4, 3])
     for d in test_docs:
-        d.convert_blob_to_text(vocab)
+        d.convert_tensor_to_text(vocab)
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'hello world'
@@ -64,15 +64,15 @@ def test_da_text_to_blob_max_len_3(test_docs):
 
 
 @pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_blob_max_len_1(test_docs):
+def test_da_text_to_tensor_max_len_1(test_docs):
     vocab = test_docs.get_vocabulary()
     for d in test_docs:
-        d.convert_text_to_blob(vocab, max_length=1)
-    np.testing.assert_array_equal(test_docs[0].blob, [2])
-    np.testing.assert_array_equal(test_docs[1].blob, [3])
-    np.testing.assert_array_equal(test_docs[2].blob, [3])
+        d.convert_text_to_tensor(vocab, max_length=1)
+    np.testing.assert_array_equal(test_docs[0].tensor, [2])
+    np.testing.assert_array_equal(test_docs[1].tensor, [3])
+    np.testing.assert_array_equal(test_docs[2].tensor, [3])
     for d in test_docs:
-        d.convert_blob_to_text(vocab)
+        d.convert_tensor_to_text(vocab)
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'world'
@@ -80,7 +80,7 @@ def test_da_text_to_blob_max_len_1(test_docs):
 
 
 @pytest.mark.parametrize('da', da_and_dam())
-def test_convert_text_blob_random_text(da):
+def test_convert_text_tensor_random_text(da):
     texts = ['a short phrase', 'word', 'this is a much longer sentence']
     da.clear()
     da.extend(Document(text=t) for t in texts)
@@ -88,11 +88,11 @@ def test_convert_text_blob_random_text(da):
 
     # encoding
     for d in da:
-        d.convert_text_to_blob(vocab, max_length=10)
+        d.convert_text_to_tensor(vocab, max_length=10)
 
     # decoding
     for d in da:
-        d.convert_blob_to_text(vocab)
+        d.convert_tensor_to_text(vocab)
 
     assert texts
     assert da.texts == texts

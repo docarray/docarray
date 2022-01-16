@@ -6,14 +6,14 @@
 {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` supports both CPU & GPU.
 ```
 
-When DocumentArray has `.blobs` set, you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into vector representations, i.e. filling `.embeddings`. For example, our DocumentArray looks like the following:
+When DocumentArray has `.tensors` set, you can use a neural network to {meth}`~docarray.array.mixins.embed.EmbedMixin.embed` it into vector representations, i.e. filling `.embeddings`. For example, our DocumentArray looks like the following:
 
 ```python
 from docarray import DocumentArray
 import numpy as np
 
 docs = DocumentArray.empty(10)
-docs.blobs = np.random.random([10, 128]).astype(np.float32)
+docs.tensors = np.random.random([10, 128]).astype(np.float32)
 ```
 
 Let's use a simple MLP in Pytorch/Keras/ONNX/Paddle as our embedding model:
@@ -120,7 +120,7 @@ docs.embed(model)
 
 After getting `.embeddings`, you can visualize it using {meth}`~docarray.array.mixins.plot.PlotMixin.plot_embeddings`, {ref}`find more details here<visualize-embeddings>`.
 
-Note that `.embed()` only works when you have `.blobs` set, if you have `.texts` set and your model function supports string as the input, then you can always do the following to get embeddings:
+Note that `.embed()` only works when you have `.tensors` set, if you have `.texts` set and your model function supports string as the input, then you can always do the following to get embeddings:
 
 ```python
 from docarray import DocumentArray

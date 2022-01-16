@@ -6,7 +6,7 @@ from docarray import DocumentArray
 
 @pytest.mark.parametrize('cls', [DocumentArray])
 @pytest.mark.parametrize(
-    'content_attr', ['texts', 'embeddings', 'blobs', 'buffers', 'contents']
+    'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
 def test_content_empty_getter_return_none(cls, content_attr):
     da = cls()
@@ -19,8 +19,8 @@ def test_content_empty_getter_return_none(cls, content_attr):
     [
         ('texts', ''),
         ('embeddings', np.array([])),
-        ('blobs', np.array([])),
-        ('buffers', []),
+        ('tensors', np.array([])),
+        ('blobs', []),
         ('contents', []),
     ],
 )
@@ -35,8 +35,8 @@ def test_content_empty_setter(cls, content_attr):
     'content_attr',
     [
         ('texts', ['s'] * 10),
-        ('blobs', np.random.random([10, 2])),
-        ('buffers', [b's'] * 10),
+        ('tensors', np.random.random([10, 2])),
+        ('blobs', [b's'] * 10),
     ],
 )
 def test_content_getter_setter(cls, content_attr):
@@ -55,8 +55,8 @@ def test_content_empty(da_len):
     da = DocumentArray.empty(da_len)
     assert not da.texts
     assert not da.contents
+    assert not da.tensors
     assert not da.blobs
-    assert not da.buffers
 
     da.texts = ['hello'] * da_len
     if da_len == 0:
@@ -64,5 +64,5 @@ def test_content_empty(da_len):
     else:
         assert da.contents == ['hello'] * da_len
         assert da.texts == ['hello'] * da_len
+        assert not da.tensors
         assert not da.blobs
-        assert not da.buffers

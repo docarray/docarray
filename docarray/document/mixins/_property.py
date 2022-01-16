@@ -47,22 +47,22 @@ class _PropertyMixin:
         self._data.adjacency = value
 
     @property
-    def buffer(self) -> Optional[bytes]:
-        self._data._set_default_value_if_none('buffer')
-        return self._data.buffer
-
-    @buffer.setter
-    def buffer(self, value: bytes):
-        self._data.buffer = value
-
-    @property
-    def blob(self) -> Optional['ArrayType']:
+    def blob(self) -> Optional[bytes]:
         self._data._set_default_value_if_none('blob')
         return self._data.blob
 
     @blob.setter
-    def blob(self, value: 'ArrayType'):
+    def blob(self, value: bytes):
         self._data.blob = value
+
+    @property
+    def tensor(self) -> Optional['ArrayType']:
+        self._data._set_default_value_if_none('tensor')
+        return self._data.tensor
+
+    @tensor.setter
+    def tensor(self, value: 'ArrayType'):
+        self._data.tensor = value
 
     @property
     def mime_type(self) -> Optional[str]:

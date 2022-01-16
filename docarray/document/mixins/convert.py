@@ -2,21 +2,21 @@ from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _uri_to_buffer, _to_datauri, _is_datauri
+from .helper import _uri_to_blob, _to_datauri, _is_datauri
 
 if TYPE_CHECKING:
     from ...types import T
 
 
 class ConvertMixin:
-    """Provide helper functions for :class:`Document` to support conversion between :attr:`.blob`, :attr:`.text`
-    and :attr:`.buffer`."""
+    """Provide helper functions for :class:`Document` to support conversion between :attr:`.tensor`, :attr:`.text`
+    and :attr:`.blob`."""
 
-    def convert_buffer_to_blob(
+    def convert_blob_to_tensor(
         self: 'T', dtype: Optional[str] = None, count: int = -1, offset: int = 0
     ) -> 'T':
-        """Assuming the :attr:`buffer` is a _valid_ buffer of Numpy ndarray,
-        set :attr:`blob` accordingly.
+        """Assuming the :attr:`blob` is a _valid_ buffer of Numpy ndarray,
+        set :attr:`tensor` accordingly.
 
         :param dtype: Data-type of the returned array; default: float.
         :param count: Number of items to read. ``-1`` means all data in the buffer.
@@ -24,15 +24,15 @@ class ConvertMixin:
 
         :return: itself after processed
         """
-        self.blob = np.frombuffer(self.buffer, dtype=dtype, count=count, offset=offset)
+        self.tensor = np.frombuffer(self.blob, dtype=dtype, count=count, offset=offset)
         return self
 
-    def convert_blob_to_buffer(self: 'T') -> 'T':
-        """Convert :attr:`.blob` to :attr:`.buffer` inplace.
+    def convert_tensor_to_blob(self: 'T') -> 'T':
+        """Convert :attr:`.tensor` to :attr:`.blob` inplace.
 
         :return: itself after processed
         """
-        self.buffer = self.blob.tobytes()
+        self.blob = self.tensor.tobytes()
         return self
 
     def convert_uri_to_datauri(
@@ -46,6 +46,6 @@ class ConvertMixin:
         :return: itself after processed
         """
         if not _is_datauri(self.uri):
-            buffer = _uri_to_buffer(self.uri)
-            self.uri = _to_datauri(self.mime_type, buffer, charset, base64, binary=True)
+            blob = _uri_to_blob(self.uri)
+            self.uri = _to_datauri(self.mime_type, blob, charset, base64, binary=True)
         return self

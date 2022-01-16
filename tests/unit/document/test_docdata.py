@@ -52,20 +52,20 @@ def test_clear_fields():
 def test_exclusive_content():
     d = Document(text='hello')
     assert d.content_type == 'text'
-    d.buffer = b'123'
-    assert d.buffer
-    assert not d.text
-    assert not d.blob
-    assert d.content_type == 'buffer'
-    d.blob = [1, 2, 3]
+    d.blob = b'123'
     assert d.blob
-    assert not d.buffer
     assert not d.text
+    assert not d.tensor
     assert d.content_type == 'blob'
+    d.tensor = [1, 2, 3]
+    assert d.tensor
+    assert not d.blob
+    assert not d.text
+    assert d.content_type == 'tensor'
     d.text = 'hello'
     assert d.text
-    assert not d.buffer
     assert not d.blob
+    assert not d.tensor
     assert d.content_type == 'text'
 
 
@@ -129,17 +129,17 @@ def test_offset():
 
 
 def test_exclusive_content_2():
-    d = Document(text='hello', buffer=b'sda')
+    d = Document(text='hello', blob=b'sda')
     assert len(d.non_empty_fields) == 3
     d.content = b'sda'
     assert d.content == b'sda'
-    assert 'buffer' in d.non_empty_fields
+    assert 'blob' in d.non_empty_fields
     d = Document(content='hello')
     assert d.content_type == 'text'
     d = Document(content=b'hello')
-    assert d.content_type == 'buffer'
-    d = Document(content=[1, 2, 3])
     assert d.content_type == 'blob'
+    d = Document(content=[1, 2, 3])
+    assert d.content_type == 'tensor'
 
 
 def test_get_attr_values():
@@ -187,7 +187,7 @@ def test_get_attr_values():
     assert res3 == 'real_value'
 
     d = Document(content=np.array([1, 2, 3]))
-    res4 = np.stack(d._get_attributes(*['blob']))
+    res4 = np.stack(d._get_attributes(*['tensor']))
     np.testing.assert_equal(res4, np.array([1, 2, 3]))
 
 
@@ -209,10 +209,10 @@ def test_doc_content():
     d.text = 'abc'
     assert d.content == 'abc'
     c = np.random.random([10, 10])
-    d.blob = c
+    d.tensor = c
     np.testing.assert_equal(d.content, c)
-    d.buffer = b'123'
-    assert d.buffer == b'123'
+    d.blob = b'123'
+    assert d.blob == b'123'
 
 
 def test_dict_constructor():
@@ -259,5 +259,5 @@ def test_content_setter_as_proxy():
     assert 'content' not in d.non_empty_fields
     assert 'text' in d.non_empty_fields
     d.content = [1, 2, 3]
-    assert 'blob' in d.non_empty_fields
+    assert 'tensor' in d.non_empty_fields
     assert 'text' not in d.non_empty_fields

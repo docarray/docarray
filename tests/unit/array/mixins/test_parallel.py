@@ -6,10 +6,10 @@ from docarray import DocumentArray, Document
 
 def foo(d: Document):
     return (
-        d.load_uri_to_image_blob()
-        .set_image_blob_normalization()
-        .set_image_blob_channel_axis(-1, 0)
-        .set_image_blob_shape((222, 222), 0)
+        d.load_uri_to_image_tensor()
+        .set_image_tensor_normalization()
+        .set_image_tensor_channel_axis(-1, 0)
+        .set_image_tensor_shape((222, 222), 0)
     )
 
 
@@ -36,20 +36,20 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
 
     # use a generator
     for d in da.map(foo, backend, num_worker=num_worker):
-        assert d.blob.shape == (3, 222, 222)
+        assert d.tensor.shape == (3, 222, 222)
 
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use as list, here the caveat is when using process backend you can not modify thing in-place
     list(da.map(foo, backend, num_worker=num_worker))
     if backend == 'thread':
-        assert da.blobs.shape == (len(da), 3, 222, 222)
+        assert da.tensors.shape == (len(da), 3, 222, 222)
     else:
-        assert da.blobs is None
+        assert da.tensors is None
 
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
     da_new = da.apply(foo)
-    assert da_new.blobs.shape == (len(da_new), 3, 222, 222)
+    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
 @pytest.mark.skipif(
@@ -73,7 +73,7 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
         foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
     ):
         for d in _da:
-            assert d.blob.shape == (3, 222, 222)
+            assert d.tensor.shape == (3, 222, 222)
 
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
@@ -84,12 +84,12 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
         )
     )
     if backend == 'thread':
-        assert da.blobs.shape == (len(da), 3, 222, 222)
+        assert da.tensors.shape == (len(da), 3, 222, 222)
     else:
-        assert da.blobs is None
+        assert da.tensors is None
 
     da_new = da.apply_batch(foo_batch, batch_size=b_size)
-    assert da_new.blobs.shape == (len(da_new), 3, 222, 222)
+    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
 @pytest.mark.skipif(
@@ -106,7 +106,7 @@ def test_map_lambda(pytestconfig, da_cls):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     for d in da:
-        assert d.blob is None
+        assert d.tensor is None
 
-    for d in da.map(lambda x: x.load_uri_to_image_blob()):
-        assert d.blob is not None
+    for d in da.map(lambda x: x.load_uri_to_image_tensor()):
+        assert d.tensor is not None

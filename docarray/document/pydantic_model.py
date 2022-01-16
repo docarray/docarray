@@ -22,8 +22,8 @@ class PydanticDocument(BaseModel):
     parent_id: Optional[str]
     granularity: Optional[int]
     adjacency: Optional[int]
-    buffer: Optional[bytes]
-    blob: Optional[Any]
+    blob: Optional[bytes]
+    tensor: Optional[Any]
     mime_type: Optional[str]
     text: Optional[str]
     weight: Optional[float]
@@ -38,7 +38,7 @@ class PydanticDocument(BaseModel):
     chunks: Optional[List['PydanticDocument']]
     matches: Optional[List['PydanticDocument']]
 
-    _blob2list = validator('blob', allow_reuse=True)(_convert_ndarray_to_list)
+    _tensor2list = validator('tensor', allow_reuse=True)(_convert_ndarray_to_list)
     _embedding2list = validator('embedding', allow_reuse=True)(_convert_ndarray_to_list)
 
 

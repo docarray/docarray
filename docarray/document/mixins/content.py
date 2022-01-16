@@ -22,8 +22,8 @@ class ContentPropertyMixin:
         """
         if self.text:
             self.convert_text_to_datauri()
-        elif self.buffer:
-            self.convert_buffer_to_datauri()
+        elif self.blob:
+            self.convert_blob_to_datauri()
         elif self.content_type:
             raise NotImplementedError
         return self
