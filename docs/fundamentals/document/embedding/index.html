@@ -7,10 +7,10 @@
   <meta property="og:title" content="Embedding" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/embedding.html" />
-  <meta property="og:site_name" content="DocArray 0.1.9 Documentation" />
-  <meta property="og:description" content="Embedding is a multi-dimensional representation of a Document (often a[1, D] vector). It serves as a very important piece in machine learning. The attribute embedding is designed to contain the embedding information of a Document. Like.blob, you can assign it with a Python (nested) List/Tuple, Nu..." />
+  <meta property="og:site_name" content="DocArray 0.2.0 Documentation" />
+  <meta property="og:description" content="Embedding is a multi-dimensional representation of a Document (often a[1, D] vector). It serves as a very important piece in machine learning. The attribute embedding is designed to contain the embedding information of a Document. Like.tensor, you can assign it with a Python (nested) List/Tuple, ..." />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.1.9 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.2.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Nested Structure" href="../nested/" /><link rel="prev" title="Access Attributes" href="../attribute/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Embedding - DocArray 0.1.9 documentation</title>
+        <title>Embedding - DocArray 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.1.9 documentation</div>
+                <div class="brand">DocArray 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -294,7 +294,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.buffer/">docarray.document.mixins.buffer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
@@ -353,6 +353,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/">Changelog</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -412,7 +413,7 @@
                 <section class="tex2jax_ignore mathjax_ignore" id="embedding">
 <h1>Embedding<a class="headerlink" href="#embedding" title="Permalink to this headline">¶</a></h1>
 <p>Embedding is a multi-dimensional representation of a Document (often a <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">D]</span></code> vector). It serves as a very important piece in machine learning. The attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code> is designed to contain the embedding information of a Document.</p>
-<p>Like <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, you can assign it with a Python (nested) List/Tuple, Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, SciPy sparse matrix (<code class="docutils literal notranslate"><span class="pre">spmatrix</span></code>), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.</p>
+<p>Like <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, you can assign it with a Python (nested) List/Tuple, Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, SciPy sparse matrix (<code class="docutils literal notranslate"><span class="pre">spmatrix</span></code>), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -429,7 +430,7 @@
 </pre></div>
 </div>
 <p>Unlike some other packages, DocArray will not actively cast <code class="docutils literal notranslate"><span class="pre">dtype</span></code> into <code class="docutils literal notranslate"><span class="pre">float32</span></code>. If the right-hand assigment <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">float64</span></code> in PyTorch, it will stay as a PyTorch <code class="docutils literal notranslate"><span class="pre">float64</span></code> tensor.</p>
-<p>To assign multiple Documents <code class="docutils literal notranslate"><span class="pre">.blob</span></code> and <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> in bulk, you <a class="reference internal" href="../../documentarray/access-attributes/#da-content-embedding"><span class="std std-ref">should use DocumentArray</span></a>. It is much faster and smarter than using for-loop.</p>
+<p>To assign multiple Documents <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> and <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> in bulk, you <a class="reference internal" href="../../documentarray/access-attributes/#da-content-embedding"><span class="std std-ref">should use DocumentArray</span></a>. It is much faster and smarter than using for-loop.</p>
 <section id="fill-embedding-via-neural-network">
 <h2>Fill embedding via neural network<a class="headerlink" href="#fill-embedding-via-neural-network" title="Permalink to this headline">¶</a></h2>
 <div class="tip admonition">
@@ -437,16 +438,16 @@
 <p>To embed multiple Documents, do not use this feature in a for-loop. Instead, put all Documents in a DocumentArray and call <code class="docutils literal notranslate"><span class="pre">.embed()</span></code>. You can find out more in <a class="reference internal" href="../../documentarray/embedding/#embed-via-model"><span class="std std-ref">Embed via Neural Network</span></a>.</p>
 </div>
 <p>Usually you don’t want to assign embedding manually, but instead doing something like:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>d.blob   \
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>d.tensor   \
 d.text   ---&gt; some DNN model ---&gt; d.embedding
-d.buffer /
+d.blob /
 </pre></div>
 </div>
 <p>Once a Document has content field set, you can use a deep neural network to <a class="reference internal" href="../../../api/docarray.document.mixins.sugar/#docarray.document.mixins.sugar.SingletonSugarMixin.embed" title="docarray.document.mixins.sugar.SingletonSugarMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a> it, which means filling <code class="docutils literal notranslate"><span class="pre">.embedding</span></code>. For example, our Document looks like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'/Users/hanxiao/Downloads/left/00003.jpg'</span><span class="p">)</span>
-     <span class="o">.</span><span class="n">load_uri_to_image_blob</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">set_image_blob_normalization</span><span class="p">()</span>
-     <span class="o">.</span><span class="n">set_image_blob_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Let’s embed it into vector via ResNet50:</p>
@@ -524,7 +525,7 @@ d.buffer /
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 14, 2022.
+                    Last updated on Jan 16, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

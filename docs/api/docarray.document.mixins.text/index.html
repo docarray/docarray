@@ -7,9 +7,9 @@
   <meta property="og:title" content="docarray.document.mixins.text module" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.text.html" />
-  <meta property="og:site_name" content="DocArray 0.1.9 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.2.0 Documentation" />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.1.9 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.2.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins.video module" href="../docarray.document.mixins.video/" /><link rel="prev" title="docarray.document.mixins.sugar module" href="../docarray.document.mixins.sugar/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>docarray.document.mixins.text module - DocArray 0.1.9 documentation</title>
+        <title>docarray.document.mixins.text module - DocArray 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -163,7 +163,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.1.9 documentation</div>
+                <div class="brand">DocArray 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -293,7 +293,7 @@
 <li class="toctree-l3 current has-children"><a class="reference internal" href="../docarray.document.mixins/">docarray.document.mixins package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.buffer/">docarray.document.mixins.buffer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
@@ -352,6 +352,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/">Changelog</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -448,10 +449,10 @@
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="docarray.document.mixins.text.TextDataMixin.convert_text_to_blob">
-<span class="sig-name descname"><span class="pre">convert_text_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'int64'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/text/#TextDataMixin.convert_text_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.text.TextDataMixin.convert_text_to_blob" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text" title="docarray.document.data.DocumentData.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a> to <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob" title="docarray.document.data.DocumentData.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a> inplace.</p>
-<p>In the end <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob" title="docarray.document.data.DocumentData.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a> will be a 1D array where <cite>D</cite> is <cite>max_length</cite>.</p>
+<dt class="sig sig-object py" id="docarray.document.mixins.text.TextDataMixin.convert_text_to_tensor">
+<span class="sig-name descname"><span class="pre">convert_text_to_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'int64'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/text/#TextDataMixin.convert_text_to_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.text.TextDataMixin.convert_text_to_tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text" title="docarray.document.data.DocumentData.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a> to <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> inplace.</p>
+<p>In the end <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> will be a 1D array where <cite>D</cite> is <cite>max_length</cite>.</p>
 <p>To get the vocab of a DocumentArray, you can use <cite>jina.types.document.converters.build_vocab</cite> to</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -460,7 +461,7 @@
 for unknown words in <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text" title="docarray.document.data.DocumentData.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a>. So you should <em>not</em> include these two entries in <cite>vocab</cite>.</p></li>
 <li><p><strong>max_length</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum length of the sequence. Sequence longer than this are cut off from <em>beginning</em>.
 Sequence shorter than this will be padded with <cite>0</cite> from right hand side.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the dtype of the generated <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob" title="docarray.document.data.DocumentData.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a></p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the dtype of the generated <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -472,9 +473,9 @@ Sequence shorter than this will be padded with <cite>0</cite> from right hand si
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="docarray.document.mixins.text.TextDataMixin.convert_blob_to_text">
-<span class="sig-name descname"><span class="pre">convert_blob_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/text/#TextDataMixin.convert_blob_to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.text.TextDataMixin.convert_blob_to_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.blob" title="docarray.document.data.DocumentData.blob"><code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code></a> to <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text" title="docarray.document.data.DocumentData.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a> inplace.</p>
+<dt class="sig sig-object py" id="docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text">
+<span class="sig-name descname"><span class="pre">convert_tensor_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/text/#TextDataMixin.convert_tensor_to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.text.TextDataMixin.convert_tensor_to_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> to <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.text" title="docarray.document.data.DocumentData.text"><code class="xref py py-attr docutils literal notranslate"><span class="pre">text</span></code></a> inplace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -547,7 +548,7 @@ Sometimes used for text data that frequently uses non-US-ASCII characters.</p></
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 14, 2022.
+                    Last updated on Jan 16, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>docarray.document.mixins.plot - DocArray 0.1.9 documentation</title>
+        <title>docarray.document.mixins.plot - DocArray 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.1.9 documentation</div>
+                <div class="brand">DocArray 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -268,7 +268,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.buffer/">docarray.document.mixins.buffer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
@@ -327,6 +327,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changelog/">Changelog</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -416,7 +417,7 @@
                 <span class="p">)</span>
 
 <div class="viewcode-block" id="PlotMixin.display"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">""" Plot image data from :attr:`.blob` or :attr:`.uri`. """</span>
+        <span class="sd">""" Plot image data from :attr:`.tensor` or :attr:`.uri`. """</span>
         <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
@@ -426,18 +427,18 @@
                 <span class="n">_html5_video_player</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">PIL.Image</span>
 
-                <span class="n">p</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s1">'RGB'</span><span class="p">:</span>
                     <span class="k">raise</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-                <span class="n">plt</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span></div>
 
@@ -481,7 +482,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 14, 2022.
+                    Last updated on Jan 16, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

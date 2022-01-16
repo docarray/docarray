@@ -83,12 +83,12 @@ vocab = da.get_vocabulary()
 
 The vocabulary is 2-indexed as `0` is reserved for padding symbol and `1` is reserved for unknown symbol.
 
-One can further use this vocabulary to convert `.text` field into `.blob` via:
+One can further use this vocabulary to convert `.text` field into `.tensor` via:
 
 ```python
 for d in da:
-    d.convert_text_to_blob(vocab)
-    print(d.blob)
+    d.convert_text_to_tensor(vocab)
+    print(d.tensor)
 ```
 
 ```text
@@ -97,7 +97,7 @@ for d in da:
 [2 4]
 ```
 
-When you have text in different length and you want the output `.blob` to have the same length, you can define `max_length` during converting:
+When you have text in different length and you want the output `.tensor` to have the same length, you can define `max_length` during converting:
 
 ```python
 from docarray import Document, DocumentArray
@@ -108,8 +108,8 @@ da = DocumentArray([Document(text='a short phrase'),
 vocab = da.get_vocabulary()
 
 for d in da:
-    d.convert_text_to_blob(vocab, max_length=10)
-    print(d.blob)
+    d.convert_text_to_tensor(vocab, max_length=10)
+    print(d.tensor)
 ```
 
 ```text
@@ -118,10 +118,10 @@ for d in da:
 [ 0  0  0  0  6  7  2  8  9 10]
 ```
 
-You can get also use `.blobs` of DocumentArray to get all blobs in one `ndarray`.
+You can get also use `.tensors` of DocumentArray to get all tensors in one `ndarray`.
 
 ```python
-print(da.blobs)
+print(da.tensors)
 ````
 
 ```text
@@ -144,11 +144,11 @@ vocab = da.get_vocabulary()
 
 # encoding
 for d in da:
-    d.convert_text_to_blob(vocab, max_length=10)
+    d.convert_text_to_tensor(vocab, max_length=10)
 
 # decoding
 for d in da:
-    d.convert_blob_to_text(vocab)
+    d.convert_tensor_to_text(vocab)
     print(d.text)
 ```
 

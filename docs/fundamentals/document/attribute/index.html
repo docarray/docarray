@@ -7,10 +7,10 @@
   <meta property="og:title" content="Access Attributes" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/attribute.html" />
-  <meta property="og:site_name" content="DocArray 0.1.9 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.2.0 Documentation" />
   <meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes, cont..." />
   <meta property="og:image" content="https://docarray.jina.ai/_images/doc-load-autocomplete.png" />
-  <meta property="og:image:alt" content="DocArray 0.1.9 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.2.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Embedding" href="../embedding/" /><link rel="prev" title="Serialization" href="../serialization/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>Access Attributes - DocArray 0.1.9 documentation</title>
+        <title>Access Attributes - DocArray 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.1.9 documentation</div>
+                <div class="brand">DocArray 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -294,7 +294,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.buffer/">docarray.document.mixins.buffer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
@@ -353,6 +353,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/">Changelog</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -438,7 +439,7 @@
 <p>You can check which attributes are set by <code class="docutils literal notranslate"><span class="pre">.non_empty_fields</span></code>.</p>
 <section id="content-attributes">
 <h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this headline">¶</a></h2>
-<p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, and <code class="docutils literal notranslate"><span class="pre">.buffer</span></code> are super important as they contain the actual content.</p>
+<p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code> are super important as they contain the actual content.</p>
 <p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively.</p>
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
@@ -455,12 +456,12 @@
 <td>Contain text</td>
 </tr>
 <tr>
-<td><code>doc.blob</code></td>
+<td><code>doc.tensor</code></td>
 <td>A Python (nested) list/tuple of numbers, Numpy <code>ndarray</code>, SciPy sparse matrix (<code>spmatrix</code>), TensorFlow dense &amp; sparse tensor, PyTorch dense &amp; sparse tensor, PaddlePaddle dense tensor</td>
 <td>Contain image/video/audio</td>
 </tr>
 <tr>
-<td><code>doc.buffer</code></td>
+<td><code>doc.blob</code></td>
 <td>Binary string</td>
 <td>Contain intermediate IO buffer</td>
 </tr>
@@ -471,23 +472,23 @@
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">d</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'blob', 'mime_type') at 7623808c6d6211ec9cf21e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'tensor', 'mime_type') at 7623808c6d6211ec9cf21e008a366d49&gt;
 </pre></div>
 </div>
 <p>As one can see <code class="docutils literal notranslate"><span class="pre">text</span></code> field is reset to empty.</p>
 <p>But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">nested Document</span></a>s by putting image into one sub-Document, and text into another sub-Document.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">blob</span><span class="o">=...</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=...</span><span class="p">)])</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">tensor</span><span class="o">=...</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=...</span><span class="p">)])</span>
 </pre></div>
 </div>
 <p>The principle is each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.</p>
-<p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> sugar getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">buffer</span></code>, or <code class="docutils literal notranslate"><span class="pre">blob</span></code> field based on the given type.</p>
+<p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> sugar getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field based on the given type.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -500,7 +501,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'blob', 'mime_type') at 2808eeb86d6311ecaddb1e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'tensor', 'mime_type') at 2808eeb86d6311ecaddb1e008a366d49&gt;
 </pre></div>
 </div>
 <p>You can also check which content field is set by <code class="docutils literal notranslate"><span class="pre">.content_type</span></code>.</p>
@@ -513,11 +514,11 @@
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Local image URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.png'</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_blob</span><span class="p">()</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.png'</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">blob [[[255 255 255]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tensor [[[255 255 255]</span>
 <span class="go">  [255 255 255]</span>
 <span class="go">  [255 255 255]</span>
 <span class="go">  ...</span>
@@ -545,12 +546,12 @@
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'''data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA</span>
 <span class="s1">AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO</span>
 <span class="s1">9TXL0Y4OHwAAAABJRU5ErkJggg==</span>
-<span class="s1">'''</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_blob</span><span class="p">()</span>
+<span class="s1">'''</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">blob [[[255 255 255]</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">tensor [[[255 255 255]</span>
 <span class="go">  [255   0   0]</span>
 <span class="go">  [255   0   0]</span>
 <span class="go">  [255   0   0]</span>
@@ -604,7 +605,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 14, 2022.
+                    Last updated on Jan 16, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.3.2, furo 2022.01.02"/>
-        <title>docarray.document.mixins.buffer - DocArray 0.1.9 documentation</title>
+        <title>docarray.document.mixins.blob - DocArray 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.1.9 documentation</div>
+                <div class="brand">DocArray 0.2.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -268,7 +268,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="../../../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.buffer/">docarray.document.mixins.buffer module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.content/">docarray.document.mixins.content module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.convert/">docarray.document.mixins.convert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/docarray.document.mixins.dump/">docarray.document.mixins.dump module</a></li>
@@ -327,6 +327,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../changelog/">Changelog</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -383,32 +384,32 @@
                         </i>
                     </label>
                 </div>
-                <h1>Source code for docarray.document.mixins.buffer</h1><div class="highlight"><pre>
+                <h1>Source code for docarray.document.mixins.blob</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">BinaryIO</span>
 
-<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">_uri_to_buffer</span><span class="p">,</span> <span class="n">_to_datauri</span><span class="p">,</span> <span class="n">_get_file_context</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">_uri_to_blob</span><span class="p">,</span> <span class="n">_to_datauri</span><span class="p">,</span> <span class="n">_get_file_context</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">...types</span> <span class="kn">import</span> <span class="n">T</span>
 
 
-<div class="viewcode-block" id="BufferDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.buffer/#docarray.document.mixins.buffer.BufferDataMixin">[docs]</a><span class="k">class</span> <span class="nc">BufferDataMixin</span><span class="p">:</span>
+<div class="viewcode-block" id="BlobDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin">[docs]</a><span class="k">class</span> <span class="nc">BlobDataMixin</span><span class="p">:</span>
     <span class="sd">"""Provide helper functions for :class:`Document` to handle binary data. """</span>
 
-<div class="viewcode-block" id="BufferDataMixin.load_uri_to_buffer"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.buffer/#docarray.document.mixins.buffer.BufferDataMixin.load_uri_to_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert :attr:`.uri` to :attr:`.buffer` inplace.</span>
-<span class="sd">        Internally it downloads from the URI and set :attr:`buffer`.</span>
+<div class="viewcode-block" id="BlobDataMixin.load_uri_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.load_uri_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+        <span class="sd">"""Convert :attr:`.uri` to :attr:`.blob` inplace.</span>
+<span class="sd">        Internally it downloads from the URI and set :attr:`blob`.</span>
 
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">_uri_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">_uri_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="BufferDataMixin.convert_buffer_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.buffer/#docarray.document.mixins.buffer.BufferDataMixin.convert_buffer_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_buffer_to_datauri</span><span class="p">(</span>
+<div class="viewcode-block" id="BlobDataMixin.convert_blob_to_datauri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_blob_to_datauri</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'utf-8'</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert :attr:`.buffer` to data :attr:`.uri` in place.</span>
-<span class="sd">        Internally it first reads into buffer and then converts it to data URI.</span>
+        <span class="sd">"""Convert :attr:`.blob` to data :attr:`.uri` in place.</span>
+<span class="sd">        Internally it first reads into blob and then converts it to data URI.</span>
 
 <span class="sd">        :param charset: charset may be any character set registered with IANA</span>
 <span class="sd">        :param base64: used to encode arbitrary octet sequences into a form that satisfies the rules of 7bit.</span>
@@ -423,20 +424,18 @@
                 <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="si">}</span><span class="s1"> is unset, can not convert it to data uri'</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">_to_datauri</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">charset</span><span class="p">,</span> <span class="n">base64</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">_to_datauri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">blob</span><span class="p">,</span> <span class="n">charset</span><span class="p">,</span> <span class="n">base64</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="BufferDataMixin.save_buffer_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.buffer/#docarray.document.mixins.buffer.BufferDataMixin.save_buffer_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_buffer_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Save :attr:`.buffer` into a file</span>
+<div class="viewcode-block" id="BlobDataMixin.save_blob_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.save_blob_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_blob_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+        <span class="sd">"""Save :attr:`.blob` into a file</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
         <span class="n">fp</span> <span class="o">=</span> <span class="n">_get_file_context</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
             </article>
@@ -449,7 +448,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 14, 2022.
+                    Last updated on Jan 16, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

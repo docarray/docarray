@@ -21,22 +21,22 @@ This feature requires `av` dependency. You can install it via `pip install "doca
 from docarray import Document
 
 d = Document(uri='toy.mp4')
-d.load_uri_to_video_blob()
+d.load_uri_to_video_tensor()
 
-print(d.blob.shape)
+print(d.tensor.shape)
 ```
 
 ```text
 (250, 176, 320, 3)
 ```
 
-For video data, `.blob` is a 4-dim array, where the first dimension represents the frame id, or time. The last three dimensions represent the same thing as in image data. Here we got our `d.blob.shape=(250, 176, 320, 3)`, which means this video is sized in 176x320 and contains 250 frames. Based on the overall length of the video (10s), we can infer the framerate is around 250/10=25fps.
+For video data, `.tensor` is a 4-dim array, where the first dimension represents the frame id, or time. The last three dimensions represent the same thing as in image data. Here we got our `d.tensor.shape=(250, 176, 320, 3)`, which means this video is sized in 176x320 and contains 250 frames. Based on the overall length of the video (10s), we can infer the framerate is around 250/10=25fps.
 
 We can put each frame into a sub-Document in `.chunks` as use image sprite to visualize them.
 
 ```python
-for b in d.blob:
-    d.chunks.append(Document(blob=b))
+for b in d.tensor:
+    d.chunks.append(Document(tensor=b))
 
 d.chunks.plot_image_sprites('mov.png')
 ```
@@ -54,8 +54,8 @@ From the sprite image one can observe our example video is quite redundant. Let'
 from docarray import Document
 
 d = Document(uri='toy.mp4')
-d.load_uri_to_video_blob(only_keyframes=True)
-print(d.blob.shape)
+d.load_uri_to_video_tensor(only_keyframes=True)
+print(d.tensor.shape)
 ```
 
 ```text
@@ -65,8 +65,8 @@ print(d.blob.shape)
 Looks like we only have two key frames, let's dump them into images and see what do they look like.
 
 ```python
-for idx, c in enumerate(d.blob):
-    Document(blob=c).save_image_blob_to_file(f'chunk-{idx}.png')
+for idx, c in enumerate(d.tensor):
+    Document(tensor=c).save_image_tensor_to_file(f'chunk-{idx}.png')
 ```
 
 ```{figure} chunk-0.png
@@ -83,15 +83,15 @@ Makes sense, right?
 
 ## Save as video file
 
-One can also save a Document `.blob` as a video file. In this example, we load our `.mp4` video and store it into a 60fps video.
+One can also save a Document `.tensor` as a video file. In this example, we load our `.mp4` video and store it into a 60fps video.
 
 ```python
 from docarray import Document
 
 d = (
     Document(uri='toy.mp4')
-    .load_uri_to_video_blob()
-    .save_video_blob_to_file('60fps.mp4', 60)
+    .load_uri_to_video_tensor()
+    .save_video_tensor_to_file('60fps.mp4', 60)
 )
 ```
 

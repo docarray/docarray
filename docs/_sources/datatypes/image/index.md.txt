@@ -8,7 +8,7 @@ This requires `Pillow` and `matplotlib` dependencies. You can install them via `
 
 ## Load image data
 
-You can load image data by specifying the image URI and then convert it into `.blob` using Document API
+You can load image data by specifying the image URI and then convert it into `.tensor` using Document API
 
 ```{figure} apple.png
 :align: center
@@ -19,9 +19,9 @@ You can load image data by specifying the image URI and then convert it into `.b
 from docarray import Document
 
 d = Document(uri='apple.png')
-d.load_uri_to_image_blob()
+d.load_uri_to_image_tensor()
 
-print(d.blob, d.blob.shape)
+print(d.tensor, d.tensor.shape)
 ```
 
 ```text
@@ -35,20 +35,20 @@ print(d.blob, d.blob.shape)
 
 ## Simple image processing
 
-DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you can switch the channel axis of the `.blob` to meet certain requirements of other framework; and finally you can chain all these preprocessing steps together in one line. For example, before feeding data into a Pytorch-based ResNet Executor, the image needs to be normalized and the color axis should be at first, not at the last. You can do this via:
+DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you can switch the channel axis of the `.tensor` to meet certain requirements of other framework; and finally you can chain all these preprocessing steps together in one line. For example, before feeding data into a Pytorch-based ResNet Executor, the image needs to be normalized and the color axis should be at first, not at the last. You can do this via:
 
 ```python
 from docarray import Document
 
 d = (
     Document(uri='apple.png')
-    .load_uri_to_image_blob()
-    .set_image_blob_shape(shape=(224, 224))
-    .set_image_blob_normalization()
-    .set_image_blob_channel_axis(-1, 0)
+    .load_uri_to_image_tensor()
+    .set_image_tensor_shape(shape=(224, 224))
+    .set_image_tensor_normalization()
+    .set_image_tensor_channel_axis(-1, 0)
 )
 
-print(d.blob, d.blob.shape)
+print(d.tensor, d.tensor.shape)
 ```
 
 
@@ -63,10 +63,10 @@ print(d.blob, d.blob.shape)
 (3, 224, 224)
 ```
 
-You can also dump `.blob` back to a PNG image so that you can see.
+You can also dump `.tensor` back to a PNG image so that you can see.
 
 ```python
-d.save_image_blob_to_file('apple-proc.png', channel_axis=0)
+d.save_image_tensor_to_file('apple-proc.png', channel_axis=0)
 ```
 
 Note that the channel axis is now switched to 0 because the previous preprocessing steps we just conducted. 
@@ -111,11 +111,11 @@ It contains rich information in details, and it is complicated as there is no si
 from docarray import Document
 
 d = Document(uri='docs/datatype/image/complicated-image.jpeg')
-d.load_uri_to_image_blob()
-print(d.blob.shape)
+d.load_uri_to_image_tensor()
+print(d.tensor.shape)
 
-d.convert_image_blob_to_sliding_windows(window_shape=(64, 64))
-print(d.blob.shape)
+d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64))
+print(d.tensor.shape)
 ```
 
 ```text
@@ -123,17 +123,17 @@ print(d.blob.shape)
 (180, 64, 64, 3)
 ```
 
-As one can see, it converts the single image blob into 180 image blobs, each with the size of (64, 64, 3). You can also add all 180 image blobs into the chunks of this `Document`, simply do:
+As one can see, it converts the single image tensor into 180 image tensors, each with the size of (64, 64, 3). You can also add all 180 image tensors into the chunks of this `Document`, simply do:
 
 ```python
-d.convert_image_blob_to_sliding_windows(window_shape=(64, 64), as_chunks=True)
+d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64), as_chunks=True)
 
 print(d.chunks)
 ```
 
 ```text
 ChunkArray has 180 items (showing first three):
-{'id': '7585b8aa-3826-11ec-bc1a-1e008a366d48', 'mime_type': 'image/jpeg', 'blob': {'dense': {'buffer': 'H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0 ...
+{'id': '7585b8aa-3826-11ec-bc1a-1e008a366d48', 'mime_type': 'image/jpeg', 'tensor': {'dense': {'buffer': 'H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0 ...
 ```
 
 Let's now use image sprite to see how these chunks look like:
@@ -150,7 +150,7 @@ d.chunks.plot_image_sprites('simpsons-chunks.png')
 Hmm, doesn't change so much. This is because we scan the whole image using sliding windows with no overlap (i.e. stride). Let's do a bit oversampling:
 
 ```python
-d.convert_image_blob_to_sliding_windows(window_shape=(64, 64), strides=(10, 10), as_chunks=True)
+d.convert_image_tensor_to_sliding_windows(window_shape=(64, 64), strides=(10, 10), as_chunks=True)
 d.chunks.plot_image_sprites('simpsons-chunks-stride-10.png')
 ```
 

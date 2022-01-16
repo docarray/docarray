@@ -25,12 +25,12 @@ If a Document is an image Document, you can use {meth}`~docarray.document.mixins
 ```{figure} image-doc.png
 ```
 
-Note that it finds `.blob` or `.uri` for visualization.
+Note that it finds `.tensor` or `.uri` for visualization.
 
 ```{figure} image-doc-blob.png
 ```
 
-This works even if your Document is not a real image but just a `ndarray` in `.blob`.
+This works even if your Document is not a real image but just a `ndarray` in `.tensor`.
 
 ```{figure} image-blob.png
 ```
@@ -49,7 +49,7 @@ A cell with a DocumentArray object can be pretty-printed automatically.
 
 ### Display image sprite
 
-DocumentArray with all image Documents (image is either in `.uri` or `.blob`) can be plotted into one sprite image.
+DocumentArray with all image Documents (image is either in `.uri` or `.tensor`) can be plotted into one sprite image.
 
 ```{figure} image-sprite.png
 ```

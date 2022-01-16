@@ -2,7 +2,7 @@
 
 Embedding is a multi-dimensional representation of a Document (often a `[1, D]` vector). It serves as a very important piece in machine learning. The attribute {attr}`~docarray.Document.embedding` is designed to contain the embedding information of a Document.
 
-Like `.blob`, you can assign it with a Python (nested) List/Tuple, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
+Like `.tensor`, you can assign it with a Python (nested) List/Tuple, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense and sparse tensor, PyTorch dense and sparse tensor, or PaddlePaddle dense tensor.
 
 ```python
 import numpy as np
@@ -22,7 +22,7 @@ d5 = Document(embedding=tf.sparse.from_dense(np.array([[1, 2, 3], [4, 5, 6]])))
 
 Unlike some other packages, DocArray will not actively cast `dtype` into `float32`. If the right-hand assigment `dtype` is `float64` in PyTorch, it will stay as a PyTorch `float64` tensor.
 
-To assign multiple Documents `.blob` and `.embedding` in bulk, you {ref}`should use DocumentArray<da-content-embedding>`. It is much faster and smarter than using for-loop.
+To assign multiple Documents `.tensor` and `.embedding` in bulk, you {ref}`should use DocumentArray<da-content-embedding>`. It is much faster and smarter than using for-loop.
 
 
 ## Fill embedding via neural network
@@ -36,18 +36,18 @@ To embed multiple Documents, do not use this feature in a for-loop. Instead, put
 Usually you don't want to assign embedding manually, but instead doing something like:
 
 ```text
-d.blob   \
+d.tensor   \
 d.text   ---> some DNN model ---> d.embedding
-d.buffer /
+d.blob /
 ```
 
 Once a Document has content field set, you can use a deep neural network to {meth}`~docarray.document.mixins.sugar.SingletonSugarMixin.embed` it, which means filling `.embedding`. For example, our Document looks like the following:
 
 ```python
 q = (Document(uri='/Users/hanxiao/Downloads/left/00003.jpg')
-     .load_uri_to_image_blob()
-     .set_image_blob_normalization()
-     .set_image_blob_channel_axis(-1, 0))
+     .load_uri_to_image_tensor()
+     .set_image_tensor_normalization()
+     .set_image_tensor_channel_axis(-1, 0))
 ```
 
 Let's embed it into vector via ResNet50:

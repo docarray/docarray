@@ -1,7 +1,7 @@
-docarray.document.mixins.buffer module
+docarray.document.mixins.helper module
 ======================================
 
-.. automodule:: docarray.document.mixins.buffer
+.. automodule:: docarray.document.mixins.helper
    :members:
    :undoc-members:
    :show-inheritance:

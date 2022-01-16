@@ -38,8 +38,8 @@ from docarray import Document
 import numpy
 
 d1 = Document(text='hello')
-d2 = Document(buffer=b'\f1')
-d3 = Document(blob=numpy.array([1, 2, 3]))
+d2 = Document(blob=b'\f1')
+d3 = Document(tensor=numpy.array([1, 2, 3]))
 d4 = Document(uri='https://jina.ai',
               mime_type='text/plain',
               granularity=1,
@@ -55,16 +55,16 @@ Don't forget to leverage autocomplete in your IDE.
 
 ```text
 <Document ('id', 'mime_type', 'text') at a14effee6d3e11ec8bde1e008a366d49>
-<Document ('id', 'buffer') at a14f00986d3e11ec8bde1e008a366d49> 
-<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49> 
+<Document ('id', 'blob') at a14f00986d3e11ec8bde1e008a366d49> 
+<Document ('id', 'tensor') at a14f01a66d3e11ec8bde1e008a366d49> 
 <Document ('id', 'granularity', 'adjacency', 'mime_type', 'uri', 'tags') at a14f023c6d3e11ec8bde1e008a366d49>
 ```
 
 ````{tip}
-When you `print()` a Document, you get a string representation such as `<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49>`. It shows the non-empty attributes of that Document as well as its `id`, which helps you understand the content of that Document.
+When you `print()` a Document, you get a string representation such as `<Document ('id', 'tensor') at a14f01a66d3e11ec8bde1e008a366d49>`. It shows the non-empty attributes of that Document as well as its `id`, which helps you understand the content of that Document.
 
 ```text
-<Document ('id', 'blob') at a14f01a66d3e11ec8bde1e008a366d49>
+<Document ('id', 'tensor') at a14f01a66d3e11ec8bde1e008a366d49>
           ^^^^^^^^^^^^^^    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                  |                          |
                  |                          |

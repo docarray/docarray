@@ -19,6 +19,7 @@ This chapter will introduce how to leverage DocArray's pydantic support in a Fas
 Features introduced in this chapter require `fastapi` and `pydantic` as dependency, please do `pip install "docarray[full]"` to enable it.
 ```
 
+(schema-gen)=
 ## JSON Schema
 
 You can get [JSON Schema](https://json-schema.org/) (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by {meth}`~docarray.array.mixins.pydantic.PydanticMixin.get_json_schema`.

@@ -97,6 +97,29 @@ da = DocumentArray(...)
 da1 = DocumentArray(da)
 ```
 
+
+## Construct from multiple DocumentArray
+
+You can use `+` or `+=` to concatenate DocumentArrays together:
+
+```python
+from docarray import DocumentArray
+
+da1 = DocumentArray.empty(3)
+da2 = DocumentArray.empty(4)
+da3 = DocumentArray.empty(5)
+print(da1 + da2 + da3)
+
+da1 += da2
+print(da1)
+```
+
+```text
+<DocumentArray (length=12) at 5024988176>
+<DocumentArray (length=7) at 4525853328>
+```
+
+
 ## Construct from a single Document
 
 ```python
@@ -177,6 +200,7 @@ da_all = DocumentArray.from_files(['images/**/*.png', 'images/**/*.jpg', 'images
 ```
 
 This will scan all filenames that match the expression and construct Documents with filled `.uri` attribute. You can control if to read each as text or binary with `read_mode` argument.
+
 
 
 
