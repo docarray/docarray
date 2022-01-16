@@ -47,11 +47,11 @@ def read_ndarray(pb_msg: 'NdArrayProto') -> 'ArrayType':
 def flush_ndarray(pb_msg: 'NdArrayProto', value: 'ArrayType'):
     framework, is_sparse = get_array_type(value)
 
-    if framework == 'jina':
+    if framework == 'docarray':
         # it is Jina's NdArray, simply copy it
         pb_msg.cls_name = 'numpy'
         pb_msg.CopyFrom(value)
-    elif framework == 'jina_proto':
+    elif framework == 'docarray_proto':
         pb_msg.cls_name = 'numpy'
         pb_msg.CopyFrom(value)
     else:

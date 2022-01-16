@@ -5,5 +5,5 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def tmpfile(tmpdir):
-    tmpfile = f'jina_test_{next(tempfile._get_candidate_names())}.db'
+    tmpfile = f'docarray_test_{next(tempfile._get_candidate_names())}.db'
     return tmpdir / tmpfile
