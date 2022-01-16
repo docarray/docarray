@@ -66,10 +66,10 @@ message DocumentProto {
 
   oneof content {
     // the raw binary content of this document, which often represents the original document when comes into jina
-    bytes buffer = 2;
+    bytes blob = 2;
 
     // the ndarray of the image/audio/video document
-    NdArrayProto blob = 3;
+    NdArrayProto tensor = 3;
 
     // a text document
     string text = 4;

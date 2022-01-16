@@ -65,9 +65,9 @@ Provide helper functions for {class}`Document` to support text data.
 
 ### BufferData
 Provide helper functions for {class}`Document` to handle binary data.
-- {meth}`~docarray.document.mixins.buffer.BufferDataMixin.convert_buffer_to_datauri`
-- {meth}`~docarray.document.mixins.buffer.BufferDataMixin.load_uri_to_buffer`
-- {meth}`~docarray.document.mixins.buffer.BufferDataMixin.save_buffer_to_file`
+- {meth}`~docarray.document.mixins.buffer.BlobDataMixin.convert_buffer_to_datauri`
+- {meth}`~docarray.document.mixins.buffer.BlobDataMixin.load_uri_to_buffer`
+- {meth}`~docarray.document.mixins.buffer.BlobDataMixin.save_buffer_to_file`
 
 
 ### ImageData

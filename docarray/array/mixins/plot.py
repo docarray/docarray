@@ -115,7 +115,7 @@ class PlotMixin:
                 make sure to give different names each time and set ``path`` to the same value.
         :param host: if set, bind the embedding-projector frontend to given host. Otherwise `localhost` is used.
         :param port: if set, run the embedding-projector frontend at given port. Otherwise a random port is used.
-        :param image_sprites: if set, visualize the dots using :attr:`.uri` and :attr:`.blob`.
+        :param image_sprites: if set, visualize the dots using :attr:`.uri` and :attr:`.tensor`.
         :param path: if set, then append the visualization to an existing folder, where you can compare multiple
             embeddings at the same time. Make sure to use a different ``title`` each time .
         :param min_image_size: only used when `image_sprites=True`. the minimum size of the image
@@ -158,7 +158,7 @@ class PlotMixin:
 
         self.save_embeddings_csv(os.path.join(path, emb_fn), delimiter='\t')
 
-        _exclude_fields = ('embedding', 'blob', 'scores')
+        _exclude_fields = ('embedding', 'tensor', 'scores')
         with_header = True
         if len(set(self[0].non_empty_fields).difference(set(_exclude_fields))) <= 1:
             with_header = False
@@ -288,7 +288,7 @@ class PlotMixin:
         min_size: int = 16,
         channel_axis: int = -1,
     ) -> None:
-        """Generate a sprite image for all image blobs in this DocumentArray-like object.
+        """Generate a sprite image for all image tensors in this DocumentArray-like object.
 
         An image sprite is a collection of images put into a single image. It is always square-sized.
         Each sub-image is also square-sized and equally-sized.
@@ -318,11 +318,11 @@ class PlotMixin:
         img_id = 0
         for d in self:
             _d = copy.deepcopy(d)
-            if _d.content_type != 'blob':
-                _d.load_uri_to_image_blob()
+            if _d.content_type != 'tensor':
+                _d.load_uri_to_image_tensor()
                 channel_axis = -1
 
-            _d.set_image_blob_channel_axis(channel_axis, -1).set_image_blob_shape(
+            _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
                 shape=(img_size, img_size)
             )
 
@@ -331,7 +331,7 @@ class PlotMixin:
             sprite_img[
                 (row_id * img_size) : ((row_id + 1) * img_size),
                 (col_id * img_size) : ((col_id + 1) * img_size),
-            ] = _d.blob
+            ] = _d.tensor
 
             img_id += 1
             if img_id >= max_num_img:

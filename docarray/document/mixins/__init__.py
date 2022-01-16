@@ -1,6 +1,6 @@
 from .attribute import GetAttributesMixin
 from .audio import AudioDataMixin
-from .buffer import BufferDataMixin
+from .blob import BlobDataMixin
 from .content import ContentPropertyMixin
 from .convert import ConvertMixin
 from .dump import UriFileMixin
@@ -28,7 +28,7 @@ class AllMixins(
     TextDataMixin,
     MeshDataMixin,
     VideoDataMixin,
-    BufferDataMixin,
+    BlobDataMixin,
     PlotMixin,
     UriFileMixin,
     SingletonSugarMixin,

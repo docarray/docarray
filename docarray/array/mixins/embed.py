@@ -43,7 +43,7 @@ class EmbedMixin:
         device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
         with device:
             for b in self.batch(batch_size):
-                r = embed_model(b.blobs, training=False)
+                r = embed_model(b.tensors, training=False)
                 b.embeddings = r.numpy() if to_numpy else r
 
     def _set_embeddings_torch(
@@ -60,7 +60,7 @@ class EmbedMixin:
         embed_model.eval()
         with torch.inference_mode():
             for b in self.batch(batch_size):
-                batch_inputs = torch.tensor(b.blobs, device=device)
+                batch_inputs = torch.tensor(b.tensors, device=device)
                 r = embed_model(batch_inputs).cpu().detach()
                 b.embeddings = r.numpy() if to_numpy else r
         if is_training_before:
@@ -79,7 +79,7 @@ class EmbedMixin:
         embed_model.to(device=device)
         embed_model.eval()
         for b in self.batch(batch_size):
-            batch_inputs = paddle.to_tensor(b.blobs, place=device)
+            batch_inputs = paddle.to_tensor(b.tensors, place=device)
             r = embed_model(batch_inputs)
             b.embeddings = r.numpy() if to_numpy else r
         if is_training_before:
@@ -105,7 +105,7 @@ class EmbedMixin:
 
         for b in self.batch(batch_size):
             b.embeddings = embed_model.run(
-                None, {embed_model.get_inputs()[0].name: b.blobs}
+                None, {embed_model.get_inputs()[0].name: b.tensors}
             )[0]
 
 

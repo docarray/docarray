@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _get_file_context, _uri_to_buffer
+from .helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
     from ...types import T
@@ -14,96 +14,96 @@ if TYPE_CHECKING:
 class ImageDataMixin:
     """Provide helper functions for :class:`Document` to support image data. """
 
-    def set_image_blob_channel_axis(
+    def set_image_tensor_channel_axis(
         self: 'T', original_channel_axis: int, new_channel_axis: int
     ) -> 'T':
-        """Move the channel axis of the image :attr:`.blob` inplace.
+        """Move the channel axis of the image :attr:`.tensor` inplace.
 
         :param original_channel_axis: the original axis of the channel
         :param new_channel_axis: the new axis of the channel
 
         :return: itself after processed
         """
-        self.blob = _move_channel_axis(
-            self.blob, original_channel_axis, new_channel_axis
+        self.tensor = _move_channel_axis(
+            self.tensor, original_channel_axis, new_channel_axis
         )
         return self
 
-    def convert_buffer_to_image_blob(
+    def convert_blob_to_image_tensor(
         self: 'T',
         width: Optional[int] = None,
         height: Optional[int] = None,
         channel_axis: int = -1,
     ) -> 'T':
-        """Convert an image :attr:`.buffer` to a ndarray :attr:`.blob`.
+        """Convert an image :attr:`.blob` to a ndarray :attr:`.tensor`.
 
-        :param width: the width of the image blob.
-        :param height: the height of the blob.
+        :param width: the width of the image tensor.
+        :param height: the height of the tensor.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
 
         :return: itself after processed
         """
-        blob = _to_image_blob(io.BytesIO(self.buffer), width=width, height=height)
-        blob = _move_channel_axis(blob, original_channel_axis=channel_axis)
-        self.blob = blob
+        tensor = _to_image_tensor(io.BytesIO(self.blob), width=width, height=height)
+        tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
+        self.tensor = tensor
         return self
 
-    def convert_image_blob_to_uri(self: 'T', channel_axis: int = -1) -> 'T':
-        """Assuming :attr:`.blob` is a _valid_ image, set :attr:`uri` accordingly
+    def convert_image_tensor_to_uri(self: 'T', channel_axis: int = -1) -> 'T':
+        """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :return: itself after processed
         """
-        blob = _move_channel_axis(self.blob, original_channel_axis=channel_axis)
-        png_bytes = _to_png_buffer(blob)
+        tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
+        png_bytes = _to_png_buffer(tensor)
         self.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
         return self
 
-    def convert_image_blob_to_buffer(self: 'T', channel_axis: int = -1) -> 'T':
-        """Assuming :attr:`.blob` is a _valid_ image, set :attr:`buffer` accordingly
+    def convert_image_tensor_to_blob(self: 'T', channel_axis: int = -1) -> 'T':
+        """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :return: itself after processed
         """
-        blob = _move_channel_axis(self.blob, original_channel_axis=channel_axis)
-        self.buffer = _to_png_buffer(blob)
+        tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
+        self.blob = _to_png_buffer(tensor)
         return self
 
-    def set_image_blob_shape(
+    def set_image_tensor_shape(
         self: 'T',
         shape: Tuple[int, int],
         channel_axis: int = -1,
     ) -> 'T':
-        """Resample the image :attr:`.blob` into different size inplace.
+        """Resample the image :attr:`.tensor` into different size inplace.
 
-        If your current image blob has shape ``[H,W,C]``, then the new blob will be ``[*shape, C]``
+        If your current image tensor has shape ``[H,W,C]``, then the new tensor will be ``[*shape, C]``
 
-        :param shape: the new shape of the image blob.
+        :param shape: the new shape of the image tensor.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
 
         :return: itself after processed
         """
-        blob = _move_channel_axis(self.blob, channel_axis, -1)
+        tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         out_rows, out_cols = shape
-        in_rows, in_cols, n_in = blob.shape
+        in_rows, in_cols, n_in = tensor.shape
 
         # compute coordinates to resample
         x = np.tile(np.linspace(0, in_cols - 2, out_cols), out_rows)
         y = np.repeat(np.linspace(0, in_rows - 2, out_rows), out_cols)
 
         # resample each image
-        r = _nn_interpolate_2D(blob, x, y)
-        blob = r.reshape(out_rows, out_cols, n_in)
-        self.blob = _move_channel_axis(blob, -1, channel_axis)
+        r = _nn_interpolate_2D(tensor, x, y)
+        tensor = r.reshape(out_rows, out_cols, n_in)
+        self.tensor = _move_channel_axis(tensor, -1, channel_axis)
 
         return self
 
-    def save_image_blob_to_file(
+    def save_image_tensor_to_file(
         self: 'T',
         file: Union[str, BinaryIO],
         channel_axis: int = -1,
     ) -> 'T':
-        """Save :attr:`.blob` into a file
+        """Save :attr:`.tensor` into a file
 
         :param file: File or filename to which the data is saved.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
@@ -112,67 +112,67 @@ class ImageDataMixin:
         """
         fp = _get_file_context(file)
         with fp:
-            blob = _move_channel_axis(self.blob, channel_axis, -1)
-            buffer = _to_png_buffer(blob)
+            tensor = _move_channel_axis(self.tensor, channel_axis, -1)
+            buffer = _to_png_buffer(tensor)
             fp.write(buffer)
         return self
 
-    def load_uri_to_image_blob(
+    def load_uri_to_image_tensor(
         self: 'T',
         width: Optional[int] = None,
         height: Optional[int] = None,
         channel_axis: int = -1,
     ) -> 'T':
-        """Convert the image-like :attr:`.uri` into :attr:`.blob`
+        """Convert the image-like :attr:`.uri` into :attr:`.tensor`
 
-        :param width: the width of the image blob.
-        :param height: the height of the blob.
+        :param width: the width of the image tensor.
+        :param height: the height of the tensor.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
 
         :return: itself after processed
         """
 
-        buffer = _uri_to_buffer(self.uri)
-        blob = _to_image_blob(io.BytesIO(buffer), width=width, height=height)
-        self.blob = _move_channel_axis(blob, original_channel_axis=channel_axis)
+        buffer = _uri_to_blob(self.uri)
+        tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
+        self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
         return self
 
-    def set_image_blob_inv_normalization(
+    def set_image_tensor_inv_normalization(
         self: 'T',
         channel_axis: int = -1,
         img_mean: Tuple[float] = (0.485, 0.456, 0.406),
         img_std: Tuple[float] = (0.229, 0.224, 0.225),
     ) -> 'T':
-        """Inverse the normalization of a float32 image :attr:`.blob` into a uint8 image :attr:`.blob` inplace.
+        """Inverse the normalization of a float32 image :attr:`.tensor` into a uint8 image :attr:`.tensor` inplace.
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param img_mean: the mean of all images
         :param img_std: the standard deviation of all images
         :return: itself after processed
         """
-        if self.blob.dtype == np.float32 and self.blob.ndim == 3:
-            blob = _move_channel_axis(self.blob, channel_axis, 0)
+        if self.tensor.dtype == np.float32 and self.tensor.ndim == 3:
+            tensor = _move_channel_axis(self.tensor, channel_axis, 0)
             mean = np.asarray(img_mean, dtype=np.float32)
             std = np.asarray(img_std, dtype=np.float32)
-            blob = ((blob * std[:, None, None] + mean[:, None, None]) * 255).astype(
+            tensor = ((tensor * std[:, None, None] + mean[:, None, None]) * 255).astype(
                 np.uint8
             )
             # set back channel to original
-            blob = _move_channel_axis(blob, 0, channel_axis)
-            self.blob = blob
+            tensor = _move_channel_axis(tensor, 0, channel_axis)
+            self.tensor = tensor
         else:
             raise ValueError(
-                f'`blob` must be a float32 ndarray with ndim=3, but receiving {self.blob.dtype} with ndim={self.blob.ndim}'
+                f'`tensor` must be a float32 ndarray with ndim=3, but receiving {self.tensor.dtype} with ndim={self.tensor.ndim}'
             )
         return self
 
-    def set_image_blob_normalization(
+    def set_image_tensor_normalization(
         self: 'T',
         channel_axis: int = -1,
         img_mean: Tuple[float] = (0.485, 0.456, 0.406),
         img_std: Tuple[float] = (0.229, 0.224, 0.225),
     ) -> 'T':
-        """Normalize a uint8 image :attr:`.blob` into a float32 image :attr:`.blob` inplace.
+        """Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
 
         Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and
         will be normalized in to a range of [0, 1] and then
@@ -192,22 +192,22 @@ class ImageDataMixin:
 
 
         """
-        if self.blob.dtype == np.uint8 and self.blob.ndim == 3:
-            blob = (self.blob / 255.0).astype(np.float32)
-            blob = _move_channel_axis(blob, channel_axis, 0)
+        if self.tensor.dtype == np.uint8 and self.tensor.ndim == 3:
+            tensor = (self.tensor / 255.0).astype(np.float32)
+            tensor = _move_channel_axis(tensor, channel_axis, 0)
             mean = np.asarray(img_mean, dtype=np.float32)
             std = np.asarray(img_std, dtype=np.float32)
-            blob = (blob - mean[:, None, None]) / std[:, None, None]
+            tensor = (tensor - mean[:, None, None]) / std[:, None, None]
             # set back channel to original
-            blob = _move_channel_axis(blob, 0, channel_axis)
-            self.blob = blob
+            tensor = _move_channel_axis(tensor, 0, channel_axis)
+            self.tensor = tensor
         else:
             raise ValueError(
-                f'`blob` must be a uint8 ndarray with ndim=3, but receiving {self.blob.dtype} with ndim={self.blob.ndim}'
+                f'`tensor` must be a uint8 ndarray with ndim=3, but receiving {self.tensor.dtype} with ndim={self.tensor.ndim}'
             )
         return self
 
-    def convert_image_blob_to_sliding_windows(
+    def convert_image_tensor_to_sliding_windows(
         self: 'T',
         window_shape: Tuple[int, int] = (64, 64),
         strides: Optional[Tuple[int, int]] = None,
@@ -215,7 +215,7 @@ class ImageDataMixin:
         channel_axis: int = -1,
         as_chunks: bool = False,
     ) -> 'T':
-        """Convert :attr:`.blob` into a sliding window view with the given window shape :attr:`.blob` inplace.
+        """Convert :attr:`.tensor` into a sliding window view with the given window shape :attr:`.tensor` inplace.
 
         :param window_shape: desired output size. If size is a sequence like (h, w), the output size will be matched to
             this. If size is an int, the output will have the same height and width as the `target_size`.
@@ -231,23 +231,23 @@ class ImageDataMixin:
         """
         window_h, window_w = window_shape
         stride_h, stride_w = strides or window_shape
-        blob = _move_channel_axis(self.blob, channel_axis, -1)
+        tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         if padding:
-            h, w, c = blob.shape
+            h, w, c = tensor.shape
             ext_h = window_h - h % stride_h
             ext_w = window_w - w % window_w
-            blob = np.pad(
-                blob,
+            tensor = np.pad(
+                tensor,
                 ((0, ext_h), (0, ext_w), (0, 0)),
                 mode='constant',
                 constant_values=0,
             )
-        h, w, c = blob.shape
-        row_step = blob.strides[0]
-        col_step = blob.strides[1]
+        h, w, c = tensor.shape
+        row_step = tensor.strides[0]
+        col_step = tensor.strides[1]
 
         expanded_img = np.lib.stride_tricks.as_strided(
-            blob,
+            tensor,
             shape=(
                 1 + int((h - window_h) / stride_h),
                 1 + int((w - window_w) / stride_w),
@@ -271,43 +271,43 @@ class ImageDataMixin:
         if as_chunks:
             from .. import Document
 
-            for location, _blob in zip(bbox_locations, expanded_img):
+            for location, _tensor in zip(bbox_locations, expanded_img):
                 self.chunks.append(
                     Document(
-                        blob=_move_channel_axis(_blob, -1, channel_axis),
+                        tensor=_move_channel_axis(_tensor, -1, channel_axis),
                         location=location,
                     )
                 )
         else:
-            self.blob = _move_channel_axis(expanded_img, -1, channel_axis)
+            self.tensor = _move_channel_axis(expanded_img, -1, channel_axis)
         return self
 
 
 def _move_channel_axis(
-    blob: np.ndarray, original_channel_axis: int = -1, target_channel_axis: int = -1
+    tensor: np.ndarray, original_channel_axis: int = -1, target_channel_axis: int = -1
 ) -> np.ndarray:
-    """This will always make the channel axis to the last of the :attr:`.blob`
+    """This will always make the channel axis to the last of the :attr:`.tensor`
 
     #noqa: DAR101
     #noqa: DAR201
     """
     if original_channel_axis != target_channel_axis:
-        blob = np.moveaxis(blob, original_channel_axis, target_channel_axis)
-    return blob
+        tensor = np.moveaxis(tensor, original_channel_axis, target_channel_axis)
+    return tensor
 
 
-def _to_image_blob(
+def _to_image_tensor(
     source,
     width: Optional[int] = None,
     height: Optional[int] = None,
 ) -> 'np.ndarray':
     """
-    Convert an image buffer to blob
+    Convert an image blob to tensor
 
-    :param source: binary buffer or file path
-    :param width: the width of the image blob.
-    :param height: the height of the blob.
-    :return: image blob
+    :param source: binary blob or file path
+    :param width: the width of the image tensor.
+    :param height: the height of the tensor.
+    :return: image tensor
     """
     from PIL import Image
 

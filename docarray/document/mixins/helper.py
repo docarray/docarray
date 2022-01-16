@@ -6,12 +6,12 @@ from contextlib import nullcontext
 from ...helper import __windows__
 
 
-def _uri_to_buffer(uri: str) -> bytes:
-    """Convert uri to buffer
-    Internally it reads uri into buffer.
+def _uri_to_blob(uri: str) -> bytes:
+    """Convert uri to blob
+    Internally it reads uri into blob.
 
     :param uri: the uri of Document
-    :return: buffer bytes.
+    :return: blob bytes.
     """
     if urllib.parse.urlparse(uri).scheme in {'http', 'https', 'data'}:
         req = urllib.request.Request(uri, headers={'User-Agent': 'Mozilla/5.0'})

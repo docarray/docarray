@@ -13,8 +13,8 @@ class PropertyMixin(_PropertyMixin):
     def _clear_content(self):
         self._data.content = None
         self._data.text = None
+        self._data.tensor = None
         self._data.blob = None
-        self._data.buffer = None
 
     @property
     def content(self) -> Optional['DocumentContentType']:
@@ -27,18 +27,18 @@ class PropertyMixin(_PropertyMixin):
         if value is None:
             self._clear_content()
         elif isinstance(value, bytes):
-            self.buffer = value
+            self.blob = value
         elif isinstance(value, str):
             self.text = value
         else:
-            self.blob = value
+            self.tensor = value
 
     @property
     def content_type(self) -> Optional[str]:
         nf = self.non_empty_fields
         if 'text' in nf:
             return 'text'
+        elif 'tensor' in nf:
+            return 'tensor'
         elif 'blob' in nf:
             return 'blob'
-        elif 'buffer' in nf:
-            return 'buffer'
