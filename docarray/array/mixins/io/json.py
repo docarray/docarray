@@ -10,12 +10,15 @@ if TYPE_CHECKING:
 class JsonIOMixin:
     """Save/load a array into a JSON file."""
 
-    def save_json(self, file: Union[str, TextIO]) -> None:
+    def save_json(
+        self, file: Union[str, TextIO], protocol: str = 'jsonschema', **kwargs
+    ) -> None:
         """Save array elements into a JSON file.
 
         Comparing to :meth:`save_binary`, it is human-readable but slower to save/load and the file size larger.
 
         :param file: File or filename to which the data is saved.
+        :param protocol: `jsonschema` or `protobuf`
         """
         if hasattr(file, 'write'):
             file_ctx = nullcontext(file)
@@ -24,15 +27,17 @@ class JsonIOMixin:
 
         with file_ctx as fp:
             for d in self:
-                json.dump(d.to_dict(), fp)
+                json.dump(d.to_dict(protocol=protocol, **kwargs), fp)
                 fp.write('\n')
 
     @classmethod
-    def load_json(cls: Type['T'], file: Union[str, TextIO]) -> 'T':
+    def load_json(
+        cls: Type['T'], file: Union[str, TextIO], protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
         """Load array elements from a JSON file.
 
         :param file: File or filename or a JSON string to which the data is saved.
-
+        :param protocol: `jsonschema` or `protobuf`
         :return: a DocumentArrayLike object
         """
 
@@ -48,31 +53,38 @@ class JsonIOMixin:
             constructor = Document.from_dict
 
         with file_ctx as fp:
-            return cls(constructor(v) for v in fp)
+            return cls(constructor(v, protocol=protocol, **kwargs) for v in fp)
 
     @classmethod
-    def from_json(cls: Type['T'], file: Union[str, TextIO]) -> 'T':
-        return cls.load_json(file)
+    def from_json(
+        cls: Type['T'], file: Union[str, TextIO], protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
+        return cls.load_json(file, protocol=protocol, **kwargs)
 
     @classmethod
-    def from_list(cls: Type['T'], values: List) -> 'T':
+    def from_list(
+        cls: Type['T'], values: List, protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
         from .... import Document
 
-        return cls(Document.from_dict(v) for v in values)
+        return cls(Document.from_dict(v, protocol=protocol, **kwargs) for v in values)
 
-    def to_list(self, strict: bool = True) -> List:
+    def to_list(self, protocol: str = 'jsonschema', **kwargs) -> List:
         """Convert the object into a Python list.
 
-        .. note::
-            Array like object such as :class:`numpy.ndarray` will be converted to Python list.
-
+        :param protocol: `jsonschema` or `protobuf`
         :return: a Python list
         """
-        return [d.to_dict(strict=strict) for d in self]
+        return [d.to_dict(protocol=protocol, **kwargs) for d in self]
 
-    def to_json(self) -> str:
+    def to_json(self, protocol: str = 'jsonschema', **kwargs) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.load_json`.
 
+        :param protocol: `jsonschema` or `protobuf`
         :return: a Python list
         """
-        return json.dumps(self.to_list())
+        return json.dumps(self.to_list(protocol=protocol, **kwargs))
+
+    # to comply with Document interfaces but less semantically accurate
+    to_dict = to_list
+    from_dict = from_list

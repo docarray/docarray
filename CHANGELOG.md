@@ -9,6 +9,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -247,4 +248,24 @@
  - [[```f27c40cc```](https://github.com/jina-ai/docarray/commit/f27c40cc5c3355258d60fffe78c046050ca044da)] __-__ bump to 0.2 (*Han Xiao*)
  - [[```03fa1201```](https://github.com/jina-ai/docarray/commit/03fa1201a0c46dd3eb51a890eb2d589bfca72433)] __-__ update docs (*Han Xiao*)
  - [[```cfd74703```](https://github.com/jina-ai/docarray/commit/cfd747033c41a5be805909813ca2db62cac0fbe5)] __-__ __version__: the next version will be 0.1.9 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-0></a>
+## Release Note (`0.3.0`)
+
+> Release time: 2022-01-17 17:18:50
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```a96787e2```](https://github.com/jina-ai/docarray/commit/a96787e2e556134e278574b6103fc85a8d221fde)] __-__ use schema-ed json as default to_dict/json (#57) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```86b03f3f```](https://github.com/jina-ai/docarray/commit/86b03f3fc84649fe52650f5f0469239a87eda256)] __-__ __docs__: update notebook support docs (#55) (*felix-wang*)
+ - [[```8098eebd```](https://github.com/jina-ai/docarray/commit/8098eebdbd3b07643afa24a44060833018dfd3df)] __-__ __version__: the next version will be 0.2.1 (*Jina Dev Bot*)
 

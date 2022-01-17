@@ -75,9 +75,14 @@ def test_from_to_protobuf(target_da):
     DocumentArray.from_protobuf(target_da.to_protobuf())
 
 
-@pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
-def test_from_to_safe_list(target_da):
-    DocumentArray.from_list(target_da.to_list())
+@pytest.mark.parametrize('target', [DocumentArray.empty(10), random_docs(10)])
+@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
+@pytest.mark.parametrize('to_fn', ['dict', 'json'])
+def test_from_to_safe_list(target, protocol, to_fn):
+    da_r = getattr(DocumentArray, f'from_{to_fn}')(
+        getattr(target, f'to_{to_fn}')(protocol=protocol), protocol=protocol
+    )
+    assert da_r == target
 
 
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])

@@ -11,6 +11,7 @@ One should use {ref}`DocumentArray for serializing multiple Documents<docarray-s
 Some readers may wonder: why aren't serialization a part of constructor? They do have similarity. Nonetheless, serialization often contains elements that do not really fit into constructor: input & output model, data schema, compression, extra-dependencies. DocArray made a decision to separate the constructor and serialization for the sake of clarity and maintainability. 
 ```
 
+(doc-json)=
 ## From/to JSON
 
 ```{tip}
@@ -18,7 +19,7 @@ If you are building a webservice and want to use JSON for passing DocArray objec
 ```
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 
@@ -37,23 +38,59 @@ print(d_as_json, d)
 ```
 
 ```text
+{"id": "641032d677b311ecb67a1e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "hello, world", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": [1, 2, 3], "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null} 
+
+<Document ('id', 'mime_type', 'text', 'embedding') at 641032d677b311ecb67a1e008a366d49>
+```
+
+By default, it uses {ref}`JSON Schema and pydantic model<schema-gen>` for serialization, i.e. `protocol='jsonschema'`. You can switch the method to `protocol='protobuf'`, which leverages Protobuf as the JSON serialization backend.
+
+```python
+from docarray import Document
+
+d = Document(text='hello, world', embedding=np.array([1, 2, 3]))
+d.to_json(protocol='protobuf')
+```
+
+```json
 {
+  "id": "db66bc2e77b311eca5f51e008a366d49",
+  "text": "hello, world",
+  "mimeType": "text/plain",
   "embedding": {
-    "cls_name": "numpy",
     "dense": {
       "buffer": "AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA",
-      "dtype": "<i8",
       "shape": [
         3
-      ]
-    }
-  },
-  "id": "27d4fa4c6d5711ec8c831e008a366d49",
-  "mime_type": "text/plain",
-  "text": "hello, world"
-} 
+      ],
+      "dtype": "<i8"
+    },
+    "clsName": "numpy"
+  }
+}
+```
 
-<Document ('id', 'mime_type', 'text', 'embedding') at 27d4fa4c6d5711ec8c831e008a366d49>
+When using it for REST API, it is recommended to use `protocol='jsonschema'` as the resulted JSON will follow a pre-defined schema. This is highly appreciated for modern webservice engineering.
+
+Note that you can pass extra arguments to control the include/exclude fields, lower/uppercase of the resulted JSON. For example, we can remove those fields that are empty or `none` from JSON via:
+
+```python
+from docarray import Document
+
+d = Document(text='hello, world', embedding=[1, 2, 3])
+d.to_json(exclude_none=True)
+```
+
+```json
+{"id": "cdbc4f7a77b411ec96ad1e008a366d49", "mime_type": "text/plain", "text": "hello, world", "embedding": [1, 2, 3]}
+```
+
+It is easier to eyes. But when building REST API, you do not need to explicitly do this, pydantic model handle everything for you. More information can be found in {ref}`fastapi-support`.
+
+```{seealso}
+To find out what extra parameters you can pass to `to_json()`/`to_dict()`, please check out:
+- [`protocol='jsonschema', **kwargs`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
+- [`protocol='protobuf', **kwargs`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
 ```
 
 (doc-in-bytes)=
@@ -146,11 +183,11 @@ print(len(d.to_base64(protocol='protobuf', compress='lz4')))
 
 Note that the same `protocol` and `compress` must be followed when using `.from_base64`.
 
-
+(doc-dict)=
 ## From/to dict
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+This feature requires `protobuf` or `pydantic` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 You can serialize a Document as a Python `dict` via {meth}`~docarray.document.mixins.porting.PortingMixin.to_dict`, and then read from it via {meth}`~docarray.document.mixins.porting.PortingMixin.from_dict`.
@@ -167,17 +204,12 @@ print(d_as_dict, d)
 ```
 
 ```text
-{'id': 'b29d39066d5611ec87661e008a366d49', 'text': 'hello, world', 'mime_type': 'text/plain', 'embedding': {'dense': {'buffer': 'AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA', 'shape': [3], 'dtype': '<i8'}, 'cls_name': 'numpy'}} 
+{'id': '5596c84c77b711ecafed1e008a366d49', 'parent_id': None, 'granularity': None, 'adjacency': None, 'blob': None, 'tensor': None, 'mime_type': 'text/plain', 'text': 'hello, world', 'weight': None, 'uri': None, 'tags': None, 'offset': None, 'location': None, 'embedding': [1, 2, 3], 'modality': None, 'evaluations': None, 'scores': None, 'chunks': None, 'matches': None} 
 
-<Document ('id', 'mime_type', 'text', 'embedding') at b29d39066d5611ec87661e008a366d49>
+<Document ('id', 'mime_type', 'text', 'embedding') at 5596c84c77b711ecafed1e008a366d49>
 ```
 
-(strict-arg-explain)=
-```{note}
-Note that the result dict is very "stricted" in the sense that all fields and values boil down to very basic data type such as `int`, `float`, `string`. This behavior is designed due to the "serialization to `dict`" is often an intermediate step of serializing into JSON/YAML. Hence all values in `dict` must be schema-friendly. After all, a Python `dict` object means nothing if you are not working in Python. 
-
-You can use `to_dict(strict=False)` to override this behavior. This will preserve the original Python data type of every value, which may not be JSON-friendly. But hey, you want it.   
-```
+As the intermediate step of `to_json()`/`from_json()` it is unlikely to use dict IO directly. Nonetheless, you can pass the same `protocol` and `kwargs` as described in {ref}`doc-json` to control the serialization behavior.
 
 ## From/to Protobuf
 

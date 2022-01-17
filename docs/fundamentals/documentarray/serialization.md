@@ -24,7 +24,7 @@ If you are building a webservice and want to use JSON for passing DocArray objec
 ```
 
 ```{important}
-This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 
@@ -37,7 +37,7 @@ da.to_json()
 ```
 
 ```text
-[{"id": "72db9a7e6e3211ec97f51e008a366d49", "text": "hello", "mime_type": "text/plain"}, {"id": "72db9cb86e3211ec97f51e008a366d49", "text": "world", "mime_type": "text/plain"}]
+[{"id": "a677577877b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "hello", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}, {"id": "a67758f477b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "world", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}]
 ```
 
 
@@ -62,6 +62,11 @@ da_r.summary()
   mime_type   ('str',)    1                False            
   text        ('str',)    2                False            
 
+```
+
+
+```{seealso}
+More parameters and usages can be found in the Document-level {ref}`doc-json`.
 ```
 
 
@@ -221,6 +226,10 @@ docs {
 
 ## From/to list
 
+```{important}
+This feature requires `protobuf` or `pydantic` dependency. You can do `pip install "docarray[full]"` to install it.
+```
+
 Serializing to/from Python list is less frequently used for the same reason as `Document.to_dict()`: it is often an intermediate step of serializing to JSON. You can do:
 
 ```python
@@ -234,7 +243,9 @@ da.to_list()
 [{'id': 'ae55782a6e4d11ec803c1e008a366d49', 'text': 'hello', 'mime_type': 'text/plain'}, {'id': 'ae557a146e4d11ec803c1e008a366d49', 'text': 'world', 'mime_type': 'text/plain'}]
 ```
 
-There is an argument `strict` shares {ref}`the same semantic<strict-arg-explain>` as in `Document.to_dict()`.
+```{seealso}
+More parameters and usages can be found in the Document-level {ref}`doc-dict`.
+```
 
 ## From/to dataframe
 

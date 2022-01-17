@@ -111,3 +111,8 @@ def test_match_to_from_pydantic():
     assert da_r[0].matches[0].scores['cosine']
     assert isinstance(da_r[0].matches[0].scores, defaultdict)
     assert isinstance(da_r[0].matches[0].scores['random_score'], NamedScore)
+
+
+def test_with_embedding_no_tensor():
+    d = Document(embedding=np.random.rand(2, 2))
+    PydanticDocument.parse_obj(d.to_pydantic_model().dict())
