@@ -1,5 +1,6 @@
 import dataclasses
 import pickle
+import warnings
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any
 import base64
 
@@ -11,32 +12,76 @@ if TYPE_CHECKING:
 
 class PortingMixin:
     @classmethod
-    def from_dict(cls: Type['T'], obj: Dict) -> 'T':
-        from google.protobuf import json_format
-        from ...proto.docarray_pb2 import DocumentProto
+    def from_dict(
+        cls: Type['T'], obj: Dict, protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
+        """Convert a dict object into a Document.
 
-        pb_msg = DocumentProto()
-        json_format.ParseDict(obj, pb_msg)
-        return cls.from_protobuf(pb_msg)
+        :param obj: a Python dict object
+        :param protocol: `jsonschema` or `protobuf`
+        :param kwargs: extra key-value args pass to pydantic and protobuf parser.
+        :return: the parsed Document object
+        """
+        if protocol == 'jsonschema':
+            from ..pydantic_model import PydanticDocument
+
+            return cls.from_pydantic_model(PydanticDocument.parse_obj(obj, **kwargs))
+        elif protocol == 'protobuf':
+            from google.protobuf import json_format
+            from ...proto.docarray_pb2 import DocumentProto
+
+            pb_msg = DocumentProto()
+            json_format.ParseDict(obj, pb_msg, **kwargs)
+            return cls.from_protobuf(pb_msg)
+        else:
+            raise ValueError(f'protocol=`{protocol}` is not supported')
 
     @classmethod
-    def from_json(cls: Type['T'], obj: str) -> 'T':
-        from google.protobuf import json_format
-        from ...proto.docarray_pb2 import DocumentProto
+    def from_json(
+        cls: Type['T'], obj: str, protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
+        """Convert a JSON string into a Document.
 
-        pb_msg = DocumentProto()
-        json_format.Parse(obj, pb_msg)
-        return cls.from_protobuf(pb_msg)
+        :param obj: a valid JSON string
+        :param protocol: `jsonschema` or `protobuf`
+        :param kwargs: extra key-value args pass to pydantic and protobuf parser.
+        :return: the parsed Document object
+        """
+        if protocol == 'jsonschema':
+            from ..pydantic_model import PydanticDocument
 
-    def to_dict(self, strict: bool = True) -> Dict[str, Any]:
-        if strict:
+            return cls.from_pydantic_model(PydanticDocument.parse_raw(obj, **kwargs))
+        elif protocol == 'protobuf':
+            from google.protobuf import json_format
+            from ...proto.docarray_pb2 import DocumentProto
+
+            pb_msg = DocumentProto()
+            json_format.Parse(obj, pb_msg, **kwargs)
+            return cls.from_protobuf(pb_msg)
+        else:
+            raise ValueError(f'protocol=`{protocol}` is not supported')
+
+    def to_dict(self, protocol: str = 'jsonschema', **kwargs) -> Dict[str, Any]:
+        """Convert itself into a Python dict object.
+
+        :param protocol: `jsonschema` or `protobuf`
+        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.
+        :return: the dumped Document as a dict object
+        """
+        if protocol == 'jsonschema':
+            return self.to_pydantic_model().dict(**kwargs)
+        elif protocol == 'protobuf':
             from google.protobuf.json_format import MessageToDict
 
             return MessageToDict(
                 self.to_protobuf(),
-                preserving_proto_field_name=True,
+                **kwargs,
             )
         else:
+            warnings.warn(
+                f'protocol=`{protocol}` is not supported, '
+                f'the result dict is a Python dynamic typing dict without any promise on the schema.'
+            )
             return dataclasses.asdict(self._data)
 
     def to_bytes(
@@ -68,25 +113,33 @@ class PortingMixin:
         """
         bstr = decompress_bytes(data, algorithm=compress)
         if protocol == 'pickle':
-            d = pickle.loads(bstr)
+            return pickle.loads(bstr)
         elif protocol == 'protobuf':
             from ...proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
             pb_msg.ParseFromString(bstr)
-            d = cls.from_protobuf(pb_msg)
+            return cls.from_protobuf(pb_msg)
         else:
             raise ValueError(
                 f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
             )
-        return d
 
-    def to_json(self) -> str:
-        from google.protobuf.json_format import MessageToJson
+    def to_json(self, protocol: str = 'jsonschema', **kwargs) -> str:
+        """Convert itself into a JSON string.
 
-        return MessageToJson(
-            self.to_protobuf(), preserving_proto_field_name=True, sort_keys=True
-        )
+        :param protocol: `jsonschema` or `protobuf`
+        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.
+        :return: the dumped JSON string
+        """
+        if protocol == 'jsonschema':
+            return self.to_pydantic_model().json(**kwargs)
+        elif protocol == 'protobuf':
+            from google.protobuf.json_format import MessageToJson
+
+            return MessageToJson(self.to_protobuf(), **kwargs)
+        else:
+            raise ValueError(f'protocol={protocol} is not supported.')
 
     def to_base64(
         self, protocol: str = 'pickle', compress: Optional[str] = None

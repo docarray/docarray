@@ -52,7 +52,7 @@ class BaseDCType:
             if _unknown_kwargs and unknown_fields_handler == 'catch':
                 getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
 
-        if _obj is None and not kwargs and self._data is None:
+        if not _obj and not kwargs and self._data is None:
             self._data = self._data_class(self)
 
         if self._data is None:
