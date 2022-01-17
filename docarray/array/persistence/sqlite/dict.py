@@ -17,17 +17,17 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
     ) -> None:
         cur.execute(
             f'CREATE TABLE {table_name} ('
-            'serialized_key BLOB NOT NULL UNIQUE, '
+            'doc_id TEXT NOT NULL UNIQUE, '
             'serialized_value BLOB NOT NULL, '
             'item_order INTEGER PRIMARY KEY)'
         )
 
     @classmethod
-    def delete_single_record_by_serialized_key(
-        cls, table_name: str, cur: 'sqlite3.Cursor', serialized_key: bytes
+    def delete_single_record_by_doc_id(
+        cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str
     ) -> None:
         cur.execute(
-            f'DELETE FROM {table_name} WHERE serialized_key=?', (serialized_key,)
+            f'DELETE FROM {table_name} WHERE doc_id=?', (doc_id,)
         )
 
     @classmethod
@@ -35,21 +35,21 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
         cur.execute(f'DELETE FROM {table_name}')
 
     @classmethod
-    def is_serialized_key_in(
-        cls, table_name: str, cur: 'sqlite3.Cursor', serialized_key: bytes
+    def is_doc_id_in(
+        cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str
     ) -> bool:
         cur.execute(
-            f'SELECT 1 FROM {table_name} WHERE serialized_key=?', (serialized_key,)
+            f'SELECT 1 FROM {table_name} WHERE doc_id=?', (doc_id,)
         )
         return len(list(cur)) > 0
 
     @classmethod
-    def get_serialized_value_by_serialized_key(
-        cls, table_name: str, cur: 'sqlite3.Cursor', serialized_key: bytes
+    def get_serialized_value_by_doc_id(
+        cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str
     ) -> Union[None, bytes]:
         cur.execute(
-            f'SELECT serialized_value FROM {table_name} WHERE serialized_key=?',
-            (serialized_key,),
+            f'SELECT serialized_value FROM {table_name} WHERE doc_id=?',
+            (doc_id,),
         )
         res = cur.fetchone()
         if res is None:
@@ -71,38 +71,38 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
         return cast(int, res[0])
 
     @classmethod
-    def get_serialized_keys(
+    def get_doc_ids(
         cls, table_name: str, cur: 'sqlite3.Cursor'
-    ) -> Iterable[bytes]:
-        cur.execute(f'SELECT serialized_key FROM {table_name} ORDER BY item_order')
+    ) -> Iterable[str]:
+        cur.execute(f'SELECT doc_id FROM {table_name} ORDER BY item_order')
         for res in cur:
-            yield cast(bytes, res[0])
+            yield cast(str, res[0])
 
     @classmethod
-    def insert_serialized_value_by_serialized_key(
+    def insert_serialized_value_by_doc_id(
         cls,
         table_name: str,
         cur: 'sqlite3.Cursor',
-        serialized_key: bytes,
+        doc_id: str,
         serialized_value: bytes,
     ) -> None:
         item_order = cls.get_next_order(table_name, cur)
         cur.execute(
-            f'INSERT INTO {table_name} (serialized_key, serialized_value, item_order) VALUES (?, ?, ?)',
-            (serialized_key, serialized_value, item_order),
+            f'INSERT INTO {table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
+            (doc_id, serialized_value, item_order),
         )
 
     @classmethod
-    def update_serialized_value_by_serialized_key(
+    def update_serialized_value_by_doc_id(
         cls,
         table_name: str,
         cur: 'sqlite3.Cursor',
-        serialized_key: bytes,
+        doc_id: str,
         serialized_value: bytes,
     ) -> None:
         cur.execute(
-            f'UPDATE {table_name} SET serialized_value=? WHERE serialized_key=?',
-            (serialized_value, serialized_key),
+            f'UPDATE {table_name} SET serialized_value=? WHERE doc_id=?',
+            (serialized_value, doc_id),
         )
 
     @classmethod
@@ -110,31 +110,31 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
         cls,
         table_name: str,
         cur: 'sqlite3.Cursor',
-        serialized_key: bytes,
+        doc_id: str,
         serialized_value: bytes,
     ) -> None:
-        if cls.is_serialized_key_in(table_name, cur, serialized_key):
-            cls.update_serialized_value_by_serialized_key(
-                table_name, cur, serialized_key, serialized_value
+        if cls.is_doc_id_in(table_name, cur, doc_id):
+            cls.update_serialized_value_by_doc_id(
+                table_name, cur, doc_id, serialized_value
             )
         else:
-            cls.insert_serialized_value_by_serialized_key(
-                table_name, cur, serialized_key, serialized_value
+            cls.insert_serialized_value_by_doc_id(
+                table_name, cur, doc_id, serialized_value
             )
 
     @classmethod
     def get_last_serialized_item(
         cls, table_name: str, cur: 'sqlite3.Cursor'
-    ) -> Tuple[bytes, bytes]:
+    ) -> Tuple[str, bytes]:
         cur.execute(
-            f'SELECT serialized_key, serialized_value FROM {table_name} ORDER BY item_order DESC LIMIT 1'
+            f'SELECT doc_id, serialized_value FROM {table_name} ORDER BY item_order DESC LIMIT 1'
         )
-        return cast(Tuple[bytes, bytes], cur.fetchone())
+        return cast(Tuple[str, bytes], cur.fetchone())
 
     @classmethod
-    def get_reversed_serialized_keys(
+    def get_reversed_doc_ids(
         cls, table_name: str, cur: 'sqlite3.Cursor'
-    ) -> Iterable[bytes]:
-        cur.execute(f'SELECT serialized_key FROM {table_name} ORDER BY item_order DESC')
+    ) -> Iterable[str]:
+        cur.execute(f'SELECT doc_id FROM {table_name} ORDER BY item_order DESC')
         for res in cur:
-            yield cast(bytes, res[0])
+            yield cast(str, res[0])
