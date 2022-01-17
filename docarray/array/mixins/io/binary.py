@@ -54,7 +54,7 @@ class BinaryIOMixin:
     def _load_binary_stream(
         cls: Type['T'],
         file_ctx: str,
-        block_size: int = 500,
+        block_size: int = 10000,
         protocol=None,
         compress=None,
     ) -> 'T':
@@ -63,20 +63,37 @@ class BinaryIOMixin:
         delimiter = None
         current_bytes = b''
         with file_ctx as fp:
+            delimiter = fp.read(16)
             while True:
                 new_bytes = fp.read(block_size)
+
                 b = current_bytes + new_bytes
-                if delimiter is None:
-                    delimiter = b[:16]  # 16 is the length of the delimiter
                 split = b.split(delimiter)
-                for d, _ in zip(split, range(len(split) - 1)):
+
+                # range(2-1) = range(1) == [0]
+                # d= whatever, _ = 0
+                #for d  , _ in zip(split, range(len(split)-1)):
+                breakpoint()
+                for d in split[:-1]:
                     if len(d) > 0:
+                        print('\n\n_load_binary_stream')
+                        print(d)
+                        print('\n\n')
+
                         yield Document.from_bytes(
                             d, protocol=protocol, compress=compress
                         )
                 current_bytes = split[-1]
+
+                # |-------------|
+                # __XX__AOSDHAIUWDHAIUSHD__XX__ASJDAIODJ
+                # ['','AOSDHAIUW']
+
+                # reach_load_binary_stream directly if len(split)==2 and split[0]=='b'
                 if new_bytes == b'':
                     if current_bytes != b'':
+                        print('\n\n_load_binary_stream LAST CASE')
+                        print(Document.from_bytes( d, protocol=protocol, compress=compress))
                         yield Document.from_bytes(
                             current_bytes, protocol=protocol, compress=compress
                         )
@@ -101,6 +118,8 @@ class BinaryIOMixin:
             return cls.from_protobuf(dap)
         elif protocol == 'pickle-array':
             return pickle.loads(d)
+
+        # Binary format for streaming case
         else:
             _len = len(random_uuid().bytes)
             _binary_delimiter = d[:_len]  # first get delimiter
@@ -194,6 +213,7 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 else:
+                    # Binary format for streaming case
                     if _show_progress:
                         from rich.progress import track as _track
 
@@ -201,9 +221,25 @@ class BinaryIOMixin:
                     else:
                         track = lambda x: x
 
+                    # V1 Docarray streaming serialization format
+                    # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
+
+                    # 1 byte (uint8)
+                    version_byte = b'\x01'
+                    f.write(version_byte)
+                    # 8 bytes (uint64)
+                    num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
+                    f.write(num_docs_as_bytes)
+
                     for d in track(self):
-                        f.write(_binary_delimiter)
-                        f.write(d.to_bytes(protocol=protocol, compress=compress))
+                        doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
+                        len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
+
+                        # 8 bytes (uint32)
+                        f.write(len_doc_as_bytes)
+                        # variable size bytes
+                        f.write(doc_as_bytes)
+
             if not _file_ctx:
                 return bf.getvalue()
 
