@@ -4,7 +4,21 @@ DocArray follows semantic versioning. However, before the project reach 1.0.0, a
 
 This chapter only tracks the most important breaking changes and explain the rationale behind them.
 
-## 0.2.0: change the content field name
+## 0.3.0: change on the default JSON/dict serialization strategy
+
+This change is a breaking change and is not back-compatible.
+
+Document/DocumentArray now favors schema-ed JSON over "unschema-ed" JSON in both JSON & dict IO interfaces. Specifically, 0.3.0 introduces `protocol='jsonschema'` (as default) and `protocol='protobuf'` to allow user to control the serialization behavior.
+
+Migration guide:
+
+- Read the docs: {ref}`doc-json`.
+- If you are using `.to_dict()`, `.to_json()`, `.from_dict()`, `.from_json()` at Document/DocumentArray level, please be aware the change of JSON output.
+- If you want to stick to old Protobuf-based JSON (not recommended, as it is "unschema-ed"), use `.to_json(protocol='protobuf')` and `.from_json(protocol='protobuf')`.
+- Fine-grained controls can be archived by passing extra key-value args as described in {ref}`doc-json`.
+
+
+## 0.2.0: change on the content field name
 
 **This change is a breaking change and is not back-compatible.**
 
