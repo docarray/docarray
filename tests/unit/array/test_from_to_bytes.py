@@ -72,10 +72,17 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
         DocumentArray.load_binary(fp, protocol=protocol, compress=compress)
 
 
-def test_save_bytes_stream(tmpfile):
-    da = DocumentArray([Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})])
-    da.save_binary(tmpfile, protocol='pickle')
-    da_reconstructed = DocumentArray.load_binary(tmpfile, protocol='pickle', return_iterator=True)
+# Note  protocol = ['protobuf-array', 'pickle-array'] not supported with Document.from_bytes
+@pytest.mark.parametrize('protocol', ['pickle', 'protobuf'])
+@pytest.mark.parametrize('compress', ['zlib', None])
+def test_save_bytes_stream_stream(tmpfile, protocol, compress):
+    da = DocumentArray(
+        [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
+    )
+    da.save_binary(tmpfile, protocol=protocol, compress=compress)
+    da_reconstructed = DocumentArray.load_binary(
+        tmpfile, protocol=protocol, compress=compress, return_iterator=True
+    )
     assert isinstance(da_reconstructed, types.GeneratorType)
     assert da == DocumentArray(da_reconstructed)
 

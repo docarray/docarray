@@ -17,12 +17,12 @@ class BinaryIOMixin:
 
     @classmethod
     def load_binary(
-            cls: Type['T'],
-            file: Union[str, BinaryIO, bytes],
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
-            return_iterator: bool = False,
+        cls: Type['T'],
+        file: Union[str, BinaryIO, bytes],
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
+        return_iterator: bool = False,
     ) -> 'T':
         """Load array elements from a LZ4-compressed binary file.
 
@@ -44,17 +44,22 @@ class BinaryIOMixin:
         else:
             raise ValueError(f'unsupported input {file!r}')
         if return_iterator:
-            return cls._load_binary_stream(file_ctx)
+            return cls._load_binary_stream(
+                file_ctx, protocol=protocol, compress=compress
+            )
         else:
             return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
 
     @classmethod
     def _load_binary_stream(
-            cls: Type['T'],
-            file_ctx: str,
-            block_size: int = 500,
+        cls: Type['T'],
+        file_ctx: str,
+        block_size: int = 500,
+        protocol=None,
+        compress=None,
     ) -> 'T':
         from .... import Document
+
         delimiter = None
         current_bytes = b''
         with file_ctx as fp:
@@ -66,16 +71,21 @@ class BinaryIOMixin:
                 split = b.split(delimiter)
                 for d, _ in zip(split, range(len(split) - 1)):
                     if len(d) > 0:
-                        yield Document.from_bytes(d)
+                        yield Document.from_bytes(
+                            d, protocol=protocol, compress=compress
+                        )
                 current_bytes = split[-1]
                 if new_bytes == b'':
                     if current_bytes != b'':
-                        yield Document.from_bytes(current_bytes)
+                        yield Document.from_bytes(
+                            current_bytes, protocol=protocol, compress=compress
+                        )
                     break
 
     @classmethod
     def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
         from .... import Document
+
         with file_ctx as fp:
             d = fp.read() if hasattr(fp, 'read') else fp
         if get_compress_ctx(algorithm=compress) is not None:
@@ -108,25 +118,25 @@ class BinaryIOMixin:
     @classmethod
     def _get_batches(cls, gen, batch_size):
         for i in range(0, len(gen), batch_size):
-            yield gen[i:i + batch_size]
+            yield gen[i : i + batch_size]
 
     @classmethod
     def from_bytes(
-            cls: Type['T'],
-            data: bytes,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
+        cls: Type['T'],
+        data: bytes,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
     ) -> 'T':
         return cls.load_binary(
             data, protocol=protocol, compress=compress, _show_progress=_show_progress
         )
 
     def save_binary(
-            self,
-            file: Union[str, BinaryIO],
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
+        self,
+        file: Union[str, BinaryIO],
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
     ) -> None:
         """Save array elements into a binary file.
 
@@ -150,11 +160,11 @@ class BinaryIOMixin:
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
 
     def to_bytes(
-            self,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _file_ctx: Optional[BinaryIO] = None,
-            _show_progress: bool = False,
+        self,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _file_ctx: Optional[BinaryIO] = None,
+        _show_progress: bool = False,
     ) -> bytes:
         """Serialize itself into bytes.
 
@@ -216,11 +226,11 @@ class BinaryIOMixin:
 
     @classmethod
     def from_base64(
-            cls: Type['T'],
-            data: str,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
+        cls: Type['T'],
+        data: str,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
     ) -> 'T':
         return cls.load_binary(
             base64.b64decode(data),
@@ -230,9 +240,9 @@ class BinaryIOMixin:
         )
 
     def to_base64(
-            self,
-            protocol: str = 'pickle-array',
-            compress: Optional[str] = None,
-            _show_progress: bool = False,
+        self,
+        protocol: str = 'pickle-array',
+        compress: Optional[str] = None,
+        _show_progress: bool = False,
     ) -> str:
         return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
