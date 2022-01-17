@@ -54,52 +54,38 @@ class BinaryIOMixin:
     def _load_binary_stream(
         cls: Type['T'],
         file_ctx: str,
-        block_size: int = 10000,
         protocol=None,
         compress=None,
     ) -> 'T':
         from .... import Document
 
-        delimiter = None
         current_bytes = b''
         with file_ctx as fp:
-            delimiter = fp.read(16)
-            while True:
-                new_bytes = fp.read(block_size)
+            # 1 byte (uint8)
+            version = int.from_bytes(d[0:1], 'big', signed=False)
+            # 8 bytes (uint64)
+            num_docs = int.from_bytes(d[1:9], 'big', signed=False)
 
-                b = current_bytes + new_bytes
-                split = b.split(delimiter)
+            if show_progress:
+                from rich.progress import track as _track
 
-                # range(2-1) = range(1) == [0]
-                # d= whatever, _ = 0
-                # for d  , _ in zip(split, range(len(split)-1)):
-                breakpoint()
-                for d in split[:-1]:
-                    if len(d) > 0:
-                        print('\n\n_load_binary_stream')
-                        print(d)
-                        print('\n\n')
+                track = lambda x: _track(x, description='Deserializing')
+            else:
+                track = lambda x: x
 
-                        yield Document.from_bytes(
-                            d, protocol=protocol, compress=compress
-                        )
-                current_bytes = split[-1]
-
-                # |-------------|
-                # __XX__AOSDHAIUWDHAIUSHD__XX__ASJDAIODJ
-                # ['','AOSDHAIUW']
-
-                # reach_load_binary_stream directly if len(split)==2 and split[0]=='b'
-                if new_bytes == b'':
-                    if current_bytes != b'':
-                        print('\n\n_load_binary_stream LAST CASE')
-                        print(
-                            Document.from_bytes(d, protocol=protocol, compress=compress)
-                        )
-                        yield Document.from_bytes(
-                            current_bytes, protocol=protocol, compress=compress
-                        )
-                    break
+            start_pos = 9
+            for d in track(self):
+                # 4 bytes (uint32)
+                len_current_doc_in_bytes = int.from_bytes(
+                    d[start_pos : start_pos + 1], 'big', signed=False
+                )
+                start_doc_pos = start_pos + 1
+                end_doc_pos = start_doc_pos + len_current_doc_in_bytes
+                start_pos = end_doc_pos
+                # variable length bytes doc
+                yield Document.from_bytes(
+                    d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
+                )
 
     @classmethod
     def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
