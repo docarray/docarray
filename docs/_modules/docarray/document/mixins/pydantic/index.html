@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.document.mixins.pydantic - DocArray 0.2.1 documentation</title>
+        <title>docarray.document.mixins.pydantic - DocArray 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.2.1 documentation</div>
+                <div class="brand">DocArray 0.3.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -434,10 +434,11 @@
         <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">Document</span>
 
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">_field_chunks</span><span class="p">,</span> <span class="n">_field_matches</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
-            <span class="n">fields</span><span class="p">[</span><span class="s1">'chunks'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">chunks</span><span class="p">]</span>
+            <span class="n">_field_chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">chunks</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
-            <span class="n">fields</span><span class="p">[</span><span class="s1">'matches'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
+            <span class="n">_field_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
             <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">'chunks'</span><span class="p">,</span> <span class="s1">'matches'</span><span class="p">}</span>
@@ -453,7 +454,13 @@
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="o">**</span><span class="n">fields</span><span class="p">)</span></div></div>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="o">**</span><span class="n">fields</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_field_chunks</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">_field_chunks</span>
+        <span class="k">if</span> <span class="n">_field_matches</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">_field_matches</span>
+        <span class="k">return</span> <span class="n">d</span></div></div>
 </pre></div>
             </article>
             <footer>

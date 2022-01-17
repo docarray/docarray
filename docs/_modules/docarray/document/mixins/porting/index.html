@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.document.mixins.porting - DocArray 0.2.1 documentation</title>
+        <title>docarray.document.mixins.porting - DocArray 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.2.1 documentation</div>
+                <div class="brand">DocArray 0.3.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -387,6 +387,7 @@
                 <h1>Source code for docarray.document.mixins.porting</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 
@@ -398,32 +399,76 @@
 
 <div class="viewcode-block" id="PortingMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin">[docs]</a><span class="k">class</span> <span class="nc">PortingMixin</span><span class="p">:</span>
 <div class="viewcode-block" id="PortingMixin.from_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
-        <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+        <span class="sd">"""Convert a dict object into a Document.</span>
 
-        <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
-        <span class="n">json_format</span><span class="o">.</span><span class="n">ParseDict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pb_msg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span></div>
+<span class="sd">        :param obj: a Python dict object</span>
+<span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
+<span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf parser.</span>
+<span class="sd">        :return: the parsed Document object</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span>
+
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">PydanticDocument</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
+            <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
+
+            <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
+            <span class="n">json_format</span><span class="o">.</span><span class="n">ParseDict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pb_msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'protocol=`</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1">` is not supported'</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.from_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
-        <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+        <span class="sd">"""Convert a JSON string into a Document.</span>
 
-        <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
-        <span class="n">json_format</span><span class="o">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pb_msg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span></div>
+<span class="sd">        :param obj: a valid JSON string</span>
+<span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
+<span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf parser.</span>
+<span class="sd">        :return: the parsed Document object</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span>
 
-<div class="viewcode-block" id="PortingMixin.to_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">PydanticDocument</span><span class="o">.</span><span class="n">parse_raw</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
+            <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
+
+            <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
+            <span class="n">json_format</span><span class="o">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pb_msg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'protocol=`</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1">` is not supported'</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PortingMixin.to_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">"""Convert itself into a Python dict object.</span>
+
+<span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
+<span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
+<span class="sd">        :return: the dumped Document as a dict object</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToDict</span>
 
             <span class="k">return</span> <span class="n">MessageToDict</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">(),</span>
-                <span class="n">preserving_proto_field_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'protocol=`</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1">` is not supported, '</span>
+                <span class="sa">f</span><span class="s1">'the result dict is a Python dynamic typing dict without any promise on the schema.'</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_bytes"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">to_bytes</span><span class="p">(</span>
@@ -455,25 +500,33 @@
 <span class="sd">        """</span>
         <span class="n">bstr</span> <span class="o">=</span> <span class="n">decompress_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'pickle'</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">bstr</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">bstr</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
 
             <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
             <span class="n">pb_msg</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">bstr</span><span class="p">)</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf` or pickle protocols 0-5.'</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">d</span></div>
+            <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PortingMixin.to_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span>
+<div class="viewcode-block" id="PortingMixin.to_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Convert itself into a JSON string.</span>
 
-        <span class="k">return</span> <span class="n">MessageToJson</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">(),</span> <span class="n">preserving_proto_field_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span></div>
+<span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
+<span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
+<span class="sd">        :return: the dumped JSON string</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span>
+
+            <span class="k">return</span> <span class="n">MessageToJson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported.'</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64">[docs]</a>    <span class="k">def</span> <span class="nf">to_base64</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>

@@ -7,10 +7,10 @@
   <meta property="og:title" content="Serialization" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization.html" />
-  <meta property="og:site_name" content="DocArray 0.2.1 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.3.0 Documentation" />
   <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. JSON string:.from_json()/.to_json()- Pydantic model:.from_pydanti..." />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.2.1 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.3.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>Serialization - DocArray 0.2.1 documentation</title>
+        <title>Serialization - DocArray 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.2.1 documentation</div>
+                <div class="brand">DocArray 0.3.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -434,7 +434,7 @@
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>Depending on which protocol you use, this feature requires <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -442,7 +442,7 @@
 <span class="n">da</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{"id": "72db9a7e6e3211ec97f51e008a366d49", "text": "hello", "mime_type": "text/plain"}, {"id": "72db9cb86e3211ec97f51e008a366d49", "text": "world", "mime_type": "text/plain"}]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{"id": "a677577877b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "hello", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}, {"id": "a67758f477b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "world", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}]
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_r</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
@@ -464,6 +464,10 @@
   mime_type   ('str',)    1                False            
   text        ('str',)    2                False            
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>More parameters and usages can be found in the Document-level <a class="reference internal" href="../../document/serialization/#doc-json"><span class="std std-ref">From/to JSON</span></a>.</p>
 </div>
 </section>
 <section id="from-to-bytes">
@@ -624,6 +628,10 @@ docs {
 </section>
 <section id="from-to-list">
 <h2>From/to list<a class="headerlink" href="#from-to-list" title="Permalink to this headline">¶</a></h2>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+</div>
 <p>Serializing to/from Python list is less frequently used for the same reason as <code class="docutils literal notranslate"><span class="pre">Document.to_dict()</span></code>: it is often an intermediate step of serializing to JSON. You can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
@@ -634,7 +642,10 @@ docs {
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{'id': 'ae55782a6e4d11ec803c1e008a366d49', 'text': 'hello', 'mime_type': 'text/plain'}, {'id': 'ae557a146e4d11ec803c1e008a366d49', 'text': 'world', 'mime_type': 'text/plain'}]
 </pre></div>
 </div>
-<p>There is an argument <code class="docutils literal notranslate"><span class="pre">strict</span></code> shares <a class="reference internal" href="../../document/serialization/#strict-arg-explain"><span class="std std-ref">the same semantic</span></a> as in <code class="docutils literal notranslate"><span class="pre">Document.to_dict()</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>More parameters and usages can be found in the Document-level <a class="reference internal" href="../../document/serialization/#doc-dict"><span class="std std-ref">From/to dict</span></a>.</p>
+</div>
 </section>
 <section id="from-to-dataframe">
 <h2>From/to dataframe<a class="headerlink" href="#from-to-dataframe" title="Permalink to this headline">¶</a></h2>
