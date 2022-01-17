@@ -46,37 +46,37 @@ class ContentPropertyMixin:
             ravel(value, self, 'embedding')
 
     @property
-    def blobs(self) -> Optional['ArrayType']:
-        """Return a :class:`ArrayType` stacking all :attr:`.blob`.
+    def tensors(self) -> Optional['ArrayType']:
+        """Return a :class:`ArrayType` stacking all :attr:`.tensor`.
 
-        The `blob` attributes are stacked together along a newly created first
+        The `tensor` attributes are stacked together along a newly created first
         dimension (as if you would stack using ``np.stack(X, axis=0)``).
 
-        .. warning:: This operation assumes all blobs have the same shape and dtype.
+        .. warning:: This operation assumes all tensors have the same shape and dtype.
                  All dtype and shape values are assumed to be equal to the values of the
                  first element in the DocumentArray
 
-        :return: a :class:`ArrayType` of blobs
+        :return: a :class:`ArrayType` of tensors
         """
-        if self and self[0].content_type == 'blob':
+        if self and self[0].content_type == 'tensor':
             if self:
-                return unravel(self, 'blob')
+                return unravel(self, 'tensor')
 
-    @blobs.setter
-    def blobs(self, value: 'ArrayType'):
-        """Set :attr:`.blob` of the Documents. To clear all :attr:`blob`, set it to ``None``.
+    @tensors.setter
+    def tensors(self, value: 'ArrayType'):
+        """Set :attr:`.tensor` of the Documents. To clear all :attr:`tensor`, set it to ``None``.
 
-        :param value: The blob array to set. The first axis is the "row" axis.
+        :param value: The tensor array to set. The first axis is the "row" axis.
         """
 
         if value is None:
             for d in self:
-                d.blob = None
+                d.tensor = None
         else:
-            blobs_shape0 = _get_len(value)
-            self._check_length(blobs_shape0)
+            tensors_shape0 = _get_len(value)
+            self._check_length(tensors_shape0)
 
-            ravel(value, self, 'blob')
+            ravel(value, self, 'tensor')
 
     @property
     def texts(self) -> Optional[List[str]]:
@@ -105,37 +105,37 @@ class ContentPropertyMixin:
                 doc.text = text
 
     @property
-    def buffers(self) -> Optional[List[bytes]]:
-        """Get the buffer attribute of all Documents.
+    def blobs(self) -> Optional[List[bytes]]:
+        """Get the blob attribute of all Documents.
 
-        :return: a list of buffers
+        :return: a list of blobs
         """
-        if self and self[0].content_type == 'buffer':
+        if self and self[0].content_type == 'blob':
             if self:
-                return [d.buffer for d in self]
+                return [d.blob for d in self]
 
-    @buffers.setter
-    def buffers(self, value: List[bytes]):
-        """Set the buffer attribute for all Documents. To clear all :attr:`buffer`, set it to ``None``.
+    @blobs.setter
+    def blobs(self, value: List[bytes]):
+        """Set the blob attribute for all Documents. To clear all :attr:`blob`, set it to ``None``.
 
-        :param value: A sequence of buffer to set, should be the same length as the
+        :param value: A sequence of blob to set, should be the same length as the
             number of Documents
         """
 
         if value is None:
             for d in self:
-                d.buffer = None
+                d.blob = None
         else:
             self._check_length(len(value))
 
-            for doc, buffer in zip(self, value):
-                doc.buffer = buffer
+            for doc, blob in zip(self, value):
+                doc.blob = blob
 
     @property
     def contents(self) -> Optional[Union[Sequence['DocumentContentType'], 'ArrayType']]:
         """Get the :attr:`.content` of all Documents.
 
-        :return: a list of texts, buffers or :class:`ArrayType`
+        :return: a list of texts, blobs or :class:`ArrayType`
         """
         if self:
             content_type = self[0].content_type
@@ -148,7 +148,7 @@ class ContentPropertyMixin:
     ):
         """Set the :attr:`.content` of all Documents.
 
-        :param value: a list of texts, buffers or :class:`ArrayType`
+        :param value: a list of texts, blobs or :class:`ArrayType`
         """
         if self:
             content_type = self[0].content_type

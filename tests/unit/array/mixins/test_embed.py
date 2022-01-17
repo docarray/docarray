@@ -46,7 +46,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
     docs = da.empty(N)
-    docs.blobs = np.random.random([N, 128]).astype(np.float32)
+    docs.tensors = np.random.random([N, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 

@@ -28,8 +28,8 @@ def get_ndarrays_for_ravel():
 
 
 @pytest.mark.parametrize('ndarray_val, is_sparse', get_ndarrays_for_ravel())
-@pytest.mark.parametrize('attr', ['embeddings', 'blobs'])
-def test_ravel_embeddings_blobs(ndarray_val, attr, is_sparse):
+@pytest.mark.parametrize('attr', ['embeddings', 'tensors'])
+def test_ravel_embeddings_tensors(ndarray_val, attr, is_sparse):
     da = DocumentArray.empty(10)
     setattr(da, attr, ndarray_val)
     ndav = getattr(da, attr)
@@ -87,7 +87,7 @@ def get_ndarrays():
 
 
 @pytest.mark.parametrize('ndarray_val, is_sparse', get_ndarrays())
-@pytest.mark.parametrize('attr', ['embedding', 'blob'])
+@pytest.mark.parametrize('attr', ['embedding', 'tensor'])
 def test_ndarray_force_numpy(ndarray_val, attr, is_sparse):
     d = Document()
     setattr(d, attr, ndarray_val)

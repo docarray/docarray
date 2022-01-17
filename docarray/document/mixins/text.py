@@ -3,7 +3,7 @@ from typing import Tuple, Dict, Union, Optional, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _uri_to_buffer, _to_datauri
+from .helper import _uri_to_blob, _to_datauri
 
 if TYPE_CHECKING:
     from ...types import T
@@ -18,8 +18,8 @@ class TextDataMixin:
         :param charset: charset may be any character set registered with IANA
         :return: itself after processed
         """
-        buffer = _uri_to_buffer(self.uri)
-        self.text = buffer.decode(charset)
+        blob = _uri_to_blob(self.uri)
+        self.text = blob.decode(charset)
         return self
 
     def get_vocabulary(self, text_attrs: Tuple[str, ...] = ('text',)) -> Dict[str, int]:
@@ -35,15 +35,15 @@ class TextDataMixin:
 
         return all_tokens
 
-    def convert_text_to_blob(
+    def convert_text_to_tensor(
         self: 'T',
         vocab: Dict[str, int],
         max_length: Optional[int] = None,
         dtype: str = 'int64',
     ) -> 'T':
-        """Convert :attr:`.text` to :attr:`.blob` inplace.
+        """Convert :attr:`.text` to :attr:`.tensor` inplace.
 
-        In the end :attr:`.blob` will be a 1D array where `D` is `max_length`.
+        In the end :attr:`.tensor` will be a 1D array where `D` is `max_length`.
 
         To get the vocab of a DocumentArray, you can use `jina.types.document.converters.build_vocab` to
 
@@ -51,18 +51,18 @@ class TextDataMixin:
             for unknown words in :attr:`.text`. So you should *not* include these two entries in `vocab`.
         :param max_length: the maximum length of the sequence. Sequence longer than this are cut off from *beginning*.
             Sequence shorter than this will be padded with `0` from right hand side.
-        :param dtype: the dtype of the generated :attr:`.blob`
+        :param dtype: the dtype of the generated :attr:`.tensor`
         :return: Document itself after processed
         """
-        self.blob = np.array(
+        self.tensor = np.array(
             _text_to_int_sequence(self.text, vocab, max_length), dtype=dtype
         )
         return self
 
-    def convert_blob_to_text(
+    def convert_tensor_to_text(
         self: 'T', vocab: Union[Dict[str, int], Dict[int, str]], delimiter: str = ' '
     ) -> 'T':
-        """Convert :attr:`.blob` to :attr:`.text` inplace.
+        """Convert :attr:`.tensor` to :attr:`.text` inplace.
 
         :param vocab: a dictionary that maps a word to an integer index, `0` is reserved for padding, `1` is reserved
             for unknown words in :attr:`.text`
@@ -73,7 +73,7 @@ class TextDataMixin:
             _vocab = {v: k for k, v in vocab.items()}
 
         _text = []
-        for k in self.blob:
+        for k in self.tensor:
             k = int(k)
             if k == 0:
                 continue

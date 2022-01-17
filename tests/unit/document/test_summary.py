@@ -23,7 +23,7 @@ def test_plot_image():
     d = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     d.display()
 
-    d.load_uri_to_image_blob()
+    d.load_uri_to_image_tensor()
     d.uri = None
 
     d.display()

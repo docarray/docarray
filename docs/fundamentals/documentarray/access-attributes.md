@@ -23,7 +23,7 @@ As in element selector, one can use attribute selector to **get/set/delete** att
 | `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
 | `da[:, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
 | `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                 |
-| `da[:, 'blob']`, `da.blobs`                  | a NdArray-like object of the all top-level Documents blobs                                                                    |
+| `da[:, 'tensor']`, `da.tensors`                  | a NdArray-like object of the all top-level Documents tensors                                                                    |
 
 
 Let's see an example.
@@ -125,7 +125,7 @@ da.summary()
 
 ## Auto-ravel on NdArray
 
-Attribute selectors `blob` and `embedding` behave a bit differently. Instead of relying on Python List for input & return when get/set, they automatically ravel/unravel the NdArray-like object [^1] for you.
+Attribute selectors `tensor` and `embedding` behave a bit differently. Instead of relying on Python List for input & return when get/set, they automatically ravel/unravel the NdArray-like object [^1] for you.
 
 [^1]: NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse & dense array.
 
@@ -159,7 +159,7 @@ for d in da:
 
 Auto unravel works in a similar way, we just assign a `(3, 10)` COO matrix as `.embeddings` and it auto breaks into three and assign them into the three Documents. 
 
-Of course, this is not limited to scipy sparse matrix. Any NdArray-like[^1] object would work. The same logic applies also to `.blobs` attribute.
+Of course, this is not limited to scipy sparse matrix. Any NdArray-like[^1] object would work. The same logic applies also to `.tensors` attribute.
 
 ## Dunder syntax for nested attributes
 
@@ -192,7 +192,7 @@ print(da['@m', ('id', 'scores__cosine__value')])
 (da-content-embedding)=
 ## Content and embedding sugary attributes
 
-DocumentArray provides `.texts`, `.buffers`, `.blobs`, `.contents` and `.embeddings` sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
+DocumentArray provides `.texts`, `.blobs`, `.tensors`, `.contents` and `.embeddings` sugary attributes for quickly accessing the content and embedding of Documents. You can use them to get/set/delete attributes of all Documents at the top-level.
 
 ```python
 from docarray import DocumentArray
@@ -209,7 +209,7 @@ print(da.texts)
 
 This is same as `da[:, 'text'] = ['hello', 'world']` and then `print(da[:, 'text'])` but more compact and probably more Pythonic.
 
-Same for `.blobs` and `.embeddings`:
+Same for `.tensors` and `.embeddings`:
 
 ```python
 import numpy as np

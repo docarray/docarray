@@ -8,9 +8,9 @@ To load a wav file as a Document.
 ```python
 from docarray import Document
 
-d = Document(uri='toy.wav').load_uri_to_audio_blob()
+d = Document(uri='toy.wav').load_uri_to_audio_tensor()
 
-print(d.blob.shape, d.blob.dtype)
+print(d.tensor.shape, d.tensor.dtype)
 ```
 
 ```text
@@ -19,10 +19,10 @@ print(d.blob.shape, d.blob.dtype)
 
 ## Save as `.wav` file
 
-You can save Document `.blob` as a `.wav` file:
+You can save Document `.tensor` as a `.wav` file:
 
 ```python
-d.save_audio_blob_to_file('toy.wav')
+d.save_audio_tensor_to_file('toy.wav')
 ```
 
 
@@ -33,9 +33,9 @@ Let's load the "hello" audio file, reverse it and finally save it.
 ```python
 from docarray import Document
 
-d = Document(uri='hello.wav').load_uri_to_audio_blob()
-d.blob = d.blob[::-1]
-d.save_audio_blob_to_file('olleh.wav')
+d = Document(uri='hello.wav').load_uri_to_audio_tensor()
+d.tensor = d.tensor[::-1]
+d.save_audio_tensor_to_file('olleh.wav')
 ```
 
 <table>

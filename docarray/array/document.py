@@ -270,8 +270,8 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
                         value = (value,)
 
                     for _a, _v in zip(_attrs, value):
-                        if _a == 'blob':
-                            _docs.blobs = _v
+                        if _a == 'tensor':
+                            _docs.tensors = _v
                         elif _a == 'embedding':
                             _docs.embeddings = _v
                         else:

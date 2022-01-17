@@ -8,6 +8,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -224,4 +225,26 @@
 
  - [[```b3debdea```](https://github.com/jina-ai/docarray/commit/b3debdeacb650e0b794fedf9ce92a3f6db559bc9)] __-__ __docs__: support pydantic data model (*Han Xiao*)
  - [[```d764341e```](https://github.com/jina-ai/docarray/commit/d764341e0957d3f0732551cc841ad6c63cb9a0b2)] __-__ __version__: the next version will be 0.1.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-2-0></a>
+## Release Note (`0.2.0`)
+
+> Release time: 2022-01-16 12:56:12
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```5b2ea94d```](https://github.com/jina-ai/docarray/commit/5b2ea94d16e0e855c9957c8cab5d57ee3b3431d1)] __-__ change content field name (#53) (*Han Xiao*)
+ - [[```fca35a0e```](https://github.com/jina-ai/docarray/commit/fca35a0e1f695b523f6a1b2340243f9f393e0231)] __-__ __array__: use extend in add improve docs (#51) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f27c40cc```](https://github.com/jina-ai/docarray/commit/f27c40cc5c3355258d60fffe78c046050ca044da)] __-__ bump to 0.2 (*Han Xiao*)
+ - [[```03fa1201```](https://github.com/jina-ai/docarray/commit/03fa1201a0c46dd3eb51a890eb2d589bfca72433)] __-__ update docs (*Han Xiao*)
+ - [[```cfd74703```](https://github.com/jina-ai/docarray/commit/cfd747033c41a5be805909813ca2db62cac0fbe5)] __-__ __version__: the next version will be 0.1.9 (*Jina Dev Bot*)
 

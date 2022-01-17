@@ -41,7 +41,7 @@ class PydanticMixin:
         """Build a Document object from a Pydantic model
 
         :param model: the pydantic data model object that represents a Document
-        :param ndarray_as_list: if set to True, `embedding` and `blob` are auto-casted to ndarray.
+        :param ndarray_as_list: if set to True, `embedding` and `tensor` are auto-casted to ndarray.
         :return: a Document object
         """
         from ... import Document
@@ -62,7 +62,7 @@ class PydanticMixin:
                 fields[f_name] = defaultdict(NamedScore)
                 for k, v in value.items():
                     fields[f_name][k] = NamedScore(v)
-            elif f_name == 'embedding' or f_name == 'blob':
+            elif f_name == 'embedding' or f_name == 'tensor':
                 fields[f_name] = np.array(value)
             else:
                 fields[f_name] = value

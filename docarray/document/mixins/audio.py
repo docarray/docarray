@@ -10,13 +10,13 @@ if TYPE_CHECKING:
 class AudioDataMixin:
     """Provide helper functions for :class:`Document` to support audio data. """
 
-    def save_audio_blob_to_file(
+    def save_audio_tensor_to_file(
         self: 'T',
         file: Union[str, BinaryIO],
         sample_rate: int = 44100,
         sample_width: int = 2,
     ) -> 'T':
-        """Save :attr:`.blob` into an wav file. Mono/stereo is preserved.
+        """Save :attr:`.tensor` into an wav file. Mono/stereo is preserved.
 
         :param file: if file is a string, open the file by that name, otherwise treat it as a file-like object.
         :param sample_rate: sampling frequency
@@ -26,8 +26,8 @@ class AudioDataMixin:
         """
         # Convert to (little-endian) 16 bit integers.
         max_int16 = 2 ** 15
-        blob = (self.blob * max_int16).astype('<h')
-        n_channels = 2 if self.blob.ndim > 1 else 1
+        tensor = (self.tensor * max_int16).astype('<h')
+        n_channels = 2 if self.tensor.ndim > 1 else 1
 
         with wave.open(file, 'w') as f:
             # 2 Channels.
@@ -35,11 +35,11 @@ class AudioDataMixin:
             # 2 bytes per sample.
             f.setsampwidth(sample_width)
             f.setframerate(sample_rate)
-            f.writeframes(blob.tobytes())
+            f.writeframes(tensor.tobytes())
         return self
 
-    def load_uri_to_audio_blob(self: 'T') -> 'T':
-        """Convert an audio :attr:`.uri` into :attr:`.blob` inplace
+    def load_uri_to_audio_tensor(self: 'T') -> 'T':
+        """Convert an audio :attr:`.uri` into :attr:`.tensor` inplace
 
         :return: Document itself after processed
         """
@@ -64,7 +64,7 @@ class AudioDataMixin:
             audio_stereo[:, 0] = audio_normalised[range(0, len(audio_normalised), 2)]
             audio_stereo[:, 1] = audio_normalised[range(1, len(audio_normalised), 2)]
 
-            self.blob = audio_stereo
+            self.tensor = audio_stereo
         else:
-            self.blob = audio_normalised
+            self.tensor = audio_normalised
         return self

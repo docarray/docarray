@@ -187,7 +187,7 @@ def test_attribute_indexing():
             assert vv
 
 
-def test_blob_attribute_selector():
+def test_tensor_attribute_selector():
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])

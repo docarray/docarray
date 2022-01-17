@@ -26,7 +26,7 @@ def get_ndarrays():
 
 
 @pytest.mark.parametrize('ndarray_val, is_sparse', get_ndarrays())
-@pytest.mark.parametrize('attr', ['embedding', 'blob'])
+@pytest.mark.parametrize('attr', ['embedding', 'tensor'])
 def test_ndarray_force_numpy(ndarray_val, attr, is_sparse):
     d = Document()
     setattr(d, attr, ndarray_val)

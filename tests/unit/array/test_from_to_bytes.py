@@ -38,7 +38,7 @@ def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
     assert len(da2) == len(target_da)
 
     target_da.embeddings = ndarray_val
-    target_da.blobs = ndarray_val
+    target_da.tensors = ndarray_val
     bstr = target_da.to_bytes(protocol=protocol, compress=compress)
     print(protocol, compress, len(bstr))
     da2 = DocumentArray.from_bytes(bstr, protocol=protocol, compress=compress)
@@ -48,7 +48,7 @@ def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
         to_numpy_array(target_da.embeddings), to_numpy_array(da2.embeddings)
     )
     np.testing.assert_almost_equal(
-        to_numpy_array(target_da.blobs), to_numpy_array(da2.blobs)
+        to_numpy_array(target_da.tensors), to_numpy_array(da2.tensors)
     )
 
 

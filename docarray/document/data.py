@@ -13,7 +13,7 @@ default_values = dict(
     granularity=0,
     adjacency=0,
     parent_id='',
-    buffer=b'',
+    blob=b'',
     text='',
     weight=0.0,
     uri='',
@@ -39,8 +39,8 @@ class DocumentData:
     parent_id: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
-    buffer: Optional[bytes] = None
-    blob: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
+    blob: Optional[bytes] = None
+    tensor: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
     mime_type: Optional[str] = None  # must be put in front of `text` `content`
     text: Optional[str] = None
     content: Optional['DocumentContentType'] = None
@@ -58,13 +58,13 @@ class DocumentData:
 
     def __setattr__(self, key, value):
         if value is not None:
-            if key == 'text' or key == 'blob' or key == 'buffer':
+            if key == 'text' or key == 'tensor' or key == 'blob':
                 # enable mutual exclusivity for content field
                 dv = default_values.get(key)
                 if type(value) != type(dv) or value != dv:
                     self.text = None
+                    self.tensor = None
                     self.blob = None
-                    self.buffer = None
                     if key == 'text':
                         self.mime_type = 'text/plain'
             elif key == 'uri':
@@ -79,11 +79,11 @@ class DocumentData:
                     value = r or value
             elif key == 'content':
                 if isinstance(value, bytes):
-                    self.buffer = value
+                    self.blob = value
                 elif isinstance(value, str):
                     self.text = value
                 else:
-                    self.blob = value
+                    self.tensor = value
                 value = None
             elif key == 'chunks':
                 from ..array.chunk import ChunkArray

@@ -42,7 +42,7 @@ def flush_proto(doc: 'Document') -> 'DocumentProto':
     for key in doc.non_empty_fields:
         try:
             value = getattr(doc, key)
-            if key in ('blob', 'embedding'):
+            if key in ('tensor', 'embedding'):
                 flush_ndarray(getattr(pb_msg, key), value)
             elif key in ('chunks', 'matches'):
                 for d in value:

@@ -35,12 +35,12 @@ To load and preprocess `docs`, we have:
 
 ```python
 def foo(d):
-    return (d.load_uri_to_image_blob()
-             .set_image_blob_normalization()
-             .set_image_blob_channel_axis(-1, 0))
+    return (d.load_uri_to_image_tensor()
+             .set_image_tensor_normalization()
+             .set_image_tensor_channel_axis(-1, 0))
 ```
 
-This load the image from file into `.blob` do some normalization and set the channel axis. Now, let's compare the time difference when we do things sequentially and use `.apply()`:
+This load the image from file into `.tensor` do some normalization and set the channel axis. Now, let's compare the time difference when we do things sequentially and use `.apply()`:
 
 ````{tab} For-loop
 

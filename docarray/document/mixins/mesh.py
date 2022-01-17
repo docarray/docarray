@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud. """
 
-    def load_uri_to_point_cloud_blob(
+    def load_uri_to_point_cloud_tensor(
         self: 'T', samples: int, as_chunks: bool = False
     ) -> 'T':
-        """Convert a 3d mesh-like :attr:`.uri` into :attr:`.blob`
+        """Convert a 3d mesh-like :attr:`.uri` into :attr:`.tensor`
 
         :param samples: number of points to sample from the mesh
         :param as_chunks: when multiple geometry stored in one mesh file,
@@ -29,10 +29,10 @@ class MeshDataMixin:
             scene = trimesh.load(self.uri, force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
-                self.chunks.append(Document(blob=geo.sample(samples)))
+                self.chunks.append(Document(tensor=geo.sample(samples)))
         else:
             # combine a scene into a single mesh
             mesh = trimesh.load(self.uri, force='mesh')
-            self.blob = mesh.sample(samples)
+            self.tensor = mesh.sample(samples)
 
         return self

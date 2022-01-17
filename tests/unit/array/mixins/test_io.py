@@ -67,7 +67,7 @@ def test_from_to_pd_dataframe(da_cls):
     # more complicated
     da = da_cls.empty(2)
     da.embeddings = [[1, 2, 3], [4, 5, 6]]
-    da.blobs = [[1, 2], [2, 1]]
+    da.tensors = [[1, 2], [2, 1]]
     da[0].tags = {'hello': 'world'}
     da2 = da_cls.from_dataframe(da.to_dataframe())
     assert da2[0].tags == {'hello': 'world'}
@@ -82,10 +82,10 @@ def test_from_to_bytes(da_cls):
     # more complicated
     da = da_cls.empty(2)
     da.embeddings = [[1, 2, 3], [4, 5, 6]]
-    da.blobs = [[1, 2], [2, 1]]
+    da.tensors = [[1, 2], [2, 1]]
     da[0].tags = {'hello': 'world'}
     da2 = da_cls.load_binary(bytes(da))
-    assert da2.blobs == [[1, 2], [2, 1]]
+    assert da2.tensors == [[1, 2], [2, 1]]
     assert da2.embeddings == [[1, 2, 3], [4, 5, 6]]
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}

@@ -15,14 +15,14 @@ class GetAttributeMixin:
         fields = list(fields)
         if 'embedding' in fields:
             e_index = fields.index('embedding')
-        if 'blob' in fields:
-            b_index = fields.index('blob')
-            fields.remove('blob')
+        if 'tensor' in fields:
+            b_index = fields.index('tensor')
+            fields.remove('tensor')
 
         if 'embedding' in fields:
             fields.remove('embedding')
-        if 'blob' in fields:
-            fields.remove('blob')
+        if 'tensor' in fields:
+            fields.remove('tensor')
 
         if fields:
             contents = [doc._get_attributes(*fields) for doc in self]
@@ -34,18 +34,18 @@ class GetAttributeMixin:
             if len(fields) == 1:
                 contents = [contents]
             if b_index is not None:
-                contents.insert(b_index, self.blobs)
+                contents.insert(b_index, self.tensors)
             if e_index is not None:
                 contents.insert(e_index, self.embeddings)
             return contents
 
         if b_index is not None and e_index is None:
-            return self.blobs
+            return self.tensors
         if b_index is None and e_index is not None:
             return self.embeddings
         if b_index is not None and e_index is not None:
             return (
-                [self.embeddings, self.blobs]
+                [self.embeddings, self.tensors]
                 if b_index > e_index
-                else [self.blobs, self.embeddings]
+                else [self.tensors, self.embeddings]
             )

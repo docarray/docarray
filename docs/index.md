@@ -106,6 +106,7 @@ fundamentals/fastapi-support/index
 
 api/docarray
 proto/index
+changelog/index
 ```
 
 

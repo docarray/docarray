@@ -62,16 +62,16 @@ def test_embeddings_wrong_len(da):
 
 
 @pytest.mark.parametrize('da', da_and_dam())
-def test_blobs_getter_da(da):
-    blobs = np.random.random((100, 10, 10))
-    da.blobs = blobs
+def test_tensors_getter_da(da):
+    tensors = np.random.random((100, 10, 10))
+    da.tensors = tensors
     assert len(da) == 100
-    np.testing.assert_almost_equal(da.blobs, blobs)
+    np.testing.assert_almost_equal(da.tensors, tensors)
 
-    da.blobs = None
+    da.tensors = None
     if hasattr(da, 'flush'):
         da.flush()
-    assert not da.blobs
+    assert not da.tensors
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -119,28 +119,28 @@ def test_texts_wrong_len(da):
 
 
 @pytest.mark.parametrize('da', da_and_dam())
-def test_blobs_wrong_len(da):
-    blobs = np.ones((2, 10, 10))
+def test_tensors_wrong_len(da):
+    tensors = np.ones((2, 10, 10))
 
     with pytest.raises(ValueError):
-        da.blobs = blobs
+        da.tensors = tensors
 
 
 @pytest.mark.parametrize('da', da_and_dam())
-def test_buffers_getter_setter(da):
+def test_blobs_getter_setter(da):
     with pytest.raises(ValueError):
-        da.buffers = [b'cc', b'bb', b'aa', b'dd']
+        da.blobs = [b'cc', b'bb', b'aa', b'dd']
 
-    da.buffers = [b'aa'] * len(da)
-    assert da.buffers == [b'aa'] * len(da)
+    da.blobs = [b'aa'] * len(da)
+    assert da.blobs == [b'aa'] * len(da)
 
-    da.buffers = None
+    da.blobs = None
     if hasattr(da, 'flush'):
         da.flush()
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
-    assert not da.buffers
+    assert not da.blobs
 
 
 def test_zero_embeddings():

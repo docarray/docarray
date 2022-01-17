@@ -30,7 +30,7 @@ class PlotMixin:
                 )
 
     def display(self):
-        """ Plot image data from :attr:`.blob` or :attr:`.uri`. """
+        """ Plot image data from :attr:`.tensor` or :attr:`.uri`. """
         from IPython.display import Image, display
 
         if self.uri:
@@ -40,18 +40,18 @@ class PlotMixin:
                 _html5_video_player(self.uri)
             else:
                 display(Image(self.uri))
-        elif self.blob is not None:
+        elif self.tensor is not None:
             try:
                 import PIL.Image
 
-                p = PIL.Image.fromarray(self.blob)
+                p = PIL.Image.fromarray(self.tensor)
                 if p.mode != 'RGB':
                     raise
                 display(p)
             except:
                 import matplotlib.pyplot as plt
 
-                plt.matshow(self.blob)
+                plt.matshow(self.tensor)
         else:
             self.summary()
 
