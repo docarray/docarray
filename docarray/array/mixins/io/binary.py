@@ -72,7 +72,7 @@ class BinaryIOMixin:
 
                 # range(2-1) = range(1) == [0]
                 # d= whatever, _ = 0
-                #for d  , _ in zip(split, range(len(split)-1)):
+                # for d  , _ in zip(split, range(len(split)-1)):
                 breakpoint()
                 for d in split[:-1]:
                     if len(d) > 0:
@@ -93,7 +93,9 @@ class BinaryIOMixin:
                 if new_bytes == b'':
                     if current_bytes != b'':
                         print('\n\n_load_binary_stream LAST CASE')
-                        print(Document.from_bytes( d, protocol=protocol, compress=compress))
+                        print(
+                            Document.from_bytes(d, protocol=protocol, compress=compress)
+                        )
                         yield Document.from_bytes(
                             current_bytes, protocol=protocol, compress=compress
                         )
@@ -121,18 +123,36 @@ class BinaryIOMixin:
 
         # Binary format for streaming case
         else:
-            _len = len(random_uuid().bytes)
-            _binary_delimiter = d[:_len]  # first get delimiter
+
+            # 1 byte (uint8)
+            version = int.from_bytes(d[0:1], 'big', signed=False)
+            # 8 bytes (uint64)
+            num_docs = int.from_bytes(d[1:9], 'big', signed=False)
+
             if show_progress:
                 from rich.progress import track as _track
 
                 track = lambda x: _track(x, description='Deserializing')
             else:
                 track = lambda x: x
-            return cls(
-                Document.from_bytes(od, protocol=protocol, compress=compress)
-                for od in track(d[_len:].split(_binary_delimiter))
-            )
+
+            docs = []
+            start_pos = 9
+            for d in track(self):
+                # 4 bytes (uint32)
+                len_current_doc_in_bytes = int.from_bytes(
+                    d[start_pos : start_pos + 1], 'big', signed=False
+                )
+                start_doc_pos = start_pos + 1
+                end_doc_pos = start_doc_pos + len_current_doc_in_bytes
+                start_pos = end_doc_pos
+                # variable length bytes doc
+                doc = Document.from_bytes(
+                    d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
+                )
+                docs.append(doc)
+
+            return cls(docs)
 
     @classmethod
     def _get_batches(cls, gen, batch_size):
@@ -221,24 +241,24 @@ class BinaryIOMixin:
                     else:
                         track = lambda x: x
 
-                    # V1 Docarray streaming serialization format
+                    # V1 DocArray streaming serialization format
                     # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
 
                     # 1 byte (uint8)
                     version_byte = b'\x01'
-                    f.write(version_byte)
                     # 8 bytes (uint64)
                     num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
-                    f.write(num_docs_as_bytes)
+                    f.write(version_byte + num_docs_as_bytes)
 
                     for d in track(self):
+                        # 4 bytes (uint32)
                         doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
-                        len_doc_as_bytes = len(doc_bytes).to_bytes(4, 'big', signed=False)
 
-                        # 8 bytes (uint32)
-                        f.write(len_doc_as_bytes)
                         # variable size bytes
-                        f.write(doc_as_bytes)
+                        len_doc_as_bytes = len(doc_bytes).to_bytes(
+                            4, 'big', signed=False
+                        )
+                        f.write(len_doc_as_bytes + doc_as_bytes)
 
             if not _file_ctx:
                 return bf.getvalue()
