@@ -111,3 +111,17 @@ def test_match_to_from_pydantic():
     assert da_r[0].matches[0].scores['cosine']
     assert isinstance(da_r[0].matches[0].scores, defaultdict)
     assert isinstance(da_r[0].matches[0].scores['random_score'], NamedScore)
+
+
+def test_pydantic_from_dict_ndarray():
+    from docarray import Document
+    import numpy as np
+    doc = Document()
+    doc.embedding = np.random.rand(2, 2)
+    pydantic_model1 = doc.to_pydantic_model()
+    assert len(pydantic_model1.embedding) == 2
+    for emb_dim in pydantic_model1.embedding:
+        assert len(emb_dim) == 2
+    pydantic_model2 = PydanticDocument(**doc.to_dict())
+    print(pydantic_model2.embedding)
+
