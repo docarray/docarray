@@ -15,11 +15,14 @@ def test_to_from_bytes(protocol, compress):
 
 
 @pytest.mark.parametrize('target', [DocumentArray.empty(10), random_docs(10)])
-def test_dict_json(target):
+@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
+@pytest.mark.parametrize('to_fn', ['dict', 'json'])
+def test_dict_json(target, protocol, to_fn):
     for d in target:
-        d1 = Document.from_dict(d.to_dict())
-        d2 = Document.from_json(d.to_json())
-        assert d1 == d2
+        d_r = getattr(Document, f'from_{to_fn}')(
+            getattr(d, f'to_{to_fn}')(protocol=protocol), protocol=protocol
+        )
+        assert d == d_r
 
 
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])

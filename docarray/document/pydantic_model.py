@@ -14,7 +14,8 @@ _StructValueType = Union[
 
 
 def _convert_ndarray_to_list(v: 'ArrayType'):
-    return to_list(v)
+    if v is not None:
+        return to_list(v)
 
 
 class PydanticDocument(BaseModel):

@@ -47,10 +47,11 @@ class PydanticMixin:
         from ... import Document
 
         fields = {}
+        _field_chunks, _field_matches = None, None
         if model.chunks:
-            fields['chunks'] = [Document.from_pydantic_model(d) for d in model.chunks]
+            _field_chunks = [Document.from_pydantic_model(d) for d in model.chunks]
         if model.matches:
-            fields['matches'] = [Document.from_pydantic_model(d) for d in model.matches]
+            _field_matches = [Document.from_pydantic_model(d) for d in model.matches]
 
         for (field, value) in model.dict(
             exclude_none=True, exclude={'chunks', 'matches'}
@@ -66,4 +67,10 @@ class PydanticMixin:
                 fields[f_name] = np.array(value)
             else:
                 fields[f_name] = value
-        return Document(**fields)
+
+        d = Document(**fields)
+        if _field_chunks:
+            d.chunks = _field_chunks
+        if _field_matches:
+            d.matches = _field_matches
+        return d
