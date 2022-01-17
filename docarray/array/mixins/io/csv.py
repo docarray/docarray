@@ -72,15 +72,12 @@ class CsvIOMixin:
             if with_header:
                 writer.writeheader()
 
-            from .... import Document
-
             for d in self:
-                _d = d
-                if exclude_fields:
-                    _d = Document(d, copy=True)
-                    _d.pop(*exclude_fields)
-
-                pd = _d.to_dict()
+                pd = d.to_dict(
+                    protocol='jsonschema',
+                    exclude=set(exclude_fields) if exclude_fields else None,
+                    exclude_none=True,
+                )
                 if flatten_tags:
                     t = pd.pop('tags')
                     pd.update({f'tag__{k}': v for k, v in t.items()})
