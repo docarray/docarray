@@ -27,12 +27,12 @@ If a Document is an image Document, you can use {meth}`~docarray.document.mixins
 
 Note that it finds `.tensor` or `.uri` for visualization.
 
-```{figure} image-doc-blob.png
+```{figure} image-doc-tensor.png
 ```
 
 This works even if your Document is not a real image but just a `ndarray` in `.tensor`.
 
-```{figure} image-blob.png
+```{figure} image-tensor.png
 ```
 
 Video and audio Document can be displayed as well, you can play them in the cell.
