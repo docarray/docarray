@@ -88,9 +88,9 @@ d.to_json(exclude_none=True)
 It is easier to eyes. But when building REST API, you do not need to explicitly do this, pydantic model handle everything for you. More information can be found in {ref}`fastapi-support`.
 
 ```{seealso}
-To find out what extra parameters you can pass to `to_json()`/`to_dict`, please check out:
-- [`protocol='jsonschema'`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
-- [`protocol='protobuf'`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
+To find out what extra parameters you can pass to `to_json()`/`to_dict()`, please check out:
+- [`protocol='jsonschema', **kwargs`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
+- [`protocol='protobuf', **kwargs`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
 ```
 
 (doc-in-bytes)=
