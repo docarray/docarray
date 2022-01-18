@@ -112,55 +112,18 @@ class SqliteMixin(SqliteCollectionBase):
         for res in r:
             yield res[0]
 
-    def __getitem__(
-        self, index: 'DocumentArrayIndexType'
-    ) -> Union['Document', 'DocumentArray']:
-        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
-            return self._get_doc_by_offset(int(index))
-        elif isinstance(index, str):
-            if index.startswith('@'):
-                return self.traverse_flat(index[1:])
-            else:
-                return self._get_doc_by_id(index)
-        elif isinstance(index, slice):
-            from docarray import DocumentArray
+    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
+        return self._get_docs_by_offsets(range(len(self))[_slice])
 
-            return DocumentArray(self[j] for j in range(len(self))[index])
-        elif index is Ellipsis:
-            return self.flatten()
-        elif isinstance(index, Sequence):
-            from docarray import DocumentArray
-
-            if (
-                isinstance(index, tuple)
-                and len(index) == 2
-                and isinstance(index[0], (slice, Sequence))
-            ):
-                if isinstance(index[0], str) and isinstance(index[1], str):
-                    # ambiguity only comes from the second string
-                    if index[1] in self:
-                        return DocumentArray([self[index[0]], self[index[1]]])
-                    else:
-                        return getattr(self[index[0]], index[1])
-                elif isinstance(index[0], (slice, Sequence)):
-                    _docs = self[index[0]]
-                    _attrs = index[1]
-                    if isinstance(_attrs, str):
-                        _attrs = (index[1],)
-                    return _docs._get_attributes(*_attrs)
-            elif isinstance(index[0], bool):
-                return DocumentArray(itertools.compress(self, index))
-            elif isinstance(index[0], (int, str)):
-                return DocumentArray(self[t] for t in index)
-        elif isinstance(index, np.ndarray):
-            index = index.squeeze()
-            if index.ndim == 1:
-                return self[index.tolist()]
-            else:
-                raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
-                )
-        raise IndexError(f'Unsupported index type {typename(index)}: {index}')
+    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
+        l = len(self)
+        offsets = [o + (l if o < 0 else 0) for o in offsets]
+        r = self._sql(
+            f"SELECT serialized_value FROM {self.table_name} WHERE item_order in ({','.join(['?']*len(offsets))})",
+            offsets,
+        )
+        for rr in r:
+            yield rr[0]
 
     def _get_doc_by_offset(self, index: int) -> 'Document':
         r = self._sql(
