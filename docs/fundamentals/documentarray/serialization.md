@@ -3,8 +3,7 @@
 
 DocArray is designed to be "ready-to-wire" at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
 
-- JSON string: `.from_json()`/`.to_json()`
-  - Pydantic model: `.from_pydantic_model()`/`.to_pydantic_model()`
+- JSON string: `.from_json()`/`.to_json()` 
 - Bytes (compressed): `.from_bytes()`/`.to_bytes()`
 - Base64 (compressed): `.from_base64()`/`.to_base64()` 
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
@@ -12,22 +11,11 @@ DocArray is designed to be "ready-to-wire" at anytime. Serialization is importan
 - Pandas Dataframe: `.from_dataframe()`/`.to_dataframe()`
 - Cloud: `.push()`/`.pull()`
 
-
-
-
-
 ## From/to JSON
 
-
-```{tip}
-If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out {ref}`fastapi-support` and follow the methods there.   
-```
-
 ```{important}
-Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+This feature requires `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
-
-
 
 ```python
 from docarray import DocumentArray, Document
@@ -37,7 +25,7 @@ da.to_json()
 ```
 
 ```text
-[{"id": "a677577877b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "hello", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}, {"id": "a67758f477b611eca3811e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "world", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": null, "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null}]
+[{"id": "72db9a7e6e3211ec97f51e008a366d49", "text": "hello", "mime_type": "text/plain"}, {"id": "72db9cb86e3211ec97f51e008a366d49", "text": "world", "mime_type": "text/plain"}]
 ```
 
 
@@ -62,11 +50,6 @@ da_r.summary()
   mime_type   ('str',)    1                False            
   text        ('str',)    2                False            
 
-```
-
-
-```{seealso}
-More parameters and usages can be found in the Document-level {ref}`doc-json`.
 ```
 
 
@@ -143,21 +126,23 @@ Depending on how you want to interpret the results, the figures above can be an 
 
 ### Wire format of `pickle` and `protobuf`
 
-When set `protocol=pickle` or `protobuf`, the result binary string looks like the following:
+When set `protocol=pickle` or `protobuf`, the resulting bytes look like the following:
 
 ```text
------------------------------------------------------------------------------------
-| Delimiter |  doc1.to_bytes()  |  Delimiter |  doc2.to_bytes()  | Delimiter | ...
------------------------------------------------------------------------------------
-      |               |
-      |               |
-      |               |
- Fixed-length         |
-                      |
-               Variable-length       
+--------------------------------------------------------------------------------------------------------
+|   version    |   len(docs)    |  doc1_bytes  |  doc1.to_bytes()  |  doc2_bytes  |  doc2.to_bytes() ...
+---------------------------------------------------------------------------------------------------------
+| Fixed-length |  Fixed-length  | Fixed-length |  Variable-length  | Fixed-length |  Variable-length ...
+--------------------------------------------------------------------------------------------------------
+      |               |               |                  |                 |               |
+    uint8           uint64          uint32        Variable-length         ...             ...
+
 ```
 
-Here `Delimiter` is a 16-bytes separator such as `b'g\x81\xcc\x1c\x0f\x93L\xed\xa2\xb0s)\x9c\xf9\xf6\xf2'` used for setting the boundary of each Document's serialization. Given a `to_bytes(protocol='pickle/protobuf')` binary string, once we know the first 16 bytes, the boundary is clear. Consequently, one can leverage this format to stream Documents, drop, skip, or early-stop, etc.
+Here `version` is a `uint8` that specifies the serialization version of the `DocumentArray` serialization format, followed by `len(docs)` which is a `uint64` that specifies the amount of serialized documents.
+Afterwards, `doc1_bytes` describes how many bytes are used to serialize `doc1`, followed by `doc1.to_bytes()` which is the bytes data of the document itself.
+The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
+
 
 ## From/to base64
 
@@ -226,10 +211,6 @@ docs {
 
 ## From/to list
 
-```{important}
-This feature requires `protobuf` or `pydantic` dependency. You can do `pip install "docarray[full]"` to install it.
-```
-
 Serializing to/from Python list is less frequently used for the same reason as `Document.to_dict()`: it is often an intermediate step of serializing to JSON. You can do:
 
 ```python
@@ -243,9 +224,7 @@ da.to_list()
 [{'id': 'ae55782a6e4d11ec803c1e008a366d49', 'text': 'hello', 'mime_type': 'text/plain'}, {'id': 'ae557a146e4d11ec803c1e008a366d49', 'text': 'world', 'mime_type': 'text/plain'}]
 ```
 
-```{seealso}
-More parameters and usages can be found in the Document-level {ref}`doc-dict`.
-```
+There is an argument `strict` shares {ref}`the same semantic<strict-arg-explain>` as in `Document.to_dict()`.
 
 ## From/to dataframe
 
