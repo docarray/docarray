@@ -6,8 +6,6 @@ from ..base import BaseDCType
 
 if TYPE_CHECKING:
     from ..types import ArrayType, StructValueType, DocumentContentType
-    from .. import DocumentArray
-    from ..score import NamedScore
 
 
 class Document(AllMixins, BaseDCType):

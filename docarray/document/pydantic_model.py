@@ -1,3 +1,4 @@
+import base64
 from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
 from pydantic import BaseModel, validator
@@ -42,6 +43,14 @@ class PydanticDocument(BaseModel):
 
     _tensor2list = validator('tensor', allow_reuse=True)(_convert_ndarray_to_list)
     _embedding2list = validator('embedding', allow_reuse=True)(_convert_ndarray_to_list)
+
+    @validator('blob')
+    def _blob2base64(cls, v):
+        if v is not None:
+            if isinstance(v, bytes):
+                return base64.b64encode(v).decode('utf8')
+            else:
+                raise ValueError('must be bytes')
 
 
 PydanticDocument.update_forward_refs()
