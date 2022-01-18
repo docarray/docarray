@@ -76,9 +76,9 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
 @pytest.mark.parametrize('protocol', ['pickle'])
 @pytest.mark.parametrize('compress', ['lzma'])
 def test_save_bytes_stream_stream_new(tmpfile, protocol, compress):
-#    tmpfile = '/Users/davidbuchaca1/Documents/jina_stuff/docarray/test_aladdine.bin'
+    #    tmpfile = '/Users/davidbuchaca1/Documents/jina_stuff/docarray/test_aladdine.bin'
     da = DocumentArray(
-        [Document(text='aaa'),  Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
+        [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
     )
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
     da_reconstructed = DocumentArray.load_binary(
@@ -100,7 +100,7 @@ def test_save_bytes_stream_stream_new(tmpfile, protocol, compress):
 @pytest.mark.parametrize('compress', ['zlib', 'gzib', None])
 def test_save_bytes_stream_stream(tmpfile, protocol, compress):
     da = DocumentArray(
-         [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
+        [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
     )
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
     da_reconstructed = DocumentArray.load_binary(
