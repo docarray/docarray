@@ -5,6 +5,7 @@ from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
 from .getattr import GetAttributeMixin
+from .getitem import GetItemMixin
 from .group import GroupMixin
 from .io.binary import BinaryIOMixin
 from .io.common import CommonIOMixin
@@ -16,15 +17,16 @@ from .io.pushpull import PushPullMixin
 from .match import MatchMixin
 from .parallel import ParallelMixin
 from .plot import PlotMixin
+from .pydantic import PydanticMixin
 from .reduce import ReduceMixin
 from .sample import SampleMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
-from .pydantic import PydanticMixin
 
 
 class AllMixins(
     GetAttributeMixin,
+    GetItemMixin,
     ContentPropertyMixin,
     PydanticMixin,
     GroupMixin,
