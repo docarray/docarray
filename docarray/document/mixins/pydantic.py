@@ -1,3 +1,4 @@
+import base64
 from collections import defaultdict
 from typing import TYPE_CHECKING, Type
 
@@ -41,7 +42,6 @@ class PydanticMixin:
         """Build a Document object from a Pydantic model
 
         :param model: the pydantic data model object that represents a Document
-        :param ndarray_as_list: if set to True, `embedding` and `tensor` are auto-casted to ndarray.
         :return: a Document object
         """
         from ... import Document
@@ -65,6 +65,14 @@ class PydanticMixin:
                     fields[f_name][k] = NamedScore(v)
             elif f_name == 'embedding' or f_name == 'tensor':
                 fields[f_name] = np.array(value)
+            elif f_name == 'blob':
+                # here is a dirty fishy itchy trick
+                # the original bytes will be encoded two times:
+                # first time is real during `to_dict/to_json`, it converts into base64 string
+                # second time is at `from_dict/from_json`, it is unnecessary yet inevitable, the result string get
+                # converted into a binary string and encoded again.
+                # consequently, we need to decode two times here!
+                fields[f_name] = base64.b64decode(base64.b64decode(value))
             else:
                 fields[f_name] = value
 

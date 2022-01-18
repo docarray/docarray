@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from typing import List, Optional
 
@@ -142,3 +143,18 @@ def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
     dd = d.to_dict(protocol=protocol)['tags']['hello'][-1]
     assert dd == tag_value
     assert isinstance(dd, tag_type)
+
+
+@pytest.mark.parametrize(
+    'blob', [b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
+)
+@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
+@pytest.mark.parametrize('to_fn', ['dict', 'json'])
+def test_to_from_with_blob(protocol, to_fn, blob):
+    d = Document(blob=blob)
+    r_d = getattr(Document, f'from_{to_fn}')(
+        getattr(d, f'to_{to_fn}')(protocol=protocol), protocol=protocol
+    )
+
+    assert d.blob == r_d.blob
+    assert isinstance(r_d.blob, bytes)
