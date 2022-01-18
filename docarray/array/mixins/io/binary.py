@@ -214,7 +214,7 @@ class BinaryIOMixin:
                     f.write(self.to_protobuf().SerializePartialToString())
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
-                else:
+                elif protocol in ('pickle', 'protobuf'):
                     # Binary format for streaming case
                     if _show_progress:
                         from rich.progress import track as _track
@@ -241,6 +241,10 @@ class BinaryIOMixin:
                             4, 'big', signed=False
                         )
                         f.write(len_doc_as_bytes + doc_as_bytes)
+                else:
+                    raise ValueError(
+                        f'protocol={protocol} is not supported. Can be only `protobuf`,`pickle`,`protobuf-array`,`pickle-array`.'
+                    )
 
             if not _file_ctx:
                 return bf.getvalue()
