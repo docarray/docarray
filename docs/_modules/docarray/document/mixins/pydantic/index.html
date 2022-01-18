@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.document.mixins.pydantic - DocArray 0.3.1 documentation</title>
+        <title>docarray.document.mixins.pydantic - DocArray 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.3.1 documentation</div>
+                <div class="brand">DocArray 0.3.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -385,7 +385,8 @@
                     </label>
                 </div>
                 <h1>Source code for docarray.document.mixins.pydantic</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -428,7 +429,6 @@
         <span class="sd">"""Build a Document object from a Pydantic model</span>
 
 <span class="sd">        :param model: the pydantic data model object that represents a Document</span>
-<span class="sd">        :param ndarray_as_list: if set to True, `embedding` and `tensor` are auto-casted to ndarray.</span>
 <span class="sd">        :return: a Document object</span>
 <span class="sd">        """</span>
         <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -452,6 +452,14 @@
                     <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'embedding'</span> <span class="ow">or</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'tensor'</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'blob'</span><span class="p">:</span>
+                <span class="c1"># here is a dirty fishy itchy trick</span>
+                <span class="c1"># the original bytes will be encoded two times:</span>
+                <span class="c1"># first time is real during `to_dict/to_json`, it converts into base64 string</span>
+                <span class="c1"># second time is at `from_dict/from_json`, it is unnecessary yet inevitable, the result string get</span>
+                <span class="c1"># converted into a binary string and encoded again.</span>
+                <span class="c1"># consequently, we need to decode two times here!</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
