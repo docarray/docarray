@@ -73,11 +73,34 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
 
 
 # Note  protocol = ['protobuf-array', 'pickle-array'] not supported with Document.from_bytes
+@pytest.mark.parametrize('protocol', ['pickle'])
+@pytest.mark.parametrize('compress', ['lzma'])
+def test_save_bytes_stream_stream_new(tmpfile, protocol, compress):
+#    tmpfile = '/Users/davidbuchaca1/Documents/jina_stuff/docarray/test_aladdine.bin'
+    da = DocumentArray(
+        [Document(text='aaa'),  Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
+    )
+    da.save_binary(tmpfile, protocol=protocol, compress=compress)
+    da_reconstructed = DocumentArray.load_binary(
+        tmpfile, protocol=protocol, compress=compress, return_iterator=True
+    )
+    da_reconstructed_normal = DocumentArray.load_binary(
+        tmpfile, protocol=protocol, compress=compress, return_iterator=False
+    )
+
+    assert isinstance(da_reconstructed, types.GeneratorType)
+    for d, d_rec in zip(da, da_reconstructed):
+        print(f'\n\ndoc assets!!\n\n')
+        print(f'd={d.text}, d_rec={d_rec.text}')
+        print(f'd==d_rec:  {d == d_rec}')
+        assert d == d_rec
+
+
 @pytest.mark.parametrize('protocol', ['pickle', 'protobuf'])
-@pytest.mark.parametrize('compress', ['zlib', None])
+@pytest.mark.parametrize('compress', ['zlib', 'gzib', None])
 def test_save_bytes_stream_stream(tmpfile, protocol, compress):
     da = DocumentArray(
-        [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
+         [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
     )
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
     da_reconstructed = DocumentArray.load_binary(
