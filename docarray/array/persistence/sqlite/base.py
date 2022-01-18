@@ -1,11 +1,8 @@
 import sqlite3
 import warnings
 from abc import ABCMeta, abstractmethod
-from collections.abc import Hashable
-from enum import Enum
-from pickle import dumps, loads
 from tempfile import NamedTemporaryFile
-from typing import Callable, Generic, Optional, TypeVar, Union, cast
+from typing import Callable, Generic, Optional, TypeVar, Union
 from uuid import uuid4
 
 T = TypeVar('T')
@@ -13,12 +10,6 @@ KT = TypeVar('KT')
 VT = TypeVar('VT')
 _T = TypeVar('_T')
 _S = TypeVar('_S')
-
-
-class RebuildStrategy(Enum):
-    CHECK_WITH_FIRST_ELEMENT = 1
-    ALWAYS = 2
-    SKIP = 3
 
 
 def sanitize_table_name(table_name: str) -> str:
@@ -30,10 +21,6 @@ def sanitize_table_name(table_name: str) -> str:
 
 def create_random_name(suffix: str) -> str:
     return f"{suffix}_{str(uuid4()).replace('-', '')}"
-
-
-def is_hashable(x: object) -> bool:
-    return isinstance(x, Hashable)
 
 
 class _SqliteCollectionBaseDatabaseDriver(metaclass=ABCMeta):
@@ -162,15 +149,12 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
         serializer: Optional[Callable[[T], bytes]] = None,
         deserializer: Optional[Callable[[bytes], T]] = None,
         persist: bool = True,
-        rebuild_strategy: RebuildStrategy = RebuildStrategy.CHECK_WITH_FIRST_ELEMENT,
     ):
         super(SqliteCollectionBase, self).__init__()
-        self._serializer = (
-            cast(Callable[[T], bytes], dumps) if serializer is None else serializer
-        )
-        self._deserializer = (
-            cast(Callable[[bytes], T], loads) if deserializer is None else deserializer
-        )
+        from ....document import Document
+
+        self._serializer = serializer or (lambda d: d.to_bytes())
+        self._deserializer = deserializer or (lambda x: Document.from_bytes(x))
         self._persist = persist
         if connection is None:
             self._connection = sqlite3.connect(NamedTemporaryFile().name)
@@ -187,7 +171,12 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
             if table_name is None
             else sanitize_table_name(table_name)
         )
-        self._initialize(rebuild_strategy=rebuild_strategy)
+        cur = self.connection.cursor()
+        self._driver_class.initialize_metadata_table(cur)
+        self._driver_class.initialize_table(
+            self.table_name, self.container_type_name, self.schema_version, cur
+        )
+        self.connection.commit()
 
     def __del__(self) -> None:
         if not self.persist:
@@ -196,31 +185,6 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
                 self.table_name, self.container_type_name, cur
             )
             self.connection.commit()
-
-    def _initialize(self, rebuild_strategy: RebuildStrategy) -> None:
-        cur = self.connection.cursor()
-        self._driver_class.initialize_metadata_table(cur)
-        self._driver_class.initialize_table(
-            self.table_name, self.container_type_name, self.schema_version, cur
-        )
-        if self._should_rebuild(rebuild_strategy):
-            self._do_rebuild()
-        self.connection.commit()
-
-    def _should_rebuild(self, rebuild_strategy: RebuildStrategy) -> bool:
-        if rebuild_strategy == RebuildStrategy.ALWAYS:
-            return True
-        if rebuild_strategy == RebuildStrategy.SKIP:
-            return False
-        return self._rebuild_check_with_first_element()
-
-    @abstractmethod
-    def _rebuild_check_with_first_element(self) -> bool:
-        ...
-
-    @abstractmethod
-    def _do_rebuild(self) -> None:
-        ...
 
     @property
     def persist(self) -> bool:
@@ -253,13 +217,17 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
         new_table_name = sanitize_table_name(table_name)
         try:
             self._driver_class.alter_table_name(self.table_name, new_table_name, cur)
-        except sqlite3.IntegrityError as e:
-            raise ValueError(table_name)
-        self._table_name = new_table_name
+            self._table_name = new_table_name
+        except sqlite3.IntegrityError as ex:
+            raise ValueError(table_name) from ex
 
     @property
     def connection(self) -> sqlite3.Connection:
         return self._connection
+
+    @property
+    def cursor(self) -> sqlite3.Cursor:
+        return self.connection.cursor()
 
     @property
     def container_type_name(self) -> str:
