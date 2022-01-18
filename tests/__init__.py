@@ -20,7 +20,7 @@ def random_docs(
 
         d = Document(id=doc_id)
         d.text = text
-        d.tags['id'] = doc_id
+        d.tags['id'] = f'myself id is: {doc_id}'
         if embedding:
             if sparse_embedding:
                 from scipy.sparse import coo_matrix
@@ -42,8 +42,8 @@ def random_docs(
                 c.embedding = np.random.random(
                     [embed_dim + np.random.randint(0, jitter)]
                 )
-            c.tags['parent_id'] = doc_id
-            c.tags['id'] = chunk_doc_id
+            c.tags['parent_id'] = f'my parent is: {id}'
+            c.tags['id'] = f'myself id is: {doc_id}'
             d.chunks.append(c)
             next_chunk_doc_id += 1
 
