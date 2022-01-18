@@ -1,4 +1,4 @@
-from typing import Tuple, Union, cast, Iterable, TYPE_CHECKING, Optional
+from typing import Tuple, Union, cast, Iterable, TYPE_CHECKING
 
 from .base import _SqliteCollectionBaseDatabaseDriver
 
@@ -18,57 +18,15 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
         cur.execute(
             f'CREATE TABLE {table_name} ('
             'doc_id TEXT NOT NULL UNIQUE, '
-            'serialized_value BLOB NOT NULL, '
+            'serialized_value Document NOT NULL, '
             'item_order INTEGER PRIMARY KEY)'
         )
-
-    @classmethod
-    def get_max_index_plus_one(cls, table_name: str, cur: 'sqlite3.Cursor') -> int:
-        cur.execute(f'SELECT MAX(item_order) FROM {table_name}')
-        res = cur.fetchone()
-        if res[0] is None:
-            return 0
-        return cast(int, res[0]) + 1
-
-    @classmethod
-    def increment_indices(
-        cls, table_name: str, cur: 'sqlite3.Cursor', start: int
-    ) -> None:
-        idx = cls.get_max_index_plus_one(table_name, cur) - 1
-        while idx >= start:
-            cur.execute(
-                f"UPDATE {table_name} SET item_index = ? WHERE item_index = ?",
-                (idx + 1, idx),
-            )
-            idx -= 1
 
     @classmethod
     def delete_single_record_by_doc_id(
         cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str
     ) -> None:
         cur.execute(f'DELETE FROM {table_name} WHERE doc_id=?', (doc_id,))
-
-    @classmethod
-    def delete_all_records(cls, table_name: str, cur: 'sqlite3.Cursor') -> None:
-        cur.execute(f'DELETE FROM {table_name}')
-
-    @classmethod
-    def is_doc_id_in(cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str) -> bool:
-        cur.execute(f'SELECT 1 FROM {table_name} WHERE doc_id=?', (doc_id,))
-        return len(list(cur)) > 0
-
-    @classmethod
-    def get_serialized_value_by_doc_id(
-        cls, table_name: str, cur: 'sqlite3.Cursor', doc_id: str
-    ) -> Union[None, bytes]:
-        cur.execute(
-            f'SELECT serialized_value FROM {table_name} WHERE doc_id=?',
-            (doc_id,),
-        )
-        res = cur.fetchone()
-        if res is None:
-            return None
-        return cast(bytes, res[0])
 
     @classmethod
     def get_next_order(cls, table_name: str, cur: 'sqlite3.Cursor') -> int:
@@ -79,32 +37,10 @@ class _DictDatabaseDriver(_SqliteCollectionBaseDatabaseDriver):
         return cast(int, res) + 1
 
     @classmethod
-    def get_count(cls, table_name: str, cur: 'sqlite3.Cursor') -> int:
-        cur.execute(f'SELECT COUNT(*) FROM {table_name}')
-        res = cur.fetchone()
-        return cast(int, res[0])
-
-    @classmethod
     def get_doc_ids(cls, table_name: str, cur: 'sqlite3.Cursor') -> Iterable[str]:
         cur.execute(f'SELECT doc_id FROM {table_name} ORDER BY item_order')
         for res in cur:
-            yield cast(str, res[0])
-
-    @classmethod
-    def insert_serialized_value_by_doc_id(
-        cls,
-        table_name: str,
-        cur: 'sqlite3.Cursor',
-        doc_id: str,
-        serialized_value: bytes,
-        item_order: Optional[int],
-    ) -> None:
-        if item_order is None:
-            item_order = cls.get_next_order(table_name, cur)
-        cur.execute(
-            f'INSERT INTO {table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-            (doc_id, serialized_value, item_order),
-        )
+            yield res[0]
 
     @classmethod
     def update_serialized_value_by_doc_id(

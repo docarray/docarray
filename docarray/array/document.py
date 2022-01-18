@@ -148,7 +148,7 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
+                    if index[1] in self:
                         return DocumentArray([self[index[0]], self[index[1]]])
                     else:
                         return getattr(self[index[0]], index[1])
@@ -161,9 +161,9 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self._data, index))
             elif isinstance(index[0], int):
-                return DocumentArray(self._data[t] for t in index)
+                return DocumentArray(self[t] for t in index)
             elif isinstance(index[0], str):
-                return DocumentArray(self._data[self._id2offset[t]] for t in index)
+                return DocumentArray(self[t] for t in index)
         elif isinstance(index, np.ndarray):
             index = index.squeeze()
             if index.ndim == 1:
