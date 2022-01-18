@@ -2,7 +2,7 @@ import sqlite3
 import warnings
 from abc import ABCMeta, abstractmethod
 from tempfile import NamedTemporaryFile
-from typing import Callable, Generic, Optional, TypeVar, Union
+from typing import Callable, Generic, Optional, TypeVar, Union, Dict
 from uuid import uuid4
 
 T = TypeVar('T')
@@ -146,26 +146,35 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
         self,
         connection: Optional[Union[str, sqlite3.Connection]] = None,
         table_name: Optional[str] = None,
-        serializer: Optional[Callable[[T], bytes]] = None,
-        deserializer: Optional[Callable[[bytes], T]] = None,
-        persist: bool = True,
+        serialize_config: Optional[Dict] = None,
     ):
         super(SqliteCollectionBase, self).__init__()
-        from ....document import Document
+        self._serialize_config = serialize_config or {}
+        self._persist = not table_name
 
-        self._serializer = serializer or (lambda d: d.to_bytes())
-        self._deserializer = deserializer or (lambda x: Document.from_bytes(x))
-        self._persist = persist
+        from docarray import Document
+
+        sqlite3.register_adapter(
+            Document, lambda d: d.to_bytes(**self._serialize_config)
+        )
+        sqlite3.register_converter(
+            'Document', lambda x: Document.from_bytes(x, **self._serialize_config)
+        )
+
+        _conn_kwargs = dict(detect_types=sqlite3.PARSE_DECLTYPES)
         if connection is None:
-            self._connection = sqlite3.connect(NamedTemporaryFile().name)
+            self._connection = sqlite3.connect(
+                NamedTemporaryFile().name, **_conn_kwargs
+            )
         elif isinstance(connection, str):
-            self._connection = sqlite3.connect(connection)
+            self._connection = sqlite3.connect(connection, **_conn_kwargs)
         elif isinstance(connection, sqlite3.Connection):
             self._connection = connection
         else:
             raise TypeError(
                 f'connection argument must be None or a string or a sqlite3.Connection, not `{type(connection)}`'
             )
+
         self._table_name = (
             sanitize_table_name(create_random_name(self.container_type_name))
             if table_name is None
@@ -179,33 +188,12 @@ class SqliteCollectionBase(Generic[T], metaclass=ABCMeta):
         self.connection.commit()
 
     def __del__(self) -> None:
-        if not self.persist:
+        if not self._persist:
             cur = self.connection.cursor()
             self._driver_class.drop_table(
                 self.table_name, self.container_type_name, cur
             )
             self.connection.commit()
-
-    @property
-    def persist(self) -> bool:
-        return self._persist
-
-    def set_persist(self, persist: bool) -> None:
-        self._persist = persist
-
-    @property
-    def serializer(self) -> Callable[[T], bytes]:
-        return self._serializer
-
-    def serialize(self, x: T) -> bytes:
-        return self.serializer(x)
-
-    @property
-    def deserializer(self) -> Callable[[bytes], T]:
-        return self._deserializer
-
-    def deserialize(self, blob: bytes) -> T:
-        return self.deserializer(blob)
 
     @property
     def table_name(self) -> str:
