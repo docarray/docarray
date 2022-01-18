@@ -109,12 +109,10 @@ class BinaryIOMixin:
 
         # Binary format for streaming case
         else:
-
             # 1 byte (uint8)
             version = int.from_bytes(d[0:1], 'big', signed=False)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(d[1:9], 'big', signed=False)
-
             if show_progress:
                 from rich.progress import track as _track
 
@@ -122,16 +120,19 @@ class BinaryIOMixin:
             else:
                 track = lambda x: x
 
-            docs = []
+            # this 9 is version + num_docs bytes used
             start_pos = 9
-            for d in track(self):
+            docs = []
+
+            for _ in track(range(num_docs)):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos : start_pos + 1], 'big', signed=False
+                    d[start_pos : start_pos + 4], 'big', signed=False
                 )
-                start_doc_pos = start_pos + 1
+                start_doc_pos = start_pos + 4
                 end_doc_pos = start_doc_pos + len_current_doc_in_bytes
                 start_pos = end_doc_pos
+
                 # variable length bytes doc
                 doc = Document.from_bytes(
                     d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
@@ -241,7 +242,7 @@ class BinaryIOMixin:
                         doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
 
                         # variable size bytes
-                        len_doc_as_bytes = len(doc_bytes).to_bytes(
+                        len_doc_as_bytes = len(doc_as_bytes).to_bytes(
                             4, 'big', signed=False
                         )
                         f.write(len_doc_as_bytes + doc_as_bytes)
