@@ -9,29 +9,71 @@ from typing import (
     MutableSequence,
     Sequence,
     Iterable,
-    overload,
     Any,
-    List,
 )
-
-import numpy as np
 
 from .mixins import AllMixins
 from .. import Document
-from ..helper import typename
 
 if TYPE_CHECKING:
     from ..types import (
         DocumentArraySourceType,
-        DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,
-        DocumentArrayMultipleAttributeType,
-        DocumentArraySingleAttributeType,
     )
 
 
 class DocumentArray(AllMixins, MutableSequence[Document]):
+    def _del_docs_by_mask(self, mask: Sequence[bool]):
+        self._data = list(itertools.compress(self._data, (not _i for _i in mask)))
+        self._rebuild_id2offset()
+
+    def _del_all_docs(self):
+        self._data.clear()
+        self._id2offset.clear()
+
+    def _del_docs_by_slice(self, _slice: slice):
+        del self._data[_slice]
+        self._rebuild_id2offset()
+
+    def _del_doc_by_id(self, _id: str):
+        del self._data[self._id2offset[_id]]
+        self._id2offset.pop(_id)
+
+    def _del_doc_by_offset(self, offset: int):
+        self._id2offset.pop(self._data[offset].id)
+        del self._data[offset]
+
+    def _set_doc_by_offset(self, offset: int, value: 'Document'):
+        self._data[offset] = value
+        self._id2offset[value.id] = offset
+
+    def _set_doc_by_id(self, _id: str, value: 'Document'):
+        old_idx = self._id2offset.pop(_id)
+        self._data[old_idx] = value
+        self._id2offset[value.id] = old_idx
+
+    def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
+        self._data[_slice] = value
+        self._rebuild_id2offset()
+
+    def _set_doc_value_pairs(
+        self, docs: Iterable['Document'], values: Iterable['Document']
+    ):
+        for _d, _v in zip(docs, values):
+            _d._data = _v._data
+        self._rebuild_id2offset()
+
+    def _set_doc_attr_by_index(
+        self,
+        _index: Union[
+            'DocumentArraySingletonIndexType', 'DocumentArrayMultipleIndexType'
+        ],
+        attr: str,
+        value: Any,
+    ):
+        setattr(self[_index], attr, value)
+
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]
 
@@ -122,205 +164,6 @@ class DocumentArray(AllMixins, MutableSequence[Document]):
             return x.id in self._id2offset
         else:
             return False
-
-    @overload
-    def __setitem__(
-        self,
-        index: 'DocumentArrayMultipleAttributeType',
-        value: List[List['Any']],
-    ):
-        ...
-
-    @overload
-    def __setitem__(
-        self,
-        index: 'DocumentArraySingleAttributeType',
-        value: List['Any'],
-    ):
-        ...
-
-    @overload
-    def __setitem__(
-        self,
-        index: 'DocumentArraySingletonIndexType',
-        value: 'Document',
-    ):
-        ...
-
-    @overload
-    def __setitem__(
-        self,
-        index: 'DocumentArrayMultipleIndexType',
-        value: Sequence['Document'],
-    ):
-        ...
-
-    def __setitem__(
-        self,
-        index: 'DocumentArrayIndexType',
-        value: Union['Document', Sequence['Document']],
-    ):
-
-        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
-            index = int(index)
-            self._data[index] = value
-            self._id2offset[value.id] = index
-        elif isinstance(index, str):
-            if index.startswith('@'):
-                for _d, _v in zip(self.traverse_flat(index[1:]), value):
-                    _d._data = _v._data
-                self._rebuild_id2offset()
-            else:
-                old_idx = self._id2offset.pop(index)
-                self._data[old_idx] = value
-                self._id2offset[value.id] = old_idx
-        elif isinstance(index, slice):
-            self._data[index] = value
-            self._rebuild_id2offset()
-        elif index is Ellipsis:
-            for _d, _v in zip(self.flatten(), value):
-                _d._data = _v._data
-            self._rebuild_id2offset()
-        elif isinstance(index, Sequence):
-            if (
-                isinstance(index, tuple)
-                and len(index) == 2
-                and isinstance(index[0], (slice, Sequence))
-            ):
-                if isinstance(index[0], str) and isinstance(index[1], str):
-                    # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
-                        for _d, _v in zip((self[index[0]], self[index[1]]), value):
-                            _d._data = _v._data
-                        self._rebuild_id2offset()
-                    elif hasattr(self[index[0]], index[1]):
-                        setattr(self[index[0]], index[1], value)
-                    else:
-                        # to avoid accidentally add new unsupport attribute
-                        raise ValueError(
-                            f'`{index[1]}` is neither a valid id nor attribute name'
-                        )
-                elif isinstance(index[0], (slice, Sequence)):
-                    _docs = self[index[0]]
-                    _attrs = index[1]
-
-                    if isinstance(_attrs, str):
-                        # a -> [a]
-                        # [a, a] -> [a, a]
-                        _attrs = (index[1],)
-                    if isinstance(value, (list, tuple)) and not any(
-                        isinstance(el, (tuple, list)) for el in value
-                    ):
-                        # [x] -> [[x]]
-                        # [[x], [y]] -> [[x], [y]]
-                        value = (value,)
-                    if not isinstance(value, (list, tuple)):
-                        # x -> [x]
-                        value = (value,)
-
-                    for _a, _v in zip(_attrs, value):
-                        if _a == 'tensor':
-                            _docs.tensors = _v
-                        elif _a == 'embedding':
-                            _docs.embeddings = _v
-                        else:
-                            if len(_docs) == 1:
-                                setattr(_docs[0], _a, _v)
-                            else:
-                                for _d, _vv in zip(_docs, _v):
-                                    setattr(_d, _a, _vv)
-            elif isinstance(index[0], bool):
-                if len(index) != len(self._data):
-                    raise IndexError(
-                        f'Boolean mask index is required to have the same length as {len(self._data)}, '
-                        f'but receiving {len(index)}'
-                    )
-                _selected = itertools.compress(self._data, index)
-                for _idx, _val in zip(_selected, value):
-                    self[_idx.id] = _val
-            elif isinstance(index[0], (int, str)):
-                if not isinstance(value, Sequence) or len(index) != len(value):
-                    raise ValueError(
-                        f'Number of elements for assigning must be '
-                        f'the same as the index length: {len(index)}'
-                    )
-                if isinstance(value, Document):
-                    for si in index:
-                        self[si] = value
-                else:
-                    for si, _val in zip(index, value):
-                        self[si] = _val
-        elif isinstance(index, np.ndarray):
-            index = index.squeeze()
-            if index.ndim == 1:
-                self[index.tolist()] = value
-            else:
-                raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
-                )
-        else:
-            raise IndexError(f'Unsupported index type {typename(index)}: {index}')
-
-    def __delitem__(self, index: 'DocumentArrayIndexType'):
-        if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
-            index = int(index)
-            self._id2offset.pop(self._data[index].id)
-            del self._data[index]
-        elif isinstance(index, str):
-            if index.startswith('@'):
-                raise NotImplementedError(
-                    'Delete elements along traversal paths is not implemented'
-                )
-            else:
-                del self._data[self._id2offset[index]]
-            self._id2offset.pop(index)
-        elif isinstance(index, slice):
-            del self._data[index]
-            self._rebuild_id2offset()
-        elif index is Ellipsis:
-            self._data.clear()
-            self._id2offset.clear()
-        elif isinstance(index, Sequence):
-            if (
-                isinstance(index, tuple)
-                and len(index) == 2
-                and isinstance(index[0], (slice, Sequence))
-            ):
-                if isinstance(index[0], str) and isinstance(index[1], str):
-                    # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
-                        del self[index[0]]
-                        del self[index[1]]
-                    else:
-                        self[index[0]].pop(index[1])
-                elif isinstance(index[0], (slice, Sequence)):
-                    _docs = self[index[0]]
-                    _attrs = index[1]
-                    if isinstance(_attrs, str):
-                        _attrs = (index[1],)
-                    for _d in _docs:
-                        _d.pop(*_attrs)
-            elif isinstance(index[0], bool):
-                self._data = list(
-                    itertools.compress(self._data, (not _i for _i in index))
-                )
-                self._rebuild_id2offset()
-            elif isinstance(index[0], int):
-                for t in sorted(index, reverse=True):
-                    del self[t]
-            elif isinstance(index[0], str):
-                for t in index:
-                    del self[t]
-        elif isinstance(index, np.ndarray):
-            index = index.squeeze()
-            if index.ndim == 1:
-                del self[index.tolist()]
-            else:
-                raise IndexError(
-                    f'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim={index.ndim}'
-                )
-        else:
-            raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def clear(self):
         """Clear the data of :class:`DocumentArray`"""
