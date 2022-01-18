@@ -32,3 +32,9 @@ def test_to_from_base64(protocol, compress):
     d_r = Document.from_base64(d.to_base64(protocol, compress), protocol, compress)
     assert d_r == d
     assert d_r.embedding == [1, 2, 3]
+
+
+@pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
+def test_tags_type_mantained(protocol):
+    d = Document(tags={'a': 100})
+    assert isinstance(d.to_dict(protocol=protocol)['tags']['a'], float)

@@ -7,7 +7,7 @@ from ..math.ndarray import to_list
 if TYPE_CHECKING:
     from ..types import ArrayType
 
-_ProtoValueType = Optional[Union[str, bool, float]]
+_ProtoValueType = Optional[Union[float, bool, str]]
 _StructValueType = Union[
     _ProtoValueType, List[_ProtoValueType], Dict[str, _ProtoValueType]
 ]
