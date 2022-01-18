@@ -62,7 +62,6 @@ class BinaryIOMixin:
         else:
             track = lambda x: x
 
-        print(f'type(file_ctx)={type(file_ctx)}')
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
@@ -123,7 +122,7 @@ class BinaryIOMixin:
             for _ in track(range(num_docs)):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos : start_pos + 4], 'big', signed=False
+                    d[start_pos: start_pos + 4], 'big', signed=False
                 )
                 start_doc_pos = start_pos + 4
                 end_doc_pos = start_doc_pos + len_current_doc_in_bytes
@@ -239,7 +238,6 @@ class BinaryIOMixin:
 
                     for d in track(self):
                         # 4 bytes (uint32)
-                        print(f'\nprotocol={protocol}, compress={compress}\n')
                         doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
 
                         # variable size bytes
