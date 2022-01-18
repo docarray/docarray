@@ -2,6 +2,7 @@ from collections import defaultdict
 from typing import List, Optional
 
 import numpy as np
+import pytest
 from fastapi import FastAPI
 from pydantic import BaseModel
 from starlette.testclient import TestClient
@@ -116,3 +117,28 @@ def test_match_to_from_pydantic():
 def test_with_embedding_no_tensor():
     d = Document(embedding=np.random.rand(2, 2))
     PydanticDocument.parse_obj(d.to_pydantic_model().dict())
+
+
+@pytest.mark.parametrize(
+    'tag_value, tag_type',
+    [(3, float), (3.4, float), ('hello', str), (True, bool), (False, bool)],
+)
+@pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
+def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
+    d = Document(tags={'hello': tag_value})
+    dd = d.to_dict(protocol=protocol)['tags']['hello']
+    assert dd == tag_value
+    assert isinstance(dd, tag_type)
+
+    # now nested tags in dict
+
+    d = Document(tags={'hello': {'world': tag_value}})
+    dd = d.to_dict(protocol=protocol)['tags']['hello']['world']
+    assert dd == tag_value
+    assert isinstance(dd, tag_type)
+
+    # now nested in list
+    d = Document(tags={'hello': [tag_value] * 10})
+    dd = d.to_dict(protocol=protocol)['tags']['hello'][-1]
+    assert dd == tag_value
+    assert isinstance(dd, tag_type)

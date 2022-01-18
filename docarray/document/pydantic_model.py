@@ -7,7 +7,8 @@ from ..math.ndarray import to_list
 if TYPE_CHECKING:
     from ..types import ArrayType
 
-_ProtoValueType = Optional[Union[str, bool, float]]
+# this order must be preserved: https://pydantic-docs.helpmanual.io/usage/types/#unions
+_ProtoValueType = Optional[Union[bool, float, str]]
 _StructValueType = Union[
     _ProtoValueType, List[_ProtoValueType], Dict[str, _ProtoValueType]
 ]
