@@ -485,10 +485,10 @@
 <p>It is easier to eyes. But when building REST API, you do not need to explicitly do this, pydantic model handle everything for you. More information can be found in <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/pydantic Support</span></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>To find out what extra parameters you can pass to <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_dict</span></code>, please check out:</p>
+<p>To find out what extra parameters you can pass to <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>, please check out:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson"><code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code></a></p></li>
-<li><p><a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson"><code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson"><code class="docutils literal notranslate"><span class="pre">protocol='jsonschema',</span> <span class="pre">**kwargs</span></code></a></p></li>
+<li><p><a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson"><code class="docutils literal notranslate"><span class="pre">protocol='protobuf',</span> <span class="pre">**kwargs</span></code></a></p></li>
 </ul>
 </div>
 </section>
@@ -651,7 +651,7 @@ mime_type: "image/jpeg"
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 17, 2022.
+                    Last updated on Jan 18, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

@@ -548,7 +548,16 @@
 </tr>
 </tbody>
 </table></div>
-<p>There are two other packages that people often compare DocArray to, yet I haven’t use them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them.</p>
+<p>There are three other packages that people often compare DocArray to, yet I haven’t used them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them.</p>
+<section id="to-huggingface-datasets">
+<h2>To Huggingface Datasets<a class="headerlink" href="#to-huggingface-datasets" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://huggingface.co/docs/datasets/">Huggingface datasets</a> is a library for easily accessing and sharing datasets for NLP, computer vision, and audio tasks. One of the highlights is its efficient loading on large dataset, which is highly appreciated during training.</p>
+<p>There will be a couple of feature release soon to allow big data loading with constant memory consumption. However, the biggest difference is that DocArray is focused on <strong>data in transit</strong>, whereas HF Datasets is about <strong>data at rest</strong>. DocArray is focused on active data that subject to frequent change; and allow it to be transferred between threads, processes and microservices. This type of data often traverses a network or temporarily resides in memory to be read or updated. It is as opposed to Datasets, where training data is stored physically and statically that subject to very occasional changes. The figure below depicts the differences.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/compare-data-type.svg"><img alt="../../_images/compare-data-type.svg" src="../../_images/compare-data-type.svg" width="90%"/></a>
+</figure>
+<p>The data in transit part of DocArray will become much clearer with Jina 3.0 release (expected in Feb. 2022).</p>
+</section>
 <section id="to-awkwardarray">
 <h2>To AwkwardArray<a class="headerlink" href="#to-awkwardarray" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://awkward-array.org/quickstart.html">AwkwardArray</a> is a library for manipulating JSON/dict data via Numpy idioms. Instead of working with Python dynamically typed object, AwkwardArray converts the data into precompiled routines on contiguous data. Hence, it is highly efficient.</p>
@@ -652,7 +661,7 @@ access text via awkward ...	0.000s
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 17, 2022.
+                    Last updated on Jan 18, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -682,6 +691,7 @@ access text via awkward ...	0.000s
 </ul>
 </li>
 <li><a class="reference internal" href="#comparing-to-alternatives">Comparing to Alternatives</a><ul>
+<li><a class="reference internal" href="#to-huggingface-datasets">To Huggingface Datasets</a></li>
 <li><a class="reference internal" href="#to-awkwardarray">To AwkwardArray</a></li>
 <li><a class="reference internal" href="#to-zarr">To Zarr</a></li>
 <li><a class="reference internal" href="#to-jina-users">To Jina Users</a></li>
