@@ -50,6 +50,7 @@ class PortingMixin:
             raise ValueError(
                 f'protocol={protocol} is not supported. Can be only `protobuf` or pickle protocols 0-5.'
             )
+
         return compress_bytes(bstr, algorithm=compress)
 
     @classmethod

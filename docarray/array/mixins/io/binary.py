@@ -34,7 +34,6 @@ class BinaryIOMixin:
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
         :return: a DocumentArray object
         """
-
         if isinstance(file, io.BufferedReader):
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
@@ -63,6 +62,7 @@ class BinaryIOMixin:
         else:
             track = lambda x: x
 
+        print(f'type(file_ctx)={type(file_ctx)}')
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
@@ -87,9 +87,11 @@ class BinaryIOMixin:
 
         with file_ctx as fp:
             d = fp.read() if hasattr(fp, 'read') else fp
-        if get_compress_ctx(algorithm=compress) is not None:
-            d = decompress_bytes(d, algorithm=compress)
-            compress = None
+
+        if protocol == 'pickle-array' or protocol == 'protobuf-array':
+            if get_compress_ctx(algorithm=compress) is not None:
+                d = decompress_bytes(d, algorithm=compress)
+                compress = None
 
         if protocol == 'protobuf-array':
             from ....proto.docarray_pb2 import DocumentArrayProto
@@ -197,8 +199,11 @@ class BinaryIOMixin:
         :return: the binary serialization in bytes
         """
 
-        _binary_delimiter = random_uuid().bytes
-        compress_ctx = get_compress_ctx(compress, mode='wb')
+        if protocol == 'protobuf-array' or protocol == 'pickle-array':
+            compress_ctx = get_compress_ctx(compress, mode='wb')
+        else:
+            compress_ctx = None
+
         with (_file_ctx or io.BytesIO()) as bf:
             if compress_ctx is None:
                 # if compress do not support streaming then postpone the compress
@@ -208,6 +213,7 @@ class BinaryIOMixin:
                 f = compress_ctx(bf)
                 fc = f
                 compress = None
+
             with fc:
                 if protocol == 'protobuf-array':
                     f.write(self.to_protobuf().SerializePartialToString())
@@ -233,6 +239,7 @@ class BinaryIOMixin:
 
                     for d in track(self):
                         # 4 bytes (uint32)
+                        print(f'\nprotocol={protocol}, compress={compress}\n')
                         doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
 
                         # variable size bytes
