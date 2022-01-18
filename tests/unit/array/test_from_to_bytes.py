@@ -75,7 +75,7 @@ def test_save_bytes(target_da, protocol, compress, tmpfile):
 # Note  protocol = ['protobuf-array', 'pickle-array'] not supported with Document.from_bytes
 @pytest.mark.parametrize('protocol', ['pickle'])
 @pytest.mark.parametrize('compress', ['lzma'])
-def test_save_bytes_stream_stream_new(tmpfile, protocol, compress):
+def test_save_bytes_stream_new(tmpfile, protocol, compress):
     #    tmpfile = '/Users/davidbuchaca1/Documents/jina_stuff/docarray/test_aladdine.bin'
     da = DocumentArray(
         [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
@@ -98,7 +98,7 @@ def test_save_bytes_stream_stream_new(tmpfile, protocol, compress):
 
 @pytest.mark.parametrize('protocol', ['pickle', 'protobuf'])
 @pytest.mark.parametrize('compress', ['zlib', 'gzib', None])
-def test_save_bytes_stream_stream(tmpfile, protocol, compress):
+def test_save_bytes_stream(tmpfile, protocol, compress):
     da = DocumentArray(
         [Document(text='aaa'), Document(buffer=b'buffer'), Document(tags={'a': 'b'})]
     )

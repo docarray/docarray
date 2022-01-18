@@ -56,35 +56,29 @@ class BinaryIOMixin:
         file_ctx: str,
         protocol=None,
         compress=None,
+        show_progress=False
     ) -> 'T':
         from .... import Document
 
-        current_bytes = b''
-        with file_ctx as fp:
+        if show_progress:
+            from rich.progress import track as _track
+
+            track = lambda x: _track(x, description='Deserializing')
+        else:
+            track = lambda x: x
+
+        with file_ctx as f:
+            version_numdocs_lendoc0 = f.read(9)
             # 1 byte (uint8)
-            version = int.from_bytes(d[0:1], 'big', signed=False)
+            version = int.from_bytes(version_numdocs_lendoc0[0:1], 'big', signed=False)
             # 8 bytes (uint64)
-            num_docs = int.from_bytes(d[1:9], 'big', signed=False)
+            num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
-            if show_progress:
-                from rich.progress import track as _track
-
-                track = lambda x: _track(x, description='Deserializing')
-            else:
-                track = lambda x: x
-
-            start_pos = 9
-            for d in track(self):
+            for _ in track(range(num_docs)):
                 # 4 bytes (uint32)
-                len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos : start_pos + 1], 'big', signed=False
-                )
-                start_doc_pos = start_pos + 1
-                end_doc_pos = start_doc_pos + len_current_doc_in_bytes
-                start_pos = end_doc_pos
-                # variable length bytes doc
+                len_current_doc_in_bytes = int.from_bytes(f.read(4), 'big', signed=False)
                 yield Document.from_bytes(
-                    d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
+                    f.read(len_current_doc_in_bytes), protocol=protocol, compress=compress
                 )
 
     @classmethod
@@ -127,7 +121,7 @@ class BinaryIOMixin:
             for _ in track(range(num_docs)):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos : start_pos + 4], 'big', signed=False
+                    d[start_pos:start_pos + 4], 'big', signed=False
                 )
                 start_doc_pos = start_pos + 4
                 end_doc_pos = start_doc_pos + len_current_doc_in_bytes
