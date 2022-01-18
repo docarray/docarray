@@ -20,6 +20,13 @@ def _convert_ndarray_to_list(v: 'ArrayType'):
         return to_list(v)
 
 
+class _NamedScore(BaseModel):
+    value: Optional[float] = None
+    op_name: Optional[str] = None
+    description: Optional[str] = None
+    ref_id: Optional[str] = None
+
+
 class PydanticDocument(BaseModel):
     id: str
     parent_id: Optional[str]
@@ -36,8 +43,8 @@ class PydanticDocument(BaseModel):
     location: Optional[List[float]]
     embedding: Optional[Any]
     modality: Optional[str]
-    evaluations: Optional[Dict[str, Dict[str, '_StructValueType']]]
-    scores: Optional[Dict[str, Dict[str, '_StructValueType']]]
+    evaluations: Optional[Dict[str, '_NamedScore']]
+    scores: Optional[Dict[str, '_NamedScore']]
     chunks: Optional[List['PydanticDocument']]
     matches: Optional[List['PydanticDocument']]
 

@@ -111,6 +111,7 @@ def test_match_to_from_pydantic():
     dap = da.to_pydantic_model()
     da_r = DocumentArray.from_pydantic_model(dap)
     assert da_r[0].matches[0].scores['cosine']
+    assert isinstance(da_r[0].matches[0].scores['cosine'], NamedScore)
     assert isinstance(da_r[0].matches[0].scores, defaultdict)
     assert isinstance(da_r[0].matches[0].scores['random_score'], NamedScore)
 
