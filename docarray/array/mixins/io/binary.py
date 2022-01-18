@@ -53,6 +53,7 @@ class BinaryIOMixin:
     def _load_binary_stream(
         cls: Type['T'], file_ctx: str, protocol=None, compress=None, show_progress=False
     ) -> 'T':
+
         from .... import Document
 
         if show_progress:
@@ -122,7 +123,7 @@ class BinaryIOMixin:
             for _ in track(range(num_docs)):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos: start_pos + 4], 'big', signed=False
+                    d[start_pos : start_pos + 4], 'big', signed=False
                 )
                 start_doc_pos = start_pos + 4
                 end_doc_pos = start_doc_pos + len_current_doc_in_bytes
