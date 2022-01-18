@@ -20,7 +20,7 @@ DocArray is a library for nested, unstructured data such as text, image, audio, 
 
 🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, matching, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
 
-🚡 **Portable**: ready-to-wire at anytime with fast and compressed serialization from/to Protobuf, bytes, base64, JSON, CSV, DataFrame. Built-in data validation and JSON Schema (OpenAPI) help you build reliable webservices.
+🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. Built-in data validation and JSON Schema (OpenAPI) help you build reliable webservices.
 
 <!-- end elevator-pitch -->
 

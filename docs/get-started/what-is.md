@@ -45,7 +45,20 @@ DocArray is designed to maximize the local experience, with the requirement of c
 | Rich functions for data types   |✅|❌| ❌    |✅|❌|
 
 
-There are two other packages that people often compare DocArray to, yet I haven't use them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them. 
+There are three other packages that people often compare DocArray to, yet I haven't used them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them. 
+
+## To Huggingface Datasets
+
+[Huggingface datasets](https://huggingface.co/docs/datasets/) is a library for easily accessing and sharing datasets for NLP, computer vision, and audio tasks. One of the highlights is its efficient loading on large dataset, which is highly appreciated during training.
+
+There will be a couple of feature release soon to allow big data loading with constant memory consumption. However, the biggest difference is that DocArray is focused on **data in transit**, whereas HF Datasets is about **data at rest**. DocArray is focused on active data that subject to frequent change; and allow it to be transferred between threads, processes and microservices. This type of data often traverses a network or temporarily resides in memory to be read or updated. It is as opposed to Datasets, where training data is stored physically and statically that subject to very occasional changes. The figure below depicts the differences.
+
+```{figure} compare-data-type.svg
+:width: 90%
+```
+
+The data in transit part of DocArray will become much clearer with Jina 3.0 release (expected in Feb. 2022).
+
 
 ## To AwkwardArray
 
