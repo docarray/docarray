@@ -138,11 +138,6 @@ class BinaryIOMixin:
             return cls(docs)
 
     @classmethod
-    def _get_batches(cls, gen, batch_size):
-        for i in range(0, len(gen), batch_size):
-            yield gen[i : i + batch_size]
-
-    @classmethod
     def from_bytes(
         cls: Type['T'],
         data: bytes,
