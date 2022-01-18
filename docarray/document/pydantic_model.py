@@ -46,10 +46,11 @@ class PydanticDocument(BaseModel):
 
     @validator('blob')
     def _blob2base64(cls, v):
-        if isinstance(v, bytes):
-            return base64.b64encode(v).decode('utf8')
-        else:
-            raise ValueError('must be bytes')
+        if v is not None:
+            if isinstance(v, bytes):
+                return base64.b64encode(v).decode('utf8')
+            else:
+                raise ValueError('must be bytes')
 
 
 PydanticDocument.update_forward_refs()

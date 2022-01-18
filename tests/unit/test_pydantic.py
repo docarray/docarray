@@ -146,7 +146,7 @@ def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
 
 
 @pytest.mark.parametrize(
-    'blob', [b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
+    'blob', [None, b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
 )
 @pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
 @pytest.mark.parametrize('to_fn', ['dict', 'json'])
@@ -157,4 +157,5 @@ def test_to_from_with_blob(protocol, to_fn, blob):
     )
 
     assert d.blob == r_d.blob
-    assert isinstance(r_d.blob, bytes)
+    if d.blob:
+        assert isinstance(r_d.blob, bytes)
