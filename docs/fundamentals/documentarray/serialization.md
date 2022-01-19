@@ -161,17 +161,19 @@ Afterwards, `doc1_bytes` describes how many bytes are used to serialize `doc1`, 
 The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
 
 
-### Streaming 
+### Stream large binary serialization from disk
 
-A `DocumentArray` can be streamed from a serialized file as shown in the following example
+In particular, if a serialization uses `protocol='pickle'` or `protocol='protobuf'`, then you can load it via streaming with a constant memory consumption by setting `streaming=True`:
 
 ```python
-da_generator =  DocumentArray.load_binary('documentarray.bin', protocol='pickle', compress='gzip', streaming=True)
-for d in da_generator: 
-    # work here with `d` as a Document object
-    print(d.text)
-```
+from docarray import DocumentArray, Document
 
+da_generator = DocumentArray.load_binary('xxxl.bin', protocol='pickle', compress='gzip', streaming=True)
+
+for d in da_generator: 
+    d: Document
+    # go nuts with `d`
+```
 
 
 ## From/to base64
