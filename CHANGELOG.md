@@ -12,6 +12,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -311,4 +312,23 @@
 ### 🍹 Other Improvements
 
  - [[```34156700```](https://github.com/jina-ai/docarray/commit/341567008a906db8d0ee466a6394eb9c238b58ea)] __-__ __version__: the next version will be 0.3.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-3></a>
+## Release Note (`0.3.3`)
+
+> Release time: 2022-01-19 09:06:16
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```0f425260```](https://github.com/jina-ai/docarray/commit/0f4252604d61e500219b87e67db7ee8954690718)] __-__ __array__: allow plot to use uri or tensor as the source (#66) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```624b5032```](https://github.com/jina-ai/docarray/commit/624b5032a03863217f04997bfabb13cae438de20)] __-__ __version__: the next version will be 0.3.3 (*Jina Dev Bot*)
 
