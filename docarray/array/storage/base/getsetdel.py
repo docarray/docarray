@@ -38,19 +38,19 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived from :meth:`_get_doc_by_offset`
 
         Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_offset(j) for j in range(len(self))[_slice])
+        return (self._get_doc_by_offset(o) for o in range(len(self))[_slice])
 
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
 
         Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_offset(d) for d in offsets)
+        return (self._get_doc_by_offset(o) for o in offsets)
 
     def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_id`
 
         Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_id(d) for d in ids)
+        return (self._get_doc_by_id(_id) for _id in ids)
 
     # Delitem APIs
 

@@ -15,6 +15,10 @@ class DocumentArray(AllMixins):
             from .storage.memory import MemoryStorageMixins
 
             _extend_instance(self, MemoryStorageMixins)
+        elif storage == 'sqlite':
+            from .storage.sqlite import SqliteStorageMixins
+
+            _extend_instance(self, SqliteStorageMixins)
         else:
             raise ValueError(f'storage=`{storage}` is not supported.')
 

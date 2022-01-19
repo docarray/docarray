@@ -10,7 +10,7 @@ from .... import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
-    """Implement `getitem`, `setitem`, `delitem`"""
+    """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         self._data = list(itertools.compress(self._data, (not _i for _i in mask)))

@@ -9,6 +9,7 @@ from typing import (
 )
 
 from .... import Document
+from ..base.backend import BaseBackendMixin
 
 if TYPE_CHECKING:
     from ....types import (
@@ -16,7 +17,9 @@ if TYPE_CHECKING:
     )
 
 
-class MemoryBackendMixin:
+class MemoryBackendMixin(BaseBackendMixin):
+    """Provide necessary functions to enable this storage backend. """
+
     @property
     def _id2offset(self) -> Dict[str, int]:
         """Return the `_id_to_index` map
