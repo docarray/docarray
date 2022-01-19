@@ -163,8 +163,14 @@ The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
 
 ### Streaming 
 
-A `DocumentArray` can be streammed from a serialized file as shown in the following example
+A `DocumentArray` can be streamed from a serialized file as shown in the following example
 
+```python
+da_generator =  DocumentArray.load_binary('documentarray.bin', protocol='pickle', compress='gzip', streaming=True)
+for d in da_reconstructed: 
+    # work here with `d` as a Document object
+    print(d.text)
+```
 
 
 
