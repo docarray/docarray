@@ -44,14 +44,21 @@ class BinaryIOMixin:
             raise ValueError(f'unsupported input {file!r}')
         if streaming:
             return cls._load_binary_stream(
-                file_ctx, protocol=protocol, compress=compress, _show_progress=_show_progress
+                file_ctx,
+                protocol=protocol,
+                compress=compress,
+                _show_progress=_show_progress,
             )
         else:
             return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
 
     @classmethod
     def _load_binary_stream(
-        cls: Type['T'], file_ctx: str, protocol=None, compress=None, _show_progress=False
+        cls: Type['T'],
+        file_ctx: str,
+        protocol=None,
+        compress=None,
+        _show_progress=False,
     ) -> Generator['Document', None, None]:
         """Yield `Document` objects from a binary file
 
