@@ -321,31 +321,36 @@ class PlotMixin:
             [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
         )
         img_id = 0
-        for d in self:
-            _d = copy.deepcopy(d)
+        try:
+            for d in self:
+                _d = copy.deepcopy(d)
 
-            if image_source == 'uri' or (
-                image_source == 'tensor' and _d.content_type != 'tensor'
-            ):
-                _d.load_uri_to_image_tensor()
-                channel_axis = -1
-            elif image_source not in ('uri', 'tensor'):
-                raise ValueError(f'image_source can be only `uri` or `tensor`')
+                if image_source == 'uri' or (
+                    image_source == 'tensor' and _d.content_type != 'tensor'
+                ):
+                    _d.load_uri_to_image_tensor()
+                    channel_axis = -1
+                elif image_source not in ('uri', 'tensor'):
+                    raise ValueError(f'image_source can be only `uri` or `tensor`')
 
-            _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
-                shape=(img_size, img_size)
-            )
+                _d.set_image_tensor_channel_axis(
+                    channel_axis, -1
+                ).set_image_tensor_shape(shape=(img_size, img_size))
 
-            row_id = floor(img_id / img_per_row)
-            col_id = img_id % img_per_row
-            sprite_img[
-                (row_id * img_size) : ((row_id + 1) * img_size),
-                (col_id * img_size) : ((col_id + 1) * img_size),
-            ] = _d.tensor
+                row_id = floor(img_id / img_per_row)
+                col_id = img_id % img_per_row
+                sprite_img[
+                    (row_id * img_size) : ((row_id + 1) * img_size),
+                    (col_id * img_size) : ((col_id + 1) * img_size),
+                ] = _d.tensor
 
-            img_id += 1
-            if img_id >= max_num_img:
-                break
+                img_id += 1
+                if img_id >= max_num_img:
+                    break
+        except Exception as ex:
+            raise ValueError(
+                'Bad image tensor. Try different `image_source` or `channel_axis`'
+            ) from ex
 
         from PIL import Image
 
