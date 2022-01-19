@@ -167,7 +167,7 @@ A `DocumentArray` can be streamed from a serialized file as shown in the followi
 
 ```python
 da_generator =  DocumentArray.load_binary('documentarray.bin', protocol='pickle', compress='gzip', streaming=True)
-for d in da_reconstructed: 
+for d in da_generator: 
     # work here with `d` as a Document object
     print(d.text)
 ```
