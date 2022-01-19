@@ -8,7 +8,7 @@ import pytest
 from docarray import DocumentArray, Document
 
 
-def test_sprite_image_generator(pytestconfig, tmpdir):
+def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir):
     da = DocumentArray.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
@@ -16,7 +16,26 @@ def test_sprite_image_generator(pytestconfig, tmpdir):
             f'{pytestconfig.rootdir}/**/*.jpeg',
         ]
     )
-    da.plot_image_sprites(tmpdir / 'sprint_da.png')
+    da.apply(
+        lambda d: d.load_uri_to_image_tensor().set_image_tensor_channel_axis(-1, 0)
+    )
+    with pytest.raises(ValueError):
+        da.plot_image_sprites()
+    da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source='uri')
+    assert os.path.exists(tmpdir / 'sprint_da.png')
+
+
+@pytest.mark.parametrize('image_source', ['tensor', 'uri'])
+def test_sprite_image_generator(pytestconfig, tmpdir, image_source):
+    da = DocumentArray.from_files(
+        [
+            f'{pytestconfig.rootdir}/**/*.png',
+            f'{pytestconfig.rootdir}/**/*.jpg',
+            f'{pytestconfig.rootdir}/**/*.jpeg',
+        ]
+    )
+    da.apply(lambda d: d.load_uri_to_image_tensor())
+    da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 

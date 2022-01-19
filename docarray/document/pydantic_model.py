@@ -1,3 +1,4 @@
+import base64
 from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
 from pydantic import BaseModel, validator
@@ -7,7 +8,8 @@ from ..math.ndarray import to_list
 if TYPE_CHECKING:
     from ..types import ArrayType
 
-_ProtoValueType = Optional[Union[str, bool, float]]
+# this order must be preserved: https://pydantic-docs.helpmanual.io/usage/types/#unions
+_ProtoValueType = Optional[Union[bool, float, str]]
 _StructValueType = Union[
     _ProtoValueType, List[_ProtoValueType], Dict[str, _ProtoValueType]
 ]
@@ -16,6 +18,13 @@ _StructValueType = Union[
 def _convert_ndarray_to_list(v: 'ArrayType'):
     if v is not None:
         return to_list(v)
+
+
+class _NamedScore(BaseModel):
+    value: Optional[float] = None
+    op_name: Optional[str] = None
+    description: Optional[str] = None
+    ref_id: Optional[str] = None
 
 
 class PydanticDocument(BaseModel):
@@ -34,13 +43,21 @@ class PydanticDocument(BaseModel):
     location: Optional[List[float]]
     embedding: Optional[Any]
     modality: Optional[str]
-    evaluations: Optional[Dict[str, Dict[str, '_StructValueType']]]
-    scores: Optional[Dict[str, Dict[str, '_StructValueType']]]
+    evaluations: Optional[Dict[str, '_NamedScore']]
+    scores: Optional[Dict[str, '_NamedScore']]
     chunks: Optional[List['PydanticDocument']]
     matches: Optional[List['PydanticDocument']]
 
     _tensor2list = validator('tensor', allow_reuse=True)(_convert_ndarray_to_list)
     _embedding2list = validator('embedding', allow_reuse=True)(_convert_ndarray_to_list)
+
+    @validator('blob')
+    def _blob2base64(cls, v):
+        if v is not None:
+            if isinstance(v, bytes):
+                return base64.b64encode(v).decode('utf8')
+            else:
+                raise ValueError('must be bytes')
 
 
 PydanticDocument.update_forward_refs()

@@ -10,6 +10,9 @@
 
 
 
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -268,4 +271,64 @@
 
  - [[```86b03f3f```](https://github.com/jina-ai/docarray/commit/86b03f3fc84649fe52650f5f0469239a87eda256)] __-__ __docs__: update notebook support docs (#55) (*felix-wang*)
  - [[```8098eebd```](https://github.com/jina-ai/docarray/commit/8098eebdbd3b07643afa24a44060833018dfd3df)] __-__ __version__: the next version will be 0.2.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-1></a>
+## Release Note (`0.3.1`)
+
+> Release time: 2022-01-18 14:06:03
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```e179ef61```](https://github.com/jina-ai/docarray/commit/e179ef61725ccb5dabc494d0904e7520b3431927)] __-__ __document__: serialize tag value in the correct priority (#60) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f5c013fc```](https://github.com/jina-ai/docarray/commit/f5c013fcadfa4f1f13bb1c3fb4e3b5ed9f9804e9)] __-__ fix typo (*Han Xiao*)
+ - [[```be9ea860```](https://github.com/jina-ai/docarray/commit/be9ea8604dc35180fc5747687f4306d3e85528c1)] __-__ update changelog (*Han Xiao*)
+ - [[```57c289b4```](https://github.com/jina-ai/docarray/commit/57c289b449c54016bf59b728462aa0cd6d728c3a)] __-__ __version__: the next version will be 0.3.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-2></a>
+## Release Note (`0.3.2`)
+
+> Release time: 2022-01-18 20:30:43
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```cbd5fd0f```](https://github.com/jina-ai/docarray/commit/cbd5fd0f77f1699bc26e569a18b62a99e52ed37b)] __-__ __document__: complete the schema for namedscore (#65) (*Han Xiao*)
+ - [[```79c13a09```](https://github.com/jina-ai/docarray/commit/79c13a09980c97c9b4fcf9857566ff2a46c95c83)] __-__ __document__: serialize blob with base64 in dict/json (#63) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```34156700```](https://github.com/jina-ai/docarray/commit/341567008a906db8d0ee466a6394eb9c238b58ea)] __-__ __version__: the next version will be 0.3.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-3-3></a>
+## Release Note (`0.3.3`)
+
+> Release time: 2022-01-19 09:06:16
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```0f425260```](https://github.com/jina-ai/docarray/commit/0f4252604d61e500219b87e67db7ee8954690718)] __-__ __array__: allow plot to use uri or tensor as the source (#66) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```624b5032```](https://github.com/jina-ai/docarray/commit/624b5032a03863217f04997bfabb13cae438de20)] __-__ __version__: the next version will be 0.3.3 (*Jina Dev Bot*)
 
