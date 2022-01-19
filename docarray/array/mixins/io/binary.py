@@ -10,6 +10,7 @@ from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_by
 if TYPE_CHECKING:
     from ....types import T
     from ....proto.docarray_pb2 import DocumentArrayProto
+    from .... import Document, DocumentArray
 
 
 class BinaryIOMixin:
