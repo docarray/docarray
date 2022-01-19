@@ -140,7 +140,7 @@ The benchmark was conducted [on the codebase of Jan. 5, 2022](https://github.com
 
 Depending on how you want to interpret the results, the figures above can be an over-estimation/under-estimation of the serialization latency: one may argue that near-empty Documents are not realistic, but serializing a DocumentArray with one million Documents is also unreal. In practice, DocumentArray passing across microservices are relatively small, say at thousands, for better overlapping the network latency and computational overhead.
 
-
+(wire-format)=
 ### Wire format of `pickle` and `protobuf`
 
 When set `protocol=pickle` or `protobuf`, the resulting bytes look like the following:
