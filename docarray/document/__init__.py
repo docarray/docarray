@@ -17,13 +17,13 @@ class Document(AllMixins, BaseDCType):
         ...
 
     @overload
-    def __init__(self, doc: Optional['Document'] = None, copy: bool = False):
+    def __init__(self, _obj: Optional['Document'] = None, copy: bool = False):
         ...
 
     @overload
     def __init__(
         self,
-        doc: Optional[Dict],
+        _obj: Optional[Dict],
         field_resolver: Optional[Dict[str, str]] = None,
         unknown_fields_handler: str = 'catch',
     ):
@@ -32,7 +32,7 @@ class Document(AllMixins, BaseDCType):
     @overload
     def __init__(
         self,
-        doc: Optional[Dict],
+        _obj: Optional[Dict],
         field_resolver: Optional[Dict[str, str]] = None,
         unknown_fields_handler: str = 'catch',
     ):
