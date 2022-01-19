@@ -1,5 +1,6 @@
 import itertools
 import uuid
+from collections.abc import Iterable
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -17,6 +18,7 @@ from typing import (
 
 import numpy as np
 import weaviate
+import scipy.sparse
 
 from .mixins import AllMixins
 from .. import Document, DocumentArray
@@ -31,6 +33,15 @@ if TYPE_CHECKING:
         DocumentArrayMultipleAttributeType,
         DocumentArraySingleAttributeType,
     )
+
+
+def wmap(doc_id: str):
+    # TODO: although rare, it's possible for key collision to occur with SHA-1
+    return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id))
+
+
+def find(l, item):
+    return l.index(item) if item in l else -1
 
 
 class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
@@ -71,6 +82,7 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
                 }
             ]
         }
+        self._client.schema.delete_all()
         self._client.schema.create(doc_schema)
 
     def insert(self, index: int, value: 'Document'):
@@ -79,15 +91,22 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        self._offset2ids.insert(index, value.id)
+        self._offset2ids.insert(index, wmap(value.id))
         self._client.data_object.create(**self._doc2weaviate_create_payload(value))
 
     def _doc2weaviate_create_payload(self, value: 'Document'):
+        if value.embedding is None:
+            embedding = [0]
+        elif isinstance(value.embedding, scipy.sparse.spmatrix):
+            embedding = value.embedding.toarray()
+        else:
+            embedding = value.embedding
+
         return dict(
             data_object={'_serialized': value.to_base64()},
             class_name=self._class_name,
-            uuid=str(uuid.UUID(value.id)),
-            vector=value.embedding or [0],
+            uuid=wmap(value.id),
+            vector=embedding,
         )
 
     def __eq__(self, other):
@@ -105,14 +124,14 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
         )
 
     def __iter__(self) -> Iterator['Document']:
-        for _id in self._offset2ids:
-            yield self[_id]
+        for int_id in range(len(self._offset2ids)):
+            yield self[int_id]
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
-            return self._client.data_object.exists(x)
+            return self._client.data_object.exists(wmap(x))
         elif isinstance(x, Document):
-            return self._client.data_object.exists(x.id)
+            return self._client.data_object.exists(wmap(x.id))
         else:
             return False
 
@@ -134,25 +153,27 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
     ) -> List[List[Any]]:
         ...
 
+    def _getitem(self, wid: str):
+        resp = self._client.data_object.get_by_id(wid, with_vector=True)
+        if not resp:
+            raise KeyError(wid)
+        return Document.from_base64(resp['properties']['_serialized'])
+
     def __getitem__(
         self, index: 'DocumentArrayIndexType'
     ) -> Union['Document', 'DocumentArray']:
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             # convert into integer, map to string key, delegate the string __getitem__
-            return self[self._offset2ids[int(index)]]
+            return self._getitem(self._offset2ids[index])
         elif isinstance(index, str):
             if index.startswith('@'):
                 return self.traverse_flat(index[1:])
             else:
-                return Document.from_base64(
-                    self._client.data_object.get_by_id(index, with_vector=True)[
-                        'properties'
-                    ]['_serialized']
-                )
+                return self._getitem(wmap(index))
         elif isinstance(index, slice):
             # convert it to a sequence of strings.
             _ids = self._offset2ids[index]
-            return DocumentArray(self[_id] for _id in _ids)
+            return DocumentArray(self._getitem(_id) for _id in _ids)
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
@@ -163,7 +184,7 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
             ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
-                    if index[1] in self._offset2ids:
+                    if wmap(index[1]) in self._offset2ids:
                         return DocumentArray([self[index[0]], self[index[1]]])
                     else:
                         return getattr(self[index[0]], index[1])
@@ -174,8 +195,8 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
                         _attrs = (index[1],)
                     return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
-                _ids = itertools.compress(self._offset2ids, index)
-                return self[_ids]
+                _ids = list(itertools.compress(self._offset2ids, index))
+                return DocumentArray(self._getitem(_id) for _id in _ids)
             elif isinstance(index[0], int):
                 return DocumentArray(self[t] for t in index)
             elif isinstance(index[0], str):
@@ -222,31 +243,39 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
     ):
         ...
 
+    def _setitem(self, wid: str, value: Document):
+        exist = self._client.data_object.exists(wid)
+        self._client.data_object.delete(wid)
+        self._client.data_object.create(**self._doc2weaviate_create_payload(value))
+        self._offset2ids[find(self._offset2ids, wid)] = wmap(value.id)
+
     def __setitem__(
         self,
         index: 'DocumentArrayIndexType',
         value: Union['Document', Sequence['Document']],
     ):
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
-            index = int(index)
-            self._data[index] = value
-            self._id2offset[value.id] = index
+            wid = self._offset2ids[int(index)]
+            self._setitem(wid, value)
+            # update the weaviatei
+            self._offset2ids[index] = wmap(value.id)
+
         elif isinstance(index, str):
             if index.startswith('@'):
-                for _d, _v in zip(self.traverse_flat(index[1:]), value):
-                    _d._data = _v._data
-                self._rebuild_id2offset()
+                raise NotImplementedError(
+                    'set along traversal paths is not implemented'
+                )
             else:
-                old_idx = self._id2offset.pop(index)
-                self._data[old_idx] = value
-                self._id2offset[value.id] = old_idx
+                self._setitem(wmap(index), value)
         elif isinstance(index, slice):
-            self._data[index] = value
-            self._rebuild_id2offset()
+            if not isinstance(value, Iterable):
+                raise TypeError('can only assign an iterable')
+            index = self._offset2ids[index]
+            for _i, _v in zip(index, value):
+                self._setitem(_i, _v)
         elif index is Ellipsis:
             for _d, _v in zip(self.flatten(), value):
-                _d._data = _v._data
-            self._rebuild_id2offset()
+                self._setitem(wmap(d.id), _v)
         elif isinstance(index, Sequence):
             if (
                 isinstance(index, tuple)
@@ -255,12 +284,14 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
             ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
+                    i = find(self._offset2ids, wmap(index[1]))
+                    if i >= 0:
                         for _d, _v in zip((self[index[0]], self[index[1]]), value):
-                            _d._data = _v._data
-                        self._rebuild_id2offset()
+                            self._setitem(wmap(_d.id), _v)
                     elif hasattr(self[index[0]], index[1]):
-                        setattr(self[index[0]], index[1], value)
+                        doc = self[index[0]]
+                        setattr(doc, index[1], value)
+                        self._setitem(wmap(doc.id), doc)
                     else:
                         # to avoid accidentally add new unsupport attribute
                         raise ValueError(
@@ -295,15 +326,19 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
                             else:
                                 for _d, _vv in zip(_docs, _v):
                                     setattr(_d, _a, _vv)
+                        for d in _docs:
+                            # TODO: refactor this to batch update
+                            self._setitem(wmap(d.id), d)
+
             elif isinstance(index[0], bool):
-                if len(index) != len(self._data):
+                if len(index) != len(self):
                     raise IndexError(
-                        f'Boolean mask index is required to have the same length as {len(self._data)}, '
+                        f'Boolean mask index is required to have the same length as {len(self)}, '
                         f'but receiving {len(index)}'
                     )
-                _selected = itertools.compress(self._data, index)
+                _selected = itertools.compress(self._offset2ids, index)
                 for _idx, _val in zip(_selected, value):
-                    self[_idx.id] = _val
+                    self._setitem(_idx, _val)
             elif isinstance(index[0], (int, str)):
                 if not isinstance(value, Sequence) or len(index) != len(value):
                     raise ValueError(
@@ -327,25 +362,29 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
         else:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
+    def _delitem(self, key):
+        self._offset2ids.pop(find(self._offset2ids, key))
+        self._client.data_object.delete(key)
+
     def __delitem__(self, index: 'DocumentArrayIndexType'):
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             index = int(index)
-            self._id2offset.pop(self._data[index].id)
-            del self._data[index]
+            self._delitem(self._offset2ids[index])
         elif isinstance(index, str):
             if index.startswith('@'):
                 raise NotImplementedError(
                     'Delete elements along traversal paths is not implemented'
                 )
             else:
-                del self._data[self._id2offset[index]]
-            self._id2offset.pop(index)
+                self._delitem(wmap(index))
         elif isinstance(index, slice):
-            del self._data[index]
-            self._rebuild_id2offset()
+            start = index.start or 0
+            stop = index.stop or len(self)
+            step = index.step or 1
+            del self[list(range(start, stop, step))]
         elif index is Ellipsis:
-            self._data.clear()
-            self._id2offset.clear()
+            self._client.schema.delete_all()
+            self._offset2ids.clear()
         elif isinstance(index, Sequence):
             if (
                 isinstance(index, tuple)
@@ -354,23 +393,32 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
             ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
+                    i = find(self._offset2ids, wmap(index[1]))
+                    if i >= 0:
                         del self[index[0]]
                         del self[index[1]]
+                    elif index[1] != 'id':
+                        doc = self[index[0]]
+                        doc.pop(index[1])
+                        self._setitem(wmap(index[0]), doc)
                     else:
-                        self[index[0]].pop(index[1])
+                        raise ValueError('cannot pop id from DocumentArrayWeaviate')
                 elif isinstance(index[0], (slice, Sequence)):
                     _docs = self[index[0]]
                     _attrs = index[1]
+                    if 'id' in _attrs:
+                        raise ValueError('cannot pop id from DocumentArrayWeaviate')
                     if isinstance(_attrs, str):
                         _attrs = (index[1],)
                     for _d in _docs:
                         _d.pop(*_attrs)
+                        self._setitem(wmap(_d.id), _d)
             elif isinstance(index[0], bool):
-                self._data = list(
-                    itertools.compress(self._data, (not _i for _i in index))
+                idx = list(
+                    itertools.compress(self._offset2ids, (not _i for _i in index))
                 )
-                self._rebuild_id2offset()
+                for _idx in reversed(idx):
+                    self._delitem(_idx)
             elif isinstance(index[0], int):
                 for t in sorted(index, reverse=True):
                     del self[t]
@@ -390,7 +438,7 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
 
     def clear(self):
         """Clear the data of :class:`DocumentArray`"""
-        self._data.clear()
+        self._client.schema.delete_all()
         self._offset2ids.clear()
 
     def __bool__(self):
@@ -415,4 +463,4 @@ class DocumentArrayWeaviate(AllMixins, MutableSequence[Document]):
         with self._client.batch as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
-                self._offset2ids.append(d.id)
+                self._offset2ids.append(wmap(d.id))
