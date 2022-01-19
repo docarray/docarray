@@ -1,5 +1,4 @@
 import itertools
-from abc import abstractmethod
 from typing import (
     TYPE_CHECKING,
     Union,
@@ -7,7 +6,6 @@ from typing import (
     overload,
     Any,
     List,
-    Iterable,
 )
 
 import numpy as np
@@ -28,33 +26,6 @@ if TYPE_CHECKING:
 
 class GetItemMixin:
     """Provide helper functions to enable advance indexing in `__getitem__`"""
-
-    @abstractmethod
-    def _get_doc_by_offset(self, offset: int) -> 'Document':
-        ...
-
-    @abstractmethod
-    def _get_doc_by_id(self, _id: str) -> 'Document':
-        ...
-
-    @abstractmethod
-    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
-        """This function is derived from :meth:`_get_doc_by_offset`
-
-        Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_offset(j) for j in range(len(self))[_slice])
-
-    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
-        """This function is derived from :meth:`_get_doc_by_offset`
-
-        Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_offset(d) for d in offsets)
-
-    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
-        """This function is derived from :meth:`_get_doc_by_id`
-
-        Override this function if there is a more efficient logic"""
-        return (self._get_doc_by_id(d) for d in ids)
 
     @overload
     def __getitem__(self, index: 'DocumentArraySingletonIndexType') -> 'Document':

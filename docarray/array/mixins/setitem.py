@@ -1,5 +1,4 @@
 import itertools
-from abc import abstractmethod
 from typing import (
     TYPE_CHECKING,
     Union,
@@ -7,7 +6,6 @@ from typing import (
     overload,
     Any,
     List,
-    Iterable,
 )
 
 import numpy as np
@@ -27,35 +25,6 @@ if TYPE_CHECKING:
 
 class SetItemMixin:
     """Provides helper function to allow advanced indexing for `__setitem__`"""
-
-    @abstractmethod
-    def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        ...
-
-    @abstractmethod
-    def _set_doc_by_id(self, _id: str, value: 'Document'):
-        ...
-
-    @abstractmethod
-    def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
-        ...
-
-    @abstractmethod
-    def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Iterable['Document']
-    ):
-        ...
-
-    @abstractmethod
-    def _set_doc_attr_by_index(
-        self,
-        _index: Union[
-            'DocumentArraySingletonIndexType', 'DocumentArrayMultipleIndexType'
-        ],
-        attr: str,
-        value: Any,
-    ):
-        ...
 
     @overload
     def __setitem__(
@@ -119,7 +88,7 @@ class SetItemMixin:
                             (self[index[0]], self[index[1]]), value
                         )
                     elif hasattr(self[index[0]], index[1]):
-                        self._set_doc_attr_by_index(index[0], index[1], value)
+                        self._set_doc_attr_by_id(index[0], index[1], value)
                     else:
                         # to avoid accidentally add new unsupport attribute
                         raise ValueError(
@@ -150,10 +119,10 @@ class SetItemMixin:
                             _docs.embeddings = _v
                         else:
                             if len(_docs) == 1:
-                                self._set_doc_attr_by_index(_docs[0].id, _a, _v)
+                                self._set_doc_attr_by_id(_docs[0].id, _a, _v)
                             else:
                                 for _d, _vv in zip(_docs, _v):
-                                    self._set_doc_attr_by_index(_d.id, _a, _vv)
+                                    self._set_doc_attr_by_id(_d.id, _a, _vv)
             elif isinstance(index[0], bool):
                 if len(index) != len(self):
                     raise IndexError(

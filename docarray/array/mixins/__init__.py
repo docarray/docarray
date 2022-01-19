@@ -1,6 +1,7 @@
 from abc import ABC
 
 from .content import ContentPropertyMixin
+from .delitem import DelItemMixin
 from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
@@ -21,7 +22,6 @@ from .pydantic import PydanticMixin
 from .reduce import ReduceMixin
 from .sample import SampleMixin
 from .setitem import SetItemMixin
-from .delitem import DelItemMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
 
@@ -53,6 +53,6 @@ class AllMixins(
     DataframeIOMixin,
     ABC,
 ):
-    """All plugins that can be used in :class:`DocumentArray`. """
+    """All plugins that can be used in :class:`DocumentArray`."""
 
     ...

@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import (
     TYPE_CHECKING,
     Sequence,
@@ -16,26 +15,6 @@ if TYPE_CHECKING:
 
 class DelItemMixin:
     """Provide help function to enable advanced indexing in `__delitem__`"""
-
-    @abstractmethod
-    def _del_docs_by_mask(self, mask: Sequence[bool]):
-        ...
-
-    @abstractmethod
-    def _del_doc_by_offset(self, offset: int):
-        ...
-
-    @abstractmethod
-    def _del_doc_by_id(self, _id: str):
-        ...
-
-    @abstractmethod
-    def _del_docs_by_slice(self, _slice: slice):
-        ...
-
-    @abstractmethod
-    def _del_all_docs(self):
-        ...
 
     def __delitem__(self, index: 'DocumentArrayIndexType'):
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
@@ -64,14 +43,14 @@ class DelItemMixin:
                         del self[index[0]]
                         del self[index[1]]
                     else:
-                        self._set_doc_attr_by_index(index[0], index[1], None)
+                        self._set_doc_attr_by_id(index[0], index[1], None)
                 elif isinstance(index[0], (slice, Sequence)):
                     _attrs = index[1]
                     if isinstance(_attrs, str):
                         _attrs = (index[1],)
                     for _d in self[index[0]]:
                         for _aa in _attrs:
-                            self._set_doc_attr_by_index(_d.id, _aa, None)
+                            self._set_doc_attr_by_id(_d.id, _aa, None)
             elif isinstance(index[0], bool):
                 self._del_docs_by_mask(index)
             elif isinstance(index[0], int):
