@@ -23,7 +23,7 @@ class BinaryIOMixin:
         compress: Optional[str] = None,
         _show_progress: bool = False,
         streaming: bool = False,
-    ) -> Union['DocumentArray', Generator['Document']]:
+    ) -> Union['DocumentArray', Generator['Document', None, None]]:
         """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
@@ -43,16 +43,16 @@ class BinaryIOMixin:
         else:
             raise ValueError(f'unsupported input {file!r}')
         if streaming:
-            yield from cls._load_binary_stream(
-                file_ctx, protocol=protocol, compress=compress, _show_progress
+            return cls._load_binary_stream(
+                file_ctx, protocol=protocol, compress=compress, _show_progress=_show_progress
             )
         else:
             return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
 
     @classmethod
     def _load_binary_stream(
-        cls: Type['T'], file_ctx: str, protocol=None, compress=None, show_progress=False
-    ) -> Generator['Document']:
+        cls: Type['T'], file_ctx: str, protocol=None, compress=None, _show_progress=False
+    ) -> Generator['Document', None, None]:
         """Yield `Document` objects from a binary file
 
         :param protocol: protocol to use
@@ -63,7 +63,7 @@ class BinaryIOMixin:
 
         from .... import Document
 
-        if show_progress:
+        if _show_progress:
             from rich.progress import track as _track
 
             track = lambda x: _track(x, description='Deserializing')

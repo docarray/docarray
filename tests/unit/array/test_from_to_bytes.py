@@ -102,11 +102,11 @@ def test_push_pull_show_progress(show_progress, protocol):
 )
 def test_save_bytes_stream(tmpfile, protocol, compress):
     da = DocumentArray(
-        [Document(text='aaa'), Document(text='bbb'), Document(text='dasdw')]
+        [Document(text='aaa'), Document(text='bbb'), Document(text='ccc')]
     )
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
     da_reconstructed = DocumentArray.load_binary(
-        tmpfile, protocol=protocol, compress=compress, return_iterator=True
+        tmpfile, protocol=protocol, compress=compress, streaming=True
     )
     assert isinstance(da_reconstructed, types.GeneratorType)
     for d, d_rec in zip(da, da_reconstructed):
