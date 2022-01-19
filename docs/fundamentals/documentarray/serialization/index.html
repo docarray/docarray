@@ -7,10 +7,10 @@
   <meta property="og:title" content="Serialization" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization.html" />
-  <meta property="og:site_name" content="DocArray 0.3.3 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.4.0 Documentation" />
   <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. JSON string:.from_json()/.to_json()- Pydantic model:.from_pydanti..." />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.3.3 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.4.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>Serialization - DocArray 0.3.3 documentation</title>
+        <title>Serialization - DocArray 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -164,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.3.3 documentation</div>
+                <div class="brand">DocArray 0.4.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -552,20 +552,33 @@
 <p>The benchmark was conducted <a class="reference external" href="https://github.com/jina-ai/docarray/tree/a56067e486d2318e05bcf6088bd1436040107ad2">on the codebase of Jan. 5, 2022</a>.</p>
 <p>Depending on how you want to interpret the results, the figures above can be an over-estimation/under-estimation of the serialization latency: one may argue that near-empty Documents are not realistic, but serializing a DocumentArray with one million Documents is also unreal. In practice, DocumentArray passing across microservices are relatively small, say at thousands, for better overlapping the network latency and computational overhead.</p>
 <section id="wire-format-of-pickle-and-protobuf">
-<h3>Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code><a class="headerlink" href="#wire-format-of-pickle-and-protobuf" title="Permalink to this headline">¶</a></h3>
-<p>When set <code class="docutils literal notranslate"><span class="pre">protocol=pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code>, the result binary string looks like the following:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>-----------------------------------------------------------------------------------
-| Delimiter |  doc1.to_bytes()  |  Delimiter |  doc2.to_bytes()  | Delimiter | ...
------------------------------------------------------------------------------------
-      |               |
-      |               |
-      |               |
- Fixed-length         |
-                      |
-               Variable-length       
+<span id="wire-format"></span><h3>Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code><a class="headerlink" href="#wire-format-of-pickle-and-protobuf" title="Permalink to this headline">¶</a></h3>
+<p>When set <code class="docutils literal notranslate"><span class="pre">protocol=pickle</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code>, the resulting bytes look like the following:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>--------------------------------------------------------------------------------------------------------
+|   version    |   len(docs)    |  doc1_bytes  |  doc1.to_bytes()  |  doc2_bytes  |  doc2.to_bytes() ...
+---------------------------------------------------------------------------------------------------------
+| Fixed-length |  Fixed-length  | Fixed-length |  Variable-length  | Fixed-length |  Variable-length ...
+--------------------------------------------------------------------------------------------------------
+      |               |               |                  |                 |               |
+    uint8           uint64          uint32        Variable-length         ...             ...
 </pre></div>
 </div>
-<p>Here <code class="docutils literal notranslate"><span class="pre">Delimiter</span></code> is a 16-bytes separator such as <code class="docutils literal notranslate"><span class="pre">b'g\x81\xcc\x1c\x0f\x93L\xed\xa2\xb0s)\x9c\xf9\xf6\xf2'</span></code> used for setting the boundary of each Document’s serialization. Given a <code class="docutils literal notranslate"><span class="pre">to_bytes(protocol='pickle/protobuf')</span></code> binary string, once we know the first 16 bytes, the boundary is clear. Consequently, one can leverage this format to stream Documents, drop, skip, or early-stop, etc.</p>
+<p>Here <code class="docutils literal notranslate"><span class="pre">version</span></code> is a <code class="docutils literal notranslate"><span class="pre">uint8</span></code> that specifies the serialization version of the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> serialization format, followed by <code class="docutils literal notranslate"><span class="pre">len(docs)</span></code> which is a <code class="docutils literal notranslate"><span class="pre">uint64</span></code> that specifies the amount of serialized documents.
+Afterwards, <code class="docutils literal notranslate"><span class="pre">doc1_bytes</span></code> describes how many bytes are used to serialize <code class="docutils literal notranslate"><span class="pre">doc1</span></code>, followed by <code class="docutils literal notranslate"><span class="pre">doc1.to_bytes()</span></code> which is the bytes data of the document itself.
+The pattern <code class="docutils literal notranslate"><span class="pre">dock_bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">dock.to_bytes</span></code> is repeated <code class="docutils literal notranslate"><span class="pre">len(docs)</span></code> times.</p>
+</section>
+<section id="stream-large-binary-serialization-from-disk">
+<h3>Stream large binary serialization from disk<a class="headerlink" href="#stream-large-binary-serialization-from-disk" title="Permalink to this headline">¶</a></h3>
+<p>In particular, if a serialization uses <code class="docutils literal notranslate"><span class="pre">protocol='pickle'</span></code> or <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code>, then you can load it via streaming with a constant memory consumption by setting <code class="docutils literal notranslate"><span class="pre">streaming=True</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">da_generator</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'xxxl.bin'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">,</span> <span class="n">streaming</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da_generator</span><span class="p">:</span> 
+    <span class="n">d</span><span class="p">:</span> <span class="n">Document</span>
+    <span class="c1"># go nuts with `d`</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="from-to-base64">
@@ -760,6 +773,7 @@ docs {
 <li><a class="reference internal" href="#from-to-json">From/to JSON</a></li>
 <li><a class="reference internal" href="#from-to-bytes">From/to bytes</a><ul>
 <li><a class="reference internal" href="#wire-format-of-pickle-and-protobuf">Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code></a></li>
+<li><a class="reference internal" href="#stream-large-binary-serialization-from-disk">Stream large binary serialization from disk</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#from-to-base64">From/to base64</a></li>

@@ -4,6 +4,17 @@ DocArray follows semantic versioning. However, before the project reach 1.0.0, a
 
 This chapter only tracks the most important breaking changes and explain the rationale behind them.
 
+
+## 0.4.0: change on the DocumentArray serialization format
+
+This change affects `DocumentArray.load_binary`, `DocumentArray.from_bytes`, `DocumentArray.to_bytes` and users can not load old DocumentArray back if they store it with `protocol='pickle'` and `protocol='protobuf'` under old version.
+
+The major change of 0.4.0 is the serialization format of DocumentArray when `protocol` is set to `pickle` and `protobuf`. The new format enables streaming for large on-disk serialization, however the format itself is not back-compatible. One can read more details from {ref}`wire-format`. 
+
+Migration guide:
+- If you are using `protocol='pickle'` and `protocol='protobuf'` for on-disk serialization, you need to re-generate the serialized file.
+
+
 ## 0.3.0: change on the default JSON/dict serialization strategy
 
 This change is a breaking change and is not back-compatible.
