@@ -3,7 +3,7 @@ import io
 import os.path
 import pickle
 from contextlib import nullcontext
-from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional
+from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
 from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_bytes
 
@@ -22,15 +22,15 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
-        return_iterator: bool = False,
-    ) -> 'T':
-        """Load array elements from a LZ4-compressed binary file.
+        streaming: bool = False,
+    ) -> Union['DocumentArray', Generator['Document']]:
+        """Load array elements from a compressed binary file.
 
         :param file: File or filename or serialized bytes where the data is stored.
         :param protocol: protocol to use
         :param compress: compress algorithm to use
         :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
-        :param return_iterator: returns an iterator over the DocumentArray.
+        :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
         :return: a DocumentArray object
         """
@@ -42,9 +42,9 @@ class BinaryIOMixin:
             file_ctx = open(file, 'rb')
         else:
             raise ValueError(f'unsupported input {file!r}')
-        if return_iterator:
-            return cls._load_binary_stream(
-                file_ctx, protocol=protocol, compress=compress
+        if streaming:
+            yield from cls._load_binary_stream(
+                file_ctx, protocol=protocol, compress=compress, _show_progress
             )
         else:
             return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
@@ -52,7 +52,14 @@ class BinaryIOMixin:
     @classmethod
     def _load_binary_stream(
         cls: Type['T'], file_ctx: str, protocol=None, compress=None, show_progress=False
-    ) -> 'T':
+    ) -> Generator['Document']:
+        """Yield `Document` objects from a binary file
+
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: a generator of `Document` objects
+        """
 
         from .... import Document
 
@@ -83,6 +90,13 @@ class BinaryIOMixin:
 
     @classmethod
     def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
+        """Read a `DocumentArray` object from a binary file
+
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+        :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
+        :return: a `DocumentArray`
+        """
         from .... import Document
 
         with file_ctx as fp:
