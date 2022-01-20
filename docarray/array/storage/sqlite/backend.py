@@ -1,5 +1,7 @@
-import dataclasses
-from dataclasses import dataclass
+import sqlite3
+import warnings
+from dataclasses import dataclass, field
+from tempfile import NamedTemporaryFile
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -7,56 +9,84 @@ from typing import (
     Dict,
 )
 
+from .helper import initialize_table
 from ..base.backend import BaseBackendMixin
+from ....helper import random_identity
 
 if TYPE_CHECKING:
-    import sqlite3
-
     from ....types import (
         DocumentArraySourceType,
     )
+
+
+def _sanitize_table_name(table_name: str) -> str:
+    ret = ''.join(c for c in table_name if c.isalnum() or c == '_')
+    if ret != table_name:
+        warnings.warn(f'The table name is changed to {ret} due to illegal characters')
+    return ret
 
 
 @dataclass
 class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
-    serialize_config: Optional[Dict] = None
+    serialize_config: Dict = field(default_factory=dict)
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    @property
-    def schema_version(self) -> str:
-        return '0'
+    schema_version = '0'
 
-    def _sql(self, *arg, **kwargs) -> 'sqlite3.Cursor':
-        return self.connection.cursor().execute(*arg, **kwargs)
+    def _sql(self, *args, **kwargs) -> 'sqlite3.Cursor':
+        return self._cursor.execute(*args, **kwargs)
 
-    def _insert_doc_at_idx(self, doc, idx: Optional[int] = None):
-        if idx is None:
-            idx = len(self)
-        self._sql(
-            f'INSERT INTO {self.table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-            (doc.id, doc, idx),
-        )
-
-    def _shift_index_right_backward(self, start: int):
-        idx = len(self) - 1
-        while idx >= start:
-            self._sql(
-                f"UPDATE {self.table_name} SET item_order = ? WHERE item_order = ?",
-                (idx + 1, idx),
-            )
-            idx -= 1
+    def _commit(self):
+        self._connection.commit()
 
     def _init_storage(
-        self,
-        docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[SqliteConfig] = None,
+            self,
+            docs: Optional['DocumentArraySourceType'] = None,
+            config: Optional[SqliteConfig] = None,
     ):
-        super().__init__(**(dataclasses.asdict(config) if config else {}))
+        if not config:
+            config = SqliteConfig()
+
+        from docarray import Document
+
+        sqlite3.register_adapter(
+            Document, lambda d: d.to_bytes(**config.serialize_config)
+        )
+        sqlite3.register_converter(
+            'Document', lambda x: Document.from_bytes(x, **config.serialize_config)
+        )
+
+        _conn_kwargs = dict(detect_types=sqlite3.PARSE_DECLTYPES)
+        if config.connection is None:
+            self._connection = sqlite3.connect(
+                NamedTemporaryFile().name, **_conn_kwargs
+            )
+        elif isinstance(config.connection, str):
+            self._connection = sqlite3.connect(config.connection, **_conn_kwargs)
+        elif isinstance(config.connection, sqlite3.Connection):
+            self._connection = config.connection
+        else:
+            raise TypeError(
+                f'connection argument must be None or a string or a sqlite3.Connection, not `{type(connection)}`'
+            )
+
+        self._table_name = (
+            _sanitize_table_name(self.__class__.__name__ + random_identity())
+            if config.table_name is None
+            else _sanitize_table_name(config.table_name)
+        )
+        self._cursor = self._connection.cursor()
+        self._persist = not config.table_name
+        initialize_table(
+            self._table_name, self.__class__.__name__, self.schema_version, self._cursor
+        )
+        self._connection.commit()
+
         if docs is not None:
             self.clear()
             self.extend(docs)
