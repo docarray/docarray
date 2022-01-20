@@ -85,8 +85,9 @@ class PushPullMixin:
 
         with progress as p_bar:
             body = BufferReader(data, p_bar, task_id)
-            _service_url = _get_cloud_api() + '/v2/rpc/da.'
-            requests.post(_service_url + 'push', data=body, headers=headers)
+            requests.post(
+                f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
+            )
 
     @classmethod
     def pull(
@@ -102,8 +103,7 @@ class PushPullMixin:
         """
         import requests
 
-        _service_url = _get_cloud_api() + '/v2/rpc/da.'
-        url = f'{_service_url}pull?token={token}'
+        url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
         response = requests.get(url)
 
         progress = _get_progressbar(show_progress)
