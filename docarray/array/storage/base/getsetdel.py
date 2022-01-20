@@ -36,20 +36,29 @@ class BaseGetSetDelMixin(ABC):
 
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
+        Override this function if there is a more efficient logic
 
-        Override this function if there is a more efficient logic"""
+        :param _slice: the slice used for indexing
+        :return: an iterable of document
+        """
         return (self._get_doc_by_offset(o) for o in range(len(self))[_slice])
 
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
+        Override this function if there is a more efficient logic
 
-        Override this function if there is a more efficient logic"""
+        :param offsets: the offsets used for indexing
+        :return: an iterable of document
+        """
         return (self._get_doc_by_offset(o) for o in offsets)
 
     def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_id`
+        Override this function if there is a more efficient logic
 
-        Override this function if there is a more efficient logic"""
+        :param ids: the ids used for indexing
+        :return: an iterable of document
+        """
         return (self._get_doc_by_id(_id) for _id in ids)
 
     # Delitem APIs
@@ -64,15 +73,17 @@ class BaseGetSetDelMixin(ABC):
 
     def _del_docs_by_slice(self, _slice: slice):
         """This function is derived and may not have the most efficient implementation.
-
-        Override this function if there is a more efficient logic"""
+        Override this function if there is a more efficient logic
+        :param _slice: the slice used for indexing
+        """
         for j in range(len(self))[_slice]:
             self._del_doc_by_offset(j)
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """This function is derived and may not have the most efficient implementation.
-
-        Override this function if there is a more efficient logic"""
+        Override this function if there is a more efficient logic
+        :param mask: the boolean mask used for indexing
+        """
         for idx, m in enumerate(mask):
             if not m:
                 self._del_doc_by_offset(idx)
@@ -98,6 +109,9 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic
+        :param _slice: the slice used for indexing
+        :param value: the value docs will be updated to
+        :raises TypeError: error raised when right-hand assignment is not an iterable
         """
         if not isinstance(value, Iterable):
             raise TypeError(
@@ -112,12 +126,14 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic
+        :param docs: the docs to update
+        :param values: the value docs will be updated to
         """
         for _d, _v in zip(docs, values):
             _d._data = _v._data
 
         for _d in docs:
-            if _d not in docs:
+            if _d not in self:
                 root_d = self._find_root_doc(_d)
             else:
                 # _d is already on the root-level
@@ -130,6 +146,9 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic
+        :param offset: the offset used for indexing
+        :param attr: the attribute of document to update
+        :param value: the value doc's attr will be updated to
         """
         d = self._get_doc_by_offset(offset)
         if hasattr(d, attr):
@@ -140,14 +159,20 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic
+        :param _id: the id used for indexing
+        :param attr: the attribute of document to update
+        :param value: the value doc's attr will be updated to
         """
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
             setattr(d, attr, value)
             self._set_doc_by_id(d.id, d)
 
-    def _find_root_doc(self, d: Document):
-        """Find `d`'s root Document in an exhaustive manner"""
+    def _find_root_doc(self, d: Document) -> 'Document':
+        """Find `d`'s root Document in an exhaustive manner
+        :param: d: the input document
+        :return: the root of the input document
+        """
         from docarray import DocumentArray
 
         for _d in self:

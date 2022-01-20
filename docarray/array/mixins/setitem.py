@@ -72,6 +72,8 @@ class SetItemMixin:
             else:
                 self._set_doc_by_id(index, value)
         elif isinstance(index, slice):
+            # TODO: handle this case da[1:3] = DocumentAray.empty(10)
+            # where length of value is longer than the slice
             self._set_docs_by_slice(index, value)
         elif index is Ellipsis:
             self._set_doc_value_pairs(self.flatten(), value)
@@ -79,8 +81,52 @@ class SetItemMixin:
             if (
                 isinstance(index, tuple)
                 and len(index) == 2
-                and isinstance(index[0], (slice, Sequence))
+                and (
+                    isinstance(index[0], (slice, Sequence, str, int))
+                    or index[0] is Ellipsis
+                )
+                and isinstance(index[1], (str, Sequence))
             ):
+                # TODO: this is added because we are still trying to figure out the proper way
+                # to set attribute and to get test_path_syntax_indexing_set to pass.
+                # we may have to refactor the following logic
+                from ..weaviate import DocumentArrayWeaviate
+                from ..memory import DocumentArrayInMemory
+
+                # NOTE: this check is not proper way to handle, but a temporary hack.
+                # writing it this way to minimize effect on other docarray classs and
+                # to make it easier to remove/refactor the following block
+                if isinstance(self, (DocumentArrayWeaviate, DocumentArrayInMemory)):
+                    if index[1] in self:
+                        # we first handle he case when second item in index is an id not attr
+                        _docs = DocumentArrayInMemory(
+                            self[index[0]]
+                        ) + DocumentArrayInMemory(self[index[1]])
+                        self._set_doc_value_pairs(_docs, value)
+                        return
+
+                    _docs = self[index[0]]
+                    if isinstance(_docs, Document):
+                        _docs = DocumentArrayInMemory(_docs)
+                        # because we've augmented docs dimension, we do the same for value
+                        value = (value,)
+
+                    attrs = index[1]
+                    if isinstance(attrs, str):
+                        attrs = (attrs,)
+                        # because we've augmented attrs dimension, we do the same for value
+                        value = (value,)
+
+                    for attr in attrs:
+                        if any(not hasattr(_d, attr) for _d in _docs):
+                            raise ValueError(
+                                f'`{attr}` is neither a valid id nor attribute name'
+                            )
+
+                    for _a, _v in zip(attrs, value):
+                        self._set_docs_attrs(_docs, _a, _v)
+                    return
+
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
                     if index[1] in self:

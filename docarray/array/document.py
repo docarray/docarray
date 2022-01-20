@@ -41,6 +41,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .sqlite import DocumentArraySqlite
 
                 instance = super().__new__(DocumentArraySqlite)
+            elif storage == 'weaviate':
+                from .weaviate import DocumentArrayWeaviate
+
+                instance = super().__new__(DocumentArrayWeaviate)
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
         else:
