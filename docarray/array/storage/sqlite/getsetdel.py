@@ -7,6 +7,8 @@ from .... import Document
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
+    # essential methods start
+
     def _del_doc_by_id(self, _id: str):
         self._sql(f'DELETE FROM {self._table_name} WHERE doc_id=?', (_id,))
         self._commit()
@@ -48,6 +50,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             raise KeyError(f'Can not find Document with id=`{id}`')
         return res[0]
 
+    # essentials end here
+
+    # now start the optimized bulk methods
+
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         l = len(self)
         offsets = [o + (l if o < 0 else 0) for o in offsets]
@@ -60,3 +66,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         return self._get_docs_by_offsets(range(len(self))[_slice])
+
+    def _del_all_docs(self):
+        self._sql(f'DELETE FROM {self._table_name}')
+        self._commit()
+
+    def _del_docs_by_slice(self, _slice: slice):
+        offsets = range(len(self))[_slice]
+        self._sql(
+            f"DELETE FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
+            offsets,
+        )
+        self._commit()

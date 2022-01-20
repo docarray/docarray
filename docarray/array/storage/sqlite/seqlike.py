@@ -49,8 +49,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         self._commit()
 
     def clear(self) -> None:
-        self._sql(f'DELETE FROM {self._table_name}')
-        self._commit()
+        self._del_all_docs()
 
     def __del__(self) -> None:
         if not self._persist:

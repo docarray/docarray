@@ -1,7 +1,3 @@
-from .base import BaseDocumentArray
-from .mixins import AllMixins
-from .storage.memory import StorageMixins
+from .memory import DocumentArrayMemory as DocumentArray
 
-
-class DocumentArray(StorageMixins, AllMixins, BaseDocumentArray):
-    ...
+__all__ = ['DocumentArray']

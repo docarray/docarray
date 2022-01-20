@@ -38,8 +38,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def clear(self):
         """Clear the data of :class:`DocumentArray`"""
-        self._data.clear()
-        self._id2offset.clear()
+        self._del_all_docs()
 
     def __bool__(self):
         """To simulate ```l = []; if l: ...```
