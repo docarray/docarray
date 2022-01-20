@@ -45,9 +45,9 @@ class BackendMixin(BaseBackendMixin):
         self._connection.commit()
 
     def _init_storage(
-            self,
-            docs: Optional['DocumentArraySourceType'] = None,
-            config: Optional[SqliteConfig] = None,
+        self,
+        docs: Optional['DocumentArraySourceType'] = None,
+        config: Optional[SqliteConfig] = None,
     ):
         if not config:
             config = SqliteConfig()
