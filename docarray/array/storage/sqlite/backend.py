@@ -24,7 +24,7 @@ class SqliteConfig:
     serialize_config: Optional[Dict] = None
 
 
-class SqliteBackendMixin(BaseBackendMixin):
+class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
     @property

@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     )
 
 
-class MemoryBackendMixin(BaseBackendMixin):
+class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend. """
 
     @property

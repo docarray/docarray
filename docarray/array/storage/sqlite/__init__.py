@@ -1,10 +1,10 @@
-from .backend import SqliteBackendMixin
+from .backend import BackendMixin
 from .getsetdel import GetSetDelMixin
 from .seqlike import SequenceLikeMixin
 from abc import ABC
 
-__all__ = ['SqliteStorageMixins']
+__all__ = ['StorageMixins']
 
 
-class SqliteStorageMixins(SqliteBackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
+class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...

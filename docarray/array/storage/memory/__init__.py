@@ -1,10 +1,10 @@
-from .backend import MemoryBackendMixin
+from .backend import BackendMixin
 from .getsetdel import GetSetDelMixin
 from .seqlike import SequenceLikeMixin
 from abc import ABC
 
-__all__ = ['MemoryStorageMixins']
+__all__ = ['StorageMixins']
 
 
-class MemoryStorageMixins(MemoryBackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
+class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...
