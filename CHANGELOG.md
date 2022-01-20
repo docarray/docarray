@@ -15,6 +15,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -369,4 +370,23 @@
 
  - [[```1b786969```](https://github.com/jina-ai/docarray/commit/1b786969a851b2dd13f1ba4a52ee5406042856df)] __-__ __docs__: fix typo in docs (*Han Xiao*)
  - [[```c6e1b9f0```](https://github.com/jina-ai/docarray/commit/c6e1b9f073c4300ee9404128aeb1291e231044b5)] __-__ __version__: the next version will be 0.4.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-2></a>
+## Release Note (`0.4.2`)
+
+> Release time: 2022-01-20 06:12:09
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```66ceeda5```](https://github.com/jina-ai/docarray/commit/66ceeda5e740fc9aa6e27b581b8ee218d32221f0)] __-__ __array__: move hubble url to inline (#67) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```a1b29976```](https://github.com/jina-ai/docarray/commit/a1b29976b82a1c79b014ae4a3d4b0b3792363876)] __-__ __version__: the next version will be 0.4.2 (*Jina Dev Bot*)
 
