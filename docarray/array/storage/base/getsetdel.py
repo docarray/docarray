@@ -99,6 +99,8 @@ class BaseGetSetDelMixin(ABC):
 
         Override this function if there is a more efficient logic
         """
+        if not isinstance(value, Iterable):
+            raise TypeError('You can only assign an iterable')
         for _offset, val in zip(range(len(self))[_slice], value):
             self._set_doc_by_offset(_offset, val)
 
