@@ -7,12 +7,13 @@ from typing import (
 )
 
 from .document import DocumentArray
+from .memory import DocumentArrayInMemory
 
 if TYPE_CHECKING:
     from ..document import Document
 
 
-class ChunkArray(DocumentArray):
+class ChunkArray(DocumentArrayInMemory):
     """
     :class:`ChunkArray` inherits from :class:`DocumentArray`.
     It's a subset of Documents.

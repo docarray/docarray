@@ -1,7 +1,7 @@
-from .base import BaseDocumentArray
-from .mixins import AllMixins
+from .base import DocumentArray
 from .storage.sqlite import StorageMixins
 
 
-class DocumentArraySqlite(StorageMixins, AllMixins, BaseDocumentArray):
-    ...
+class DocumentArraySqlite(StorageMixins, DocumentArray):
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls)

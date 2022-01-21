@@ -1,3 +1,3 @@
-from .memory import DocumentArrayInMemory as DocumentArray
+from .base import DocumentArray
 
 __all__ = ['DocumentArray']
