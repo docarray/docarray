@@ -125,7 +125,6 @@ def test_with_embedding_no_tensor():
     'tag_value, tag_type',
     [
         (3.0, float),
-        (3.4, float),
         ('hello', str),
         ('1', str),
         (True, bool),
