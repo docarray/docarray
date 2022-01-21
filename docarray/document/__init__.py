@@ -24,6 +24,7 @@ class Document(AllMixins, BaseDCType):
     def __init__(
         self,
         _obj: Optional[Dict],
+        copy: bool = False,
         field_resolver: Optional[Dict[str, str]] = None,
         unknown_fields_handler: str = 'catch',
     ):
