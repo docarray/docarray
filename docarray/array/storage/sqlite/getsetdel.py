@@ -26,8 +26,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         self._sql(
-            f'UPDATE {self._table_name} SET serialized_value=? WHERE doc_id=?',
-            (value, _id),
+            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE doc_id=?',
+            (value, value.id, _id),
         )
         self._commit()
 
