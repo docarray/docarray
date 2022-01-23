@@ -59,6 +59,9 @@ class PydanticDocument(BaseModel):
             else:
                 raise ValueError('must be bytes')
 
+    class Config:
+        smart_union = True
+
 
 PydanticDocument.update_forward_refs()
 
