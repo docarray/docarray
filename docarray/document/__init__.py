@@ -1,6 +1,6 @@
-from typing import overload, Dict, Optional, List, TYPE_CHECKING, Union, Sequence
+from typing import overload, Dict, Optional, List, TYPE_CHECKING, Sequence
 
-from .data import DocumentData, default_values
+from .data import DocumentData
 from .mixins import AllMixins
 from ..base import BaseDCType
 
@@ -24,15 +24,7 @@ class Document(AllMixins, BaseDCType):
     def __init__(
         self,
         _obj: Optional[Dict],
-        field_resolver: Optional[Dict[str, str]] = None,
-        unknown_fields_handler: str = 'catch',
-    ):
-        ...
-
-    @overload
-    def __init__(
-        self,
-        _obj: Optional[Dict],
+        copy: bool = False,
         field_resolver: Optional[Dict[str, str]] = None,
         unknown_fields_handler: str = 'catch',
     ):
