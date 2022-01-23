@@ -16,6 +16,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -389,4 +390,24 @@
 ### 🍹 Other Improvements
 
  - [[```a1b29976```](https://github.com/jina-ai/docarray/commit/a1b29976b82a1c79b014ae4a3d4b0b3792363876)] __-__ __version__: the next version will be 0.4.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-3></a>
+## Release Note (`0.4.3`)
+
+> Release time: 2022-01-23 09:47:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Delgermurun,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```d840d301```](https://github.com/jina-ai/docarray/commit/d840d301a649adc197de3753c86a0e92e2c3f4d5)] __-__ __document__: constructor overload (#74) (*Delgermurun*)
+ - [[```412930d7```](https://github.com/jina-ai/docarray/commit/412930d76ea8c11a556e9399db1c638cfa282c50)] __-__ __pydantic__: turn on pydantic smart union (#73) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```ecf89c4a```](https://github.com/jina-ai/docarray/commit/ecf89c4aa46063cc53b6a7cac540864218e6afa3)] __-__ __version__: the next version will be 0.4.3 (*Jina Dev Bot*)
 
