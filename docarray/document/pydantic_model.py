@@ -38,7 +38,7 @@ class PydanticDocument(BaseModel):
     text: Optional[str]
     weight: Optional[float]
     uri: Optional[str]
-    tags: Optional[Dict[str, Any]]
+    tags: Optional[Dict[str, '_StructValueType']]
     offset: Optional[float]
     location: Optional[List[float]]
     embedding: Optional[Any]
@@ -58,6 +58,9 @@ class PydanticDocument(BaseModel):
                 return base64.b64encode(v).decode('utf8')
             else:
                 raise ValueError('must be bytes')
+
+    class Config:
+        smart_union = True
 
 
 PydanticDocument.update_forward_refs()
