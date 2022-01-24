@@ -68,7 +68,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     # essentials end here
 
     # now start the optimized bulk methods
-
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         l = len(self)
         offsets = [o + (l if o < 0 else 0) for o in offsets]
@@ -88,6 +87,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_docs_by_slice(self, _slice: slice):
         offsets = range(len(self))[_slice]
+        self._sql(
+            f"DELETE FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
+            offsets,
+        )
+        self._commit()
+
+    def _del_docs_by_mask(self, mask: Sequence[bool]):
+
+        offsets = [i for i,m in enumerate(mask) if m==True]
         self._sql(
             f"DELETE FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
             offsets,
