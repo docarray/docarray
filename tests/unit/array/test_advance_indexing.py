@@ -283,7 +283,9 @@ def test_single_boolean_and_padding(storage):
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
 def test_edge_case_two_strings(storage):
     # getitem
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')], storage=storage)
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     assert da['1', 'id'] == '1'
     assert len(da['1', '2']) == 2
     assert isinstance(da['1', '2'], DocumentArray)
@@ -299,7 +301,8 @@ def test_edge_case_two_strings(storage):
     assert len(da) == 1
 
     da = DocumentArray(
-        [Document(id=str(i), text='hey') for i in range(3)], storage=storage)
+        [Document(id=str(i), text='hey') for i in range(3)], storage=storage
+    )
     del da['1', 'text']
     assert len(da) == 3
     assert not da[1].text
@@ -307,12 +310,16 @@ def test_edge_case_two_strings(storage):
     del da['2', 'hello']
 
     # setitem
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')], storage=storage)
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     da['1', '2'] = DocumentArray.empty(2)
     assert da[0].id != '1'
     assert da[1].id != '2'
 
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')], storage=storage)
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     da['1', 'text'] = 'hello'
     assert da['1'].text == 'hello'
 

@@ -29,7 +29,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             )
         self._commit()
 
-
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._sql(
             f'UPDATE {self._table_name} SET serialized_value=? WHERE item_order=?',
@@ -51,7 +50,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             (index + (len(self) if index < 0 else 0),),
         )
         res = r.fetchone()
-        #import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         if res is None:
             raise IndexError('index out of range')
         return res[0]
