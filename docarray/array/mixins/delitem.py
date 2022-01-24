@@ -39,7 +39,7 @@ class DelItemMixin:
             ):
                 if isinstance(index[0], str) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
-                    if index[1] in self._id2offset:
+                    if index[1] in self:
                         del self[index[0]]
                         del self[index[1]]
                     else:

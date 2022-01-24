@@ -288,10 +288,11 @@ def test_edge_case_two_strings(storage):
     del da['1', '2']
     assert len(da) == 1
 
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')], storage=storage)
-    del da['1', 'id']
+    da = DocumentArray(
+        [Document(id=str(i), text='hey') for i in range(3)], storage=storage)
+    del da['1', 'text']
     assert len(da) == 3
-    assert not da[0].id
+    assert not da[1].text
 
     del da['2', 'hello']
 
