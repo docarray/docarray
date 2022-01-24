@@ -33,8 +33,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         offset = len(self) + offset if offset < 0 else offset
 
         self._sql(
-            f'UPDATE {self._table_name} SET serialized_value=? WHERE item_order=?',
-            (value, offset),
+            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE item_order=?',
+            (value, value.id, offset),
         )
 
         self._commit()
