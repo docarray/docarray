@@ -17,6 +17,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -410,4 +411,23 @@
 ### 🍹 Other Improvements
 
  - [[```ecf89c4a```](https://github.com/jina-ai/docarray/commit/ecf89c4aa46063cc53b6a7cac540864218e6afa3)] __-__ __version__: the next version will be 0.4.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-4></a>
+## Release Note (`0.4.4`)
+
+> Release time: 2022-01-24 12:47:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```06cd577e```](https://github.com/jina-ai/docarray/commit/06cd577e732547bdd906b481ac0f9d385c4460eb)] __-__ change pydantic model optional id (#77) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```7a868d3b```](https://github.com/jina-ai/docarray/commit/7a868d3b37744ba9618912657198fc5b29532f06)] __-__ __version__: the next version will be 0.4.4 (*Jina Dev Bot*)
 
