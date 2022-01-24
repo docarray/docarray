@@ -14,6 +14,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._commit()
 
     def _del_doc_by_offset(self, offset: int):
+
+        # if offset = -2 and len(self)= 100 use offset = 98
+        if offset < 0:
+            offset = len(self) + offset
+
         self._sql(f'DELETE FROM {self._table_name} WHERE item_order=?', (offset,))
         # shift the offset of every value on the right position of the deleted item
         for i in range(offset, len(self) + 1):

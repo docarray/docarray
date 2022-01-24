@@ -11,6 +11,10 @@ from docarray import DocumentArray, Document
 def docs():
     yield (Document(text=j) for j in range(100))
 
+@pytest.fixture
+def indices():
+    yield (i for i in [-2,0,2])
+
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
 def test_getter_int_str(docs, storage):
@@ -49,19 +53,25 @@ def test_setter_int_str(docs, storage):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
-def test_del_int_str(docs, storage):
-    docs = DocumentArray(docs, storage=storage)
-    zero_id = docs[0].id
-    del docs[0]
-    assert len(docs) == 99
-    assert zero_id not in docs
+def test_del_int_str(docs, storage, indices):
 
-    new_zero_id = docs[0].id
-    new_doc_zero = docs[0]
-    del docs[new_zero_id]
-    assert len(docs) == 98
-    assert zero_id not in docs
-    assert new_doc_zero not in docs
+    docs = DocumentArray(docs, storage=storage)
+    initial_len = len(docs)
+    deleted_elements = 0
+    for pos in indices:
+        pos_id = docs[pos].id
+        del docs[pos]
+        deleted_elements += 1
+        assert pos_id not in docs
+        assert len(docs) == initial_len - deleted_elements
+
+        new_pos_id = docs[pos].id
+        new_doc_zero = docs[pos]
+        del docs[new_pos_id]
+        deleted_elements += 1
+        assert len(docs) == initial_len - deleted_elements
+        assert pos_id not in docs
+        assert new_doc_zero not in docs
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
