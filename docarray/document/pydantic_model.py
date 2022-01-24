@@ -28,7 +28,7 @@ class _NamedScore(BaseModel):
 
 
 class PydanticDocument(BaseModel):
-    id: str
+    id: Optional[str]
     parent_id: Optional[str]
     granularity: Optional[int]
     adjacency: Optional[int]

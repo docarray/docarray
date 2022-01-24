@@ -160,3 +160,7 @@ def test_to_from_with_blob(protocol, to_fn, blob):
     assert d.blob == r_d.blob
     if d.blob:
         assert isinstance(r_d.blob, bytes)
+
+
+def test_pydantic_not_id():
+    _ = PydanticDocument()
