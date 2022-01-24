@@ -31,8 +31,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._sql(
-            f'UPDATE {self._table_name} SET serialized_value=? WHERE item_order=?',
-            (value, offset),
+            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE item_order=?',
+            (value, value.id, offset),
         )
 
         self._commit()

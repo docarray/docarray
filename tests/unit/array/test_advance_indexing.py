@@ -1,6 +1,3 @@
-import os
-import time
-
 import numpy as np
 import pytest
 
@@ -55,7 +52,6 @@ def test_setter_int_str(docs, storage):
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
 def test_del_int_str(docs, storage, indices):
-
     docs = DocumentArray(docs, storage=storage)
     initial_len = len(docs)
     deleted_elements = 0
