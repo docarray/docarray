@@ -114,7 +114,17 @@ class BaseGetSetDelMixin(ABC):
         Override this function if there is a more efficient logic
         """
         for _d, _v in zip(docs, values):
-            self._set_doc_by_id(_d.id, _v)
+            _d._data = _v._data
+
+        for _d in docs:
+            if _d not in docs:
+                root_d = self._find_root_doc(_d)
+            else:
+                # _d is already on the root-level
+                root_d = _d
+
+            if root_d:
+                self._set_doc_by_id(root_d.id, root_d)
 
     def _set_doc_attr_by_offset(self, offset: int, attr: str, value: Any):
         """This function is derived and may not have the most efficient implementation.
@@ -135,3 +145,12 @@ class BaseGetSetDelMixin(ABC):
         if hasattr(d, attr):
             setattr(d, attr, value)
             self._set_doc_by_id(d.id, d)
+
+    def _find_root_doc(self, d: Document):
+        """Find `d`'s root Document in an exhaustive manner """
+        from docarray import DocumentArray
+
+        for _d in self:
+            _all_ids = set(DocumentArray(d)[...][:, 'id'])
+            if d.id in _all_ids:
+                return _d
