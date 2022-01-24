@@ -72,7 +72,7 @@ class BackendMixin(BaseBackendMixin):
             self._connection = config.connection
         else:
             raise TypeError(
-                f'connection argument must be None or a string or a sqlite3.Connection, not `{type(connection)}`'
+                f'connection argument must be None or a string or a sqlite3.Connection, not `{type(config.connection)}`'
             )
 
         self._table_name = (

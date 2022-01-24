@@ -113,10 +113,13 @@ class SetItemMixin:
 
                     _docs = self[index[0]]
                     for _a, _v in zip(_attrs, value):
-                        if _a == 'tensor':
-                            _docs.tensors = _v
-                        elif _a == 'embedding':
-                            _docs.embeddings = _v
+                        if _a in ('tensor', 'embedding'):
+                            if _a == 'tensor':
+                                _docs.tensors = _v
+                            elif _a == 'embedding':
+                                _docs.embeddings = _v
+                            for _d in _docs:
+                                self._set_doc_by_id(_d.id, _d)
                         else:
                             if len(_docs) == 1:
                                 self._set_doc_attr_by_id(_docs[0].id, _a, _v)

@@ -15,13 +15,22 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_offset(self, offset: int):
         self._sql(f'DELETE FROM {self._table_name} WHERE item_order=?', (offset,))
+        # shift the offset of every value on the right position of the deleted item
+        for i in range(offset, len(self) + 1):
+            # doc_id values should be also changed
+            self._sql(
+                f'UPDATE {self._table_name} SET item_order=? WHERE item_order=?',
+                (i - 1, i),
+            )
         self._commit()
+
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._sql(
             f'UPDATE {self._table_name} SET serialized_value=? WHERE item_order=?',
             (value, offset),
         )
+
         self._commit()
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
@@ -37,6 +46,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             (index + (len(self) if index < 0 else 0),),
         )
         res = r.fetchone()
+        #import pdb;pdb.set_trace()
         if res is None:
             raise IndexError('index out of range')
         return res[0]
