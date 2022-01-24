@@ -11,9 +11,10 @@ from docarray import DocumentArray, Document
 def docs():
     yield (Document(text=j) for j in range(100))
 
+
 @pytest.fixture
 def indices():
-    yield (i for i in [-2,0,2])
+    yield (i for i in [-2, 0, 2])
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
