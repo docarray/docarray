@@ -73,8 +73,11 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return r.fetchone()[0]
 
     def __iter__(self) -> Iterator['Document']:
-        r = self._sql(
+        # TODO: make this memory efficient
+        self._sql(
             f'SELECT serialized_value FROM {self._table_name} ORDER BY item_order'
         )
-        for res in r:
-            yield res[0]
+        result = self._cursor.fetchall()
+        for r in result:
+            yield r[0]
+
