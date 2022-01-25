@@ -81,7 +81,7 @@ class BackendMixin(BaseBackendMixin):
             else _sanitize_table_name(config.table_name)
         )
         self._cursor = self._connection.cursor()
-        self._persist = not config.table_name
+        self._persist = bool(config.table_name)
         initialize_table(
             self._table_name, self.__class__.__name__, self.schema_version, self._cursor
         )
