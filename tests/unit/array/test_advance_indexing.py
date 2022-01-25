@@ -6,7 +6,7 @@ from docarray import DocumentArray, Document
 
 @pytest.fixture
 def docs():
-    yield (Document(text=str(j)) for j in range(100))
+    yield (Document(text=j) for j in range(100))
 
 
 @pytest.fixture
