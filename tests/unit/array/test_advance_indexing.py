@@ -5,90 +5,111 @@ from docarray import DocumentArray, Document
 
 
 @pytest.fixture
-def docarray100():
-    yield DocumentArray(Document(text=j) for j in range(100))
+def docs():
+    yield (Document(text=j) for j in range(100))
 
 
-def test_getter_int_str(docarray100):
+@pytest.fixture
+def indices():
+    yield (i for i in [-2, 0, 2])
+
+
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_getter_int_str(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
     # getter
-    assert docarray100[99].text == 99
-    assert docarray100[np.int(99)].text == 99
-    assert docarray100[-1].text == 99
-    assert docarray100[0].text == 0
+    assert docs[99].text == 99
+    assert docs[np.int(99)].text == 99
+    assert docs[-1].text == 99
+    assert docs[0].text == 0
     # string index
-    assert docarray100[docarray100[0].id].text == 0
-    assert docarray100[docarray100[99].id].text == 99
-    assert docarray100[docarray100[-1].id].text == 99
+    assert docs[docs[0].id].text == 0
+    assert docs[docs[99].id].text == 99
+    assert docs[docs[-1].id].text == 99
 
     with pytest.raises(IndexError):
-        docarray100[100]
+        docs[100]
 
     with pytest.raises(KeyError):
-        docarray100['adsad']
+        docs['adsad']
 
 
-def test_setter_int_str(docarray100):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_setter_int_str(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
     # setter
-    docarray100[99] = Document(text='hello')
-    docarray100[0] = Document(text='world')
+    docs[99] = Document(text='hello')
+    docs[0] = Document(text='world')
 
-    assert docarray100[99].text == 'hello'
-    assert docarray100[-1].text == 'hello'
-    assert docarray100[0].text == 'world'
+    assert docs[99].text == 'hello'
+    assert docs[-1].text == 'hello'
+    assert docs[0].text == 'world'
 
-    docarray100[docarray100[2].id] = Document(text='doc2')
+    docs[docs[2].id] = Document(text='doc2')
     # string index
-    assert docarray100[docarray100[2].id].text == 'doc2'
+    assert docs[docs[2].id].text == 'doc2'
 
 
-def test_del_int_str(docarray100):
-    zero_id = docarray100[0].id
-    del docarray100[0]
-    assert len(docarray100) == 99
-    assert zero_id not in docarray100
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_del_int_str(docs, storage, indices):
+    docs = DocumentArray(docs, storage=storage)
+    initial_len = len(docs)
+    deleted_elements = 0
+    for pos in indices:
+        pos_id = docs[pos].id
+        del docs[pos]
+        deleted_elements += 1
+        assert pos_id not in docs
+        assert len(docs) == initial_len - deleted_elements
 
-    new_zero_id = docarray100[0].id
-    new_doc_zero = docarray100[0]
-    del docarray100[new_zero_id]
-    assert len(docarray100) == 98
-    assert zero_id not in docarray100
-    assert new_doc_zero not in docarray100
+        new_pos_id = docs[pos].id
+        new_doc_zero = docs[pos]
+        del docs[new_pos_id]
+        deleted_elements += 1
+        assert len(docs) == initial_len - deleted_elements
+        assert pos_id not in docs
+        assert new_doc_zero not in docs
 
 
-def test_slice(docarray100):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_slice(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
     # getter
-    assert len(docarray100[1:5]) == 4
-    assert len(docarray100[1:100:5]) == 20  # 1 to 100, sep with 5
+    assert len(docs[1:5]) == 4
+    assert len(docs[1:100:5]) == 20  # 1 to 100, sep with 5
 
     # setter
-    with pytest.raises(TypeError, match='can only assign an iterable'):
-        docarray100[1:5] = Document(text='repl')
+    with pytest.raises(TypeError, match='an iterable'):
+        docs[1:5] = Document(text='repl')
 
-    docarray100[1:5] = [Document(text=f'repl{j}') for j in range(4)]
-    for d in docarray100[1:5]:
+    docs[1:5] = [Document(text=f'repl{j}') for j in range(4)]
+    for d in docs[1:5]:
         assert d.text.startswith('repl')
-    assert len(docarray100) == 100
+    assert len(docs) == 100
 
     # del
-    zero_doc = docarray100[0]
-    twenty_doc = docarray100[20]
-    del docarray100[0:20]
-    assert len(docarray100) == 80
-    assert zero_doc not in docarray100
-    assert twenty_doc in docarray100
+    zero_doc = docs[0]
+    twenty_doc = docs[20]
+    del docs[0:20]
+    assert len(docs) == 80
+    assert zero_doc not in docs
+    assert twenty_doc in docs
 
 
-def test_sequence_bool_index(docarray100):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_sequence_bool_index(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
     # getter
     mask = [True, False] * 50
-    assert len(docarray100[mask]) == 50
-    assert len(docarray100[[True, False]]) == 1
+    assert len(docs[mask]) == 50
+    assert len(docs[[True, False]]) == 1
 
     # setter
     mask = [True, False] * 50
-    docarray100[mask] = [Document(text=f'repl{j}') for j in range(50)]
+    # docs[mask] = [Document(text=f'repl{j}') for j in range(50)]
+    docs[mask, 'text'] = [f'repl{j}' for j in range(50)]
 
-    for idx, d in enumerate(docarray100):
+    for idx, d in enumerate(docs):
         if idx % 2 == 0:
             # got replaced
             assert d.text.startswith('repl')
@@ -96,61 +117,68 @@ def test_sequence_bool_index(docarray100):
             assert isinstance(d.text, int)
 
     # del
-    del docarray100[mask]
-    assert len(docarray100) == 50
-
-    del docarray100[mask]
-    assert len(docarray100) == 25
+    del docs[mask]
+    assert len(docs) == 50
 
 
 @pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
-def test_sequence_int(docarray100, nparray):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_sequence_int(docs, nparray, storage):
+    docs = DocumentArray(docs, storage=storage)
     # getter
     idx = nparray([1, 3, 5, 7, -1, -2])
-    assert len(docarray100[idx]) == len(idx)
+    assert len(docs[idx]) == len(idx)
 
     # setter
-    docarray100[idx] = [Document(text='repl') for _ in range(len(idx))]
+    docs[idx] = [Document(text='repl') for _ in range(len(idx))]
     for _id in idx:
-        assert docarray100[_id].text == 'repl'
+        assert docs[_id].text == 'repl'
 
     # del
     idx = [-3, -4, -5, 9, 10, 11]
-    del docarray100[idx]
-    assert len(docarray100) == 100 - len(idx)
+    del docs[idx]
+    assert len(docs) == 100 - len(idx)
 
 
-def test_sequence_str(docarray100):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_sequence_str(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
     # getter
-    idx = [d.id for d in docarray100[1, 3, 5, 7, -1, -2]]
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
 
-    assert len(docarray100[idx]) == len(idx)
-    assert len(docarray100[tuple(idx)]) == len(idx)
+    assert len(docs[idx]) == len(idx)
+    assert len(docs[tuple(idx)]) == len(idx)
 
     # setter
-    docarray100[idx] = [Document(text='repl') for _ in range(len(idx))]
-    idx = [d.id for d in docarray100[1, 3, 5, 7, -1, -2]]
+    docs[idx] = [Document(text='repl') for _ in range(len(idx))]
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
     for _id in idx:
-        assert docarray100[_id].text == 'repl'
+        assert docs[_id].text == 'repl'
 
     # del
-    idx = [d.id for d in docarray100[-3, -4, -5, 9, 10, 11]]
-    del docarray100[idx]
-    assert len(docarray100) == 100 - len(idx)
+    idx = [d.id for d in docs[-3, -4, -5, 9, 10, 11]]
+    del docs[idx]
+    assert len(docs) == 100 - len(idx)
 
 
-def test_docarray_list_tuple(docarray100):
-    assert isinstance(docarray100[99, 98], DocumentArray)
-    assert len(docarray100[99, 98]) == 2
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_docarray_list_tuple(docs, storage):
+    docs = DocumentArray(docs, storage=storage)
+    assert isinstance(docs[99, 98], DocumentArray)
+    assert len(docs[99, 98]) == 2
 
 
-def test_path_syntax_indexing():
-    da = DocumentArray().empty(3)
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_path_syntax_indexing(storage):
+    da = DocumentArray.empty(3)
     for d in da:
         d.chunks = DocumentArray.empty(5)
         d.matches = DocumentArray.empty(7)
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
+
+    if storage == 'sqlite':
+        da = DocumentArray(da, storage=storage)
     assert len(da['@c']) == 3 * 5
     assert len(da['@c:1']) == 3
     assert len(da['@c-1:']) == 3
@@ -165,8 +193,11 @@ def test_path_syntax_indexing():
     assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
 
 
-def test_attribute_indexing():
-    da = DocumentArray.empty(10)
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_attribute_indexing(storage):
+    da = DocumentArray(storage=storage)
+    da.extend(DocumentArray.empty(10))
+
     for v in da[:, 'id']:
         assert v
     da[:, 'mime_type'] = [f'type {j}' for j in range(10)]
@@ -187,14 +218,17 @@ def test_attribute_indexing():
             assert vv
 
 
-def test_tensor_attribute_selector():
+# TODO: enable weaviate storage test
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_tensor_attribute_selector(storage):
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])
     sp_embed[sp_embed > 0.1] = 0
     sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
-    da = DocumentArray.empty(3)
+    da = DocumentArray(storage=storage)
+    da.extend(DocumentArray.empty(3))
 
     da[:, 'embedding'] = sp_embed
 
@@ -212,17 +246,22 @@ def test_tensor_attribute_selector():
     assert isinstance(v1, list)
 
 
-def test_advance_selector_mixed():
-    da = DocumentArray.empty(10)
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_advance_selector_mixed(storage):
+    da = DocumentArray(storage=storage)
+    da.extend(DocumentArray.empty(10))
     da.embeddings = np.random.random([10, 3])
+
     da.match(da, exclude_self=True)
 
     assert len(da[:, ('id', 'embedding', 'matches')]) == 3
     assert len(da[:, ('id', 'embedding', 'matches')][0]) == 10
 
 
-def test_single_boolean_and_padding():
-    da = DocumentArray.empty(3)
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_single_boolean_and_padding(storage):
+    da = DocumentArray(storage=storage)
+    da.extend(DocumentArray.empty(3))
 
     with pytest.raises(IndexError):
         da[True]
@@ -237,9 +276,12 @@ def test_single_boolean_and_padding():
     assert len(da[False, False]) == 0
 
 
-def test_edge_case_two_strings():
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_edge_case_two_strings(storage):
     # getitem
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     assert da['1', 'id'] == '1'
     assert len(da['1', '2']) == 2
     assert isinstance(da['1', '2'], DocumentArray)
@@ -254,20 +296,26 @@ def test_edge_case_two_strings():
     del da['1', '2']
     assert len(da) == 1
 
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
-    del da['1', 'id']
+    da = DocumentArray(
+        [Document(id=str(i), text='hey') for i in range(3)], storage=storage
+    )
+    del da['1', 'text']
     assert len(da) == 3
-    assert not da[0].id
+    assert not da[1].text
 
     del da['2', 'hello']
 
     # setitem
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     da['1', '2'] = DocumentArray.empty(2)
     assert da[0].id != '1'
     assert da[1].id != '2'
 
-    da = DocumentArray([Document(id='1'), Document(id='2'), Document(id='3')])
+    da = DocumentArray(
+        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+    )
     da['1', 'text'] = 'hello'
     assert da['1'].text == 'hello'
 

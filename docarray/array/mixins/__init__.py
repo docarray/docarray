@@ -1,10 +1,12 @@
 from abc import ABC
 
 from .content import ContentPropertyMixin
+from .delitem import DelItemMixin
 from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
 from .getattr import GetAttributeMixin
+from .getitem import GetItemMixin
 from .group import GroupMixin
 from .io.binary import BinaryIOMixin
 from .io.common import CommonIOMixin
@@ -16,15 +18,19 @@ from .io.pushpull import PushPullMixin
 from .match import MatchMixin
 from .parallel import ParallelMixin
 from .plot import PlotMixin
+from .pydantic import PydanticMixin
 from .reduce import ReduceMixin
 from .sample import SampleMixin
+from .setitem import SetItemMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
-from .pydantic import PydanticMixin
 
 
 class AllMixins(
     GetAttributeMixin,
+    GetItemMixin,
+    SetItemMixin,
+    DelItemMixin,
     ContentPropertyMixin,
     PydanticMixin,
     GroupMixin,
@@ -47,6 +53,6 @@ class AllMixins(
     DataframeIOMixin,
     ABC,
 ):
-    """All plugins that can be used in :class:`DocumentArray`. """
+    """All plugins that can be used in :class:`DocumentArray`."""
 
     ...

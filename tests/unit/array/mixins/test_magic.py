@@ -1,6 +1,6 @@
 import pytest
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 
 N = 100
 
@@ -8,6 +8,11 @@ N = 100
 def da_and_dam():
     da = DocumentArray.empty(N)
     return (da,)
+
+
+@pytest.fixture
+def docs():
+    yield (Document(text=str(j)) for j in range(100))
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -25,6 +30,17 @@ def test_iter_len_bool(da):
 @pytest.mark.parametrize('da', da_and_dam())
 def test_repr(da):
     assert f'length={N}' in repr(da)
+
+
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+def test_repr_str(docs, storage):
+    da = DocumentArray(docs, storage=storage)
+    print(da)
+    da.summary()
+    assert da
+    da.clear()
+    assert not da
+    print(da)
 
 
 @pytest.mark.parametrize('da', da_and_dam())
