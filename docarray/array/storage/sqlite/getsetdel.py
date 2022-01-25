@@ -78,8 +78,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         l = len(self)
         offsets = [o + (l if o < 0 else 0) for o in offsets]
-        cursor = self._connection.cursor()
-        r = cursor.execute(
+        r = self._sql(
             f"SELECT serialized_value FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
             offsets,
         )
@@ -89,15 +88,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         return self._get_docs_by_offsets(range(len(self))[_slice])
 
-    def _get_doc_by_ids(self, ids: str) -> 'Document':
+    def _get_docs_by_ids(self, ids: str) -> Iterable['Document']:
         r = self._sql(
             f"SELECT serialized_value FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
             ids,
         )
-        res = r.fetchall()
-        if not res:
-            raise KeyError(f'Cannot find any Documents with ids from {ids}')
-        return res
+        for rr in r:
+            yield rr[0]
 
     def _del_all_docs(self):
         self._sql(f'DELETE FROM {self._table_name}')
