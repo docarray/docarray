@@ -57,7 +57,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             (index + (len(self) if index < 0 else 0),),
         )
         res = r.fetchone()
-        #import pdb;pdb.set_trace()
         if res is None:
             raise IndexError('index out of range')
         return res[0]
@@ -77,7 +76,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         l = len(self)
         offsets = [o + (l if o < 0 else 0) for o in offsets]
-        r = self._sql(
+        cursor = self._connection.cursor()
+        r = cursor.execute(
             f"SELECT serialized_value FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
             offsets,
         )
