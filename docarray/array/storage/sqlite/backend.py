@@ -44,6 +44,10 @@ class BackendMixin(BaseBackendMixin):
     def _commit(self):
         self._connection.commit()
 
+    @property
+    def _cursor(self) -> 'sqlite3.Cursor':
+        return self._connection.cursor()
+
     def _init_storage(
         self,
         docs: Optional['DocumentArraySourceType'] = None,
@@ -80,7 +84,7 @@ class BackendMixin(BaseBackendMixin):
             if config.table_name is None
             else _sanitize_table_name(config.table_name)
         )
-        self._cursor = self._connection.cursor()
+
         self._persist = bool(config.table_name)
         initialize_table(
             self._table_name, self.__class__.__name__, self.schema_version, self._cursor
