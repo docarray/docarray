@@ -1,5 +1,6 @@
 from abc import ABC
 
+import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
@@ -47,7 +48,7 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
 
 @pytest.fixture(scope='function')
 def docs():
-    return DocumentArrayDummy([Document(text=j) for j in range(100)])
+    return DocumentArrayDummy([Document(id=str(j), text=j) for j in range(100)])
 
 
 def test_index_by_int_str(docs):
@@ -66,3 +67,20 @@ def test_index_by_int_str(docs):
     for d in docs[1:5]:
         assert d.text.startswith('repl')
     assert len(docs) == 100
+
+
+def test_getter_int_str(docs):
+    # getter
+    assert docs[99].text == 99
+    assert docs[-1].text == 99
+    assert docs[0].text == 0
+
+    # string index
+    assert docs['0'].text == 0
+    assert docs['99'].text == 99
+
+    with pytest.raises(IndexError):
+        docs[100]
+
+    with pytest.raises(KeyError):
+        docs['adsad']
