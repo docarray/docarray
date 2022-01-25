@@ -147,7 +147,7 @@ class BaseGetSetDelMixin(ABC):
             self._set_doc_by_id(d.id, d)
 
     def _find_root_doc(self, d: Document):
-        """Find `d`'s root Document in an exhaustive manner """
+        """Find `d`'s root Document in an exhaustive manner"""
         from docarray import DocumentArray
 
         for _d in self:

@@ -80,4 +80,3 @@ class SequenceLikeMixin(MutableSequence[Document]):
         result = self._cursor.fetchall()
         for r in result:
             yield r[0]
-

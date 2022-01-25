@@ -13,7 +13,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._sql(f'DELETE FROM {self._table_name} WHERE doc_id=?', (_id,))
         self._commit()
 
-
     def _del_doc_by_offset(self, offset: int):
 
         # if offset = -2 and len(self)= 100 use offset = 98
@@ -22,7 +21,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._sql(f'DELETE FROM {self._table_name} WHERE item_order=?', (offset,))
 
         # shift the offset of every value on the right position of the deleted item
-        self._sql(f'UPDATE {self._table_name} SET item_order=item_order-1 WHERE item_order>={offset}')
+        self._sql(
+            f'UPDATE {self._table_name} SET item_order=item_order-1 WHERE item_order>={offset}'
+        )
 
         # Code above line is equivalent to
         """
@@ -57,7 +58,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             (index + (len(self) if index < 0 else 0),),
         )
         res = r.fetchone()
-        #import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         if res is None:
             raise IndexError('index out of range')
         return res[0]
@@ -89,7 +90,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _get_doc_by_ids(self, ids: str) -> 'Document':
         r = self._sql(
-            f"SELECT serialized_value FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})", ids
+            f"SELECT serialized_value FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
+            ids,
         )
         res = r.fetchall()
         if not res:
@@ -110,17 +112,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
 
-        offsets = [i for i,m in enumerate(mask) if m==True]
+        offsets = [i for i, m in enumerate(mask) if m == True]
         self._sql(
             f"DELETE FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
             offsets,
         )
         self._commit()
 
-
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Iterable['Document']
     ):
         for _d, _v in zip(docs, values):
             self._set_doc_by_id(_d.id, _v)
-

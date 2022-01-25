@@ -8,8 +8,8 @@ from typing import (
     TYPE_CHECKING,
 )
 
-from .... import Document
 from ..base.backend import BaseBackendMixin
+from .... import Document
 
 if TYPE_CHECKING:
     from ....types import (
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class BackendMixin(BaseBackendMixin):
-    """Provide necessary functions to enable this storage backend. """
+    """Provide necessary functions to enable this storage backend."""
 
     @property
     def _id2offset(self) -> Dict[str, int]:
