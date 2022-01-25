@@ -3,7 +3,6 @@ from abc import ABC
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.array.mixins import GetItemMixin
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.memory import BackendMixin, SequenceLikeMixin
 
