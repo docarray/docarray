@@ -48,11 +48,10 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return len(self) > 0
 
     def __repr__(self):
-        return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
+        return f'<DocumentArray (length={len(self)}) at {id(self)}>'
 
     def __add__(self, other: Union['Document', Sequence['Document']]):
-        v = type(self)()
-        v.extend(self)
+        v = type(self)(self)
         v.extend(other)
         return v
 

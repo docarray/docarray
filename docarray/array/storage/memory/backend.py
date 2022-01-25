@@ -41,28 +41,28 @@ class BackendMixin(BaseBackendMixin):
         }  # type: Dict[str, int]
 
     def _init_storage(
-        self, docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+        self, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         from ... import DocumentArray
 
         self._data = []
-        if docs is None:
+        if _docs is None:
             return
         elif isinstance(
-            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self._data = [Document(d, copy=True) for d in docs]
+                self._data = [Document(d, copy=True) for d in _docs]
                 self._rebuild_id2offset()
-            elif isinstance(docs, DocumentArray):
-                self._data = docs._data
-                self._id_to_index = docs._id2offset
+            elif isinstance(_docs, DocumentArray):
+                self._data = _docs._data
+                self._id_to_index = _docs._id2offset
             else:
-                self._data = list(docs)
+                self._data = list(_docs)
                 self._rebuild_id2offset()
         else:
-            if isinstance(docs, Document):
+            if isinstance(_docs, Document):
                 if copy:
-                    self.append(Document(docs, copy=True))
+                    self.append(Document(_docs, copy=True))
                 else:
-                    self.append(docs)
+                    self.append(_docs)

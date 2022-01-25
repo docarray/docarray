@@ -11,7 +11,7 @@ from typing import (
 
 from .helper import initialize_table
 from ..base.backend import BaseBackendMixin
-from ....helper import random_identity
+from ....helper import random_identity, dataclass_from_dict
 
 if TYPE_CHECKING:
     from ....types import (
@@ -31,6 +31,7 @@ class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
+    conn_config: Dict = field(default_factory=dict)
 
 
 class BackendMixin(BaseBackendMixin):
@@ -50,11 +51,14 @@ class BackendMixin(BaseBackendMixin):
 
     def _init_storage(
         self,
-        docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[SqliteConfig] = None,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        config: Optional[Union[SqliteConfig, Dict]] = None,
     ):
         if not config:
             config = SqliteConfig()
+
+        if isinstance(config, dict):
+            config = dataclass_from_dict(SqliteConfig, config)
 
         from docarray import Document
 
@@ -66,6 +70,7 @@ class BackendMixin(BaseBackendMixin):
         )
 
         _conn_kwargs = dict(detect_types=sqlite3.PARSE_DECLTYPES)
+        _conn_kwargs.update(config.conn_config)
         if config.connection is None:
             self._connection = sqlite3.connect(
                 NamedTemporaryFile().name, **_conn_kwargs
@@ -84,13 +89,12 @@ class BackendMixin(BaseBackendMixin):
             if config.table_name is None
             else _sanitize_table_name(config.table_name)
         )
-
         self._persist = bool(config.table_name)
         initialize_table(
             self._table_name, self.__class__.__name__, self.schema_version, self._cursor
         )
         self._connection.commit()
-
-        if docs is not None:
+        self._config = config
+        if _docs is not None:
             self.clear()
-            self.extend(docs)
+            self.extend(_docs)

@@ -1,4 +1,4 @@
-from typing import Iterator, Union, Iterable, MutableSequence, Optional
+from typing import Iterator, Union, Iterable, MutableSequence, Optional, Sequence
 
 from .... import Document
 
@@ -79,3 +79,26 @@ class SequenceLikeMixin(MutableSequence[Document]):
         )
         for res in r:
             yield res[0]
+
+    def __repr__(self):
+        return f'<DocumentArray[SQLite] (length={len(self)}) at {id(self)}>'
+
+    def __bool__(self):
+        """To simulate ```l = []; if l: ...```
+
+        :return: returns true if the length of the array is larger than 0
+        """
+        return len(self) > 0
+
+    def __eq__(self, other):
+        """In sqlite backend, data are considered as identical if configs point to the same database source"""
+        return (
+            type(self) is type(other)
+            and type(self._config) is type(other._config)
+            and self._config == other._config
+        )
+
+    def __add__(self, other: Union['Document', Sequence['Document']]):
+        v = type(self)(self, storage='sqlite')
+        v.extend(other)
+        return v
