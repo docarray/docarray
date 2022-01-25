@@ -41,7 +41,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
             return False
 
     def __len__(self) -> int:
-        ...
+        return self._pqlite.stat['doc_num']
 
     def __iter__(self) -> Iterator['Document']:
         ...

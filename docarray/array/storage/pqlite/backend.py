@@ -20,7 +20,7 @@ class PqliteConfig:
     data_path: str = 'data'
 
 
-class PqliteBackendMixin(BaseBackendMixin):
+class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend. """
 
     def _insert_doc_at_idx(self, doc, idx: Optional[int] = None):
@@ -34,7 +34,13 @@ class PqliteBackendMixin(BaseBackendMixin):
         docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[PqliteConfig] = None,
     ):
-        super().__init__(**(dataclasses.asdict(config) if config else {}))
+        if not config:
+            config = PqliteConfig()
+
+        from pqlite import PQLite
+
+        self._pqlite = PQLite(**config)
+
         if docs is not None:
             self.clear()
             self.extend(docs)
