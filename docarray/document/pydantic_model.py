@@ -28,7 +28,7 @@ class _NamedScore(BaseModel):
 
 
 class PydanticDocument(BaseModel):
-    id: str
+    id: Optional[str]
     parent_id: Optional[str]
     granularity: Optional[int]
     adjacency: Optional[int]
@@ -58,6 +58,9 @@ class PydanticDocument(BaseModel):
                 return base64.b64encode(v).decode('utf8')
             else:
                 raise ValueError('must be bytes')
+
+    class Config:
+        smart_union = True
 
 
 PydanticDocument.update_forward_refs()

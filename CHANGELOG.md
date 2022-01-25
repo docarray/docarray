@@ -13,6 +13,11 @@
 
 
 
+
+
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -331,4 +336,98 @@
 ### 🍹 Other Improvements
 
  - [[```624b5032```](https://github.com/jina-ai/docarray/commit/624b5032a03863217f04997bfabb13cae438de20)] __-__ __version__: the next version will be 0.3.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-0></a>
+## Release Note (`0.4.0`)
+
+> Release time: 2022-01-19 14:03:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```a97bd8f9```](https://github.com/jina-ai/docarray/commit/a97bd8f9055b4b232ca2dadcd3a1ff961e366a64)] __-__ v1 streaming protocol (#62) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```fcfddd3b```](https://github.com/jina-ai/docarray/commit/fcfddd3bc36b8db89bd761856807bb952d29a6e5)] __-__ __docs__: fix typo in docs (*Han Xiao*)
+ - [[```8503535f```](https://github.com/jina-ai/docarray/commit/8503535ff9d26674a499d79f65eb997a5548919b)] __-__ __version__: the next version will be 0.3.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-1></a>
+## Release Note (`0.4.1`)
+
+> Release time: 2022-01-19 16:07:51
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```1b786969```](https://github.com/jina-ai/docarray/commit/1b786969a851b2dd13f1ba4a52ee5406042856df)] __-__ __docs__: fix typo in docs (*Han Xiao*)
+ - [[```c6e1b9f0```](https://github.com/jina-ai/docarray/commit/c6e1b9f073c4300ee9404128aeb1291e231044b5)] __-__ __version__: the next version will be 0.4.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-2></a>
+## Release Note (`0.4.2`)
+
+> Release time: 2022-01-20 06:12:09
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```66ceeda5```](https://github.com/jina-ai/docarray/commit/66ceeda5e740fc9aa6e27b581b8ee218d32221f0)] __-__ __array__: move hubble url to inline (#67) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```a1b29976```](https://github.com/jina-ai/docarray/commit/a1b29976b82a1c79b014ae4a3d4b0b3792363876)] __-__ __version__: the next version will be 0.4.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-3></a>
+## Release Note (`0.4.3`)
+
+> Release time: 2022-01-23 09:47:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Delgermurun,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```d840d301```](https://github.com/jina-ai/docarray/commit/d840d301a649adc197de3753c86a0e92e2c3f4d5)] __-__ __document__: constructor overload (#74) (*Delgermurun*)
+ - [[```412930d7```](https://github.com/jina-ai/docarray/commit/412930d76ea8c11a556e9399db1c638cfa282c50)] __-__ __pydantic__: turn on pydantic smart union (#73) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```ecf89c4a```](https://github.com/jina-ai/docarray/commit/ecf89c4aa46063cc53b6a7cac540864218e6afa3)] __-__ __version__: the next version will be 0.4.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-4-4></a>
+## Release Note (`0.4.4`)
+
+> Release time: 2022-01-24 12:47:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```06cd577e```](https://github.com/jina-ai/docarray/commit/06cd577e732547bdd906b481ac0f9d385c4460eb)] __-__ change pydantic model optional id (#77) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```7a868d3b```](https://github.com/jina-ai/docarray/commit/7a868d3b37744ba9618912657198fc5b29532f06)] __-__ __version__: the next version will be 0.4.4 (*Jina Dev Bot*)
 

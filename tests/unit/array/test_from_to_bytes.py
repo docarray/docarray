@@ -1,10 +1,11 @@
+import types
 import numpy as np
 import pytest
 import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from docarray.math.ndarray import to_numpy_array
 from tests import random_docs
 
@@ -92,3 +93,21 @@ def test_push_pull_show_progress(show_progress, protocol):
     r = da.to_bytes(_show_progress=show_progress, protocol=protocol)
     da_r = DocumentArray.from_bytes(r, _show_progress=show_progress, protocol=protocol)
     assert da == da_r
+
+
+# Note  protocol = ['protobuf-array', 'pickle-array'] not supported with Document.from_bytes
+@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
+@pytest.mark.parametrize(
+    'compress', ['lz4', 'bz2', 'lzma', 'gzip', 'zlib', 'gzib', None]
+)
+def test_save_bytes_stream(tmpfile, protocol, compress):
+    da = DocumentArray(
+        [Document(text='aaa'), Document(text='bbb'), Document(text='ccc')]
+    )
+    da.save_binary(tmpfile, protocol=protocol, compress=compress)
+    da_reconstructed = DocumentArray.load_binary(
+        tmpfile, protocol=protocol, compress=compress, streaming=True
+    )
+    assert isinstance(da_reconstructed, types.GeneratorType)
+    for d, d_rec in zip(da, da_reconstructed):
+        assert d == d_rec

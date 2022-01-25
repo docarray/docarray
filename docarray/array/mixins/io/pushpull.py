@@ -36,7 +36,6 @@ def _get_cloud_api() -> str:
 class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
-    _service_url = _get_cloud_api() + '/v2/rpc/da.'
     _max_bytes = 4 * 1024 * 1024 * 1024
 
     def push(self, token: str, show_progress: bool = False) -> None:
@@ -86,7 +85,9 @@ class PushPullMixin:
 
         with progress as p_bar:
             body = BufferReader(data, p_bar, task_id)
-            requests.post(self._service_url + 'push', data=body, headers=headers)
+            requests.post(
+                f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
+            )
 
     @classmethod
     def pull(
@@ -102,7 +103,7 @@ class PushPullMixin:
         """
         import requests
 
-        url = f'{cls._service_url}pull?token={token}'
+        url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
         response = requests.get(url)
 
         progress = _get_progressbar(show_progress)

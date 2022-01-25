@@ -123,7 +123,13 @@ def test_with_embedding_no_tensor():
 
 @pytest.mark.parametrize(
     'tag_value, tag_type',
-    [(3, float), (3.4, float), ('hello', str), (True, bool), (False, bool)],
+    [
+        (3.0, float),
+        ('hello', str),
+        ('1', str),
+        (True, bool),
+        (False, bool),
+    ],
 )
 @pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
 def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
@@ -160,3 +166,7 @@ def test_to_from_with_blob(protocol, to_fn, blob):
     assert d.blob == r_d.blob
     if d.blob:
         assert isinstance(r_d.blob, bytes)
+
+
+def test_pydantic_not_id():
+    _ = PydanticDocument()

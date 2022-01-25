@@ -140,24 +140,41 @@ The benchmark was conducted [on the codebase of Jan. 5, 2022](https://github.com
 
 Depending on how you want to interpret the results, the figures above can be an over-estimation/under-estimation of the serialization latency: one may argue that near-empty Documents are not realistic, but serializing a DocumentArray with one million Documents is also unreal. In practice, DocumentArray passing across microservices are relatively small, say at thousands, for better overlapping the network latency and computational overhead.
 
-
+(wire-format)=
 ### Wire format of `pickle` and `protobuf`
 
-When set `protocol=pickle` or `protobuf`, the result binary string looks like the following:
+When set `protocol=pickle` or `protobuf`, the resulting bytes look like the following:
 
 ```text
------------------------------------------------------------------------------------
-| Delimiter |  doc1.to_bytes()  |  Delimiter |  doc2.to_bytes()  | Delimiter | ...
------------------------------------------------------------------------------------
-      |               |
-      |               |
-      |               |
- Fixed-length         |
-                      |
-               Variable-length       
+--------------------------------------------------------------------------------------------------------
+|   version    |   len(docs)    |  doc1_bytes  |  doc1.to_bytes()  |  doc2_bytes  |  doc2.to_bytes() ...
+---------------------------------------------------------------------------------------------------------
+| Fixed-length |  Fixed-length  | Fixed-length |  Variable-length  | Fixed-length |  Variable-length ...
+--------------------------------------------------------------------------------------------------------
+      |               |               |                  |                 |               |
+    uint8           uint64          uint32        Variable-length         ...             ...
+
 ```
 
-Here `Delimiter` is a 16-bytes separator such as `b'g\x81\xcc\x1c\x0f\x93L\xed\xa2\xb0s)\x9c\xf9\xf6\xf2'` used for setting the boundary of each Document's serialization. Given a `to_bytes(protocol='pickle/protobuf')` binary string, once we know the first 16 bytes, the boundary is clear. Consequently, one can leverage this format to stream Documents, drop, skip, or early-stop, etc.
+Here `version` is a `uint8` that specifies the serialization version of the `DocumentArray` serialization format, followed by `len(docs)` which is a `uint64` that specifies the amount of serialized documents.
+Afterwards, `doc1_bytes` describes how many bytes are used to serialize `doc1`, followed by `doc1.to_bytes()` which is the bytes data of the document itself.
+The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
+
+
+### Stream large binary serialization from disk
+
+In particular, if a serialization uses `protocol='pickle'` or `protocol='protobuf'`, then you can load it via streaming with a constant memory consumption by setting `streaming=True`:
+
+```python
+from docarray import DocumentArray, Document
+
+da_generator = DocumentArray.load_binary('xxxl.bin', protocol='pickle', compress='gzip', streaming=True)
+
+for d in da_generator: 
+    d: Document
+    # go nuts with `d`
+```
+
 
 ## From/to base64
 
@@ -306,3 +323,5 @@ da = DocumentArray.pull(token='myda123')
 Now you can continue the work at local, analyzing `da` or visualizing it. Your friends & colleagues who know the token `myda123` can also pull that DocumentArray. It's useful when you want to quickly share the results with your colleagues & friends.
 
 The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compress='gzip'` setting. The lifetime of an upload is one week after its creation.
+
+
