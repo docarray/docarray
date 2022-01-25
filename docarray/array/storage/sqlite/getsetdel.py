@@ -13,22 +13,33 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._sql(f'DELETE FROM {self._table_name} WHERE doc_id=?', (_id,))
         self._commit()
 
+
     def _del_doc_by_offset(self, offset: int):
+
+        # if offset = -2 and len(self)= 100 use offset = 98
+        offset = len(self) + offset if offset < 0 else offset
+
         self._sql(f'DELETE FROM {self._table_name} WHERE item_order=?', (offset,))
+
         # shift the offset of every value on the right position of the deleted item
+        self._sql(f'UPDATE {self._table_name} SET item_order=item_order-1 WHERE item_order>={offset}')
+
+        # Code above line is equivalent to
+        """
         for i in range(offset, len(self) + 1):
-            # doc_id values should be also changed
-            self._sql(
-                f'UPDATE {self._table_name} SET item_order=? WHERE item_order=?',
-                (i - 1, i),
-            )
+            self._sql( f'UPDATE {self._table_name} SET item_order=? WHERE item_order=?',  (i - 1, i), )
+        """
+
         self._commit()
 
-
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
+
+        # if offset = -2 and len(self)= 100 use offset = 98
+        offset = len(self) + offset if offset < 0 else offset
+
         self._sql(
-            f'UPDATE {self._table_name} SET serialized_value=? WHERE item_order=?',
-            (value, offset),
+            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE item_order=?',
+            (value, value.id, offset),
         )
 
         self._commit()
@@ -63,7 +74,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     # essentials end here
 
     # now start the optimized bulk methods
-
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         l = len(self)
         offsets = [o + (l if o < 0 else 0) for o in offsets]
@@ -77,6 +87,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         return self._get_docs_by_offsets(range(len(self))[_slice])
 
+    def _get_doc_by_ids(self, ids: str) -> 'Document':
+        r = self._sql(
+            f"SELECT serialized_value FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})", ids
+        )
+        res = r.fetchall()
+        if not res:
+            raise KeyError(f'Cannot find any Documents with ids from {ids}')
+        return res
+
     def _del_all_docs(self):
         self._sql(f'DELETE FROM {self._table_name}')
         self._commit()
@@ -88,3 +107,20 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             offsets,
         )
         self._commit()
+
+    def _del_docs_by_mask(self, mask: Sequence[bool]):
+
+        offsets = [i for i,m in enumerate(mask) if m==True]
+        self._sql(
+            f"DELETE FROM {self._table_name} WHERE item_order in ({','.join(['?'] * len(offsets))})",
+            offsets,
+        )
+        self._commit()
+
+
+    def _set_doc_value_pairs(
+        self, docs: Iterable['Document'], values: Iterable['Document']
+    ):
+        for _d, _v in zip(docs, values):
+            self._set_doc_by_id(_d.id, _v)
+

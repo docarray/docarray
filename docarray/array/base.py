@@ -13,9 +13,11 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         if cls is DocumentArray:
             if storage == 'memory':
                 from docarray.array.memory import DocumentArrayInMemory
+
                 instance = super().__new__(DocumentArrayInMemory)
             elif storage == 'sqlite':
                 from docarray.array.sqlite import DocumentArraySqlite
+
                 instance = super().__new__(DocumentArraySqlite)
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
