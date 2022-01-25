@@ -15,9 +15,13 @@ class SequenceLikeMixin(MutableSequence[Document]):
         )
 
     def _shift_index_right_backward(self, start: int):
-        self._sql(
-            f'UPDATE {self._table_name} SET item_order=item_order+1 WHERE item_order>={start}'
-        )
+        idx = len(self) - 1
+        while idx >= start:
+            self._sql(
+                f'UPDATE {self._table_name} SET item_order = ? WHERE item_order = ?',
+                (idx + 1, idx),
+            )
+            idx -= 1
 
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.

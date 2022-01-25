@@ -22,7 +22,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         # shift the offset of every value on the right position of the deleted item
         self._sql(
-            f'UPDATE {self._table_name} SET item_order=item_order-1 WHERE item_order>={offset}'
+            f'UPDATE {self._table_name} SET item_order=item_order-1 WHERE item_order>?',
+            (offset,),
         )
 
         # Code above line is equivalent to
