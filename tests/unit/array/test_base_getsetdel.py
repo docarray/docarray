@@ -3,7 +3,6 @@ from abc import ABC
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.array.mixins import GetItemMixin
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.memory import BackendMixin, SequenceLikeMixin
 
@@ -26,13 +25,11 @@ class DummyGetSetDelMixin(BaseGetSetDelMixin):
         self._data[old_idx] = value
         self._id2offset[value.id] = old_idx
 
-
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
         return self._data[self._id2offset[_id]]
-
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._data[offset] = value
@@ -69,4 +66,3 @@ def test_index_by_int_str(docs):
     for d in docs[1:5]:
         assert d.text.startswith('repl')
     assert len(docs) == 100
-
