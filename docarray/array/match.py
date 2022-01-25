@@ -6,8 +6,7 @@ from typing import (
     Sequence,
 )
 
-from docarray import DocumentArray
-
+from .document import DocumentArray
 from .memory import DocumentArrayInMemory
 
 if TYPE_CHECKING:

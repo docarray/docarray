@@ -1,4 +1,3 @@
-
 import numpy as np
 import pytest
 
@@ -107,8 +106,8 @@ def test_sequence_bool_index(docs, storage):
 
     # setter
     mask = [True, False] * 50
-    #docs[mask] = [Document(text=f'repl{j}') for j in range(50)]
-    docs[mask,'text'] = [f'repl{j}' for j in range(50)]
+    # docs[mask] = [Document(text=f'repl{j}') for j in range(50)]
+    docs[mask, 'text'] = [f'repl{j}' for j in range(50)]
 
     for idx, d in enumerate(docs):
         if idx % 2 == 0:
@@ -120,7 +119,6 @@ def test_sequence_bool_index(docs, storage):
     # del
     del docs[mask]
     assert len(docs) == 50
-
 
 
 @pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
@@ -298,7 +296,9 @@ def test_edge_case_two_strings(storage):
     del da['1', '2']
     assert len(da) == 1
 
-    da = DocumentArray([Document(id=str(i), text='hey') for i in range(3)], storage=storage)
+    da = DocumentArray(
+        [Document(id=str(i), text='hey') for i in range(3)], storage=storage
+    )
     del da['1', 'text']
     assert len(da) == 3
     assert not da[1].text

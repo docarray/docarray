@@ -58,6 +58,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
                 (self._table_name, self.__class__.__name__),
             )
             self._sql(f'DROP TABLE {self._table_name}')
+            self._commit()
 
     def __contains__(self, item: Union[str, 'Document']):
         if isinstance(item, str):
