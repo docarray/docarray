@@ -193,14 +193,15 @@ def test_path_syntax_indexing(storage):
     assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
 
 
+@pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
-def test_attribute_indexing(storage):
+def test_attribute_indexing(storage, size):
     da = DocumentArray(storage=storage)
-    da.extend(DocumentArray.empty(10))
+    da.extend(DocumentArray.empty(size))
 
     for v in da[:, 'id']:
         assert v
-    da[:, 'mime_type'] = [f'type {j}' for j in range(10)]
+    da[:, 'mime_type'] = [f'type {j}' for j in range(size)]
     for v in da[:, 'mime_type']:
         assert v
     del da[:, 'mime_type']
@@ -208,8 +209,8 @@ def test_attribute_indexing(storage):
         assert not v
 
     da[:, ['text', 'mime_type']] = [
-        [f'hello {j}' for j in range(10)],
-        [f'type {j}' for j in range(10)],
+        [f'hello {j}' for j in range(size)],
+        [f'type {j}' for j in range(size)],
     ]
     da.summary()
 
