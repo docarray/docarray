@@ -53,6 +53,7 @@ setup(
             'av',
             'fastapi',
             'uvicorn',
+            'weaviate-client~=3.3.0',
         ],
         'test': [
             'pytest',
@@ -72,6 +73,7 @@ setup(
             'onnx',
             'onnxruntime',
             'jupyterlab',
+            'weaviate-client~=3.3.0'
         ],
     },
     classifiers=[

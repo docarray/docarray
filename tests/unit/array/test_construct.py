@@ -6,7 +6,7 @@ from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 
-def test_construct_docarray_weaviate():
+def test_construct_docarray_weaviate(start_weaviate):
     daw = DocumentArrayWeaviate()
     daw.extend([Document(text='a'), Document(text='b'), Document(text='c')])
     array_id = daw.array_id
