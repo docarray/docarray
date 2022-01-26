@@ -52,6 +52,14 @@ The following dependencies will be installed to enable additional features:
 Alternatively, you can first do basic installation and then install missing dependencies on-demand. 
 ````
 
+````{tab} Developer install
+
+```bash
+pip install "docarray[full,test]"
+```
+
+This will install all requirements to reproduce tests on your local environment.
+```
 
 
 ```pycon

@@ -40,9 +40,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install wheel
-          pip install -r .github/requirements-test.txt
-          pip install -r .github/requirements-cicd.txt
-          pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[full,test]"
       - name: Test
         id: test
         run: |
