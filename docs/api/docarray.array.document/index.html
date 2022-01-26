@@ -7,9 +7,9 @@
   <meta property="og:title" content="docarray.array.document module" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.document.html" />
-  <meta property="og:site_name" content="DocArray 0.4.4 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.5.0 Documentation" />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.4.4 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.5.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.match module" href="../docarray.array.match/" /><link rel="prev" title="docarray.array.chunk module" href="../docarray.array.chunk/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.array.document module - DocArray 0.4.4 documentation</title>
+        <title>docarray.array.document module - DocArray 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -163,7 +163,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.4.4 documentation</div>
+                <div class="brand">DocArray 0.5.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -269,10 +269,12 @@
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.content/">docarray.array.mixins.content module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.delitem/">docarray.array.mixins.delitem module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.embed/">docarray.array.mixins.embed module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.empty/">docarray.array.mixins.empty module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.evaluation/">docarray.array.mixins.evaluation module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.getattr/">docarray.array.mixins.getattr module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.getitem/">docarray.array.mixins.getitem module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.group/">docarray.array.mixins.group module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.match/">docarray.array.mixins.match module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.parallel/">docarray.array.mixins.parallel module</a></li>
@@ -280,17 +282,42 @@
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.pydantic/">docarray.array.mixins.pydantic module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.reduce/">docarray.array.mixins.reduce module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.sample/">docarray.array.mixins.sample module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.setitem/">docarray.array.mixins.setitem module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.text/">docarray.array.mixins.text module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.traverse/">docarray.array.mixins.traverse module</a></li>
 </ul>
 </li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.array.storage/">docarray.array.storage package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../docarray.array.storage.base/">docarray.array.storage.base package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.base.backend/">docarray.array.storage.base.backend module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.base.getsetdel/">docarray.array.storage.base.getsetdel module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../docarray.array.storage.memory/">docarray.array.storage.memory package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.sqlite.backend/">docarray.array.storage.sqlite.backend module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.sqlite.getsetdel/">docarray.array.storage.sqlite.getsetdel module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.sqlite.helper/">docarray.array.storage.sqlite.helper module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.sqlite.seqlike/">docarray.array.storage.sqlite.seqlike module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.base/">docarray.array.base module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../docarray.array.chunk/">docarray.array.chunk module</a></li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">docarray.array.document module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../docarray.array.match/">docarray.array.match module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.memory/">docarray.array.memory module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.sqlite/">docarray.array.sqlite module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
@@ -316,8 +343,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.document.pydantic_model/">docarray.document.pydantic_model module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.numpy/">docarray.math.distance.numpy module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.paddle/">docarray.math.distance.paddle module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.math.distance.tensorflow/">docarray.math.distance.tensorflow module</a></li>
@@ -329,16 +356,16 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.math.ndarray/">docarray.math.ndarray module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../docarray.proto.docarray_pb2/">docarray.proto.docarray_pb2 module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.property/">docarray.score.mixins.property module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.representer/">docarray.score.mixins.representer module</a></li>
 </ul>
@@ -413,36 +440,10 @@
 <span id="docarray-array-document-module"></span><h1>docarray.array.document module<a class="headerlink" href="#module-docarray.array.document" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.document.DocumentArray">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.document.</span></span><span class="sig-name descname"><span class="pre">DocumentArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/document/#DocumentArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.document.DocumentArray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="../docarray.array.mixins/#docarray.array.mixins.AllMixins" title="docarray.array.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.AllMixins</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableSequence</span></code>[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.Document</span></code></a>]</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.document.DocumentArray.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/document/#DocumentArray.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.document.DocumentArray.insert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert <cite>doc</cite> at <cite>index</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Position of the insertion.</p></li>
-<li><p><strong>value</strong> (<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>) – The doc needs to be inserted.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.document.DocumentArray.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/document/#DocumentArray.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.document.DocumentArray.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear the data of <a class="reference internal" href="#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></p>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.document.DocumentArray.extend">
-<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/document/#DocumentArray.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.document.DocumentArray.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>S.extend(iterable) – extend sequence by appending elements from the iterable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.document.</span></span><span class="sig-name descname"><span class="pre">DocumentArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_docs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DocumentArraySourceType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/document/#DocumentArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.document.DocumentArray" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.document.</span></span><span class="sig-name descname"><span class="pre">DocumentArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_docs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">DocumentArraySourceType</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sqlite'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig" title="docarray.array.storage.sqlite.SqliteConfig"><span class="pre">SqliteConfig</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <a class="reference internal" href="../docarray.array.mixins/#docarray.array.mixins.AllMixins" title="docarray.array.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.mixins.AllMixins</span></code></a>, <a class="reference internal" href="../docarray.array.base/#docarray.array.base.BaseDocumentArray" title="docarray.array.base.BaseDocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.base.BaseDocumentArray</span></code></a></p>
 </dd></dl>
 </section>
 
@@ -478,7 +479,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Jan 24, 2022.
+                    Last updated on Jan 26, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
