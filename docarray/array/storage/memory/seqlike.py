@@ -13,7 +13,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param value: The doc needs to be inserted.
         """
         self._data.insert(index, value)
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def __eq__(self, other):
         return (
@@ -57,4 +57,4 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def extend(self, values: Iterable['Document']) -> None:
         self._data.extend(values)
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True

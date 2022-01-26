@@ -14,7 +14,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         self._data = list(itertools.compress(self._data, (not _i for _i in mask)))
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def _del_all_docs(self):
         self._data.clear()
@@ -22,14 +22,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_docs_by_slice(self, _slice: slice):
         del self._data[_slice]
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def _del_doc_by_id(self, _id: str):
         self._del_doc_by_offset(self._id2offset[_id])
 
     def _del_doc_by_offset(self, offset: int):
         del self._data[offset]
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._data[offset] = value
@@ -42,14 +42,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         self._data[_slice] = value
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Iterable['Document']
     ):
         for _d, _v in zip(docs, values):
             _d._data = _v._data
-        self._rebuild_id2offset()
+        self._needs_id2offset_rebuild = True
 
     def _set_doc_attr_by_offset(self, offset: int, attr: str, value: Any):
         setattr(self._data[offset], attr, value)
