@@ -97,12 +97,12 @@ class ContentPropertyMixin:
         """
         if value is None:
             for d in self:
-                d.text = None
+                self[d.id, 'text'] = None
         else:
             self._check_length(len(value))
 
             for doc, text in zip(self, value):
-                doc.text = text
+                self[doc.id, 'text'] = text
 
     @property
     def blobs(self) -> Optional[List[bytes]]:
