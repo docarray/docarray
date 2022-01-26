@@ -39,7 +39,7 @@ class ContentPropertyMixin:
 
         if value is None:
             for d in self:
-                self[d.id, 'embedding']  = None
+                self[d.id, 'embedding'] = None
         else:
             emb_shape0 = _get_len(value)
             self._check_length(emb_shape0)
