@@ -68,3 +68,12 @@ def test_content_empty(da_len, cls):
         assert da.texts == ['hello'] * da_len
         assert not da.tensors
         assert not da.blobs
+
+
+@pytest.mark.parametrize('da_len', [0, 1, 2])
+@pytest.mark.parametrize('cls', [DocumentArray, DocumentArraySqlite])
+def test_embeddings_setter(da_len, cls):
+    da = cls.empty(da_len)
+    da.embeddings = np.random.rand(da_len, 5)
+    for doc in da:
+        assert doc.embedding.shape == (5,)
