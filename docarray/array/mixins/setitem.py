@@ -109,10 +109,12 @@ class SetItemMixin:
                     if isinstance(_docs, Document):
                         _docs = DocumentArrayInMemory(_docs)
                         # because we've augmented docs dimension, we do the same for value
+                        print('ok')
                         value = (value,)
 
                     attrs = index[1]
                     if isinstance(attrs, str):
+                        print('okk')
                         attrs = (attrs,)
                         # because we've augmented attrs dimension, we do the same for value
                         value = (value,)

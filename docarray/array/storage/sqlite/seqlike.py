@@ -97,8 +97,3 @@ class SequenceLikeMixin(MutableSequence[Document]):
             and type(self._config) is type(other._config)
             and self._config == other._config
         )
-
-    def __add__(self, other: Union['Document', Sequence['Document']]):
-        v = type(self)(self, storage='sqlite')
-        v.extend(other)
-        return v
