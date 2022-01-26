@@ -65,7 +65,9 @@ class EmbedMixin:
                 r = embed_model(batch_inputs).cpu().detach()
                 if to_numpy:
                     r = r.numpy()
-                self[i*batch_size: min((i + 1)*batch_size, length), 'embedding'] = r
+                self[
+                    i * batch_size : min((i + 1) * batch_size, length), 'embedding'
+                ] = r
 
         if is_training_before:
             embed_model.train()
