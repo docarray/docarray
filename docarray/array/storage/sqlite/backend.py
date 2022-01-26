@@ -32,6 +32,8 @@ class SqliteConfig:
     table_name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     conn_config: Dict = field(default_factory=dict)
+    journal_mode: str = 'DELETE'
+    synchronous: str = 'OFF'
 
 
 class BackendMixin(BaseBackendMixin):
@@ -69,7 +71,9 @@ class BackendMixin(BaseBackendMixin):
             'Document', lambda x: Document.from_bytes(x, **config.serialize_config)
         )
 
-        _conn_kwargs = dict(detect_types=sqlite3.PARSE_DECLTYPES)
+        _conn_kwargs = dict(
+            detect_types=sqlite3.PARSE_DECLTYPES, check_same_thread=False
+        )
         _conn_kwargs.update(config.conn_config)
         if config.connection is None:
             self._connection = sqlite3.connect(
@@ -83,6 +87,8 @@ class BackendMixin(BaseBackendMixin):
             raise TypeError(
                 f'connection argument must be None or a string or a sqlite3.Connection, not `{type(config.connection)}`'
             )
+        self._connection.execute(f'PRAGMA synchronous={config.synchronous}')
+        self._connection.execute(f'PRAGMA journal_mode={config.journal_mode}')
 
         self._table_name = (
             _sanitize_table_name(self.__class__.__name__ + random_identity())

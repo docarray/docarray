@@ -110,3 +110,22 @@ def test_map_lambda(pytestconfig, da_cls):
 
     for d in da.map(lambda x: x.load_uri_to_image_tensor()):
         assert d.tensor is not None
+
+
+@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+@pytest.mark.parametrize('backend', ['thread', 'process'])
+def test_apply_diff_backend_storage(storage, backend):
+    da = DocumentArray(
+        (Document(text='hello world she smiled too much') for _ in range(1000)),
+        storage=storage,
+    )
+    da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
+
+    q = (
+        Document(text='she smiled too much')
+        .embed_feature_hashing()
+        .match(da, metric='jaccard', use_scipy=True)
+    )
+
+    assert len(q.matches[:5, ('text', 'scores__jaccard__value')]) == 2
+    assert len(q.matches[:5, ('text', 'scores__jaccard__value')][0]) == 5
