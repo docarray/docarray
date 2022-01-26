@@ -1,13 +1,15 @@
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 N = 100
 
 
 def da_and_dam():
     da = DocumentArray.empty(N)
-    return (da,)
+    dasq = DocumentArraySqlite.empty(N)
+    return (da, dasq)
 
 
 @pytest.fixture

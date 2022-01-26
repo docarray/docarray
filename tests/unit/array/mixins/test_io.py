@@ -5,17 +5,19 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray
+from docarray.array.sqlite import DocumentArraySqlite
 from tests import random_docs
 
 
 def da_and_dam():
     da = DocumentArray(random_docs(100))
-    return (da,)
+    das = DocumentArraySqlite(random_docs(100))
+    return (da, das)
 
 
 @pytest.mark.slow
 @pytest.mark.parametrize('method', ['json', 'binary'])
-@pytest.mark.parametrize('da', da_and_dam())
+@pytest.mark.parametrize('da', (da_and_dam()[0],))
 def test_document_save_load(method, tmp_path, da):
     tmp_file = os.path.join(tmp_path, 'test')
     da.save(tmp_file, file_format=method)
@@ -38,13 +40,13 @@ def test_da_csv_write(flatten_tags, tmp_path, da):
         assert len([v for v in fp]) == len(da) + 1
 
 
-@pytest.mark.parametrize('da', [DocumentArray])
+@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 def test_from_ndarray(da):
     _da = da.from_ndarray(np.random.random([10, 256]))
     assert len(_da) == 10
 
 
-@pytest.mark.parametrize('da', [DocumentArray])
+@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 def test_from_files(da):
     assert len(da.from_files(patterns='*.*', to_dataturi=True, size=1)) == 1
 
@@ -52,14 +54,19 @@ def test_from_files(da):
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
-@pytest.mark.parametrize('da', [DocumentArray])
+@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 def test_from_ndjson(da):
     with open(os.path.join(cur_dir, 'docs.jsonlines')) as fp:
         _da = da.from_ndjson(fp)
         assert len(_da) == 2
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 def test_from_to_pd_dataframe(da_cls):
     # simple
     assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
@@ -74,7 +81,12 @@ def test_from_to_pd_dataframe(da_cls):
     assert da2[1].tags == {}
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 def test_from_to_bytes(da_cls):
     # simple
     assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
@@ -91,7 +103,12 @@ def test_from_to_bytes(da_cls):
     assert da2[1].tags == {}
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
 @pytest.mark.parametrize('show_progress', [True, False])
 def test_push_pull_io(da_cls, show_progress):
     da1 = da_cls.empty(10)

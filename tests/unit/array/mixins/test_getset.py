@@ -6,6 +6,7 @@ import torch
 from scipy.sparse import csr_matrix
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 from tests import random_docs
 
 rand_array = np.random.random([10, 3])
@@ -15,7 +16,8 @@ def da_and_dam():
     rand_docs = random_docs(100)
     da = DocumentArray()
     da.extend(rand_docs)
-    return (da,)
+    das = DocumentArraySqlite(rand_docs)
+    return (da, das)
 
 
 @pytest.mark.parametrize(
@@ -69,9 +71,7 @@ def test_tensors_getter_da(da):
     np.testing.assert_almost_equal(da.tensors, tensors)
 
     da.tensors = None
-    if hasattr(da, 'flush'):
-        da.flush()
-    assert not da.tensors
+    assert da.tensors is None
 
 
 @pytest.mark.parametrize('da', da_and_dam())

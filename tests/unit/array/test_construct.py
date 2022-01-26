@@ -1,9 +1,10 @@
 import pytest
 
 from docarray import Document, DocumentArray
+from docarray.array.sqlite import DocumentArraySqlite
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 def test_construct_docarray(da_cls):
     da = da_cls()
     assert len(da) == 0
@@ -24,39 +25,48 @@ def test_construct_docarray(da_cls):
     assert len(da1) == 10
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('is_copy', [True, False])
 def test_docarray_copy_singleton(da_cls, is_copy):
     d = Document()
     da = da_cls(d, copy=is_copy)
     d.id = 'hello'
-    if is_copy:
-        assert da[0].id != 'hello'
+    if da_cls == DocumentArray:
+        if is_copy:
+            assert da[0].id != 'hello'
+        else:
+            assert da[0].id == 'hello'
     else:
-        assert da[0].id == 'hello'
+        assert da[0].id != 'hello'
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('is_copy', [True, False])
 def test_docarray_copy_da(da_cls, is_copy):
     d1 = Document()
     d2 = Document()
     da = da_cls([d1, d2], copy=is_copy)
     d1.id = 'hello'
-    if is_copy:
-        assert da[0].id != 'hello'
+    if da_cls == DocumentArray:
+        if is_copy:
+            assert da[0].id != 'hello'
+        else:
+            assert da[0].id == 'hello'
     else:
-        assert da[0].id == 'hello'
+        assert da[0] != 'hello'
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('is_copy', [True, False])
 def test_docarray_copy_list(da_cls, is_copy):
     d1 = Document()
     d2 = Document()
     da = da_cls([d1, d2], copy=is_copy)
     d1.id = 'hello'
-    if is_copy:
-        assert da[0].id != 'hello'
+    if da_cls == DocumentArray:
+        if is_copy:
+            assert da[0].id != 'hello'
+        else:
+            assert da[0].id == 'hello'
     else:
-        assert da[0].id == 'hello'
+        assert da[0] != 'hello'

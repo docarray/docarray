@@ -11,10 +11,12 @@ from starlette.testclient import TestClient
 from docarray import DocumentArray, Document
 from docarray.document.pydantic_model import PydanticDocument, PydanticDocumentArray
 from docarray.score import NamedScore
+from docarray.array.sqlite import DocumentArraySqlite
 
 
-def test_pydantic_doc_da(pytestconfig):
-    da = DocumentArray.from_files(
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_pydantic_doc_da(pytestconfig, da_cls):
+    da = da_cls.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
             f'{pytestconfig.rootdir}/**/*.jpg',

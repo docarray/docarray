@@ -1,9 +1,10 @@
 import pytest
 
 from docarray import Document, DocumentArray
+from docarray.array.sqlite import DocumentArraySqlite
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 def test_insert(da_cls):
     da = da_cls()
     assert not len(da)
@@ -14,7 +15,7 @@ def test_insert(da_cls):
     assert da[1].text == 'hello'
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray])
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
 def test_append_extend(da_cls):
     da = da_cls()
     da.append(Document())

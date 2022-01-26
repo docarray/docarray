@@ -8,6 +8,7 @@ import tensorflow as tf
 import torch
 
 from docarray import DocumentArray
+from docarray.array.sqlite import DocumentArraySqlite
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -40,7 +41,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 
 @pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch', 'paddle'])
-@pytest.mark.parametrize('da', [DocumentArray])
+@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('N', [2, 1000])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
