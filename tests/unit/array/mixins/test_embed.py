@@ -1,13 +1,11 @@
 import os
 
 import numpy as np
-import onnxruntime
-import paddle
 import pytest
-import tensorflow as tf
 import torch
 
 from docarray import DocumentArray
+from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
 
 random_embed_models = {
@@ -59,14 +57,16 @@ def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
     # reset
     docs.embeddings = np.random.random([N, 128]).astype(np.float32)
 
-    # try it again, it should yield the same result
-    docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+    # docs[a: b].embed is only supported for DocumentArrayInMemory
+    if isinstance(da, DocumentArrayInMemory):
+        # try it again, it should yield the same result
+        docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
 
-    # reset
-    docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+        # reset
+        docs.embeddings = np.random.random([N, 128]).astype(np.float32)
 
-    # now do this one by one
-    docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        # now do this one by one
+        docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
