@@ -4,7 +4,7 @@ import numpy as np
 
 if TYPE_CHECKING:
     from ..types import ArrayType
-    from .. import Document
+    from .. import Document, DocumentArray
 
 
 def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
@@ -48,15 +48,13 @@ def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
         return cls_type(scipy.sparse.vstack(all_fields))
 
 
-def ravel(value: 'ArrayType', docs: Sequence['Document'], field: str) -> None:
+def ravel(value: 'ArrayType', docs: 'DocumentArray', field: str) -> None:
     """Ravel :attr:`value` into ``doc.field`` of each documents
 
     :param docs: the docs to set
     :param field: the field of the doc to set
     :param value: the value to be set on ``doc.field``
     """
-    from .. import DocumentArray
-
     use_get_row = False
     if hasattr(value, 'getformat'):
         # for scipy only
@@ -70,19 +68,17 @@ def ravel(value: 'ArrayType', docs: Sequence['Document'], field: str) -> None:
 
     if use_get_row:
         emb_shape0 = value.shape[0]
-        for d, j in zip(docs, range(emb_shape0)):
+        for i, (d, j) in enumerate(zip(docs, range(emb_shape0))):
             row = getattr(value.getrow(j), f'to{sp_format}')()
-            setattr(d, field, row)
+            docs[d.id, field] = row
     elif isinstance(value, (list, tuple)):
         for d, j in zip(docs, value):
-            setattr(d, field, j)
+            docs[d.id, field] = j
     else:
 
         emb_shape0 = value.shape[0]
         for i, (d, j) in enumerate(zip(docs, range(emb_shape0))):
-            setattr(d, field, value[j, ...])
-            if isinstance(docs, DocumentArray):
-                docs._set_doc_by_id(d.id, d)
+            docs[d.id, field] = value[j, ...]
 
 
 def get_array_type(array: 'ArrayType') -> Tuple[str, bool]:
