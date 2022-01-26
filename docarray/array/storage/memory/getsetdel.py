@@ -26,7 +26,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         del self._data[self._id2offset[_id]]
-        self._id2offset.pop(_id)
+        self._rebuild_id2offset()
 
     def _del_doc_by_offset(self, offset: int):
         self._id2offset.pop(self._data[offset].id)
