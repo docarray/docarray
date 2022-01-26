@@ -71,7 +71,7 @@ class ContentPropertyMixin:
 
         if value is None:
             for d in self:
-                d.tensor = None
+                self[d.id, 'tensor'] = None
         else:
             tensors_shape0 = _get_len(value)
             self._check_length(tensors_shape0)
@@ -124,12 +124,12 @@ class ContentPropertyMixin:
 
         if value is None:
             for d in self:
-                d.blob = None
+                self[d.id, 'blob'] = None
         else:
             self._check_length(len(value))
 
             for doc, blob in zip(self, value):
-                doc.blob = blob
+                self[doc.id, 'blob'] = blob
 
     @property
     def contents(self) -> Optional[Union[Sequence['DocumentContentType'], 'ArrayType']]:
