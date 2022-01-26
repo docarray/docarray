@@ -67,19 +67,16 @@ def _any_hash(v):
     try:
         return int(v)  # parse int parameter
     except ValueError:
-        try:
-            return float(v)  # parse float parameter
-        except ValueError:
-            if not v:
-                # ignore it when the parameter is empty
+        if not v:
+            # ignore it when the parameter is empty
+            return 0
+        if isinstance(v, str):
+            v = v.strip()
+            if v.lower() in {'true', 'yes'}:  # parse boolean parameter
+                return 1
+            if v.lower() in {'false', 'no'}:
                 return 0
-            if isinstance(v, str):
-                v = v.strip()
-                if v.lower() in {'true', 'yes'}:  # parse boolean parameter
-                    return 1
-                if v.lower() in {'false', 'no'}:
-                    return 0
-            if isinstance(v, (tuple, dict, list)):
-                v = json.dumps(v, sort_keys=True)
+        if isinstance(v, (tuple, dict, list)):
+            v = json.dumps(v, sort_keys=True)
 
     return int(hashlib.md5(str(v).encode('utf-8')).hexdigest(), base=16)
