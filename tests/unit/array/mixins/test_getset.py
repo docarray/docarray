@@ -20,6 +20,17 @@ def da_and_dam():
     return (da, das)
 
 
+def nested_da_and_dam():
+    docs = [
+        Document(id='r1', chunks=[Document(id='c1'), Document(id='c2')]),
+        Document(id='r2', matches=[Document(id='m1'), Document(id='m2')]),
+    ]
+    da = DocumentArray()
+    da.extend(docs)
+    das = DocumentArraySqlite(docs)
+    return (da, das)
+
+
 @pytest.mark.parametrize(
     'array',
     [
@@ -147,6 +158,14 @@ def test_blobs_getter_setter(da):
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
     assert not da.blobs
+
+
+@pytest.mark.parametrize('da', nested_da_and_dam())
+def test_ellipsis_getter(da):
+    flattened = da[...]
+    assert len(flattened) == 6
+    for d, doc_id in zip(flattened, ['c1', 'c2', 'r1', 'm1', 'm2', 'r2']):
+        assert d.id == doc_id
 
 
 def test_zero_embeddings():
