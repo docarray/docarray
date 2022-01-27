@@ -78,13 +78,17 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = self._load_or_create_weaviate_schema(config.name)
         self._offset2ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
-        if docs is None or config.name:
+        if docs is None and config.name:
             return
 
-        elif isinstance(
+        # To align with Sqlite behavior; if `docs` is not `None` and table name
+        # is provided, :class:`DocumentArraySqlite` will clear the existing
+        # table and load the given `docs`
+        self.clear()
+        if isinstance(
             docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
-            self.extend(Document(d, copy=True) for d in docs)
+            self.extend(docs)
         else:
             if isinstance(docs, Document):
                 self.append(docs)
@@ -272,7 +276,7 @@ class BackendMixin(BaseBackendMixin):
         else:
             from ....math.ndarray import to_numpy_array
 
-            embedding = to_numpy_array(embedding)
+            embedding = to_numpy_array(value.embedding)
 
         return dict(
             data_object={'_serialized': value.to_base64()},

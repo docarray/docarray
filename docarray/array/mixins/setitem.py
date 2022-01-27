@@ -90,15 +90,18 @@ class SetItemMixin:
                 # TODO: this is added because we are still trying to figure out the proper way
                 # to set attribute and to get test_path_syntax_indexing_set to pass.
                 # we may have to refactor the following logic
-                from ..weaviate import DocumentArrayWeaviate
-                from ..memory import DocumentArrayInMemory
 
                 # NOTE: this check is not proper way to handle, but a temporary hack.
                 # writing it this way to minimize effect on other docarray classs and
                 # to make it easier to remove/refactor the following block
-                if isinstance(self, (DocumentArrayWeaviate, DocumentArrayInMemory)):
+                if self.__class__.__name__ in {
+                    'DocumentArrayWeaviate',
+                    'DocumentArrayInMemory',
+                }:
+                    from ..memory import DocumentArrayInMemory
+
                     if index[1] in self:
-                        # we first handle he case when second item in index is an id not attr
+                        # we first handle the case when second item in index is an id not attr
                         _docs = DocumentArrayInMemory(
                             self[index[0]]
                         ) + DocumentArrayInMemory(self[index[1]])

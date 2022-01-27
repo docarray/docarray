@@ -193,6 +193,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """ Concrete implementation of base class' ``_del_all_docs``"""
         if self._class_name:
             self._client.schema.delete_class(self._class_name)
+            self._client.schema.delete_class(self._meta_name)
             self._offset2ids.clear()
             self._load_or_create_weaviate_schema(self._class_name)
             self._update_offset2ids_meta()
