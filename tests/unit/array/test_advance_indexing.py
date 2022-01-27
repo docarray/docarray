@@ -102,7 +102,11 @@ def test_sequence_bool_index(docs, storage):
     # getter
     mask = [True, False] * 50
     assert len(docs[mask]) == 50
-    assert len(docs[[True, False]]) == 1
+    with pytest.raises(IndexError):
+        docs[[True, False]]
+
+    with pytest.raises(IndexError):
+        docs[[True, False]] = [Document(), Document()]
 
     # setter
     mask = [True, False] * 50
