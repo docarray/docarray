@@ -6,7 +6,9 @@ from typing import (
     Sequence,
     Optional,
     TYPE_CHECKING,
+    Callable,
 )
+import functools
 
 from ..base.backend import BaseBackendMixin
 from .... import Document
@@ -15,6 +17,17 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+
+
+def needs_id2offset_rebuild(func) -> Callable:
+    # self._id2offset needs to be rebuilt after every insert or delete
+    # this flag allows to do it lazily and cache the result
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        self._needs_id2offset_rebuild = True
+        return func(self, *args, **kwargs)
+
+    return wrapper
 
 
 class BackendMixin(BaseBackendMixin):
@@ -43,14 +56,11 @@ class BackendMixin(BaseBackendMixin):
 
         self._needs_id2offset_rebuild = False
 
+    @needs_id2offset_rebuild
     def _init_storage(
         self, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         from ... import DocumentArray
-
-        self._needs_id2offset_rebuild = True
-        # self._id2offset needs to be rebuilt after every insert or delete
-        # this flag allows to do it lazily and cache the result
 
         self._data = []
         if _docs is None:

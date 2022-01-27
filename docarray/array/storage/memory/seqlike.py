@@ -2,10 +2,13 @@ from typing import Iterator, Union, Sequence, Iterable, MutableSequence
 
 from .... import Document
 
+from ..memory.backend import needs_id2offset_rebuild
+
 
 class SequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
 
+    @needs_id2offset_rebuild
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
 
@@ -13,7 +16,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param value: The doc needs to be inserted.
         """
         self._data.insert(index, value)
-        self._needs_id2offset_rebuild = True
 
     def __eq__(self, other):
         return (
@@ -55,6 +57,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
         v.extend(other)
         return v
 
+    @needs_id2offset_rebuild
     def extend(self, values: Iterable['Document']) -> None:
         self._data.extend(values)
-        self._needs_id2offset_rebuild = True
