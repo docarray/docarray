@@ -130,7 +130,7 @@ class SetItemMixin:
             elif isinstance(index[0], bool):
                 if len(index) != len(self):
                     raise IndexError(
-                        f'Boolean mask index is required to have the same length as {len(self._data)}, '
+                        f'Boolean mask index is required to have the same length as {len(self)}, '
                         f'but receiving {len(index)}'
                     )
                 _selected = itertools.compress(self, index)
