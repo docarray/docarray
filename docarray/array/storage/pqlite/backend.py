@@ -41,7 +41,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._pqlite = PQLite(n_dim, **config)
         self._offset2ids = OffsetMapping(
-            name='offset2ids', data_path=config['data_path'], in_memory=True
+            name='offset2ids', data_path=config['data_path']
         )
 
         if docs is not None:
