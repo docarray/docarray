@@ -289,8 +289,10 @@ def test_single_boolean_and_padding(storage):
     with pytest.raises(IndexError):
         del da[True]
 
-    assert len(da[True, False]) == 1
-    assert len(da[False, False]) == 0
+    with pytest.raises(IndexError):
+        _ = da[True, False]
+    assert len(da[False, False, False]) == 0
+    assert len(da[True, False, False]) == 1
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
