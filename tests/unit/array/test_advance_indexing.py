@@ -120,6 +120,15 @@ def test_sequence_bool_index(docs, storage):
         else:
             assert d.text == str(idx)
 
+    docs[mask] = [Document(text='test') for _ in range(50)]
+
+    for idx, d in enumerate(docs):
+        if idx % 2 == 0:
+            # got replaced
+            assert d.text == 'test'
+        else:
+            assert d.text == str(idx)
+
     # del
     del docs[mask]
     assert len(docs) == 50
