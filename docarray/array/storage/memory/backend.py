@@ -61,6 +61,7 @@ class BackendMixin(BaseBackendMixin):
         self, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         from ... import DocumentArray
+        from ...memory import DocumentArrayInMemory
 
         self._data = []
         self._id_to_index = {}
@@ -76,6 +77,9 @@ class BackendMixin(BaseBackendMixin):
                 self._id_to_index = _docs._id2offset
             else:
                 self._data = list(_docs)
+
+            if isinstance(_docs, DocumentArrayInMemory):
+                self._needs_id2offset_rebuild = _docs._needs_id2offset_rebuild
         else:
             if isinstance(_docs, Document):
                 if copy:
