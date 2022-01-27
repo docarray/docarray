@@ -74,11 +74,11 @@ class BackendMixin(BaseBackendMixin):
                 self._data = [Document(d, copy=True) for d in _docs]
             elif isinstance(_docs, DocumentArray):
                 self._data = _docs._data
-                self._id_to_index = _docs._id2offset
             else:
                 self._data = list(_docs)
 
             if isinstance(_docs, DocumentArrayInMemory):
+                self._id_to_index = _docs._id2offset
                 self._needs_id2offset_rebuild = _docs._needs_id2offset_rebuild
         else:
             if isinstance(_docs, Document):
