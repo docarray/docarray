@@ -65,7 +65,6 @@ class GroupMixin:
         for i in range(n_batches):
             yield self[ix[i * batch_size : (i + 1) * batch_size]]
 
-
     def batch_indices(
         self,
         batch_size: int,
@@ -93,7 +92,6 @@ class GroupMixin:
         for i in range(n_batches):
             yield ix[i * batch_size : (i + 1) * batch_size]
 
-
     def batch_ids(
         self,
         batch_size: int,
@@ -112,7 +110,7 @@ class GroupMixin:
             raise ValueError('`batch_size` should be a positive integer')
 
         N = len(self)
-        ix = self[:,'id']
+        ix = self[:, 'id']
         n_batches = int(np.ceil(N / batch_size))
 
         if shuffle:
@@ -120,4 +118,3 @@ class GroupMixin:
 
         for i in range(n_batches):
             yield ix[i * batch_size : (i + 1) * batch_size]
-

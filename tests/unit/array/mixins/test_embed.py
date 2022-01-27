@@ -43,7 +43,8 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 
 @pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch', 'paddle'])
-@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
+# @pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
+@pytest.mark.parametrize('da', [DocumentArraySqlite])
 @pytest.mark.parametrize('N', [2, 1000])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True])

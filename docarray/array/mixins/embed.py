@@ -43,8 +43,8 @@ class EmbedMixin:
         device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
         with device:
             for b_ids in self.batch_ids(batch_size):
-                r = embed_model(self[b_ids,'tensor'], training=False)
-                self[b_ids,'embedding'] = r.numpy() if to_numpy else r
+                r = embed_model(self[b_ids, 'tensor'], training=False)
+                self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
     def _set_embeddings_torch(
         self: 'T',
@@ -61,7 +61,7 @@ class EmbedMixin:
         length = len(self)
         with torch.inference_mode():
             for b_ids in self.batch_ids(batch_size):
-                batch_inputs = torch.tensor(self[b_ids,'tensor'], device=device)
+                batch_inputs = torch.tensor(self[b_ids, 'tensor'], device=device)
                 r = embed_model(batch_inputs).cpu().detach()
                 self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
@@ -81,7 +81,7 @@ class EmbedMixin:
         embed_model.to(device=device)
         embed_model.eval()
         for b_ids in self.batch_ids(batch_size):
-            batch_inputs = paddle.to_tensor(self[b_ids,'tensor'], place=device)
+            batch_inputs = paddle.to_tensor(self[b_ids, 'tensor'], place=device)
             r = embed_model(batch_inputs)
             self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
@@ -108,8 +108,9 @@ class EmbedMixin:
 
         for b_ids in self.batch_ids(batch_size):
             self[b_ids, 'embedding'] = embed_model.run(
-                None, {embed_model.get_inputs()[0].name: self[b_ids,'tensor']}
+                None, {embed_model.get_inputs()[0].name: self[b_ids, 'tensor']}
             )[0]
+
 
 def get_framework(dnn_model) -> str:
     """Return the framework that powers a DNN model.
