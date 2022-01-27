@@ -1,9 +1,12 @@
-from typing import Iterator, Union, Iterable, MutableSequence
-
+from typing import Iterator, Union, Iterable, Sequence, MutableSequence
+import numpy as np
 from .... import Document
+from ...memory import DocumentArrayInMemory
 
 
 class SequenceLikeMixin(MutableSequence[Document]):
+    """Implement sequence-like methods"""
+
     """Implement sequence-like methods"""
 
     def insert(self, index: int, value: 'Document'):
@@ -12,36 +15,67 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        length = len(self)
-        if index < 0:
-            index = length + index
-        index = max(0, min(length, index))
-        self._shift_index_right_backward(index)
-        self._insert_doc_at_idx(doc=value, idx=index)
+        if value.embedding is None:
+            value.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+
+        self._pqlite.index(DocumentArrayInMemory([value]))
+        self._offset2ids.insert_at_offset(index, value.id)
 
     def append(self, value: 'Document') -> None:
-        self._insert_doc_at_idx(value)
+        self._pqlite.index(DocumentArrayInMemory([value]))
+        self._offset2ids.extend_doc_ids([value.id])
 
     def extend(self, values: Iterable['Document']) -> None:
-        idx = len(self)
-        for v in values:
-            self._insert_doc_at_idx(v, idx)
-            idx += 1
+        docs = DocumentArrayInMemory(values)
+        for doc in docs:
+            if doc.embedding is None:
+                doc.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+        self._pqlite.index(docs)
+        self._offset2ids.extend_doc_ids([value.id for value in values])
 
-    def clear(self) -> None:
-        raise NotImplementedError
+    def __del__(self) -> None:
+        del self._offset2ids
+        del self._pqlite
 
-    def __contains__(self, item: Union[str, 'Document']):
-        if isinstance(item, str):
-            raise NotImplementedError
-            return len(list(r)) > 0
-        elif isinstance(item, Document):
-            return item.id in self  # fall back to str check
+    def __eq__(self, other):
+        """In pqlite backend, data are considered as identical if configs point to the same database source"""
+        return (
+            type(self) is type(other)
+            and type(self._config) is type(other._config)
+            and self._config == other._config
+        )
+
+    def __len__(self):
+        return self._offset2ids.size
+
+    def __iter__(self) -> Iterator['Document']:
+        for i in range(len(self)):
+            yield self[i]
+
+    def __contains__(self, x: Union[str, 'Document']):
+        if isinstance(x, str):
+            return self._offset2id.get_offset_by_id(x) is not None
+        elif isinstance(x, Document):
+            return self._offset2id.get_offset_by_id(x.id) is not None
         else:
             return False
 
-    def __len__(self) -> int:
-        return self._pqlite.stat['doc_num']
+    def clear(self):
+        """Clear the data of :class:`DocumentArray`"""
+        self._offset2ids.clear()
+        self._pqlite.clear()
 
-    def __iter__(self) -> Iterator['Document']:
-        ...
+    def __bool__(self):
+        """To simulate ```l = []; if l: ...```
+
+        :return: returns true if the length of the array is larger than 0
+        """
+        return len(self) > 0
+
+    def __repr__(self):
+        return f'<DocumentArray[PQLite] (length={len(self)}) at {id(self)}>'
+
+    def __add__(self, other: Union['Document', Sequence['Document']]):
+        v = type(self)(self)
+        v.extend(other)
+        return v

@@ -1,4 +1,4 @@
-from .base import DocumentArray
+from .document import DocumentArray
 from .storage.pqlite import StorageMixins
 
 

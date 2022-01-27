@@ -1,6 +1,7 @@
-import dataclasses
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from typing import (
+    Union,
+    Dict,
     Optional,
     TYPE_CHECKING,
 )
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class PqliteConfig:
-    dim: int = 256
+    n_dim: int = 1
     metric: str = 'cosine'
     data_path: str = 'data'
 
@@ -23,23 +24,25 @@ class PqliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend. """
 
-    def _insert_doc_at_idx(self, doc, idx: Optional[int] = None):
-        raise NotImplementedError
-
-    def _shift_index_right_backward(self, start: int):
-        raise NotImplementedError
-
     def _init_storage(
         self,
         docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[PqliteConfig] = None,
+        config: Optional[Union[PqliteConfig, Dict]] = None,
     ):
         if not config:
             config = PqliteConfig()
+        self._config = config
 
         from pqlite import PQLite
+        from .helper import OffsetMapping
 
-        self._pqlite = PQLite(**config)
+        config = asdict(config)
+        n_dim = config.pop('n_dim')
+
+        self._pqlite = PQLite(n_dim, **config)
+        self._offset2ids = OffsetMapping(
+            name='offset2ids', data_path=config['data_path'], in_memory=True
+        )
 
         if docs is not None:
             self.clear()
