@@ -32,9 +32,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param wid: weaviate id
         :param value: the new document to update to
         """
+        payload = self._doc2weaviate_create_payload(value)
         if self._client.data_object.exists(wid):
             self._client.data_object.delete(wid)
-        self._client.data_object.create(**self._doc2weaviate_create_payload(value))
+        self._client.data_object.create(**payload)
         self._offset2ids[self._offset2ids.index(wid)] = self.wmap(value.id)
         self._update_offset2ids_meta()
 

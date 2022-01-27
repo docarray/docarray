@@ -13,7 +13,6 @@ from typing import (
     List,
 )
 
-import weaviate
 import uuid
 import scipy.sparse
 
@@ -31,9 +30,9 @@ class WeaviateConfig:
     """This class stores the config variables to initialize
     connection to the Weaviate server"""
 
-    client: Optional[Union[str, weaviate.Client]] = None
+    client: Optional[Union[str, 'weaviate.Client']] = None
     n_dim: Optional[int] = None
-    array_id: Optional[str] = None
+    name: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -48,7 +47,7 @@ class BackendMixin(BaseBackendMixin):
 
         :param docs: the list of documents to initialize to
         :param config: the config object used to ininitialize connection to weaviate server
-        :raises ValueError: only one of array_id or docs can be used for initialization,
+        :raises ValueError: only one of name or docs can be used for initialization,
             raise an error if both are provided
         """
 
@@ -61,6 +60,8 @@ class BackendMixin(BaseBackendMixin):
 
         self.n_dim = config.n_dim or 1
 
+        import weaviate
+
         if config.client is None:
             self._client = weaviate.Client('http://localhost:8080')
         elif isinstance(config.client, str):
@@ -68,15 +69,15 @@ class BackendMixin(BaseBackendMixin):
         else:
             self._client = config.client
 
-        if config.array_id is not None and docs is not None:
+        if config.name is not None and docs is not None:
             raise ValueError(
-                'only one of array_id or docs can be provided for initialization'
+                'only one of name or docs can be provided for initialization'
             )
 
-        self._schemas = self._load_or_create_weaviate_schema(config.array_id)
+        self._schemas = self._load_or_create_weaviate_schema(config.name)
         self._offset2ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
-        if docs is None or config.array_id:
+        if docs is None or config.name:
             return
 
         elif isinstance(
@@ -207,7 +208,7 @@ class BackendMixin(BaseBackendMixin):
             raise ValueError('received multiple meta copies which is invalid')
 
     @property
-    def array_id(self):
+    def name(self):
         """An alias to _class_name that returns the id/name of the class
         in the weaviate of this :class:`DocumentArrayWeaviate`
 
@@ -264,11 +265,13 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
         if value.embedding is None:
-            embedding = [0]
+            embedding = [0] * self.n_dim
         elif isinstance(value.embedding, scipy.sparse.spmatrix):
             embedding = value.embedding.toarray()
         else:
-            embedding = value.embedding
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
 
         return dict(
             data_object={'_serialized': value.to_base64()},

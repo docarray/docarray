@@ -9,10 +9,10 @@ from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 def test_construct_docarray_weaviate(start_weaviate):
     daw = DocumentArrayWeaviate()
     daw.extend([Document(text='a'), Document(text='b'), Document(text='c')])
-    array_id = daw.array_id
+    name = daw.name
     del daw
 
-    daw2 = DocumentArrayWeaviate(config=WeaviateConfig(array_id=array_id))
+    daw2 = DocumentArrayWeaviate(config=WeaviateConfig(name=name))
     assert len(daw2) == 3
     assert daw2.texts == ['a', 'b', 'c']
 
