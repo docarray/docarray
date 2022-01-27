@@ -106,21 +106,23 @@ class SetItemMixin:
                         return
 
                     _docs = self[index[0]]
+
+                    if not _docs:
+                        return
+
                     if isinstance(_docs, Document):
                         _docs = DocumentArrayInMemory(_docs)
                         # because we've augmented docs dimension, we do the same for value
-                        print('ok')
                         value = (value,)
 
                     attrs = index[1]
                     if isinstance(attrs, str):
-                        print('okk')
                         attrs = (attrs,)
                         # because we've augmented attrs dimension, we do the same for value
                         value = (value,)
 
                     for attr in attrs:
-                        if any(not hasattr(_d, attr) for _d in _docs):
+                        if not hasattr(_docs[0], attr):
                             raise ValueError(
                                 f'`{attr}` is neither a valid id nor attribute name'
                             )

@@ -190,10 +190,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_all_docs(self):
         """ Concrete implementation of base class' ``_del_all_docs``"""
-        self._client.schema.delete_class(self._class_name)
-        self._offset2ids.clear()
-        self._upload_weaviate_schema()
-        self._update_offset2ids_meta()
+        if self._class_name:
+            self._client.schema.delete_class(self._class_name)
+            self._offset2ids.clear()
+            self._load_or_create_weaviate_schema(self._class_name)
+            self._update_offset2ids_meta()
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """Concrete implementation of base class' ``_del_docs_by_mask``

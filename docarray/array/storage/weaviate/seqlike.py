@@ -71,10 +71,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def clear(self):
         """Clear the data of :class:`DocumentArray` with weaviate storage"""
-        if self._class_name:
-            self._client.schema.delete_class(self._class_name)
-            self._offset2ids.clear()
-            self._update_offset2ids_meta()
+        self._del_all_docs()
 
     def __bool__(self):
         """To simulate ```l = []; if l: ...```
