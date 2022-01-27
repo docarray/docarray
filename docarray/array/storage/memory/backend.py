@@ -63,6 +63,7 @@ class BackendMixin(BaseBackendMixin):
         from ... import DocumentArray
 
         self._data = []
+        self._id_to_index = {}
         if _docs is None:
             return
         elif isinstance(

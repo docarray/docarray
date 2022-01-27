@@ -57,6 +57,8 @@ class SequenceLikeMixin(MutableSequence[Document]):
         v.extend(other)
         return v
 
-    @needs_id2offset_rebuild
     def extend(self, values: Iterable['Document']) -> None:
         self._data.extend(values)
+        # extend _id_to_index, no rebuilt needed
+        last_idx = len(self._id_to_index)
+        self._id_to_index.update({d.id: i + last_idx for i, d in enumerate(values)})
