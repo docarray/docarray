@@ -58,7 +58,6 @@ class EmbedMixin:
         embed_model = embed_model.to(device)
         is_training_before = embed_model.training
         embed_model.eval()
-        length = len(self)
         with torch.inference_mode():
             for b_ids in self.batch_ids(batch_size):
                 batch_inputs = torch.tensor(self[b_ids, 'tensor'], device=device)

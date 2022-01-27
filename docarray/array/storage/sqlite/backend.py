@@ -34,7 +34,7 @@ def _sanitize_table_name(table_name: str) -> str:
 class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
-    serialize_config: Dict = field(default_factory=dict)
+    serialize_config: Dict = field(default_factory=lambda: {'protocol': 'protobuf'})
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'DELETE'
     synchronous: str = 'OFF'
