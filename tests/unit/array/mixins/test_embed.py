@@ -1,8 +1,12 @@
 import os
 
 import numpy as np
+import tensorflow as tf
 import pytest
 import torch
+import paddle
+import onnx
+import onnxruntime
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
@@ -42,7 +46,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 @pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('N', [2, 1000])
 @pytest.mark.parametrize('batch_size', [1, 256])
-@pytest.mark.parametrize('to_numpy', [True, False])
+@pytest.mark.parametrize('to_numpy', [True])
 def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
     docs = da.empty(N)
     docs.tensors = np.random.random([N, 128]).astype(np.float32)
@@ -52,6 +56,7 @@ def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
     r = docs.embeddings
     if hasattr(r, 'numpy'):
         r = r.numpy()
+
     embed1 = r.copy()
 
     # reset

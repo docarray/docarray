@@ -42,9 +42,9 @@ class EmbedMixin:
 
         device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
         with device:
-            for b in self.batch(batch_size):
-                r = embed_model(b.tensors, training=False)
-                b.embeddings = r.numpy() if to_numpy else r
+            for b_ids in self.batch_ids(batch_size):
+                r = embed_model(self[b_ids,'tensor'], training=False)
+                self[b_ids,'embedding'] = r.numpy() if to_numpy else r
 
     def _set_embeddings_torch(
         self: 'T',
@@ -60,14 +60,10 @@ class EmbedMixin:
         embed_model.eval()
         length = len(self)
         with torch.inference_mode():
-            for i, b in enumerate(self.batch(batch_size)):
-                batch_inputs = torch.tensor(b.tensors, device=device)
+            for b_ids in self.batch_ids(batch_size):
+                batch_inputs = torch.tensor(self[b_ids,'tensor'], device=device)
                 r = embed_model(batch_inputs).cpu().detach()
-                if to_numpy:
-                    r = r.numpy()
-                self[
-                    i * batch_size : min((i + 1) * batch_size, length), 'embedding'
-                ] = r
+                self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
         if is_training_before:
             embed_model.train()
@@ -84,10 +80,11 @@ class EmbedMixin:
         is_training_before = embed_model.training
         embed_model.to(device=device)
         embed_model.eval()
-        for b in self.batch(batch_size):
-            batch_inputs = paddle.to_tensor(b.tensors, place=device)
+        for b_ids in self.batch_ids(batch_size):
+            batch_inputs = paddle.to_tensor(self[b_ids,'tensor'], place=device)
             r = embed_model(batch_inputs)
-            b.embeddings = r.numpy() if to_numpy else r
+            self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
+
         if is_training_before:
             embed_model.train()
 
@@ -109,11 +106,10 @@ class EmbedMixin:
                     f'Your installed `onnxruntime` supports `{support_device}`, but you give {device}'
                 )
 
-        for b in self.batch(batch_size):
-            b.embeddings = embed_model.run(
-                None, {embed_model.get_inputs()[0].name: b.tensors}
+        for b_ids in self.batch_ids(batch_size):
+            self[b_ids, 'embedding'] = embed_model.run(
+                None, {embed_model.get_inputs()[0].name: self[b_ids,'tensor']}
             )[0]
-
 
 def get_framework(dnn_model) -> str:
     """Return the framework that powers a DNN model.
