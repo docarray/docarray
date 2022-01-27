@@ -15,6 +15,7 @@ from typing import (
 
 import uuid
 import scipy.sparse
+import weaviate
 
 from .... import Document
 from ..base.backend import BaseBackendMixin
@@ -30,7 +31,7 @@ class WeaviateConfig:
     """This class stores the config variables to initialize
     connection to the Weaviate server"""
 
-    client: Optional[Union[str, 'weaviate.Client']] = None
+    client: Optional[Union[str, weaviate.Client]] = None
     n_dim: Optional[int] = None
     name: Optional[str] = None
 
