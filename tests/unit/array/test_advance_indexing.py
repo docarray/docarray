@@ -152,6 +152,9 @@ def test_sequence_int(docs, nparray, storage):
     del docs[idx]
     assert len(docs) == 100 - len(idx)
 
+    with pytest.raises(ValueError):
+        docs[1, 5, 9] = Document(text='new')
+
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite'])
 def test_sequence_str(docs, storage):
