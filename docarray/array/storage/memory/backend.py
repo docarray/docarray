@@ -44,7 +44,7 @@ class BackendMixin(BaseBackendMixin):
         self._needs_id2offset_rebuild = False
 
     def _init_storage(
-        self, _docs: Optional["DocumentArraySourceType"] = None, copy: bool = False
+        self, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
     ):
         from ... import DocumentArray
 

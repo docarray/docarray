@@ -5,11 +5,11 @@ from docarray import DocumentArray, Document
 
 @pytest.fixture()
 def docs():
-    return DocumentArray([Document(id=f"{i}") for i in range(1, 10)])
+    return DocumentArray([Document(id=f'{i}') for i in range(1, 10)])
 
 
 @pytest.mark.parametrize(
-    "to_delete",
+    'to_delete',
     [
         0,
         1,
@@ -31,12 +31,12 @@ def test_del_all(docs, to_delete):
 
 
 @pytest.mark.parametrize(
-    ["deleted_ids", "expected_ids"],
+    ['deleted_ids', 'expected_ids'],
     [
-        (["1", "2", "3", "4"], ["5", "6", "7", "8", "9"]),
-        (["2", "4", "7", "1"], ["3", "5", "6", "8", "9"]),
+        (['1', '2', '3', '4'], ['5', '6', '7', '8', '9']),
+        (['2', '4', '7', '1'], ['3', '5', '6', '8', '9']),
     ],
 )
 def test_del_by_multiple_idx(docs, deleted_ids, expected_ids):
     del docs[deleted_ids]
-    assert docs[:, "id"] == expected_ids
+    assert docs[:, 'id'] == expected_ids
