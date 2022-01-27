@@ -6,7 +6,7 @@ from docarray import DocumentArray, Document
 
 @pytest.fixture
 def docs():
-    yield (Document(text=j) for j in range(100))
+    yield (Document(text=str(j)) for j in range(100))
 
 
 @pytest.fixture
@@ -18,14 +18,14 @@ def indices():
 def test_getter_int_str(docs, storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
-    assert docs[99].text == 99
-    assert docs[np.int(99)].text == 99
-    assert docs[-1].text == 99
-    assert docs[0].text == 0
+    assert docs[99].text == '99'
+    assert docs[np.int(99)].text == '99'
+    assert docs[-1].text == '99'
+    assert docs[0].text == '0'
     # string index
-    assert docs[docs[0].id].text == 0
-    assert docs[docs[99].id].text == 99
-    assert docs[docs[-1].id].text == 99
+    assert docs[docs[0].id].text == '0'
+    assert docs[docs[99].id].text == '99'
+    assert docs[docs[-1].id].text == '99'
 
     with pytest.raises(IndexError):
         docs[100]
@@ -114,7 +114,7 @@ def test_sequence_bool_index(docs, storage):
             # got replaced
             assert d.text.startswith('repl')
         else:
-            assert isinstance(d.text, int)
+            assert d.text == str(idx)
 
     # del
     del docs[mask]

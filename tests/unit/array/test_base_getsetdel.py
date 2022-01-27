@@ -48,7 +48,7 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
 
 @pytest.fixture(scope='function')
 def docs():
-    return DocumentArrayDummy([Document(id=str(j), text=j) for j in range(100)])
+    return DocumentArrayDummy([Document(id=str(j), text=str(j)) for j in range(100)])
 
 
 def test_index_by_int_str(docs):
@@ -71,13 +71,13 @@ def test_index_by_int_str(docs):
 
 def test_getter_int_str(docs):
     # getter
-    assert docs[99].text == 99
-    assert docs[-1].text == 99
-    assert docs[0].text == 0
+    assert docs[99].text == '99'
+    assert docs[-1].text == '99'
+    assert docs[0].text == '0'
 
     # string index
-    assert docs['0'].text == 0
-    assert docs['99'].text == 99
+    assert docs['0'].text == '0'
+    assert docs['99'].text == '99'
 
     with pytest.raises(IndexError):
         docs[100]
