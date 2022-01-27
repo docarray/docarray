@@ -44,7 +44,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         self._data[_slice] = value
 
-    @needs_id2offset_rebuild
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Iterable['Document']
     ):
