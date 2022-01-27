@@ -141,12 +141,8 @@ class SetItemMixin:
                         f'Number of elements for assigning must be '
                         f'the same as the index length: {len(index)}'
                     )
-                if isinstance(value, Document):
-                    for si in index:
-                        self[si] = value  # leverage existing setter
-                else:
-                    for si, _val in zip(index, value):
-                        self[si] = _val  # leverage existing setter
+                for si, _val in zip(index, value):
+                    self[si] = _val  # leverage existing setter
         elif isinstance(index, np.ndarray):
             index = index.squeeze()
             if index.ndim == 1:
