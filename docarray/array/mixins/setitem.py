@@ -121,8 +121,12 @@ class SetItemMixin:
                             for _d in _docs:
                                 self._set_doc_by_id(_d.id, _d)
                         else:
-                            for _d, _vv in zip(_docs, _v):
-                                self._set_doc_attr_by_id(_d.id, _a, _vv)
+                            if not isinstance(_v, (list, tuple)):
+                                for _d in _docs:
+                                    self._set_doc_attr_by_id(_d.id, _a, _v)
+                            else:
+                                for _d, _vv in zip(_docs, _v):
+                                    self._set_doc_attr_by_id(_d.id, _a, _vv)
             elif isinstance(index[0], bool):
                 if len(index) != len(self):
                     raise IndexError(

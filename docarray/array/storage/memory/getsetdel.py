@@ -56,7 +56,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         setattr(self._data[offset], attr, value)
 
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
-        setattr(self._data[self._id2offset[_id]], attr, value)
+        if attr == 'id':
+            old_idx = self._id2offset.pop(_id)
+            setattr(self._data[old_idx], attr, value)
+            self._id2offset[value] = old_idx
+        else:
+            setattr(self._data[self._id2offset[_id]], attr, value)
 
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]

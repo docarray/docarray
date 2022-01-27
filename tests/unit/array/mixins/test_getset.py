@@ -96,18 +96,24 @@ def test_texts_getter_da(da):
 
 @pytest.mark.parametrize('da', da_and_dam())
 def test_setter_by_sequences_in_selected_docs_da(da):
+    da[[0, 1, 2], 'text'] = 'test'
+    assert da[[0, 1, 2], 'text'] == ['test', 'test', 'test']
 
-    da[[0], 'text'] = 'jina'
-    assert ['jina'] == da[[0], 'text']
+    da[[3, 4], 'text'] = ['test', 'test']
+    assert da[[3, 4], 'text'] == ['test', 'test']
 
-    da[[0, 1], 'text'] = ['jina', 'jana']
-    assert ['jina', 'jana'] == da[[0, 1], 'text']
+    da[[5], 'text'] = 'test'
+    assert da[[5], 'text'] == ['test']
 
-    da[[0], 'id'] = '12'
-    assert ['12'] == da[[0], 'id']
+    da[[6], 'text'] = ['test']
+    assert da[[6], 'text'] == ['test']
 
-    da[[0, 1], 'id'] = ['12', '34']
-    assert ['12', '34'] == da[[0, 1], 'id']
+    # test that ID not present in da works
+    da[[0], 'id'] = '999'
+    assert ['999'] == da[[0], 'id']
+
+    da[[0, 1], 'id'] = ['101', '102']
+    assert ['101', '102'] == da[[0, 1], 'id']
 
 
 @pytest.mark.parametrize('da', da_and_dam())

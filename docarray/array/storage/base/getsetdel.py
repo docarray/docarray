@@ -144,7 +144,7 @@ class BaseGetSetDelMixin(ABC):
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
             setattr(d, attr, value)
-            self._set_doc_by_id(d.id, d)
+            self._set_doc_by_id(_id, d)
 
     def _find_root_doc(self, d: Document):
         """Find `d`'s root Document in an exhaustive manner"""
