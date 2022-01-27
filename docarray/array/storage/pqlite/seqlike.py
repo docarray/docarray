@@ -7,8 +7,6 @@ from ...memory import DocumentArrayInMemory
 class SequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
 
-    """Implement sequence-like methods"""
-
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
 
@@ -34,8 +32,9 @@ class SequenceLikeMixin(MutableSequence[Document]):
         self._offset2ids.extend_doc_ids([value.id for value in values])
 
     def __del__(self) -> None:
-        del self._offset2ids
-        del self._pqlite
+        if not self._persist:
+            self._offset2ids.clear()
+            self._pqlite.clear()
 
     def __eq__(self, other):
         """In pqlite backend, data are considered as identical if configs point to the same database source"""

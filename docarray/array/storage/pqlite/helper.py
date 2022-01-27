@@ -15,7 +15,7 @@ class OffsetMapping(Table):
         self._size = None
 
     def create_table(self):
-        sql = f'''CREATE TABLE {self.name}
+        sql = f'''CREATE TABLE IF NOT EXISTS {self.name}
                             (offset INTEGER NOT NULL PRIMARY KEY,
                              doc_id INTEGER TEXT NOT NULL)'''
 

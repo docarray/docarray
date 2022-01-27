@@ -38,7 +38,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_doc_by_offset(self, index: int) -> 'Document':
         doc_id = self._offset2ids.get_id_by_offset(index)
         if doc_id is not None:
-            return self._pqlite.get_doc_by_offset(index)
+            return self._pqlite.get_doc_by_id(doc_id)
 
     def _get_doc_by_id(self, id: str) -> 'Document':
         return self._pqlite.get_doc_by_id(id)
