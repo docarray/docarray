@@ -89,17 +89,28 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Iterable['Document']
     ):
-        # TODO: use base _set_doc_value_pairs
-        map_doc_id_to_offset = {doc.id: offset for offset, doc in enumerate(docs)}
-        new = DocumentArray(d for d in self)
-        for d in new.flatten():
-            if d.id not in map_doc_id_to_offset:
-                continue
-            v = values[map_doc_id_to_offset[d.id]]
-            d._data = v._data
+        # TODO: optimize/use base _set_doc_value_pairs
+        from ...memory import DocumentArrayInMemory
 
-        for _d, _v in zip(self, new):
-            self._setitem(self.wmap(_d.id), _v)
+        docs = DocumentArrayInMemory(docs)
+        map_doc_id_to_offset = {doc.id: offset for offset, doc in enumerate(docs)}
+        map_new_id_to_old_id = {new.id: old.id for old, new in zip(docs, values)}
+
+        def _set_doc_value_pairs(_docs: DocumentArrayInMemory):
+            for d in _docs:
+                if d.id in map_doc_id_to_offset:
+                    d._data = values[map_doc_id_to_offset[d.id]]._data
+                _set_doc_value_pairs(d.chunks)
+                _set_doc_value_pairs(d.matches)
+
+        res = DocumentArrayInMemory(d for d in self)
+        _set_doc_value_pairs(res)
+
+        for r in res:
+            old_id = (
+                r.id if r.id not in map_new_id_to_old_id else map_new_id_to_old_id[r.id]
+            )
+            self._setitem(self.wmap(old_id), r)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
