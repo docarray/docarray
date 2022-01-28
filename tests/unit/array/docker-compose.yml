@@ -1,0 +1,11 @@
+version: "3.3"
+services:
+  weaviate:
+    image: semitechnologies/weaviate:1.9.0
+    ports:
+      - 8080:8080
+    environment:
+      CONTEXTIONARY_URL: contextionary:9999
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'

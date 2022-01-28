@@ -113,8 +113,12 @@ def test_setter_by_sequences_in_selected_docs_da(da):
     da[[3, 4], 'text'] = ['test', 'test']
     assert da[[3, 4], 'text'] == ['test', 'test']
 
-    da[[5], 'text'] = 'test'
-    assert da[[5], 'text'] == ['test']
+    # TODO Clarify whether this change can be accepted
+    # I think since the first element of the index (i.e. [0])
+    # is a list, it might be more natural to expect a list
+    # as values?
+    da[[0], 'text'] = ['jina']
+    assert da[[0], 'text'] == ['jina']
 
     da[[6], 'text'] = ['test']
     assert da[[6], 'text'] == ['test']

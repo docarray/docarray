@@ -64,22 +64,24 @@ def _hash_column(col_name, col_val, n_dim, max_value, idxs, data, table):
 
 
 def _any_hash(v):
-    try:
-        return int(v)  # parse int parameter
-    except ValueError:
-        try:
-            return float(v)  # parse float parameter
-        except ValueError:
-            if not v:
-                # ignore it when the parameter is empty
+    if not v:
+        # ignore it when the parameter is empty
+        return 0
+    elif isinstance(v, (tuple, dict, list, str)):
+        if isinstance(v, str):
+            v = v.strip()
+            if v.lower() in {'true', 'yes'}:  # parse boolean parameter
+                return 1
+            if v.lower() in {'false', 'no'}:
                 return 0
-            if isinstance(v, str):
-                v = v.strip()
-                if v.lower() in {'true', 'yes'}:  # parse boolean parameter
-                    return 1
-                if v.lower() in {'false', 'no'}:
-                    return 0
-            if isinstance(v, (tuple, dict, list)):
-                v = json.dumps(v, sort_keys=True)
-
-    return int(hashlib.md5(str(v).encode('utf-8')).hexdigest(), base=16)
+        else:
+            v = json.dumps(v, sort_keys=True)
+        return int(hashlib.md5(str(v).encode('utf-8')).hexdigest(), base=16)
+    else:
+        try:
+            return int(v)  # parse int parameter
+        except ValueError:
+            try:
+                return float(v)  # parse float parameter
+            except ValueError:
+                return 0  # unable to hash

@@ -35,9 +35,14 @@ class DelItemMixin:
             if (
                 isinstance(index, tuple)
                 and len(index) == 2
-                and isinstance(index[0], (slice, Sequence))
+                and (
+                    isinstance(index[0], (slice, Sequence, str, int))
+                    or index[0] is Ellipsis
+                )
+                and isinstance(index[1], (str, Sequence))
             ):
-                if isinstance(index[0], str) and isinstance(index[1], str):
+                # TODO: add support for cases such as da[1, ['text', 'id']]?
+                if isinstance(index[0], (str, int)) and isinstance(index[1], str):
                     # ambiguity only comes from the second string
                     if index[1] in self:
                         del self[index[0]]

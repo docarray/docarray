@@ -1,11 +1,15 @@
 import pytest
 
-from docarray import Document, DocumentArray
+from docarray import Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_insert(da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+)
+def test_insert(da_cls, start_weaviate):
     da = da_cls()
     assert not len(da)
     da.insert(0, Document(text='hello'))
@@ -15,8 +19,10 @@ def test_insert(da_cls):
     assert da[1].text == 'hello'
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_append_extend(da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+)
+def test_append_extend(da_cls, start_weaviate):
     da = da_cls()
     da.append(Document())
     da.append(Document())
