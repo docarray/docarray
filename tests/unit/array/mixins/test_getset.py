@@ -97,13 +97,17 @@ def test_texts_getter_da(da):
 @pytest.mark.parametrize('da', da_and_dam())
 def test_setter_by_sequences_in_selected_docs_da(da):
 
-    da[[0], 'text'] = 'jina'
+    # TODO Clarify whether this change can be accepted
+    # I think since the first element of the index (i.e. [0])
+    # is a list, it might be more natural to expect a list
+    # as values?
+    da[[0], 'text'] = ['jina']
     assert ['jina'] == da[[0], 'text']
 
     da[[0, 1], 'text'] = ['jina', 'jana']
     assert ['jina', 'jana'] == da[[0, 1], 'text']
 
-    da[[0], 'id'] = '12'
+    da[[0], 'id'] = ['12']
     assert ['12'] == da[[0], 'id']
 
     da[[0, 1], 'id'] = ['12', '34']
