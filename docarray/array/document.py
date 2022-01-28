@@ -41,6 +41,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .sqlite import DocumentArraySqlite
 
                 instance = super().__new__(DocumentArraySqlite)
+            elif storage == 'pqlite':
+                from .pqlite import DocumentArrayPqlite
+
+                instance = super().__new__(DocumentArrayPqlite)
             elif storage == 'weaviate':
                 from .weaviate import DocumentArrayWeaviate
 
