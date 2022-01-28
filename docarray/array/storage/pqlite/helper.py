@@ -51,7 +51,7 @@ class OffsetMapping(Table):
         offset = len(self) + offset if offset < 0 else offset
         sql = f'SELECT doc_id FROM {self.name} WHERE offset = ? LIMIT 1;'
         result = self._conn.execute(sql, (offset,)).fetchone()
-        return result[0] if result else None
+        return str(result[0]) if result is not None else None
 
     def get_ids_by_offsets(self, offsets: List[int]) -> List[str]:
         return [self.get_id_by_offset(offset) for offset in offsets]

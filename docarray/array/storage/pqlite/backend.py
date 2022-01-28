@@ -19,8 +19,7 @@ if TYPE_CHECKING:
 class PqliteConfig:
     n_dim: int = 1
     metric: str = 'cosine'
-    data_path: str = 'data'
-    table_name: Optional[str] = None
+    data_path: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -36,10 +35,14 @@ class BackendMixin(BaseBackendMixin):
         if isinstance(config, dict):
             config = dataclass_from_dict(PqliteConfig, config)
 
-        self._config = config
+        self._persist = bool(config.data_path)
 
-        table_name = config.table_name
-        self._persist = bool(table_name)
+        if not self._persist:
+            from tempfile import TemporaryDirectory
+
+            config.data_path = TemporaryDirectory().name
+
+        self._config = config
 
         from pqlite import PQLite
         from .helper import OffsetMapping
@@ -49,7 +52,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._pqlite = PQLite(n_dim, **config)
         self._offset2ids = OffsetMapping(
-            name=table_name or 'docarray',
+            name='docarray',
             data_path=config['data_path'],
             in_memory=False,
         )
