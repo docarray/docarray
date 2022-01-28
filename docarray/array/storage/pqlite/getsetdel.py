@@ -74,9 +74,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _del_doc_by_offsets(self, offsets: Sequence[int]):
         ids = []
         for offset in offsets:
-            _id = self._offset2ids.get_id_by_offset(offset)
-            ids.append(_id)
-            self._offset2ids.del_at_offset(offset)
+            ids.append(self._offset2ids.get_id_by_offset(offset))
+
+        self._offset2ids.del_at_offsets(offsets)
         self._pqlite.delete(ids)
 
     def _del_docs_by_slice(self, _slice: slice):

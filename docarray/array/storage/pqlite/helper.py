@@ -25,6 +25,9 @@ class OffsetMapping(Table):
         super().clear()
         self._size = None
 
+    def __len__(self):
+        return self.size
+
     @property
     def size(self):
         if self._size is None:
@@ -45,6 +48,7 @@ class OffsetMapping(Table):
         self._size = self.size + len(offset_ids)
 
     def get_id_by_offset(self, offset: int):
+        offset = len(self) + offset if offset < 0 else offset
         sql = f'SELECT doc_id FROM {self.name} WHERE offset = ? LIMIT 1;'
         result = self._conn.execute(sql, (offset,)).fetchone()
         return result[0] if result else None
@@ -56,22 +60,31 @@ class OffsetMapping(Table):
         return [self.get_offset_by_id(k) for k in ids]
 
     def get_offset_by_id(self, doc_id: str):
-        sql = f'SELECT offset FROM {self.name} WHERE doc_id = ? LIMIT 1;'
+        sql = f'SELECT offset FROM {self.name} WHERE doc_id=? LIMIT 1;'
         result = self._conn.execute(sql, (doc_id,)).fetchone()
         return result[0] if result else None
 
     def del_at_offset(self, offset: int, commit: bool = True):
+        offset = len(self) + offset if offset < 0 else offset
         sql = f'DELETE FROM {self.name} WHERE offset=?'
         self._conn.execute(sql, (offset,))
         self.shift_offset(offset, shift_step=1, direction='left', commit=commit)
 
         self._size -= 1
 
+    def del_at_offsets(self, offsets: List[int], commit: bool = True):
+        for offset in sorted(offsets, reverse=True):
+            self.del_at_offset(offset, commit=False)
+        if commit:
+            self.commit()
+
     def insert_at_offset(self, offset: int, doc_id: str, commit: bool = True):
+        offset = len(self) + offset if offset < 0 else offset
         self.shift_offset(offset - 1, shift_step=1, direction='right', commit=False)
         self._insert([(offset, doc_id)], commit=commit)
 
     def set_at_offset(self, offset: int, doc_id: str, commit: bool = True):
+        offset = len(self) + offset if offset < 0 else offset
         sql = f'UPDATE {self.name} SET doc_id=? WHERE offset = ?'
         self._conn.execute(
             sql,
