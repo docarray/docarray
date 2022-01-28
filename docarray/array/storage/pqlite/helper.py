@@ -48,6 +48,12 @@ class OffsetMapping(Table):
         result = self._conn.execute(sql, (offset,)).fetchone()
         return result[0]
 
+    def get_ids_by_offsets(self, offsets: List[int]) -> List[str]:
+        return [self.get_id_by_offset(offset) for offset in offsets]
+
+    def get_offsets_by_ids(self, ids: List[str]) -> List[int]:
+        return [self.get_offset_by_id(k) for k in ids]
+
     def get_offset_by_id(self, doc_id: str):
         sql = f'SELECT offset FROM {self.name} WHERE doc_id = ? LIMIT 1;'
         result = self._conn.execute(sql, (doc_id,)).fetchone()

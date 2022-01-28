@@ -13,14 +13,28 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     # essential methods start
 
-    def _del_doc_by_id(self, _id: str):
-        offset = self._offset2ids.get_offset_by_id(_id)
-        self._offset2ids.del_at_offset(offset, commit=True)
-        self._pqlite.delete([_id])
+    def _get_doc_by_offset(self, index: int) -> 'Document':
+        doc_id = self._offset2ids.get_id_by_offset(index)
+        if doc_id is not None:
+            return self._pqlite.get_doc_by_id(doc_id)
+        return None
 
-    def _del_doc_by_offset(self, offset: int):
-        _id = self._offset2ids.get_id_by_offset(offset)
-        self._pqlite.delete([_id])
+    def _get_doc_by_id(self, id: str) -> 'Document':
+        return self._pqlite.get_doc_by_id(id)
+
+    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
+        ids = self._offset2ids.get_ids_by_offsets(offsets)
+        self._get_docs_by_ids(ids)
+
+    def _get_docs_by_ids(self, ids: str) -> Iterable['Document']:
+        return [self._get_doc_by_id(k) for k in ids]
+
+    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
+        return self._get_docs_by_offsets(range(len(self))[_slice])
+
+    def _get_docs_by_mask(self, mask: Sequence[bool]):
+        offsets = [i for i, m in enumerate(mask) if m is True]
+        return self._get_docs_by_offsets(offsets)
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._offset2ids.set_at_offset(offset, value.id)
@@ -30,21 +44,32 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._pqlite.update(docs)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        docs = DocumentArrayInMemory([value])
-        if docs.embeddings is None:
-            docs.embeddings = np.zeros((1, self._pqlite.dim))
-        self._pqlite.update(docs)
+        offset = self._offset2ids.get_offset_by_id(_id)
+        self._set_doc_by_offset(offset, value)
 
-    def _get_doc_by_offset(self, index: int) -> 'Document':
-        doc_id = self._offset2ids.get_id_by_offset(index)
-        if doc_id is not None:
-            return self._pqlite.get_doc_by_id(doc_id)
+    def _set_doc_value_pairs(
+        self, docs: Iterable['Document'], values: Iterable['Document']
+    ):
+        for _d, _v in zip(docs, values):
+            self._set_doc_by_id(_d.id, _v)
 
-    def _get_doc_by_id(self, id: str) -> 'Document':
-        return self._pqlite.get_doc_by_id(id)
+    def _del_doc_by_id(self, _id: str):
+        offset = self._offset2ids.get_offset_by_id(_id)
+        self._offset2ids.del_at_offset(offset, commit=True)
+        self._pqlite.delete([_id])
 
-    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
-        return [self._get_doc_by_offset(offset) for offset in offsets]
+    def _del_doc_by_offset(self, offset: int):
+        _id = self._offset2ids.get_id_by_offset(offset)
+        self._pqlite.delete([_id])
 
-    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
-        return self._get_docs_by_offsets(range(len(self))[_slice])
+    def _del_doc_by_offsets(self, offsets: Sequence[int]):
+        ids = [self._offset2ids.get_id_by_offset(offset) for offset in offsets]
+        self._pqlite.delete(ids)
+
+    def _del_docs_by_slice(self, _slice: slice):
+        offsets = range(len(self))[_slice]
+        self._del_doc_by_offsets(offsets)
+
+    def _del_docs_by_mask(self, mask: Sequence[bool]):
+        offsets = [i for i, m in enumerate(mask) if m is True]
+        self._del_doc_by_offsets(offsets)

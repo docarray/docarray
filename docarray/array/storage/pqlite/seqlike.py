@@ -31,6 +31,11 @@ class SequenceLikeMixin(MutableSequence[Document]):
         self._pqlite.index(docs)
         self._offset2ids.extend_doc_ids([value.id for value in values])
 
+    def clear(self):
+        """Clear the data of :class:`DocumentArray`"""
+        self._offset2ids.clear()
+        self._pqlite.clear()
+
     def __del__(self) -> None:
         if not self._persist:
             self._offset2ids.clear()
@@ -58,11 +63,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
             return self._offset2id.get_offset_by_id(x.id) is not None
         else:
             return False
-
-    def clear(self):
-        """Clear the data of :class:`DocumentArray`"""
-        self._offset2ids.clear()
-        self._pqlite.clear()
 
     def __bool__(self):
         """To simulate ```l = []; if l: ...```
