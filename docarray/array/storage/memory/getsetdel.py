@@ -4,7 +4,7 @@ from typing import (
     Iterable,
     Any,
 )
-
+from ..memory.backend import needs_id2offset_rebuild
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document, DocumentArray
 
@@ -12,24 +12,23 @@ from .... import Document, DocumentArray
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
+    @needs_id2offset_rebuild
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         self._data = list(itertools.compress(self._data, (not _i for _i in mask)))
-        self._rebuild_id2offset()
 
     def _del_all_docs(self):
         self._data.clear()
         self._id2offset.clear()
 
+    @needs_id2offset_rebuild
     def _del_docs_by_slice(self, _slice: slice):
         del self._data[_slice]
-        self._rebuild_id2offset()
 
     def _del_doc_by_id(self, _id: str):
-        del self._data[self._id2offset[_id]]
-        self._id2offset.pop(_id)
+        self._del_doc_by_offset(self._id2offset[_id])
 
+    @needs_id2offset_rebuild
     def _del_doc_by_offset(self, offset: int):
-        self._id2offset.pop(self._data[offset].id)
         del self._data[offset]
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
@@ -41,9 +40,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._data[old_idx] = value
         self._id2offset[value.id] = old_idx
 
+    @needs_id2offset_rebuild
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         self._data[_slice] = value
-        self._rebuild_id2offset()
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']
@@ -57,7 +56,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         for _d, _v in zip(docs, values):
             _d._data = _v._data
-        self._rebuild_id2offset()
 
     def _set_doc_attr_by_offset(self, offset: int, attr: str, value: Any):
         setattr(self._data[offset], attr, value)
