@@ -34,6 +34,7 @@ class WeaviateConfig:
     client: Optional[Union[str, weaviate.Client]] = None
     n_dim: Optional[int] = None
     name: Optional[str] = None
+    serialize_config: Dict = field(default_factory=lambda: {'protocol': 'pickle'})
 
 
 class BackendMixin(BaseBackendMixin):
@@ -60,6 +61,7 @@ class BackendMixin(BaseBackendMixin):
             config = WeaviateConfig()
 
         self.n_dim = config.n_dim or 1
+        self.serialize_config = config.serialize_config
 
         import weaviate
 
@@ -279,7 +281,7 @@ class BackendMixin(BaseBackendMixin):
             embedding = to_numpy_array(value.embedding)
 
         return dict(
-            data_object={'_serialized': value.to_base64()},
+            data_object={'_serialized': value.to_base64(**self.serialize_config)},
             class_name=self._class_name,
             uuid=self.wmap(value.id),
             vector=embedding,

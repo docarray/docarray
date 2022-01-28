@@ -24,7 +24,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         resp = self._client.data_object.get_by_id(wid, with_vector=True)
         if not resp:
             raise KeyError(wid)
-        return Document.from_base64(resp['properties']['_serialized'])
+        return Document.from_base64(
+            resp['properties']['_serialized'], **self.serialize_config
+        )
 
     def _setitem(self, wid: str, value: Document):
         """Helper method for setting an item with weaviate as storage

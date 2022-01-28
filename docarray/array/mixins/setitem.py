@@ -72,8 +72,6 @@ class SetItemMixin:
             else:
                 self._set_doc_by_id(index, value)
         elif isinstance(index, slice):
-            # TODO: handle this case da[1:3] = DocumentAray.empty(10)
-            # where length of value is longer than the slice
             self._set_docs_by_slice(index, value)
         elif index is Ellipsis:
             self._set_doc_value_pairs(self.flatten(), value)
