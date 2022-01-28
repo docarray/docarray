@@ -6,7 +6,7 @@ from typing import (
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin
-from .... import Document
+from .... import Document, DocumentArray
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -58,9 +58,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
         setattr(self._data[self._id2offset[_id]], attr, value)
 
-    def _set_docs_attrs(
-        self, docs: Iterable['Document'], attr: str, values: Iterable[Any]
-    ):
+    def _set_docs_attrs(self, docs: 'DocumentArray', attr: str, values: Iterable[Any]):
         # TODO: remove this function to use _set_doc_attr_by_id once
         # we find a way to do
         if attr == 'embedding':

@@ -7,7 +7,7 @@ from typing import (
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin
-from .... import Document
+from .... import Document, DocumentArray
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -90,10 +90,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self, docs: Iterable['Document'], values: Iterable['Document']
     ):
         # TODO: use base _set_doc_value_pairs
-        from .... import DocumentArray
-
         map_doc_id_to_offset = {doc.id: offset for offset, doc in enumerate(docs)}
-        new = DocumentArray([d for d in self], copy=True)
+        new = DocumentArray(d for d in self)
         for d in new.flatten():
             if d.id not in map_doc_id_to_offset:
                 continue
@@ -139,9 +137,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         setattr(doc, attr, value)
         self._setitem(self.wmap(doc.id), doc)
 
-    def _set_docs_attrs(
-        self, docs: Iterable['Document'], attr: str, values: Iterable[Any]
-    ):
+    def _set_docs_attrs(self, docs: 'DocumentArray', attr: str, values: Iterable[Any]):
         # TODO: remove this function to use _set_doc_attr_by_id once
         # we find a way to do
         from ...memory import DocumentArrayInMemory
