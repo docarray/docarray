@@ -87,24 +87,34 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._offset2ids[offset] = self.wmap(value.id)
 
     def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Iterable['Document']
+        self, docs: Iterable['Document'], values: Sequence['Document']
     ):
-        # TODO: optimize/use base _set_doc_value_pairs
-        from ...memory import DocumentArrayInMemory
+        """Concrete implementation of base class' ``_set_doc_value_pairs``
 
-        docs = DocumentArrayInMemory(docs)
+        :param docs: the array of docs to update
+        :param values: the values docs should be set to
+        :raises ValueError: raise error when there's a mismatch between len of docs and values
+        """
+        # TODO: optimize/use base _set_doc_value_pairs
+        docs = list(docs)
+        if len(docs) != len(values):
+            raise ValueError(
+                f'length of docs to set({len(docs)}) does not match '
+                f'length of values({len(values)})'
+            )
+
         map_doc_id_to_offset = {doc.id: offset for offset, doc in enumerate(docs)}
         map_new_id_to_old_id = {new.id: old.id for old, new in zip(docs, values)}
 
-        def _set_doc_value_pairs(_docs: DocumentArrayInMemory):
+        def _set_doc_value_pairs_util(_docs: DocumentArray):
             for d in _docs:
                 if d.id in map_doc_id_to_offset:
                     d._data = values[map_doc_id_to_offset[d.id]]._data
-                _set_doc_value_pairs(d.chunks)
-                _set_doc_value_pairs(d.matches)
+                _set_doc_value_pairs_util(d.chunks)
+                _set_doc_value_pairs_util(d.matches)
 
-        res = DocumentArrayInMemory(d for d in self)
-        _set_doc_value_pairs(res)
+        res = DocumentArray(d for d in self)
+        _set_doc_value_pairs_util(res)
 
         for r in res:
             old_id = (

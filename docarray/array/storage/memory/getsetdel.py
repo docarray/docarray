@@ -46,8 +46,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._rebuild_id2offset()
 
     def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Iterable['Document']
+        self, docs: Iterable['Document'], values: Sequence['Document']
     ):
+        docs = list(docs)
+        if len(docs) != len(values):
+            raise ValueError(
+                f'length of docs to set({len(docs)}) does not match '
+                f'length of values({len(values)})'
+            )
+
         for _d, _v in zip(docs, values):
             _d._data = _v._data
         self._rebuild_id2offset()

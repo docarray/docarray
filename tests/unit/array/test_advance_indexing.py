@@ -210,7 +210,7 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     repeat = lambda s, l: [s] * l
     da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    if storage == 'weaviate':
+    if storage != 'memory':
         da = DocumentArray(da, storage=storage)
 
     assert da['@c', 'text'] == repeat('a', 3 * 5)
@@ -255,6 +255,9 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     da[doc_id, 'text'] = 'e'
     assert da[doc_id, 'text'] == 'e'
     assert da[doc_id].text == 'e'
+
+    da['@m'] = [Document(text='c')] * (3 * 7)
+    assert da['@m', 'text'] == repeat('c', 3 * 7)
 
     # TODO also test cases like da[1, ['text', 'id']],
     # where first index is str/int and second is attr

@@ -13,7 +13,6 @@ from typing import (
     List,
 )
 
-import uuid
 import scipy.sparse
 import weaviate
 

@@ -121,7 +121,7 @@ class BaseGetSetDelMixin(ABC):
             self._set_doc_by_offset(_offset, val)
 
     def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Iterable['Document']
+        self, docs: Iterable['Document'], values: Sequence['Document']
     ):
         """This function is derived and may not have the most efficient implementation.
 
@@ -129,6 +129,13 @@ class BaseGetSetDelMixin(ABC):
         :param docs: the docs to update
         :param values: the value docs will be updated to
         """
+        docs = list(docs)
+        if len(docs) != len(values):
+            raise ValueError(
+                f'length of docs to set({len(docs)}) does not match '
+                f'length of values({len(values)})'
+            )
+
         for _d, _v in zip(docs, values):
             _d._data = _v._data
 
