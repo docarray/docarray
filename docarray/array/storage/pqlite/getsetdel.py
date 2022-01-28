@@ -13,21 +13,27 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     # essential methods start
 
-    def _get_doc_by_offset(self, index: int) -> 'Document':
-        doc_id = self._offset2ids.get_id_by_offset(index)
-        if doc_id is not None:
-            return self._pqlite.get_doc_by_id(doc_id)
-        return None
+    def _get_doc_by_offset(self, offset: int) -> 'Document':
+        offset = len(self) + offset if offset < 0 else offset
+        doc_id = self._offset2ids.get_id_by_offset(offset)
+        doc = self._pqlite.get_doc_by_id(doc_id) if doc_id else None
+        if doc is None:
+            raise IndexError('index out of range')
+        return doc
 
-    def _get_doc_by_id(self, id: str) -> 'Document':
-        return self._pqlite.get_doc_by_id(id)
+    def _get_doc_by_id(self, _id: str) -> 'Document':
+        doc = self._pqlite.get_doc_by_id(_id)
+        if doc is None:
+            raise KeyError(f'Can not find Document with id=`{_id}`')
+        return doc
 
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         ids = self._offset2ids.get_ids_by_offsets(offsets)
-        self._get_docs_by_ids(ids)
+        return self._get_docs_by_ids(ids)
 
     def _get_docs_by_ids(self, ids: str) -> Iterable['Document']:
-        return [self._get_doc_by_id(k) for k in ids]
+        for _id in ids:
+            yield self._get_doc_by_id(_id)
 
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         return self._get_docs_by_offsets(range(len(self))[_slice])
@@ -37,6 +43,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return self._get_docs_by_offsets(offsets)
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
+        offset = len(self) + offset if offset < 0 else offset
         self._offset2ids.set_at_offset(offset, value.id)
         docs = DocumentArrayInMemory([value])
         if docs.embeddings is None:
@@ -59,11 +66,17 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._pqlite.delete([_id])
 
     def _del_doc_by_offset(self, offset: int):
+        offset = len(self) + offset if offset < 0 else offset
         _id = self._offset2ids.get_id_by_offset(offset)
+        self._offset2ids.del_at_offset(offset)
         self._pqlite.delete([_id])
 
     def _del_doc_by_offsets(self, offsets: Sequence[int]):
-        ids = [self._offset2ids.get_id_by_offset(offset) for offset in offsets]
+        ids = []
+        for offset in offsets:
+            _id = self._offset2ids.get_id_by_offset(offset)
+            ids.append(_id)
+            self._offset2ids.del_at_offset(offset)
         self._pqlite.delete(ids)
 
     def _del_docs_by_slice(self, _slice: slice):

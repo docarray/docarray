@@ -36,17 +36,18 @@ class OffsetMapping(Table):
 
     def extend_doc_ids(self, doc_ids: List[str], commit: bool = True):
         offsets = [self.size + i for i in range(len(doc_ids))]
-        self._insert(list(zip(offsets, doc_ids)), commit=commit)
+        offset_ids = list(zip(offsets, doc_ids))
+        self._insert(offset_ids, commit=commit)
 
     def _insert(self, offset_ids: List[Tuple[int, str]], commit: bool = True):
         sql = f'INSERT INTO {self.name}(offset, doc_id) VALUES (?, ?);'
         self.execute_many(sql, offset_ids, commit=commit)
-        self._size += len(offset_ids)
+        self._size = self.size + len(offset_ids)
 
     def get_id_by_offset(self, offset: int):
         sql = f'SELECT doc_id FROM {self.name} WHERE offset = ? LIMIT 1;'
         result = self._conn.execute(sql, (offset,)).fetchone()
-        return result[0]
+        return result[0] if result else None
 
     def get_ids_by_offsets(self, offsets: List[int]) -> List[str]:
         return [self.get_id_by_offset(offset) for offset in offsets]
@@ -57,14 +58,12 @@ class OffsetMapping(Table):
     def get_offset_by_id(self, doc_id: str):
         sql = f'SELECT offset FROM {self.name} WHERE doc_id = ? LIMIT 1;'
         result = self._conn.execute(sql, (doc_id,)).fetchone()
-        return result[0]
+        return result[0] if result else None
 
     def del_at_offset(self, offset: int, commit: bool = True):
         sql = f'DELETE FROM {self.name} WHERE offset=?'
         self._conn.execute(sql, (offset,))
-        self.shift_offset(offset, shift_step=1, direction='left', commit=False)
-        if commit:
-            self.commit()
+        self.shift_offset(offset, shift_step=1, direction='left', commit=commit)
 
         self._size -= 1
 
@@ -73,8 +72,14 @@ class OffsetMapping(Table):
         self._insert([(offset, doc_id)], commit=commit)
 
     def set_at_offset(self, offset: int, doc_id: str, commit: bool = True):
-        sql = f'UPDATE {self.name} SET doc_id={doc_id} WHERE offset = ?'
-        self._conn.execute(sql, (offset,))
+        sql = f'UPDATE {self.name} SET doc_id=? WHERE offset = ?'
+        self._conn.execute(
+            sql,
+            (
+                doc_id,
+                offset,
+            ),
+        )
         if commit:
             self.commit()
 

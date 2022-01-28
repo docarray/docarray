@@ -29,7 +29,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
             if doc.embedding is None:
                 doc.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
         self._pqlite.index(docs)
-        self._offset2ids.extend_doc_ids([value.id for value in values])
+        self._offset2ids.extend_doc_ids([doc.id for doc in docs])
 
     def clear(self):
         """Clear the data of :class:`DocumentArray`"""
@@ -58,9 +58,9 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
-            return self._offset2id.get_offset_by_id(x) is not None
+            return self._offset2ids.get_offset_by_id(x) is not None
         elif isinstance(x, Document):
-            return self._offset2id.get_offset_by_id(x.id) is not None
+            return self._offset2ids.get_offset_by_id(x.id) is not None
         else:
             return False
 
