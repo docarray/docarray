@@ -65,33 +65,6 @@ class GroupMixin:
         for i in range(n_batches):
             yield self[ix[i * batch_size : (i + 1) * batch_size]]
 
-    def batch_indices(
-        self,
-        batch_size: int,
-        shuffle: bool = False,
-    ) -> Generator[list, None, None]:
-        """
-        Creates a `Generator` that yields `list` of size `batch_size` until `docs` is fully traversed along
-        the `traversal_path`.  Note, that the last batch might be smaller than `batch_size`.
-
-        :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
-        :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-        :yield: a Generator of `np.ndarray`, each in the length of `batch_size`
-        """
-
-        if not (isinstance(batch_size, int) and batch_size > 0):
-            raise ValueError('`batch_size` should be a positive integer')
-
-        N = len(self)
-        ix = list(range(N))
-        n_batches = int(np.ceil(N / batch_size))
-
-        if shuffle:
-            random.shuffle(ix)
-
-        for i in range(n_batches):
-            yield ix[i * batch_size : (i + 1) * batch_size]
-
     def batch_ids(
         self,
         batch_size: int,
