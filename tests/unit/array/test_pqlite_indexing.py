@@ -6,7 +6,7 @@ from docarray import DocumentArray, Document
 
 @pytest.fixture
 def docs():
-    yield (Document(text=f'{j}') for j in range(100))
+    yield (Document(text=j) for j in range(100))
 
 
 @pytest.fixture
@@ -18,14 +18,14 @@ def indices():
 def test_getter_int_str(docs, storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
-    assert docs[99].text == '99'
-    assert docs[np.int(99)].text == '99'
-    assert docs[-1].text == '99'
-    assert docs[0].text == '0'
+    assert docs[99].text == 99
+    assert docs[np.int(99)].text == 99
+    assert docs[-1].text == 99
+    assert docs[0].text == 0
     # string index
-    assert docs[docs[0].id].text == '0'
-    assert docs[docs[99].id].text == '99'
-    assert docs[docs[-1].id].text == '99'
+    assert docs[docs[0].id].text == 0
+    assert docs[docs[99].id].text == 99
+    assert docs[docs[-1].id].text == 99
 
     with pytest.raises(IndexError):
         r = docs[100]
@@ -115,7 +115,7 @@ def test_sequence_bool_index(docs, storage):
             # got replaced
             assert d.text.startswith('repl')
         else:
-            assert isinstance(d.text, str)
+            assert isinstance(d.text, int)
 
     # del
     del docs[mask]
@@ -225,8 +225,8 @@ def test_tensor_attribute_selector(storage):
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])
-    # sp_embed[sp_embed > 0.1] = 0
-    # sp_embed = scipy.sparse.coo_matrix(sp_embed)
+    sp_embed[sp_embed > 0.1] = 0
+    sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
     da = DocumentArray(storage=storage, config={'n_dim': 10})
     da.extend(DocumentArray.empty(3))
@@ -238,7 +238,7 @@ def test_tensor_attribute_selector(storage):
     assert da[:, 'embedding'].shape == (3, 10)
 
     for d in da:
-        assert d.embedding.shape == (10,)
+        assert d.embedding.shape == (1, 10)
 
     v1, v2 = da[:, ['embedding', 'id']]
     # assert isinstance(v1, scipy.sparse.coo_matrix)

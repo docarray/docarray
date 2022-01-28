@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 class PqliteConfig:
     n_dim: int = 1
     metric: str = 'cosine'
+    serialize_protocol: str = 'pickle'
     data_path: Optional[str] = None
 
 
