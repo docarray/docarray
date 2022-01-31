@@ -103,7 +103,7 @@ class SetItemMixin:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def _set_by_pair(self, idx1, idx2, value):
-        if isinstance(idx1, str):
+        if isinstance(idx1, str) and not idx1.startswith('@'):
             # second is an ID
             if isinstance(idx2, str) and idx2 in self:
                 self._set_doc_value_pairs((self[idx1], self[idx2]), value)
@@ -138,7 +138,11 @@ class SetItemMixin:
             else:
                 raise ValueError(f'`{idx2}` must be an attribute or list of attributes')
 
-        elif isinstance(idx1, (slice, Sequence)) or idx1 is Ellipsis:
+        elif (
+            isinstance(idx1, (slice, Sequence))
+            or idx1 is Ellipsis
+            or (isinstance(idx1, str) and idx1.startswith('@'))
+        ):
             self._set_docs_attributes(idx1, idx2, value)
         # TODO: else raise error
 
@@ -154,7 +158,33 @@ class SetItemMixin:
             attributes = (attributes,)
             value = (value,)
 
-        _docs = self[index]
+        if isinstance(index, str) and index.startswith('@'):
+            self._set_docs_attributes_traversal_paths(index, attributes, value)
+        else:
+            _docs = self[index]
+            if not _docs:
+                return
+
+            for _a, _v in zip(attributes, value):
+                if _a in ('tensor', 'embedding'):
+                    if _a == 'tensor':
+                        _docs.tensors = _v
+                    elif _a == 'embedding':
+                        _docs.embeddings = _v
+                    for _d in _docs:
+                        self._set_doc_by_id(_d.id, _d)
+                else:
+                    if not isinstance(_v, (list, tuple)):
+                        for _d in _docs:
+                            self._set_doc_attr_by_id(_d.id, _a, _v)
+                    else:
+                        for _d, _vv in zip(_docs, _v):
+                            self._set_doc_attr_by_id(_d.id, _a, _vv)
+
+    def _set_docs_attributes_traversal_paths(
+        self, traversal_paths: str, attributes, value
+    ):
+        _docs = self[traversal_paths]
         if not _docs:
             return
 
@@ -164,12 +194,11 @@ class SetItemMixin:
                     _docs.tensors = _v
                 elif _a == 'embedding':
                     _docs.embeddings = _v
-                for _d in _docs:
-                    self._set_doc_by_id(_d.id, _d)
             else:
                 if not isinstance(_v, (list, tuple)):
                     for _d in _docs:
-                        self._set_doc_attr_by_id(_d.id, _a, _v)
+                        setattr(_d, _a, _v)
                 else:
                     for _d, _vv in zip(_docs, _v):
-                        self._set_doc_attr_by_id(_d.id, _a, _vv)
+                        setattr(_d, _a, _vv)
+        self._set_doc_value_pairs(_docs, _docs)
