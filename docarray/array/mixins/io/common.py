@@ -20,7 +20,7 @@ class CommonIOMixin:
         if file_format == 'json':
             self.save_json(file)
         elif file_format == 'binary':
-            self.save_binary(file, protocol=self._default_protocol())
+            self.save_binary(file)
         elif file_format == 'csv':
             self.save_csv(file)
         else:
@@ -42,7 +42,7 @@ class CommonIOMixin:
         if file_format == 'json':
             return cls.load_json(file)
         elif file_format == 'binary':
-            return cls.load_binary(file, protocol=cls._default_protocol())
+            return cls.load_binary(file)
         elif file_format == 'csv':
             return cls.load_csv(file)
         else:

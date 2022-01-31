@@ -297,7 +297,3 @@ class BackendMixin(BaseBackendMixin):
         # daw2 = DocumentArrayWeaviate([Document(id=str(i), text='bye') for i in range(3)])
         # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
         return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
-
-    @classmethod
-    def _default_protocol(cls):
-        return WeaviateConfig().serialize_config['protocol']

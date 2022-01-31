@@ -1,6 +1,10 @@
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 from docarray.array.mixins import BinaryIOMixin
 
+if TYPE_CHECKING:
+    from ....types import T
+    from .... import Document, DocumentArray
+
 
 def _check_protocol(protocol):
     if protocol == 'pickle-array':
