@@ -83,13 +83,8 @@ class SetItemMixin:
                 self._set_by_mask(index, value)
 
             elif isinstance(index[0], (int, str)):
-                # if single value
-                if isinstance(value, Document):
-                    for si in index:
-                        self[si] = value  # leverage existing setter
-                else:
-                    for si, _val in zip(index, value):
-                        self[si] = _val  # leverage existing setter
+                for si, _val in zip(index, value):
+                    self[si] = _val  # leverage existing setter
 
         elif isinstance(index, np.ndarray):
             index = index.squeeze()
