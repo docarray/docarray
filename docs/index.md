@@ -105,7 +105,12 @@ fundamentals/notebook-support/index
 fundamentals/fastapi-support/index
 ```
 
+```{toctree}
+:caption: Advanced Topics
+:hidden:
 
+advanced/document-store/index
+```
 
 ```{toctree}
 :caption: Developer References

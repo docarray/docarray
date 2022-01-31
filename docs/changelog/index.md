@@ -5,6 +5,11 @@ DocArray follows semantic versioning. However, before the project reach 1.0.0, a
 This chapter only tracks the most important breaking changes and explain the rationale behind them.
 
 
+## 0.5.0: add storage backend to DocumentArray
+
+0.5 introduces an important feature that enables external Document Store as the backend of DocumentArray. It also refactors the implementation of DocumentArray. The change should be backward-compatible; and the version bumping is mainly because of the introduction of the new concept "`storage`".
+
+
 ## 0.4.0: change on the DocumentArray serialization format
 
 This change affects `DocumentArray.load_binary`, `DocumentArray.from_bytes`, `DocumentArray.to_bytes` and users can not load old DocumentArray back if they store it with `protocol='pickle'` and `protocol='protobuf'` under old version.
