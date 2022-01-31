@@ -68,17 +68,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         else:
             setattr(self._data[self._id2offset[_id]], attr, value)
 
-    def _set_docs_attrs(self, docs: 'DocumentArray', attr: str, values: Iterable[Any]):
-        # TODO: remove this function to use _set_doc_attr_by_id once
-        # we find a way to do
-        if attr == 'embedding':
-            docs.embeddings = values
-        elif attr == 'tensor':
-            docs.tensors = values
-        else:
-            for _d, _v in zip(docs, values):
-                setattr(_d, attr, _v)
-
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]
 
