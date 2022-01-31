@@ -78,6 +78,7 @@ def test_from_ndjson(da, start_weaviate):
 )
 def test_from_to_pd_dataframe(da_cls):
     # simple
+
     assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
 
     # more complicated

@@ -55,7 +55,7 @@ def test_iadd(da):
     assert nid == oid
 
 
-@pytest.mark.parametrize('da', da_and_dam())
+@pytest.mark.parametrize('da', [da_and_dam()[0]])
 def test_add(da):
     oid = id(da)
     dap = DocumentArray.empty(10)

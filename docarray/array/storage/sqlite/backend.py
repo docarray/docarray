@@ -118,3 +118,7 @@ class BackendMixin(BaseBackendMixin):
         else:
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    @classmethod
+    def _default_protocol(cls):
+        return SqliteConfig().serialize_config['protocol']

@@ -1,4 +1,4 @@
-from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type
+from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type, Optional
 
 if TYPE_CHECKING:
     from ....types import T
@@ -20,7 +20,7 @@ class CommonIOMixin:
         if file_format == 'json':
             self.save_json(file)
         elif file_format == 'binary':
-            self.save_binary(file)
+            self.save_binary(file, protocol=self._default_protocol())
         elif file_format == 'csv':
             self.save_csv(file)
         else:
@@ -42,7 +42,7 @@ class CommonIOMixin:
         if file_format == 'json':
             return cls.load_json(file)
         elif file_format == 'binary':
-            return cls.load_binary(file)
+            return cls.load_binary(file, protocol=cls._default_protocol())
         elif file_format == 'csv':
             return cls.load_csv(file)
         else:

@@ -121,12 +121,12 @@ class SetItemMixin:
             else:
                 raise ValueError(f'`{idx2}` is neither a valid id nor attribute name')
         elif isinstance(idx1, int):
-            # second is an offset:
+            # second is an offset
             if isinstance(idx2, int):
                 self._set_doc_value_pairs((self[idx1], self[idx2]), value)
             # second is an attribute
             elif isinstance(idx2, str) and hasattr(self[idx1], idx2):
-                self._set_doc_attr_by_id(idx1, idx2, value)
+                self._set_doc_attr_by_offset(idx1, idx2, value)
             # second is a list of attributes:
             elif (
                 isinstance(idx2, Sequence)
@@ -140,6 +140,7 @@ class SetItemMixin:
 
         elif isinstance(idx1, (slice, Sequence)) or idx1 is Ellipsis:
             self._set_docs_attributes(idx1, idx2, value)
+        # TODO: else raise error
 
     def _set_by_mask(self, mask: List[bool], value):
         _selected = itertools.compress(self, mask)
@@ -151,14 +152,6 @@ class SetItemMixin:
             # a -> [a]
             # [a, a] -> [a, a]
             attributes = (attributes,)
-        if isinstance(value, (list, tuple)) and not any(
-            isinstance(el, (tuple, list)) for el in value
-        ):
-            # [x] -> [[x]]
-            # [[x], [y]] -> [[x], [y]]
-            value = (value,)
-        if not isinstance(value, (list, tuple)):
-            # x -> [x]
             value = (value,)
 
         _docs = self[index]
