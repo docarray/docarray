@@ -156,8 +156,10 @@ def test_sequence_int(docs, nparray, storage, start_weaviate):
     del docs[idx]
     assert len(docs) == 100 - len(idx)
 
-    with pytest.raises(ValueError):
-        docs[1, 5, 9] = Document(text='new')
+    docs[1, 5, 9] = Document(text='new')
+    assert docs[1].text == 'new'
+    assert docs[5].text == 'new'
+    assert docs[9].text == 'new'
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])

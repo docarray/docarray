@@ -80,11 +80,11 @@ class SetItemMixin:
                 self._set_by_pair(index[0], index[1], value)
 
             elif isinstance(index[0], bool):
-                self._set_by_mask(index[0], value)
+                self._set_by_mask(index, value)
 
             elif isinstance(index[0], (int, str)):
                 # if single value
-                if isinstance(value, str) or not isinstance(value, Sequence):
+                if isinstance(value, Document):
                     for si in index:
                         self[si] = value  # leverage existing setter
                 else:
@@ -142,11 +142,6 @@ class SetItemMixin:
             self._set_docs_attributes(idx1, idx2, value)
 
     def _set_by_mask(self, mask: List[bool], value):
-        if len(mask) != len(self):
-            raise IndexError(
-                f'Boolean mask index is required to have the same length as {len(self)}, '
-                f'but receiving {len(mask)}'
-            )
         _selected = itertools.compress(self, mask)
         self._set_doc_value_pairs(_selected, value)
 

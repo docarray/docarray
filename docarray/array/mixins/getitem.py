@@ -92,11 +92,6 @@ class GetItemMixin:
                         _attrs = (index[1],)
                     return _docs._get_attributes(*_attrs)
             elif isinstance(index[0], bool):
-                if len(index) != len(self):
-                    raise IndexError(
-                        f'Boolean mask index is required to have the same length as {len(self)}, '
-                        f'but receiving {len(index)}'
-                    )
                 return DocumentArray(itertools.compress(self, index))
             elif isinstance(index[0], int):
                 return DocumentArray(self._get_docs_by_offsets(index))
