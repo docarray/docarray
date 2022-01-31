@@ -68,7 +68,7 @@ def ravel(value: 'ArrayType', docs: 'DocumentArray', field: str) -> None:
 
     if use_get_row:
         emb_shape0 = value.shape[0]
-        for i, (d, j) in enumerate(zip(docs, range(emb_shape0))):
+        for d, j in zip(docs, range(emb_shape0)):
             row = getattr(value.getrow(j), f'to{sp_format}')()
             docs[d.id, field] = row
     elif isinstance(value, (list, tuple)):
@@ -77,7 +77,7 @@ def ravel(value: 'ArrayType', docs: 'DocumentArray', field: str) -> None:
     else:
 
         emb_shape0 = value.shape[0]
-        for i, (d, j) in enumerate(zip(docs, range(emb_shape0))):
+        for d, j in zip(docs, range(emb_shape0)):
             docs[d.id, field] = value[j, ...]
 
 

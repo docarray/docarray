@@ -1,4 +1,4 @@
-from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type, Optional
+from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from ....types import T

@@ -71,7 +71,7 @@ class GroupMixin:
         shuffle: bool = False,
     ) -> Generator[List[str], None, None]:
         """
-        Creates a `Generator` that yields `lists of ids` of size `batch_size` until `self` is fully .
+        Creates a `Generator` that yields `lists of ids` of size `batch_size` until `self` is fully traversed.
         Note, that the last batch might be smaller than `batch_size`.
 
         :param batch_size: Size of each generated batch (except the last one, which might be smaller)

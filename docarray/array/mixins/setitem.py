@@ -85,6 +85,10 @@ class SetItemMixin:
             elif isinstance(index[0], (int, str)):
                 for si, _val in zip(index, value):
                     self[si] = _val  # leverage existing setter
+            else:
+                raise IndexError(
+                    f'{index} should be either a sequence of bool, int or str'
+                )
 
         elif isinstance(index, np.ndarray):
             index = index.squeeze()
@@ -114,7 +118,7 @@ class SetItemMixin:
                 for attr, _v in zip(idx2, value):
                     self._set_doc_attr_by_id(idx1, attr, _v)
             else:
-                raise ValueError(f'`{idx2}` is neither a valid id nor attribute name')
+                raise IndexError(f'`{idx2}` is neither a valid id nor attribute name')
         elif isinstance(idx1, int):
             # second is an offset
             if isinstance(idx2, int):
@@ -131,7 +135,7 @@ class SetItemMixin:
                 for attr, _v in zip(idx2, value):
                     self._set_doc_attr_by_id(idx1, attr, _v)
             else:
-                raise ValueError(f'`{idx2}` must be an attribute or list of attributes')
+                raise IndexError(f'`{idx2}` must be an attribute or list of attributes')
 
         elif (
             isinstance(idx1, (slice, Sequence))
@@ -184,11 +188,10 @@ class SetItemMixin:
             return
 
         for _a, _v in zip(attributes, value):
-            if _a in ('tensor', 'embedding'):
-                if _a == 'tensor':
-                    _docs.tensors = _v
-                elif _a == 'embedding':
-                    _docs.embeddings = _v
+            if _a == 'tensor':
+                _docs.tensors = _v
+            elif _a == 'embedding':
+                _docs.embeddings = _v
             else:
                 if not isinstance(_v, (list, tuple)):
                     for _d in _docs:
