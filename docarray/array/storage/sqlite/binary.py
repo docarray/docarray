@@ -63,7 +63,7 @@ class SqliteBinaryIOMixin(BinaryIOMixin):
     def save_binary(
         self,
         file: Union[str, BinaryIO],
-        protocol: str = 'pickle-array',
+        protocol: str = 'protobuf-array',
         compress: Optional[str] = None,
     ) -> None:
         """Save array elements into a binary file.
