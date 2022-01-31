@@ -345,7 +345,7 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
-def test_single_boolean_and_padding(storage):
+def test_single_boolean_and_padding(storage, start_weaviate):
     da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
 
@@ -358,8 +358,7 @@ def test_single_boolean_and_padding(storage):
     with pytest.raises(IndexError):
         del da[True]
 
-    with pytest.raises(IndexError):
-        _ = da[True, False]
+    assert len(da[True, False]) == 1
     assert len(da[False, False, False]) == 0
     assert len(da[True, False, False]) == 1
 
