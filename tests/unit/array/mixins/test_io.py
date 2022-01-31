@@ -76,7 +76,7 @@ def test_from_ndjson(da, start_weaviate):
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_to_pd_dataframe(da_cls):
+def test_from_to_pd_dataframe(da_cls, start_weaviate):
     # simple
 
     assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
@@ -94,7 +94,7 @@ def test_from_to_pd_dataframe(da_cls):
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_to_bytes(da_cls):
+def test_from_to_bytes(da_cls, start_weaviate):
     # simple
     assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
 
@@ -130,7 +130,9 @@ def test_push_pull_io(da_cls, show_progress):
 
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-@pytest.mark.parametrize('da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate])
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+)
 def test_from_to_base64(protocol, compress, da_cls):
     da = da_cls.empty(10)
     da[:, 'embedding'] = [[1, 2, 3]] * len(da)
