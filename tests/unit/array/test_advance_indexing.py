@@ -103,11 +103,6 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
     # getter
     mask = [True, False] * 50
     assert len(docs[mask]) == 50
-    with pytest.raises(IndexError):
-        docs[[True, False]]
-
-    with pytest.raises(IndexError):
-        docs[[True, False]] = [Document(), Document()]
 
     # setter
     mask = [True, False] * 50
@@ -156,7 +151,7 @@ def test_sequence_int(docs, nparray, storage, start_weaviate):
     del docs[idx]
     assert len(docs) == 100 - len(idx)
 
-    docs[1, 5, 9] = Document(text='new')
+    docs[1, 5, 9] = [Document(text='new') for _ in range(3)]
     assert docs[1].text == 'new'
     assert docs[5].text == 'new'
     assert docs[9].text == 'new'
