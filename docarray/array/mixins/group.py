@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Dict, Any, TYPE_CHECKING, Generator
+from typing import Dict, Any, TYPE_CHECKING, Generator, List
 from ...helper import dunder_get
 import numpy as np
 
@@ -69,14 +69,14 @@ class GroupMixin:
         self,
         batch_size: int,
         shuffle: bool = False,
-    ) -> Generator[list, None, None]:
+    ) -> Generator[List[str], None, None]:
         """
-        Creates a `Generator` that yields `lists of ids` of size `batch_size` until `docs` is fully traversed along
-        the `traversal_path`.  Note, that the last batch might be smaller than `batch_size`.
+        Creates a `Generator` that yields `lists of ids` of size `batch_size` until `self` is fully .
+        Note, that the last batch might be smaller than `batch_size`.
 
-        :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
+        :param batch_size: Size of each generated batch (except the last one, which might be smaller)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-        :yield: a Generator of `np.ndarray`, each in the length of `batch_size`
+        :yield: a Generator of `list` of IDs, each in the length of `batch_size`
         """
 
         if not (isinstance(batch_size, int) and batch_size > 0):
