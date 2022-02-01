@@ -214,9 +214,9 @@ def test_path_syntax_indexing(storage, start_weaviate):
 @pytest.mark.parametrize('storage', ['memory', 'weaviate', 'sqlite'])
 def test_path_syntax_indexing_set(storage, start_weaviate):
     da = DocumentArray.empty(3)
-    for d in da:
+    for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
-        d.matches = DocumentArray.empty(7)
+        d.matches = DocumentArray([Document(id=f'm{j + (i*7)}') for j in range(7)])
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
@@ -269,7 +269,8 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     assert da[doc_id, 'text'] == 'e'
     assert da[doc_id].text == 'e'
 
-    da['@m'] = [Document(text='c')] * (3 * 7)
+    # setting matches is only possible if the IDs are the same
+    da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
     assert da['@m', 'text'] == repeat('c', 3 * 7)
 
     # TODO also test cases like da[1, ['text', 'id']],
@@ -413,5 +414,5 @@ def test_edge_case_two_strings(storage, start_weaviate):
     assert da['1', 'text'] == 'hello'
     assert da['1'].text == 'hello'
 
-    with pytest.raises(ValueError):
+    with pytest.raises(IndexError):
         da['1', 'hellohello'] = 'hello'

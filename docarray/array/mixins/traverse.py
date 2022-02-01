@@ -129,19 +129,20 @@ class TraverseMixin:
         """
         from .. import DocumentArray
 
+        visited = set()
+
         def _yield_all():
             for d in self:
                 yield from _yield_nest(d)
 
         def _yield_nest(doc: 'Document'):
+            if doc.id not in visited:
+                for d in doc.chunks:
+                    yield from _yield_nest(d)
+                for m in doc.matches:
+                    yield from _yield_nest(m)
+                visited.add(doc.id)
 
-            for d in doc.chunks:
-                yield from _yield_nest(d)
-            for m in doc.matches:
-                yield from _yield_nest(m)
-
-            doc.matches.clear()
-            doc.chunks.clear()
             yield doc
 
         return DocumentArray(_yield_all())

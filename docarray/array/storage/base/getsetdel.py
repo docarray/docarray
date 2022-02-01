@@ -138,10 +138,8 @@ class BaseGetSetDelMixin(ABC):
 
         for _d, _v in zip(docs, values):
             _d._data = _v._data
-
-        for _d in docs:
             if _d not in self:
-                root_d = self._find_root_doc(_d)
+                root_d = self._find_root_doc_and_modify(_d)
             else:
                 # _d is already on the root-level
                 root_d = _d
@@ -175,7 +173,7 @@ class BaseGetSetDelMixin(ABC):
             setattr(d, attr, value)
             self._set_doc_by_id(_id, d)
 
-    def _find_root_doc(self, d: Document) -> 'Document':
+    def _find_root_doc_and_modify(self, d: Document) -> 'Document':
         """Find `d`'s root Document in an exhaustive manner
         :param: d: the input document
         :return: the root of the input document
@@ -183,6 +181,8 @@ class BaseGetSetDelMixin(ABC):
         from docarray import DocumentArray
 
         for _d in self:
-            _all_ids = set(DocumentArray(d)[...][:, 'id'])
+            da = DocumentArray(_d)[...]
+            _all_ids = set(da[:, 'id'])
             if d.id in _all_ids:
+                da[d.id].copy_from(d)
                 return _d
