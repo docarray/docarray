@@ -57,7 +57,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
                 'DELETE FROM metadata WHERE table_name=? AND container_type=?',
                 (self._table_name, self.__class__.__name__),
             )
-            self._sql(f'DROP TABLE {self._table_name}')
+            self._sql(f'DROP TABLE IF EXISTS {self._table_name}')
             self._commit()
 
     def __contains__(self, item: Union[str, 'Document']):
