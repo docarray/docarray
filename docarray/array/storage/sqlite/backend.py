@@ -76,16 +76,18 @@ class BackendMixin(BaseBackendMixin):
             'Document', lambda x: Document.from_bytes(x, **config.serialize_config)
         )
 
-        _conn_kwargs = dict(
-            detect_types=sqlite3.PARSE_DECLTYPES, check_same_thread=False
-        )
+        _conn_kwargs = dict()
         _conn_kwargs.update(config.conn_config)
         if config.connection is None:
+            config.connection = NamedTemporaryFile().name
+
+        if isinstance(config.connection, str):
             self._connection = sqlite3.connect(
-                NamedTemporaryFile().name, **_conn_kwargs
+                config.connection,
+                detect_types=sqlite3.PARSE_DECLTYPES,
+                check_same_thread=False,
+                **_conn_kwargs,
             )
-        elif isinstance(config.connection, str):
-            self._connection = sqlite3.connect(config.connection, **_conn_kwargs)
         elif isinstance(config.connection, sqlite3.Connection):
             self._connection = config.connection
         else:
@@ -118,3 +120,19 @@ class BackendMixin(BaseBackendMixin):
         else:
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_connection']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        _conn_kwargs = dict()
+        _conn_kwargs.update(state['_config'].conn_config)
+        self._connection = sqlite3.connect(
+            state['_config'].connection,
+            detect_types=sqlite3.PARSE_DECLTYPES,
+            check_same_thread=False,
+            **_conn_kwargs,
+        )
