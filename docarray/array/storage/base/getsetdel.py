@@ -150,6 +150,10 @@ class BaseGetSetDelMixin(ABC):
             )
 
         for _d, _v in zip(docs, values):
+            if _d.id != _v.id:
+                raise ValueError(
+                    'Setting Documents by traversal paths with different IDs is not supported'
+                )
             _d._data = _v._data
             if _d not in self:
                 root_d = self._find_root_doc_and_modify(_d)

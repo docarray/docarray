@@ -273,6 +273,10 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
     assert da['@m', 'text'] == repeat('c', 3 * 7)
 
+    # setting by traversal paths with different IDs is not supported
+    with pytest.raises(ValueError):
+        da['@m'] = [Document() for _ in range(3 * 7)]
+
     # TODO also test cases like da[1, ['text', 'id']],
     # where first index is str/int and second is attr
 
