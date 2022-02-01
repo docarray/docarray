@@ -129,6 +129,9 @@ class TraverseMixin:
         """
         from .. import DocumentArray
 
+        if hasattr(self, '_flattened') and getattr(self, '_flattened'):
+            return self
+
         visited = set()
 
         def _yield_all():
@@ -145,7 +148,9 @@ class TraverseMixin:
 
             yield doc
 
-        return DocumentArray(_yield_all())
+        da = DocumentArray(_yield_all())
+        da._flattened = True
+        return da
 
     @staticmethod
     def _flatten(sequence) -> 'DocumentArray':
