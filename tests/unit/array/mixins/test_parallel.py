@@ -2,6 +2,7 @@ import os
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 
 def foo(d: Document):
@@ -25,9 +26,7 @@ def foo_batch(da: DocumentArray):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [
-        DocumentArray,
-    ],
+    [DocumentArray, DocumentArraySqlite],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
@@ -58,9 +57,7 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [
-        DocumentArray,
-    ],
+    [DocumentArray, DocumentArraySqlite],
 )
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
@@ -98,9 +95,7 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [
-        DocumentArray,
-    ],
+    [DocumentArray, DocumentArraySqlite],
 )
 def test_map_lambda(pytestconfig, da_cls):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]

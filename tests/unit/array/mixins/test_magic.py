@@ -1,13 +1,15 @@
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 N = 100
 
 
 def da_and_dam():
     da = DocumentArray.empty(N)
-    return (da,)
+    dasq = DocumentArraySqlite.empty(N)
+    return (da, dasq)
 
 
 @pytest.fixture
@@ -53,7 +55,7 @@ def test_iadd(da):
     assert nid == oid
 
 
-@pytest.mark.parametrize('da', da_and_dam())
+@pytest.mark.parametrize('da', [da_and_dam()[0]])
 def test_add(da):
     oid = id(da)
     dap = DocumentArray.empty(10)

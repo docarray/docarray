@@ -6,10 +6,12 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 
-def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir):
-    da = DocumentArray.from_files(
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls):
+    da = da_cls.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
             f'{pytestconfig.rootdir}/**/*.jpg',
@@ -26,8 +28,9 @@ def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir):
 
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
-def test_sprite_image_generator(pytestconfig, tmpdir, image_source):
-    da = DocumentArray.from_files(
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_sprite_image_generator(pytestconfig, tmpdir, image_source, da_cls):
+    da = da_cls.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
             f'{pytestconfig.rootdir}/**/*.jpg',
@@ -48,7 +51,14 @@ def da_and_dam():
         ]
     )
 
-    return (doc_array,)
+    doc_arraysq = DocumentArraySqlite(
+        [
+            Document(embedding=x, tags={'label': random.randint(0, 5)})
+            for x in embeddings
+        ]
+    )
+
+    return (doc_array, doc_arraysq)
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -62,11 +72,12 @@ def test_plot_embeddings(da):
         assert config['embeddings'][0]['tensorShape'] == list(da.embeddings.shape)
 
 
-def test_plot_embeddings_same_path(tmpdir):
-    da1 = DocumentArray.empty(100)
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_plot_embeddings_same_path(tmpdir, da_cls):
+    da1 = da_cls.empty(100)
     da1.embeddings = np.random.random([100, 5])
     p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
-    da2 = DocumentArray.empty(768)
+    da2 = da_cls.empty(768)
     da2.embeddings = np.random.random([768, 5])
     p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
     assert p1 == p2
@@ -76,8 +87,9 @@ def test_plot_embeddings_same_path(tmpdir):
         assert len(config['embeddings']) == 2
 
 
-def test_summary_homo_hetero():
-    da = DocumentArray.empty(100)
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_summary_homo_hetero(da_cls):
+    da = da_cls.empty(100)
     da._get_attributes()
     da.summary()
 
@@ -85,7 +97,8 @@ def test_summary_homo_hetero():
     da.summary()
 
 
-def test_empty_get_attributes():
-    da = DocumentArray.empty(10)
+@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
+def test_empty_get_attributes(da_cls):
+    da = da_cls.empty(10)
     da[0].pop('id')
     print(da[:, 'id'])

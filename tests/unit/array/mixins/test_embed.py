@@ -1,13 +1,16 @@
 import os
 
 import numpy as np
-import onnxruntime
-import paddle
-import pytest
 import tensorflow as tf
+import pytest
 import torch
+import paddle
+import onnx
+import onnxruntime
 
 from docarray import DocumentArray
+from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.sqlite import DocumentArraySqlite
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -40,7 +43,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 
 @pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch', 'paddle'])
-@pytest.mark.parametrize('da', [DocumentArray])
+@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
 @pytest.mark.parametrize('N', [2, 1000])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
@@ -53,19 +56,22 @@ def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
     r = docs.embeddings
     if hasattr(r, 'numpy'):
         r = r.numpy()
+
     embed1 = r.copy()
 
     # reset
     docs.embeddings = np.random.random([N, 128]).astype(np.float32)
 
-    # try it again, it should yield the same result
-    docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+    # docs[a: b].embed is only supported for DocumentArrayInMemory
+    if isinstance(da, DocumentArrayInMemory):
+        # try it again, it should yield the same result
+        docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
 
-    # reset
-    docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+        # reset
+        docs.embeddings = np.random.random([N, 128]).astype(np.float32)
 
-    # now do this one by one
-    docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-    np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        # now do this one by one
+        docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(docs.embeddings, embed1)

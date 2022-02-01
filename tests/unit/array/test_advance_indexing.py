@@ -7,7 +7,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 
 @pytest.fixture
 def docs():
-    yield (Document(text=j) for j in range(100))
+    yield (Document(text=str(j)) for j in range(100))
 
 
 @pytest.fixture
@@ -19,14 +19,14 @@ def indices():
 def test_getter_int_str(docs, storage, start_weaviate):
     docs = DocumentArray(docs, storage=storage)
     # getter
-    assert docs[99].text == 99
-    assert docs[np.int(99)].text == 99
-    assert docs[-1].text == 99
-    assert docs[0].text == 0
+    assert docs[99].text == '99'
+    assert docs[np.int(99)].text == '99'
+    assert docs[-1].text == '99'
+    assert docs[0].text == '0'
     # string index
-    assert docs[docs[0].id].text == 0
-    assert docs[docs[99].id].text == 99
-    assert docs[docs[-1].id].text == 99
+    assert docs[docs[0].id].text == '0'
+    assert docs[docs[99].id].text == '99'
+    assert docs[docs[-1].id].text == '99'
 
     with pytest.raises(IndexError):
         docs[100]
@@ -103,7 +103,6 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
     # getter
     mask = [True, False] * 50
     assert len(docs[mask]) == 50
-    assert len(docs[[True, False]]) == 1
 
     # setter
     mask = [True, False] * 50
@@ -118,7 +117,16 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
             # got replaced
             assert d.text.startswith('repl')
         else:
-            assert isinstance(d.text, int)
+            assert d.text == str(idx)
+
+    docs[mask] = [Document(text='test') for _ in range(50)]
+
+    for idx, d in enumerate(docs):
+        if idx % 2 == 0:
+            # got replaced
+            assert d.text == 'test'
+        else:
+            assert d.text == str(idx)
 
     # del
     del docs[mask]
@@ -142,6 +150,11 @@ def test_sequence_int(docs, nparray, storage, start_weaviate):
     idx = [-3, -4, -5, 9, 10, 11]
     del docs[idx]
     assert len(docs) == 100 - len(idx)
+
+    docs[1, 5, 9] = [Document(text='new') for _ in range(3)]
+    assert docs[1].text == 'new'
+    assert docs[5].text == 'new'
+    assert docs[9].text == 'new'
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
@@ -198,12 +211,12 @@ def test_path_syntax_indexing(storage, start_weaviate):
     assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
 
 
-@pytest.mark.parametrize('storage', ['memory', 'weaviate'])
+@pytest.mark.parametrize('storage', ['memory', 'weaviate', 'sqlite'])
 def test_path_syntax_indexing_set(storage, start_weaviate):
     da = DocumentArray.empty(3)
-    for d in da:
+    for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
-        d.matches = DocumentArray.empty(7)
+        d.matches = DocumentArray([Document(id=f'm{j + (i*7)}') for j in range(7)])
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
@@ -256,21 +269,27 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     assert da[doc_id, 'text'] == 'e'
     assert da[doc_id].text == 'e'
 
-    da['@m'] = [Document(text='c')] * (3 * 7)
+    # setting matches is only possible if the IDs are the same
+    da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
     assert da['@m', 'text'] == repeat('c', 3 * 7)
+
+    # setting by traversal paths with different IDs is not supported
+    with pytest.raises(ValueError):
+        da['@m'] = [Document() for _ in range(3 * 7)]
 
     # TODO also test cases like da[1, ['text', 'id']],
     # where first index is str/int and second is attr
 
 
+@pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
-def test_attribute_indexing(storage, start_weaviate):
+def test_attribute_indexing(storage, start_weaviate, size):
     da = DocumentArray(storage=storage)
-    da.extend(DocumentArray.empty(10))
+    da.extend(DocumentArray.empty(size))
 
     for v in da[:, 'id']:
         assert v
-    da[:, 'mime_type'] = [f'type {j}' for j in range(10)]
+    da[:, 'mime_type'] = [f'type {j}' for j in range(size)]
     for v in da[:, 'mime_type']:
         assert v
     del da[:, 'mime_type']
@@ -278,8 +297,8 @@ def test_attribute_indexing(storage, start_weaviate):
         assert not v
 
     da[:, ['text', 'mime_type']] = [
-        [f'hello {j}' for j in range(10)],
-        [f'type {j}' for j in range(10)],
+        [f'hello {j}' for j in range(size)],
+        [f'type {j}' for j in range(size)],
     ]
     da.summary()
 
@@ -331,7 +350,7 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
-def test_single_boolean_and_padding(storage):
+def test_single_boolean_and_padding(storage, start_weaviate):
     da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
 
@@ -345,7 +364,8 @@ def test_single_boolean_and_padding(storage):
         del da[True]
 
     assert len(da[True, False]) == 1
-    assert len(da[False, False]) == 0
+    assert len(da[False, False, False]) == 0
+    assert len(da[True, False, False]) == 1
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
@@ -398,5 +418,5 @@ def test_edge_case_two_strings(storage, start_weaviate):
     assert da['1', 'text'] == 'hello'
     assert da['1'].text == 'hello'
 
-    with pytest.raises(ValueError):
+    with pytest.raises(IndexError):
         da['1', 'hellohello'] = 'hello'

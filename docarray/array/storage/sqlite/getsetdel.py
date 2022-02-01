@@ -116,16 +116,3 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             offsets,
         )
         self._commit()
-
-    def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Sequence['Document']
-    ):
-        docs = list(docs)
-        if len(docs) != len(values):
-            raise ValueError(
-                f'length of docs to set({len(docs)}) does not match '
-                f'length of values({len(values)})'
-            )
-
-        for _d, _v in zip(docs, values):
-            self._set_doc_by_id(_d.id, _v)
