@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.fixture
