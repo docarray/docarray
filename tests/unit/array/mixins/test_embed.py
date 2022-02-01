@@ -47,7 +47,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 @pytest.mark.parametrize(
     'da', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
 )
-@pytest.mark.parametrize('N', [2, 1000])
+@pytest.mark.parametrize('N', [2, 10])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(
