@@ -68,7 +68,7 @@ class SetItemMixin:
             self._set_doc_by_offset(int(index), value)
         elif isinstance(index, str):
             if index.startswith('@'):
-                self._set_doc_value_pairs(self.traverse_flat(index[1:]), value)
+                self._set_doc_value_pairs_nested(self.traverse_flat(index[1:]), value)
             else:
                 self._set_doc_by_id(index, value)
         elif isinstance(index, slice):
@@ -199,4 +199,4 @@ class SetItemMixin:
                 else:
                     for _d, _vv in zip(_docs, _v):
                         setattr(_d, _a, _vv)
-        self._set_doc_value_pairs(_docs, _docs)
+        self._set_doc_value_pairs_nested(_docs, _docs)
