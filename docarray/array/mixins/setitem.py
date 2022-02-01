@@ -68,7 +68,7 @@ class SetItemMixin:
             self._set_doc_by_offset(int(index), value)
         elif isinstance(index, str):
             if index.startswith('@'):
-                self._set_doc_value_pairs(self.traverse_flat(index[1:]), value)
+                self._set_doc_value_pairs_nested(self.traverse_flat(index[1:]), value)
             else:
                 self._set_doc_by_id(index, value)
         elif isinstance(index, slice):
@@ -76,127 +76,20 @@ class SetItemMixin:
         elif index is Ellipsis:
             self._set_doc_value_pairs(self.flatten(), value)
         elif isinstance(index, Sequence):
-            if (
-                isinstance(index, tuple)
-                and len(index) == 2
-                and (
-                    isinstance(index[0], (slice, Sequence, str, int))
-                    or index[0] is Ellipsis
-                )
-                and isinstance(index[1], (str, Sequence))
-            ):
-                # TODO: this is added because we are still trying to figure out the proper way
-                # to set attribute and to get test_path_syntax_indexing_set to pass.
-                # we may have to refactor the following logic
+            if isinstance(index, tuple) and len(index) == 2:
+                self._set_by_pair(index[0], index[1], value)
 
-                # NOTE: this check is not proper way to handle, but a temporary hack.
-                # writing it this way to minimize effect on other docarray classs and
-                # to make it easier to remove/refactor the following block
-                if self.__class__.__name__ in {
-                    'DocumentArrayWeaviate',
-                    'DocumentArrayInMemory',
-                }:
-                    from ..memory import DocumentArrayInMemory
-
-                    if index[1] in self:
-                        # we first handle the case when second item in index is an id not attr
-                        _docs = DocumentArrayInMemory(
-                            self[index[0]]
-                        ) + DocumentArrayInMemory(self[index[1]])
-                        self._set_doc_value_pairs(_docs, value)
-                        return
-
-                    _docs = self[index[0]]
-
-                    if not _docs:
-                        return
-
-                    if isinstance(_docs, Document):
-                        _docs = DocumentArrayInMemory(_docs)
-                        # because we've augmented docs dimension, we do the same for value
-                        value = (value,)
-
-                    attrs = index[1]
-                    if isinstance(attrs, str):
-                        attrs = (attrs,)
-                        # because we've augmented attrs dimension, we do the same for value
-                        value = (value,)
-
-                    for attr in attrs:
-                        if not hasattr(_docs[0], attr):
-                            raise ValueError(
-                                f'`{attr}` is neither a valid id nor attribute name'
-                            )
-
-                    for _a, _v in zip(attrs, value):
-                        self._set_docs_attrs(_docs, _a, _v)
-                    return
-
-                if isinstance(index[0], str) and isinstance(index[1], str):
-                    # ambiguity only comes from the second string
-                    if index[1] in self:
-                        self._set_doc_value_pairs(
-                            (self[index[0]], self[index[1]]), value
-                        )
-                    elif hasattr(self[index[0]], index[1]):
-                        self._set_doc_attr_by_id(index[0], index[1], value)
-                    else:
-                        # to avoid accidentally add new unsupport attribute
-                        raise ValueError(
-                            f'`{index[1]}` is neither a valid id nor attribute name'
-                        )
-                elif isinstance(index[0], (slice, Sequence)):
-                    _attrs = index[1]
-
-                    if isinstance(_attrs, str):
-                        # a -> [a]
-                        # [a, a] -> [a, a]
-                        _attrs = (index[1],)
-                    if isinstance(value, (list, tuple)) and not any(
-                        isinstance(el, (tuple, list)) for el in value
-                    ):
-                        # [x] -> [[x]]
-                        # [[x], [y]] -> [[x], [y]]
-                        value = (value,)
-                    if not isinstance(value, (list, tuple)):
-                        # x -> [x]
-                        value = (value,)
-
-                    _docs = self[index[0]]
-                    for _a, _v in zip(_attrs, value):
-                        if _a in ('tensor', 'embedding'):
-                            if _a == 'tensor':
-                                _docs.tensors = _v
-                            elif _a == 'embedding':
-                                _docs.embeddings = _v
-                            for _d in _docs:
-                                self._set_doc_by_id(_d.id, _d)
-                        else:
-                            if len(_docs) == 1:
-                                self._set_doc_attr_by_id(_docs[0].id, _a, _v)
-                            else:
-                                for _d, _vv in zip(_docs, _v):
-                                    self._set_doc_attr_by_id(_d.id, _a, _vv)
             elif isinstance(index[0], bool):
-                if len(index) != len(self):
-                    raise IndexError(
-                        f'Boolean mask index is required to have the same length as {len(self._data)}, '
-                        f'but receiving {len(index)}'
-                    )
-                _selected = itertools.compress(self, index)
-                self._set_doc_value_pairs(_selected, value)
+                self._set_by_mask(index, value)
+
             elif isinstance(index[0], (int, str)):
-                if not isinstance(value, Sequence) or len(index) != len(value):
-                    raise ValueError(
-                        f'Number of elements for assigning must be '
-                        f'the same as the index length: {len(index)}'
-                    )
-                if isinstance(value, Document):
-                    for si in index:
-                        self[si] = value  # leverage existing setter
-                else:
-                    for si, _val in zip(index, value):
-                        self[si] = _val  # leverage existing setter
+                for si, _val in zip(index, value):
+                    self[si] = _val  # leverage existing setter
+            else:
+                raise IndexError(
+                    f'{index} should be either a sequence of bool, int or str'
+                )
+
         elif isinstance(index, np.ndarray):
             index = index.squeeze()
             if index.ndim == 1:
@@ -207,3 +100,103 @@ class SetItemMixin:
                 )
         else:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
+
+    def _set_by_pair(self, idx1, idx2, value):
+        if isinstance(idx1, str) and not idx1.startswith('@'):
+            # second is an ID
+            if isinstance(idx2, str) and idx2 in self:
+                self._set_doc_value_pairs((self[idx1], self[idx2]), value)
+            # second is an attribute
+            elif isinstance(idx2, str) and hasattr(self[idx1], idx2):
+                self._set_doc_attr_by_id(idx1, idx2, value)
+            # second is a list of attributes:
+            elif (
+                isinstance(idx2, Sequence)
+                and all(isinstance(attr, str) for attr in idx2)
+                and all(hasattr(self[idx1], attr) for attr in idx2)
+            ):
+                for attr, _v in zip(idx2, value):
+                    self._set_doc_attr_by_id(idx1, attr, _v)
+            else:
+                raise IndexError(f'`{idx2}` is neither a valid id nor attribute name')
+        elif isinstance(idx1, int):
+            # second is an offset
+            if isinstance(idx2, int):
+                self._set_doc_value_pairs((self[idx1], self[idx2]), value)
+            # second is an attribute
+            elif isinstance(idx2, str) and hasattr(self[idx1], idx2):
+                self._set_doc_attr_by_offset(idx1, idx2, value)
+            # second is a list of attributes:
+            elif (
+                isinstance(idx2, Sequence)
+                and all(isinstance(attr, str) for attr in idx2)
+                and all(hasattr(self[idx1], attr) for attr in idx2)
+            ):
+                for attr, _v in zip(idx2, value):
+                    self._set_doc_attr_by_id(idx1, attr, _v)
+            else:
+                raise IndexError(f'`{idx2}` must be an attribute or list of attributes')
+
+        elif (
+            isinstance(idx1, (slice, Sequence))
+            or idx1 is Ellipsis
+            or (isinstance(idx1, str) and idx1.startswith('@'))
+        ):
+            self._set_docs_attributes(idx1, idx2, value)
+        # TODO: else raise error
+
+    def _set_by_mask(self, mask: List[bool], value):
+        _selected = itertools.compress(self, mask)
+        self._set_doc_value_pairs(_selected, value)
+
+    def _set_docs_attributes(self, index, attributes, value):
+        # TODO: handle index is Ellipsis
+        if isinstance(attributes, str):
+            # a -> [a]
+            # [a, a] -> [a, a]
+            attributes = (attributes,)
+            value = (value,)
+
+        if isinstance(index, str) and index.startswith('@'):
+            self._set_docs_attributes_traversal_paths(index, attributes, value)
+        else:
+            _docs = self[index]
+            if not _docs:
+                return
+
+            for _a, _v in zip(attributes, value):
+                if _a in ('tensor', 'embedding'):
+                    if _a == 'tensor':
+                        _docs.tensors = _v
+                    elif _a == 'embedding':
+                        _docs.embeddings = _v
+                    for _d in _docs:
+                        self._set_doc_by_id(_d.id, _d)
+                else:
+                    if not isinstance(_v, (list, tuple)):
+                        for _d in _docs:
+                            self._set_doc_attr_by_id(_d.id, _a, _v)
+                    else:
+                        for _d, _vv in zip(_docs, _v):
+                            self._set_doc_attr_by_id(_d.id, _a, _vv)
+
+    def _set_docs_attributes_traversal_paths(
+        self, traversal_paths: str, attributes, value
+    ):
+        _docs = self[traversal_paths]
+        if not _docs:
+            return
+
+        for _a, _v in zip(attributes, value):
+            if _a == 'tensor':
+                _docs.tensors = _v
+            elif _a == 'embedding':
+                _docs.embeddings = _v
+            else:
+                if not isinstance(_v, (list, tuple)):
+                    for _d in _docs:
+                        setattr(_d, _a, _v)
+                else:
+                    for _d, _vv in zip(_docs, _v):
+                        setattr(_d, _a, _vv)
+        self._set_doc_value_pairs_nested(_docs, _docs)

@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 
 def da_and_dam():
@@ -13,7 +14,15 @@ def da_and_dam():
         ]
     )
 
-    return (da,)
+    das = DocumentArraySqlite(
+        [
+            Document(text='hello'),
+            Document(text='hello world'),
+            Document(text='goodbye world!'),
+        ]
+    )
+
+    return (da, das)
 
 
 @pytest.mark.parametrize('min_freq', [1, 2, 3])
@@ -34,13 +43,11 @@ def test_da_vocabulary(da, min_freq):
 @pytest.mark.parametrize('test_docs', da_and_dam())
 def test_da_text_to_tensor_non_max_len(test_docs):
     vocab = test_docs.get_vocabulary()
-    for d in test_docs:
-        d.convert_text_to_tensor(vocab)
+    test_docs.apply(lambda d: d.convert_text_to_tensor(vocab))
     np.testing.assert_array_equal(test_docs[0].tensor, [2])
     np.testing.assert_array_equal(test_docs[1].tensor, [2, 3])
     np.testing.assert_array_equal(test_docs[2].tensor, [4, 3])
-    for d in test_docs:
-        d.convert_tensor_to_text(vocab)
+    test_docs.apply(lambda d: d.convert_tensor_to_text(vocab))
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'hello world'
@@ -50,13 +57,13 @@ def test_da_text_to_tensor_non_max_len(test_docs):
 @pytest.mark.parametrize('test_docs', da_and_dam())
 def test_da_text_to_tensor_max_len_3(test_docs):
     vocab = test_docs.get_vocabulary()
-    for d in test_docs:
-        d.convert_text_to_tensor(vocab, max_length=3)
+    test_docs.apply(lambda d: d.convert_text_to_tensor(vocab, max_length=3))
+
     np.testing.assert_array_equal(test_docs[0].tensor, [0, 0, 2])
     np.testing.assert_array_equal(test_docs[1].tensor, [0, 2, 3])
     np.testing.assert_array_equal(test_docs[2].tensor, [0, 4, 3])
-    for d in test_docs:
-        d.convert_tensor_to_text(vocab)
+
+    test_docs.apply(lambda d: d.convert_tensor_to_text(vocab))
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'hello world'
@@ -66,13 +73,13 @@ def test_da_text_to_tensor_max_len_3(test_docs):
 @pytest.mark.parametrize('test_docs', da_and_dam())
 def test_da_text_to_tensor_max_len_1(test_docs):
     vocab = test_docs.get_vocabulary()
-    for d in test_docs:
-        d.convert_text_to_tensor(vocab, max_length=1)
+    test_docs.apply(lambda d: d.convert_text_to_tensor(vocab, max_length=1))
+
     np.testing.assert_array_equal(test_docs[0].tensor, [2])
     np.testing.assert_array_equal(test_docs[1].tensor, [3])
     np.testing.assert_array_equal(test_docs[2].tensor, [3])
-    for d in test_docs:
-        d.convert_tensor_to_text(vocab)
+
+    test_docs.apply(lambda d: d.convert_tensor_to_text(vocab))
 
     assert test_docs[0].text == 'hello'
     assert test_docs[1].text == 'world'
@@ -87,12 +94,10 @@ def test_convert_text_tensor_random_text(da):
     vocab = da.get_vocabulary()
 
     # encoding
-    for d in da:
-        d.convert_text_to_tensor(vocab, max_length=10)
+    da.apply(lambda d: d.convert_text_to_tensor(vocab, max_length=10))
 
     # decoding
-    for d in da:
-        d.convert_tensor_to_text(vocab)
+    da.apply(lambda d: d.convert_tensor_to_text(vocab))
 
     assert texts
     assert da.texts == texts

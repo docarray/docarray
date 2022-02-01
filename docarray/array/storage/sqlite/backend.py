@@ -1,12 +1,16 @@
+import itertools
 import sqlite3
 import warnings
 from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile
 from typing import (
+    Generator,
+    Iterator,
+    Dict,
+    Sequence,
     Optional,
     TYPE_CHECKING,
     Union,
-    Dict,
 )
 
 from .helper import initialize_table
@@ -30,7 +34,7 @@ def _sanitize_table_name(table_name: str) -> str:
 class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
-    serialize_config: Dict = field(default_factory=dict)
+    serialize_config: Dict = field(default_factory=lambda: {'protocol': 'protobuf'})
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'DELETE'
     synchronous: str = 'OFF'
@@ -55,6 +59,7 @@ class BackendMixin(BaseBackendMixin):
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[SqliteConfig, Dict]] = None,
+        **kwargs,
     ):
         if not config:
             config = SqliteConfig()
@@ -101,6 +106,15 @@ class BackendMixin(BaseBackendMixin):
         )
         self._connection.commit()
         self._config = config
-        if _docs is not None:
+        from ... import DocumentArray
+
+        if _docs is None:
+            return
+        elif isinstance(
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+        ):
             self.clear()
             self.extend(_docs)
+        else:
+            if isinstance(_docs, Document):
+                self.append(_docs)

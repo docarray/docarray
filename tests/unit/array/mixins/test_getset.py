@@ -6,6 +6,7 @@ import torch
 from scipy.sparse import csr_matrix
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 from tests import random_docs
 
 rand_array = np.random.random([10, 3])
@@ -15,7 +16,19 @@ def da_and_dam():
     rand_docs = random_docs(100)
     da = DocumentArray()
     da.extend(rand_docs)
-    return (da,)
+    das = DocumentArraySqlite(rand_docs)
+    return (da, das)
+
+
+def nested_da_and_dam():
+    docs = [
+        Document(id='r1', chunks=[Document(id='c1'), Document(id='c2')]),
+        Document(id='r2', matches=[Document(id='m1'), Document(id='m2')]),
+    ]
+    da = DocumentArray()
+    da.extend(docs)
+    das = DocumentArraySqlite(docs)
+    return (da, das)
 
 
 @pytest.mark.parametrize(
@@ -69,9 +82,7 @@ def test_tensors_getter_da(da):
     np.testing.assert_almost_equal(da.tensors, tensors)
 
     da.tensors = None
-    if hasattr(da, 'flush'):
-        da.flush()
-    assert not da.tensors
+    assert da.tensors is None
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -96,22 +107,28 @@ def test_texts_getter_da(da):
 
 @pytest.mark.parametrize('da', da_and_dam())
 def test_setter_by_sequences_in_selected_docs_da(da):
+    da[[0, 1, 2], 'text'] = 'test'
+    assert da[[0, 1, 2], 'text'] == ['test', 'test', 'test']
+
+    da[[3, 4], 'text'] = ['test', 'test']
+    assert da[[3, 4], 'text'] == ['test', 'test']
 
     # TODO Clarify whether this change can be accepted
     # I think since the first element of the index (i.e. [0])
     # is a list, it might be more natural to expect a list
     # as values?
     da[[0], 'text'] = ['jina']
-    assert ['jina'] == da[[0], 'text']
+    assert da[[0], 'text'] == ['jina']
 
-    da[[0, 1], 'text'] = ['jina', 'jana']
-    assert ['jina', 'jana'] == da[[0, 1], 'text']
+    da[[6], 'text'] = ['test']
+    assert da[[6], 'text'] == ['test']
 
-    da[[0], 'id'] = ['12']
-    assert ['12'] == da[[0], 'id']
+    # test that ID not present in da works
+    da[[0], 'id'] = '999'
+    assert ['999'] == da[[0], 'id']
 
-    da[[0, 1], 'id'] = ['12', '34']
-    assert ['12', '34'] == da[[0, 1], 'id']
+    da[[0, 1], 'id'] = ['101', '102']
+    assert ['101', '102'] == da[[0, 1], 'id']
 
 
 @pytest.mark.parametrize('da', da_and_dam())
@@ -145,6 +162,14 @@ def test_blobs_getter_setter(da):
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
     assert not da.blobs
+
+
+@pytest.mark.parametrize('da', nested_da_and_dam())
+def test_ellipsis_getter(da):
+    flattened = da[...]
+    assert len(flattened) == 6
+    for d, doc_id in zip(flattened, ['c1', 'c2', 'r1', 'm1', 'm2', 'r2']):
+        assert d.id == doc_id
 
 
 def test_zero_embeddings():

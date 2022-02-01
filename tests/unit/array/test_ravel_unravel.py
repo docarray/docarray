@@ -8,6 +8,7 @@ import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 
 
 def get_ndarrays_for_ravel():
@@ -29,8 +30,14 @@ def get_ndarrays_for_ravel():
 
 @pytest.mark.parametrize('ndarray_val, is_sparse', get_ndarrays_for_ravel())
 @pytest.mark.parametrize('attr', ['embeddings', 'tensors'])
-def test_ravel_embeddings_tensors(ndarray_val, attr, is_sparse):
-    da = DocumentArray.empty(10)
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+    ],
+)
+def test_ravel_embeddings_tensors(ndarray_val, attr, is_sparse, da_cls):
+    da = da_cls.empty(10)
     setattr(da, attr, ndarray_val)
     ndav = getattr(da, attr)
 

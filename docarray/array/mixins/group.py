@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import Dict, Any, TYPE_CHECKING, Generator
+from typing import Dict, Any, TYPE_CHECKING, Generator, List
 from ...helper import dunder_get
 import numpy as np
 
@@ -64,3 +64,30 @@ class GroupMixin:
 
         for i in range(n_batches):
             yield self[ix[i * batch_size : (i + 1) * batch_size]]
+
+    def batch_ids(
+        self,
+        batch_size: int,
+        shuffle: bool = False,
+    ) -> Generator[List[str], None, None]:
+        """
+        Creates a `Generator` that yields `lists of ids` of size `batch_size` until `self` is fully traversed.
+        Note, that the last batch might be smaller than `batch_size`.
+
+        :param batch_size: Size of each generated batch (except the last one, which might be smaller)
+        :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+        :yield: a Generator of `list` of IDs, each in the length of `batch_size`
+        """
+
+        if not (isinstance(batch_size, int) and batch_size > 0):
+            raise ValueError('`batch_size` should be a positive integer')
+
+        N = len(self)
+        ix = self[:, 'id']
+        n_batches = int(np.ceil(N / batch_size))
+
+        if shuffle:
+            random.shuffle(ix)
+
+        for i in range(n_batches):
+            yield ix[i * batch_size : (i + 1) * batch_size]

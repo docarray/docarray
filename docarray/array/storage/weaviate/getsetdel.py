@@ -86,42 +86,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         # update weaviate id
         self._offset2ids[offset] = self.wmap(value.id)
 
-    def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Sequence['Document']
-    ):
-        """Concrete implementation of base class' ``_set_doc_value_pairs``
-
-        :param docs: the array of docs to update
-        :param values: the values docs should be set to
-        :raises ValueError: raise error when there's a mismatch between len of docs and values
-        """
-        # TODO: optimize/use base _set_doc_value_pairs
-        docs = list(docs)
-        if len(docs) != len(values):
-            raise ValueError(
-                f'length of docs to set({len(docs)}) does not match '
-                f'length of values({len(values)})'
-            )
-
-        map_doc_id_to_offset = {doc.id: offset for offset, doc in enumerate(docs)}
-        map_new_id_to_old_id = {new.id: old.id for old, new in zip(docs, values)}
-
-        def _set_doc_value_pairs_util(_docs: DocumentArray):
-            for d in _docs:
-                if d.id in map_doc_id_to_offset:
-                    d._data = values[map_doc_id_to_offset[d.id]]._data
-                _set_doc_value_pairs_util(d.chunks)
-                _set_doc_value_pairs_util(d.matches)
-
-        res = DocumentArray(d for d in self)
-        _set_doc_value_pairs_util(res)
-
-        for r in res:
-            old_id = (
-                r.id if r.id not in map_new_id_to_old_id else map_new_id_to_old_id[r.id]
-            )
-            self._setitem(self.wmap(old_id), r)
-
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
 

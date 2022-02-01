@@ -38,8 +38,7 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self:
-                d.embedding = None
+            self[:, 'embedding'] = [None] * len(self)
         else:
             emb_shape0 = _get_len(value)
             self._check_length(emb_shape0)
@@ -70,8 +69,7 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self:
-                d.tensor = None
+            self[:, 'tensor'] = [None] * len(self)
         else:
             tensors_shape0 = _get_len(value)
             self._check_length(tensors_shape0)
@@ -96,13 +94,11 @@ class ContentPropertyMixin:
             number of Documents
         """
         if value is None:
-            for d in self:
-                d.text = None
+            self[:, 'text'] = [None] * len(self)
         else:
             self._check_length(len(value))
 
-            for doc, text in zip(self, value):
-                doc.text = text
+            self[:, 'text'] = value
 
     @property
     def blobs(self) -> Optional[List[bytes]]:
@@ -123,13 +119,12 @@ class ContentPropertyMixin:
         """
 
         if value is None:
-            for d in self:
-                d.blob = None
+            self[:, 'blob'] = [None] * len(self)
         else:
             self._check_length(len(value))
 
             for doc, blob in zip(self, value):
-                doc.blob = blob
+                self[doc.id, 'blob'] = blob
 
     @property
     def contents(self) -> Optional[Union[Sequence['DocumentContentType'], 'ArrayType']]:
