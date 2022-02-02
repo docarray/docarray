@@ -43,11 +43,13 @@ class BackendMixin(BaseBackendMixin):
         self,
         docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[WeaviateConfig] = None,
+        **kwargs
     ):
         """Initialize weaviate storage.
 
         :param docs: the list of documents to initialize to
         :param config: the config object used to ininitialize connection to weaviate server
+        :param kwargs: extra keyword arguments
         :raises ValueError: only one of name or docs can be used for initialization,
             raise an error if both are provided
         """
