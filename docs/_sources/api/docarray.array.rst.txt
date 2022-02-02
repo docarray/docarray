@@ -21,7 +21,9 @@ Submodules
    docarray.array.document
    docarray.array.match
    docarray.array.memory
+   docarray.array.pqlite
    docarray.array.sqlite
+   docarray.array.weaviate
 
 Module contents
 ---------------

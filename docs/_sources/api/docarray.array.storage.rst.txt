@@ -9,7 +9,9 @@ Subpackages
 
    docarray.array.storage.base
    docarray.array.storage.memory
+   docarray.array.storage.pqlite
    docarray.array.storage.sqlite
+   docarray.array.storage.weaviate
 
 Module contents
 ---------------
