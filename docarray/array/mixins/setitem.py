@@ -168,14 +168,14 @@ class SetItemMixin:
             or (isinstance(idx1, str) and idx1.startswith('@'))
         ):
             self._set_docs_attributes(idx1, idx2, value)
-        # TODO: else raise error
+        else:
+            raise IndexError(f'Unsupported first index type {typename(idx1)}: {idx1}')
 
     def _set_by_mask(self, mask: List[bool], value):
         _selected = itertools.compress(self, mask)
         self._set_doc_value_pairs(_selected, value)
 
     def _set_docs_attributes(self, index, attributes, value):
-        # TODO: handle index is Ellipsis
         if isinstance(attributes, str):
             # a -> [a]
             # [a, a] -> [a, a]
@@ -184,6 +184,21 @@ class SetItemMixin:
 
         if isinstance(index, str) and index.startswith('@'):
             self._set_docs_attributes_traversal_paths(index, attributes, value)
+        elif index is Ellipsis:
+            _docs = self[index]
+            for _a, _v in zip(attributes, value):
+                if _a == 'tensor':
+                    _docs.tensors = _v
+                elif _a == 'embedding':
+                    _docs.embeddings = _v
+                else:
+                    if not isinstance(_v, (list, tuple)):
+                        for _d in _docs:
+                            setattr(_d, _a, _v)
+                    else:
+                        for _d, _vv in zip(_docs, _v):
+                            setattr(_d, _a, _vv)
+            self._set_doc_value_pairs_nested(_docs, _docs)
         else:
             _docs = self[index]
             if not _docs:

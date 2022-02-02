@@ -135,32 +135,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             setattr(doc, attr, value)
             self._setitem(self.wmap(doc.id), doc)
 
-    def _set_docs_attrs(self, docs: 'DocumentArray', attr: str, values: Iterable[Any]):
-        # TODO: remove this function to use _set_doc_attr_by_id once
-        # we find a way to do
-        from ...memory import DocumentArrayInMemory
-
-        if attr == 'embedding':
-            docs.embeddings = values
-        elif attr == 'tensor':
-            docs.tensors = values
-        else:
-            for d, v in zip(docs, values):
-                setattr(d, attr, v)
-
-        def _set_attr_util(_docs: DocumentArrayInMemory):
-            for d in _docs:
-                if d in docs:
-                    setattr(d, attr, getattr(docs[d.id], attr))
-                _set_attr_util(d.chunks)
-                _set_attr_util(d.matches)
-
-        res = DocumentArrayInMemory([d for d in self])
-        _set_attr_util(res)
-
-        for r in res:
-            self._setitem(self.wmap(r.id), r)
-
     def _del_doc_by_offset(self, offset: int):
         """Concrete implementation of base class' ``_del_doc_by_offset``
 

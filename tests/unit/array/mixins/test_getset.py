@@ -134,10 +134,6 @@ def test_setter_by_sequences_in_selected_docs_da(docs, da_cls, start_weaviate):
     da[[3, 4], 'text'] = ['test', 'test']
     assert da[[3, 4], 'text'] == ['test', 'test']
 
-    # TODO Clarify whether this change can be accepted
-    # I think since the first element of the index (i.e. [0])
-    # is a list, it might be more natural to expect a list
-    # as values?
     da[[0], 'text'] = ['jina']
     assert da[[0], 'text'] == ['jina']
 
@@ -207,6 +203,16 @@ def test_ellipsis_getter(nested_docs, da_cls, start_weaviate):
     assert len(flattened) == 6
     for d, doc_id in zip(flattened, ['c1', 'c2', 'r1', 'm1', 'm2', 'r2']):
         assert d.id == doc_id
+
+
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_ellipsis_attribute_setter(nested_docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(nested_docs)
+    da[..., 'text'] = 'new'
+    assert all(d.text == 'new' for d in da[...])
 
 
 def test_zero_embeddings():
