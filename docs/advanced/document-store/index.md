@@ -76,7 +76,7 @@ One can pass the config in the constructor via `config`:
 
 ```python
 from docarray import DocumentArray
-from docarray.array.configs import SqliteConfig
+from docarray.array.sqlite import SqliteConfig
 
 cfg = SqliteConfig(connection='example.db', table_name='test')
 
