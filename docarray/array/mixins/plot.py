@@ -57,7 +57,7 @@ class PlotMixin:
             table.add_row('Common Attributes', str(list(attr_counter.items())[0][0]))
         else:
             for _a, _n in attr_counter.most_common():
-                if _n <= 1:
+                if _n == 1:
                     _doc_text = f'{_n} Document has'
                 else:
                     _doc_text = f'{_n} Documents have'
@@ -96,7 +96,11 @@ class PlotMixin:
                 str(len(_a)),
                 str(any(_aa is None for _aa in _a)),
             )
-        console.print(table, attr_table)
+
+        storage_table = Table(box=box.SIMPLE, title='Storage Summary')
+        self._fill_storage_table(storage_table)
+
+        console.print(table, attr_table, storage_table)
 
     def plot_embeddings(
         self,

@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+    from rich.table import Table
 
 
 def needs_id2offset_rebuild(func) -> Callable:
@@ -86,3 +87,7 @@ class BackendMixin(BaseBackendMixin):
                     self.append(Document(_docs, copy=True))
                 else:
                     self.append(_docs)
+
+    def _fill_storage_table(self, table: 'Table'):
+        super()._fill_storage_table(table)
+        table.add_row('Backend', 'In Memory')

@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+    from rich.table import Table
 
 
 def _sanitize_table_name(table_name: str) -> str:
@@ -135,4 +136,13 @@ class BackendMixin(BaseBackendMixin):
             detect_types=sqlite3.PARSE_DECLTYPES,
             check_same_thread=False,
             **_conn_kwargs,
+        )
+
+    def _fill_storage_table(self, table: 'Table'):
+        super()._fill_storage_table(table)
+        table.add_row('Backend', 'SQLite (https://www.sqlite.org)')
+        table.add_row('Connection', self._config.connection)
+        table.add_row('Table Name', self._table_name)
+        table.add_row(
+            'Serialization Protocol', self._config.serialize_config.get('protocol')
         )

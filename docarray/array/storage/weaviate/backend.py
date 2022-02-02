@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+    from rich.table import Table
 
 
 @dataclass
@@ -67,8 +68,9 @@ class BackendMixin(BaseBackendMixin):
         import weaviate
 
         if config.client is None:
-            self._client = weaviate.Client('http://localhost:8080')
-        elif isinstance(config.client, str):
+            config.client = 'http://localhost:8080'
+
+        if isinstance(config.client, str):
             self._client = weaviate.Client(config.client)
         else:
             self._client = config.client
@@ -77,8 +79,9 @@ class BackendMixin(BaseBackendMixin):
             raise ValueError(
                 'only one of name or docs can be provided for initialization'
             )
+        self._config = config
 
-        self._schemas = self._load_or_create_weaviate_schema(config.name)
+        self._schemas = self._load_or_create_weaviate_schema()
         self._offset2ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
         if docs is None and config.name:
@@ -146,7 +149,7 @@ class BackendMixin(BaseBackendMixin):
             ]
         }
 
-    def _load_or_create_weaviate_schema(self, cls_name: Optional[str] = None):
+    def _load_or_create_weaviate_schema(self):
         """Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object
         if not present in weaviate or if ``cls_name`` not provided, else if ``cls_name`` is provided
         load the object with the given ``cls_name``
@@ -156,14 +159,17 @@ class BackendMixin(BaseBackendMixin):
             with a newly generated class name.
         :return: the schemas of this :class`DocumentArrayWeaviate` object and its meta
         """
-        if not cls_name:
-            doc_schemas = self._get_schema_by_name(self._get_weaviate_class_name())
+        if not self._config.name:
+            name_candidate = self._get_weaviate_class_name()
+            doc_schemas = self._get_schema_by_name(name_candidate)
             while self._client.schema.contains(doc_schemas):
-                doc_schemas = self._get_schema_by_name(self._get_weaviate_class_name())
+                name_candidate = self._get_weaviate_class_name()
+                doc_schemas = self._get_schema_by_name(name_candidate)
             self._client.schema.create(doc_schemas)
+            self._config.name = name_candidate
             return doc_schemas
 
-        doc_schemas = self._get_schema_by_name(cls_name)
+        doc_schemas = self._get_schema_by_name(self._config.name)
         if self._client.schema.contains(doc_schemas):
             return doc_schemas
 
@@ -299,3 +305,12 @@ class BackendMixin(BaseBackendMixin):
         # daw2 = DocumentArrayWeaviate([Document(id=str(i), text='bye') for i in range(3)])
         # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
         return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
+
+    def _fill_storage_table(self, table: 'Table'):
+        super()._fill_storage_table(table)
+        table.add_row('Backend', 'Weaviate (www.semi.technology/developers/weaviate)')
+        table.add_row('Hostname', self._config.client)
+        table.add_row('Schema Name', self._config.name)
+        table.add_row(
+            'Serialization Protocol', self._config.serialize_config.get('protocol')
+        )
