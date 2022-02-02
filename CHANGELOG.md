@@ -18,6 +18,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -430,4 +431,44 @@
 ### 🍹 Other Improvements
 
  - [[```7a868d3b```](https://github.com/jina-ai/docarray/commit/7a868d3b37744ba9618912657198fc5b29532f06)] __-__ __version__: the next version will be 0.4.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-5-0></a>
+## Release Note (`0.5.0`)
+
+> Release time: 2022-02-02 19:40:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ felix-wang,  Han Xiao,  AlaeddineAbdessalem,  samsja,  Winston Wong,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```2a80abf7```](https://github.com/jina-ai/docarray/commit/2a80abf7dd91b0d87786736958efaf9683f689bc)] __-__ advanced pq indexer (#87) (*felix-wang*)
+ - [[```f55fb473```](https://github.com/jina-ai/docarray/commit/f55fb4736ceb9289431a452fd663b427191f1bbd)] __-__ storage option (#78) (*Winston Wong*)
+ - [[```ab788b22```](https://github.com/jina-ai/docarray/commit/ab788b225c5eb02c27c0f36ffdf268818cf0eac0)] __-__ add sqlite storage backend (#69) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```2d5e93b2```](https://github.com/jina-ai/docarray/commit/2d5e93b271c5aa54a27eec25fc2f568c114f69bc)] __-__ del with ids (#79) (*samsja*)
+ - [[```95d9f5a5```](https://github.com/jina-ai/docarray/commit/95d9f5a543c7a210007fbbcb11f8fbd9b6f38ab6)] __-__ __document__: fix feature hash mixin (#85) (*Han Xiao*)
+ - [[```d127742a```](https://github.com/jina-ai/docarray/commit/d127742ab5ff42f40ebf3f84708b2e4e5f68a5bf)] __-__ __sqlite__: allow sqlite to work in mp/mt context (#80) (*Han Xiao*)
+
+### 🧼 Code Refactoring
+
+ - [[```1ed4ddd5```](https://github.com/jina-ai/docarray/commit/1ed4ddd57163b22c570482168fe274e550553b2d)] __-__ __deps__: move cicd requirement to extra_requires (#82) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```63573adb```](https://github.com/jina-ai/docarray/commit/63573adb473570d573b6eb37dc81a9a73704f736)] __-__ __store__: add documentation for storage backend (#88) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3c4ba0be```](https://github.com/jina-ai/docarray/commit/3c4ba0be634d9fd1a298c6572b03392665764a5e)] __-__ __sqlite__: add more test to cover sqlite backend (#81) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```9ba25f83```](https://github.com/jina-ai/docarray/commit/9ba25f83c2697182a46135984bc5c883734ad866)] __-__ finish storage document array todos (#90) (*AlaeddineAbdessalem*)
+ - [[```4c81e6d5```](https://github.com/jina-ai/docarray/commit/4c81e6d534040d00127cdbc720cc6be3051aeb6d)] __-__ __version__: the next version will be 0.4.5 (*Jina Dev Bot*)
 
