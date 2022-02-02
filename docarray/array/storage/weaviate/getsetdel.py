@@ -41,6 +41,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._offset2ids[self._offset2ids.index(wid)] = self.wmap(value.id)
         self._update_offset2ids_meta()
 
+    def _change_doc_id(self, old_wid: str, doc: Document, new_wid: str):
+        payload = self._doc2weaviate_create_payload(doc)
+        self._client.data_object.delete(old_wid)
+        self._client.data_object.create(**payload)
+        self._offset2ids[self._offset2ids.index(old_wid)] = new_wid
+        self._update_offset2ids_meta()
+
     def _delitem(self, wid: str):
         """Helper method for deleting an item with weaviate as storage
 
@@ -119,8 +126,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if attr == 'id' and value is None:
             raise ValueError('pop id from Document stored with weaviate is not allowed')
         doc = self[_id]
-        setattr(doc, attr, value)
-        self._setitem(self.wmap(doc.id), doc)
+
+        if attr == 'id':
+            old_wid = self.wmap(doc.id)
+            setattr(doc, attr, value)
+            self._change_doc_id(old_wid, doc, self.wmap(value))
+        else:
+            setattr(doc, attr, value)
+            self._setitem(self.wmap(doc.id), doc)
 
     def _set_docs_attrs(self, docs: 'DocumentArray', attr: str, values: Iterable[Any]):
         # TODO: remove this function to use _set_doc_attr_by_id once
