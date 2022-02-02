@@ -114,7 +114,7 @@ def test_from_to_bytes(da_cls, start_weaviate):
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
 @pytest.mark.parametrize('show_progress', [True, False])
-def test_push_pull_io(da_cls, show_progress):
+def test_push_pull_io(da_cls, show_progress, start_weaviate):
     da1 = da_cls.empty(10)
     da1[:, 'embedding'] = np.random.random([len(da1), 256])
     random_texts = [str(uuid.uuid1()) for _ in da1]
