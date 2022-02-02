@@ -128,14 +128,21 @@ def test_push_pull_io(da_cls, show_progress, start_weaviate):
     assert da1.texts == da2.texts == random_texts
 
 
-@pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
-@pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'protocol', ['protobuf', 'pickle', 'protobuf-array', 'pickle-array']
 )
+@pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
+@pytest.mark.parametrize('da_cls', [DocumentArrayWeaviate])
 def test_from_to_base64(protocol, compress, da_cls):
     da = da_cls.empty(10)
     da[:, 'embedding'] = [[1, 2, 3]] * len(da)
     da_r = da_cls.from_base64(da.to_base64(protocol, compress), protocol, compress)
-    assert da_r == da
+
+    # only pickle-array will serialize the configuration so we can assume DAs are equal
+    if protocol == 'pickle-array':
+        assert da_r == da
+    # for the rest, we can only check the docs content
+    else:
+        for d1, d2 in zip(da_r, da):
+            assert d1 == d2
     assert da_r[0].embedding == [1, 2, 3]
