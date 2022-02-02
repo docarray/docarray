@@ -3,31 +3,24 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
-def da_and_dam():
-    da = DocumentArray(
-        [
-            Document(text='hello'),
-            Document(text='hello world'),
-            Document(text='goodbye world!'),
-        ]
-    )
-
-    das = DocumentArraySqlite(
-        [
-            Document(text='hello'),
-            Document(text='hello world'),
-            Document(text='goodbye world!'),
-        ]
-    )
-
-    return (da, das)
+@pytest.fixture(scope='function')
+def docs():
+    return [
+        Document(text='hello'),
+        Document(text='hello world'),
+        Document(text='goodbye world!'),
+    ]
 
 
 @pytest.mark.parametrize('min_freq', [1, 2, 3])
-@pytest.mark.parametrize('da', da_and_dam())
-def test_da_vocabulary(da, min_freq):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_da_vocabulary(da_cls, docs, min_freq, start_weaviate):
+    da = da_cls(docs)
     vocab = da.get_vocabulary(min_freq)
     if min_freq <= 1:
         assert set(vocab.values()) == {2, 3, 4}  # 0,1 are reserved
@@ -40,8 +33,11 @@ def test_da_vocabulary(da, min_freq):
         assert not vocab.keys()
 
 
-@pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_tensor_non_max_len(test_docs):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_da_text_to_tensor_non_max_len(docs, da_cls, start_weaviate):
+    test_docs = da_cls(docs)
     vocab = test_docs.get_vocabulary()
     test_docs.apply(lambda d: d.convert_text_to_tensor(vocab))
     np.testing.assert_array_equal(test_docs[0].tensor, [2])
@@ -54,8 +50,11 @@ def test_da_text_to_tensor_non_max_len(test_docs):
     assert test_docs[2].text == 'goodbye world'
 
 
-@pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_tensor_max_len_3(test_docs):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_da_text_to_tensor_max_len_3(docs, da_cls, start_weaviate):
+    test_docs = da_cls(docs)
     vocab = test_docs.get_vocabulary()
     test_docs.apply(lambda d: d.convert_text_to_tensor(vocab, max_length=3))
 
@@ -70,8 +69,11 @@ def test_da_text_to_tensor_max_len_3(test_docs):
     assert test_docs[2].text == 'goodbye world'
 
 
-@pytest.mark.parametrize('test_docs', da_and_dam())
-def test_da_text_to_tensor_max_len_1(test_docs):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_da_text_to_tensor_max_len_1(docs, da_cls, start_weaviate):
+    test_docs = da_cls(docs)
     vocab = test_docs.get_vocabulary()
     test_docs.apply(lambda d: d.convert_text_to_tensor(vocab, max_length=1))
 
@@ -86,8 +88,11 @@ def test_da_text_to_tensor_max_len_1(test_docs):
     assert test_docs[2].text == 'world'
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_convert_text_tensor_random_text(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_convert_text_tensor_random_text(da_cls, docs, start_weaviate):
+    da = da_cls(docs)
     texts = ['a short phrase', 'word', 'this is a much longer sentence']
     da.clear()
     da.extend(Document(text=t) for t in texts)
