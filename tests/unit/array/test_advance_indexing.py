@@ -105,11 +105,7 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
 
     # setter
     mask = [True, False] * 50
-    # TODO: unifiy the following test logic
-    if storage == 'sqlite':
-        docs[mask, 'text'] = [f'repl{j}' for j in range(50)]
-    else:
-        docs[mask] = [Document(text=f'repl{j}') for j in range(50)]
+    docs[mask, 'text'] = [f'repl{j}' for j in range(50)]
 
     for idx, d in enumerate(docs):
         if idx % 2 == 0:
@@ -276,8 +272,9 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     with pytest.raises(ValueError):
         da['@m'] = [Document() for _ in range(3 * 7)]
 
-    # TODO also test cases like da[1, ['text', 'id']],
-    # where first index is str/int and second is attr
+    da[2, ['text', 'id']] = ['new_text', 'new_id']
+    assert da[2].text == 'new_text'
+    assert da[2].id == 'new_id'
 
 
 @pytest.mark.parametrize('size', [1, 5])

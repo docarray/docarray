@@ -157,7 +157,7 @@ class SetItemMixin:
                 and all(hasattr(self[idx1], attr) for attr in idx2)
             ):
                 for attr, _v in zip(idx2, value):
-                    self._set_doc_attr_by_id(idx1, attr, _v)
+                    self._set_doc_attr_by_offset(idx1, attr, _v)
             else:
                 raise IndexError(f'`{idx2}` must be an attribute or list of attributes')
 
