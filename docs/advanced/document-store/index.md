@@ -1,5 +1,11 @@
 # Document Store
 
+```{toctree}
+:hidden:
+
+sqlite
+```
+
 Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
 
 The look-and-feel of a DocumentArray with external store is **almost the same** as a regular in-memory DocumentArray. This allows users to easily switch between backends under the same DocArray idiom.  
@@ -120,3 +126,9 @@ The solution is simple: use {ref}`column-selector<bulk-access>`:
 ```python
 da[0, 'text'] = 'hello'
 ```
+
+### Elements access is slower
+
+Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.
+ 
+Slowness can affect all functions of DocumentArray. On the bright side, they may not be that severe as you would expect. Modern database are highly optimized. Moreover, some database provides faster method for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features. 
