@@ -3,6 +3,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 def foo(d: Document):
@@ -26,11 +27,11 @@ def foo_batch(da: DocumentArray):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [DocumentArray, DocumentArraySqlite],
+    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
+def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_weaviate):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
@@ -57,12 +58,14 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [DocumentArray, DocumentArraySqlite],
+    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
 )
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
-def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
+def test_parallel_map_batch(
+    pytestconfig, da_cls, backend, num_worker, b_size, start_weaviate
+):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
@@ -95,9 +98,9 @@ def test_parallel_map_batch(pytestconfig, da_cls, backend, num_worker, b_size):
 )
 @pytest.mark.parametrize(
     'da_cls',
-    [DocumentArray, DocumentArraySqlite],
+    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
 )
-def test_map_lambda(pytestconfig, da_cls):
+def test_map_lambda(pytestconfig, da_cls, start_weaviate):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     for d in da:
@@ -107,9 +110,9 @@ def test_map_lambda(pytestconfig, da_cls):
         assert d.tensor is not None
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
+@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_diff_backend_storage(storage, backend):
+def test_apply_diff_backend_storage(storage, backend, start_weaviate):
     da = DocumentArray(
         (Document(text='hello world she smiled too much') for _ in range(1000)),
         storage=storage,

@@ -11,6 +11,7 @@ import onnxruntime
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -43,11 +44,15 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 
 @pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch', 'paddle'])
-@pytest.mark.parametrize('da', [DocumentArray, DocumentArraySqlite])
-@pytest.mark.parametrize('N', [2, 1000])
+@pytest.mark.parametrize(
+    'da', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+@pytest.mark.parametrize('N', [2, 10])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
-def test_embedding_on_random_network(framework, da, N, batch_size, to_numpy):
+def test_embedding_on_random_network(
+    framework, da, N, batch_size, to_numpy, start_weaviate
+):
     docs = da.empty(N)
     docs.tensors = np.random.random([N, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()

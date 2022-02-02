@@ -27,6 +27,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return (
             type(self) is type(other)
             and self._client.get_meta() == other._client.get_meta()
+            and self._config == other._config
         )
 
     def __len__(self):

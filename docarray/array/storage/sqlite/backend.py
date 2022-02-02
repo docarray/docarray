@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+    from rich.table import Table
 
 
 def _sanitize_table_name(table_name: str) -> str:
@@ -76,16 +77,18 @@ class BackendMixin(BaseBackendMixin):
             'Document', lambda x: Document.from_bytes(x, **config.serialize_config)
         )
 
-        _conn_kwargs = dict(
-            detect_types=sqlite3.PARSE_DECLTYPES, check_same_thread=False
-        )
+        _conn_kwargs = dict()
         _conn_kwargs.update(config.conn_config)
         if config.connection is None:
+            config.connection = NamedTemporaryFile().name
+
+        if isinstance(config.connection, str):
             self._connection = sqlite3.connect(
-                NamedTemporaryFile().name, **_conn_kwargs
+                config.connection,
+                detect_types=sqlite3.PARSE_DECLTYPES,
+                check_same_thread=False,
+                **_conn_kwargs,
             )
-        elif isinstance(config.connection, str):
-            self._connection = sqlite3.connect(config.connection, **_conn_kwargs)
         elif isinstance(config.connection, sqlite3.Connection):
             self._connection = config.connection
         else:
@@ -118,3 +121,28 @@ class BackendMixin(BaseBackendMixin):
         else:
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_connection']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        _conn_kwargs = dict()
+        _conn_kwargs.update(state['_config'].conn_config)
+        self._connection = sqlite3.connect(
+            state['_config'].connection,
+            detect_types=sqlite3.PARSE_DECLTYPES,
+            check_same_thread=False,
+            **_conn_kwargs,
+        )
+
+    def _fill_storage_table(self, table: 'Table'):
+        super()._fill_storage_table(table)
+        table.add_row('Backend', 'SQLite (https://www.sqlite.org)')
+        table.add_row('Connection', self._config.connection)
+        table.add_row('Table Name', self._table_name)
+        table.add_row(
+            'Serialization Protocol', self._config.serialize_config.get('protocol')
+        )

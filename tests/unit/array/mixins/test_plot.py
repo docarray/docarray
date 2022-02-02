@@ -7,10 +7,13 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls, start_weaviate):
     da = da_cls.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
@@ -28,8 +31,12 @@ def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls):
 
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_sprite_image_generator(pytestconfig, tmpdir, image_source, da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_sprite_image_generator(
+    pytestconfig, tmpdir, image_source, da_cls, start_weaviate
+):
     da = da_cls.from_files(
         [
             f'{pytestconfig.rootdir}/**/*.png',
@@ -72,8 +79,10 @@ def test_plot_embeddings(da):
         assert config['embeddings'][0]['tensorShape'] == list(da.embeddings.shape)
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_plot_embeddings_same_path(tmpdir, da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_plot_embeddings_same_path(tmpdir, da_cls, start_weaviate):
     da1 = da_cls.empty(100)
     da1.embeddings = np.random.random([100, 5])
     p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
@@ -87,8 +96,10 @@ def test_plot_embeddings_same_path(tmpdir, da_cls):
         assert len(config['embeddings']) == 2
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_summary_homo_hetero(da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_summary_homo_hetero(da_cls, start_weaviate):
     da = da_cls.empty(100)
     da._get_attributes()
     da.summary()
@@ -97,8 +108,10 @@ def test_summary_homo_hetero(da_cls):
     da.summary()
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])
-def test_empty_get_attributes(da_cls):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_empty_get_attributes(da_cls, start_weaviate):
     da = da_cls.empty(10)
     da[0].pop('id')
     print(da[:, 'id'])

@@ -7,28 +7,25 @@ from scipy.sparse import csr_matrix
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
 
 rand_array = np.random.random([10, 3])
 
 
-def da_and_dam():
+@pytest.fixture()
+def docs():
     rand_docs = random_docs(100)
-    da = DocumentArray()
-    da.extend(rand_docs)
-    das = DocumentArraySqlite(rand_docs)
-    return (da, das)
+    return rand_docs
 
 
-def nested_da_and_dam():
+@pytest.fixture()
+def nested_docs():
     docs = [
         Document(id='r1', chunks=[Document(id='c1'), Document(id='c2')]),
         Document(id='r2', matches=[Document(id='m1'), Document(id='m2')]),
     ]
-    da = DocumentArray()
-    da.extend(docs)
-    das = DocumentArraySqlite(docs)
-    return (da, das)
+    return docs
 
 
 @pytest.mark.parametrize(
@@ -45,14 +42,22 @@ def test_set_embeddings_multi_kind(array):
     da.embeddings = array
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_da_get_embeddings(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_da_get_embeddings(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
     np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_embeddings_setter_da(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_embeddings_setter_da(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     emb = np.random.random((100, 128))
     da.embeddings = emb
     np.testing.assert_almost_equal(da.embeddings, emb)
@@ -66,16 +71,24 @@ def test_embeddings_setter_da(da):
     assert not da.embeddings
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_embeddings_wrong_len(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_embeddings_wrong_len(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     embeddings = np.ones((2, 10))
 
     with pytest.raises(ValueError):
         da.embeddings = embeddings
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_tensors_getter_da(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_tensors_getter_da(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     tensors = np.random.random((100, 10, 10))
     da.tensors = tensors
     assert len(da) == 100
@@ -85,8 +98,12 @@ def test_tensors_getter_da(da):
     assert da.tensors is None
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_texts_getter_da(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_texts_getter_da(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     assert len(da.texts) == 100
     assert da.texts == da[:, 'text']
     texts = ['text' for _ in range(100)]
@@ -105,18 +122,18 @@ def test_texts_getter_da(da):
     assert not da.texts
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_setter_by_sequences_in_selected_docs_da(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_setter_by_sequences_in_selected_docs_da(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     da[[0, 1, 2], 'text'] = 'test'
     assert da[[0, 1, 2], 'text'] == ['test', 'test', 'test']
 
     da[[3, 4], 'text'] = ['test', 'test']
     assert da[[3, 4], 'text'] == ['test', 'test']
 
-    # TODO Clarify whether this change can be accepted
-    # I think since the first element of the index (i.e. [0])
-    # is a list, it might be more natural to expect a list
-    # as values?
     da[[0], 'text'] = ['jina']
     assert da[[0], 'text'] == ['jina']
 
@@ -131,24 +148,36 @@ def test_setter_by_sequences_in_selected_docs_da(da):
     assert ['101', '102'] == da[[0, 1], 'id']
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_texts_wrong_len(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_texts_wrong_len(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     texts = ['hello']
 
     with pytest.raises(ValueError):
         da.texts = texts
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_tensors_wrong_len(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_tensors_wrong_len(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     tensors = np.ones((2, 10, 10))
 
     with pytest.raises(ValueError):
         da.tensors = tensors
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_blobs_getter_setter(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_blobs_getter_setter(docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(docs)
     with pytest.raises(ValueError):
         da.blobs = [b'cc', b'bb', b'aa', b'dd']
 
@@ -164,12 +193,26 @@ def test_blobs_getter_setter(da):
     assert not da.blobs
 
 
-@pytest.mark.parametrize('da', nested_da_and_dam())
-def test_ellipsis_getter(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_ellipsis_getter(nested_docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(nested_docs)
     flattened = da[...]
     assert len(flattened) == 6
     for d, doc_id in zip(flattened, ['c1', 'c2', 'r1', 'm1', 'm2', 'r2']):
         assert d.id == doc_id
+
+
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_ellipsis_attribute_setter(nested_docs, da_cls, start_weaviate):
+    da = da_cls()
+    da.extend(nested_docs)
+    da[..., 'text'] = 'new'
+    assert all(d.text == 'new' for d in da[...])
 
 
 def test_zero_embeddings():

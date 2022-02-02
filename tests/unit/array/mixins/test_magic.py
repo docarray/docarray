@@ -2,6 +2,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 N = 100
 
@@ -17,8 +18,11 @@ def docs():
     yield (Document(text=str(j)) for j in range(100))
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_iter_len_bool(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_iter_len_bool(da_cls, start_weaviate):
+    da = da_cls.empty(N)
     j = 0
     for _ in da:
         j += 1
@@ -29,15 +33,17 @@ def test_iter_len_bool(da):
     assert not da
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_repr(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_repr(da_cls, start_weaviate):
+    da = da_cls.empty(N)
     assert f'length={N}' in repr(da)
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite'])
-def test_repr_str(docs, storage):
+@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
+def test_repr_str(docs, storage, start_weaviate):
     da = DocumentArray(docs, storage=storage)
-    print(da)
     da.summary()
     assert da
     da.clear()
@@ -45,8 +51,11 @@ def test_repr_str(docs, storage):
     print(da)
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_iadd(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_iadd(da_cls, start_weaviate):
+    da = da_cls.empty(N)
     oid = id(da)
     dap = DocumentArray.empty(10)
     da += dap
