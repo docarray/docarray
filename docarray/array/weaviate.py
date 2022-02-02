@@ -1,6 +1,7 @@
 from .document import DocumentArray
-from .storage.weaviate import StorageMixins
-from .storage.weaviate.backend import WeaviateConfig
+from .storage.weaviate import StorageMixins, WeaviateConfig
+
+__all__ = ['DocumentArrayWeaviate', 'WeaviateConfig']
 
 
 class DocumentArrayWeaviate(StorageMixins, DocumentArray):
