@@ -1,17 +1,15 @@
 import pytest
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 from docarray import DocumentArray
 from docarray.array.sqlite import DocumentArraySqlite
 
 
-def da_and_dam(N):
-    da = DocumentArray.empty(N)
-    dam = DocumentArraySqlite.empty(N)
-    return (da, dam)
-
-
-@pytest.mark.parametrize('da', da_and_dam(100))
-def test_sample(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_sample(da_cls, start_weaviate):
+    da = da_cls.empty(100)
     sampled = da.sample(1)
     assert len(sampled) == 1
     sampled = da.sample(5)
@@ -21,8 +19,11 @@ def test_sample(da):
         da.sample(101)  # can not sample with k greater than lenth of document array.
 
 
-@pytest.mark.parametrize('da', da_and_dam(100))
-def test_sample_with_seed(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_sample_with_seed(da_cls, start_weaviate):
+    da = da_cls.empty(100)
     sampled_1 = da.sample(5, seed=1)
     sampled_2 = da.sample(5, seed=1)
     sampled_3 = da.sample(5, seed=2)
@@ -31,8 +32,11 @@ def test_sample_with_seed(da):
     assert sampled_1 != sampled_3
 
 
-@pytest.mark.parametrize('da', da_and_dam(100))
-def test_shuffle(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_shuffle(da_cls, start_weaviate):
+    da = da_cls.empty(100)
     shuffled = da.shuffle()
     assert len(shuffled) == len(da)
     assert isinstance(shuffled, DocumentArray)
@@ -42,8 +46,11 @@ def test_shuffle(da):
     assert sorted(ids_before_shuffle) == sorted(ids_after_shuffle)
 
 
-@pytest.mark.parametrize('da', da_and_dam(100))
-def test_shuffle_with_seed(da):
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+)
+def test_shuffle_with_seed(da_cls, start_weaviate):
+    da = da_cls.empty(100)
     shuffled_1 = da.shuffle(seed=1)
     shuffled_2 = da.shuffle(seed=1)
     shuffled_3 = da.shuffle(seed=2)
