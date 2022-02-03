@@ -1,8 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from rich.table import Table
+from typing import Dict
 
 
 class BaseBackendMixin(ABC):
@@ -10,6 +7,5 @@ class BaseBackendMixin(ABC):
     def _init_storage(self, *args, **kwargs):
         ...
 
-    def _fill_storage_table(self, table: 'Table'):
-        table.show_header = False
-        table.add_row('Class', self.__class__.__name__)
+    def _get_storage_infos(self) -> Dict:
+        return {'Class': self.__class__.__name__}

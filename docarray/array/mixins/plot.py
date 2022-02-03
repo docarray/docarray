@@ -33,6 +33,9 @@ class PlotMixin:
         from rich.console import Console
         from rich import box
 
+        tables = []
+        console = Console()
+
         all_attrs = self._get_attributes('non_empty_fields')
         attr_counter = Counter(all_attrs)
 
@@ -69,38 +72,43 @@ class PlotMixin:
                     _text = f'{_doc_text} attributes'
                 table.add_row(_text, str(_a))
 
-        console = Console()
+        tables.append(table)
+
         all_attrs_names = tuple(sorted(all_attrs_names))
-        if not all_attrs_names:
-            console.print(table)
-            return
+        if all_attrs_names:
 
-        attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
-        attr_table.add_column('Attribute')
-        attr_table.add_column('Data type')
-        attr_table.add_column('#Unique values')
-        attr_table.add_column('Has empty value')
+            attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
+            attr_table.add_column('Attribute')
+            attr_table.add_column('Data type')
+            attr_table.add_column('#Unique values')
+            attr_table.add_column('Has empty value')
 
-        all_attrs_values = self._get_attributes(*all_attrs_names)
-        if len(all_attrs_names) == 1:
-            all_attrs_values = [all_attrs_values]
-        for _a, _a_name in zip(all_attrs_values, all_attrs_names):
-            try:
-                _a = set(_a)
-            except:
-                pass  # intentional ignore as some fields are not hashable
-            _set_type_a = set(type(_aa).__name__ for _aa in _a)
-            attr_table.add_row(
-                _a_name,
-                str(tuple(_set_type_a)),
-                str(len(_a)),
-                str(any(_aa is None for _aa in _a)),
-            )
+            all_attrs_values = self._get_attributes(*all_attrs_names)
+            if len(all_attrs_names) == 1:
+                all_attrs_values = [all_attrs_values]
+            for _a, _a_name in zip(all_attrs_values, all_attrs_names):
+                try:
+                    _a = set(_a)
+                except:
+                    pass  # intentional ignore as some fields are not hashable
+                _set_type_a = set(type(_aa).__name__ for _aa in _a)
+                attr_table.add_row(
+                    _a_name,
+                    str(tuple(_set_type_a)),
+                    str(len(_a)),
+                    str(any(_aa is None for _aa in _a)),
+                )
+            tables.append(attr_table)
 
         storage_table = Table(box=box.SIMPLE, title='Storage Summary')
-        self._fill_storage_table(storage_table)
+        storage_table.show_header = False
+        storage_infos = self._get_storage_infos()
+        for k, v in storage_infos.items():
+            storage_table.add_row(k, v)
 
-        console.print(table, attr_table, storage_table)
+        tables.append(storage_table)
+
+        console.print(*tables)
 
     def plot_embeddings(
         self,
