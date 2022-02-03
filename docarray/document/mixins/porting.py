@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class PortingMixin:
     @classmethod
     def from_dict(
-        cls: Type['T'], obj: Dict, protocol: str = 'jsonschema', *args, **kwargs
+        cls: Type['T'], obj: Dict, protocol: str = 'jsonschema', **kwargs
     ) -> 'T':
         """Convert a dict object into a Document.
 
@@ -31,14 +31,14 @@ class PortingMixin:
             from ...proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
-            json_format.ParseDict(obj, pb_msg, *args, **kwargs)
+            json_format.ParseDict(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
         else:
             raise ValueError(f'protocol=`{protocol}` is not supported')
 
     @classmethod
     def from_json(
-        cls: Type['T'], obj: str, protocol: str = 'jsonschema', *args, **kwargs
+        cls: Type['T'], obj: str, protocol: str = 'jsonschema', **kwargs
     ) -> 'T':
         """Convert a JSON string into a Document.
 

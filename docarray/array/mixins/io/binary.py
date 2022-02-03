@@ -49,8 +49,6 @@ class BinaryIOMixin:
                 protocol=protocol,
                 compress=compress,
                 _show_progress=_show_progress,
-                *args,
-                **kwargs,
             )
         else:
             return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
@@ -285,9 +283,7 @@ class BinaryIOMixin:
         return dap
 
     @classmethod
-    def from_protobuf(
-        cls: Type['T'], pb_msg: 'DocumentArrayProto', *args, **kwargs
-    ) -> 'T':
+    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentArrayProto') -> 'T':
         from .... import Document
 
         return cls(Document.from_protobuf(od) for od in pb_msg.docs)
