@@ -85,7 +85,7 @@ class PortingMixin:
             return dataclasses.asdict(self._data)
 
     def to_bytes(
-        self, protocol: str = 'protobuf', compress: Optional[str] = None
+        self, protocol: str = 'pickle', compress: Optional[str] = None
     ) -> bytes:
 
         if protocol == 'pickle':
@@ -102,7 +102,7 @@ class PortingMixin:
     def from_bytes(
         cls: Type['T'],
         data: bytes,
-        protocol: str = 'protobuf',
+        protocol: str = 'pickle',
         compress: Optional[str] = None,
     ) -> 'T':
         """Build Document object from binary bytes
