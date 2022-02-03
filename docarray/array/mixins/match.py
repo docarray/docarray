@@ -148,6 +148,7 @@ class MatchMixin:
         :param metric_name: if provided, then match result will be marked with this string.
         :return: distances and indices
         """
+
         x_mat = self.embeddings
         y_mat = darray.embeddings
 

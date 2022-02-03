@@ -32,9 +32,7 @@ class JsonIOMixin:
 
     @classmethod
     def load_json(
-        cls: Type['T'],
-        file: Union[str, TextIO],
-        protocol: str = 'jsonschema',
+        cls: Type['T'], file: Union[str, TextIO], protocol: str = 'jsonschema', **kwargs
     ) -> 'T':
         """Load array elements from a JSON file.
 
@@ -55,21 +53,21 @@ class JsonIOMixin:
             constructor = Document.from_dict
 
         with file_ctx as fp:
-            return cls(constructor(v, protocol=protocol) for v in fp)
+            return cls(constructor(v, protocol=protocol, **kwargs) for v in fp)
 
     @classmethod
     def from_json(
-        cls: Type['T'],
-        file: Union[str, TextIO],
-        protocol: str = 'jsonschema',
+        cls: Type['T'], file: Union[str, TextIO], protocol: str = 'jsonschema', **kwargs
     ) -> 'T':
-        return cls.load_json(file, protocol=protocol)
+        return cls.load_json(file, protocol=protocol, **kwargs)
 
     @classmethod
-    def from_list(cls: Type['T'], values: List, protocol: str = 'jsonschema') -> 'T':
+    def from_list(
+        cls: Type['T'], values: List, protocol: str = 'jsonschema', **kwargs
+    ) -> 'T':
         from .... import Document
 
-        return cls(Document.from_dict(v, protocol=protocol) for v in values)
+        return cls(Document.from_dict(v, protocol=protocol, **kwargs) for v in values)
 
     def to_list(self, protocol: str = 'jsonschema', **kwargs) -> List:
         """Convert the object into a Python list.
