@@ -122,9 +122,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name,
                     "vectorizer": "none",
-                    # TODO: this skips checking embedding dimension but might not
-                    # work if want to leverage weaviate for vector search
-                    'vectorIndexConfig': {'skip': True},
+                    'vectorIndexConfig': {'skip': False},
                     'properties': [
                         {
                             'dataType': ['blob'],
