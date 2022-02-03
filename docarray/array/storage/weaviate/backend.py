@@ -23,7 +23,6 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
-    from rich.table import Table
 
 
 @dataclass
@@ -306,11 +305,12 @@ class BackendMixin(BaseBackendMixin):
         # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
         return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
 
-    def _fill_storage_table(self, table: 'Table'):
-        super()._fill_storage_table(table)
-        table.add_row('Backend', 'Weaviate (www.semi.technology/developers/weaviate)')
-        table.add_row('Hostname', self._config.client)
-        table.add_row('Schema Name', self._config.name)
-        table.add_row(
-            'Serialization Protocol', self._config.serialize_config.get('protocol')
-        )
+    def _get_storage_infos(self) -> Dict:
+        storage_infos = super()._get_storage_infos()
+        return {
+            'Backend': 'Weaviate (www.semi.technology/developers/weaviate)',
+            'Hostname': self._config.client,
+            'Schema Name': self._config.name,
+            'Serialization Protocol': self._config.serialize_config.get('protocol'),
+            **storage_infos,
+        }
