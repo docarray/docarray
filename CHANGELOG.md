@@ -19,6 +19,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -471,4 +472,35 @@
 
  - [[```9ba25f83```](https://github.com/jina-ai/docarray/commit/9ba25f83c2697182a46135984bc5c883734ad866)] __-__ finish storage document array todos (#90) (*AlaeddineAbdessalem*)
  - [[```4c81e6d5```](https://github.com/jina-ai/docarray/commit/4c81e6d534040d00127cdbc720cc6be3051aeb6d)] __-__ __version__: the next version will be 0.4.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-5-1></a>
+## Release Note (`0.5.1`)
+
+> Release time: 2022-02-03 18:10:42
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Han Xiao,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```569f8716```](https://github.com/jina-ai/docarray/commit/569f8716ae1000e662c4251e63f34d9a9c91a56e)] __-__ allow empty to get kwargs (#91) (*David Buchaca Prats*)
+
+### ⚡ Performance Improvements
+
+ - [[```4c05919a```](https://github.com/jina-ai/docarray/commit/4c05919a97e8f19439405434d553f6794242863c)] __-__ implement append to avoid invalidating id2offset (#94) (*AlaeddineAbdessalem*)
+
+### 🐞 Bug fixes
+
+ - [[```bd343d8c```](https://github.com/jina-ai/docarray/commit/bd343d8c1ca8ddf8e30361b7d572c2368824ad45)] __-__ fix summary for storage backends (#92) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```8db14ffb```](https://github.com/jina-ai/docarray/commit/8db14ffbcb480c6a69102e0c13aa6cd5b0ff7f69)] __-__ __store__: add documentation for storage backend (#95) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```74ce8610```](https://github.com/jina-ai/docarray/commit/74ce8610fc4a39a9e7e6b1c669c3a48b5f71a97b)] __-__ __version__: the next version will be 0.5.1 (*Jina Dev Bot*)
 
