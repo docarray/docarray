@@ -22,10 +22,7 @@ class PydanticMixin:
         return [d.to_pydantic_model() for d in self]
 
     @classmethod
-    def from_pydantic_model(
-        cls: Type['T'],
-        model: List['BaseModel'],
-    ) -> 'T':
+    def from_pydantic_model(cls: Type['T'], model: List['BaseModel']) -> 'T':
         """Convert a list of PydanticDocument into
 
         :param model: the pydantic data model object that represents a DocumentArray

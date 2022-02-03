@@ -168,7 +168,10 @@ class BinaryIOMixin:
         _show_progress: bool = False,
     ) -> 'T':
         return cls.load_binary(
-            data, protocol=protocol, compress=compress, _show_progress=_show_progress
+            data,
+            protocol=protocol,
+            compress=compress,
+            _show_progress=_show_progress,
         )
 
     def save_binary(

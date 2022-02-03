@@ -36,6 +36,8 @@ class FromGeneratorMixin:
         axis: int = 0,
         size: Optional[int] = None,
         shuffle: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from a numpy array.
 
