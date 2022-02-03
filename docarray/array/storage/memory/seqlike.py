@@ -24,7 +24,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         """
         self._data.append(value)
         if not self._needs_id2offset_rebuild:
-            self._id_to_index[value.id] = len(self)
+            self._id_to_index[value.id] = len(self) - 1
 
     def __eq__(self, other):
         return (
