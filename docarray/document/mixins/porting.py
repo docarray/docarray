@@ -87,7 +87,6 @@ class PortingMixin:
     def to_bytes(
         self, protocol: str = 'pickle', compress: Optional[str] = None
     ) -> bytes:
-
         if protocol == 'pickle':
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
