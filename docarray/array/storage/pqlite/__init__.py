@@ -1,9 +1,10 @@
-from .backend import BackendMixin
-from .getsetdel import GetSetDelMixin
-from .seqlike import SequenceLikeMixin
 from abc import ABC
 
-__all__ = ['StorageMixins']
+from .backend import BackendMixin, PqliteConfig
+from .getsetdel import GetSetDelMixin
+from .seqlike import SequenceLikeMixin
+
+__all__ = ['StorageMixins', 'PqliteConfig']
 
 
 class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):

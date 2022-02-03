@@ -7,12 +7,12 @@ from typing import (
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin
-from .... import Document, DocumentArray
+from .... import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
-    """Provide concrete implmentation for ``__getitem__``, ``__setitem__``,
-    and ``__delitem__`` for ``DoucmentArrayWeaviate``"""
+    """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
+    and ``__delitem__`` for ``DocumentArrayWeaviate``"""
 
     def _getitem(self, wid: str) -> 'Document':
         """Helper method for getting item with weaviate as storage
