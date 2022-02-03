@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.array.storage.sqlite.backend - DocArray 0.5.0 documentation</title>
+        <title>docarray.array.storage.sqlite.backend - DocArray 0.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.5.0 documentation</div>
+                <div class="brand">DocArray 0.5.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -377,6 +377,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../proto/">Protocol Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../changelog/">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 </ul>
 
     <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
@@ -457,7 +458,6 @@
     <span class="kn">from</span> <span class="nn">....types</span> <span class="kn">import</span> <span class="p">(</span>
         <span class="n">DocumentArraySourceType</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
 
 
 <span class="k">def</span> <span class="nf">_sanitize_table_name</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -574,14 +574,15 @@
             <span class="o">**</span><span class="n">_conn_kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_fill_storage_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="s1">'Table'</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_fill_storage_table</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Backend'</span><span class="p">,</span> <span class="s1">'SQLite (https://www.sqlite.org)'</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Connection'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Table Name'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
-            <span class="s1">'Serialization Protocol'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">serialize_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'protocol'</span><span class="p">)</span>
-        <span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_get_storage_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="n">storage_infos</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_storage_infos</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">'Backend'</span><span class="p">:</span> <span class="s1">'SQLite (https://www.sqlite.org)'</span><span class="p">,</span>
+            <span class="s1">'Connection'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">connection</span><span class="p">,</span>
+            <span class="s1">'Table Name'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="p">,</span>
+            <span class="s1">'Serialization Protocol'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">serialize_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'protocol'</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">storage_infos</span><span class="p">,</span>
+        <span class="p">}</span></div>
 </pre></div>
             </article>
             <footer>
@@ -593,7 +594,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 02, 2022.
+                    Last updated on Feb 03, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
