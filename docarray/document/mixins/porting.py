@@ -104,8 +104,6 @@ class PortingMixin:
         data: bytes,
         protocol: str = 'protobuf',
         compress: Optional[str] = None,
-        *args,
-        **kwargs,
     ) -> 'T':
         """Build Document object from binary bytes
 
@@ -161,8 +159,6 @@ class PortingMixin:
         data: str,
         protocol: str = 'pickle',
         compress: Optional[str] = None,
-        *args,
-        **kwargs,
     ) -> 'T':
         """Build Document object from binary bytes
 
@@ -171,6 +167,4 @@ class PortingMixin:
         :param compress: compress method to use
         :return: a Document object
         """
-        return cls.from_bytes(
-            base64.b64decode(data), protocol, compress, *args, **kwargs
-        )
+        return cls.from_bytes(base64.b64decode(data), protocol, compress)

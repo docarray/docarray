@@ -90,9 +90,7 @@ class PushPullMixin:
             )
 
     @classmethod
-    def pull(
-        cls: Type['T'], token: str, show_progress: bool = False, *args, **kwargs
-    ) -> 'T':
+    def pull(cls: Type['T'], token: str, show_progress: bool = False) -> 'T':
         """Pulling a :class:`DocumentArray` from Jina Cloud Service to local.
 
         :param token: the upload token set during :meth:`.push`

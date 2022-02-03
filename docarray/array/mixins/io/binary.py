@@ -24,8 +24,6 @@ class BinaryIOMixin:
         compress: Optional[str] = None,
         _show_progress: bool = False,
         streaming: bool = False,
-        *args,
-        **kwargs,
     ) -> Union['DocumentArray', Generator['Document', None, None]]:
         """Load array elements from a compressed binary file.
 
@@ -55,9 +53,7 @@ class BinaryIOMixin:
                 **kwargs,
             )
         else:
-            return cls._load_binary_all(
-                file_ctx, protocol, compress, _show_progress, *args, **kwargs
-            )
+            return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
 
     @classmethod
     def _load_binary_stream(
@@ -66,8 +62,6 @@ class BinaryIOMixin:
         protocol=None,
         compress=None,
         _show_progress=False,
-        *args,
-        **kwargs,
     ) -> Generator['Document', None, None]:
         """Yield `Document` objects from a binary file
 
@@ -105,9 +99,7 @@ class BinaryIOMixin:
                 )
 
     @classmethod
-    def _load_binary_all(
-        cls, file_ctx, protocol, compress, show_progress, *args, **kwargs
-    ):
+    def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
         """Read a `DocumentArray` object from a binary file
 
         :param protocol: protocol to use
@@ -176,8 +168,6 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
-        *args,
-        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             data,
@@ -312,8 +302,6 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
-        *args,
-        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             base64.b64decode(data),

@@ -14,7 +14,7 @@ class PydanticMixin:
     """Provide helper functions to convert to/from a Pydantic model"""
 
     @classmethod
-    def get_json_schema(cls, indent: int = 2, *args, **kwargs) -> str:
+    def get_json_schema(cls, indent: int = 2) -> str:
         """Return a JSON Schema of Document class."""
         from ..pydantic_model import PydanticDocument as DP
 
@@ -38,7 +38,7 @@ class PydanticMixin:
         return DP(**_p_dict)
 
     @classmethod
-    def from_pydantic_model(cls: Type['T'], model: 'BaseModel', *args, **kwargs) -> 'T':
+    def from_pydantic_model(cls: Type['T'], model: 'BaseModel') -> 'T':
         """Build a Document object from a Pydantic model
 
         :param model: the pydantic data model object that represents a Document

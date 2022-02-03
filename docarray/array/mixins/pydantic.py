@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class PydanticMixin:
     @classmethod
-    def get_json_schema(cls, indent: int = 2, *args, **kwargs) -> str:
+    def get_json_schema(cls, indent: int = 2) -> str:
         """Return a JSON Schema of DocumentArray class."""
         from pydantic import schema_json_of
         from ...document.pydantic_model import PydanticDocumentArray
@@ -22,9 +22,7 @@ class PydanticMixin:
         return [d.to_pydantic_model() for d in self]
 
     @classmethod
-    def from_pydantic_model(
-        cls: Type['T'], model: List['BaseModel'], *args, **kwargs
-    ) -> 'T':
+    def from_pydantic_model(cls: Type['T'], model: List['BaseModel']) -> 'T':
         """Convert a list of PydanticDocument into
 
         :param model: the pydantic data model object that represents a DocumentArray
