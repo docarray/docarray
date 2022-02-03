@@ -7,10 +7,10 @@ if TYPE_CHECKING:
 
 class ProtobufMixin:
     @classmethod
-    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentProto') -> 'T':
+    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentProto', *args, **kwargs) -> 'T':
         from ...proto.io import parse_proto
 
-        return parse_proto(pb_msg)
+        return parse_proto(pb_msg, *args, **kwargs)
 
     def to_protobuf(self) -> 'DocumentProto':
         from ...proto.io import flush_proto

@@ -88,6 +88,8 @@ class CsvIOMixin:
         cls: Type['T'],
         file: Union[str, TextIO],
         field_resolver: Optional[Dict[str, str]] = None,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Load array elements from a binary file.
 

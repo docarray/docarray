@@ -36,6 +36,8 @@ class FromGeneratorMixin:
         axis: int = 0,
         size: Optional[int] = None,
         shuffle: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from a numpy array.
 
@@ -65,6 +67,8 @@ class FromGeneratorMixin:
         sampling_rate: Optional[float] = None,
         read_mode: Optional[str] = None,
         to_dataturi: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from a list of file path or the content of the files.
 
@@ -98,6 +102,8 @@ class FromGeneratorMixin:
         size: Optional[int] = None,
         sampling_rate: Optional[float] = None,
         dialect: Union[str, 'csv.Dialect'] = 'excel',
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from CSV.
 
@@ -171,6 +177,8 @@ class FromGeneratorMixin:
         field_resolver: Optional[Dict[str, str]] = None,
         size: Optional[int] = None,
         sampling_rate: Optional[float] = None,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from line separated JSON. Yields documents.
 
@@ -203,6 +211,8 @@ class FromGeneratorMixin:
         field_resolver: Optional[Dict[str, str]] = None,
         size: Optional[int] = None,
         sampling_rate: Optional[float] = None,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from lines, json and csv. Yields documents or strings.
 

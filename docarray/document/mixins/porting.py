@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class PortingMixin:
     @classmethod
     def from_dict(
-        cls: Type['T'], obj: Dict, protocol: str = 'jsonschema', **kwargs
+        cls: Type['T'], obj: Dict, protocol: str = 'jsonschema', *args, **kwargs
     ) -> 'T':
         """Convert a dict object into a Document.
 
@@ -31,14 +31,14 @@ class PortingMixin:
             from ...proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
-            json_format.ParseDict(obj, pb_msg, **kwargs)
+            json_format.ParseDict(obj, pb_msg, *args, **kwargs)
             return cls.from_protobuf(pb_msg)
         else:
             raise ValueError(f'protocol=`{protocol}` is not supported')
 
     @classmethod
     def from_json(
-        cls: Type['T'], obj: str, protocol: str = 'jsonschema', **kwargs
+        cls: Type['T'], obj: str, protocol: str = 'jsonschema', *args, **kwargs
     ) -> 'T':
         """Convert a JSON string into a Document.
 
@@ -85,8 +85,9 @@ class PortingMixin:
             return dataclasses.asdict(self._data)
 
     def to_bytes(
-        self, protocol: str = 'pickle', compress: Optional[str] = None
+        self, protocol: str = 'protobuf', compress: Optional[str] = None
     ) -> bytes:
+
         if protocol == 'pickle':
             bstr = pickle.dumps(self)
         elif protocol == 'protobuf':
@@ -101,8 +102,10 @@ class PortingMixin:
     def from_bytes(
         cls: Type['T'],
         data: bytes,
-        protocol: str = 'pickle',
+        protocol: str = 'protobuf',
         compress: Optional[str] = None,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build Document object from binary bytes
 
@@ -158,6 +161,8 @@ class PortingMixin:
         data: str,
         protocol: str = 'pickle',
         compress: Optional[str] = None,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build Document object from binary bytes
 
@@ -166,4 +171,6 @@ class PortingMixin:
         :param compress: compress method to use
         :return: a Document object
         """
-        return cls.from_bytes(base64.b64decode(data), protocol, compress)
+        return cls.from_bytes(
+            base64.b64decode(data), protocol, compress, *args, **kwargs
+        )

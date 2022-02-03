@@ -24,6 +24,8 @@ class BinaryIOMixin:
         compress: Optional[str] = None,
         _show_progress: bool = False,
         streaming: bool = False,
+        *args,
+        **kwargs,
     ) -> Union['DocumentArray', Generator['Document', None, None]]:
         """Load array elements from a compressed binary file.
 
@@ -49,9 +51,13 @@ class BinaryIOMixin:
                 protocol=protocol,
                 compress=compress,
                 _show_progress=_show_progress,
+                *args,
+                **kwargs,
             )
         else:
-            return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
+            return cls._load_binary_all(
+                file_ctx, protocol, compress, _show_progress, *args, **kwargs
+            )
 
     @classmethod
     def _load_binary_stream(
@@ -60,6 +66,8 @@ class BinaryIOMixin:
         protocol=None,
         compress=None,
         _show_progress=False,
+        *args,
+        **kwargs,
     ) -> Generator['Document', None, None]:
         """Yield `Document` objects from a binary file
 
@@ -97,7 +105,9 @@ class BinaryIOMixin:
                 )
 
     @classmethod
-    def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
+    def _load_binary_all(
+        cls, file_ctx, protocol, compress, show_progress, *args, **kwargs
+    ):
         """Read a `DocumentArray` object from a binary file
 
         :param protocol: protocol to use
@@ -166,9 +176,14 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         return cls.load_binary(
-            data, protocol=protocol, compress=compress, _show_progress=_show_progress
+            data,
+            protocol=protocol,
+            compress=compress,
+            _show_progress=_show_progress,
         )
 
     def save_binary(
@@ -280,7 +295,9 @@ class BinaryIOMixin:
         return dap
 
     @classmethod
-    def from_protobuf(cls: Type['T'], pb_msg: 'DocumentArrayProto') -> 'T':
+    def from_protobuf(
+        cls: Type['T'], pb_msg: 'DocumentArrayProto', *args, **kwargs
+    ) -> 'T':
         from .... import Document
 
         return cls(Document.from_protobuf(od) for od in pb_msg.docs)
@@ -295,6 +312,8 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             base64.b64decode(data),
