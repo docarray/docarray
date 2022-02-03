@@ -17,6 +17,15 @@ class SequenceLikeMixin(MutableSequence[Document]):
         """
         self._data.insert(index, value)
 
+    def append(self, value: 'Document'):
+        """Append `doc` to the end of the array.
+
+        :param value: The doc needs to be appended.
+        """
+        self._data.append(value)
+        if not self._needs_id2offset_rebuild:
+            self._id_to_index[value.id] = len(self) - 1
+
     def __eq__(self, other):
         return (
             type(self) is type(other)
