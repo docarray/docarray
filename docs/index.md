@@ -120,6 +120,7 @@ advanced/document-store/index
 api/docarray
 proto/index
 changelog/index
+advanced/document-store/extend
 ```
 
 

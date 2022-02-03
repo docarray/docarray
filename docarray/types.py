@@ -61,8 +61,3 @@ if TYPE_CHECKING:
         DocumentArraySingleAttributeType,
         DocumentArrayMultipleAttributeType,
     ]
-
-    from .array.sqlite import DocumentArraySqlite
-    from .array.memory import DocumentArrayInMemory
-
-    DocumentArrayLike = Union[DocumentArrayInMemory, DocumentArraySqlite]

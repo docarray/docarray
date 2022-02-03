@@ -1,4 +1,4 @@
-from typing import Iterator, Union, Sequence, Iterable, MutableSequence
+from typing import Iterator, Union, Iterable, MutableSequence
 
 from .... import Document
 
