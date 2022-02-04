@@ -44,7 +44,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 )
 
 
-@pytest.mark.parametrize('framework', ['pytorch'])
+@pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch'])
 @pytest.mark.parametrize(
     'da_cls,config',
     [
