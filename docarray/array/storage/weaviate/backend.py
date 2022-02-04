@@ -30,8 +30,8 @@ class WeaviateConfig:
     """This class stores the config variables to initialize
     connection to the Weaviate server"""
 
+    n_dim: int
     client: Optional[Union[str, weaviate.Client]] = None
-    n_dim: Optional[int] = None
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=lambda: {'protocol': 'protobuf'})
 
@@ -61,7 +61,9 @@ class BackendMixin(BaseBackendMixin):
         if not config:
             config = WeaviateConfig()
 
-        self.n_dim = config.n_dim or 1
+        if not config.n_dim:
+            raise ValueError('Config object must contain n_dim')
+        self.n_dim = config.n_dim
         self.serialize_config = config.serialize_config
 
         import weaviate
