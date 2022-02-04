@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.storage.weaviate import WeaviateConfig
 
 
 @pytest.fixture
@@ -14,9 +15,20 @@ def indices():
     yield (i for i in [-2, 0, 2])
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_getter_int_str(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_getter_int_str(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # getter
     assert docs[99].text == '99'
     assert docs[np.int(99)].text == '99'
@@ -34,9 +46,20 @@ def test_getter_int_str(docs, storage, start_weaviate):
         docs['adsad']
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_setter_int_str(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_setter_int_str(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # setter
     docs[99] = Document(text='hello')
     docs[0] = Document(text='world')
@@ -50,9 +73,20 @@ def test_setter_int_str(docs, storage, start_weaviate):
     assert docs[docs[2].id].text == 'doc2'
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_del_int_str(docs, storage, indices):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_del_int_str(docs, storage, config, indices):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     initial_len = len(docs)
     deleted_elements = 0
     for pos in indices:
@@ -71,9 +105,20 @@ def test_del_int_str(docs, storage, indices):
         assert new_doc_zero not in docs
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_slice(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_slice(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # getter
     assert len(docs[1:5]) == 4
     assert len(docs[1:100:5]) == 20  # 1 to 100, sep with 5
@@ -96,9 +141,20 @@ def test_slice(docs, storage, start_weaviate):
     assert twenty_doc in docs
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_bool_index(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_sequence_bool_index(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # getter
     mask = [True, False] * 50
     assert len(docs[mask]) == 50
@@ -129,9 +185,20 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
 
 
 @pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_int(docs, nparray, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_sequence_int(docs, nparray, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # getter
     idx = nparray([1, 3, 5, 7, -1, -2])
     assert len(docs[idx]) == len(idx)
@@ -152,9 +219,20 @@ def test_sequence_int(docs, nparray, storage, start_weaviate):
     assert docs[9].text == 'new'
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_str(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_sequence_str(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     # getter
     idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
 
@@ -173,15 +251,34 @@ def test_sequence_str(docs, storage, start_weaviate):
     assert len(docs) == 100 - len(idx)
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_docarray_list_tuple(docs, storage, start_weaviate):
-    docs = DocumentArray(docs, storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_docarray_list_tuple(docs, storage, config, start_weaviate):
+    if config:
+        docs = DocumentArray(docs, storage=storage, config=config)
+    else:
+        docs = DocumentArray(docs, storage=storage)
     assert isinstance(docs[99, 98], DocumentArray)
     assert len(docs[99, 98]) == 2
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_path_syntax_indexing(storage, start_weaviate):
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_path_syntax_indexing(storage, config, start_weaviate):
     da = DocumentArray.empty(3)
     for d in da:
         d.chunks = DocumentArray.empty(5)
@@ -189,8 +286,11 @@ def test_path_syntax_indexing(storage, start_weaviate):
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
-    if storage in {'sqlite', 'weaviate'}:
-        da = DocumentArray(da, storage=storage)
+    if not storage == 'memory':
+        if config:
+            da = DocumentArray(da, storage=storage, config=config)
+        else:
+            da = DocumentArray(da, storage=storage)
 
     assert len(da['@c']) == 3 * 5
     assert len(da['@c:1']) == 3
@@ -206,8 +306,16 @@ def test_path_syntax_indexing(storage, start_weaviate):
     assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
 
 
-@pytest.mark.parametrize('storage', ['memory', 'weaviate', 'sqlite'])
-def test_path_syntax_indexing_set(storage, start_weaviate):
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_path_syntax_indexing_set(storage, config, start_weaviate):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
@@ -219,7 +327,10 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
     da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
     if storage != 'memory':
-        da = DocumentArray(da, storage=storage)
+        if config:
+            da = DocumentArray(da, storage=storage, config=config)
+        else:
+            da = DocumentArray(da, storage=storage)
 
     assert da['@c', 'text'] == repeat('a', 3 * 5)
     assert da['@c:1', 'text'] == repeat('a', 3)
@@ -278,9 +389,20 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
 
 
 @pytest.mark.parametrize('size', [1, 5])
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_attribute_indexing(storage, start_weaviate, size):
-    da = DocumentArray(storage=storage)
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_attribute_indexing(storage, config, start_weaviate, size):
+    if config:
+        da = DocumentArray(storage=storage, config=config)
+    else:
+        da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(size))
 
     for v in da[:, 'id']:
@@ -311,7 +433,7 @@ def test_tensor_attribute_selector(storage):
     sp_embed[sp_embed > 0.1] = 0
     sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
-    if storage == 'pqlite':
+    if storage in ('pqlite', 'weaviate'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
     else:
         da = DocumentArray(storage=storage)
@@ -372,12 +494,22 @@ def test_single_boolean_and_padding(storage, start_weaviate):
     assert len(da[True, False, False]) == 1
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_edge_case_two_strings(storage, start_weaviate):
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', None),
+    ],
+)
+def test_edge_case_two_strings(storage, config, start_weaviate):
     # getitem
-    da = DocumentArray(
-        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
-    )
+    if config:
+        da = DocumentArray(storage=storage, config=config)
+    else:
+        da = DocumentArray(storage=storage)
+    da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
     assert da['1', 'id'] == '1'
     assert len(da['1', '2']) == 2
     assert isinstance(da['1', '2'], DocumentArray)
@@ -392,9 +524,11 @@ def test_edge_case_two_strings(storage, start_weaviate):
     del da['1', '2']
     assert len(da) == 1
 
-    da = DocumentArray(
-        [Document(id=str(i), text='hey') for i in range(3)], storage=storage
-    )
+    if config:
+        da = DocumentArray(storage=storage, config=config)
+    else:
+        da = DocumentArray(storage=storage)
+    da.extend([Document(id=str(i), text='hey') for i in range(3)])
     del da['1', 'text']
     assert len(da) == 3
     assert not da[1].text
@@ -408,9 +542,11 @@ def test_edge_case_two_strings(storage, start_weaviate):
     del da['2', 'hello']
 
     # setitem
-    da = DocumentArray(
-        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
-    )
+    if config:
+        da = DocumentArray(storage=storage, config=config)
+    else:
+        da = DocumentArray(storage=storage)
+    da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
     da['1', '2'] = DocumentArray.empty(2)
     assert da[0].id != '1'
     assert da[1].id != '2'
