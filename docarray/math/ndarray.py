@@ -167,9 +167,9 @@ def get_array_rows(array: 'ArrayType'):
 
     >>> get_array_rows([1,2,3])
     1, 1
-    >>> get_array_rows([[1,2,3],[4,5,6]])
+    >>> get_array_rows([[1,2,3], [4,5,6]])
     2, 2
-    >>> get_array_rows([[1,2,3],[4,5,6], [7,8,9]])
+    >>> get_array_rows([[1,2,3], [4,5,6], [7,8,9]])
     3, 2
     >>> get_array_rows(np.array([[1,2,3], [4,5,6], [7,8,9]]))
     3, 2
