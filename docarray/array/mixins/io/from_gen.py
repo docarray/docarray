@@ -24,7 +24,7 @@ class FromGeneratorMixin:
         from ....document import generators
 
         from_fn = getattr(generators, meth)
-        da_like = cls()
+        da_like = cls(**kwargs)
         da_like.extend(from_fn(*args, **kwargs))
         return da_like
 
@@ -67,6 +67,8 @@ class FromGeneratorMixin:
         sampling_rate: Optional[float] = None,
         read_mode: Optional[str] = None,
         to_dataturi: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Build from a list of file path or the content of the files.
 

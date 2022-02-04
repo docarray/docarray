@@ -144,6 +144,8 @@ def to_numpy_array(value) -> 'np.ndarray':
 
     if hasattr(v, 'numpy'):
         v = v.numpy()
+    if framework == 'python':
+        v = np.array(v)
     return v
 
 

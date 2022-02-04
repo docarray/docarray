@@ -58,7 +58,11 @@ class BackendMixin(BaseBackendMixin):
 
     @needs_id2offset_rebuild
     def _init_storage(
-        self, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+        self,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        copy: bool = False,
+        *args,
+        **kwargs
     ):
         from ... import DocumentArray
         from ...memory import DocumentArrayInMemory

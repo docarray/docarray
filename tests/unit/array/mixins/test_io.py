@@ -130,24 +130,33 @@ def test_from_ndjson(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_weaviate):
-    # simple
 
-    assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
+    if config:
+        df = da_cls.empty(2, config=config()).to_dataframe()
+        assert len(da_cls.from_dataframe(df, config=config())) == 2
+    else:
+        assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
 
     # more complicated
     if config:
-        da = da_cls().empty(2)
+        da = da_cls.empty(2, config=config())
     else:
         da = da_cls.empty(2)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
-    da2 = da_cls.from_dataframe(da.to_dataframe())
+    df = da.to_dataframe()
+
+    if config:
+        da2 = da_cls.from_dataframe(df, config=config())
+    else:
+        da2 = da_cls.from_dataframe(df)
+
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}
 
@@ -157,18 +166,13 @@ def test_from_to_pd_dataframe(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_weaviate):
     # simple
     assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
 
-    # more complicated
-    if config:
-        da = da_cls.empty(2, config=config)
-    else:
-        da = da_cls.empty(2)
+    da = da_cls.empty(2)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
@@ -186,12 +190,12 @@ def test_from_to_bytes(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
     if config:
-        da1 = da_cls.empty(10, config=config)
+        da1 = da_cls.empty(10, config=config())
     else:
         da1 = da_cls.empty(10)
 
@@ -202,7 +206,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
     da1.push('myda', show_progress=show_progress)
 
     if config:
-        da2 = da_cls.pull('myda', show_progress=show_progress, config=config)
+        da2 = da_cls.pull('myda', show_progress=show_progress, config=config())
     else:
         da2 = da_cls.pull('myda', show_progress=show_progress)
 
@@ -219,14 +223,10 @@ def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):
-    if config:
-        da = da_cls.empty(10, config=config)
-    else:
-        da = da_cls.empty(10)
+    da = da_cls.empty(10)
 
     da[:, 'embedding'] = [[1, 2, 3]] * len(da)
     da_r = da_cls.from_base64(da.to_base64(protocol, compress), protocol, compress)
