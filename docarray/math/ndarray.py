@@ -181,7 +181,10 @@ def get_array_rows(array: 'ArrayType'):
         num_rows = len(array) if first_element_list_like else 1
         ndim = 2 if first_element_list_like else 1
     elif array_type in ('numpy', 'tensorflow', 'torch', 'paddle', 'scipy'):
-        num_rows = array.shape[0]
         ndim = array.ndim
+        if ndim == 1:
+            num_rows = 1
+        else:
+            num_rows = array.shape[0]
 
     return num_rows, ndim
