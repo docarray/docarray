@@ -46,7 +46,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 @pytest.mark.parametrize('framework', ['pytorch'])
 @pytest.mark.parametrize(
-    'da,config',
+    'da_cls,config',
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
@@ -57,12 +57,12 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(
-    framework, da, config, N, batch_size, to_numpy, start_weaviate
+    framework, da_cls, config, N, batch_size, to_numpy, start_weaviate
 ):
     if config:
-        docs = da.empty(N, config=config)
+        docs = da_cls.empty(N, config=config)
     else:
-        docs = da.empty(N)
+        docs = da_cls.empty(N)
     docs.tensors = np.random.random([N, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
