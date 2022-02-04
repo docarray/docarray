@@ -74,7 +74,7 @@ setup(
             'onnx',
             'onnxruntime',
             'jupyterlab',
-            'transformers==4.16.2'
+            'transformers==4.16.2',
         ],
     },
     classifiers=[
