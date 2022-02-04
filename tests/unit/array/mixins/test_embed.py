@@ -1,13 +1,12 @@
 import os
 
 import numpy as np
-import tensorflow as tf
-import pytest
-import torch
-import paddle
-import onnx
 import onnxruntime
-from transformers import ViTModel, TFViTModel, ViTConfig
+import paddle
+import pytest
+import tensorflow as tf
+import torch
+from transformers import TFViTModel, ViTConfig, ViTModel
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
@@ -46,7 +45,17 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 )
 
 
-@pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch', 'paddle'])
+@pytest.mark.parametrize(
+    'framework, input_shape',
+    [
+        ('onnx', (128,)),
+        ('keras', (128,)),
+        ('pytorch', (128,)),
+        ('paddle', (128,)),
+        ('transformers_torch', (3, 224, 224)),
+        ('transformers_tf', (3, 224, 224)),
+    ],
+)
 @pytest.mark.parametrize(
     'da', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
 )
@@ -54,49 +63,10 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(
-    framework, da, N, batch_size, to_numpy, start_weaviate
+    framework, input_shape, da, N, batch_size, to_numpy, start_weaviate
 ):
     docs = da.empty(N)
-    docs.tensors = np.random.random([N, 128]).astype(np.float32)
-    embed_model = random_embed_models[framework]()
-    docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-
-    r = docs.embeddings
-    if hasattr(r, 'numpy'):
-        r = r.numpy()
-
-    embed1 = r.copy()
-
-    # reset
-    docs.embeddings = np.random.random([N, 128]).astype(np.float32)
-
-    # docs[a: b].embed is only supported for DocumentArrayInMemory
-    if isinstance(da, DocumentArrayInMemory):
-        # try it again, it should yield the same result
-        docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
-
-        # reset
-        docs.embeddings = np.random.random([N, 128]).astype(np.float32)
-
-        # now do this one by one
-        docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
-
-
-@pytest.mark.parametrize('framework', ['transformers_torch', 'transformers_tf'])
-@pytest.mark.parametrize(
-    'da', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
-)
-@pytest.mark.parametrize('N', [2, 10])
-@pytest.mark.parametrize('batch_size', [1, 256])
-@pytest.mark.parametrize('to_numpy', [True, False])
-def test_embedding_on_transformers(
-    framework, da, N, batch_size, to_numpy, start_weaviate
-):
-    docs = da.empty(N)
-    docs.tensors = np.random.random([N, 3, 224, 224]).astype(np.float32)
+    docs.tensors = np.random.random([N, *input_shape]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 
