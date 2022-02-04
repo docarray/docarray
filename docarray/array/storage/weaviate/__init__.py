@@ -8,5 +8,5 @@ from .find import FindMixin
 __all__ = ['StorageMixins', 'WeaviateConfig']
 
 
-class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, FindMixin, ABC):
+class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, FindMixin):
     ...

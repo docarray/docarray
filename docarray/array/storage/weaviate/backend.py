@@ -75,11 +75,6 @@ class BackendMixin(BaseBackendMixin):
             self._client = weaviate.Client(config.client)
         else:
             self._client = config.client
-
-        if config.name is not None and docs is not None:
-            raise ValueError(
-                'only one of name or docs can be provided for initialization'
-            )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
