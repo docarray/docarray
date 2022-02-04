@@ -12,6 +12,7 @@ from typing import (
 )
 
 from .... import Document, DocumentArray
+from ....math import ndarray
 
 if TYPE_CHECKING:
     import tensorflow
@@ -59,33 +60,10 @@ class FindMixin:
 
         return DocumentArray(docs)
 
-    def _check_single_query(self, query: 'WeaviateArrayType'):
-        """Return whether query contains a single or multiple queries across all compatible Weaviate types
-
-        Examples
-
-        >>> _check_single_query([1,2,3])
-        True
-        >>> _check_single_query([[1,2,3],[4,5,6]])
-        Flase
-        >>> _check_single_query(np.array([1,2,3]))
-        True
-        >>> _check_single_query(np.array([[1,2,3], [4,5,6]]))
-        False
-        >>> _check_single_query(tf.constant([1,2,3]))
-        True
-        >>> _check_single_query(tf.constant([[1.0, 2.0], [3.0, 4.0]]))
-        False
-        """
-        if isinstance(query, (np.ndarray, torch.Tensor, tf.Tensor)):
-            return True if query.ndim >= 2 else False
-        if isinstance(query, list, tuple):
-            return True if isinstance(q[0], (list, tuple)) else False
-
     def find(
         self, query: 'WeaviateArrayType', limit=10
     ) -> Union[DocumentArray, List[DocumentArray]]:
-        """
+        """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
 
@@ -95,7 +73,10 @@ class FindMixin:
         Note: Weaviate returns `certainty` values. To get cosine similarities one needs to use `cosine_sim = 2*certainty - 1` as explained here:
                   https://www.semi.technology/developers/weaviate/current/more-resources/faq.html#q-how-do-i-get-the-cosine-similarity-from-weaviates-certainty
         """
-        if self._check_single_query(query):
+
+        num_rows, _ = ndarray.get_array_rows(query)
+
+        if num_rows == 1:
             return self._find_similar_vectors(query, limit=limit)
         else:
             closest_docs = []
