@@ -12,16 +12,25 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls, start_weaviate):
-    da = da_cls.from_files(
-        [
-            f'{pytestconfig.rootdir}/**/*.png',
-            f'{pytestconfig.rootdir}/**/*.jpg',
-            f'{pytestconfig.rootdir}/**/*.jpeg',
-        ]
-    )
+def test_sprite_fail_tensor_success_uri(
+    pytestconfig, tmpdir, da_cls, config, start_weaviate
+):
+    files = [
+        f'{pytestconfig.rootdir}/**/*.png',
+        f'{pytestconfig.rootdir}/**/*.jpg',
+        f'{pytestconfig.rootdir}/**/*.jpeg',
+    ]
+    if config:
+        da = da_cls.from_files(files, config=config)
+    else:
+        da = da_cls.from_files(files)
     da.apply(
         lambda d: d.load_uri_to_image_tensor().set_image_tensor_channel_axis(-1, 0)
     )
@@ -33,18 +42,25 @@ def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls, start_weav
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, start_weaviate
+    pytestconfig, tmpdir, image_source, da_cls, config, start_weaviate
 ):
-    da = da_cls.from_files(
-        [
-            f'{pytestconfig.rootdir}/**/*.png',
-            f'{pytestconfig.rootdir}/**/*.jpg',
-            f'{pytestconfig.rootdir}/**/*.jpeg',
-        ]
-    )
+    files = [
+        f'{pytestconfig.rootdir}/**/*.png',
+        f'{pytestconfig.rootdir}/**/*.jpg',
+        f'{pytestconfig.rootdir}/**/*.jpeg',
+    ]
+    if config:
+        da = da_cls.from_files(files, config=config)
+    else:
+        da = da_cls.from_files(files)
     da.apply(lambda d: d.load_uri_to_image_tensor())
     da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
     assert os.path.exists(tmpdir / 'sprint_da.png')
@@ -81,17 +97,17 @@ def test_plot_embeddings(da):
 
 
 @pytest.mark.parametrize(
-    'da_cls,config',
+    'da_cls,config_gen',
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
     ],
 )
-def test_plot_embeddings_same_path(tmpdir, da_cls, config, start_weaviate):
-    if config:
-        da1 = da_cls.empty(100, config=config)
-        da2 = da_cls.empty(768, config=config)
+def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
+    if config_gen:
+        da1 = da_cls.empty(100, config=config_gen())
+        da2 = da_cls.empty(768, config=config_gen())
     else:
         da1 = da_cls.empty(100)
         da2 = da_cls.empty(768)
