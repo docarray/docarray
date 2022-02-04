@@ -20,6 +20,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -503,4 +504,23 @@
 ### 🍹 Other Improvements
 
  - [[```74ce8610```](https://github.com/jina-ai/docarray/commit/74ce8610fc4a39a9e7e6b1c669c3a48b5f71a97b)] __-__ __version__: the next version will be 0.5.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-5-2></a>
+## Release Note (`0.5.2`)
+
+> Release time: 2022-02-04 15:37:55
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```a72a18d0```](https://github.com/jina-ai/docarray/commit/a72a18d03b937408a76658b421302d1b72ea1fdb)] __-__ __store__: change default serialization protocol to pickle (#97) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f3f3de45```](https://github.com/jina-ai/docarray/commit/f3f3de450516f2bbecd56e6910e4cb0dd7d95ee1)] __-__ __version__: the next version will be 0.5.2 (*Jina Dev Bot*)
 

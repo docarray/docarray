@@ -51,7 +51,6 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
         ('onnx', (128,)),
         ('keras', (128,)),
         ('pytorch', (128,)),
-        ('paddle', (128,)),
         ('transformers_torch', (3, 224, 224)),
         ('transformers_tf', (3, 224, 224)),
     ],
