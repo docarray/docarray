@@ -1,6 +1,6 @@
-from dataclasses import dataclass, field
-import uuid
 import itertools
+import uuid
+from dataclasses import dataclass, field
 from typing import (
     Generator,
     Iterator,
@@ -16,8 +16,8 @@ from typing import (
 import scipy.sparse
 import weaviate
 
-from .... import Document
 from ..base.backend import BaseBackendMixin
+from .... import Document
 
 if TYPE_CHECKING:
     from ....types import (
