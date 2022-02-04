@@ -7,6 +7,7 @@ from scipy.sparse import csr_matrix
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
 
@@ -43,22 +44,37 @@ def test_set_embeddings_multi_kind(array):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_da_get_embeddings(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_da_get_embeddings(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
     np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    # TODO: restore other backends
+    [
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_embeddings_setter_da(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_embeddings_setter_da(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
-    emb = np.random.random((100, 128))
+    emb = np.random.random((100, 10))
     da.embeddings = emb
     np.testing.assert_almost_equal(da.embeddings, emb)
 
@@ -72,10 +88,18 @@ def test_embeddings_setter_da(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_embeddings_wrong_len(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_embeddings_wrong_len(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     embeddings = np.ones((2, 10))
 
@@ -84,10 +108,18 @@ def test_embeddings_wrong_len(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_tensors_getter_da(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_tensors_getter_da(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     tensors = np.random.random((100, 10, 10))
     da.tensors = tensors
@@ -99,10 +131,18 @@ def test_tensors_getter_da(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_texts_getter_da(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_texts_getter_da(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     assert len(da.texts) == 100
     assert da.texts == da[:, 'text']
@@ -123,10 +163,18 @@ def test_texts_getter_da(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_setter_by_sequences_in_selected_docs_da(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     da[[0, 1, 2], 'text'] = 'test'
     assert da[[0, 1, 2], 'text'] == ['test', 'test', 'test']
@@ -149,10 +197,18 @@ def test_setter_by_sequences_in_selected_docs_da(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_texts_wrong_len(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_texts_wrong_len(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     texts = ['hello']
 
@@ -161,10 +217,18 @@ def test_texts_wrong_len(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_tensors_wrong_len(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_tensors_wrong_len(docs, config, da_cls, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     tensors = np.ones((2, 10, 10))
 
@@ -173,10 +237,18 @@ def test_tensors_wrong_len(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_blobs_getter_setter(docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_blobs_getter_setter(docs, da_cls, config, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(docs)
     with pytest.raises(ValueError):
         da.blobs = [b'cc', b'bb', b'aa', b'dd']
@@ -194,10 +266,18 @@ def test_blobs_getter_setter(docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_ellipsis_getter(nested_docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_ellipsis_getter(nested_docs, da_cls, config, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(nested_docs)
     flattened = da[...]
     assert len(flattened) == 6
@@ -206,10 +286,18 @@ def test_ellipsis_getter(nested_docs, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_ellipsis_attribute_setter(nested_docs, da_cls, start_weaviate):
-    da = da_cls()
+def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_weaviate):
+    if config:
+        da = da_cls(config=config)
+    else:
+        da = da_cls()
     da.extend(nested_docs)
     da[..., 'text'] = 'new'
     assert all(d.text == 'new' for d in da[...])

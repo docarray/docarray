@@ -13,6 +13,7 @@ from typing import (
     List,
 )
 
+import numpy as np
 import scipy.sparse
 import weaviate
 
@@ -43,7 +44,7 @@ class BackendMixin(BaseBackendMixin):
         self,
         docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[WeaviateConfig] = None,
-        **kwargs
+        **kwargs,
     ):
         """Initialize weaviate storage.
 
@@ -270,13 +271,17 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
         if value.embedding is None:
-            embedding = [0] * self.n_dim
+            embedding = np.zeros(self.n_dim)
         elif isinstance(value.embedding, scipy.sparse.spmatrix):
             embedding = value.embedding.toarray()
         else:
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
+        if embedding.shape != (self.n_dim,):
+            raise ValueError(
+                f'All documents must have embedding of shape n_dim: {self.n_dim}'
+            )
 
         return dict(
             data_object={'_serialized': value.to_base64(**self.serialize_config)},
