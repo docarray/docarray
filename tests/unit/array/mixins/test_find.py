@@ -6,7 +6,9 @@ from docarray.math import ndarray
 from docarray.array.storage.weaviate import WeaviateConfig
 
 
-@pytest.mark.parametrize('storage, config', [('weaviate', WeaviateConfig(32))])
+@pytest.mark.parametrize(
+    'storage, config', [('weaviate', WeaviateConfig(32)), ('pqlite', {'n_dim': 32})]
+)
 @pytest.mark.parametrize('limit', [1, 5, 10])
 @pytest.mark.parametrize(
     'query',
@@ -25,17 +27,34 @@ def test_find(storage, config, limit, query):
     da_result = da.find(query, limit=limit)
     n_rows_query, _ = ndarray.get_array_rows(query)
 
+    print(f'\n\n\ntype(da_result)={type(da_result)}')
+
     # check for each row on the query a DocumentArray is returned
     if n_rows_query == 1:
         assert len(da_result) == limit
     else:
         assert len(da_result) == n_rows_query
 
-    # check returned objects are sorted
+    # check returned objects are sorted according to the storage backend metric
+    # weaviate uses cosine similarity by default
+    # pqlite uses cosine distance by default
     if n_rows_query == 1:
-        cosine_similarities = [t['cosine_similarity'] for t in da_result[:, 'tags']]
-        assert sorted(cosine_similarities, reverse=True) == cosine_similarities
-    else:
-        for da in da_result:
-            cosine_similarities = [t['cosine_similarity'] for t in da[:, 'tags']]
+        if storage == 'weaviate':
+            cosine_similarities = [
+                t['cosine_similarity'].value for t in da_result[:, 'scores']
+            ]
             assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        elif storage == 'weaviate':
+            cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
+            assert sorted(cosine_distances, reverse=False) == cosine_distances
+    else:
+        if storage == 'weaviate':
+            for da in da_result:
+                cosine_similarities = [
+                    t['cosine_similarity'].value for t in da[:, 'scores']
+                ]
+                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        elif storage == 'pqlite':
+            for da in da_result:
+                cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
+                assert sorted(cosine_distances, reverse=False) == cosine_distances

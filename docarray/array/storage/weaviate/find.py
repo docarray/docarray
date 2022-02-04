@@ -13,6 +13,7 @@ from typing import (
 
 from .... import Document, DocumentArray
 from ....math import ndarray
+from ....score import NamedScore
 
 if TYPE_CHECKING:
     import tensorflow
@@ -50,12 +51,11 @@ class FindMixin:
         for result in results.get('data', {}).get('Get', {}).get(self._class_name, []):
             doc = Document.from_base64(result['_serialized'], **self.serialize_config)
             certainty = result['_additional']['certainty']
+            doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
+            doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
             doc.tags = {
-                'weaviate_certainty': certainty,
-                'cosine_similarity': 2 * certainty - 1,
                 'wid': result['_additional']['id'],
             }
-
             docs.append(doc)
 
         return DocumentArray(docs)
