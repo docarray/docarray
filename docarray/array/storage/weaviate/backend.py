@@ -59,10 +59,7 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = None
 
         if not config:
-            config = WeaviateConfig()
-
-        if not config.n_dim:
-            raise ValueError('Config object must contain n_dim')
+            raise ValueError('Config object must be specified')
         self.n_dim = config.n_dim
         self.serialize_config = config.serialize_config
 
