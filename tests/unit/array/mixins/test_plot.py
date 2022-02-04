@@ -7,6 +7,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
@@ -80,13 +81,22 @@ def test_plot_embeddings(da):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
+    ],
 )
-def test_plot_embeddings_same_path(tmpdir, da_cls, start_weaviate):
-    da1 = da_cls.empty(100)
+def test_plot_embeddings_same_path(tmpdir, da_cls, config, start_weaviate):
+    if config:
+        da1 = da_cls.empty(100, config=config)
+        da2 = da_cls.empty(768, config=config)
+    else:
+        da1 = da_cls.empty(100)
+        da2 = da_cls.empty(768)
     da1.embeddings = np.random.random([100, 5])
     p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
-    da2 = da_cls.empty(768)
     da2.embeddings = np.random.random([768, 5])
     p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
     assert p1 == p2
@@ -97,10 +107,18 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_summary_homo_hetero(da_cls, start_weaviate):
-    da = da_cls.empty(100)
+def test_summary_homo_hetero(da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.empty(100, config=config)
+    else:
+        da = da_cls.empty(100)
     da._get_attributes()
     da.summary()
 
@@ -109,9 +127,17 @@ def test_summary_homo_hetero(da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_empty_get_attributes(da_cls, start_weaviate):
-    da = da_cls.empty(10)
+def test_empty_get_attributes(da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.empty(10, config=config)
+    else:
+        da = da_cls.empty(10)
     da[0].pop('id')
     print(da[:, 'id'])
