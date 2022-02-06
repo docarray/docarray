@@ -55,6 +55,10 @@ setup(
             'uvicorn',
             'weaviate-client~=3.3.0',
             'pqlite>=0.2.1',
+            'qdrant-client~=0.5.0',
+        ],
+        'qdrant': [
+            'qdrant-client~=0.5.0',
         ],
         'test': [
             'pytest',
