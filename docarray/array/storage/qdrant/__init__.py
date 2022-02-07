@@ -38,5 +38,6 @@ class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin):
     def config(self):
         return self._config
 
+    @property
     def client(self) -> QdrantClient:
         return self._client
