@@ -75,10 +75,18 @@ def test_repr_str(docs, storage, config, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_iadd(da_cls, start_weaviate):
-    da = da_cls.empty(N)
+def test_iadd(da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.empty(N, config=config)
+    else:
+        da = da_cls.empty(N)
     oid = id(da)
     dap = DocumentArray.empty(10)
     da += dap
