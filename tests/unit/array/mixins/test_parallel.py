@@ -3,6 +3,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
@@ -26,19 +27,31 @@ def foo_batch(da: DocumentArray):
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_weaviate):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+def test_parallel_map(
+    pytestconfig, da_cls, config, backend, num_worker, start_weaviate
+):
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
     for d in da.map(foo, backend, num_worker=num_worker):
         assert d.tensor.shape == (3, 222, 222)
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use as list, here the caveat is when using process backend you can not modify thing in-place
     list(da.map(foo, backend, num_worker=num_worker))
@@ -47,7 +60,10 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_weaviate)
     else:
         assert da.tensors is None
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
     da_new = da.apply(foo)
     assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
@@ -57,16 +73,23 @@ def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_weaviate)
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
 def test_parallel_map_batch(
-    pytestconfig, da_cls, backend, num_worker, b_size, start_weaviate
+    pytestconfig, da_cls, config, backend, num_worker, b_size, start_weaviate
 ):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator
     for _da in da.map_batch(
@@ -75,7 +98,10 @@ def test_parallel_map_batch(
         for d in _da:
             assert d.tensor.shape == (3, 222, 222)
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use as list, here the caveat is when using process backend you can not modify thing in-place
     list(
@@ -97,11 +123,18 @@ def test_parallel_map_batch(
     reason='this test somehow fail on Github CI, but it MUST run successfully on local',
 )
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_map_lambda(pytestconfig, da_cls, start_weaviate):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
+    else:
+        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     for d in da:
         assert d.tensor is None
@@ -110,13 +143,18 @@ def test_map_lambda(pytestconfig, da_cls, start_weaviate):
         assert d.tensor is not None
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
+@pytest.mark.parametrize(
+    'storage,config',
+    [('memory', None), ('sqlite', None), ('weaviate', WeaviateConfig(n_dim=256))],
+)
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_diff_backend_storage(storage, backend, start_weaviate):
-    da = DocumentArray(
-        (Document(text='hello world she smiled too much') for _ in range(1000)),
-        storage=storage,
-    )
+def test_apply_diff_backend_storage(storage, config, backend, start_weaviate):
+    docs = (Document(text='hello world she smiled too much') for _ in range(1000))
+    if config:
+        da = DocumentArray(docs, storage=storage, config=config)
+    else:
+        da = DocumentArray(docs, storage=storage)
+
     da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
 
     q = (
