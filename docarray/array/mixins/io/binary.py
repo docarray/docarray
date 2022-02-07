@@ -5,7 +5,7 @@ import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
-from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_bytes
+from ....helper import __windows__, get_compress_ctx, decompress_bytes
 
 if TYPE_CHECKING:
     from ....types import T

@@ -159,7 +159,7 @@ def to_list(value) -> List[float]:
         raise TypeError(f'{r} can not be converted into list')
 
 
-def get_array_rows(array: 'ArrayType'):
+def get_array_rows(array: 'ArrayType') -> Tuple[int, int]:
     """Get the number of rows of the ndarray without importing all frameworks
 
     :param array: input array
@@ -188,5 +188,7 @@ def get_array_rows(array: 'ArrayType'):
             num_rows = 1
         else:
             num_rows = array.shape[0]
+    else:
+        raise ValueError
 
     return num_rows, ndim

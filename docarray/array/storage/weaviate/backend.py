@@ -38,7 +38,7 @@ class WeaviateConfig:
 
 
 class BackendMixin(BaseBackendMixin):
-    """Provide necessary functions to enable this storage backend. """
+    """Provide necessary functions to enable this storage backend."""
 
     def _init_storage(
         self,

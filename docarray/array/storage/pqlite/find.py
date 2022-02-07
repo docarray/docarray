@@ -1,36 +1,21 @@
-import numpy as np
 from typing import (
     Union,
     TYPE_CHECKING,
-    TypeVar,
-    Sequence,
-    Optional,
     List,
-    Iterable,
-    Tuple,
     overload,
 )
 
-from .... import Document, DocumentArray
-from ....math import ndarray
-
 if TYPE_CHECKING:
-    import tensorflow
-    import torch
     import numpy as np
-
-    PQLiteArrayType = TypeVar(
-        'PQLiteArrayType',
-        np.ndarray,
-    )
+    from .... import DocumentArray
 
 
 class FindMixin:
     @overload
-    def find(self, query: 'PQLiteArrayType'):
+    def find(self, query: 'np.ndarray'):
         ...
 
-    def _find_similar_vectors(self, q: 'PQLiteArrayType', limit=10):
+    def _find_similar_vectors(self, q: 'np.ndarray', limit=10):
 
         """
         if q.ndim == 1:
@@ -54,8 +39,8 @@ class FindMixin:
             return list_of_docs
 
     def find(
-        self, query: 'PQLiteArrayType', limit=10
-    ) -> Union[DocumentArray, List[DocumentArray]]:
+        self, query: 'np.ndarray', limit: int = 10
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items

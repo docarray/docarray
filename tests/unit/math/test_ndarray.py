@@ -1,11 +1,10 @@
-import numpy as np
 import paddle
 import pytest
 import tensorflow as tf
 import torch
+from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
 from docarray.math.ndarray import get_array_rows
-from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
 
 @pytest.mark.parametrize(

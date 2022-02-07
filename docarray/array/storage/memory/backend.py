@@ -1,3 +1,4 @@
+import functools
 import itertools
 from typing import (
     Generator,
@@ -8,7 +9,6 @@ from typing import (
     TYPE_CHECKING,
     Callable,
 )
-import functools
 
 from ..base.backend import BaseBackendMixin
 from .... import Document

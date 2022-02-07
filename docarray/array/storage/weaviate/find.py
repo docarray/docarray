@@ -1,13 +1,9 @@
-import numpy as np
 from typing import (
     Union,
     TYPE_CHECKING,
     TypeVar,
     Sequence,
-    Optional,
     List,
-    Iterable,
-    Tuple,
     overload,
 )
 

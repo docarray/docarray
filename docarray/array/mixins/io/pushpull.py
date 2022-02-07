@@ -1,8 +1,8 @@
 import io
 import json
 from contextlib import nullcontext
-from typing import Type, TYPE_CHECKING
 from functools import lru_cache
+from typing import Type, TYPE_CHECKING
 from urllib.request import Request, urlopen
 
 from ....helper import get_request_header
