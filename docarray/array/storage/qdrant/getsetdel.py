@@ -30,7 +30,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def collection_name(self) -> str:
         raise NotImplementedError()
 
-    def _embedding_to_array(self, embedding: ArrayType) -> List[float]:
+    def _embedding_to_array(self, embedding: 'ArrayType') -> List[float]:
         if embedding is None:
             embedding = [0] * self.n_dim
         elif isinstance(embedding, scipy.sparse.spmatrix):
