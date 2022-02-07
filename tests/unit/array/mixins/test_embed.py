@@ -74,7 +74,7 @@ def test_embedding_on_random_network(
         da = da_cls.empty(N, config=config)
     else:
         da = da_cls.empty(N)
-    da.tensors = np.random.random([N, 128]).astype(np.float32)
+    da.tensors = np.random.random([N, *input_shape]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 
