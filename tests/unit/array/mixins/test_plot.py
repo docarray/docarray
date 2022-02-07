@@ -7,20 +7,30 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls, start_weaviate):
-    da = da_cls.from_files(
-        [
-            f'{pytestconfig.rootdir}/**/*.png',
-            f'{pytestconfig.rootdir}/**/*.jpg',
-            f'{pytestconfig.rootdir}/**/*.jpeg',
-        ]
-    )
+def test_sprite_fail_tensor_success_uri(
+    pytestconfig, tmpdir, da_cls, config, start_weaviate
+):
+    files = [
+        f'{pytestconfig.rootdir}/**/*.png',
+        f'{pytestconfig.rootdir}/**/*.jpg',
+        f'{pytestconfig.rootdir}/**/*.jpeg',
+    ]
+    if config:
+        da = da_cls.from_files(files, config=config)
+    else:
+        da = da_cls.from_files(files)
     da.apply(
         lambda d: d.load_uri_to_image_tensor().set_image_tensor_channel_axis(-1, 0)
     )
@@ -32,18 +42,25 @@ def test_sprite_fail_tensor_success_uri(pytestconfig, tmpdir, da_cls, start_weav
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, start_weaviate
+    pytestconfig, tmpdir, image_source, da_cls, config, start_weaviate
 ):
-    da = da_cls.from_files(
-        [
-            f'{pytestconfig.rootdir}/**/*.png',
-            f'{pytestconfig.rootdir}/**/*.jpg',
-            f'{pytestconfig.rootdir}/**/*.jpeg',
-        ]
-    )
+    files = [
+        f'{pytestconfig.rootdir}/**/*.png',
+        f'{pytestconfig.rootdir}/**/*.jpg',
+        f'{pytestconfig.rootdir}/**/*.jpeg',
+    ]
+    if config:
+        da = da_cls.from_files(files, config=config)
+    else:
+        da = da_cls.from_files(files)
     da.apply(lambda d: d.load_uri_to_image_tensor())
     da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
     assert os.path.exists(tmpdir / 'sprint_da.png')
@@ -80,13 +97,22 @@ def test_plot_embeddings(da):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config_gen',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
+    ],
 )
-def test_plot_embeddings_same_path(tmpdir, da_cls, start_weaviate):
-    da1 = da_cls.empty(100)
+def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
+    if config_gen:
+        da1 = da_cls.empty(100, config=config_gen())
+        da2 = da_cls.empty(768, config=config_gen())
+    else:
+        da1 = da_cls.empty(100)
+        da2 = da_cls.empty(768)
     da1.embeddings = np.random.random([100, 5])
     p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
-    da2 = da_cls.empty(768)
     da2.embeddings = np.random.random([768, 5])
     p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
     assert p1 == p2
@@ -97,10 +123,18 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_summary_homo_hetero(da_cls, start_weaviate):
-    da = da_cls.empty(100)
+def test_summary_homo_hetero(da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.empty(100, config=config)
+    else:
+        da = da_cls.empty(100)
     da._get_attributes()
     da.summary()
 
@@ -109,9 +143,17 @@ def test_summary_homo_hetero(da_cls, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
-def test_empty_get_attributes(da_cls, start_weaviate):
-    da = da_cls.empty(10)
+def test_empty_get_attributes(da_cls, config, start_weaviate):
+    if config:
+        da = da_cls.empty(10, config=config)
+    else:
+        da = da_cls.empty(10)
     da[0].pop('id')
     print(da[:, 'id'])

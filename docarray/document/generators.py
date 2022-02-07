@@ -27,6 +27,8 @@ def from_ndarray(
     axis: int = 0,
     size: Optional[int] = None,
     shuffle: bool = False,
+    *args,
+    **kwargs,
 ) -> Generator['Document', None, None]:
     """Create a generator for a given dimension of a numpy array.
 
@@ -57,6 +59,8 @@ def from_files(
     sampling_rate: Optional[float] = None,
     read_mode: Optional[str] = None,
     to_dataturi: bool = False,
+    *args,
+    **kwargs,
 ) -> Generator['Document', None, None]:
     """Creates an iterator over a list of file path or the content of the files.
 
@@ -113,6 +117,8 @@ def from_csv(
     size: Optional[int] = None,
     sampling_rate: Optional[float] = None,
     dialect: Union[str, 'csv.Dialect'] = 'excel',
+    *args,
+    **kwargs,
 ) -> Generator['Document', None, None]:
     """Generator function for CSV. Yields documents.
 
@@ -217,6 +223,8 @@ def from_ndjson(
     field_resolver: Optional[Dict[str, str]] = None,
     size: Optional[int] = None,
     sampling_rate: Optional[float] = None,
+    *args,
+    **kwargs,
 ) -> Generator['Document', None, None]:
     """Generator function for line separated JSON. Yields documents.
 

@@ -53,7 +53,7 @@ class JsonIOMixin:
             constructor = Document.from_dict
 
         with file_ctx as fp:
-            return cls(constructor(v, protocol=protocol, **kwargs) for v in fp)
+            return cls([constructor(v, protocol=protocol) for v in fp], **kwargs)
 
     @classmethod
     def from_json(

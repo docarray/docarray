@@ -28,7 +28,10 @@ class CommonIOMixin:
 
     @classmethod
     def load(
-        cls: Type['T'], file: Union[str, TextIO, BinaryIO], file_format: str = 'binary'
+        cls: Type['T'],
+        file: Union[str, TextIO, BinaryIO],
+        file_format: str = 'binary',
+        **kwargs
     ) -> 'T':
         """Load array elements from a JSON or a binary file, or a CSV file.
 
@@ -40,7 +43,7 @@ class CommonIOMixin:
         :return: the loaded DocumentArray object
         """
         if file_format == 'json':
-            return cls.load_json(file)
+            return cls.load_json(file, **kwargs)
         elif file_format == 'binary':
             return cls.load_binary(file)
         elif file_format == 'csv':

@@ -2,13 +2,11 @@ import numpy as np
 import paddle
 import pytest
 import tensorflow as tf
-
-from docarray.math.ndarray import to_numpy_array
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
 from docarray import DocumentArray, Document
-from docarray.array.sqlite import DocumentArraySqlite
+from docarray.math.ndarray import to_numpy_array
 
 
 def get_ndarrays_for_ravel():

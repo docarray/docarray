@@ -1,7 +1,6 @@
-import warnings
 from typing import List, Union, Any
 
-from ...helper import typename, dunder_get
+from ...helper import dunder_get
 
 
 class GetAttributesMixin:

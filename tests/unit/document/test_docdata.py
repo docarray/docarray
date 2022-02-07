@@ -216,7 +216,6 @@ def test_doc_content():
 
 
 def test_dict_constructor():
-
     d1 = Document(
         uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3
     )

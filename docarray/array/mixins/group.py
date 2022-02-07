@@ -1,8 +1,10 @@
 import random
 from collections import defaultdict
 from typing import Dict, Any, TYPE_CHECKING, Generator, List
-from ...helper import dunder_get
+
 import numpy as np
+
+from ...helper import dunder_get
 
 if TYPE_CHECKING:
     from ... import DocumentArray
