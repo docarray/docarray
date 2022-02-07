@@ -60,32 +60,32 @@ def test_embedding_on_random_network(
     framework, da_cls, config, N, batch_size, to_numpy, start_weaviate
 ):
     if config:
-        docs = da_cls.empty(N, config=config)
+        da = da_cls.empty(N, config=config)
     else:
-        docs = da_cls.empty(N)
-    docs.tensors = np.random.random([N, 128]).astype(np.float32)
+        da = da_cls.empty(N)
+    da.tensors = np.random.random([N, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()
-    docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+    da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 
-    r = docs.embeddings
+    r = da.embeddings
     if hasattr(r, 'numpy'):
         r = r.numpy()
 
     embed1 = r.copy()
 
     # reset
-    docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+    da.embeddings = np.random.random([N, 128]).astype(np.float32)
 
     # docs[a: b].embed is only supported for DocumentArrayInMemory
     if isinstance(da, DocumentArrayInMemory):
         # try it again, it should yield the same result
-        docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(da.embeddings, embed1)
 
         # reset
-        docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+        da.embeddings = np.random.random([N, 128]).astype(np.float32)
 
         # now do this one by one
-        docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        da[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        da[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(da.embeddings, embed1)
