@@ -34,7 +34,7 @@ class WeaviateConfig:
     n_dim: int
     client: Optional[Union[str, weaviate.Client]] = None
     name: Optional[str] = None
-    serialize_config: Dict = field(default_factory=lambda: {'protocol': 'protobuf'})
+    serialize_config: Dict = field(default_factory=dict)
 
 
 class BackendMixin(BaseBackendMixin):
