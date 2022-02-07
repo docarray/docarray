@@ -20,7 +20,7 @@ def docs():
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_document_save_load(docs, method, tmp_path, da_cls, start_weaviate):
+def test_document_save_load(docs, method, tmp_path, da_cls, start_storage):
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs)
     da.save(tmp_file, file_format=method)
@@ -38,7 +38,7 @@ def test_document_save_load(docs, method, tmp_path, da_cls, start_weaviate):
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, start_weaviate):
+def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, start_storage):
     tmpfile = os.path.join(tmp_path, 'test.csv')
     da = da_cls(docs)
     da.save_csv(tmpfile, flatten_tags)
@@ -49,7 +49,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, start_weaviate):
 @pytest.mark.parametrize(
     'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_ndarray(da, start_weaviate):
+def test_from_ndarray(da, start_storage):
     _da = da.from_ndarray(np.random.random([10, 256]))
     assert len(_da) == 10
 
@@ -57,7 +57,7 @@ def test_from_ndarray(da, start_weaviate):
 @pytest.mark.parametrize(
     'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_files(da, start_weaviate):
+def test_from_files(da, start_storage):
     assert len(da.from_files(patterns='*.*', to_dataturi=True, size=1)) == 1
 
 
@@ -67,7 +67,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 @pytest.mark.parametrize(
     'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_ndjson(da, start_weaviate):
+def test_from_ndjson(da, start_storage):
     with open(os.path.join(cur_dir, 'docs.jsonlines')) as fp:
         _da = da.from_ndjson(fp)
         assert len(_da) == 2
@@ -76,7 +76,7 @@ def test_from_ndjson(da, start_weaviate):
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_from_to_pd_dataframe(da_cls, start_weaviate):
+def test_from_to_pd_dataframe(da_cls, start_storage):
     # simple
 
     assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2

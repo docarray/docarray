@@ -9,7 +9,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_insert(da_cls, start_weaviate):
+def test_insert(da_cls, start_storage):
     da = da_cls()
     assert not len(da)
     da.insert(0, Document(text='hello', id="0"))
@@ -24,7 +24,7 @@ def test_insert(da_cls, start_weaviate):
 @pytest.mark.parametrize(
     'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
 )
-def test_append_extend(da_cls, start_weaviate):
+def test_append_extend(da_cls, start_storage):
     da = da_cls()
     da.append(Document())
     da.append(Document())

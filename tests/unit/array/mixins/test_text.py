@@ -19,7 +19,7 @@ def docs():
 @pytest.mark.parametrize(
     'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
 )
-def test_da_vocabulary(da_cls, docs, min_freq, start_weaviate):
+def test_da_vocabulary(da_cls, docs, min_freq, start_storage):
     da = da_cls(docs)
     vocab = da.get_vocabulary(min_freq)
     if min_freq <= 1:

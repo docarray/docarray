@@ -43,7 +43,7 @@ def test_content_empty_setter(cls, content_attr):
         ('blobs', [b's'] * 10),
     ],
 )
-def test_content_getter_setter(cls, content_attr, start_weaviate):
+def test_content_getter_setter(cls, content_attr, start_storage):
     da = cls.empty(10)
     setattr(da, content_attr[0], content_attr[1])
     np.testing.assert_equal(da.contents, content_attr[1])
@@ -58,7 +58,7 @@ def test_content_getter_setter(cls, content_attr, start_weaviate):
 @pytest.mark.parametrize(
     'cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
 )
-def test_content_empty(da_len, cls, start_weaviate):
+def test_content_empty(da_len, cls, start_storage):
     da = cls.empty(da_len)
     assert not da.texts
     assert not da.contents
@@ -79,7 +79,7 @@ def test_content_empty(da_len, cls, start_weaviate):
 @pytest.mark.parametrize(
     'cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
 )
-def test_embeddings_setter(da_len, cls, start_weaviate):
+def test_embeddings_setter(da_len, cls, start_storage):
     da = cls.empty(da_len)
     da.embeddings = np.random.rand(da_len, 5)
     for doc in da:

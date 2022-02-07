@@ -9,7 +9,7 @@ compose_yml = os.path.abspath(os.path.join(cur_dir, 'docker-compose.yml'))
 
 
 @pytest.fixture(scope='module')
-def start_weaviate():
+def start_storage():
     os.system(
         f"docker-compose -f {compose_yml} --project-directory . up  --build -d "
         f"--remove-orphans"

@@ -1,4 +1,4 @@
-from typing import List, Iterable, Iterator
+from typing import List, Iterable, Iterator, TYPE_CHECKING
 
 import scipy.sparse
 from qdrant_client import QdrantClient
@@ -7,9 +7,9 @@ from qdrant_openapi_client.models.models import PointIdsList, PointsList, Scroll
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
-from docarray.types import ArrayType
 
-SCROLL_BATCH_SIZE = 64
+if TYPE_CHECKING:
+    from docarray.types import ArrayType
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -28,6 +28,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     @property
     def collection_name(self) -> str:
+        raise NotImplementedError()
+
+    @property
+    def scroll_batch_size(self) -> int:
         raise NotImplementedError()
 
     def _embedding_to_array(self, embedding: 'ArrayType') -> List[float]:
@@ -104,7 +108,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 name=self.collection_name,
                 scroll_request=ScrollRequest(
                     offset=offset,
-                    limit=SCROLL_BATCH_SIZE,
+                    limit=self.scroll_batch_size,
                     with_payload=['_serialized'],
                     with_vector=False
                 )

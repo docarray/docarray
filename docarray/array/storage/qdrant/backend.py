@@ -22,11 +22,12 @@ if TYPE_CHECKING:
 
 @dataclass
 class QdrantConfig:
-    distance: Distance = field(default=Distance.COSINE)
+    n_dim: int
+    distance: Distance
     collection_name: Optional[str] = None
     connection: Optional[Union[str, QdrantClient]] = field(default="localhost:6333")
-    n_dim: Optional[int] = field(default=1)
     serialize_config: Dict = field(default_factory=dict)
+    scroll_batch_size: int = 64
 
 
 class BackendMixin(BaseBackendMixin):
@@ -68,12 +69,12 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = None
 
         if not config:
-            config = QdrantConfig()
+            raise ValueError('Empty config is not allowed for Qdrant storage')
 
         if not config.collection_name:
             config.collection_name = self._tmp_collection_name()
 
-        self._n_dim = config.n_dim or 1
+        self._n_dim = config.n_dim
         self._serialize_config = config.serialize_config
 
         if isinstance(config.connection, str):

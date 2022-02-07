@@ -31,7 +31,7 @@ def foo_batch(da: DocumentArray):
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_weaviate):
+def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_storage):
     da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
     # use a generator

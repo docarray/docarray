@@ -15,7 +15,7 @@ def indices():
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_getter_int_str(docs, storage, start_weaviate):
+def test_getter_int_str(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
     assert docs[99].text == '99'
@@ -35,7 +35,7 @@ def test_getter_int_str(docs, storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_setter_int_str(docs, storage, start_weaviate):
+def test_setter_int_str(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # setter
     docs[99] = Document(text='hello')
@@ -72,7 +72,7 @@ def test_del_int_str(docs, storage, indices):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_slice(docs, storage, start_weaviate):
+def test_slice(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
     assert len(docs[1:5]) == 4
@@ -97,7 +97,7 @@ def test_slice(docs, storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_bool_index(docs, storage, start_weaviate):
+def test_sequence_bool_index(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
     mask = [True, False] * 50
@@ -130,7 +130,7 @@ def test_sequence_bool_index(docs, storage, start_weaviate):
 
 @pytest.mark.parametrize('nparray', [lambda x: x, np.array, tuple])
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_int(docs, nparray, storage, start_weaviate):
+def test_sequence_int(docs, nparray, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
     idx = nparray([1, 3, 5, 7, -1, -2])
@@ -153,7 +153,7 @@ def test_sequence_int(docs, nparray, storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_sequence_str(docs, storage, start_weaviate):
+def test_sequence_str(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     # getter
     idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
@@ -174,14 +174,14 @@ def test_sequence_str(docs, storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_docarray_list_tuple(docs, storage, start_weaviate):
+def test_docarray_list_tuple(docs, storage, start_storage):
     docs = DocumentArray(docs, storage=storage)
     assert isinstance(docs[99, 98], DocumentArray)
     assert len(docs[99, 98]) == 2
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_path_syntax_indexing(storage, start_weaviate):
+def test_path_syntax_indexing(storage, start_storage):
     da = DocumentArray.empty(3)
     for d in da:
         d.chunks = DocumentArray.empty(5)
@@ -207,7 +207,7 @@ def test_path_syntax_indexing(storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'weaviate', 'sqlite'])
-def test_path_syntax_indexing_set(storage, start_weaviate):
+def test_path_syntax_indexing_set(storage, start_storage):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
@@ -279,7 +279,7 @@ def test_path_syntax_indexing_set(storage, start_weaviate):
 
 @pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_attribute_indexing(storage, start_weaviate, size):
+def test_attribute_indexing(storage, start_storage, size):
     da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(size))
 
@@ -354,7 +354,7 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_single_boolean_and_padding(storage, start_weaviate):
+def test_single_boolean_and_padding(storage, start_storage):
     da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
 
@@ -373,7 +373,7 @@ def test_single_boolean_and_padding(storage, start_weaviate):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_edge_case_two_strings(storage, start_weaviate):
+def test_edge_case_two_strings(storage, start_storage):
     # getitem
     da = DocumentArray(
         [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage

@@ -41,3 +41,7 @@ class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin):
     @property
     def client(self) -> QdrantClient:
         return self._client
+
+    @property
+    def scroll_batch_size(self) -> int:
+        return self._config.scroll_batch_size
