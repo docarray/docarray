@@ -22,10 +22,6 @@ def foo_batch(da: DocumentArray):
     return da
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
     'da_cls, config',
     [
@@ -39,33 +35,42 @@ def foo_batch(da: DocumentArray):
 def test_parallel_map(
     pytestconfig, da_cls, config, backend, num_worker, start_weaviate
 ):
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    # use a generator
-    for d in da.map(foo, backend, num_worker=num_worker):
-        assert d.tensor.shape == (3, 222, 222)
+    if __name__ == '__main__':
 
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    # use as list, here the caveat is when using process backend you can not modify thing in-place
-    list(da.map(foo, backend, num_worker=num_worker))
-    if backend == 'thread':
-        assert da.tensors.shape == (len(da), 3, 222, 222)
-    else:
-        assert da.tensors is None
+        # use a generator
+        for d in da.map(foo, backend, num_worker=num_worker):
+            assert d.tensor.shape == (3, 222, 222)
 
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
-    da_new = da.apply(foo)
-    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+
+        # use as list, here the caveat is when using process backend you can not modify thing in-place
+        list(da.map(foo, backend, num_worker=num_worker))
+        if backend == 'thread':
+            assert da.tensors.shape == (len(da), 3, 222, 222)
+        else:
+            assert da.tensors is None
+
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+        da_new = da.apply(foo)
+        assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
 @pytest.mark.skipif(
@@ -149,19 +154,21 @@ def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_diff_backend_storage(storage, config, backend, start_weaviate):
-    docs = (Document(text='hello world she smiled too much') for _ in range(1000))
-    if config:
-        da = DocumentArray(docs, storage=storage, config=config)
-    else:
-        da = DocumentArray(docs, storage=storage)
 
-    da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
+    if __name__ == '__main__':
+        docs = (Document(text='hello world she smiled too much') for _ in range(1000))
+        if config:
+            da = DocumentArray(docs, storage=storage, config=config)
+        else:
+            da = DocumentArray(docs, storage=storage)
 
-    q = (
-        Document(text='she smiled too much')
-        .embed_feature_hashing()
-        .match(da, metric='jaccard', use_scipy=True)
-    )
+        da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
 
-    assert len(q.matches[:5, ('text', 'scores__jaccard__value')]) == 2
-    assert len(q.matches[:5, ('text', 'scores__jaccard__value')][0]) == 5
+        q = (
+            Document(text='she smiled too much')
+            .embed_feature_hashing()
+            .match(da, metric='jaccard', use_scipy=True)
+        )
+
+        assert len(q.matches[:5, ('text', 'scores__jaccard__value')]) == 2
+        assert len(q.matches[:5, ('text', 'scores__jaccard__value')][0]) == 5
