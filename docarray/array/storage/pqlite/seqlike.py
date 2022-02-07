@@ -1,7 +1,9 @@
 from typing import Iterator, Union, Iterable, Sequence, MutableSequence
+
 import numpy as np
-from .... import Document
+
 from ...memory import DocumentArrayInMemory
+from .... import Document
 
 
 class SequenceLikeMixin(MutableSequence[Document]):

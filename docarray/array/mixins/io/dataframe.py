@@ -24,13 +24,13 @@ class DataframeIOMixin:
         return DataFrame.from_dict(self.to_list(), **kwargs)
 
     @classmethod
-    def from_dataframe(cls: Type['T'], df: 'DataFrame') -> 'T':
+    def from_dataframe(cls: Type['T'], df: 'DataFrame', *args, **kwargs) -> 'T':
         """Import a :class:`DocumentArray` from a :class:`pandas.DataFrame` object.
 
         :param df: a :class:`pandas.DataFrame` object.
         :return: a :class:`DocumentArray` object
         """
-        da = cls()
+        da = cls(**kwargs)
         from .... import Document
 
         for m in df.to_dict(orient='records'):

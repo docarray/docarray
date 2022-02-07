@@ -13,6 +13,7 @@ from typing import (
     List,
 )
 
+import numpy as np
 import scipy.sparse
 import weaviate
 
@@ -30,20 +31,20 @@ class WeaviateConfig:
     """This class stores the config variables to initialize
     connection to the Weaviate server"""
 
+    n_dim: int
     client: Optional[Union[str, weaviate.Client]] = None
-    n_dim: Optional[int] = None
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
 
 
 class BackendMixin(BaseBackendMixin):
-    """Provide necessary functions to enable this storage backend. """
+    """Provide necessary functions to enable this storage backend."""
 
     def _init_storage(
         self,
         docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[WeaviateConfig] = None,
-        **kwargs
+        **kwargs,
     ):
         """Initialize weaviate storage.
 
@@ -59,9 +60,11 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = None
 
         if not config:
-            config = WeaviateConfig()
+            raise ValueError('Config object must be specified')
+        elif isinstance(config, dict):
+            config = WeaviateConfig(**config)
 
-        self.n_dim = config.n_dim or 1
+        self.n_dim = config.n_dim
         self.serialize_config = config.serialize_config
 
         import weaviate
@@ -73,11 +76,6 @@ class BackendMixin(BaseBackendMixin):
             self._client = weaviate.Client(config.client)
         else:
             self._client = config.client
-
-        if config.name is not None and docs is not None:
-            raise ValueError(
-                'only one of name or docs can be provided for initialization'
-            )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
@@ -122,9 +120,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name,
                     "vectorizer": "none",
-                    # TODO: this skips checking embedding dimension but might not
-                    # work if want to leverage weaviate for vector search
-                    'vectorIndexConfig': {'skip': True},
+                    'vectorIndexConfig': {'skip': False},
                     'properties': [
                         {
                             'dataType': ['blob'],
@@ -278,13 +274,25 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
         if value.embedding is None:
-            embedding = [0] * self.n_dim
+            embedding = np.zeros(self.n_dim)
         elif isinstance(value.embedding, scipy.sparse.spmatrix):
             embedding = value.embedding.toarray()
         else:
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
+
+        embedding = embedding.flatten()
+        if embedding.shape != (self.n_dim,):
+            raise ValueError(
+                f'All documents must have embedding of shape n_dim: {self.n_dim}, receiving shape: {embedding.shape}'
+            )
+
+        # Weaviate expects vector to have dim 2 at least
+        # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
+        # hence we cast it to list of a single element
+        if len(embedding) == 1:
+            embedding = [embedding[0]]
 
         return dict(
             data_object={'_serialized': value.to_base64(**self.serialize_config)},

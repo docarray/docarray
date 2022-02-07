@@ -1,7 +1,5 @@
-import itertools
 import types
 
-import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
