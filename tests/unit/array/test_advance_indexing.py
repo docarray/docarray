@@ -390,17 +390,17 @@ def test_path_syntax_indexing_set(storage, config, start_weaviate):
 
 @pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize(
-    'storage,config',
+    'storage,config_gen',
     [
         ('memory', None),
         ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('weaviate', lambda: WeaviateConfig(n_dim=123)),
         ('pqlite', None),
     ],
 )
-def test_attribute_indexing(storage, config, start_weaviate, size):
-    if config:
-        da = DocumentArray(storage=storage, config=config)
+def test_attribute_indexing(storage, config_gen, start_weaviate, size):
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(size))
@@ -426,7 +426,7 @@ def test_attribute_indexing(storage, config, start_weaviate, size):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_tensor_attribute_selector(storage):
+def test_tensor_attribute_selector(storage, start_weaviate):
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])
@@ -477,7 +477,10 @@ def test_advance_selector_mixed(storage):
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
 def test_single_boolean_and_padding(storage, start_weaviate):
-    da = DocumentArray(storage=storage)
+    if storage in ('pqlite', 'weaviate'):
+        da = DocumentArray(storage=storage, config={'n_dim': 10})
+    else:
+        da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
 
     with pytest.raises(IndexError):
@@ -495,18 +498,18 @@ def test_single_boolean_and_padding(storage, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'storage,config',
+    'storage,config_gen',
     [
         ('memory', None),
         ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('weaviate', lambda: WeaviateConfig(n_dim=123)),
         ('pqlite', None),
     ],
 )
-def test_edge_case_two_strings(storage, config, start_weaviate):
+def test_edge_case_two_strings(storage, config_gen, start_weaviate):
     # getitem
-    if config:
-        da = DocumentArray(storage=storage, config=config)
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
     da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
@@ -524,8 +527,8 @@ def test_edge_case_two_strings(storage, config, start_weaviate):
     del da['1', '2']
     assert len(da) == 1
 
-    if config:
-        da = DocumentArray(storage=storage, config=config)
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
     da.extend([Document(id=str(i), text='hey') for i in range(3)])
@@ -542,8 +545,8 @@ def test_edge_case_two_strings(storage, config, start_weaviate):
     del da['2', 'hello']
 
     # setitem
-    if config:
-        da = DocumentArray(storage=storage, config=config)
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
     da.extend([Document(id='1'), Document(id='2'), Document(id='3')])
@@ -551,9 +554,17 @@ def test_edge_case_two_strings(storage, config, start_weaviate):
     assert da[0].id != '1'
     assert da[1].id != '2'
 
-    da = DocumentArray(
-        [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
-    )
+    if config_gen:
+        da = DocumentArray(
+            [Document(id='1'), Document(id='2'), Document(id='3')],
+            storage=storage,
+            config=config_gen(),
+        )
+    else:
+        da = DocumentArray(
+            [Document(id='1'), Document(id='2'), Document(id='3')], storage=storage
+        )
+
     da['1', 'text'] = 'hello'
     assert da['1', 'text'] == 'hello'
     assert da['1'].text == 'hello'

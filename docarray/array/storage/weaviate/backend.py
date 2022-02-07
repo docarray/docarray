@@ -61,6 +61,9 @@ class BackendMixin(BaseBackendMixin):
 
         if not config:
             raise ValueError('Config object must be specified')
+        elif isinstance(config, dict):
+            config = WeaviateConfig(**config)
+
         self.n_dim = config.n_dim
         self.serialize_config = config.serialize_config
 
@@ -278,9 +281,12 @@ class BackendMixin(BaseBackendMixin):
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
+
+        embedding = embedding.flatten()
+
         if embedding.shape != (self.n_dim,):
             raise ValueError(
-                f'All documents must have embedding of shape n_dim: {self.n_dim}'
+                f'All documents must have embedding of shape n_dim: {self.n_dim}, receiving shape: {embedding.shape}'
             )
 
         return dict(
