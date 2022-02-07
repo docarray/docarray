@@ -283,11 +283,16 @@ class BackendMixin(BaseBackendMixin):
             embedding = to_numpy_array(value.embedding)
 
         embedding = embedding.flatten()
-
         if embedding.shape != (self.n_dim,):
             raise ValueError(
                 f'All documents must have embedding of shape n_dim: {self.n_dim}, receiving shape: {embedding.shape}'
             )
+
+        # Weaviate expects vector to have dim 2 at least
+        # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
+        # hence we cast it to list of a single element
+        if len(embedding) == 1:
+            embedding = [embedding[0]]
 
         return dict(
             data_object={'_serialized': value.to_base64(**self.serialize_config)},

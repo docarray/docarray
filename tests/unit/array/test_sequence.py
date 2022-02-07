@@ -12,9 +12,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
-        # Weaviate expects vector to have dim 2 at least
-        # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
-        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=2)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
     ],
 )
 def test_insert(da_cls, config, start_weaviate):
@@ -34,9 +32,7 @@ def test_insert(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
-        # Weaviate expects vector to have dim 2 at least
-        # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
-        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=2)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
     ],
 )
 def test_append_extend(da_cls, config, start_weaviate):
