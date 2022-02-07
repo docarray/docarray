@@ -1,12 +1,11 @@
 import os
 
 import numpy as np
-import tensorflow as tf
-import pytest
-import torch
-import paddle
-import onnx
 import onnxruntime
+import paddle
+import pytest
+import tensorflow as tf
+import torch
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory

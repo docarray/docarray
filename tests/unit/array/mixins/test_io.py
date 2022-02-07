@@ -5,9 +5,9 @@ import numpy as np
 import pytest
 
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
-from docarray.array.sqlite import DocumentArraySqlite
 from tests import random_docs
 
 
@@ -115,7 +115,6 @@ def test_from_ndjson(da_cls, config, start_weaviate):
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_weaviate):
-
     df = da_cls.empty(2, config=config()).to_dataframe()
     assert len(da_cls.from_dataframe(df, config=config())) == 2
 
@@ -166,7 +165,6 @@ def test_from_to_bytes(da_cls, config, start_weaviate):
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
-
     da1 = da_cls.empty(10, config=config())
 
     da1[:, 'embedding'] = np.random.random([len(da1), 256])

@@ -9,9 +9,9 @@ from pydantic import BaseModel
 from starlette.testclient import TestClient
 
 from docarray import DocumentArray, Document
+from docarray.array.sqlite import DocumentArraySqlite
 from docarray.document.pydantic_model import PydanticDocument, PydanticDocumentArray
 from docarray.score import NamedScore
-from docarray.array.sqlite import DocumentArraySqlite
 
 
 @pytest.mark.parametrize('da_cls', [DocumentArray, DocumentArraySqlite])

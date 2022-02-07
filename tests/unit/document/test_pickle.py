@@ -3,7 +3,6 @@ import pickle
 import pytest
 
 from docarray import Document
-from docarray.document.data import DocumentData
 from docarray.base import BaseDCType
 from tests import random_docs
 

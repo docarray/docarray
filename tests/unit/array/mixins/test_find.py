@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.math import ndarray
 from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.math import ndarray
 
 
 @pytest.mark.parametrize(

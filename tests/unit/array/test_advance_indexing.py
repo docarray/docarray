@@ -319,7 +319,7 @@ def test_path_syntax_indexing_set(storage, config, start_weaviate):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
-        d.matches = DocumentArray([Document(id=f'm{j + (i*7)}') for j in range(7)])
+        d.matches = DocumentArray([Document(id=f'm{j + (i * 7)}') for j in range(7)])
         for c in d.chunks:
             c.chunks = DocumentArray.empty(3)
 
@@ -461,7 +461,6 @@ def test_tensor_attribute_selector(storage, start_weaviate):
 # next version
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'pqlite'])
 def test_advance_selector_mixed(storage):
-
     da = DocumentArray(storage=storage)
     if storage == 'pqlite':
         da = DocumentArray(storage=storage, config={'n_dim': 3})

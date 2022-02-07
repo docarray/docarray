@@ -117,7 +117,6 @@ def test_embeddings_setter(da_len, da_cls, config, start_weaviate):
     'config, n_dim', [({'n_dim': 1}, 1), (WeaviateConfig(n_dim=5), 5)]
 )
 def test_content_by_config(da_len, da_cls, config, n_dim):
-
     with pytest.raises(ValueError):
         da_cls(da_len)
 

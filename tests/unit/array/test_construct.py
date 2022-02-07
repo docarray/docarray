@@ -1,8 +1,8 @@
 import pytest
 
 from docarray import Document
-from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 

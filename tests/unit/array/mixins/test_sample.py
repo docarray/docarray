@@ -1,10 +1,9 @@
 import pytest
 
-from docarray.array.storage.weaviate import WeaviateConfig
-from docarray.array.weaviate import DocumentArrayWeaviate
-
 from docarray import DocumentArray
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.mark.parametrize(

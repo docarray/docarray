@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from docarray import DocumentArray, Document
@@ -35,7 +34,6 @@ def foo_batch(da: DocumentArray):
 def test_parallel_map(
     pytestconfig, da_cls, config, backend, num_worker, start_weaviate
 ):
-
     if __name__ == '__main__':
 
         if config:
@@ -134,7 +132,6 @@ def test_parallel_map_batch(
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
-
     if __name__ == '__main__':
 
         if config:
@@ -157,7 +154,6 @@ def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
 def test_apply_diff_backend_storage(storage, config, backend, start_weaviate):
-
     if __name__ == '__main__':
         docs = (Document(text='hello world she smiled too much') for _ in range(1000))
         if config:
