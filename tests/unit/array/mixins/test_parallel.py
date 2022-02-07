@@ -73,10 +73,6 @@ def test_parallel_map(
         assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
     'da_cls, config',
     [
@@ -91,42 +87,44 @@ def test_parallel_map(
 def test_parallel_map_batch(
     pytestconfig, da_cls, config, backend, num_worker, b_size, start_weaviate
 ):
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if __name__ == '__main__':
 
-    # use a generator
-    for _da in da.map_batch(
-        foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
-    ):
-        for d in _da:
-            assert d.tensor.shape == (3, 222, 222)
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
-
-    # use as list, here the caveat is when using process backend you can not modify thing in-place
-    list(
-        da.map_batch(
+        # use a generator
+        for _da in da.map_batch(
             foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+        ):
+            for d in _da:
+                assert d.tensor.shape == (3, 222, 222)
+
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+
+        # use as list, here the caveat is when using process backend you can not modify thing in-place
+        list(
+            da.map_batch(
+                foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+            )
         )
-    )
-    if backend == 'thread':
-        assert da.tensors.shape == (len(da), 3, 222, 222)
-    else:
-        assert da.tensors is None
+        if backend == 'thread':
+            assert da.tensors.shape == (len(da), 3, 222, 222)
+        else:
+            assert da.tensors is None
 
-    da_new = da.apply_batch(foo_batch, batch_size=b_size)
-    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
+        da_new = da.apply_batch(foo_batch, batch_size=b_size)
+        assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
     'da_cls, config',
     [
@@ -136,16 +134,21 @@ def test_parallel_map_batch(
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
-    if config:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[:10]
-    else:
-        da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    for d in da:
-        assert d.tensor is None
+    if __name__ == '__main__':
 
-    for d in da.map(lambda x: x.load_uri_to_image_tensor()):
-        assert d.tensor is not None
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+
+        for d in da:
+            assert d.tensor is None
+
+        for d in da.map(lambda x: x.load_uri_to_image_tensor()):
+            assert d.tensor is not None
 
 
 @pytest.mark.parametrize(
