@@ -2,7 +2,6 @@ from typing import (
     Union,
     TYPE_CHECKING,
     List,
-    overload,
 )
 
 if TYPE_CHECKING:
@@ -11,10 +10,6 @@ if TYPE_CHECKING:
 
 
 class FindMixin:
-    @overload
-    def find(self, query: 'np.ndarray'):
-        ...
-
     def _find_similar_vectors(self, q: 'np.ndarray', limit=10):
 
         """

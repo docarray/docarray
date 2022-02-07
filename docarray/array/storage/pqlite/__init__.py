@@ -8,5 +8,5 @@ from .seqlike import SequenceLikeMixin
 __all__ = ['StorageMixins', 'PqliteConfig']
 
 
-class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin, FindMixin, ABC):
+class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...

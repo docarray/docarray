@@ -4,7 +4,6 @@ from typing import (
     TypeVar,
     Sequence,
     List,
-    overload,
 )
 
 from .... import Document, DocumentArray
@@ -26,10 +25,6 @@ if TYPE_CHECKING:
 
 
 class FindMixin:
-    @overload
-    def find(self, query: 'WeaviateArrayType'):
-        ...
-
     def _find_similar_vectors(self, q: 'WeaviateArrayType', limit=10):
         query_dict = {'vector': q}
         results = (
@@ -57,8 +52,8 @@ class FindMixin:
         return DocumentArray(docs)
 
     def find(
-        self, query: 'WeaviateArrayType', limit=10
-    ) -> Union[DocumentArray, List[DocumentArray]]:
+        self, query: 'WeaviateArrayType', limit: int = 10
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
