@@ -3,11 +3,14 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
-@pytest.mark.parametrize('cls', [DocumentArray, DocumentArraySqlite])
+@pytest.mark.parametrize(
+    'cls', [DocumentArray, DocumentArraySqlite, DocumentArrayPqlite]
+)
 @pytest.mark.parametrize(
     'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
@@ -16,7 +19,9 @@ def test_content_empty_getter_return_none(cls, content_attr):
     assert getattr(da, content_attr) is None
 
 
-@pytest.mark.parametrize('cls', [DocumentArray, DocumentArraySqlite])
+@pytest.mark.parametrize(
+    'cls', [DocumentArray, DocumentArraySqlite, DocumentArrayPqlite]
+)
 @pytest.mark.parametrize(
     'content_attr',
     [
@@ -38,6 +43,7 @@ def test_content_empty_setter(cls, content_attr):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -69,6 +75,7 @@ def test_content_getter_setter(cls, content_attr, config, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -98,6 +105,7 @@ def test_content_empty(da_len, da_cls, config, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
     ],
 )

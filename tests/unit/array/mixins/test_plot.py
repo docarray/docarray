@@ -7,6 +7,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -16,6 +17,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -46,6 +48,7 @@ def test_sprite_fail_tensor_success_uri(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -101,6 +104,7 @@ def test_plot_embeddings(da):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
     ],
 )
@@ -127,6 +131,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -147,6 +152,7 @@ def test_summary_homo_hetero(da_cls, config, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
