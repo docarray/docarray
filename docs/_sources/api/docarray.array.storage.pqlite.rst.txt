@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    docarray.array.storage.pqlite.backend
+   docarray.array.storage.pqlite.find
    docarray.array.storage.pqlite.getsetdel
    docarray.array.storage.pqlite.helper
    docarray.array.storage.pqlite.seqlike

@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    docarray.array.storage.weaviate.backend
+   docarray.array.storage.weaviate.find
    docarray.array.storage.weaviate.getsetdel
    docarray.array.storage.weaviate.seqlike
 
