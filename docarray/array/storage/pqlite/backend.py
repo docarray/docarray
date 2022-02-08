@@ -74,3 +74,39 @@ class BackendMixin(BaseBackendMixin):
         else:
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def __getstate__(self):
+        self._pqlite.close()
+        state = dict(self.__dict__)
+        del state['_pqlite']
+        del state['_offset2ids']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+
+        config = state['_config']
+        config = asdict(config)
+        n_dim = config.pop('n_dim')
+
+        from pqlite import PQLite
+        from .helper import OffsetMapping
+
+        self._pqlite = PQLite(n_dim, **config)
+        self._offset2ids = OffsetMapping(
+            name='docarray_mappings',
+            data_path=config['data_path'],
+            in_memory=False,
+        )
+
+    def _get_storage_infos(self) -> Dict:
+        storage_infos = super()._get_storage_infos()
+        return {
+            'Backend': 'PQLite (https://github.com/jina-ai/pqlite)',
+            'Distance Metric': self._pqlite.metric.name,
+            'Data Path': self._pqlite.data_path,
+            'Serialization Protocol': self._config.serialize_config.get(
+                'protocol', 'pickle'
+            ),
+            **storage_infos,
+        }
