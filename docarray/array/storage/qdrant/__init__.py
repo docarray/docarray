@@ -12,7 +12,6 @@ __all__ = ['StorageMixins', 'QdrantConfig']
 
 
 class StorageMixins(BackendMixin, GetSetDelMixin, SequenceLikeMixin):
-
     def __iter__(self) -> Iterable['Document']:
         yield from self.scan()
 

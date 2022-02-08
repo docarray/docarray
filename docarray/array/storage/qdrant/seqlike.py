@@ -5,7 +5,6 @@ from qdrant_client import QdrantClient
 
 
 class SequenceLikeMixin(MutableSequence[Document]):
-
     @property
     def client(self) -> QdrantClient:
         raise NotImplementedError()
@@ -35,13 +34,16 @@ class SequenceLikeMixin(MutableSequence[Document]):
         """
         # two DAW are considered as the same if they have the same client meta data
         return (
-                type(self) is type(other)
-                and self.client.openapi_client.client.host == other.openapi_client.client.host
-                and self.config == other.config
+            type(self) is type(other)
+            and self.client.openapi_client.client.host
+            == other.openapi_client.client.host
+            and self.config == other.config
         )
 
     def __len__(self):
-        return self.client.http.collections_api.get_collection(self.collection_name).vectors_count
+        return self.client.http.collections_api.get_collection(
+            self.collection_name
+        ).vectors_count
 
     def __iter__(self) -> Iterable['Document']:
         raise NotImplementedError()

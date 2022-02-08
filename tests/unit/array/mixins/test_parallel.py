@@ -31,9 +31,7 @@ def foo_batch(da: DocumentArray):
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(
-    pytestconfig, da_cls, config, backend, num_worker, start_storage
-):
+def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_storage):
     if __name__ == '__main__':
 
         if config:

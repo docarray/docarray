@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
-
     @property
     def client(self) -> QdrantClient:
         raise NotImplementedError()
@@ -41,6 +40,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             embedding = embedding.toarray().tolist()
         else:
             from ....math.ndarray import to_numpy_array
+
             embedding = to_numpy_array(embedding).tolist()
 
         return embedding
@@ -51,7 +51,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             wait=True,
             point_insert_operations=PointsList(
                 points=[self._document_to_qdrant(doc) for doc in docs]
-            )
+            ),
         )
 
     def _qdrant_to_document(self, qdrant_record: dict) -> 'Document':
@@ -62,10 +62,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _document_to_qdrant(self, doc: Document, _id: str = None) -> dict:
         return dict(
             id=_id or doc.id,
-            payload=dict(
-                _serialized=doc.to_base64(**self.serialization_config)
-            ),
-            vector=self._embedding_to_array(doc.embedding)
+            payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
+            vector=self._embedding_to_array(doc.embedding),
         )
 
     def _get_doc_by_offset(self, offset: int) -> 'Document':
@@ -73,7 +71,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
         try:
-            resp = self.client.http.points_api.get_point(name=self.collection_name, id=_id)
+            resp = self.client.http.points_api.get_point(
+                name=self.collection_name, id=_id
+            )
             return self._qdrant_to_document(resp.json())
         except UnexpectedResponse as response_error:
             if response_error.status_code == 404:
@@ -86,7 +86,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self.client.http.points_api.delete_points(
             name=self.collection_name,
             wait=True,
-            points_selector=PointIdsList(points=[_id])
+            points_selector=PointIdsList(points=[_id]),
         )
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
@@ -96,9 +96,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self.client.http.points_api.upsert_points(
             name=self.collection_name,
             wait=True,
-            point_insert_operations=[
-                self._document_to_qdrant(value, _id=_id)
-            ]
+            point_insert_operations=[self._document_to_qdrant(value, _id=_id)],
         )
 
     def scan(self) -> Iterator['Document']:
@@ -110,8 +108,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                     offset=offset,
                     limit=self.scroll_batch_size,
                     with_payload=['_serialized'],
-                    with_vector=False
-                )
+                    with_vector=False,
+                ),
             )
             for point in response.result.points:
                 yield self._qdrant_to_document(point.json())

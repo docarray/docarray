@@ -4,7 +4,11 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Union,
-    Dict, Sequence, Generator, Iterator, Iterable
+    Dict,
+    Sequence,
+    Generator,
+    Iterator,
+    Iterable,
 )
 from dataclasses import dataclass, field
 
@@ -31,12 +35,11 @@ class QdrantConfig:
 
 
 class BackendMixin(BaseBackendMixin):
-
     def clear(self):
         self._client.recreate_collection(
             self._config.collection_name,
             vector_size=self._config.n_dim,
-            distance=self._config.distance
+            distance=self._config.distance,
         )
 
     def extend(self, docs: Iterable):
@@ -50,10 +53,10 @@ class BackendMixin(BaseBackendMixin):
         return uuid.uuid4().hex
 
     def _init_storage(
-            self,
-            docs: Optional['DocumentArraySourceType'] = None,
-            config: Optional[Union[QdrantConfig, Dict]] = None,
-            **kwargs
+        self,
+        docs: Optional['DocumentArraySourceType'] = None,
+        config: Optional[Union[QdrantConfig, Dict]] = None,
+        **kwargs
     ):
         """Initialize qdrant storage.
 
@@ -94,7 +97,7 @@ class BackendMixin(BaseBackendMixin):
         # table and load the given `docs`
         self.clear()
         if isinstance(
-                docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             self.extend(docs)
         elif isinstance(docs, Document):
