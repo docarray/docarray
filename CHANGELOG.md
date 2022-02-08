@@ -21,6 +21,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -523,4 +524,37 @@
 ### 🍹 Other Improvements
 
  - [[```f3f3de45```](https://github.com/jina-ai/docarray/commit/f3f3de450516f2bbecd56e6910e4cb0dd7d95ee1)] __-__ __version__: the next version will be 0.5.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-5-3></a>
+## Release Note (`0.5.3`)
+
+> Release time: 2022-02-08 18:15:03
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Wang Bo,  Han Xiao,  Winston Wong,  AlaeddineAbdessalem,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```d1184e45```](https://github.com/jina-ai/docarray/commit/d1184e45f43d5de58000add0c717aba80f16cfed)] __-__ __embed__: transformer embed support (#96) (*Wang Bo*)
+ - [[```b032047e```](https://github.com/jina-ai/docarray/commit/b032047e2a0381f0a9b55762194a726a9feb75ee)] __-__ find method  (#93) (*David Buchaca Prats*)
+
+### 🐞 Bug fixes
+
+ - [[```1fe53b6e```](https://github.com/jina-ai/docarray/commit/1fe53b6ed117c9aed842afb5d27728ecdf196479)] __-__ decrease batch_size of weaviate client (#102) (*AlaeddineAbdessalem*)
+
+### 🧼 Code Refactoring
+
+ - [[```646ace86```](https://github.com/jina-ai/docarray/commit/646ace8682f4e60351551b4f2dae570e394d0ac3)] __-__ __backend__: change weaviate config (#103) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```8ef12517```](https://github.com/jina-ai/docarray/commit/8ef12517079ff533688517f00eb16a39060cb517)] __-__ address comment (#100) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```46f80d67```](https://github.com/jina-ai/docarray/commit/46f80d67deb1ab3ddad11a12e01c5695fe78074d)] __-__ __docs__: fix typo in pydantic section (*Han Xiao*)
+ - [[```ab7d6da8```](https://github.com/jina-ai/docarray/commit/ab7d6da87695beb1173bcad5a50874b352f7fb93)] __-__ __version__: the next version will be 0.5.3 (*Jina Dev Bot*)
 
