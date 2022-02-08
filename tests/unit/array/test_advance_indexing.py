@@ -426,7 +426,7 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
 
 
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate', 'pqlite'])
-def test_tensor_attribute_selector(storage, start_weaviate):
+def test_tensor_attribute_selector(storage, start_storage):
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])

@@ -139,7 +139,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArraySqlite, None),
     ],
 )
-def test_from_to_bytes(da_cls, config, start_weaviate):
+def test_from_to_bytes(da_cls, config, start_storage):
     # simple
     assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
 
@@ -164,7 +164,7 @@ def test_from_to_bytes(da_cls, config, start_weaviate):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
-def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
+def test_push_pull_io(da_cls, config, show_progress, start_storage):
     da1 = da_cls.empty(10, config=config())
 
     da1[:, 'embedding'] = np.random.random([len(da1), 256])

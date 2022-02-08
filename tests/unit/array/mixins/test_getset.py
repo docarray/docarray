@@ -51,7 +51,7 @@ def test_set_embeddings_multi_kind(array):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_da_get_embeddings(docs, config, da_cls, start_weaviate):
+def test_da_get_embeddings(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -68,7 +68,7 @@ def test_da_get_embeddings(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_embeddings_setter_da(docs, config, da_cls, start_weaviate):
+def test_embeddings_setter_da(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -95,7 +95,7 @@ def test_embeddings_setter_da(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_embeddings_wrong_len(docs, config, da_cls, start_weaviate):
+def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -115,7 +115,7 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_tensors_getter_da(docs, config, da_cls, start_weaviate):
+def test_tensors_getter_da(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -138,7 +138,7 @@ def test_tensors_getter_da(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_texts_getter_da(docs, config, da_cls, start_weaviate):
+def test_texts_getter_da(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -170,7 +170,7 @@ def test_texts_getter_da(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_weaviate):
+def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -204,7 +204,7 @@ def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_wea
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_texts_wrong_len(docs, config, da_cls, start_weaviate):
+def test_texts_wrong_len(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -224,7 +224,7 @@ def test_texts_wrong_len(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_tensors_wrong_len(docs, config, da_cls, start_weaviate):
+def test_tensors_wrong_len(docs, config, da_cls, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -244,7 +244,7 @@ def test_tensors_wrong_len(docs, config, da_cls, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_blobs_getter_setter(docs, da_cls, config, start_weaviate):
+def test_blobs_getter_setter(docs, da_cls, config, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -273,7 +273,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_ellipsis_getter(nested_docs, da_cls, config, start_weaviate):
+def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
     if config:
         da = da_cls(config=config)
     else:
@@ -293,7 +293,7 @@ def test_ellipsis_getter(nested_docs, da_cls, config, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_weaviate):
+def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
     if config:
         da = da_cls(config=config)
     else:

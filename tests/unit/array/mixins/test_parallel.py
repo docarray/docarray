@@ -81,7 +81,7 @@ def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_s
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
 def test_parallel_map_batch(
-    pytestconfig, da_cls, config, backend, num_worker, b_size, start_weaviate
+    pytestconfig, da_cls, config, backend, num_worker, b_size, start_storage
 ):
     if __name__ == '__main__':
 
@@ -129,7 +129,7 @@ def test_parallel_map_batch(
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
-def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
+def test_map_lambda(pytestconfig, da_cls, config, start_storage):
     if __name__ == '__main__':
 
         if config:
@@ -151,7 +151,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
     [('memory', None), ('sqlite', None), ('weaviate', WeaviateConfig(n_dim=256))],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_diff_backend_storage(storage, config, backend, start_weaviate):
+def test_apply_diff_backend_storage(storage, config, backend, start_storage):
     if __name__ == '__main__':
         docs = (Document(text='hello world she smiled too much') for _ in range(1000))
         if config:

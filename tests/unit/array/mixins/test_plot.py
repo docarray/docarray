@@ -20,7 +20,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     ],
 )
 def test_sprite_fail_tensor_success_uri(
-    pytestconfig, tmpdir, da_cls, config, start_weaviate
+    pytestconfig, tmpdir, da_cls, config, start_storage
 ):
     files = [
         f'{pytestconfig.rootdir}/**/*.png',
@@ -50,7 +50,7 @@ def test_sprite_fail_tensor_success_uri(
     ],
 )
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, config, start_weaviate
+    pytestconfig, tmpdir, image_source, da_cls, config, start_storage
 ):
     files = [
         f'{pytestconfig.rootdir}/**/*.png',
@@ -104,7 +104,7 @@ def test_plot_embeddings(da):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
     ],
 )
-def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
+def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
     if config_gen:
         da1 = da_cls.empty(100, config=config_gen())
         da2 = da_cls.empty(768, config=config_gen())
@@ -130,7 +130,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
-def test_summary_homo_hetero(da_cls, config, start_weaviate):
+def test_summary_homo_hetero(da_cls, config, start_storage):
     if config:
         da = da_cls.empty(100, config=config)
     else:
@@ -150,7 +150,7 @@ def test_summary_homo_hetero(da_cls, config, start_weaviate):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
-def test_empty_get_attributes(da_cls, config, start_weaviate):
+def test_empty_get_attributes(da_cls, config, start_storage):
     if config:
         da = da_cls.empty(10, config=config)
     else:
