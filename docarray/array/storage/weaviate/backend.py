@@ -146,12 +146,10 @@ class BackendMixin(BaseBackendMixin):
 
     def _load_or_create_weaviate_schema(self):
         """Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object
-        if not present in weaviate or if ``cls_name`` not provided, else if ``cls_name`` is provided
-        load the object with the given ``cls_name``
+        if not present in weaviate or if ``self._config.name`` is None. If ``self._config.name``
+        is provided and not None and schema with the specified name exists in weaviate,
+        then load the object with the given ``self._config.name``
 
-        :param cls_name: if provided, load this :class:`DocumentArrayWeaviate` object with
-            the data stored in weaviate. If ``cls_name`` is ``None``, the create a schema in weaviate
-            with a newly generated class name.
         :return: the schemas of this :class`DocumentArrayWeaviate` object and its meta
         """
         if not self._config.name:
