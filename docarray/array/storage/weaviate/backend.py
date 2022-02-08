@@ -14,7 +14,6 @@ from typing import (
 )
 
 import numpy as np
-import scipy.sparse
 import weaviate
 
 from ..base.backend import BaseBackendMixin
@@ -78,14 +77,15 @@ class BackendMixin(BaseBackendMixin):
         # To align with Sqlite behavior; if `docs` is not `None` and table name
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
-        self.clear()
         if _docs is None:
             return
-        if isinstance(
+        elif isinstance(
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
+            self.clear()
             self.extend(_docs)
         else:
+            self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
 
@@ -268,8 +268,6 @@ class BackendMixin(BaseBackendMixin):
         """
         if value.embedding is None:
             embedding = np.zeros(self._n_dim)
-        elif isinstance(value.embedding, scipy.sparse.spmatrix):
-            embedding = value.embedding.toarray()
         else:
             from ....math.ndarray import to_numpy_array
 
