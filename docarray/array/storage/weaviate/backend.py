@@ -61,9 +61,6 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(WeaviateConfig, config)
 
-        if _docs is None and config.name:
-            return
-
         from ... import DocumentArray
 
         self._n_dim = config.n_dim
@@ -82,6 +79,8 @@ class BackendMixin(BaseBackendMixin):
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
         self.clear()
+        if _docs is None:
+            return
         if isinstance(
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
