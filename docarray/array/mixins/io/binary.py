@@ -5,7 +5,7 @@ import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
-from ....helper import random_uuid, __windows__, get_compress_ctx, decompress_bytes
+from ....helper import __windows__, get_compress_ctx, decompress_bytes
 
 if TYPE_CHECKING:
     from ....types import T
@@ -24,6 +24,8 @@ class BinaryIOMixin:
         compress: Optional[str] = None,
         _show_progress: bool = False,
         streaming: bool = False,
+        *args,
+        **kwargs,
     ) -> Union['DocumentArray', Generator['Document', None, None]]:
         """Load array elements from a compressed binary file.
 
@@ -51,7 +53,9 @@ class BinaryIOMixin:
                 _show_progress=_show_progress,
             )
         else:
-            return cls._load_binary_all(file_ctx, protocol, compress, _show_progress)
+            return cls._load_binary_all(
+                file_ctx, protocol, compress, _show_progress, *args, **kwargs
+            )
 
     @classmethod
     def _load_binary_stream(
@@ -97,7 +101,9 @@ class BinaryIOMixin:
                 )
 
     @classmethod
-    def _load_binary_all(cls, file_ctx, protocol, compress, show_progress):
+    def _load_binary_all(
+        cls, file_ctx, protocol, compress, show_progress, *args, **kwargs
+    ):
         """Read a `DocumentArray` object from a binary file
 
         :param protocol: protocol to use
@@ -156,8 +162,7 @@ class BinaryIOMixin:
                     d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
                 )
                 docs.append(doc)
-
-            return cls(docs)
+            return cls(docs, *args, **kwargs)
 
     @classmethod
     def from_bytes(
@@ -166,12 +171,16 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             data,
             protocol=protocol,
             compress=compress,
             _show_progress=_show_progress,
+            *args,
+            **kwargs,
         )
 
     def save_binary(
@@ -298,12 +307,16 @@ class BinaryIOMixin:
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         return cls.load_binary(
             base64.b64decode(data),
             protocol=protocol,
             compress=compress,
             _show_progress=_show_progress,
+            *args,
+            **kwargs,
         )
 
     def to_base64(

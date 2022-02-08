@@ -173,10 +173,11 @@ The same idea applies to DocumentArray as well. Say after [`.match()`](../docume
 
 ```python
 from typing import List, Optional
+from pydantic import BaseModel
 
 class IdAndMatch(BaseModel):
     id: str
-    matches: Optional[List['IdMatch']]
+    matches: Optional[List['IdAndMatch']]
 ```
 
 Bind it to `response_model`:

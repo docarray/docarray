@@ -1,8 +1,7 @@
-from typing import Iterator, Union, Sequence, Iterable, MutableSequence
-
-from .... import Document
+from typing import Iterator, Union, Iterable, MutableSequence
 
 from ..memory.backend import needs_id2offset_rebuild
+from .... import Document
 
 
 class SequenceLikeMixin(MutableSequence[Document]):

@@ -1,16 +1,16 @@
 import os
 
 import numpy as np
-import tensorflow as tf
-import pytest
-import torch
-import paddle
-import onnx
 import onnxruntime
+import paddle
+import pytest
+import tensorflow as tf
+import torch
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 random_embed_models = {
@@ -45,38 +45,46 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 
 @pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch'])
 @pytest.mark.parametrize(
-    'da', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+    ],
 )
 @pytest.mark.parametrize('N', [2, 10])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(
-    framework, da, N, batch_size, to_numpy, start_storage
+    framework, da_cls, config, N, batch_size, to_numpy, start_storage
 ):
-    docs = da.empty(N)
-    docs.tensors = np.random.random([N, 128]).astype(np.float32)
+    if config:
+        da = da_cls.empty(N, config=config)
+    else:
+        da = da_cls.empty(N)
+    da.tensors = np.random.random([N, 128]).astype(np.float32)
     embed_model = random_embed_models[framework]()
-    docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+    da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 
-    r = docs.embeddings
+    r = da.embeddings
     if hasattr(r, 'numpy'):
         r = r.numpy()
 
     embed1 = r.copy()
 
     # reset
-    docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+    da.embeddings = np.random.random([N, 128]).astype(np.float32)
 
     # docs[a: b].embed is only supported for DocumentArrayInMemory
     if isinstance(da, DocumentArrayInMemory):
         # try it again, it should yield the same result
-        docs.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(da.embeddings, embed1)
 
         # reset
-        docs.embeddings = np.random.random([N, 128]).astype(np.float32)
+        da.embeddings = np.random.random([N, 128]).astype(np.float32)
 
         # now do this one by one
-        docs[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        docs[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
-        np.testing.assert_array_almost_equal(docs.embeddings, embed1)
+        da[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        da[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
+        np.testing.assert_array_almost_equal(da.embeddings, embed1)

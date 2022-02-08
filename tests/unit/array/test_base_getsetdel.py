@@ -1,6 +1,5 @@
 from abc import ABC
 
-import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document

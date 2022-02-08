@@ -1,13 +1,10 @@
 import os
-import shutil
 
-import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
 from docarray.document.generators import (
     from_files,
-    from_ndarray,
     from_lines,
     from_csv,
     from_huggingface_datasets,

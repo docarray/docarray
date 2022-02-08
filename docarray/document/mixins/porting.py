@@ -1,8 +1,8 @@
+import base64
 import dataclasses
 import pickle
 import warnings
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any
-import base64
 
 from ...helper import compress_bytes, decompress_bytes
 

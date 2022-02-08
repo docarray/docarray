@@ -11,8 +11,6 @@ from typing import Optional
 
 import numpy as np
 
-from ...helper import deprecate_by
-
 
 class PlotMixin:
     """Helper functions for plotting the arrays. """

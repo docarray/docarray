@@ -2,13 +2,23 @@ import pytest
 
 from docarray import DocumentArray
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate]
+    'da_cls,config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
+    ],
 )
-def test_empty_non_zero(da_cls, start_storage):
+def test_empty_non_zero(da_cls, config, start_storage):
+    if config:
+        da = da_cls.empty(10, config=config)
+    else:
+        da = da_cls.empty(10)
     da = DocumentArray.empty(10)
     assert len(da) == 10
     da = DocumentArray.empty()

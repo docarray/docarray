@@ -1,8 +1,8 @@
-import os
 import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
 
@@ -21,109 +21,153 @@ def foo_batch(da: DocumentArray):
     return da
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(pytestconfig, da_cls, backend, num_worker, start_storage):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+def test_parallel_map(
+    pytestconfig, da_cls, config, backend, num_worker, start_storage
+):
+    if __name__ == '__main__':
 
-    # use a generator
-    for d in da.map(foo, backend, num_worker=num_worker):
-        assert d.tensor.shape == (3, 222, 222)
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+        # use a generator
+        for d in da.map(foo, backend, num_worker=num_worker):
+            assert d.tensor.shape == (3, 222, 222)
 
-    # use as list, here the caveat is when using process backend you can not modify thing in-place
-    list(da.map(foo, backend, num_worker=num_worker))
-    if backend == 'thread':
-        assert da.tensors.shape == (len(da), 3, 222, 222)
-    else:
-        assert da.tensors is None
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
-    da_new = da.apply(foo)
-    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
+        # use as list, here the caveat is when using process backend you can not modify thing in-place
+        list(da.map(foo, backend, num_worker=num_worker))
+        if backend == 'thread':
+            assert da.tensors.shape == (len(da), 3, 222, 222)
+        else:
+            assert da.tensors is None
+
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+        da_new = da.apply(foo)
+        assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
 def test_parallel_map_batch(
-    pytestconfig, da_cls, backend, num_worker, b_size, start_weaviate
+    pytestconfig, da_cls, config, backend, num_worker, b_size, start_weaviate
 ):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+    if __name__ == '__main__':
 
-    # use a generator
-    for _da in da.map_batch(
-        foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
-    ):
-        for d in _da:
-            assert d.tensor.shape == (3, 222, 222)
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
-
-    # use as list, here the caveat is when using process backend you can not modify thing in-place
-    list(
-        da.map_batch(
+        # use a generator
+        for _da in da.map_batch(
             foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+        ):
+            for d in _da:
+                assert d.tensor.shape == (3, 222, 222)
+
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+
+        # use as list, here the caveat is when using process backend you can not modify thing in-place
+        list(
+            da.map_batch(
+                foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+            )
         )
-    )
-    if backend == 'thread':
-        assert da.tensors.shape == (len(da), 3, 222, 222)
-    else:
-        assert da.tensors is None
+        if backend == 'thread':
+            assert da.tensors.shape == (len(da), 3, 222, 222)
+        else:
+            assert da.tensors is None
 
-    da_new = da.apply_batch(foo_batch, batch_size=b_size)
-    assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
+        da_new = da.apply_batch(foo_batch, batch_size=b_size)
+        assert da_new.tensors.shape == (len(da_new), 3, 222, 222)
 
 
-@pytest.mark.skipif(
-    'GITHUB_WORKFLOW' in os.environ,
-    reason='this test somehow fail on Github CI, but it MUST run successfully on local',
-)
 @pytest.mark.parametrize(
-    'da_cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayWeaviate],
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_map_lambda(pytestconfig, da_cls, start_weaviate):
-    da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+def test_map_lambda(pytestconfig, da_cls, config, start_weaviate):
+    if __name__ == '__main__':
 
-    for d in da:
-        assert d.tensor is None
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
-    for d in da.map(lambda x: x.load_uri_to_image_tensor()):
-        assert d.tensor is not None
+        for d in da:
+            assert d.tensor is None
+
+        for d in da.map(lambda x: x.load_uri_to_image_tensor()):
+            assert d.tensor is not None
 
 
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'weaviate'])
+@pytest.mark.parametrize(
+    'storage,config',
+    [('memory', None), ('sqlite', None), ('weaviate', WeaviateConfig(n_dim=256))],
+)
 @pytest.mark.parametrize('backend', ['thread', 'process'])
-def test_apply_diff_backend_storage(storage, backend, start_weaviate):
-    da = DocumentArray(
-        (Document(text='hello world she smiled too much') for _ in range(1000)),
-        storage=storage,
-    )
-    da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
+def test_apply_diff_backend_storage(storage, config, backend, start_weaviate):
+    if __name__ == '__main__':
+        docs = (Document(text='hello world she smiled too much') for _ in range(1000))
+        if config:
+            da = DocumentArray(docs, storage=storage, config=config)
+        else:
+            da = DocumentArray(docs, storage=storage)
 
-    q = (
-        Document(text='she smiled too much')
-        .embed_feature_hashing()
-        .match(da, metric='jaccard', use_scipy=True)
-    )
+        da.apply(lambda d: d.embed_feature_hashing(), backend=backend)
 
-    assert len(q.matches[:5, ('text', 'scores__jaccard__value')]) == 2
-    assert len(q.matches[:5, ('text', 'scores__jaccard__value')][0]) == 5
+        q = (
+            Document(text='she smiled too much')
+            .embed_feature_hashing()
+            .match(da, metric='jaccard', use_scipy=True)
+        )
+
+        assert len(q.matches[:5, ('text', 'scores__jaccard__value')]) == 2
+        assert len(q.matches[:5, ('text', 'scores__jaccard__value')][0]) == 5

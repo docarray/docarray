@@ -144,6 +144,8 @@ def to_numpy_array(value) -> 'np.ndarray':
 
     if hasattr(v, 'numpy'):
         v = v.numpy()
+    if framework == 'python':
+        v = np.array(v)
     return v
 
 
@@ -155,3 +157,38 @@ def to_list(value) -> List[float]:
         return r
     else:
         raise TypeError(f'{r} can not be converted into list')
+
+
+def get_array_rows(array: 'ArrayType') -> Tuple[int, int]:
+    """Get the number of rows of the ndarray without importing all frameworks
+
+    :param array: input array
+    :return: (num_rows, ndim)
+
+    Examples
+
+    >>> get_array_rows([1,2,3])
+    1, 1
+    >>> get_array_rows([[1,2,3], [4,5,6]])
+    2, 2
+    >>> get_array_rows([[1,2,3], [4,5,6], [7,8,9]])
+    3, 2
+    >>> get_array_rows(np.array([[1,2,3], [4,5,6], [7,8,9]]))
+    3, 2
+    """
+    array_type, _ = get_array_type(array)
+
+    if array_type == 'python':
+        first_element_list_like = isinstance(array[0], (list, tuple))
+        num_rows = len(array) if first_element_list_like else 1
+        ndim = 2 if first_element_list_like else 1
+    elif array_type in ('numpy', 'tensorflow', 'torch', 'paddle', 'scipy'):
+        ndim = array.ndim
+        if ndim == 1:
+            num_rows = 1
+        else:
+            num_rows = array.shape[0]
+    else:
+        raise ValueError
+
+    return num_rows, ndim

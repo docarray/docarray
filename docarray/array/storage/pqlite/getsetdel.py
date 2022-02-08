@@ -2,9 +2,11 @@ from typing import (
     Sequence,
     Iterable,
 )
+
 import numpy as np
-from ...memory import DocumentArrayInMemory
+
 from ..base.getsetdel import BaseGetSetDelMixin
+from ...memory import DocumentArrayInMemory
 from .... import Document
 
 

@@ -5,8 +5,9 @@ import numpy as np
 import pytest
 
 from docarray.array.memory import DocumentArrayInMemory
-from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
 
 
@@ -18,13 +19,19 @@ def docs():
 @pytest.mark.slow
 @pytest.mark.parametrize('method', ['json', 'binary'])
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_document_save_load(docs, method, tmp_path, da_cls, start_storage):
+def test_document_save_load(docs, method, tmp_path, da_cls, config, start_storage):
     tmp_file = os.path.join(tmp_path, 'test')
-    da = da_cls(docs)
+    da = da_cls(docs, config=config())
     da.save(tmp_file, file_format=method)
-    da_r = type(da).load(tmp_file, file_format=method)
+
+    da_r = type(da).load(tmp_file, file_format=method, config=config())
 
     assert type(da) is type(da_r)
     assert len(da) == len(da_r)
@@ -36,70 +43,108 @@ def test_document_save_load(docs, method, tmp_path, da_cls, start_storage):
 
 @pytest.mark.parametrize('flatten_tags', [True, False])
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
+    ],
 )
-def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, start_storage):
+def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storage):
     tmpfile = os.path.join(tmp_path, 'test.csv')
-    da = da_cls(docs)
+    da = da_cls(docs, config=config())
     da.save_csv(tmpfile, flatten_tags)
     with open(tmpfile) as fp:
         assert len([v for v in fp]) == len(da) + 1
 
 
 @pytest.mark.parametrize(
-    'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+    ],
 )
-def test_from_ndarray(da, start_storage):
-    _da = da.from_ndarray(np.random.random([10, 256]))
+def test_from_ndarray(da_cls, config, start_storage):
+    _da = da_cls.from_ndarray(np.random.random([10, 256]), config=config())
+
     assert len(_da) == 10
 
 
 @pytest.mark.parametrize(
-    'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+    ],
 )
-def test_from_files(da, start_storage):
-    assert len(da.from_files(patterns='*.*', to_dataturi=True, size=1)) == 1
+def test_from_files(da_cls, config, start_storage):
+    assert (
+        len(
+            da_cls.from_files(patterns='*.*', to_dataturi=True, size=1, config=config())
+        )
+        == 1
+    )
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 @pytest.mark.parametrize(
-    'da', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+    ],
 )
-def test_from_ndjson(da, start_storage):
+def test_from_ndjson(da_cls, config, start_storage):
     with open(os.path.join(cur_dir, 'docs.jsonlines')) as fp:
-        _da = da.from_ndjson(fp)
+        _da = da_cls.from_ndjson(fp, config=config())
         assert len(_da) == 2
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls, config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
+    ],
 )
-def test_from_to_pd_dataframe(da_cls, start_storage):
-    # simple
-
-    assert len(da_cls.from_dataframe(da_cls.empty(2).to_dataframe())) == 2
+def test_from_to_pd_dataframe(da_cls, config, start_storage):
+    df = da_cls.empty(2, config=config()).to_dataframe()
+    assert len(da_cls.from_dataframe(df, config=config())) == 2
 
     # more complicated
-    da = da_cls.empty(2)
+    da = da_cls.empty(2, config=config())
+
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
-    da2 = da_cls.from_dataframe(da.to_dataframe())
+    df = da.to_dataframe()
+
+    da2 = da_cls.from_dataframe(df, config=config())
+
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
+    'da_cls, config',
+    [
+        (DocumentArrayInMemory, None),
+        (DocumentArraySqlite, None),
+    ],
 )
-def test_from_to_bytes(da_cls, start_weaviate):
+def test_from_to_bytes(da_cls, config, start_weaviate):
     # simple
     assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
 
-    # more complicated
     da = da_cls.empty(2)
+
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
@@ -110,19 +155,25 @@ def test_from_to_bytes(da_cls, start_weaviate):
     assert da2[1].tags == {}
 
 
-@pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArrayWeaviate, DocumentArraySqlite]
-)
 @pytest.mark.parametrize('show_progress', [True, False])
-def test_push_pull_io(da_cls, show_progress, start_weaviate):
-    da1 = da_cls.empty(10)
+@pytest.mark.parametrize(
+    'da_cls, config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+    ],
+)
+def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
+    da1 = da_cls.empty(10, config=config())
+
     da1[:, 'embedding'] = np.random.random([len(da1), 256])
     random_texts = [str(uuid.uuid1()) for _ in da1]
     da1[:, 'text'] = random_texts
 
     da1.push('myda', show_progress=show_progress)
 
-    da2 = da_cls.pull('myda', show_progress=show_progress)
+    da2 = da_cls.pull('myda', show_progress=show_progress, config=config())
 
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts
@@ -132,9 +183,16 @@ def test_push_pull_io(da_cls, show_progress, start_weaviate):
     'protocol', ['protobuf', 'pickle', 'protobuf-array', 'pickle-array']
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
-@pytest.mark.parametrize('da_cls', [DocumentArrayWeaviate])
-def test_from_to_base64(protocol, compress, da_cls):
+@pytest.mark.parametrize(
+    'da_cls, config',
+    [
+        (DocumentArrayInMemory, None),
+        (DocumentArraySqlite, None),
+    ],
+)
+def test_from_to_base64(protocol, compress, da_cls, config):
     da = da_cls.empty(10)
+
     da[:, 'embedding'] = [[1, 2, 3]] * len(da)
     da_r = da_cls.from_base64(da.to_base64(protocol, compress), protocol, compress)
 

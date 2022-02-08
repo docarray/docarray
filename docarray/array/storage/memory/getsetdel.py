@@ -4,9 +4,10 @@ from typing import (
     Iterable,
     Any,
 )
-from ..memory.backend import needs_id2offset_rebuild
+
 from ..base.getsetdel import BaseGetSetDelMixin
-from .... import Document, DocumentArray
+from ..memory.backend import needs_id2offset_rebuild
+from .... import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
