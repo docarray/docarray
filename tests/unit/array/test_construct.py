@@ -3,6 +3,7 @@ import pytest
 from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 
@@ -22,6 +23,7 @@ def test_construct_docarray_weaviate(start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -67,6 +69,7 @@ def test_construct_docarray(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -93,6 +96,7 @@ def test_docarray_copy_singleton(da_cls, config, is_copy, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -114,7 +118,9 @@ def test_docarray_copy_da(da_cls, config, is_copy, start_weaviate):
         assert da[0] != 'hello'
 
 
-@pytest.mark.parametrize('da_cls', [DocumentArrayInMemory, DocumentArraySqlite])
+@pytest.mark.parametrize(
+    'da_cls', [DocumentArrayInMemory, DocumentArraySqlite, DocumentArrayPqlite]
+)
 @pytest.mark.parametrize('is_copy', [True, False])
 def test_docarray_copy_list(da_cls, is_copy, start_weaviate):
     d1 = Document()

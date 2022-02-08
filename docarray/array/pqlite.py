@@ -1,5 +1,7 @@
 from .document import DocumentArray
-from .storage.pqlite import StorageMixins
+from .storage.pqlite import StorageMixins, PqliteConfig
+
+__all__ = ['PqliteConfig', 'DocumentArrayPqlite']
 
 
 class DocumentArrayPqlite(StorageMixins, DocumentArray):

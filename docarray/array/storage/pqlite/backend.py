@@ -34,6 +34,7 @@ class BackendMixin(BaseBackendMixin):
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[PqliteConfig, Dict]] = None,
+        **kwargs,
     ):
         if not config:
             config = PqliteConfig()

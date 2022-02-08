@@ -22,6 +22,8 @@ class SequenceLikeMixin(MutableSequence[Document]):
         self._offset2ids.insert_at_offset(index, value.id)
 
     def append(self, value: 'Document') -> None:
+        if value.embedding is None:
+            value.embedding = np.zeros((self._pqlite.dim,), dtype=np.float32)
         self._pqlite.index(DocumentArrayInMemory([value]))
         self._offset2ids.extend_doc_ids([value.id])
 
