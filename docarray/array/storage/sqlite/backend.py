@@ -110,12 +110,12 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
         from ... import DocumentArray
 
+        self.clear()
         if _docs is None:
             return
         elif isinstance(
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
-            self.clear()
             self.extend(_docs)
         else:
             if isinstance(_docs, Document):
