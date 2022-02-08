@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional, List, Tuple
 
 from pqlite.storage.table import Table
@@ -7,7 +8,7 @@ class OffsetMapping(Table):
     def __init__(
         self,
         name: str = 'offset2ids',
-        data_path: Optional[str] = None,
+        data_path: Optional[Path] = None,
         in_memory: bool = True,
     ):
         super().__init__(name, data_path, in_memory)

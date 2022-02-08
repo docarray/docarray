@@ -14,11 +14,11 @@ from typing import (
 )
 
 import numpy as np
-import scipy.sparse
 import weaviate
 
 from ..base.backend import BaseBackendMixin
 from .... import Document
+from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
     from ....types import (
@@ -32,7 +32,7 @@ class WeaviateConfig:
     connection to the Weaviate server"""
 
     n_dim: int
-    client: Optional[Union[str, weaviate.Client]] = None
+    client: Union[str, weaviate.Client] = 'http://localhost:8080'
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
 
@@ -42,8 +42,8 @@ class BackendMixin(BaseBackendMixin):
 
     def _init_storage(
         self,
-        docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[WeaviateConfig] = None,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        config: Optional[Union[WeaviateConfig, Dict]] = None,
         **kwargs,
     ):
         """Initialize weaviate storage.
@@ -55,22 +55,15 @@ class BackendMixin(BaseBackendMixin):
             raise an error if both are provided
         """
 
-        from ... import DocumentArray
-
-        self._schemas = None
-
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
-            config = WeaviateConfig(**config)
+            config = dataclass_from_dict(WeaviateConfig, config)
 
-        self.n_dim = config.n_dim
-        self.serialize_config = config.serialize_config
+        from ... import DocumentArray
 
-        import weaviate
-
-        if config.client is None:
-            config.client = 'http://localhost:8080'
+        self._n_dim = config.n_dim
+        self._serialize_config = config.serialize_config
 
         if isinstance(config.client, str):
             self._client = weaviate.Client(config.client)
@@ -81,20 +74,20 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = self._load_or_create_weaviate_schema()
         self._offset2ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
-        if docs is None and config.name:
-            return
-
         # To align with Sqlite behavior; if `docs` is not `None` and table name
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
-        self.clear()
-        if isinstance(
-            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+        if _docs is None:
+            return
+        elif isinstance(
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
-            self.extend(docs)
+            self.clear()
+            self.extend(_docs)
         else:
-            if isinstance(docs, Document):
-                self.append(docs)
+            self.clear()
+            if isinstance(_docs, Document):
+                self.append(_docs)
 
     def _get_weaviate_class_name(self) -> str:
         """Generate the class/schema name using the ``uuid1`` module with some
@@ -272,18 +265,17 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
         if value.embedding is None:
-            embedding = np.zeros(self.n_dim)
-        elif isinstance(value.embedding, scipy.sparse.spmatrix):
-            embedding = value.embedding.toarray()
+            embedding = np.zeros(self._n_dim)
         else:
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
 
-        embedding = embedding.flatten()
-        if embedding.shape != (self.n_dim,):
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
+        if embedding.shape != (self._n_dim,):
             raise ValueError(
-                f'All documents must have embedding of shape n_dim: {self.n_dim}, receiving shape: {embedding.shape}'
+                f'All documents must have embedding of shape n_dim: {self._n_dim}, receiving shape: {embedding.shape}'
             )
 
         # Weaviate expects vector to have dim 2 at least
@@ -293,13 +285,13 @@ class BackendMixin(BaseBackendMixin):
             embedding = [embedding[0]]
 
         return dict(
-            data_object={'_serialized': value.to_base64(**self.serialize_config)},
+            data_object={'_serialized': value.to_base64(**self._serialize_config)},
             class_name=self._class_name,
-            uuid=self.wmap(value.id),
+            uuid=self._wmap(value.id),
             vector=embedding,
         )
 
-    def wmap(self, doc_id: str):
+    def _wmap(self, doc_id: str):
         """the function maps doc id to weaviate id
 
         :param doc_id: id of the document
