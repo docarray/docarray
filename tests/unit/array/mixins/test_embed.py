@@ -61,7 +61,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
     [
         DocumentArray,
         DocumentArraySqlite,
-        DocumentArrayWeaviate,
+        # DocumentArrayWeaviate,  # TODO enable this
     ],
 )
 @pytest.mark.parametrize('N', [2, 10])
