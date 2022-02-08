@@ -105,7 +105,7 @@ class BackendMixin(BaseBackendMixin):
         return {
             'Backend': 'PQLite (https://github.com/jina-ai/pqlite)',
             'Distance Metric': self._pqlite.metric.name,
-            'Data Path': self._pqlite.data_path,
+            'Data Path': self._config.data_path,
             'Serialization Protocol': self._config.serialize_config.get(
                 'protocol', 'pickle'
             ),
