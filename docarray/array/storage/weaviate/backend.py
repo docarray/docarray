@@ -273,7 +273,7 @@ class BackendMixin(BaseBackendMixin):
 
             embedding = to_numpy_array(value.embedding)
 
-        embedding = embedding.flatten()
+        embedding = embedding.squeeze()
         if embedding.shape != (self._n_dim,):
             raise ValueError(
                 f'All documents must have embedding of shape n_dim: {self._n_dim}, receiving shape: {embedding.shape}'
