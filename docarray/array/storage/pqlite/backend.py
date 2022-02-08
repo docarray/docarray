@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from pathlib import Path
 from typing import (
     Union,
     Dict,
@@ -54,7 +55,7 @@ class BackendMixin(BaseBackendMixin):
         self._pqlite = PQLite(n_dim, **config)
         self._offset2ids = OffsetMapping(
             name='docarray',
-            data_path=config['data_path'],
+            data_path=Path(config['data_path']),
             in_memory=False,
         )
 
