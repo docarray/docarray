@@ -25,7 +25,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if not resp:
             raise KeyError(wid)
         return Document.from_base64(
-            resp['properties']['_serialized'], **self.serialize_config
+            resp['properties']['_serialized'], **self._serialize_config
         )
 
     def _setitem(self, wid: str, value: Document):
