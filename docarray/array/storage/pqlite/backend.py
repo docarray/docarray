@@ -1,10 +1,13 @@
-from dataclasses import dataclass, asdict
-from pathlib import Path
+import itertools
+from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
     Dict,
     Optional,
     TYPE_CHECKING,
+    Sequence,
+    Generator,
+    Iterator,
 )
 
 from ..base.backend import BaseBackendMixin
@@ -20,7 +23,7 @@ if TYPE_CHECKING:
 class PqliteConfig:
     n_dim: int = 1
     metric: str = 'cosine'
-    serialize_protocol: str = 'pickle'
+    serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
 
 
@@ -29,7 +32,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _init_storage(
         self,
-        docs: Optional['DocumentArraySourceType'] = None,
+        _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[PqliteConfig, Dict]] = None,
     ):
         if not config:
@@ -54,11 +57,20 @@ class BackendMixin(BaseBackendMixin):
 
         self._pqlite = PQLite(n_dim, **config)
         self._offset2ids = OffsetMapping(
-            name='docarray',
-            data_path=Path(config['data_path']),
+            name='docarray_mappings',
+            data_path=config['data_path'],
             in_memory=False,
         )
+        from ... import DocumentArray
+        from .... import Document
 
-        if docs is not None:
+        if _docs is None:
+            return
+        elif isinstance(
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+        ):
             self.clear()
-            self.extend(docs)
+            self.extend(_docs)
+        else:
+            if isinstance(_docs, Document):
+                self.append(_docs)
