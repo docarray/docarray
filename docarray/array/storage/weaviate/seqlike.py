@@ -12,7 +12,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        self._offset2ids.insert(index, self.wmap(value.id))
+        self._offset2ids.insert(index, self._wmap(value.id))
         self._client.data_object.create(**self._doc2weaviate_create_payload(value))
         self._update_offset2ids_meta()
 
@@ -64,9 +64,9 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :return: True if ``x`` is contained in self
         """
         if isinstance(x, str):
-            return self._client.data_object.exists(self.wmap(x))
+            return self._client.data_object.exists(self._wmap(x))
         elif isinstance(x, Document):
-            return self._client.data_object.exists(self.wmap(x.id))
+            return self._client.data_object.exists(self._wmap(x.id))
         else:
             return False
 
@@ -94,5 +94,5 @@ class SequenceLikeMixin(MutableSequence[Document]):
         with self._client.batch as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
-                self._offset2ids.append(self.wmap(d.id))
+                self._offset2ids.append(self._wmap(d.id))
         self._update_offset2ids_meta()
