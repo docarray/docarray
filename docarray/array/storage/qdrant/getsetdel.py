@@ -1,6 +1,5 @@
-from typing import List, Iterable, Iterator, TYPE_CHECKING
+from typing import Iterable, Iterator
 
-import scipy.sparse
 from qdrant_client import QdrantClient
 from qdrant_openapi_client.exceptions import UnexpectedResponse
 from qdrant_openapi_client.models.models import PointIdsList, PointsList, ScrollRequest
@@ -31,7 +30,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def scroll_batch_size(self) -> int:
         raise NotImplementedError()
 
-    def _upload_batch(self, docs: Iterable[Document]):
+    def _upload_batch(self, docs: Iterable['Document']):
         self.client.http.points_api.upsert_points(
             name=self.collection_name,
             wait=True,
@@ -45,7 +44,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             qdrant_record['payload']['_serialized'], **self.serialization_config
         )
 
-    def _document_to_qdrant(self, doc: Document) -> dict:
+    def _document_to_qdrant(self, doc: 'Document') -> dict:
         return dict(
             id=doc.id,
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
