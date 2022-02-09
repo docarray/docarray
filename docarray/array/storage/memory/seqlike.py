@@ -1,5 +1,7 @@
 from typing import Iterator, Union, Iterable, MutableSequence
 
+import pandas as pd
+
 from ..memory.backend import needs_id2offset_rebuild
 from .... import Document
 
@@ -7,23 +9,23 @@ from .... import Document
 class SequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
 
-    @needs_id2offset_rebuild
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
 
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        self._data.insert(index, value)
+        s1 = self._data[:index]
+        s2 = self._data[index:]
+        s1[value.id] = value
+        self._data = s1.append(s2)
 
     def append(self, value: 'Document'):
         """Append `doc` to the end of the array.
 
         :param value: The doc needs to be appended.
         """
-        self._data.append(value)
-        if not self._needs_id2offset_rebuild:
-            self._id_to_index[value.id] = len(self) - 1
+        self._data[value.id] = value
 
     def __eq__(self, other):
         return (
@@ -40,9 +42,9 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
-            return x in self._id2offset
+            return x in self._data.index
         elif isinstance(x, Document):
-            return x.id in self._id2offset
+            return x.id in self._data.index
         else:
             return False
 
@@ -66,7 +68,5 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return v
 
     def extend(self, values: Iterable['Document']) -> None:
-        values = list(values)  # consume the iterator only once
-        last_idx = len(self._id2offset)
-        self._data.extend(values)
-        self._id_to_index.update({d.id: i + last_idx for i, d in enumerate(values)})
+        for v in values:
+            self._data[v.id] = values

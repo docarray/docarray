@@ -10,6 +10,8 @@ from typing import (
     Callable,
 )
 
+from pandas import Series
+
 from ..base.backend import BaseBackendMixin
 from .... import Document
 
@@ -44,19 +46,6 @@ class BackendMixin(BaseBackendMixin):
 
         return self._id_to_index
 
-    def _rebuild_id2offset(self) -> None:
-        """Update the id_to_index map by enumerating all Documents in self._data.
-
-        Very costy! Only use this function when self._data is dramtically changed.
-        """
-
-        self._id_to_index = {
-            d.id: i for i, d in enumerate(self._data)
-        }  # type: Dict[str, int]
-
-        self._needs_id2offset_rebuild = False
-
-    @needs_id2offset_rebuild
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -67,7 +56,7 @@ class BackendMixin(BaseBackendMixin):
         from ... import DocumentArray
         from ...memory import DocumentArrayInMemory
 
-        self._data = []
+        self._data: Series = Series()
         self._id_to_index = {}
         if _docs is None:
             return
@@ -75,15 +64,16 @@ class BackendMixin(BaseBackendMixin):
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self._data = [Document(d, copy=True) for d in _docs]
+                self._data = Series(
+                    [Document(d, copy=True) for d in _docs], index=[d.id for d in _docs]
+                )
             elif isinstance(_docs, DocumentArray):
                 self._data = _docs._data
             else:
-                self._data = list(_docs)
+                self._data = Series(
+                    [Document(d) for d in _docs], index=[d.id for d in _docs]
+                )
 
-            if isinstance(_docs, DocumentArrayInMemory):
-                self._id_to_index = _docs._id2offset
-                self._needs_id2offset_rebuild = _docs._needs_id2offset_rebuild
         else:
             if isinstance(_docs, Document):
                 if copy:

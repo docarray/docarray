@@ -55,6 +55,7 @@ setup(
             'uvicorn',
             'weaviate-client~=3.3.0',
             'pqlite>=0.2.1',
+            'pandas~=1.4.0',
         ],
         'test': [
             'pytest',
