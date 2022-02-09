@@ -22,6 +22,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -557,4 +558,23 @@
 
  - [[```46f80d67```](https://github.com/jina-ai/docarray/commit/46f80d67deb1ab3ddad11a12e01c5695fe78074d)] __-__ __docs__: fix typo in pydantic section (*Han Xiao*)
  - [[```ab7d6da8```](https://github.com/jina-ai/docarray/commit/ab7d6da87695beb1173bcad5a50874b352f7fb93)] __-__ __version__: the next version will be 0.5.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-6-0></a>
+## Release Note (`0.6.0`)
+
+> Release time: 2022-02-09 20:56:24
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```a39ae690```](https://github.com/jina-ai/docarray/commit/a39ae690c87536d30d4501f0192fb56f75860a0f)] __-__ graphql support (#107) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```4e026565```](https://github.com/jina-ai/docarray/commit/4e026565c72839a44517ce41f5bccce126c0c585)] __-__ __version__: the next version will be 0.5.4 (*Jina Dev Bot*)
 
