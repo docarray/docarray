@@ -121,4 +121,4 @@ def test_content_by_config(da_len, da_cls, config, n_dim):
         da_cls(da_len)
 
     da = da_cls.empty(da_len, config=config)
-    assert da.n_dim == n_dim
+    assert da._n_dim == n_dim

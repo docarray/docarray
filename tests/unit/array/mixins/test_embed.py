@@ -6,6 +6,7 @@ import paddle
 import pytest
 import tensorflow as tf
 import torch
+from transformers import TFViTModel, ViTConfig, ViTModel
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
@@ -23,6 +24,8 @@ random_embed_models = {
     'paddle': lambda: paddle.nn.Sequential(
         paddle.nn.Dropout(0.5), paddle.nn.BatchNorm1D(128)
     ),
+    'transformers_torch': lambda: ViTModel(ViTConfig()),
+    'transformers_tf': lambda: TFViTModel(ViTConfig()),
 }
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 torch.onnx.export(
@@ -43,26 +46,41 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
 )
 
 
-@pytest.mark.parametrize('framework', ['onnx', 'keras', 'pytorch'])
 @pytest.mark.parametrize(
-    'da_cls,config',
+    'framework, input_shape, embedding_shape',
     [
-        (DocumentArray, None),
-        (DocumentArraySqlite, None),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        ('onnx', (128,), 128),
+        ('keras', (128,), 128),
+        ('pytorch', (128,), 128),
+        ('transformers_torch', (3, 224, 224), 768),
+        ('transformers_tf', (3, 224, 224), 768),
+    ],
+)
+@pytest.mark.parametrize(
+    'da_cls',
+    [
+        DocumentArray,
+        DocumentArraySqlite,
+        # DocumentArrayWeaviate,  # TODO enable this
     ],
 )
 @pytest.mark.parametrize('N', [2, 10])
 @pytest.mark.parametrize('batch_size', [1, 256])
 @pytest.mark.parametrize('to_numpy', [True, False])
 def test_embedding_on_random_network(
-    framework, da_cls, config, N, batch_size, to_numpy, start_storage
+    framework,
+    input_shape,
+    da_cls,
+    embedding_shape,
+    N,
+    batch_size,
+    to_numpy,
 ):
-    if config:
-        da = da_cls.empty(N, config=config)
+    if da_cls == DocumentArrayWeaviate:
+        da = da_cls.empty(N, config=WeaviateConfig(n_dim=embedding_shape))
     else:
-        da = da_cls.empty(N)
-    da.tensors = np.random.random([N, 128]).astype(np.float32)
+        da = da_cls.empty(N, config=None)
+    da.tensors = np.random.random([N, *input_shape]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
 
@@ -73,7 +91,7 @@ def test_embedding_on_random_network(
     embed1 = r.copy()
 
     # reset
-    da.embeddings = np.random.random([N, 128]).astype(np.float32)
+    da.embeddings = np.random.random([N, embedding_shape]).astype(np.float32)
 
     # docs[a: b].embed is only supported for DocumentArrayInMemory
     if isinstance(da, DocumentArrayInMemory):
@@ -82,7 +100,7 @@ def test_embedding_on_random_network(
         np.testing.assert_array_almost_equal(da.embeddings, embed1)
 
         # reset
-        da.embeddings = np.random.random([N, 128]).astype(np.float32)
+        da.embeddings = np.random.random([N, embedding_shape]).astype(np.float32)
 
         # now do this one by one
         da[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)

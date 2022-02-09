@@ -118,6 +118,7 @@ class BackendMixin(BaseBackendMixin):
             self.clear()
             self.extend(_docs)
         else:
+            self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
 

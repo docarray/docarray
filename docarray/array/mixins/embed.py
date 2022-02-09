@@ -44,6 +44,12 @@ class EmbedMixin:
         with device:
             for b_ids in self.batch_ids(batch_size):
                 r = embed_model(self[b_ids, 'tensor'], training=False)
+                if not isinstance(r, tf.Tensor):
+                    # NOTE: Transformers has own output class.
+                    from transformers.modeling_outputs import ModelOutput
+
+                    r = r.pooler_output  # type: ModelOutput
+
                 self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
     def _set_embeddings_torch(
@@ -61,7 +67,14 @@ class EmbedMixin:
         with torch.inference_mode():
             for b_ids in self.batch_ids(batch_size):
                 batch_inputs = torch.tensor(self[b_ids, 'tensor'], device=device)
-                r = embed_model(batch_inputs).cpu().detach()
+                r = embed_model(batch_inputs)
+                if isinstance(r, torch.Tensor):
+                    r = r.cpu().detach()
+                else:
+                    # NOTE: Transformers has own output class.
+                    from transformers.modeling_outputs import ModelOutput
+
+                    r = r.pooler_output.cpu().detach()  # type: ModelOutput
                 self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
         if is_training_before:

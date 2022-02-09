@@ -25,7 +25,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if not resp:
             raise KeyError(wid)
         return Document.from_base64(
-            resp['properties']['_serialized'], **self.serialize_config
+            resp['properties']['_serialized'], **self._serialize_config
         )
 
     def _setitem(self, wid: str, value: Document):
@@ -38,7 +38,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if self._client.data_object.exists(wid):
             self._client.data_object.delete(wid)
         self._client.data_object.create(**payload)
-        self._offset2ids[self._offset2ids.index(wid)] = self.wmap(value.id)
+        self._offset2ids[self._offset2ids.index(wid)] = self._wmap(value.id)
         self._update_offset2ids_meta()
 
     def _change_doc_id(self, old_wid: str, doc: Document, new_wid: str):
@@ -71,7 +71,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of the document
         :return: the retrieved document from weaviate
         """
-        return self._getitem(self.wmap(_id))
+        return self._getitem(self._wmap(_id))
 
     def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         """Concrete implementation of base class' ``_get_doc_by_slice``
@@ -91,7 +91,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         wid = self._offset2ids[offset]
         self._setitem(wid, value)
         # update weaviate id
-        self._offset2ids[offset] = self.wmap(value.id)
+        self._offset2ids[offset] = self._wmap(value.id)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
@@ -99,7 +99,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
-        self._setitem(self.wmap(_id), value)
+        self._setitem(self._wmap(_id), value)
 
     def _set_docs_by_slice(self, _slice: slice, values: Sequence['Document']):
         """Concrete implementation of base class' ``_set_doc_by_slice``
@@ -128,12 +128,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         doc = self[_id]
 
         if attr == 'id':
-            old_wid = self.wmap(doc.id)
+            old_wid = self._wmap(doc.id)
             setattr(doc, attr, value)
-            self._change_doc_id(old_wid, doc, self.wmap(value))
+            self._change_doc_id(old_wid, doc, self._wmap(value))
         else:
             setattr(doc, attr, value)
-            self._setitem(self.wmap(doc.id), doc)
+            self._setitem(self._wmap(doc.id), doc)
 
     def _del_doc_by_offset(self, offset: int):
         """Concrete implementation of base class' ``_del_doc_by_offset``
@@ -147,7 +147,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param _id: the id of the document to delete
         """
-        self._delitem(self.wmap(_id))
+        self._delitem(self._wmap(_id))
 
     def _del_docs_by_slice(self, _slice: slice):
         """Concrete implementation of base class' ``_del_doc_by_slice``
