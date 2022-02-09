@@ -77,7 +77,6 @@ class BackendMixin(BaseBackendMixin):
             self.append(_docs)
 
     def __getstate__(self):
-        self._pqlite.close()
         state = dict(self.__dict__)
         del state['_pqlite']
         del state['_offset2ids']
