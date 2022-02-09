@@ -8,6 +8,8 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Callable,
+    Tuple,
+    List,
 )
 
 from pandas import Series
@@ -21,30 +23,24 @@ if TYPE_CHECKING:
     )
 
 
-def needs_id2offset_rebuild(func) -> Callable:
-    # self._id2offset needs to be rebuilt after every insert or delete
-    # this flag allows to do it lazily and cache the result
-    @functools.wraps(func)
-    def wrapper(self, *args, **kwargs):
-        self._needs_id2offset_rebuild = True
-        return func(self, *args, **kwargs)
-
-    return wrapper
+def _get_docs_ids(
+    docs: Sequence['Document'], copy: bool = False
+) -> Tuple[List['Document'], List[str]]:
+    """ Returns a tuple of docs and ids while consuming the generator only once"""
+    _docs, ids = [], []
+    if copy:
+        for doc in docs:
+            _docs.append(Document(doc, copy=True))
+            ids.append(doc.id)
+    else:
+        for doc in docs:
+            _docs.append(Document(doc))
+            ids.append(doc.id)
+    return _docs, ids
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
-
-    @property
-    def _id2offset(self) -> Dict[str, int]:
-        """Return the `_id_to_index` map
-
-        :return: a Python dict.
-        """
-        if self._needs_id2offset_rebuild:
-            self._rebuild_id2offset()
-
-        return self._id_to_index
 
     def _init_storage(
         self,
@@ -54,7 +50,6 @@ class BackendMixin(BaseBackendMixin):
         **kwargs
     ):
         from ... import DocumentArray
-        from ...memory import DocumentArrayInMemory
 
         self._data: Series = Series()
         self._id_to_index = {}
@@ -64,15 +59,13 @@ class BackendMixin(BaseBackendMixin):
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
             if copy:
-                self._data = Series(
-                    [Document(d, copy=True) for d in _docs], index=[d.id for d in _docs]
-                )
+                _docs, ids = _get_docs_ids(_docs, copy=True)
+                self._data = Series(_docs, index=ids)
             elif isinstance(_docs, DocumentArray):
                 self._data = _docs._data
             else:
-                self._data = Series(
-                    [Document(d) for d in _docs], index=[d.id for d in _docs]
-                )
+                _docs, ids = _get_docs_ids(_docs)
+                self._data = Series(_docs, index=ids)
 
         else:
             if isinstance(_docs, Document):
