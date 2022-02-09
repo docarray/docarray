@@ -22,6 +22,7 @@ Submodules
    docarray.document.mixins.property
    docarray.document.mixins.protobuf
    docarray.document.mixins.pydantic
+   docarray.document.mixins.strawberry
    docarray.document.mixins.sugar
    docarray.document.mixins.text
    docarray.document.mixins.video

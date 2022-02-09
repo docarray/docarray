@@ -18,6 +18,7 @@ Submodules
    docarray.document.data
    docarray.document.generators
    docarray.document.pydantic_model
+   docarray.document.strawberry_type
 
 Module contents
 ---------------

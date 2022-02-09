@@ -30,6 +30,7 @@ Submodules
    docarray.array.mixins.reduce
    docarray.array.mixins.sample
    docarray.array.mixins.setitem
+   docarray.array.mixins.strawberry
    docarray.array.mixins.text
    docarray.array.mixins.traverse
 
