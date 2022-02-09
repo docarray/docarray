@@ -7,11 +7,12 @@ if TYPE_CHECKING:
 
 
 class QdrantStorageHelper:
-
     @classmethod
-    def embedding_to_array(cls, embedding: 'ArrayType', default_dim: int) -> List[float]:
+    def embedding_to_array(
+        cls, embedding: 'ArrayType', default_dim: int
+    ) -> List[float]:
         if embedding is None:
-            embedding = [0.] * default_dim
+            embedding = [0.0] * default_dim
         elif isinstance(embedding, scipy.sparse.spmatrix):
             embedding = embedding.toarray().tolist()
         else:

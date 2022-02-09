@@ -28,7 +28,6 @@ if TYPE_CHECKING:
 
 
 class FindMixin:
-
     @property
     def client(self) -> 'QdrantClient':
         raise NotImplementedError()
@@ -54,20 +53,24 @@ class FindMixin:
             query_filter=None,
             search_params=None,
             top=limit,
-            append_payload=['_serialized']
+            append_payload=['_serialized'],
         )
 
         docs = []
 
         for hit in search_result:
-            doc = Document.from_base64(hit.payload['_serialized'], **self.serialize_config)
-            doc.scores[f'{self.distance.lower()}_similarity'] = NamedScore(value=hit.score)
+            doc = Document.from_base64(
+                hit.payload['_serialized'], **self.serialize_config
+            )
+            doc.scores[f'{self.distance.lower()}_similarity'] = NamedScore(
+                value=hit.score
+            )
             docs.append(doc)
 
         return DocumentArray(docs)
 
     def find(
-            self, query: 'QdrantArrayType', limit: int = 10
+        self, query: 'QdrantArrayType', limit: int = 10
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be used in Qdrant.
