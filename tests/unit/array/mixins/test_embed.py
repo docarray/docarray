@@ -62,7 +62,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
     [
         DocumentArray,
         DocumentArraySqlite,
-        # DocumentArrayPqlite,  # TODO enable this
+        DocumentArrayPqlite,
         # DocumentArrayWeaviate,  # TODO enable this
     ],
 )
