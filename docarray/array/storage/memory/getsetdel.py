@@ -15,7 +15,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
-        self._data.drop(itertools.compress(self._data.index, mask))
+        self._data.drop(itertools.compress(self._data.index, mask), inplace=True)
 
     def _del_all_docs(self):
         self._data = Series()
@@ -39,6 +39,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         # TODO: what if value.id is different from _id?
+        if not isinstance(value, Sequence):
+            raise TypeError('can only assign an iterable')
         self._data[_slice] = value
 
     def _set_doc_value_pairs(
@@ -66,6 +68,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return self._data[_slice]
 
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
+        if isinstance(offsets, tuple):
+            return self._data[list(offsets)]
         return self._data[offsets]
 
     def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
