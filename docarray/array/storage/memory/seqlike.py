@@ -2,7 +2,6 @@ from typing import Iterator, Union, Iterable, MutableSequence
 
 import pandas as pd
 
-from ..memory.backend import needs_id2offset_rebuild
 from .... import Document
 
 

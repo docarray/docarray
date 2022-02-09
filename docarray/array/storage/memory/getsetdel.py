@@ -8,7 +8,6 @@ from typing import (
 from pandas import Series
 
 from ..base.getsetdel import BaseGetSetDelMixin
-from ..memory.backend import needs_id2offset_rebuild
 from .... import Document
 
 
