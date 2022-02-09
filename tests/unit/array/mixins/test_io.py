@@ -200,7 +200,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        # (DocumentArrayPqlite, PqliteConfig(n_dim=3)), # TODO: to support DAPqlite
+        # (DocumentArrayPqlite, PqliteConfig(n_dim=3)), # TODO: enable this
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):
