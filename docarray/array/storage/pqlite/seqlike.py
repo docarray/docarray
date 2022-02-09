@@ -1,7 +1,6 @@
-from typing import Iterator, Union, Iterable, Sequence, MutableSequence, TYPE_CHECKING
+from typing import Iterator, Union, Iterable, Sequence, MutableSequence
 
-if TYPE_CHECKING:
-    from .... import Document
+from .... import Document
 
 from ...memory import DocumentArrayInMemory
 
