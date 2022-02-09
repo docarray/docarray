@@ -70,6 +70,12 @@ class SequenceLikeMixin(MutableSequence[Document]):
         else:
             return False
 
+    def __del__(self):
+        """Delete this :class:`DocumentArrayWeaviate` object"""
+        if not self._persist:
+            self._client.schema.delete_class(self._class_name)
+            self._client.schema.delete_class(self._meta_name)
+
     def clear(self):
         """Clear the data of :class:`DocumentArray` with weaviate storage"""
         self._del_all_docs()

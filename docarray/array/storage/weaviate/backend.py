@@ -65,6 +65,11 @@ class BackendMixin(BaseBackendMixin):
         self._n_dim = config.n_dim
         self._serialize_config = config.serialize_config
 
+        if config.name and config.name != config.name.capitalize():
+            raise ValueError('weaviate class name has to be capitalized')
+
+        self._persist = bool(config.name)
+
         if isinstance(config.client, str):
             self._client = weaviate.Client(config.client)
         else:

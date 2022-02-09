@@ -6,17 +6,6 @@ from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 
-def test_construct_docarray_weaviate(start_weaviate):
-    daw = DocumentArrayWeaviate(config=WeaviateConfig(n_dim=10))
-    daw.extend([Document(text='a'), Document(text='b'), Document(text='c')])
-    name = daw.name
-    del daw
-
-    daw2 = DocumentArrayWeaviate(config=WeaviateConfig(n_dim=10, name=name))
-    assert len(daw2) == 3
-    assert daw2.texts == ['a', 'b', 'c']
-
-
 @pytest.mark.parametrize(
     'da_cls,config',
     [
