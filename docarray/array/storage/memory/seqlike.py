@@ -30,7 +30,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return (
             type(self) is type(other)
             and type(self._data) is type(other._data)
-            and self._data == other._data
+            and (self._data == other._data).all()
         )
 
     def __len__(self):
