@@ -1,4 +1,4 @@
-# Notebook/Colab Support
+# Jupyter Notebook/Colab
 
 Many data scientists work with Jupyter Notebook or Google Colab especially at the early prototyping stage. We understand that and that's why we optimize DocArray's user experience in these two environments. In this chapter, I use Jupyter Notebook as an example to demonstrate the features that can improve your productivity. On Google Colab, it is the same experience.
 
