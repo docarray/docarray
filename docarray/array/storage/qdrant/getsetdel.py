@@ -7,9 +7,7 @@ from qdrant_openapi_client.models.models import PointIdsList, PointsList, Scroll
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
-
-if TYPE_CHECKING:
-    from docarray.types import ArrayType
+from docarray.array.storage.qdrant.helper import QdrantStorageHelper
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -33,18 +31,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def scroll_batch_size(self) -> int:
         raise NotImplementedError()
 
-    def _embedding_to_array(self, embedding: 'ArrayType') -> List[float]:
-        if embedding is None:
-            embedding = [0] * self.n_dim
-        elif isinstance(embedding, scipy.sparse.spmatrix):
-            embedding = embedding.toarray().tolist()
-        else:
-            from ....math.ndarray import to_numpy_array
-
-            embedding = to_numpy_array(embedding).tolist()
-
-        return embedding
-
     def _upload_batch(self, docs: Iterable[Document]):
         self.client.http.points_api.upsert_points(
             name=self.collection_name,
@@ -63,7 +49,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return dict(
             id=_id or doc.id,
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
-            vector=self._embedding_to_array(doc.embedding),
+            vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
         )
 
     def _get_doc_by_offset(self, offset: int) -> 'Document':

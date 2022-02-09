@@ -1,5 +1,6 @@
 import itertools
 import uuid
+from dataclasses import dataclass, field
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -10,13 +11,12 @@ from typing import (
     Iterator,
     Iterable,
 )
-from dataclasses import dataclass, field
+
+from qdrant_client import QdrantClient
+from qdrant_openapi_client.models.models import Distance
 
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
-
-from qdrant_openapi_client.models.models import Distance, PointsList
-from qdrant_client import QdrantClient
 
 if TYPE_CHECKING:
     from docarray.types import (
