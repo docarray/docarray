@@ -45,9 +45,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             qdrant_record['payload']['_serialized'], **self.serialization_config
         )
 
-    def _document_to_qdrant(self, doc: Document, _id: str = None) -> dict:
+    def _document_to_qdrant(self, doc: Document) -> dict:
         return dict(
-            id=_id or doc.id,
+            id=doc.id,
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
             vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
         )
@@ -79,10 +79,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         raise NotImplementedError()
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
+        if _id != value.id:
+            self._del_doc_by_id(_id)
         self.client.http.points_api.upsert_points(
             name=self.collection_name,
             wait=True,
-            point_insert_operations=[self._document_to_qdrant(value, _id=_id)],
+            point_insert_operations=[self._document_to_qdrant(value)],
         )
 
     def scan(self) -> Iterator['Document']:
