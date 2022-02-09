@@ -49,7 +49,7 @@ def test_set_embeddings_multi_kind(array):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, WeaviateConfig(n_dim=10)),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
