@@ -56,7 +56,8 @@ class BackendMixin(BaseBackendMixin):
         if _docs is None:
             return
         elif isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+            _docs,
+            (DocumentArray, Sequence, Generator, Iterator, itertools.chain, Series),
         ):
             if copy:
                 _docs, ids = _get_docs_ids(_docs, copy=True)

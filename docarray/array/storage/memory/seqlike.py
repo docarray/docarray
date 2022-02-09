@@ -68,4 +68,4 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def extend(self, values: Iterable['Document']) -> None:
         for v in values:
-            self._data[v.id] = values
+            self._data[v.id] = v
