@@ -5,10 +5,18 @@ from typing import (
     Any,
 )
 
+import pandas as pd
 from pandas import Series
 
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document
+
+
+def _insert_at_series(s: Series, index, value) -> Series:
+    s1 = s[:index]
+    s2 = s[index:]
+    s1[value.id] = value
+    return s1.append(s2)
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -30,12 +38,22 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._data.drop(self._data.index[offset], inplace=True)
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        # TODO: what if value.id is different from self._data.index[offset]?
-        self._data[offset] = value
+        if offset < 0:
+            offset = offset + len(self._data)
+        old_id = self._data.index[offset]
+        if value.id != old_id:
+            self._data.drop(old_id, inplace=True)
+            self._data = _insert_at_series(self._data, offset, value)
+        else:
+            self._data[offset] = value
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        # TODO: what if value.id is different from _id?
-        self._data[_id] = value
+        if value.id != _id:
+            offset = self._data.index.get_loc(_id)
+            self._data.drop(_id, inplace=True)
+            self._data = _insert_at_series(self._data, offset, value)
+        else:
+            self._data[_id] = value
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         # TODO: what if value.id is different from _id?
@@ -55,8 +73,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         setattr(self._data[offset], attr, value)
 
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
-        # TODO: what if value.id is different from _id?
+        # TODO: what if attr is a new id?
         setattr(self._data[_id], attr, value)
+        if attr == 'id' and _id != value:
+            self._data.drop(_id, inplace=True)
+            self._data = _insert_at_series(
+                self._data, self._data.index.get_loc(_id), value
+            )
 
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]
@@ -73,4 +96,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return self._data[offsets]
 
     def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
+        if isinstance(ids, tuple):
+            return self._data[list(ids)]
         return self._data[ids]
