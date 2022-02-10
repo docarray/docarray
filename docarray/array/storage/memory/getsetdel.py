@@ -60,8 +60,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if not isinstance(value, Sequence):
             raise TypeError('can only assign an iterable')
         _docs, ids = _get_docs_ids(value)
-        start, step, end = _slice
-        start, step, end = start or 0, step or 1, end or len(self._data)
+        start, step, end = (
+            _slice.start or 0,
+            _slice.step or 1,
+            _slice.stop or len(self._data),
+        )
         self._data = (
             self._data[:start].append(Series(_docs, index=ids)).append(self._data[end:])
         )
