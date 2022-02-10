@@ -54,7 +54,7 @@ setup(
             'fastapi',
             'uvicorn',
             'weaviate-client~=3.3.0',
-            'pqlite>=0.2.2',
+            'pqlite>=0.2.3',
         ],
         'test': [
             'pytest',
