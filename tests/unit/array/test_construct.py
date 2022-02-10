@@ -3,7 +3,7 @@ import pytest
 from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 
@@ -23,7 +23,7 @@ def test_construct_docarray_weaviate(start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -69,7 +69,7 @@ def test_construct_docarray(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -96,7 +96,7 @@ def test_docarray_copy_singleton(da_cls, config, is_copy, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -119,13 +119,18 @@ def test_docarray_copy_da(da_cls, config, is_copy, start_weaviate):
 
 
 @pytest.mark.parametrize(
-    'da_cls', [DocumentArrayInMemory, DocumentArraySqlite, DocumentArrayPqlite]
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=1)),
+    ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
-def test_docarray_copy_list(da_cls, is_copy, start_weaviate):
+def test_docarray_copy_list(da_cls, config, is_copy, start_weaviate):
     d1 = Document()
     d2 = Document()
-    da = da_cls([d1, d2], copy=is_copy)
+    da = da_cls([d1, d2], copy=is_copy, config=config)
     d1.id = 'hello'
     if da_cls == DocumentArrayInMemory:
         if is_copy:
