@@ -9,6 +9,7 @@ from typing import (
     Generator,
     Iterator,
 )
+from pqlite import PQLite
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class PqliteConfig:
-    n_dim: int = 1
+    n_dim: int
     metric: str = 'cosine'
     serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
@@ -37,8 +38,8 @@ class BackendMixin(BaseBackendMixin):
         **kwargs,
     ):
         if not config:
-            config = PqliteConfig()
-        if isinstance(config, dict):
+            raise ValueError('Config object must be specified')
+        elif isinstance(config, dict):
             config = dataclass_from_dict(PqliteConfig, config)
 
         self._persist = bool(config.data_path)
@@ -50,7 +51,6 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        from pqlite import PQLite
         from .helper import OffsetMapping
 
         config = asdict(config)
