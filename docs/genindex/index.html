@@ -231,6 +231,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../advanced/graphql-support/">GraphQL</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../advanced/document-store/sqlite/">SQLite</a></li>
 </ul>
 </li>
@@ -305,6 +306,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../api/docarray.array.storage.weaviate.seqlike/">docarray.array.storage.weaviate.seqlike module</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../api/docarray.array.storage.registry/">docarray.array.storage.registry module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/docarray.array.base/">docarray.array.base module</a></li>
@@ -472,8 +474,6 @@
 </li>
           <li><a href="../api/docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.append">(docarray.array.storage.memory.seqlike.SequenceLikeMixin method)</a>
 </li>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.append">(docarray.array.storage.pqlite.seqlike.SequenceLikeMixin method)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.append">(docarray.array.storage.sqlite.seqlike.SequenceLikeMixin method)</a>
 </li>
         </ul></li>
@@ -498,8 +498,6 @@
         <li><a href="../api/docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.BackendMixin">BackendMixin (class in docarray.array.storage.memory.backend)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.BackendMixin">(class in docarray.array.storage.pqlite.backend)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.backend/#docarray.array.storage.sqlite.backend.BackendMixin">(class in docarray.array.storage.sqlite.backend)</a>
 </li>
         </ul></li>
@@ -509,10 +507,10 @@
 </li>
         <li><a href="../api/docarray.array.base/#docarray.array.base.BaseDocumentArray">BaseDocumentArray (class in docarray.array.base)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin">BaseGetSetDelMixin (class in docarray.array.storage.base.getsetdel)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch">batch() (docarray.array.mixins.group.GroupMixin method)</a>
 </li>
         <li><a href="../api/docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin.batch_ids">batch_ids() (docarray.array.mixins.group.GroupMixin method)</a>
@@ -544,8 +542,6 @@
         <li><a href="../api/docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.clear">clear() (docarray.array.storage.memory.seqlike.SequenceLikeMixin method)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.clear">(docarray.array.storage.pqlite.seqlike.SequenceLikeMixin method)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.clear">(docarray.array.storage.sqlite.seqlike.SequenceLikeMixin method)</a>
 </li>
           <li><a href="../api/docarray.base/#docarray.base.BaseDCType.clear">(docarray.base.BaseDCType method)</a>
@@ -581,14 +577,14 @@
 </li>
         <li><a href="../api/docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin.content_type">content_type (docarray.document.mixins.property.PropertyMixin property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin">ContentPropertyMixin (class in docarray.array.mixins.content)</a>
 
         <ul>
           <li><a href="../api/docarray.document.mixins.content/#docarray.document.mixins.content.ContentPropertyMixin">(class in docarray.document.mixins.content)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.contents">contents (docarray.array.mixins.content.ContentPropertyMixin property)</a>
 </li>
         <li><a href="../api/docarray.document.mixins.blob/#docarray.document.mixins.blob.BlobDataMixin.convert_blob_to_datauri">convert_blob_to_datauri() (docarray.document.mixins.blob.BlobDataMixin method)</a>
@@ -637,12 +633,6 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.PqliteConfig.data_path">data_path (docarray.array.storage.pqlite.backend.PqliteConfig attribute)</a>
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.PqliteConfig.data_path">(docarray.array.storage.pqlite.PqliteConfig attribute)</a>
-</li>
-        </ul></li>
         <li><a href="../api/docarray.helper/#docarray.helper.dataclass_from_dict">dataclass_from_dict() (in module docarray.helper)</a>
 </li>
         <li><a href="../api/docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin">DataframeIOMixin (class in docarray.array.mixins.io.dataframe)</a>
@@ -909,13 +899,6 @@
 </li>
         </ul></li>
         <li>
-    docarray.array.pqlite
-
-        <ul>
-          <li><a href="../api/docarray.array.pqlite/#module-docarray.array.pqlite">module</a>
-</li>
-        </ul></li>
-        <li>
     docarray.array.sqlite
 
         <ul>
@@ -979,42 +962,14 @@
 </li>
         </ul></li>
         <li>
-    docarray.array.storage.pqlite
+    docarray.array.storage.registry
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#module-docarray.array.storage.pqlite">module</a>
-</li>
-        </ul></li>
-        <li>
-    docarray.array.storage.pqlite.backend
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.backend/#module-docarray.array.storage.pqlite.backend">module</a>
+          <li><a href="../api/docarray.array.storage.registry/#module-docarray.array.storage.registry">module</a>
 </li>
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li>
-    docarray.array.storage.pqlite.find
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.find/#module-docarray.array.storage.pqlite.find">module</a>
-</li>
-        </ul></li>
-        <li>
-    docarray.array.storage.pqlite.getsetdel
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.getsetdel/#module-docarray.array.storage.pqlite.getsetdel">module</a>
-</li>
-        </ul></li>
-        <li>
-    docarray.array.storage.pqlite.seqlike
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#module-docarray.array.storage.pqlite.seqlike">module</a>
-</li>
-        </ul></li>
         <li>
     docarray.array.storage.sqlite
 
@@ -1336,8 +1291,6 @@
 </li>
         <li><a href="../api/docarray.array.memory/#docarray.array.memory.DocumentArrayInMemory">DocumentArrayInMemory (class in docarray.array.memory)</a>
 </li>
-        <li><a href="../api/docarray.array.pqlite/#docarray.array.pqlite.DocumentArrayPqlite">DocumentArrayPqlite (class in docarray.array.pqlite)</a>
-</li>
         <li><a href="../api/docarray.array.sqlite/#docarray.array.sqlite.DocumentArraySqlite">DocumentArraySqlite (class in docarray.array.sqlite)</a>
 </li>
         <li><a href="../api/docarray.document.data/#docarray.document.data.DocumentData">DocumentData (class in docarray.document.data)</a>
@@ -1391,8 +1344,6 @@
         <li><a href="../api/docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.extend">extend() (docarray.array.storage.memory.seqlike.SequenceLikeMixin method)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.extend">(docarray.array.storage.pqlite.seqlike.SequenceLikeMixin method)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.extend">(docarray.array.storage.sqlite.seqlike.SequenceLikeMixin method)</a>
 </li>
         </ul></li>
@@ -1407,10 +1358,6 @@
         <li><a href="../api/docarray.math.evaluation/#docarray.math.evaluation.f1_score_at_k">f1_score_at_k() (in module docarray.math.evaluation)</a>
 </li>
         <li><a href="../api/docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin">FeatureHashMixin (class in docarray.document.mixins.featurehash)</a>
-</li>
-        <li><a href="../api/docarray.array.storage.pqlite.find/#docarray.array.storage.pqlite.find.FindMixin.find">find() (docarray.array.storage.pqlite.find.FindMixin method)</a>
-</li>
-        <li><a href="../api/docarray.array.storage.pqlite.find/#docarray.array.storage.pqlite.find.FindMixin">FindMixin (class in docarray.array.storage.pqlite.find)</a>
 </li>
         <li><a href="../api/docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin.flatten">flatten() (docarray.array.mixins.traverse.TraverseMixin method)</a>
 </li>
@@ -1543,8 +1490,6 @@
         <li><a href="../api/docarray.array.storage.memory.getsetdel/#docarray.array.storage.memory.getsetdel.GetSetDelMixin">GetSetDelMixin (class in docarray.array.storage.memory.getsetdel)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.getsetdel/#docarray.array.storage.pqlite.getsetdel.GetSetDelMixin">(class in docarray.array.storage.pqlite.getsetdel)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.getsetdel/#docarray.array.storage.sqlite.getsetdel.GetSetDelMixin">(class in docarray.array.storage.sqlite.getsetdel)</a>
 </li>
         </ul></li>
@@ -1580,15 +1525,13 @@
 </li>
         <li><a href="../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin">ImageDataMixin (class in docarray.document.mixins.image)</a>
 </li>
-        <li><a href="../api/docarray.array.storage.sqlite.helper/#docarray.array.storage.sqlite.helper.initialize_table">initialize_table() (in module docarray.array.storage.sqlite.helper)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="../api/docarray.array.storage.sqlite.helper/#docarray.array.storage.sqlite.helper.initialize_table">initialize_table() (in module docarray.array.storage.sqlite.helper)</a>
+</li>
         <li><a href="../api/docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin.insert">insert() (docarray.array.storage.memory.seqlike.SequenceLikeMixin method)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.insert">(docarray.array.storage.pqlite.seqlike.SequenceLikeMixin method)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.insert">(docarray.array.storage.sqlite.seqlike.SequenceLikeMixin method)</a>
 </li>
         </ul></li>
@@ -1670,12 +1613,6 @@
 </li>
         <li><a href="../api/docarray.document.mixins.mesh/#docarray.document.mixins.mesh.MeshDataMixin">MeshDataMixin (class in docarray.document.mixins.mesh)</a>
 </li>
-        <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.PqliteConfig.metric">metric (docarray.array.storage.pqlite.backend.PqliteConfig attribute)</a>
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.PqliteConfig.metric">(docarray.array.storage.pqlite.PqliteConfig attribute)</a>
-</li>
-        </ul></li>
         <li><a href="../api/docarray.document.data/#docarray.document.data.DocumentData.mime_type">mime_type (docarray.document.data.DocumentData attribute)</a>
 </li>
         <li><a href="../api/docarray.math.helper/#docarray.math.helper.minmax_normalize">minmax_normalize() (in module docarray.math.helper)</a>
@@ -1756,8 +1693,6 @@
 </li>
           <li><a href="../api/docarray.array.mixins.traverse/#module-docarray.array.mixins.traverse">docarray.array.mixins.traverse</a>
 </li>
-          <li><a href="../api/docarray.array.pqlite/#module-docarray.array.pqlite">docarray.array.pqlite</a>
-</li>
           <li><a href="../api/docarray.array.sqlite/#module-docarray.array.sqlite">docarray.array.sqlite</a>
 </li>
           <li><a href="../api/docarray.array.storage/#module-docarray.array.storage">docarray.array.storage</a>
@@ -1776,15 +1711,7 @@
 </li>
           <li><a href="../api/docarray.array.storage.memory.seqlike/#module-docarray.array.storage.memory.seqlike">docarray.array.storage.memory.seqlike</a>
 </li>
-          <li><a href="../api/docarray.array.storage.pqlite/#module-docarray.array.storage.pqlite">docarray.array.storage.pqlite</a>
-</li>
-          <li><a href="../api/docarray.array.storage.pqlite.backend/#module-docarray.array.storage.pqlite.backend">docarray.array.storage.pqlite.backend</a>
-</li>
-          <li><a href="../api/docarray.array.storage.pqlite.find/#module-docarray.array.storage.pqlite.find">docarray.array.storage.pqlite.find</a>
-</li>
-          <li><a href="../api/docarray.array.storage.pqlite.getsetdel/#module-docarray.array.storage.pqlite.getsetdel">docarray.array.storage.pqlite.getsetdel</a>
-</li>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#module-docarray.array.storage.pqlite.seqlike">docarray.array.storage.pqlite.seqlike</a>
+          <li><a href="../api/docarray.array.storage.registry/#module-docarray.array.storage.registry">docarray.array.storage.registry</a>
 </li>
           <li><a href="../api/docarray.array.storage.sqlite/#module-docarray.array.storage.sqlite">docarray.array.storage.sqlite</a>
 </li>
@@ -1887,20 +1814,14 @@
   <h2>N</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.PqliteConfig.n_dim">n_dim (docarray.array.storage.pqlite.backend.PqliteConfig attribute)</a>
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.PqliteConfig.n_dim">(docarray.array.storage.pqlite.PqliteConfig attribute)</a>
-</li>
-        </ul></li>
         <li><a href="../api/docarray.score/#docarray.score.NamedScore">NamedScore (class in docarray.score)</a>
 </li>
         <li><a href="../api/docarray.score.data/#docarray.score.data.NamedScoreData">NamedScoreData (class in docarray.score.data)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.base/#docarray.base.BaseDCType.nbytes">nbytes (docarray.base.BaseDCType property)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.math.evaluation/#docarray.math.evaluation.ndcg_at_k">ndcg_at_k() (in module docarray.math.evaluation)</a>
 </li>
         <li><a href="../api/docarray.array.storage.memory.backend/#docarray.array.storage.memory.backend.needs_id2offset_rebuild">needs_id2offset_rebuild() (in module docarray.array.storage.memory.backend)</a>
@@ -1953,16 +1874,10 @@
         </ul></li>
         <li><a href="../api/docarray.base/#docarray.base.BaseDCType.pop">pop() (docarray.base.BaseDCType method)</a>
 </li>
-        <li><a href="../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin">PortingMixin (class in docarray.document.mixins.porting)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.PqliteConfig">PqliteConfig (class in docarray.array.storage.pqlite)</a>
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.PqliteConfig">(class in docarray.array.storage.pqlite.backend)</a>
+        <li><a href="../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin">PortingMixin (class in docarray.document.mixins.porting)</a>
 </li>
-        </ul></li>
         <li><a href="../api/docarray.math.evaluation/#docarray.math.evaluation.precision_at_k">precision_at_k() (in module docarray.math.evaluation)</a>
 </li>
         <li><a href="../api/docarray.document.mixins.property/#docarray.document.mixins.property.PropertyMixin">PropertyMixin (class in docarray.document.mixins.property)</a>
@@ -2068,8 +1983,6 @@
         <li><a href="../api/docarray.array.storage.memory.seqlike/#docarray.array.storage.memory.seqlike.SequenceLikeMixin">SequenceLikeMixin (class in docarray.array.storage.memory.seqlike)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite.seqlike/#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin">(class in docarray.array.storage.pqlite.seqlike)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin">(class in docarray.array.storage.sqlite.seqlike)</a>
 </li>
         </ul></li>
@@ -2081,20 +1994,14 @@
           <li><a href="../api/docarray.array.storage.sqlite/#docarray.array.storage.sqlite.SqliteConfig.serialize_config">(docarray.array.storage.sqlite.SqliteConfig attribute)</a>
 </li>
         </ul></li>
-        <li><a href="../api/docarray.array.storage.pqlite.backend/#docarray.array.storage.pqlite.backend.PqliteConfig.serialize_protocol">serialize_protocol (docarray.array.storage.pqlite.backend.PqliteConfig attribute)</a>
-
-        <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.PqliteConfig.serialize_protocol">(docarray.array.storage.pqlite.PqliteConfig attribute)</a>
-</li>
-        </ul></li>
         <li><a href="../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_channel_axis">set_image_tensor_channel_axis() (docarray.document.mixins.image.ImageDataMixin method)</a>
 </li>
         <li><a href="../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_inv_normalization">set_image_tensor_inv_normalization() (docarray.document.mixins.image.ImageDataMixin method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_normalization">set_image_tensor_normalization() (docarray.document.mixins.image.ImageDataMixin method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape">set_image_tensor_shape() (docarray.document.mixins.image.ImageDataMixin method)</a>
 </li>
         <li><a href="../api/docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin">SetItemMixin (class in docarray.array.mixins.setitem)</a>
@@ -2130,8 +2037,6 @@
         <li><a href="../api/docarray.array.storage.memory/#docarray.array.storage.memory.StorageMixins">StorageMixins (class in docarray.array.storage.memory)</a>
 
         <ul>
-          <li><a href="../api/docarray.array.storage.pqlite/#docarray.array.storage.pqlite.StorageMixins">(class in docarray.array.storage.pqlite)</a>
-</li>
           <li><a href="../api/docarray.array.storage.sqlite/#docarray.array.storage.sqlite.StorageMixins">(class in docarray.array.storage.sqlite)</a>
 </li>
         </ul></li>
@@ -2321,7 +2226,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 09, 2022.
+                    Last updated on Feb 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

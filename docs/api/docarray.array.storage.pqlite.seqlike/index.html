@@ -257,6 +257,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/graphql-support/">GraphQL</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/sqlite/">SQLite</a></li>
 </ul>
 </li>
@@ -331,6 +332,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../docarray.array.storage.weaviate.seqlike/">docarray.array.storage.weaviate.seqlike module</a></li>
 </ul>
 </li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.array.storage.registry/">docarray.array.storage.registry module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../docarray.array.base/">docarray.array.base module</a></li>
@@ -466,52 +468,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-docarray.array.storage.pqlite.seqlike">
-<span id="docarray-array-storage-pqlite-seqlike-module"></span><h1>docarray.array.storage.pqlite.seqlike module<a class="headerlink" href="#module-docarray.array.storage.pqlite.seqlike" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.array.storage.pqlite.seqlike.SequenceLikeMixin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.pqlite.seqlike.</span></span><span class="sig-name descname"><span class="pre">SequenceLikeMixin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/pqlite/seqlike/#SequenceLikeMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableSequence</span></code>[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.Document</span></code></a>]</p>
-<p>Implement sequence-like methods</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/pqlite/seqlike/#SequenceLikeMixin.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.insert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert <cite>doc</cite> at <cite>index</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Position of the insertion.</p></li>
-<li><p><strong>value</strong> (<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>) – The doc needs to be inserted.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/pqlite/seqlike/#SequenceLikeMixin.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.append" title="Permalink to this definition">¶</a></dt>
-<dd><p>S.append(value) – append value to the end of the sequence</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.extend">
-<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/pqlite/seqlike/#SequenceLikeMixin.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>S.extend(iterable) – extend sequence by appending elements from the iterable</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/pqlite/seqlike/#SequenceLikeMixin.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.pqlite.seqlike.SequenceLikeMixin.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear the data of <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
-</dd></dl>
-</dd></dl>
+                <section id="docarray-array-storage-pqlite-seqlike-module">
+<h1>docarray.array.storage.pqlite.seqlike module<a class="headerlink" href="#docarray-array-storage-pqlite-seqlike-module" title="Permalink to this headline">¶</a></h1>
 </section>
 
             </article>
@@ -546,7 +504,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 09, 2022.
+                    Last updated on Feb 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

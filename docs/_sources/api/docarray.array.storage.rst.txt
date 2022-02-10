@@ -13,6 +13,14 @@ Subpackages
    docarray.array.storage.sqlite
    docarray.array.storage.weaviate
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   docarray.array.storage.registry
+
 Module contents
 ---------------
 
