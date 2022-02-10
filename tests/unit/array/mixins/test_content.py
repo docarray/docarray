@@ -15,7 +15,10 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
 def test_content_empty_getter_return_none(cls, content_attr):
-    da = cls()
+    if cls == DocumentArrayPqlite:
+        da = cls(config={'n_dim': 3})
+    else:
+        da = cls()
     assert getattr(da, content_attr) is None
 
 
@@ -33,7 +36,10 @@ def test_content_empty_getter_return_none(cls, content_attr):
     ],
 )
 def test_content_empty_setter(cls, content_attr):
-    da = cls()
+    if cls == DocumentArrayPqlite:
+        da = cls(config={'n_dim': 3})
+    else:
+        da = cls()
     setattr(da, content_attr[0], content_attr[1])
     assert getattr(da, content_attr[0]) is None
 
