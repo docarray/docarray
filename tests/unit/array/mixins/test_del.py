@@ -1,7 +1,7 @@
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
+from docarray.array.weaviate import DocumentArrayWeaviate
 
 
 @pytest.fixture()
@@ -44,17 +44,17 @@ def test_del_by_multiple_idx(docs, deleted_ids, expected_ids):
 
 
 @pytest.mark.parametrize(
-    'da_cls,config_cls,kwargs,persist',
+    'da_cls,config,persist',
     [
-        (DocumentArrayWeaviate, WeaviateConfig, {'n_dim': 10}, False),
-        (DocumentArrayWeaviate, WeaviateConfig, {'name': 'Storage', 'n_dim': 10}, True),
+        (DocumentArrayWeaviate, {'n_dim': 10}, False),
+        (DocumentArrayWeaviate, {'name': 'Storage', 'n_dim': 10}, True),
     ],
 )
-def test_del_da_persist(da_cls, config_cls, kwargs, persist, docs, start_weaviate):
-    da = da_cls(docs, config=config_cls(**kwargs))
+def test_del_da_persist(da_cls, config, persist, docs, start_weaviate):
+    da = da_cls(docs, config=config)
     del da
 
-    da2 = da_cls(config=config_cls(**kwargs))
+    da2 = da_cls(config=config)
     if persist:
         assert len(da2) == len(docs)
     else:

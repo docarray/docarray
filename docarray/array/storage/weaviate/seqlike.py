@@ -1,6 +1,7 @@
 from typing import Iterator, Union, Iterable, MutableSequence
 
 from .... import Document
+from ..registry import _REGISTRY
 
 
 class SequenceLikeMixin(MutableSequence[Document]):
@@ -72,9 +73,13 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayWeaviate` object"""
-        if not self._persist:
+        if (
+            not self._persist
+            and len(_REGISTRY[self.__class__.__name__][self._class_name]) == 1
+        ):
             self._client.schema.delete_class(self._class_name)
             self._client.schema.delete_class(self._meta_name)
+        _REGISTRY[self.__class__.__name__][self._class_name].remove(self)
 
     def clear(self):
         """Clear the data of :class:`DocumentArray` with weaviate storage"""

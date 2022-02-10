@@ -19,6 +19,7 @@ import weaviate
 from ..base.backend import BaseBackendMixin
 from .... import Document
 from ....helper import dataclass_from_dict
+from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
     from ....types import (
@@ -66,7 +67,10 @@ class BackendMixin(BaseBackendMixin):
         self._serialize_config = config.serialize_config
 
         if config.name and config.name != config.name.capitalize():
-            raise ValueError('weaviate class name has to be capitalized')
+            raise ValueError(
+                'Weaviate class name has to be capitalized. '
+                'Please capitalize when declaring the name field in config.'
+            )
 
         self._persist = bool(config.name)
 
@@ -79,6 +83,7 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = self._load_or_create_weaviate_schema()
         self._offset2ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
+        _REGISTRY[self.__class__.__name__][self._class_name].append(self)
         # To align with Sqlite behavior; if `docs` is not `None` and table name
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
