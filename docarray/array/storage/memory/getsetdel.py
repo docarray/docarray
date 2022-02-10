@@ -73,13 +73,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         setattr(self._data[offset], attr, value)
 
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
-        # TODO: what if attr is a new id?
-        setattr(self._data[_id], attr, value)
+        doc = self._data[_id]
+        setattr(doc, attr, value)
         if attr == 'id' and _id != value:
+            offset = self._data.index.get_loc(_id)
             self._data.drop(_id, inplace=True)
-            self._data = _insert_at_series(
-                self._data, self._data.index.get_loc(_id), value
-            )
+            self._data = _insert_at_series(self._data, offset, doc)
 
     def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._data[offset]
