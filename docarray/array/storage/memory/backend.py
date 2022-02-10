@@ -1,4 +1,3 @@
-import functools
 import itertools
 from typing import (
     Generator,
@@ -7,13 +6,11 @@ from typing import (
     Sequence,
     Optional,
     TYPE_CHECKING,
-    Callable,
-    Tuple,
-    List,
 )
 
 from pandas import Series
 
+from .helper import _get_docs_ids
 from ..base.backend import BaseBackendMixin
 from .... import Document
 
@@ -21,22 +18,6 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
-
-
-def _get_docs_ids(
-    docs: Sequence['Document'], copy: bool = False
-) -> Tuple[List['Document'], List[str]]:
-    """ Returns a tuple of docs and ids while consuming the generator only once"""
-    _docs, ids = [], []
-    if copy:
-        for doc in docs:
-            _docs.append(Document(doc, copy=True))
-            ids.append(doc.id)
-    else:
-        for doc in docs:
-            _docs.append(Document(doc))
-            ids.append(doc.id)
-    return _docs, ids
 
 
 class BackendMixin(BaseBackendMixin):

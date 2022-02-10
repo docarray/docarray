@@ -8,6 +8,7 @@ from typing import (
 import pandas as pd
 from pandas import Series
 
+from .helper import _get_docs_ids
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document
 
@@ -56,10 +57,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._data[_id] = value
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
-        # TODO: what if value.id is different from _id?
         if not isinstance(value, Sequence):
             raise TypeError('can only assign an iterable')
-        self._data[_slice] = value
+        _docs, ids = _get_docs_ids(value)
+        start, step, end = _slice
+        start, step, end = start or 0, step or 1, end or len(self._data)
+        self._data = (
+            self._data[:start].append(Series(_docs, index=ids)).append(self._data[end:])
+        )
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']
