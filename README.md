@@ -12,7 +12,7 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API. It is the basic building block of neural search apps.
+DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
 
 🌌 **Rich data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
