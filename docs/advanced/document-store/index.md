@@ -3,8 +3,8 @@
 ```{toctree}
 :hidden:
 
-sqlite
 weaviate
+sqlite
 
 ```
 
