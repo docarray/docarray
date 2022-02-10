@@ -54,8 +54,9 @@ setup(
             'fastapi',
             'uvicorn',
             'weaviate-client~=3.3.0',
-            'pqlite>=0.2.1',
+            'pqlite>=0.2.3',
             'pandas',
+            'pqlite>=0.2.3',
             'strawberry-graphql[debug-server]',
         ],
         'test': [

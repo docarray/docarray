@@ -3,6 +3,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.array.pqlite import PqliteConfig
 
 
 @pytest.fixture
@@ -21,7 +22,7 @@ def indices():
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_weaviate):
@@ -52,7 +53,7 @@ def test_getter_int_str(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_weaviate):
@@ -79,7 +80,7 @@ def test_setter_int_str(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_del_int_str(docs, storage, config, indices):
@@ -111,7 +112,7 @@ def test_del_int_str(docs, storage, config, indices):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_slice(docs, storage, config, start_weaviate):
@@ -147,7 +148,7 @@ def test_slice(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_weaviate):
@@ -191,7 +192,7 @@ def test_sequence_bool_index(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_weaviate):
@@ -225,7 +226,7 @@ def test_sequence_int(docs, nparray, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_weaviate):
@@ -257,7 +258,7 @@ def test_sequence_str(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_weaviate):
@@ -275,7 +276,7 @@ def test_docarray_list_tuple(docs, storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_weaviate):
@@ -312,7 +313,7 @@ def test_path_syntax_indexing(storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing_set(storage, config, start_weaviate):
@@ -395,7 +396,7 @@ def test_path_syntax_indexing_set(storage, config, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', lambda: PqliteConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_weaviate, size):
@@ -461,9 +462,10 @@ def test_tensor_attribute_selector(storage, start_weaviate):
 # next version
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'pqlite'])
 def test_advance_selector_mixed(storage):
-    da = DocumentArray(storage=storage)
     if storage == 'pqlite':
         da = DocumentArray(storage=storage, config={'n_dim': 3})
+    else:
+        da = DocumentArray(storage=storage)
 
     da.extend(DocumentArray.empty(10))
     da.embeddings = np.random.random([10, 3])
@@ -502,7 +504,7 @@ def test_single_boolean_and_padding(storage, start_weaviate):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', lambda: PqliteConfig(n_dim=123)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_weaviate):

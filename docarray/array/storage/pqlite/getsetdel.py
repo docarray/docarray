@@ -47,9 +47,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         offset = len(self) + offset if offset < 0 else offset
         self._offset2ids.set_at_offset(offset, value.id)
+        self._to_numpy_embedding(value)
         docs = DocumentArrayInMemory([value])
-        if docs.embeddings is None:
-            docs.embeddings = np.zeros((1, self._pqlite.dim))
         self._pqlite.update(docs)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):

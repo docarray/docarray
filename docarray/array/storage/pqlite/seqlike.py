@@ -1,12 +1,11 @@
 from typing import Iterator, Union, Iterable, Sequence, MutableSequence
 
-import numpy as np
-
-from ...memory import DocumentArrayInMemory
 from .... import Document
 
+from ...memory import DocumentArrayInMemory
 
-class SequenceLikeMixin(MutableSequence[Document]):
+
+class SequenceLikeMixin(MutableSequence['Document']):
     """Implement sequence-like methods"""
 
     def insert(self, index: int, value: 'Document'):
@@ -15,21 +14,24 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        if value.embedding is None:
-            value.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+        self._to_numpy_embedding(value)
 
         self._pqlite.index(DocumentArrayInMemory([value]))
         self._offset2ids.insert_at_offset(index, value.id)
 
     def append(self, value: 'Document') -> None:
+        self._to_numpy_embedding(value)
         self._pqlite.index(DocumentArrayInMemory([value]))
         self._offset2ids.extend_doc_ids([value.id])
 
     def extend(self, values: Iterable['Document']) -> None:
         docs = DocumentArrayInMemory(values)
+        if len(docs) == 0:
+            return
+
         for doc in docs:
-            if doc.embedding is None:
-                doc.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+            self._to_numpy_embedding(doc)
+
         self._pqlite.index(docs)
         self._offset2ids.extend_doc_ids([doc.id for doc in docs])
 
