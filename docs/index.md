@@ -101,16 +101,19 @@ get-started/what-is
 fundamentals/document/index
 fundamentals/documentarray/index
 datatypes/index
-fundamentals/notebook-support/index
-fundamentals/fastapi-support/index
+
 ```
 
 ```{toctree}
-:caption: Advanced Topics
+:caption: Integrations
 :hidden:
 
+fundamentals/notebook-support/index
+fundamentals/fastapi-support/index
+advanced/graphql-support/index
 advanced/document-store/index
 ```
+
 
 ```{toctree}
 :caption: Developer References

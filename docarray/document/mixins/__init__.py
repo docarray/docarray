@@ -14,12 +14,14 @@ from .protobuf import ProtobufMixin
 from .pydantic import PydanticMixin
 from .sugar import SingletonSugarMixin
 from .text import TextDataMixin
+from .strawberry import StrawberryMixin
 from .video import VideoDataMixin
 
 
 class AllMixins(
     ProtobufMixin,
     PydanticMixin,
+    StrawberryMixin,
     PropertyMixin,
     ContentPropertyMixin,
     ConvertMixin,
