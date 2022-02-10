@@ -4,6 +4,8 @@
 :hidden:
 
 sqlite
+weaviate
+
 ```
 
 Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
