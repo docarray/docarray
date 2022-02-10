@@ -1,5 +1,5 @@
 (fastapi-support)=
-# FastAPI/pydantic Support
+# FastAPI/Pydantic
 
 Long story short, DocArray supports [pydantic data model](https://pydantic-docs.helpmanual.io/) via {class}`~docarray.document.pydantic_model.PydanticDocument` and {class}`~docarray.document.pydantic_model.PydanticDocumentArray`.
 

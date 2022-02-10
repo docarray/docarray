@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Type, List
 
 if TYPE_CHECKING:
     from ...document.pydantic_model import PydanticDocumentArray
+
     from ...types import T
     from pydantic import BaseModel
 
@@ -23,9 +24,9 @@ class PydanticMixin:
 
     @classmethod
     def from_pydantic_model(cls: Type['T'], model: List['BaseModel']) -> 'T':
-        """Convert a list of PydanticDocument into
+        """Convert a list of PydanticDocument into DocumentArray
 
-        :param model: the pydantic data model object that represents a DocumentArray
+        :param model: the list of pydantic data model objects that represents a DocumentArray
         :return: a DocumentArray
         """
         from ... import Document

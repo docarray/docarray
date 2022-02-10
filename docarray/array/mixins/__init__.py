@@ -22,6 +22,7 @@ from .pydantic import PydanticMixin
 from .reduce import ReduceMixin
 from .sample import SampleMixin
 from .setitem import SetItemMixin
+from .strawberry import StrawberryMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
 
@@ -33,6 +34,7 @@ class AllMixins(
     DelItemMixin,
     ContentPropertyMixin,
     PydanticMixin,
+    StrawberryMixin,
     GroupMixin,
     EmptyMixin,
     CsvIOMixin,
