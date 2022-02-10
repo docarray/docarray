@@ -23,6 +23,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -577,4 +578,29 @@
 ### 🍹 Other Improvements
 
  - [[```4e026565```](https://github.com/jina-ai/docarray/commit/4e026565c72839a44517ce41f5bccce126c0c585)] __-__ __version__: the next version will be 0.5.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-6-1></a>
+## Release Note (`0.6.1`)
+
+> Release time: 2022-02-10 13:32:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Winston Wong,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```b0f7d8a5```](https://github.com/jina-ai/docarray/commit/b0f7d8a51d331d3b726fac50d76a0a030501460e)] __-__ __store__: weaviate da del behavior (#104) (*Winston Wong*)
+
+### 📗 Documentation
+
+ - [[```2ed1f722```](https://github.com/jina-ai/docarray/commit/2ed1f722d0b5a0074e0349f2f9eb548887171e59)] __-__ add docs for weaviate da (#108) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```8e0cd106```](https://github.com/jina-ai/docarray/commit/8e0cd1067cd20fc83ce6482fa15dc60eb8f52c29)] __-__ __docs__: update readme (*Han Xiao*)
+ - [[```a30cafd1```](https://github.com/jina-ai/docarray/commit/a30cafd135b7245f1fe959cb729734a51bb2dd76)] __-__ fix pqlite  (#101) (*felix-wang*)
+ - [[```4fb2b67e```](https://github.com/jina-ai/docarray/commit/4fb2b67e2945bb5f8c0efeb637b24edce90994ef)] __-__ __version__: the next version will be 0.6.1 (*Jina Dev Bot*)
 
