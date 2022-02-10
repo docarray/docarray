@@ -14,6 +14,6 @@ def _get_docs_ids(
             ids.append(doc.id)
     else:
         for doc in docs:
-            _docs.append(Document(doc))
+            _docs.append(doc)
             ids.append(doc.id)
     return _docs, ids
