@@ -462,9 +462,10 @@ def test_tensor_attribute_selector(storage, start_weaviate):
 # next version
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'pqlite'])
 def test_advance_selector_mixed(storage):
-    da = DocumentArray(storage=storage)
     if storage == 'pqlite':
         da = DocumentArray(storage=storage, config={'n_dim': 3})
+    else:
+        da = DocumentArray(storage=storage)
 
     da.extend(DocumentArray.empty(10))
     da.embeddings = np.random.random([10, 3])
