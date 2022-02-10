@@ -2,6 +2,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -24,6 +25,7 @@ def docs():
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -47,6 +49,7 @@ def test_iter_len_bool(da_cls, config, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
     ],
 )
@@ -60,7 +63,12 @@ def test_repr(da_cls, config, start_weaviate):
 
 @pytest.mark.parametrize(
     'storage, config',
-    [('memory', None), ('sqlite', None), ('weaviate', WeaviateConfig(n_dim=128))],
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('pqlite', PqliteConfig(n_dim=128)),
+        ('weaviate', WeaviateConfig(n_dim=128)),
+    ],
 )
 def test_repr_str(docs, storage, config, start_weaviate):
     if config:
@@ -79,6 +87,7 @@ def test_repr_str(docs, storage, config, start_weaviate):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )

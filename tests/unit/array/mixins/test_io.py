@@ -6,6 +6,7 @@ import pytest
 
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
@@ -23,6 +24,7 @@ def docs():
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
     ],
 )
@@ -47,6 +49,7 @@ def test_document_save_load(docs, method, tmp_path, da_cls, config, start_weavia
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
     ],
 )
@@ -63,6 +66,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_weavia
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
@@ -77,6 +81,7 @@ def test_from_ndarray(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
@@ -97,6 +102,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
@@ -111,6 +117,7 @@ def test_from_ndjson(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=3)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
     ],
 )
@@ -137,20 +144,24 @@ def test_from_to_pd_dataframe(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_weaviate):
     # simple
-    assert len(da_cls.load_binary(bytes(da_cls.empty(2)))) == 2
+    assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 
-    da = da_cls.empty(2)
+    da = da_cls.empty(2, config=config)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
     da2 = da_cls.load_binary(bytes(da))
     assert da2.tensors == [[1, 2], [2, 1]]
-    assert da2.embeddings == [[1, 2, 3], [4, 5, 6]]
+    import numpy as np
+
+    np.testing.assert_array_equal(da2.embeddings, [[1, 2, 3], [4, 5, 6]])
+    # assert da2.embeddings == [[1, 2, 3], [4, 5, 6]]
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}
 
@@ -161,6 +172,7 @@ def test_from_to_bytes(da_cls, config, start_weaviate):
     [
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
     ],
 )
@@ -188,10 +200,11 @@ def test_push_pull_io(da_cls, config, show_progress, start_weaviate):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        # (DocumentArrayPqlite, PqliteConfig(n_dim=3)), # TODO: enable this
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):
-    da = da_cls.empty(10)
+    da = da_cls.empty(10, config=config)
 
     da[:, 'embedding'] = [[1, 2, 3]] * len(da)
     da_r = da_cls.from_base64(da.to_base64(protocol, compress), protocol, compress)
@@ -203,4 +216,5 @@ def test_from_to_base64(protocol, compress, da_cls, config):
     else:
         for d1, d2 in zip(da_r, da):
             assert d1 == d2
-    assert da_r[0].embedding == [1, 2, 3]
+    # assert da_r[0].embedding == [1, 2, 3]
+    np.testing.assert_array_equal(da_r[0].embedding, [1, 2, 3])
