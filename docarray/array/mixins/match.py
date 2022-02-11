@@ -100,7 +100,11 @@ class MatchMixin:
             )
 
         metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
-        _limit = len(rhv) if limit is None else (limit + (1 if exclude_self else 0))
+        _limit = (
+            len(rhv)
+            if limit is None
+            else min(limit + (1 if exclude_self else 0), len(rhv))
+        )
 
         if batch_size:
             dist, idx = lhv._match_online(
