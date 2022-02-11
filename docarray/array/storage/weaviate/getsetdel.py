@@ -34,17 +34,19 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param wid: weaviate id
         :param value: the new document to update to
         """
-        payload = self._doc2weaviate_create_payload(value)
-        if self._client.data_object.exists(wid):
-            self._client.data_object.delete(wid)
-        self._client.data_object.create(**payload)
+
+        # 'wid' is used only to remove the object, and it is not sure that
+        # the new one would have the same 'wid', is it intentional?
+        payload = self._doc2weaviate_create_payload(value) 
+        self._client.data_object.delete(wid)
+        self._client.batch.add_data_object(**payload)
         self._offset2ids[self._offset2ids.index(wid)] = self._wmap(value.id)
         self._update_offset2ids_meta()
 
     def _change_doc_id(self, old_wid: str, doc: Document, new_wid: str):
         payload = self._doc2weaviate_create_payload(doc)
         self._client.data_object.delete(old_wid)
-        self._client.data_object.create(**payload)
+        self._client.batch.add_data_object(**payload)
         self._offset2ids[self._offset2ids.index(old_wid)] = new_wid
         self._update_offset2ids_meta()
 

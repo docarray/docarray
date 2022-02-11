@@ -14,7 +14,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         :param value: The doc needs to be inserted.
         """
         self._offset2ids.insert(index, self._wmap(value.id))
-        self._client.data_object.create(**self._doc2weaviate_create_payload(value))
+        self._client.batch.add_data_object(**self._doc2weaviate_create_payload(value))
         self._update_offset2ids_meta()
 
     def __eq__(self, other):

@@ -22,15 +22,23 @@ def test_construct_docarray(da_cls, config, start_weaviate):
         assert len(da) == 0
 
         da = da_cls(Document(), config=config)
+        if isinstance(da, DocumentArrayWeaviate):
+            da.flush_weaviate_batch()
         assert len(da) == 1
 
         da = da_cls([Document(), Document()], config=config)
+        if isinstance(da, DocumentArrayWeaviate):
+            da.flush_weaviate_batch()
         assert len(da) == 2
 
         da = da_cls((Document(), Document()), config=config)
+        if isinstance(da, DocumentArrayWeaviate):
+            da.flush_weaviate_batch()
         assert len(da) == 2
 
         da = da_cls((Document() for _ in range(10)), config=config)
+        if isinstance(da, DocumentArrayWeaviate):
+            da.flush_weaviate_batch()
         assert len(da) == 10
     else:
         da = da_cls()

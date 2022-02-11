@@ -76,8 +76,19 @@ class BackendMixin(BaseBackendMixin):
 
         if isinstance(config.client, str):
             self._client = weaviate.Client(config.client)
+            self._client.batch.configure(
+                batch_size=100,
+                dynamic=True,
+                timeout_retries=5,
+            )
         else:
-            self._client = config.client
+            self._client: weaviate.Client = config.client
+            if self._client.batch.batch_size is None:
+                self._client.batch.configure(
+                    batch_size=100,
+                    dynamic=True,
+                    timeout_retries=5,
+                )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
@@ -174,21 +185,17 @@ class BackendMixin(BaseBackendMixin):
 
     def _update_offset2ids_meta(self):
         """Update the offset2ids in weaviate the the current local version"""
-        if self._offset2ids_wid is not None and self._client.data_object.exists(
-            self._offset2ids_wid
-        ):
-            self._client.data_object.update(
-                data_object={'_offset2ids': self._offset2ids},
-                class_name=self._meta_name,
-                uuid=self._offset2ids_wid,
-            )
-        else:
+        if self._offset2ids_wid is None:
             self._offset2ids_wid = str(uuid.uuid1())
-            self._client.data_object.create(
-                data_object={'_offset2ids': self._offset2ids},
-                class_name=self._meta_name,
-                uuid=self._offset2ids_wid,
-            )
+            
+        # this call will either create or replace an object (if uuid exists)
+        # since Meta class has a single property: '_offset2ids', we can replace
+        # the object instead of updating it.
+        self._client.batch.add_data_object(
+            data_object={'_offset2ids': self._offset2ids},
+            class_name=self._meta_name,
+            uuid=self._offset2ids_wid,
+        )
 
     def _get_offset2ids_meta(self) -> Tuple[List, str]:
         """Return the offset2ids stored in weaviate along with the name of the schema/class
@@ -322,3 +329,8 @@ class BackendMixin(BaseBackendMixin):
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
             **storage_infos,
         }
+
+    def flush_weaviate_batch(self) -> None:
+        """Flush existing objects in Weaviate Batch to the Weaviate Backend Server"""
+
+        self._client.batch.flush()
