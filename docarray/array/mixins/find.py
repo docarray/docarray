@@ -3,9 +3,11 @@ from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 from ...score import NamedScore
 import numpy as np
 
+
 if TYPE_CHECKING:
     from ...types import T, ArrayType
-    from ... import Document, DocumentArray
+
+    # from ... import Document, DocumentArray
 
 
 class FindMixin:
@@ -33,6 +35,7 @@ class FindMixin:
         **kwargs,
     ) -> 'DocumentArray':
         from ...math.ndarray import to_numpy_array, get_array_type
+        from ... import Document, DocumentArray
 
         if isinstance(query, (dict, str)):
             return self.filter(query, **kwargs)
@@ -147,6 +150,8 @@ class FindMixin:
         else:
             dist, idx = self._search(query, cdist, _limit, normalization, metric_name)
 
+        from ... import Document, DocumentArray
+
         result = DocumentArray([Document(id=q.id) for q in query])
         for _q, _ids, _dists in zip(result, idx, dist):
             num_matches = 0
@@ -186,7 +191,7 @@ class FindMixin:
         :return: distances and indices
         """
         dists = cdist(query.embeddings, self.embeddings, metric_name)
-        dist, idx = top_k(dists, min(limit, len(query)), descending=False)
+        dist, idx = top_k(dists, min(limit, len(self)), descending=False)
         if isinstance(normalization, (tuple, list)) and normalization is not None:
             # normalization bound uses original distance not the top-k trimmed distance
             min_d = np.min(dists, axis=-1, keepdims=True)
