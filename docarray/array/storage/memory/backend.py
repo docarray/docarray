@@ -8,9 +8,8 @@ from typing import (
     TYPE_CHECKING,
 )
 
-from pandas import Series
 
-from .helper import _get_docs_ids
+from .helper import _get_docs_ids, DocumentSeries
 from ..base.backend import BaseBackendMixin
 from .... import Document
 
@@ -32,22 +31,29 @@ class BackendMixin(BaseBackendMixin):
     ):
         from ... import DocumentArray
 
-        self._data: Series = Series()
+        self._data: DocumentSeries = DocumentSeries()
         self._id_to_index = {}
         if _docs is None:
             return
         elif isinstance(
             _docs,
-            (DocumentArray, Sequence, Generator, Iterator, itertools.chain, Series),
+            (
+                DocumentArray,
+                Sequence,
+                Generator,
+                Iterator,
+                itertools.chain,
+                DocumentSeries,
+            ),
         ):
             if copy:
                 _docs, ids = _get_docs_ids(_docs, copy=True)
-                self._data = Series(_docs, index=ids)
+                self._data = DocumentSeries(_docs, index=ids)
             elif isinstance(_docs, DocumentArray):
                 self._data = _docs._data
             else:
                 _docs, ids = _get_docs_ids(_docs)
-                self._data = Series(_docs, index=ids)
+                self._data = DocumentSeries(_docs, index=ids)
 
         else:
             if isinstance(_docs, Document):

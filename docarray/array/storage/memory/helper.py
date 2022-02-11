@@ -1,4 +1,7 @@
+import copy
 from typing import Sequence, Tuple, List
+
+import pandas as pd
 
 from docarray import Document
 
@@ -17,3 +20,11 @@ def _get_docs_ids(
             _docs.append(doc)
             ids.append(doc.id)
     return _docs, ids
+
+
+class DocumentSeries(pd.Series):
+    def __deepcopy__(self, memo):
+        cp = self.copy(deep=True)
+        for doc in cp:
+            cp[doc.id] = copy.deepcopy(doc)
+        return cp

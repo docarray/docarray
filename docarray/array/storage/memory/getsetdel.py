@@ -1,19 +1,21 @@
 import itertools
 from typing import (
+    TYPE_CHECKING,
     Sequence,
     Iterable,
     Any,
 )
 
-import pandas as pd
 from pandas import Series
 
-from .helper import _get_docs_ids
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document
 
+if TYPE_CHECKING:
+    from .helper import _get_docs_ids, DocumentSeries
 
-def _insert_at_series(s: Series, index, value) -> Series:
+
+def _insert_at_series(s: 'DocumentSeries', index, value) -> 'DocumentSeries':
     s1 = s[:index]
     s2 = s[index:]
     s1[value.id] = value
