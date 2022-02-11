@@ -1,4 +1,4 @@
-from typing import overload, Optional, Union, List, Dict, Tuple, Callable, TYPE_CHECKING
+from typing import overload, Optional, Union, Dict, Tuple, Callable, TYPE_CHECKING
 from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 from ...score import NamedScore
 import numpy as np
@@ -7,7 +7,7 @@ import numpy as np
 if TYPE_CHECKING:
     from ...types import T, ArrayType
 
-    # from ... import Document, DocumentArray
+    from ... import Document, DocumentArray
 
 
 class FindMixin:
@@ -31,7 +31,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Callable, Dict, str],
+        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str],
         **kwargs,
     ) -> 'DocumentArray':
         from ...math.ndarray import to_numpy_array, get_array_type
