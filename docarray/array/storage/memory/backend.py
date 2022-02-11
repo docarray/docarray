@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
 )
 
+from pandas import Series
 
 from .helper import _get_docs_ids, DocumentSeries
 from ..base.backend import BaseBackendMixin
@@ -44,6 +45,7 @@ class BackendMixin(BaseBackendMixin):
                 Iterator,
                 itertools.chain,
                 DocumentSeries,
+                Series,
             ),
         ):
             if copy:

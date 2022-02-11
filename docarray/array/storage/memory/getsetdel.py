@@ -10,9 +10,10 @@ from pandas import Series
 
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document
+from .helper import _get_docs_ids
 
 if TYPE_CHECKING:
-    from .helper import _get_docs_ids, DocumentSeries
+    from .helper import DocumentSeries
 
 
 def _insert_at_series(s: 'DocumentSeries', index, value) -> 'DocumentSeries':
