@@ -139,7 +139,7 @@ def from_csv(
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
     else:
-        file_ctx = open(file, 'r')
+        file_ctx = open(file, 'r', encoding='utf-8')
 
     with file_ctx as fp:
         # when set to auto, then sniff
