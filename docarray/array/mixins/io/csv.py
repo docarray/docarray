@@ -14,18 +14,21 @@ class CsvIOMixin:
     can be applied to DA & DAM
     """
 
-    def save_embeddings_csv(self, file: Union[str, TextIO], **kwargs) -> None:
+    def save_embeddings_csv(
+        self, file: Union[str, TextIO], encoding: str = 'utf-8', **kwargs
+    ) -> None:
         """Save embeddings to a CSV file
 
         This function utilizes :meth:`numpy.savetxt` internal.
 
         :param file: File or filename to which the data is saved.
+        :param encoding: encoding used to dump the data. By default, ``utf-8`` is used.
         :param kwargs: extra kwargs will be passed to :meth:`numpy.savetxt`.
         """
         if hasattr(file, 'write'):
             file_ctx = nullcontext(file)
         else:
-            file_ctx = open(file, 'w')
+            file_ctx = open(file, 'w', encoding='utf-8')
         with file_ctx:
             np.savetxt(file_ctx, self.embeddings, **kwargs)
 
@@ -36,6 +39,7 @@ class CsvIOMixin:
         exclude_fields: Optional[Sequence[str]] = None,
         dialect: Union[str, 'csv.Dialect'] = 'excel',
         with_header: bool = True,
+        encoding: str = 'utf-8',
     ) -> None:
         """Save array elements into a CSV file.
 
@@ -46,11 +50,12 @@ class CsvIOMixin:
         :param dialect: define a set of parameters specific to a particular CSV dialect. could be a string that represents
             predefined dialects in your system, or could be a :class:`csv.Dialect` class that groups specific formatting
             parameters together.
+        :param encoding: encoding used to dump the CSV file. By default, ``utf-8`` is used.
         """
         if hasattr(file, 'write'):
             file_ctx = nullcontext(file)
         else:
-            file_ctx = open(file, 'w')
+            file_ctx = open(file, 'w', encoding=encoding)
 
         with file_ctx as fp:
             if flatten_tags and self[0].tags:
@@ -88,15 +93,17 @@ class CsvIOMixin:
         cls: Type['T'],
         file: Union[str, TextIO],
         field_resolver: Optional[Dict[str, str]] = None,
+        encoding: str = 'utf-8',
     ) -> 'T':
         """Load array elements from a binary file.
 
         :param file: File or filename to which the data is saved.
         :param field_resolver: a map from field names defined in JSON, dict to the field
             names defined in Document.
+        :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.
         :return: a DocumentArray object
         """
 
         from ....document.generators import from_csv
 
-        return cls(from_csv(file, field_resolver=field_resolver))
+        return cls(from_csv(file, field_resolver=field_resolver, encoding=encoding))

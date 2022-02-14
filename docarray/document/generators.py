@@ -133,6 +133,7 @@ def from_csv(
         parameters together. If you don't know the dialect and the default one does not work for you,
         you can try set it to ``auto``.
     :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.
+
     :yield: documents
 
     """
