@@ -24,6 +24,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -603,4 +604,29 @@
  - [[```8e0cd106```](https://github.com/jina-ai/docarray/commit/8e0cd1067cd20fc83ce6482fa15dc60eb8f52c29)] __-__ __docs__: update readme (*Han Xiao*)
  - [[```a30cafd1```](https://github.com/jina-ai/docarray/commit/a30cafd135b7245f1fe959cb729734a51bb2dd76)] __-__ fix pqlite  (#101) (*felix-wang*)
  - [[```4fb2b67e```](https://github.com/jina-ai/docarray/commit/4fb2b67e2945bb5f8c0efeb637b24edce90994ef)] __-__ __version__: the next version will be 0.6.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-6-2></a>
+## Release Note (`0.6.2`)
+
+> Release time: 2022-02-14 12:27:31
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Tobias Jacobowitz,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```74a5e1c0```](https://github.com/jina-ai/docarray/commit/74a5e1c0172e7f72078f8be4d90282b9367b147b)] __-__ use utf-8 encoding for csv reading (#112) (*Tobias Jacobowitz*)
+
+### 📗 Documentation
+
+ - [[```300c9cf2```](https://github.com/jina-ai/docarray/commit/300c9cf2d6a20abd97d3d11734ed520058f62eb2)] __-__ update readme (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```55ebb173```](https://github.com/jina-ai/docarray/commit/55ebb1730442f2573bad663c76e32c618481e678)] __-__ fix dependency (*Han Xiao*)
+ - [[```b9061998```](https://github.com/jina-ai/docarray/commit/b90619980b5f7c570cae21a3ede5cc71bf4cf2ef)] __-__ remove unused file (*Han Xiao*)
+ - [[```d6b4e3e4```](https://github.com/jina-ai/docarray/commit/d6b4e3e44afd06a0a858322abec0a9dcc7e567bd)] __-__ __version__: the next version will be 0.6.2 (*Jina Dev Bot*)
 
