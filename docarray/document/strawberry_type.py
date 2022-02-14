@@ -33,7 +33,7 @@ NdArray = strawberry.scalar(
 )
 
 
-@strawberry.type
+@strawberry.input
 class _NamedScore:
     value: Optional[float] = None
     op_name: Optional[str] = None
@@ -41,13 +41,13 @@ class _NamedScore:
     ref_id: Optional[str] = None
 
 
-@strawberry.type
+@strawberry.input
 class _NameScoreItem:
     name: str
     score: _NamedScore
 
 
-@strawberry.type
+@strawberry.input
 class StrawberryDocument:
     id: Optional[str] = None
     parent_id: Optional[str] = None
