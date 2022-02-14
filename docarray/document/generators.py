@@ -117,6 +117,7 @@ def from_csv(
     size: Optional[int] = None,
     sampling_rate: Optional[float] = None,
     dialect: Union[str, 'csv.Dialect'] = 'excel',
+    encoding: str = 'utf-8',
     *args,
     **kwargs,
 ) -> Generator['Document', None, None]:
@@ -131,6 +132,7 @@ def from_csv(
         predefined dialects in your system, or could be a :class:`csv.Dialect` class that groups specific formatting
         parameters together. If you don't know the dialect and the default one does not work for you,
         you can try set it to ``auto``.
+    :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.
     :yield: documents
 
     """
@@ -139,7 +141,7 @@ def from_csv(
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
     else:
-        file_ctx = open(file, 'r', encoding='utf-8')
+        file_ctx = open(file, 'r', encoding=encoding)
 
     with file_ctx as fp:
         # when set to auto, then sniff
