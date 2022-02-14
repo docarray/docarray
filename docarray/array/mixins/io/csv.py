@@ -22,7 +22,7 @@ class CsvIOMixin:
         This function utilizes :meth:`numpy.savetxt` internal.
 
         :param file: File or filename to which the data is saved.
-        :param encoding: encoding used to dump the data. By default, ``utf-8`` is used.
+        :param encoding: encoding used to save the data into a file. By default, ``utf-8`` is used.
         :param kwargs: extra kwargs will be passed to :meth:`numpy.savetxt`.
         """
         if hasattr(file, 'write'):
@@ -50,7 +50,7 @@ class CsvIOMixin:
         :param dialect: define a set of parameters specific to a particular CSV dialect. could be a string that represents
             predefined dialects in your system, or could be a :class:`csv.Dialect` class that groups specific formatting
             parameters together.
-        :param encoding: encoding used to dump the CSV file. By default, ``utf-8`` is used.
+        :param encoding: encoding used to save the data into a CSV file. By default, ``utf-8`` is used.
         """
         if hasattr(file, 'write'):
             file_ctx = nullcontext(file)
@@ -100,7 +100,7 @@ class CsvIOMixin:
         :param file: File or filename to which the data is saved.
         :param field_resolver: a map from field names defined in JSON, dict to the field
             names defined in Document.
-        :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.
+        :param encoding: encoding used to read a CSV file. By default, ``utf-8`` is used.
         :return: a DocumentArray object
         """
 

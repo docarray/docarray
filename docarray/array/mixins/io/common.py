@@ -19,7 +19,7 @@ class CommonIOMixin:
         :param file_format: `json` or `binary` or `csv`. JSON and CSV files are human-readable,
             but binary format gives much smaller size and faster save/load speed. Note that, CSV file has very limited
             compatability, complex DocumentArray with nested structure can not be restored from a CSV file.
-        :param encoding: encoding used to save data into the file (it only applies to `JSON` and `CSV` format).
+        :param encoding: encoding used to save data into a file (it only applies to `JSON` and `CSV` format).
             By default, ``utf-8`` is used.
         """
         if file_format == 'json':
@@ -45,7 +45,7 @@ class CommonIOMixin:
         :param file_format: `json` or `binary` or `csv`. JSON and CSV files are human-readable,
             but binary format gives much smaller size and faster save/load speed. CSV file has very limited compatability,
             complex DocumentArray with nested structure can not be restored from a CSV file.
-        :param encoding: encoding used to load data from the file (it only applies to `JSON` and `CSV` format).
+        :param encoding: encoding used to load data from a file (it only applies to `JSON` and `CSV` format).
             By default, ``utf-8`` is used.
 
         :return: the loaded DocumentArray object
