@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.document.generators - DocArray 0.6.1 documentation</title>
+        <title>docarray.document.generators - DocArray 0.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
@@ -138,7 +138,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.6.1 documentation</div>
+                <div class="brand">DocArray 0.6.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -250,7 +250,6 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../../api/docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../api/docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../../api/docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="../../../../api/docarray.array.mixins.io.tt/">docarray.array.mixins.io.tt module</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/docarray.array.mixins.content/">docarray.array.mixins.content module</a></li>
@@ -563,6 +562,7 @@
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dialect</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'csv.Dialect'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'excel'</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'utf-8'</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
@@ -577,6 +577,8 @@
 <span class="sd">        predefined dialects in your system, or could be a :class:`csv.Dialect` class that groups specific formatting</span>
 <span class="sd">        parameters together. If you don't know the dialect and the default one does not work for you,</span>
 <span class="sd">        you can try set it to ``auto``.</span>
+<span class="sd">    :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.</span>
+
 <span class="sd">    :yield: documents</span>
 
 <span class="sd">    """</span>
@@ -585,7 +587,7 @@
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'read'</span><span class="p">):</span>
         <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">file_ctx</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+        <span class="n">file_ctx</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">file_ctx</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="c1"># when set to auto, then sniff</span>
@@ -765,7 +767,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 10, 2022.
+                    Last updated on Feb 14, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

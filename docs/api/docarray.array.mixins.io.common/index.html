@@ -7,9 +7,9 @@
   <meta property="og:title" content="docarray.array.mixins.io.common module" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.io.common.html" />
-  <meta property="og:site_name" content="DocArray 0.6.1 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.6.2 Documentation" />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.6.1 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.6.2 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.io.csv module" href="../docarray.array.mixins.io.csv/" /><link rel="prev" title="docarray.array.mixins.io.binary module" href="../docarray.array.mixins.io.binary/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>docarray.array.mixins.io.common module - DocArray 0.6.1 documentation</title>
+        <title>docarray.array.mixins.io.common module - DocArray 0.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -163,7 +163,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.6.1 documentation</div>
+                <div class="brand">DocArray 0.6.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -275,7 +275,6 @@
 <li class="toctree-l5"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a></li>
-<li class="toctree-l5"><a class="reference internal" href="../docarray.array.mixins.io.tt/">docarray.array.mixins.io.tt module</a></li>
 </ul>
 </li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.array.mixins.content/">docarray.array.mixins.content module</a></li>
@@ -477,7 +476,7 @@
 <p>The common IO helper function for arrays.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.io.common.CommonIOMixin.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/common/#CommonIOMixin.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.common.CommonIOMixin.save" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/common/#CommonIOMixin.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.common.CommonIOMixin.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save array elements into a JSON, a binary file or a CSV file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -486,6 +485,8 @@
 <li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <cite>json</cite> or <cite>binary</cite> or <cite>csv</cite>. JSON and CSV files are human-readable,
 but binary format gives much smaller size and faster save/load speed. Note that, CSV file has very limited
 compatability, complex DocumentArray with nested structure can not be restored from a CSV file.</p></li>
+<li><p><strong>encoding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – encoding used to save data into a file (it only applies to <cite>JSON</cite> and <cite>CSV</cite> format).
+By default, <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -495,7 +496,7 @@ compatability, complex DocumentArray with nested structure can not be restored f
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.io.common.CommonIOMixin.load">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/common/#CommonIOMixin.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.common.CommonIOMixin.load" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'binary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/common/#CommonIOMixin.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.common.CommonIOMixin.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load array elements from a JSON or a binary file, or a CSV file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -504,6 +505,8 @@ compatability, complex DocumentArray with nested structure can not be restored f
 <li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <cite>json</cite> or <cite>binary</cite> or <cite>csv</cite>. JSON and CSV files are human-readable,
 but binary format gives much smaller size and faster save/load speed. CSV file has very limited compatability,
 complex DocumentArray with nested structure can not be restored from a CSV file.</p></li>
+<li><p><strong>encoding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – encoding used to load data from a file (it only applies to <cite>JSON</cite> and <cite>CSV</cite> format).
+By default, <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> is used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -549,7 +552,7 @@ complex DocumentArray with nested structure can not be restored from a CSV file.
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 10, 2022.
+                    Last updated on Feb 14, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
