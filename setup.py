@@ -53,9 +53,7 @@ setup(
             'av',
             'fastapi',
             'uvicorn',
-            'weaviate-client~=3.3.0',
-            'pqlite>=0.2.3',
-            'strawberry-graphql[debug-server]',
+            'strawberry-graphql',
         ],
         'test': [
             'pytest',
@@ -76,6 +74,8 @@ setup(
             'onnxruntime',
             'jupyterlab',
             'transformers==4.16.2',
+            'weaviate-client~=3.3.0',
+            'pqlite>=0.2.3',
         ],
     },
     classifiers=[
