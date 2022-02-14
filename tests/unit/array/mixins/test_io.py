@@ -19,6 +19,7 @@ def docs():
 
 @pytest.mark.slow
 @pytest.mark.parametrize('method', ['json', 'binary'])
+@pytest.mark.parametrize('encoding', ['utf-8', 'cp1252'])
 @pytest.mark.parametrize(
     'da_cls,config',
     [
@@ -28,12 +29,16 @@ def docs():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
     ],
 )
-def test_document_save_load(docs, method, tmp_path, da_cls, config, start_weaviate):
+def test_document_save_load(
+    docs, method, encoding, tmp_path, da_cls, config, start_weaviate
+):
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs, config=config())
-    da.save(tmp_file, file_format=method)
+    da.save(tmp_file, file_format=method, encoding=encoding)
 
-    da_r = type(da).load(tmp_file, file_format=method, config=config())
+    da_r = type(da).load(
+        tmp_file, file_format=method, encoding=encoding, config=config()
+    )
 
     assert type(da) is type(da_r)
     assert len(da) == len(da_r)
