@@ -1,3 +1,4 @@
+import itertools
 from abc import abstractmethod, ABC
 from typing import (
     Sequence,
@@ -5,6 +6,7 @@ from typing import (
     Iterable,
 )
 
+from .helper import Offset2ID
 from .... import Document
 
 
@@ -13,11 +15,8 @@ class BaseGetSetDelMixin(ABC):
 
     .. note::
         The following methods must be implemented:
-            - :meth:`._get_doc_by_offset`
             - :meth:`._get_doc_by_id`
-            - :meth:`._set_doc_by_offset`
             - :meth:`._set_doc_by_id`
-            - :meth:`._del_doc_by_offset`
             - :meth:`._del_doc_by_id`
 
         Other methods implemented a generic-but-slow version that leverage the methods above.
@@ -26,9 +25,8 @@ class BaseGetSetDelMixin(ABC):
 
     # Getitem APIs
 
-    @abstractmethod
     def _get_doc_by_offset(self, offset: int) -> 'Document':
-        ...
+        return self._get_doc_by_id(self._offset2ids.get_id(offset))
 
     @abstractmethod
     def _get_doc_by_id(self, _id: str) -> 'Document':
@@ -41,7 +39,7 @@ class BaseGetSetDelMixin(ABC):
         :param _slice: the slice used for indexing
         :return: an iterable of document
         """
-        return (self._get_doc_by_offset(o) for o in range(len(self))[_slice])
+        return self._get_docs_by_ids(self._offset2ids.get_id(_slice))
 
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
@@ -63,9 +61,13 @@ class BaseGetSetDelMixin(ABC):
 
     # Delitem APIs
 
-    @abstractmethod
     def _del_doc_by_offset(self, offset: int):
-        ...
+        self._del_doc_by_id(self._offset2ids.get_id(offset))
+        del self._offset2ids[offset]
+
+    def _del_doc(self, _id: str):
+        del self._offset2ids[self._offset2ids.index(_id)]
+        self._del_doc_by_id(_id)
 
     @abstractmethod
     def _del_doc_by_id(self, _id: str):
@@ -76,30 +78,37 @@ class BaseGetSetDelMixin(ABC):
         Override this function if there is a more efficient logic
         :param _slice: the slice used for indexing
         """
-        for j in range(len(self))[_slice]:
-            self._del_doc_by_offset(j)
+        # TODO: rebuild offset2ids once
+        for _id in self._offset2ids.get_id(_slice):
+            self._del_doc(_id)
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """This function is derived and may not have the most efficient implementation.
         Override this function if there is a more efficient logic
         :param mask: the boolean mask used for indexing
         """
-        for idx, m in enumerate(mask):
-            if not m:
-                self._del_doc_by_offset(idx)
+        # TODO: rebuild offset2ids once
+        idxs = list(itertools.compress(self._offset2ids, (not _i for _i in mask)))
+        for _idx in reversed(idxs):
+            self._del_doc(_idx)
 
     def _del_all_docs(self):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic"""
-        for j in range(len(self)):
-            self._del_doc_by_offset(j)
+        for _id in self._offset2ids:
+            self._del_doc_by_id(_id)
+        self._offset2ids = Offset2ID()
 
     # Setitem API
 
-    @abstractmethod
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        ...
+        self._set_doc_by_id(self._offset2ids.get_id(offset), value)
+
+    def _set_doc(self, _id: str, value: 'Document'):
+        if _id != value.id:
+            self._offset2ids.update(self._offset2ids.index(_id), value.id)
+        self._set_doc_by_id(_id, value)
 
     @abstractmethod
     def _set_doc_by_id(self, _id: str, value: 'Document'):
@@ -117,8 +126,8 @@ class BaseGetSetDelMixin(ABC):
             raise TypeError(
                 f'You right-hand assignment must be an iterable, receiving {type(value)}'
             )
-        for _offset, val in zip(range(len(self))[_slice], value):
-            self._set_doc_by_offset(_offset, val)
+        for _id, val in zip(self._offset2ids.get_id(_slice), value):
+            self._set_doc(_id, val)
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']
@@ -131,7 +140,7 @@ class BaseGetSetDelMixin(ABC):
             )
 
         for _d, _v in zip(docs, values):
-            self._set_doc_by_id(_d.id, _v)
+            self._set_doc(_d.id, _v)
 
     def _set_doc_value_pairs_nested(
         self, docs: Iterable['Document'], values: Sequence['Document']
@@ -162,7 +171,7 @@ class BaseGetSetDelMixin(ABC):
                 root_d = _d
 
             if root_d:
-                self._set_doc_by_id(root_d.id, root_d)
+                self._set_doc(root_d.id, root_d)
 
     def _set_doc_attr_by_offset(self, offset: int, attr: str, value: Any):
         """This function is derived and may not have the most efficient implementation.
@@ -172,10 +181,11 @@ class BaseGetSetDelMixin(ABC):
         :param attr: the attribute of document to update
         :param value: the value doc's attr will be updated to
         """
-        d = self._get_doc_by_offset(offset)
+        _id = self._offset2ids.get_id(offset)
+        d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
             setattr(d, attr, value)
-            self._set_doc_by_offset(offset, d)
+            self._set_doc(_id, d)
 
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
         """This function is derived and may not have the most efficient implementation.
@@ -188,7 +198,7 @@ class BaseGetSetDelMixin(ABC):
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
             setattr(d, attr, value)
-            self._set_doc_by_id(_id, d)
+            self._set_doc(_id, d)
 
     def _find_root_doc_and_modify(self, d: Document) -> 'Document':
         """Find `d`'s root Document in an exhaustive manner

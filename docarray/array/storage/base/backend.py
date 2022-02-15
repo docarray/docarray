@@ -1,11 +1,28 @@
-from abc import ABC, abstractmethod
-from typing import Dict
+from abc import ABC
+from typing import Dict, Optional, TYPE_CHECKING
+
+from docarray.array.storage.base.helper import Offset2ID
+
+if TYPE_CHECKING:
+    from ....types import (
+        DocumentArraySourceType,
+    )
 
 
 class BaseBackendMixin(ABC):
-    @abstractmethod
-    def _init_storage(self, *args, **kwargs):
-        ...
+    def _init_storage(
+        self,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        copy: bool = False,
+        *args,
+        **kwargs
+    ):
+        from ... import DocumentArray
+
+        if isinstance(_docs, DocumentArray):
+            self._offset2ids = _docs._offset2ids
+        else:
+            self._offset2ids = Offset2ID()
 
     def _get_storage_infos(self) -> Dict:
         return {'Class': self.__class__.__name__}

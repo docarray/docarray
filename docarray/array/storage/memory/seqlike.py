@@ -1,29 +1,11 @@
-from typing import Iterator, Union, Iterable, MutableSequence
+from typing import Iterator, Union, Iterable
 
-from ..memory.backend import needs_id2offset_rebuild
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 
 
-class SequenceLikeMixin(MutableSequence[Document]):
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
-
-    @needs_id2offset_rebuild
-    def insert(self, index: int, value: 'Document'):
-        """Insert `doc` at `index`.
-
-        :param index: Position of the insertion.
-        :param value: The doc needs to be inserted.
-        """
-        self._data.insert(index, value)
-
-    def append(self, value: 'Document'):
-        """Append `doc` to the end of the array.
-
-        :param value: The doc needs to be appended.
-        """
-        self._data.append(value)
-        if not self._needs_id2offset_rebuild:
-            self._id_to_index[value.id] = len(self) - 1
 
     def __eq__(self, other):
         return (
@@ -36,7 +18,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
         return len(self._data)
 
     def __iter__(self) -> Iterator['Document']:
-        yield from self._data
+        yield from self._data.values()
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
@@ -46,17 +28,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
         else:
             return False
 
-    def clear(self):
-        """Clear the data of :class:`DocumentArray`"""
-        self._del_all_docs()
-
-    def __bool__(self):
-        """To simulate ```l = []; if l: ...```
-
-        :return: returns true if the length of the array is larger than 0
-        """
-        return len(self) > 0
-
     def __repr__(self):
         return f'<DocumentArray (length={len(self)}) at {id(self)}>'
 
@@ -64,9 +35,3 @@ class SequenceLikeMixin(MutableSequence[Document]):
         v = type(self)(self)
         v.extend(other)
         return v
-
-    def extend(self, values: Iterable['Document']) -> None:
-        values = list(values)  # consume the iterator only once
-        last_idx = len(self._id2offset)
-        self._data.extend(values)
-        self._id_to_index.update({d.id: i + last_idx for i, d in enumerate(values)})
