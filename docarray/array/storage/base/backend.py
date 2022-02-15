@@ -17,12 +17,7 @@ class BaseBackendMixin(ABC):
         *args,
         **kwargs
     ):
-        from ... import DocumentArray
-
-        if isinstance(_docs, DocumentArray):
-            self._offset2ids = _docs._offset2ids
-        else:
-            self._offset2ids = Offset2ID()
+        self._offset2ids = Offset2ID()
 
     def _get_storage_infos(self) -> Dict:
         return {'Class': self.__class__.__name__}

@@ -31,21 +31,20 @@ class BackendMixin(BaseBackendMixin):
     ):
         super()._init_storage(_docs, copy=copy, *args, **kwargs)
 
-        from ...memory import DocumentArrayInMemory
+        from ... import DocumentArray
 
         self._data = {}
         if _docs is None:
             return
         elif isinstance(
             _docs,
-            (DocumentArrayInMemory, Sequence, Generator, Iterator, itertools.chain),
+            (DocumentArray, Sequence, Generator, Iterator, itertools.chain),
         ):
             if copy:
-                self._data = {d.id: Document(d, copy=True) for d in _docs}
-            elif isinstance(_docs, DocumentArrayInMemory):
-                self._data = _docs._data
+                for doc in _docs:
+                    self.append(Document(doc, copy=True))
             else:
-                self._data = {doc.id: doc for doc in _docs}
+                self.extend(_docs)
         else:
             if isinstance(_docs, Document):
                 if copy:
