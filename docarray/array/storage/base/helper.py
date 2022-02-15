@@ -26,6 +26,9 @@ class Offset2ID:
     def insert(self, position, data_id):
         self.offset2id.insert(position, data_id)
 
+    def clear(self):
+        self.offset2id.clear()
+
     def save(self):
         pass
 

@@ -63,10 +63,10 @@ class BaseGetSetDelMixin(ABC):
 
     def _del_doc_by_offset(self, offset: int):
         self._del_doc_by_id(self._offset2ids.get_id(offset))
-        del self._offset2ids[offset]
+        self._offset2ids.delete_by_offset(offset)
 
     def _del_doc(self, _id: str):
-        del self._offset2ids[self._offset2ids.index(_id)]
+        self._offset2ids.delete_by_id(_id)
         self._del_doc_by_id(_id)
 
     @abstractmethod
@@ -103,7 +103,7 @@ class BaseGetSetDelMixin(ABC):
     # Setitem API
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        self._set_doc_by_id(self._offset2ids.get_id(offset), value)
+        self._set_doc(self._offset2ids.get_id(offset), value)
 
     def _set_doc(self, _id: str, value: 'Document'):
         if _id != value.id:

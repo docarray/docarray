@@ -22,9 +22,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
-            return x in self._id2offset
+            return x in self._data
         elif isinstance(x, Document):
-            return x.id in self._id2offset
+            return x.id in self._data
         else:
             return False
 
