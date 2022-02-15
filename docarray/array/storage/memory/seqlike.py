@@ -12,13 +12,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             type(self) is type(other)
             and type(self._data) is type(other._data)
             and self._data == other._data
+            and self._offset2ids == other._offset2ids
         )
 
     def __len__(self):
         return len(self._data)
-
-    def __iter__(self) -> Iterator['Document']:
-        yield from self._data.values()
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):

@@ -37,3 +37,6 @@ class Offset2ID:
 
     def __iter__(self) -> Iterator['str']:
         yield from self.offset2id
+
+    def __eq__(self, other):
+        return self.offset2id == other.offset2id
