@@ -82,6 +82,7 @@ def test_matching_retrieves_correct_number(
     D1, D2 = doc_lists_to_doc_arrays(
         doc_lists,
     )
+
     D1.match(
         D2, metric='sqeuclidean', limit=limit, batch_size=batch_size, only_id=only_id
     )

@@ -229,13 +229,13 @@ class FindMixin:
         top_inds = np.zeros((n_q, limit), dtype=int)
 
         def _get_dist(da: 'DocumentArray'):
-            distances = cdist(query.embeddings, self.embeddings, metric_name)
+            distances = cdist(query.embeddings, da.embeddings, metric_name)
             dists, inds = top_k(distances, limit, descending=False)
 
             if isinstance(normalization, (tuple, list)) and normalization is not None:
                 dists = minmax_normalize(dists, normalization)
 
-            return dists, inds, len(self)
+            return dists, inds, len(da)
 
         if num_worker is None or num_worker > 1:
             # notice that all most all computations (regardless the framework) are conducted in C
