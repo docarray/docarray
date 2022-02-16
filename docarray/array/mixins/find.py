@@ -31,7 +31,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str],
+        query: Union['DocumentArray', 'Document', 'ArrayType'],
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         from ...math import ndarray
