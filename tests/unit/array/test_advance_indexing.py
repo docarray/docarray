@@ -83,7 +83,7 @@ def test_setter_int_str(docs, storage, config, start_weaviate):
         ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
-def test_del_int_str(docs, storage, config, indices):
+def test_del_int_str(docs, storage, config, start_weaviate, indices):
     if config:
         docs = DocumentArray(docs, storage=storage, config=config)
     else:
