@@ -41,15 +41,20 @@ class FindMixin:
             return self.filter(query, **kwargs)
         elif isinstance(query, (DocumentArray, Document)):
             if isinstance(query, Document):
-                return self.search(DocumentArray(query), **kwargs)[0]
+                query = DocumentArray(query)
 
-            return self.search(query, **kwargs)
+            result = self.search(query, **kwargs)
+
+            if len(query) == 1:
+                return result[0]
+
+            return result
 
         try:
-            _, _ = ndarray.get_array_type(query)
+            n_rows, _ = ndarray.get_array_rows(query)
             q_mat = ndarray.to_numpy_array(query)
-            if q_mat.ndim == 1:
-                q = DocumentArray(Document(embedding=q_mat))
+            if n_rows == 1:
+                q = DocumentArray(Document(embedding=q_mat.flatten()))
                 return self.search(q, **kwargs)[0]
             else:
                 q = DocumentArray([Document(embedding=x) for x in q_mat])

@@ -51,7 +51,7 @@ class FindMixin:
 
         return DocumentArray(docs)
 
-    def find(self, query: 'DocumentArray', limit: int = 10) -> List['DocumentArray']:
+    def search(self, query: 'DocumentArray', limit: int = 10) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: the DocumentArray to search by their embeddings.
         :param limit: number of retrieved items
