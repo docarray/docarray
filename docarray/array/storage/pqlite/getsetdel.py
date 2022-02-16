@@ -28,3 +28,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         self._pqlite.delete([_id])
+
+    def _clear_storage(self):
+        self._pqlite.clear()

@@ -20,9 +20,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._pqlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
-    def _clear_storage(self):
-        self._pqlite.clear()
-
     def __del__(self) -> None:
         if not self._persist:
             self._offset2ids.clear()
