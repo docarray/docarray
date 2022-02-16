@@ -62,8 +62,10 @@ class MatchMixin:
         :param kwargs: other kwargs.
         """
 
+        from ...math import ndarray
+
         match_docs = darray.find(
-            self.embeddings,
+            ndarray.to_numpy_array(self.embeddings),
             metric=metric,
             limit=limit,
             normalization=normalization,
