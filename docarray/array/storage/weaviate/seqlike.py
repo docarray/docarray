@@ -1,10 +1,11 @@
 from typing import Iterator, Union, Iterable, MutableSequence
 
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 from ..registry import _REGISTRY
 
 
-class SequenceLikeMixin(MutableSequence[Document]):
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods for DocumentArray with weaviate as storage"""
 
     def __eq__(self, other):
