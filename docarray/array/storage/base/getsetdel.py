@@ -18,6 +18,7 @@ class BaseGetSetDelMixin(ABC):
             - :meth:`._get_doc_by_id`
             - :meth:`._set_doc_by_id`
             - :meth:`._del_doc_by_id`
+            - :meth:`._clear_storage`
 
         Other methods implemented a generic-but-slow version that leverage the methods above.
         Please override those methods in the subclass whenever a more efficient implementation is available.
@@ -96,9 +97,12 @@ class BaseGetSetDelMixin(ABC):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic"""
-        for _id in self._offset2ids:
-            self._del_doc_by_id(_id)
+        self._clear_storage()
         self._offset2ids = Offset2ID()
+
+    @abstractmethod
+    def _clear_storage(self):
+        ...
 
     # Setitem API
 
