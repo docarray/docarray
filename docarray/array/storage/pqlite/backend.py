@@ -37,6 +37,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[PqliteConfig, Dict]] = None,
         **kwargs,
     ):
+        super()._init_storage()
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
@@ -51,16 +52,10 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        from .helper import OffsetMapping
-
         config = asdict(config)
         n_dim = config.pop('n_dim')
 
         self._pqlite = PQLite(n_dim, **config)
-        self._offset2ids = OffsetMapping(
-            data_path=config['data_path'],
-            in_memory=False,
-        )
         from ... import DocumentArray
         from .... import Document
 
@@ -90,13 +85,8 @@ class BackendMixin(BaseBackendMixin):
         n_dim = config.pop('n_dim')
 
         from pqlite import PQLite
-        from .helper import OffsetMapping
 
         self._pqlite = PQLite(n_dim, **config)
-        self._offset2ids = OffsetMapping(
-            data_path=config['data_path'],
-            in_memory=False,
-        )
 
     def _get_storage_infos(self) -> Dict:
         storage_infos = super()._get_storage_infos()
