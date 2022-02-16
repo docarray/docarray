@@ -1,9 +1,10 @@
-from typing import Iterator, Union, Iterable, MutableSequence, Optional
+from typing import Union, Optional
 
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 
 
-class SequenceLikeMixin(MutableSequence[Document]):
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
 
     def _insert_doc_at_idx(self, doc, idx: Optional[int] = None):
@@ -13,6 +14,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
             f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
             (doc.id, doc, idx),
         )
+        self._offset2ids.insert(idx, doc.id)
 
     def _shift_index_right_backward(self, start: int):
         idx = len(self) - 1
@@ -37,19 +39,13 @@ class SequenceLikeMixin(MutableSequence[Document]):
         self._insert_doc_at_idx(doc=value, idx=index)
         self._commit()
 
-    def append(self, value: 'Document') -> None:
-        self._insert_doc_at_idx(value)
+    def append(self, doc: 'Document') -> None:
+        self._sql(
+            f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
+            (doc.id, doc, len(self)),
+        )
+        self._offset2ids.append(doc.id)
         self._commit()
-
-    def extend(self, values: Iterable['Document']) -> None:
-        idx = len(self)
-        for v in values:
-            self._insert_doc_at_idx(v, idx)
-            idx += 1
-        self._commit()
-
-    def clear(self) -> None:
-        self._del_all_docs()
 
     def __del__(self) -> None:
         if not self._persist:
@@ -72,13 +68,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
     def __len__(self) -> int:
         r = self._sql(f'SELECT COUNT(*) FROM {self._table_name}')
         return r.fetchone()[0]
-
-    def __iter__(self) -> Iterator['Document']:
-        r = self._sql(
-            f'SELECT serialized_value FROM {self._table_name} ORDER BY item_order'
-        )
-        for res in r:
-            yield res[0]
 
     def __repr__(self):
         return f'<DocumentArray[SQLite] (length={len(self)}) at {id(self)}>'

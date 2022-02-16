@@ -100,7 +100,7 @@ class BaseGetSetDelMixin(ABC):
         self._clear_storage()
         self._offset2ids = Offset2ID()
 
-    # TODO: make this abstract
+    @abstractmethod
     def _clear_storage(self):
         ...
 

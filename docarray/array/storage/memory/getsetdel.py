@@ -11,10 +11,6 @@ from .... import Document
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
-    def _del_all_docs(self):
-        self._data.clear()
-        self._offset2ids.clear()
-
     def _del_doc_by_id(self, _id: str):
         del self._data[_id]
 

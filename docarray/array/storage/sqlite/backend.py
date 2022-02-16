@@ -61,6 +61,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[SqliteConfig, Dict]] = None,
         **kwargs,
     ):
+        super()._init_storage()
         if not config:
             config = SqliteConfig()
 
