@@ -537,11 +537,11 @@ def test_edge_case_two_strings(storage, config_gen, start_weaviate):
     assert len(da) == 3
     assert not da[1].text
 
-    if storage == 'weaviate':
-        with pytest.raises(
-            ValueError, match='pop id from Document stored with weaviate is not allowed'
-        ):
-            del da['1', 'id']
+    with pytest.raises(
+        ValueError,
+        match='pop id from Document stored in a DocumentArray is not allowed',
+    ):
+        del da['1', 'id']
 
     del da['2', 'hello']
 
