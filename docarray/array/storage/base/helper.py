@@ -11,6 +11,9 @@ class Offset2ID:
     def append(self, data):
         self.offset2id.append(data)
 
+    def extend(self, data):
+        self.offset2id.extend(data)
+
     def update(self, position, data_id):
         self.offset2id[position] = data_id
 

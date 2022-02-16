@@ -1,11 +1,12 @@
-from typing import Iterator, Union, Iterable, Sequence, MutableSequence
+from typing import Union, Iterable, Sequence
 
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 
 from ...memory import DocumentArrayInMemory
 
 
-class SequenceLikeMixin(MutableSequence['Document']):
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
 
     def extend(self, values: Iterable['Document']) -> None:
@@ -49,3 +50,11 @@ class SequenceLikeMixin(MutableSequence['Document']):
         v = type(self)(self)
         v.extend(other)
         return v
+
+    def __contains__(self, x: Union[str, 'Document']):
+        if isinstance(x, str):
+            return self._pqlite.get_doc_by_id(x) is not None
+        elif isinstance(x, Document):
+            return self._pqlite.get_doc_by_id(x.id) is not None
+        else:
+            return False
