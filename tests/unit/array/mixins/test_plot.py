@@ -10,6 +10,8 @@ from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.pqlite import DocumentArrayPqlite
+from docarray.array.storage.pqlite import PqliteConfig
 
 
 @pytest.mark.parametrize(
@@ -44,24 +46,24 @@ def test_sprite_fail_tensor_success_uri(
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
 @pytest.mark.parametrize(
-    'da_cls,config',
+    'da_cls,config_gen',
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=128)),
+        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
     ],
 )
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, config, start_weaviate
+    pytestconfig, tmpdir, image_source, da_cls, config_gen, start_weaviate
 ):
     files = [
         f'{pytestconfig.rootdir}/**/*.png',
         f'{pytestconfig.rootdir}/**/*.jpg',
         f'{pytestconfig.rootdir}/**/*.jpeg',
     ]
-    if config:
-        da = da_cls.from_files(files, config=config)
+    if config_gen:
+        da = da_cls.from_files(files, config=config_gen())
     else:
         da = da_cls.from_files(files)
     da.apply(lambda d: d.load_uri_to_image_tensor())
@@ -69,27 +71,32 @@ def test_sprite_image_generator(
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
-def da_and_dam():
+@pytest.fixture
+def da_and_dam(start_weaviate):
     embeddings = np.array([[1, 0, 0], [2, 0, 0], [3, 0, 0]])
-    doc_array = DocumentArray(
-        [
-            Document(embedding=x, tags={'label': random.randint(0, 5)})
-            for x in embeddings
+    return [
+        cls(
+            [
+                Document(embedding=x, tags={'label': random.randint(0, 5)})
+                for x in embeddings
+            ],
+            **kwargs,
+        )
+        for cls, kwargs in [
+            (DocumentArray, {}),
+            (DocumentArraySqlite, {}),
+            (DocumentArrayWeaviate, {'config': {'n_dim': 3}}),
+            (DocumentArrayPqlite, {'config': {'n_dim': 3}}),
         ]
-    )
-
-    doc_arraysq = DocumentArraySqlite(
-        [
-            Document(embedding=x, tags={'label': random.randint(0, 5)})
-            for x in embeddings
-        ]
-    )
-
-    return (doc_array, doc_arraysq)
+    ]
 
 
-@pytest.mark.parametrize('da', da_and_dam())
-def test_plot_embeddings(da):
+def test_plot_embeddings(da_and_dam):
+    for da in da_and_dam:
+        _test_plot_embeddings(da)
+
+
+def _test_plot_embeddings(da):
     p = da.plot_embeddings(start_server=False)
     assert os.path.exists(p)
     assert os.path.exists(os.path.join(p, 'config.json'))

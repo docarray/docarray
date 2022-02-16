@@ -3,6 +3,10 @@ import types
 import pytest
 
 from docarray import Document, DocumentArray
+from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.pqlite import DocumentArrayPqlite
 from tests import random_docs
 
 # some random prime number for sanity check
@@ -19,36 +23,76 @@ def doc_req():
     # add some random matches
     for d in ds:
         for _ in range(num_matches_per_doc):
-            d.matches.append(Document(content='hello'))
+            d.matches.append(Document(content='hello', embedding=[0] * 10))
         for c in d.chunks:
             for _ in range(num_matches_per_chunk):
-                c.matches.append(Document(content='world'))
+                c.matches.append(Document(content='world', embedding=[0] * 10))
     yield DocumentArray(ds)
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_type(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = doc_req.traverse('r', filter_fn=filter_fn)
     assert isinstance(ds, types.GeneratorType)
     assert isinstance(list(ds)[0], DocumentArray)
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_root(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r', filter_fn=filter_fn))
     assert len(ds) == 1
     assert len(ds[0]) == num_docs
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('c', filter_fn=filter_fn))
     assert len(ds) == num_docs
     assert len(ds[0]) == num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_root_plus_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + 1
     assert len(ds[0]) == num_chunks_per_doc
@@ -56,7 +100,17 @@ def test_traverse_root_plus_chunk(doc_req, filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_chunk_plus_root(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r,c', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs
     assert len(ds[-1]) == num_chunks_per_doc
@@ -64,64 +118,170 @@ def test_traverse_chunk_plus_root(doc_req, filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_match(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('m', filter_fn=filter_fn))
     assert len(ds) == num_docs
     assert len(ds[0]) == num_matches_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_match_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
     assert len(ds[0]) == num_matches_per_chunk
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_root_match_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs + num_docs + num_docs * num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_embedding(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     flattened_results = doc_req.traverse_flat('r,c', filter_fn=filter_fn)
     ds = flattened_results.embeddings
     assert ds.shape == (num_docs + num_chunks_per_doc * num_docs, 10)
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_root(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('r', filter_fn=filter_fn))
     assert len(ds) == num_docs
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('c', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_root_plus_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_root_plus_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + num_docs * num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_match(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('m', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_matches_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_match_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_match_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc * num_matches_per_chunk
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flatten_root_match_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flatten_root_match_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
     assert (
         len(ds)
@@ -133,7 +293,19 @@ def test_traverse_flatten_root_match_chunk(doc_req, filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_embedding(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_embedding(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     flattened_results = list(doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn))
     ds = flattened_results[0].embeddings
     assert ds.shape == (num_docs, 10)
@@ -143,38 +315,92 @@ def test_traverse_flattened_per_path_embedding(doc_req, filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_root(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_root(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('r', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('c', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_chunks_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_root_plus_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_root_plus_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('c,r', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_chunks_per_doc
     assert len(ds[1]) == num_docs
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_match(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_match(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('m', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_matches_per_doc
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_match_chunk(doc_req, filter_fn):
-    ds = list(doc_req.traverse_flat_per_path('cm', filter_fn=filter_fn))
-    assert len(ds[0]) == num_docs * num_chunks_per_doc * num_matches_per_chunk
-
-
-@pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_traverse_flattened_per_path_root_match_chunk(doc_req, filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flattened_per_path_root_match_chunk(
+    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+):
+    doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs
     assert len(ds[1]) == num_chunks_per_doc * num_docs
@@ -183,14 +409,23 @@ def test_traverse_flattened_per_path_root_match_chunk(doc_req, filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_docuset_traverse_over_iterator_HACKY(filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_docuset_traverse_over_iterator_HACKY(da_cls, kwargs, filter_fn):
     # HACKY USAGE DO NOT RECOMMEND: can also traverse over "runtime"-documentarray
-    ds = DocumentArray(random_docs(num_docs, num_chunks_per_doc)).traverse(
-        'r', filter_fn=filter_fn
-    )
+    da = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs)
+
+    ds = da.traverse('r', filter_fn=filter_fn)
     assert len(list(list(ds)[0])) == num_docs
 
-    ds = DocumentArray(random_docs(num_docs, num_chunks_per_doc)).traverse(
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
         'c', filter_fn=filter_fn
     )
     ds = list(ds)
@@ -199,16 +434,25 @@ def test_docuset_traverse_over_iterator_HACKY(filter_fn):
 
 
 @pytest.mark.parametrize('filter_fn', [(lambda d: True), None])
-def test_docuset_traverse_over_iterator_CAVEAT(filter_fn):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_docuset_traverse_over_iterator_CAVEAT(da_cls, kwargs, filter_fn):
     # HACKY USAGE's CAVEAT: but it can not iterate over an iterator twice
-    ds = DocumentArray(random_docs(num_docs, num_chunks_per_doc)).traverse(
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
         'r,c', filter_fn=filter_fn
     )
     # note that random_docs is a generator and can be only used once,
     # therefore whoever comes first wil get iterated, and then it becomes empty
     assert len(list(ds)) == 1 + num_docs
 
-    ds = DocumentArray(random_docs(num_docs, num_chunks_per_doc)).traverse(
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
         'c,r', filter_fn=filter_fn
     )
     assert len(list(ds)) == num_docs + 1
@@ -254,7 +498,15 @@ def test_traverse_chunkarray(filter_fn):
     assert len(flat_docs) == 12
 
 
-@pytest.mark.parametrize('use_dam', [True, False])
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
 @pytest.mark.parametrize(
     ('filter_fn', 'docs_len'),
     [
@@ -280,14 +532,24 @@ def test_traverse_chunkarray(filter_fn):
         ),
     ],
 )
-def test_filter_fn_traverse_flat(filter_fn, docs_len, doc_req, use_dam, tmp_path):
-    docs = doc_req
+def test_filter_fn_traverse_flat(
+    filter_fn, docs_len, doc_req, da_cls, kwargs, tmp_path
+):
+    docs = da_cls(doc_req, **kwargs)
     ds = list(docs.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == docs_len
     assert all(isinstance(d, Document) for d in ds)
 
 
-@pytest.mark.parametrize('use_dam', [True, False])
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
 @pytest.mark.parametrize(
     ('filter_fn', 'docs_len'),
     [
@@ -318,9 +580,9 @@ def test_filter_fn_traverse_flat(filter_fn, docs_len, doc_req, use_dam, tmp_path
     ],
 )
 def test_filter_fn_traverse_flat_per_path(
-    filter_fn, doc_req, docs_len, use_dam, tmp_path
+    filter_fn, doc_req, docs_len, da_cls, kwargs, tmp_path
 ):
-    docs = doc_req
+    docs = da_cls(doc_req, **kwargs)
     ds = list(docs.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == 4
     for seq, length in zip(ds, docs_len):
@@ -328,15 +590,33 @@ def test_filter_fn_traverse_flat_per_path(
         assert len(list(seq)) == length
 
 
-def test_traversal_path():
-    da = DocumentArray([Document() for _ in range(6)])
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traversal_path(da_cls, kwargs):
+    da = da_cls([Document() for _ in range(6)], **kwargs)
     assert len(da) == 6
 
     da.traverse_flat('r')
 
 
-def test_traverse_flat_root_itself():
-    da = DocumentArray([Document() for _ in range(100)])
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_traverse_flat_root_itself(da_cls, kwargs):
+    da = da_cls([Document() for _ in range(100)], **kwargs)
     res = da.traverse_flat('r')
     assert id(res) == id(da)
 
@@ -346,8 +626,17 @@ def da_and_dam(N):
     return (da,)
 
 
-@pytest.mark.parametrize('da', da_and_dam(100))
-def test_flatten(da):
+@pytest.mark.parametrize(
+    'da_cls, kwargs',
+    [
+        (DocumentArrayInMemory, {}),
+        (DocumentArraySqlite, {}),
+        (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
+        (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+    ],
+)
+def test_flatten(da_cls, kwargs):
+    da = da_cls(random_docs(100), **kwargs)
     daf = da.flatten()
     assert len(daf) == 600
     assert isinstance(daf, DocumentArray)
