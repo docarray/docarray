@@ -6,17 +6,18 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from .... import DocumentArray
+    import numpy as np
+    from .... import Document, DocumentArray
 
 
 class FindMixin:
-    def search(
+    def find(
         self,
-        query: 'DocumentArray',
+        query: Union['DocumentArray', 'Document', 'np.ndarray'],
         limit: Optional[Union[int, float]] = 20,
         only_id: bool = False,
         **kwargs,
-    ) -> List['DocumentArray']:
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given an input query.
 
         :param query: the query documents to search.
@@ -24,12 +25,29 @@ class FindMixin:
         :param only_id: if set, then returning matches will only contain ``id``
         :param kwargs: other kwargs.
 
-        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
+        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise
+            a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+        from ....math import ndarray
+
         if limit is not None:
             if limit <= 0:
                 raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
             else:
                 limit = int(limit)
-        self._pqlite.search(query, limit=limit, include_metadata=not only_id, **kwargs)
-        return [q.matches for q in query]
+
+        if isinstance(query, Document):
+            query = ndarray.to_numpy_array(query.embedding)
+        elif isinstance(query, DocumentArray):
+            query = ndarray.to_numpy_array(query.embeddings)
+
+        n_rows, _ = ndarray.get_array_rows(query)
+        if n_rows == 1:
+            query = query.reshape(1, -1)
+
+        _, match_docs = self._pqlite._search_documents(
+            query, limit=limit, include_metadata=not only_id, **kwargs
+        )
+        if n_rows == 1:
+            return match_docs[0]
+        return match_docs

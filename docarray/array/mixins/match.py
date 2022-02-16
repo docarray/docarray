@@ -62,8 +62,8 @@ class MatchMixin:
         :param kwargs: other kwargs.
         """
 
-        result = darray.search(
-            self,
+        match_docs = darray.find(
+            self.embeddings,
             metric=metric,
             limit=limit,
             normalization=normalization,
@@ -76,5 +76,8 @@ class MatchMixin:
             num_worker=num_worker,
         )
 
-        for r, d in zip(result, self):
-            d.matches = r
+        if isinstance(match_docs, DocumentArray):
+            match_docs = [match_docs]
+
+        for m, d in zip(match_docs, self):
+            d.matches = m

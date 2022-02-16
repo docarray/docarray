@@ -37,13 +37,11 @@ class FindMixin:
         from ...math import ndarray
         from ... import Document, DocumentArray
 
-        if isinstance(query, (dict, str)):
-            return self.filter(query, **kwargs)
-        elif isinstance(query, (DocumentArray, Document)):
+        if isinstance(query, (DocumentArray, Document)):
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
-            result = self.search(query, **kwargs)
+            result = self._find_similar_docs(query, **kwargs)
 
             if len(query) == 1:
                 return result[0]
@@ -55,23 +53,16 @@ class FindMixin:
             q_mat = ndarray.to_numpy_array(query)
             if n_rows == 1:
                 q = DocumentArray(Document(embedding=q_mat.flatten()))
-                return self.search(q, **kwargs)[0]
+                return self._find_similar_docs(q, **kwargs)[0]
             else:
                 q = DocumentArray([Document(embedding=x) for x in q_mat])
-                return self.search(q, **kwargs)
+                return self._find_similar_docs(q, **kwargs)
         except Exception as ex:
             raise ValueError(
                 f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
             )
 
-    def filter(self: 'T', query: Union[Dict, str], **kwargs) -> 'DocumentArray':
-        """Returns a new DocumentArray with filtering out docs that match with the given query function.
-
-        :return: DocumentArray containing all documents matching the given `query`
-        """
-        ...
-
-    def search(
+    def _find_similar_docs(
         self: 'T',
         query: 'DocumentArray',
         metric: Union[
