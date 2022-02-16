@@ -1,12 +1,8 @@
 from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING
 
-import numpy as np
-
-from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
-from ...score import NamedScore
-
 if TYPE_CHECKING:
-    from ...types import Document, ArrayType
+    import numpy as np
+    from ...types import ArrayType
     from ... import DocumentArray
 
 
@@ -80,5 +76,5 @@ class MatchMixin:
             num_worker=num_worker,
         )
 
-        for _r, _d in zip(result, self):
-            _d.matches = _r.matches
+        for r, d in zip(result, self):
+            d.matches = r

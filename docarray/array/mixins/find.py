@@ -1,4 +1,4 @@
-from typing import overload, Optional, Union, Dict, Tuple, Callable, TYPE_CHECKING
+from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_CHECKING
 from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 from ...score import NamedScore
 import numpy as np
@@ -33,30 +33,28 @@ class FindMixin:
         self: 'T',
         query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str],
         **kwargs,
-    ) -> 'DocumentArray':
-        from ...math.ndarray import to_numpy_array, get_array_type
+    ) -> Union['DocumentArray', List['DocumentArray']]:
+        from ...math import ndarray
         from ... import Document, DocumentArray
 
         if isinstance(query, (dict, str)):
             return self.filter(query, **kwargs)
         elif isinstance(query, (DocumentArray, Document)):
             if isinstance(query, Document):
-                query = DocumentArray(query)
-                return self.search(query, **kwargs)[0].matches
+                return self.search(DocumentArray(query), **kwargs)[0]
 
             return self.search(query, **kwargs)
 
         try:
-            _, _ = get_array_type(query)
-            q_mat = to_numpy_array(query)
-            query = DocumentArray([Document(embedding=x) for x in q_mat])
+            _, _ = ndarray.get_array_type(query)
+            q_mat = ndarray.to_numpy_array(query)
             if q_mat.ndim == 1:
-                query = DocumentArray(Document(embedding=q_mat))
-                return self.search(query, **kwargs)[0].matches
+                q = DocumentArray(Document(embedding=q_mat))
+                return self.search(q, **kwargs)[0]
             else:
-                query = DocumentArray([Document(embedding=x) for x in q_mat])
-                return self.search(query, **kwargs)
-        except Exception:
+                q = DocumentArray([Document(embedding=x) for x in q_mat])
+                return self.search(q, **kwargs)
+        except Exception as ex:
             raise ValueError(
                 f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
             )
@@ -84,7 +82,7 @@ class FindMixin:
         device: str = 'cpu',
         num_worker: Optional[int] = 1,
         **kwargs,
-    ) -> 'DocumentArray':
+    ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
 
         :param query: the DocumentArray to search by their embeddings.
@@ -109,8 +107,7 @@ class FindMixin:
 
         :param kwargs: other kwargs.
 
-        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
-           the closest Document objects for each of the queries in `query`.
+        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
         if limit is not None:
             if limit <= 0:
@@ -152,9 +149,9 @@ class FindMixin:
 
         from ... import Document, DocumentArray
 
-        result = DocumentArray([Document(id=q.id) for q in query])
-        for _q, _ids, _dists in zip(result, idx, dist):
-            num_matches = 0
+        result = []
+        for _q, _ids, _dists in zip(query, idx, dist):
+            matches = DocumentArray()
             for _id, _dist in zip(_ids, _dists):
                 # Note, when match self with other, or both of them share the same Document
                 # we might have recursive matches .
@@ -164,17 +161,12 @@ class FindMixin:
                 else:
                     d = Document(self[int(_id)], copy=True)  # type: Document
 
-                if d.id in query:
-                    d = Document(
-                        d, copy=True
-                    )  # to prevent self-reference and override on matches
-                    d.pop('matches')
                 if not (d.id == _q.id and exclude_self):
-                    d.scores[metric_name] = NamedScore(value=_dist, ref_id=_q.id)
-                    _q.matches.append(d)
-                    num_matches += 1
-                    if num_matches >= (limit or _limit):
+                    d.scores[metric_name] = NamedScore(value=_dist)
+                    matches.append(d)
+                    if len(matches) >= (limit or _limit):
                         break
+            result.append(matches)
 
         return result
 
