@@ -40,3 +40,6 @@ class Offset2ID:
 
     def __eq__(self, other):
         return self.offset2id == other.offset2id
+
+    def __len__(self):
+        return len(self.offset2id)

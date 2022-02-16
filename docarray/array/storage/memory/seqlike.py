@@ -15,9 +15,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             and self._offset2ids == other._offset2ids
         )
 
-    def __len__(self):
-        return len(self._data)
-
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
             return x in self._data
