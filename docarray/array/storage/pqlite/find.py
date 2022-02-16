@@ -4,10 +4,10 @@ from typing import (
     TYPE_CHECKING,
     List,
 )
+from .... import Document, DocumentArray
 
 if TYPE_CHECKING:
     import numpy as np
-    from .... import Document, DocumentArray
 
 
 class FindMixin:

@@ -40,7 +40,7 @@ def cdist(
     if x_type != y_type:
         raise ValueError(
             f'The type of your left-hand side is {x_type}, whereas your right-hand side is {y_type}. '
-            f'`.match()` requires left must be the same type as right.'
+            f'`.cdist()` requires left must be the same type as right.'
         )
 
     framework, is_sparse = get_array_type(x_mat)

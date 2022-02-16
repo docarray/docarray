@@ -62,10 +62,14 @@ class MatchMixin:
         :param kwargs: other kwargs.
         """
 
-        from ...math import ndarray
+        if not (self and darray):
+            return
+
+        for d in self:
+            d.matches.clear()
 
         match_docs = darray.find(
-            ndarray.to_numpy_array(self.embeddings),
+            self,
             metric=metric,
             limit=limit,
             normalization=normalization,
@@ -78,7 +82,7 @@ class MatchMixin:
             num_worker=num_worker,
         )
 
-        if isinstance(match_docs, DocumentArray):
+        if not isinstance(match_docs, list):
             match_docs = [match_docs]
 
         for m, d in zip(match_docs, self):

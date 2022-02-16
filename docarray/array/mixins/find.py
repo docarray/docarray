@@ -49,18 +49,20 @@ class FindMixin:
             return result
 
         try:
+            _, _ = ndarray.get_array_type(query)
             n_rows, _ = ndarray.get_array_rows(query)
-            q_mat = ndarray.to_numpy_array(query)
             if n_rows == 1:
-                q = DocumentArray(Document(embedding=q_mat.flatten()))
+                q = DocumentArray(Document(embedding=query))
                 return self._find_similar_docs(q, **kwargs)[0]
             else:
-                q = DocumentArray([Document(embedding=x) for x in q_mat])
+                q = DocumentArray([Document(embedding=x) for x in query])
                 return self._find_similar_docs(q, **kwargs)
-        except Exception as ex:
-            raise ValueError(
+        except TypeError:
+            raise TypeError(
                 f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
             )
+        except Exception as ex:
+            raise ex
 
     def _find_similar_docs(
         self: 'T',
@@ -156,6 +158,9 @@ class FindMixin:
                     d = Document(id=self[_id].id)
                 else:
                     d = Document(self[int(_id)], copy=True)  # type: Document
+
+                # to prevent self-reference and override on matches
+                d.pop('matches')
 
                 if not (d.id == _q.id and exclude_self):
                     d.scores[metric_name] = NamedScore(value=_dist)
