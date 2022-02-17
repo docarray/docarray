@@ -165,7 +165,7 @@ class BaseGetSetDelMixin(ABC):
             )
 
         ids = self._offset2ids.get_id(_slice)
-        self._set_docs(ids)
+        self._set_docs(ids, value)
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']

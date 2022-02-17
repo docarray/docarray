@@ -32,3 +32,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_docs_by_ids(self, ids):
         self._pqlite.delete(ids)
+
+    def _load_offset2ids(self):
+        ...
+
+    def _save_offset2ids(self):
+        ...
