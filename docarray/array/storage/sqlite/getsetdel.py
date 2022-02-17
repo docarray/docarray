@@ -1,6 +1,8 @@
+from operator import itemgetter
 from typing import Sequence, Iterable
 
 from ..base.getsetdel import BaseGetSetDelMixin
+from ..base.helper import Offset2ID
 from .... import Document
 
 
@@ -51,5 +53,25 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._sql(
             f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE doc_id=?',
             (value, value.id, _id),
+        )
+        self._commit()
+
+    def _load_offset2ids(self):
+        r = self._sql(
+            f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
+        )
+        self._offset2ids = Offset2ID()
+        self._offset2ids.offset2id = list(map(itemgetter(0), r))
+
+    def _save_offset2ids(self):
+        self._sql(
+            f"""
+            WITH Tmp(doc_id, item_order) AS (VALUES {','.join([
+                '(' + _id + ', ' + str(offset) + ')' for offset, _id in enumerate(self._offset2ids)
+            ])}
+            UPDATE {self._table_name} SET item_order = (SELECT item_order
+                                 FROM Tmp
+                                 WHERE {self._table_name}.doc_id = Tmp.doc_id)
+            """
         )
         self._commit()

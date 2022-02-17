@@ -48,6 +48,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._commit()
 
     def __del__(self) -> None:
+        super().__del__()
         if not self._persist:
             self._sql(
                 'DELETE FROM metadata WHERE table_name=? AND container_type=?',
