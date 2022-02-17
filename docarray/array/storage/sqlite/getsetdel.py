@@ -36,14 +36,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         ids = [self._offset2ids.get_id(offset) for offset in offsets]
         return self._get_docs_by_ids(ids)
 
-    def _get_docs_by_ids(self, ids: str) -> Iterable['Document']:
-        r = self._sql(
-            f"SELECT serialized_value FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
-            ids,
-        )
-        for rr in r:
-            yield rr[0]
-
     def _clear_storage(self):
         self._sql(f'DELETE FROM {self._table_name}')
         self._commit()
