@@ -38,7 +38,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _load_offset2ids(self):
         self._offset2ids = Offset2ID()
         self._offsetmapping = OffsetMapping(
-            data_path=self._config['data_path'], in_memory=False
+            data_path=self._config.data_path, in_memory=False
         )
         self._offsetmapping.create_table()
         self._offset2ids.offset2id = self._offsetmapping.get_all_ids()

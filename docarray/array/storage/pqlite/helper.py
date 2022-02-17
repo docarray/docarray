@@ -21,12 +21,12 @@ class OffsetMapping(Table):
     def create_table(self):
         sql = f'''CREATE TABLE IF NOT EXISTS {self.name}
                             (offset INTEGER NOT NULL PRIMARY KEY,
-                             doc_id INTEGER TEXT NOT NULL)'''
+                             doc_id TEXT NOT NULL)'''
 
         self.execute(sql, commit=True)
 
     def drop(self):
-        sql = f'''DROP TABLE IF NOT EXISTS {self.name}'''
+        sql = f'''DROP TABLE IF EXISTS {self.name}'''
         self.execute(sql, commit=True)
 
     def clear(self):
@@ -73,9 +73,9 @@ class OffsetMapping(Table):
         return result[0] if result else None
 
     def get_all_ids(self):
-        sql = f'SELECT offset FROM {self.name}'
+        sql = f'SELECT doc_id FROM {self.name} ORDER BY offset'
         result = self._conn.execute(sql).fetchall()
-        return [r[0] for r in result] if result else None
+        return [r[0] for r in result] if result else []
 
     def del_at_offset(self, offset: int, commit: bool = True):
         offset = len(self) + offset if offset < 0 else offset
