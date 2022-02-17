@@ -22,6 +22,11 @@ class BaseGetSetDelMixin(ABC):
 
         Other methods implemented a generic-but-slow version that leverage the methods above.
         Please override those methods in the subclass whenever a more efficient implementation is available.
+        Mainly, if the backend storage supports operations in batches, you can implement the following methods:
+            - :meth:`._get_docs_by_ids`
+            - :meth:`._set_docs_by_ids`
+            - :meth:`._del_docs_by_ids`
+
     """
 
     # Getitem APIs
@@ -79,9 +84,8 @@ class BaseGetSetDelMixin(ABC):
         Override this function if there is a more efficient logic
         :param _slice: the slice used for indexing
         """
-        # TODO: rebuild offset2ids once
-        for _id in self._offset2ids.get_id(_slice):
-            self._del_doc(_id)
+        ids = self._offset2ids.get_id(_slice)
+        self._del_docs(ids)
 
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """This function is derived and may not have the most efficient implementation.
@@ -89,9 +93,8 @@ class BaseGetSetDelMixin(ABC):
         :param mask: the boolean mask used for indexing
         """
         # TODO: rebuild offset2ids once
-        idxs = list(itertools.compress(self._offset2ids, (not _i for _i in mask)))
-        for _idx in reversed(idxs):
-            self._del_doc(_idx)
+        ids = list(itertools.compress(self._offset2ids, (not _i for _i in mask)))
+        self._del_docs(ids)
 
     def _del_all_docs(self):
         """This function is derived and may not have the most efficient implementation.
@@ -99,6 +102,19 @@ class BaseGetSetDelMixin(ABC):
         Override this function if there is a more efficient logic"""
         self._clear_storage()
         self._offset2ids = Offset2ID()
+
+    def _del_docs_by_ids(self, ids):
+        """This function is derived from :meth:`_del_doc_by_id`
+        Override this function if there is a more efficient logic
+
+        :param ids: the ids used for indexing
+        """
+        for _id in ids:
+            self._del_doc_by_id(_id)
+
+    def _del_docs(self, ids):
+        self._del_docs_by_ids(ids)
+        self._offset2ids.delete_by_ids(ids)
 
     @abstractmethod
     def _clear_storage(self):
@@ -114,9 +130,26 @@ class BaseGetSetDelMixin(ABC):
             self._offset2ids.update(self._offset2ids.index(_id), value.id)
         self._set_doc_by_id(_id, value)
 
+    # TODO: document clearly what is the expected behaviour of such methods
+    # e.g, _set_doc_by_id should not take care of offset2id but should take care of cases where _id is different
+    # from value.id
     @abstractmethod
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         ...
+
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
+        """This function is derived from :meth:`_set_doc_by_id`
+        Override this function if there is a more efficient logic
+
+        :param ids: the ids used for indexing
+        """
+        for _id, doc in zip(ids, docs):
+            self._set_doc_by_id(_id, doc)
+
+    def _set_docs(self, ids, docs: Iterable['Document']):
+        self._set_docs_by_ids(ids, docs)
+        mismatch_ids = {_id: doc.id for _id, doc in zip(ids, docs) if _id != doc.id}
+        self._offset2ids.update_ids(mismatch_ids)
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         """This function is derived and may not have the most efficient implementation.
@@ -130,8 +163,9 @@ class BaseGetSetDelMixin(ABC):
             raise TypeError(
                 f'You right-hand assignment must be an iterable, receiving {type(value)}'
             )
-        for _id, val in zip(self._offset2ids.get_id(_slice), value):
-            self._set_doc(_id, val)
+
+        ids = self._offset2ids.get_id(_slice)
+        self._set_docs(ids)
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']
