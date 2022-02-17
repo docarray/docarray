@@ -52,7 +52,10 @@ class FindMixin:
         return DocumentArray(docs)
 
     def find(
-        self, query: 'WeaviateArrayType', limit: int = 10
+        self,
+        query: Union['Document', 'DocumentArray', 'WeaviateArrayType'],
+        limit: int = 10,
+        **kwargs
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
@@ -64,6 +67,11 @@ class FindMixin:
         Note: Weaviate returns `certainty` values. To get cosine similarities one needs to use `cosine_sim = 2*certainty - 1` as explained here:
                   https://www.semi.technology/developers/weaviate/current/more-resources/faq.html#q-how-do-i-get-the-cosine-similarity-from-weaviates-certainty
         """
+
+        if isinstance(query, (DocumentArray, Document)):
+            if isinstance(query, Document):
+                query = DocumentArray(query)
+            query = query.embeddings
 
         num_rows, _ = ndarray.get_array_rows(query)
 

@@ -36,18 +36,18 @@ class FindMixin:
             else:
                 limit = int(limit)
 
-        if isinstance(query, Document):
-            query = ndarray.to_numpy_array(query.embedding)
-        elif isinstance(query, DocumentArray):
-            query = ndarray.to_numpy_array(query.embeddings)
+        if isinstance(query, (DocumentArray, Document)):
+            if isinstance(query, Document):
+                query = DocumentArray(query)
+            query = query.embeddings
 
-        n_rows, _ = ndarray.get_array_rows(query)
-        if n_rows == 1:
+        num_rows, _ = ndarray.get_array_rows(query)
+        if num_rows == 1:
             query = query.reshape(1, -1)
 
         _, match_docs = self._pqlite._search_documents(
             query, limit=limit, include_metadata=not only_id, **kwargs
         )
-        if n_rows == 1:
+        if num_rows == 1:
             return match_docs[0]
         return match_docs
