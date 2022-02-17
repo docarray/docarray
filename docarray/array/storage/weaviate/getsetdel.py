@@ -1,11 +1,3 @@
-import itertools
-from collections.abc import Iterable as _Iterable
-from typing import (
-    Sequence,
-    Iterable,
-    Any,
-)
-
 from ..base.getsetdel import BaseGetSetDelMixin
 from .... import Document
 

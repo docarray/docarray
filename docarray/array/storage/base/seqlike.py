@@ -1,5 +1,5 @@
-from typing import Iterator, Union, Iterable, MutableSequence
-from abc import ABC, abstractmethod
+from typing import Iterator, Iterable, MutableSequence
+from abc import abstractmethod
 
 from .... import Document
 
