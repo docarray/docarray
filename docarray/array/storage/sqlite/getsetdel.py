@@ -64,14 +64,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._offset2ids.offset2id = list(map(itemgetter(0), r))
 
     def _save_offset2ids(self):
-        self._sql(
-            f"""
-            WITH Tmp(doc_id, item_order) AS (VALUES {','.join([
-                '(' + _id + ', ' + str(offset) + ')' for offset, _id in enumerate(self._offset2ids)
-            ])}
-            UPDATE {self._table_name} SET item_order = (SELECT item_order
-                                 FROM Tmp
-                                 WHERE {self._table_name}.doc_id = Tmp.doc_id)
-            """
-        )
+        for offset, doc_id in enumerate(self._offset2ids):
+            self._sql(
+                f"""
+                    UPDATE {self._table_name} SET item_order = ? WHERE {self._table_name}.doc_id = ?
+                """,
+                (offset, doc_id),
+            )
         self._commit()
