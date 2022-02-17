@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, List, Tuple, Dict
 
 
 class Offset2ID:
@@ -31,6 +31,15 @@ class Offset2ID:
 
     def clear(self):
         self.offset2id.clear()
+
+    def delete_by_ids(self, ids):
+        ids = set(ids)
+        self.offset2id = list(filter(lambda _id: _id not in ids, self.offset2id))
+
+    def update_ids(self, _ids_map: Dict[str, str]):
+        for i in len(self.offset2id):
+            if self.offset2id[i] in _ids_map:
+                self.offset2id[i] = _ids_map[self.offset2id[i]]
 
     def save(self):
         pass
