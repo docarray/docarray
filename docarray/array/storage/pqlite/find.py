@@ -46,7 +46,7 @@ class FindMixin:
             query = query.reshape(1, -1)
 
         _, match_docs = self._pqlite._search_documents(
-            query, limit=limit, include_metadata=not only_id, **kwargs
+            query, limit=limit, include_metadata=not only_id
         )
         if num_rows == 1:
             return match_docs[0]
