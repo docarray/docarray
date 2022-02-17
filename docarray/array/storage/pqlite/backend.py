@@ -37,7 +37,6 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[PqliteConfig, Dict]] = None,
         **kwargs,
     ):
-        super()._init_storage()
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
@@ -58,6 +57,8 @@ class BackendMixin(BaseBackendMixin):
         self._pqlite = PQLite(n_dim, **config)
         from ... import DocumentArray
         from .... import Document
+
+        super()._init_storage()
 
         if _docs is None:
             return

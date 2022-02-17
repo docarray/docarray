@@ -61,7 +61,6 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[SqliteConfig, Dict]] = None,
         **kwargs,
     ):
-        super()._init_storage()
         if not config:
             config = SqliteConfig()
 
@@ -109,6 +108,9 @@ class BackendMixin(BaseBackendMixin):
         )
         self._connection.commit()
         self._config = config
+
+        super()._init_storage()
+
         from ... import DocumentArray
 
         if _docs is None:

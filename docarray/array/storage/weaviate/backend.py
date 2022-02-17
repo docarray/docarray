@@ -55,7 +55,6 @@ class BackendMixin(BaseBackendMixin):
         :raises ValueError: only one of name or docs can be used for initialization,
             raise an error if both are provided
         """
-        super()._init_storage(_docs, **kwargs)
 
         if not config:
             raise ValueError('Config object must be specified')
@@ -84,6 +83,9 @@ class BackendMixin(BaseBackendMixin):
         self._schemas = self._load_or_create_weaviate_schema()
 
         _REGISTRY[self.__class__.__name__][self._class_name].append(self)
+
+        super()._init_storage(_docs, **kwargs)
+
         # To align with Sqlite behavior; if `docs` is not `None` and table name
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
