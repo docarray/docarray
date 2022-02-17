@@ -25,6 +25,10 @@ class OffsetMapping(Table):
 
         self.execute(sql, commit=True)
 
+    def drop(self):
+        sql = f'''DROP TABLE IF NOT EXISTS {self.name}'''
+        self.execute(sql, commit=True)
+
     def clear(self):
         super().clear()
         self._size = None
@@ -67,6 +71,11 @@ class OffsetMapping(Table):
         sql = f'SELECT offset FROM {self.name} WHERE doc_id=? LIMIT 1;'
         result = self._conn.execute(sql, (doc_id,)).fetchone()
         return result[0] if result else None
+
+    def get_all_ids(self):
+        sql = f'SELECT offset FROM {self.name}'
+        result = self._conn.execute(sql).fetchall()
+        return [r[0] for r in result] if result else None
 
     def del_at_offset(self, offset: int, commit: bool = True):
         offset = len(self) + offset if offset < 0 else offset

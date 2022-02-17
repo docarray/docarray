@@ -1,6 +1,8 @@
 from typing import Iterable
 
+from .helper import OffsetMapping
 from ..base.getsetdel import BaseGetSetDelMixin
+from ..base.helper import Offset2ID
 from ...memory import DocumentArrayInMemory
 from .... import Document
 
@@ -34,7 +36,16 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._pqlite.delete(ids)
 
     def _load_offset2ids(self):
-        ...
+        self._offset2ids = Offset2ID()
+        self._offsetmapping = OffsetMapping(
+            data_path=self._config['data_path'], in_memory=False
+        )
+        self._offsetmapping.create_table()
+        self._offset2ids.offset2id = self._offsetmapping.get_all_ids()
 
     def _save_offset2ids(self):
-        ...
+        self._offsetmapping.drop()
+        self._offsetmapping.create_table()
+        self._offsetmapping._insert(
+            [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.offset2id)]
+        )
