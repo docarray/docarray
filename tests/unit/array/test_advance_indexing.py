@@ -572,3 +572,35 @@ def test_edge_case_two_strings(storage, config_gen, start_weaviate):
 
     with pytest.raises(IndexError):
         da['1', 'hellohello'] = 'hello'
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', PqliteConfig(n_dim=123)),
+    ],
+)
+def test_offset2ids_persistence(storage, config, start_weaviate):
+    da = DocumentArray(storage=storage, config=config)
+
+    da.extend(
+        [
+            Document(id='0'),
+            Document(id='2'),
+            Document(id='4'),
+        ]
+    )
+    da.insert(1, Document(id='1'))
+    da.insert(3, Document(id='3'))
+
+    config = da._config
+    da_ids = da[:, 'id']
+    assert da_ids == [str(i) for i in range(5)]
+    da._persist = True
+    da.__del__()
+
+    da = DocumentArray(storage=storage, config=config)
+
+    assert da[:, 'id'] == da_ids
