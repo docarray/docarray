@@ -256,3 +256,14 @@ class BaseGetSetDelMixin(ABC):
             if d.id in _all_ids:
                 da[d.id].copy_from(d)
                 return _d
+
+    @abstractmethod
+    def _load_offset2ids(self):
+        ...
+
+    @abstractmethod
+    def _save_offset2ids(self):
+        ...
+
+    def __del__(self):
+        self._save_offset2ids()

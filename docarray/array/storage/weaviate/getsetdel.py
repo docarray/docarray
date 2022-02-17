@@ -1,4 +1,5 @@
 from ..base.getsetdel import BaseGetSetDelMixin
+from ..base.helper import Offset2ID
 from .... import Document
 
 
@@ -57,3 +58,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._client.schema.delete_class(self._class_name)
             self._client.schema.delete_class(self._meta_name)
             self._load_or_create_weaviate_schema()
+
+    def _load_offset2ids(self):
+        self._offset2ids = Offset2ID()
+        self._offset2ids.offset2id, self._offset2ids_wid = self._get_offset2ids_meta()
+
+    def _save_offset2ids(self):
+        self._update_offset2ids_meta()

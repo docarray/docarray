@@ -5,6 +5,7 @@ from typing import (
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin
+from ..base.helper import Offset2ID
 from .... import Document
 
 
@@ -35,3 +36,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _clear_storage(self):
         self._data.clear()
+
+    def _load_offset2ids(self):
+        self._offset2ids = Offset2ID()
+
+    def _save_offset2ids(self):
+        ...

@@ -56,7 +56,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayWeaviate` object"""
-        # TODO: persist offset2id here
+        super().__del__()
         if (
             not self._persist
             and len(_REGISTRY[self.__class__.__name__][self._class_name]) == 1
