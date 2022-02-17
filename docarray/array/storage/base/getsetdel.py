@@ -147,6 +147,7 @@ class BaseGetSetDelMixin(ABC):
             self._set_doc_by_id(_id, doc)
 
     def _set_docs(self, ids, docs: Iterable['Document']):
+        docs = list(docs)
         self._set_docs_by_ids(ids, docs)
         mismatch_ids = {_id: doc.id for _id, doc in zip(ids, docs) if _id != doc.id}
         self._offset2ids.update_ids(mismatch_ids)
