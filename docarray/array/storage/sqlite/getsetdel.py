@@ -47,3 +47,17 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _clear_storage(self):
         self._sql(f'DELETE FROM {self._table_name}')
         self._commit()
+
+    def _del_docs_by_ids(self, ids: str) -> Iterable['Document']:
+        self._sql(
+            f"DELETE FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
+            ids,
+        )
+        self._commit()
+
+    def _set_docs_by_ids(self, _id: str, value: 'Document'):
+        self._sql(
+            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE doc_id=?',
+            (value, value.id, _id),
+        )
+        self._commit()
