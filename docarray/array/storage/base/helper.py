@@ -37,7 +37,7 @@ class Offset2ID:
         self.offset2id = list(filter(lambda _id: _id not in ids, self.offset2id))
 
     def update_ids(self, _ids_map: Dict[str, str]):
-        for i in len(self.offset2id):
+        for i in range(len(self.offset2id)):
             if self.offset2id[i] in _ids_map:
                 self.offset2id[i] = _ids_map[self.offset2id[i]]
 

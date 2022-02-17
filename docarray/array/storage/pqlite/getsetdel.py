@@ -30,7 +30,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._pqlite.clear()
 
     def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
-        self._pqlite.update(ids)
+        docs = DocumentArrayInMemory(docs)
+        self._pqlite.update(docs)
 
     def _del_docs_by_ids(self, ids):
         self._pqlite.delete(ids)

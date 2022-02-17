@@ -49,13 +49,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         )
         self._commit()
 
-    def _set_docs_by_ids(self, _id: str, value: 'Document'):
-        self._sql(
-            f'UPDATE {self._table_name} SET serialized_value=?, doc_id=? WHERE doc_id=?',
-            (value, value.id, _id),
-        )
-        self._commit()
-
     def _load_offset2ids(self):
         r = self._sql(
             f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
