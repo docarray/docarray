@@ -539,7 +539,7 @@ def test_edge_case_two_strings(storage, config_gen, start_weaviate):
 
     with pytest.raises(
         ValueError,
-        match='pop id from Document stored in a DocumentArray is not allowed',
+        match='setting the ID of a Document stored in a DocumentArray to None is not allowed',
     ):
         del da['1', 'id']
 

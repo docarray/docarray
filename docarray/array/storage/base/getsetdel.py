@@ -235,7 +235,7 @@ class BaseGetSetDelMixin(ABC):
         """
         if attr == 'id' and value is None:
             raise ValueError(
-                'pop id from Document stored in a DocumentArray is not allowed'
+                'setting the ID of a Document stored in a DocumentArray to None is not allowed'
             )
 
         d = self._get_doc_by_id(_id)
