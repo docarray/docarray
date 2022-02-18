@@ -31,6 +31,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
         docs = DocumentArrayInMemory(docs)
+        for doc in docs:
+            self._to_numpy_embedding(doc)
         self._pqlite.update(docs)
 
     def _del_docs_by_ids(self, ids):
