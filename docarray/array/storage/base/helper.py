@@ -2,8 +2,8 @@ from typing import Iterator, Dict
 
 
 class Offset2ID:
-    def __init__(self):
-        self.ids = []
+    def __init__(self, ids=[]):
+        self.ids = ids
 
     def get_id(self, idx):
         return self.ids[idx]
