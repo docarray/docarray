@@ -75,6 +75,7 @@ class BackendMixin(BaseBackendMixin):
     def __getstate__(self):
         state = dict(self.__dict__)
         del state['_pqlite']
+        del state['_offsetmapping']
         return state
 
     def __setstate__(self, state):

@@ -4,6 +4,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.memory import BackendMixin, SequenceLikeMixin
 
 
@@ -34,6 +35,12 @@ class StorageMixins(BackendMixin, DummyGetSetDelMixin, SequenceLikeMixin, ABC):
 class DocumentArrayDummy(StorageMixins, DocumentArray):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
+
+    def _load_offset2ids(self):
+        self._offset2ids = Offset2ID()
+
+    def _save_offset2ids(self):
+        pass
 
 
 @pytest.fixture(scope='function')

@@ -4,6 +4,7 @@ import uuid
 import numpy as np
 import pytest
 
+from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
@@ -34,6 +35,7 @@ def test_document_save_load(
 ):
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs, config=config())
+    da.insert(2, Document(id='new'))
     da.save(tmp_file, file_format=method, encoding=encoding)
 
     da_r = type(da).load(
@@ -42,6 +44,7 @@ def test_document_save_load(
 
     assert type(da) is type(da_r)
     assert len(da) == len(da_r)
+    assert da_r[2].id == 'new'
     for d, d_r in zip(da, da_r):
         assert d.id == d_r.id
         np.testing.assert_equal(d.embedding, d_r.embedding)
