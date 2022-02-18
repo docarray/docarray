@@ -52,7 +52,9 @@ class EvaluationMixin:
 
         metric_name = metric_name or metric_fn.__name__
         results = []
+        global_max_rel = kwargs.pop('max_rel', None)
         for d, gd in zip(self, other):
+            max_rel = global_max_rel or len(gd.matches)
             if strict and hash_fn(d) != hash_fn(gd):
                 raise ValueError(
                     f'Document {d} from the left-hand side and '
@@ -65,8 +67,9 @@ class EvaluationMixin:
                     f'Document {d!r} or {gd!r} has no matches, please check your Document'
                 )
 
-            desired = {hash_fn(m) for m in gd.matches}
-            if len(desired) != len(gd.matches):
+            targets = gd.matches[:max_rel]
+            desired = {hash_fn(m) for m in targets}
+            if len(desired) != len(targets):
                 warnings.warn(
                     f'{hash_fn!r} may not be valid, as it maps multiple Documents into the same hash. '
                     f'Evaluation results may be affected'
@@ -74,9 +77,7 @@ class EvaluationMixin:
 
             binary_relevance = [1 if hash_fn(m) in desired else 0 for m in d.matches]
 
-            kwargs['max_rel'] = len(gd.matches)
-
-            r = metric_fn(binary_relevance, **kwargs)
+            r = metric_fn(binary_relevance, max_rel=max_rel, **kwargs)
             d.evaluations[metric_name] = NamedScore(
                 value=r, op_name=str(metric_fn), ref_id=d.id
             )
