@@ -54,7 +54,7 @@ class BackendMixin(BaseBackendMixin):
         config = asdict(config)
         n_dim = config.pop('n_dim')
 
-        self._pqlite = PQLite(n_dim, **config)
+        self._pqlite = PQLite(n_dim, lock=False, **config)
         from ... import DocumentArray
         from .... import Document
 
@@ -87,7 +87,7 @@ class BackendMixin(BaseBackendMixin):
 
         from pqlite import PQLite
 
-        self._pqlite = PQLite(n_dim, **config)
+        self._pqlite = PQLite(n_dim, lock=False, **config)
 
     def _get_storage_infos(self) -> Dict:
         storage_infos = super()._get_storage_infos()
