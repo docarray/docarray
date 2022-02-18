@@ -61,7 +61,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _load_offset2ids(self):
         self._offset2ids = Offset2ID()
-        self._offset2ids._ids, self._offset2ids_wid = self._get_offset2ids_meta()
+        self._offset2ids.ids, self._offset2ids_wid = self._get_offset2ids_meta()
 
     def _save_offset2ids(self):
         self._update_offset2ids_meta()
