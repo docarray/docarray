@@ -77,7 +77,7 @@ class SetItemMixin:
             # set by ID
             # allows da['id_123'] = Document()
             else:
-                self._set_doc_by_id(index, value)
+                self._set_doc(index, value)
         # set by slice
         # allows da[1:3] = [d1, d2]
         elif isinstance(index, slice):
@@ -211,7 +211,7 @@ class SetItemMixin:
                     elif _a == 'embedding':
                         _docs.embeddings = _v
                     for _d in _docs:
-                        self._set_doc_by_id(_d.id, _d)
+                        self._set_doc(_d.id, _d)
                 else:
                     if not isinstance(_v, (list, tuple)):
                         for _d in _docs:

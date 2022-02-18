@@ -3,6 +3,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.array.pqlite import PqliteConfig
 
 
 @pytest.fixture
@@ -21,7 +22,7 @@ def indices():
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_storage):
@@ -52,7 +53,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_storage):
@@ -79,10 +80,10 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
-def test_del_int_str(docs, storage, config, indices):
+def test_del_int_str(docs, storage, config, start_weaviate, indices):
     if config:
         docs = DocumentArray(docs, storage=storage, config=config)
     else:
@@ -111,7 +112,7 @@ def test_del_int_str(docs, storage, config, indices):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_slice(docs, storage, config, start_storage):
@@ -147,7 +148,7 @@ def test_slice(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_storage):
@@ -191,7 +192,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_storage):
@@ -225,7 +226,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_storage):
@@ -257,7 +258,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_storage):
@@ -275,7 +276,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_storage):
@@ -312,7 +313,7 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', PqliteConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing_set(storage, config, start_storage):
@@ -395,7 +396,7 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', lambda: PqliteConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -461,9 +462,10 @@ def test_tensor_attribute_selector(storage, start_storage):
 # next version
 @pytest.mark.parametrize('storage', ['memory', 'sqlite', 'pqlite'])
 def test_advance_selector_mixed(storage):
-    da = DocumentArray(storage=storage)
     if storage == 'pqlite':
         da = DocumentArray(storage=storage, config={'n_dim': 3})
+    else:
+        da = DocumentArray(storage=storage)
 
     da.extend(DocumentArray.empty(10))
     da.embeddings = np.random.random([10, 3])
@@ -502,7 +504,7 @@ def test_single_boolean_and_padding(storage, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', None),
+        ('pqlite', lambda: PqliteConfig(n_dim=123)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_storage):
@@ -535,11 +537,11 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
     assert len(da) == 3
     assert not da[1].text
 
-    if storage == 'weaviate':
-        with pytest.raises(
-            ValueError, match='pop id from Document stored with weaviate is not allowed'
-        ):
-            del da['1', 'id']
+    with pytest.raises(
+        ValueError,
+        match='setting the ID of a Document stored in a DocumentArray to None is not allowed',
+    ):
+        del da['1', 'id']
 
     del da['2', 'hello']
 
@@ -570,3 +572,35 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
 
     with pytest.raises(IndexError):
         da['1', 'hellohello'] = 'hello'
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', PqliteConfig(n_dim=123)),
+    ],
+)
+def test_offset2ids_persistence(storage, config, start_weaviate):
+    da = DocumentArray(storage=storage, config=config)
+
+    da.extend(
+        [
+            Document(id='0'),
+            Document(id='2'),
+            Document(id='4'),
+        ]
+    )
+    da.insert(1, Document(id='1'))
+    da.insert(3, Document(id='3'))
+
+    config = da._config
+    da_ids = da[:, 'id']
+    assert da_ids == [str(i) for i in range(5)]
+    da._persist = True
+    da.__del__()
+
+    da = DocumentArray(storage=storage, config=config)
+
+    assert da[:, 'id'] == da_ids

@@ -57,6 +57,7 @@ setup(
             'pqlite>=0.2.1',
             'strawberry-graphql[debug-server]',
             'qdrant-client~=0.5.0',
+            'strawberry-graphql',
         ],
         'qdrant': [
             'qdrant-client~=0.5.0',
@@ -80,6 +81,8 @@ setup(
             'onnxruntime',
             'jupyterlab',
             'transformers==4.16.2',
+            'weaviate-client~=3.3.0',
+            'pqlite>=0.2.4',
         ],
     },
     classifiers=[

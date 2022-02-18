@@ -7,7 +7,7 @@ DocumentArray can be easily extended to support different Document Store backend
 
 After the extension, users can enjoy convenient and powerful DocumentArray API on top of your document store. To end users, it promises the same user experience just like using a regular DocumentArray, no extra learning is required.
 
-This chapter gives you a walkthrough on how to add a new DocumentArray. To be specific, in this chapter we are extending DocumentArray to support a new backend `mydocstore`. The final result would be enabling the following usage:
+This chapter gives you a walk through on how to add a new DocumentArray. To be specific, in this chapter we are extending DocumentArray to support a new backend `mydocstore`. The final result would be enabling the following usage:
 
 ```python
 from docarray import DocumentArray
@@ -51,34 +51,41 @@ from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray import Document
 
 class GetSetDelMixin(BaseGetSetDelMixin):
-
-    def _get_doc_by_offset(self, offset: int) -> 'Document':
-        # to be implemented
         
     def _get_doc_by_id(self, _id: str) -> 'Document':
         # to be implemented
-
-    def _del_doc_by_offset(self, offset: int):
-        # to be implemented
+        ...
 
     def _del_doc_by_id(self, _id: str):
         # to be implemented
-
-    def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        # to be implemented
+        ...
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         # to be implemented
+        ...
+
+    def _load_offset2ids(self):
+        # to be implemented
+        ...
+    
+    def _save_offset2ids(self):
+        # to be implemented
+        ...
 ```
 
-You will need to implement the above six functions, which correspond to the logics of get/set/delete items via a string `.id` or an integer offset. They are essential to ensure DocumentArray works.
+You will need to implement the above five functions, which correspond to the logics of get/set/delete items via a string `.id`. They are essential to ensure DocumentArray works.
+
+Note that DocumentArray maintains an offset2ids mapping to allow a list-like behaviour. This mapping is added by 
+inherited from the `BaseGetSetDelMixin`. Therefore, you need to implement methods to persist this mapping, in case you 
+want to have also persist the ordering of Documents inside the storage.
+
 
 ```{tip}
-Let's call the above six functions as **six essentials**.
+Let's call the above five functions as **three essentials**.
 
-If you aim for high performance, it is recommened to implement other methods *without* leveraging your six essentials. They are: `_get_docs_by_slice`, `_get_docs_by_offsets`, `_get_docs_by_ids`, `_del_docs_by_slice`, `_del_docs_by_mask`, `_del_all_docs`, `_set_docs_by_slice`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_doc_attr_by_offset`. One can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
+If you aim for high performance, it is recommeneded to implement other methods *without* leveraging your three essentials. They are: `_get_docs_by_ids`, `_del_docs_by_ids`, `_clear_storage`, `_set_doc_value_pairs`, `_set_doc_value_pairs_nested`, `_set_docs_by_ids`. One can get their full signatures from {class}`~docarray.array.storage.base.getsetdel.BaseGetSetDelMixin`. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray. 
 
-Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that based on your six essentials.
+Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that is based on your five essentials.
 ```
 
 ```{seealso}
@@ -92,28 +99,14 @@ Your `seqlike.py` should look like the following:
 ```python
 from typing import MutableSequence, Iterable, Iterator, Union
 from docarray import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
 
-class SequenceLikeMixin(MutableSequence[Document]):
-    
-    def insert(self, index: int, value: 'Document'):
-        ...
-
-    def clear(self) -> None:
-        ...
+class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __eq__(self, other):
         ...
-    
-    def __len__(self):
-        ...
-
-    def __iter__(self) -> Iterator['Document']:
-        ...
 
     def __contains__(self, x: Union[str, 'Document']):
-        ...
-    
-    def __bool__(self):
         ...
     
     def __repr__(self):
@@ -121,12 +114,28 @@ class SequenceLikeMixin(MutableSequence[Document]):
     
     def __add__(self, other: Union['Document', Iterable['Document']]):
         ...
+    
+    def insert(self, index: int, value: 'Document'):
+        # Optional. By default, this will add a new item and update offset2id
+        # if you want to customize this, makee sure to handle offset2id
+        ...
 
     def append(self, value: 'Document'):
-        # optional, if you have better implementation than `insert`
+        # Optional. If you have better implementation than `insert`
+        ...
 
     def extend(self, values: Iterable['Document']) -> None:
-        # optional, if you have better implementation than `insert` one by one
+        # Optional. If you have better implementation than `insert` one by one
+        ...
+
+
+    def __len__(self):
+        # Optional. By default, this will rely on offset2id to get the length
+        ...
+
+    def __iter__(self) -> Iterator['Document']:
+        # Optional. By default, this will rely on offset2id to iterate
+        ...
 ```
 
 Most of the interfaces come from Python standard [MutableSequence](https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence).
@@ -170,6 +179,7 @@ class BackendMixin(BaseBackendMixin):
             config: Optional[Union[MyDocStoreConfig, Dict]] = None,
             **kwargs
     ):
+        super()._init_storage(_docs, config, **kwargs)
         ...
 ```
 

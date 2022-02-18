@@ -12,7 +12,7 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API. It is the basic building block of neural search apps.
+DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
 
 🌌 **Rich data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
 
@@ -106,13 +106,21 @@ Our problem is given an image from `/left`, can we find its most-similar image i
 
 ### Load images
 
-First load images and pre-process them with standard computer vision techniques:
+First we load images. You *can* go to [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) website, unzip and load images as below:
 
 ```python
 from docarray import DocumentArray
 
 left_da = DocumentArray.from_files('left/*.jpg')
 ```
+
+Or you can simply pull it from Jina Cloud:
+
+```python
+left_da = DocumentArray.pull('demo-leftda', show_progress=True)
+```
+
+You will see a running progress bar to indicate the downloading process.
 
 To get a feeling of the data you will handle, plot them in one sprite image:
 
@@ -133,7 +141,6 @@ from docarray import Document
 
 def preproc(d: Document):
     return (d.load_uri_to_image_tensor()  # load
-             .set_image_tensor_shape((200, 200))  # resize all to 200x200
              .set_image_tensor_normalization()  # normalize color 
              .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
@@ -168,11 +175,33 @@ left_da.plot_embeddings()
 
 Fun is fun, but recall our goal is to match left images against right images and so far we have only handled the left. Let's repeat the same procedure for the right:
 
+
+<table>
+<tr>
+<th> Pull from Cloud </th> 
+<th> Download, unzip, load from local </th>
+</tr>
+<tr>
+<td> 
+
+```python
+right_da = (DocumentArray.pull('demo-rightda', show_progress=True)
+                         .apply(preproc)
+                         .embed(model, device='cuda'))
+```
+     
+</td>
+<td>
+
 ```python
 right_da = (DocumentArray.from_files('right/*.jpg')
                          .apply(preproc)
                          .embed(model, device='cuda'))
 ```
+
+</td>
+</tr>
+</table>
 
 ### Match nearest neighbours
 

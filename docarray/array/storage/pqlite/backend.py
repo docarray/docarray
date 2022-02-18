@@ -1,11 +1,15 @@
-from dataclasses import dataclass, asdict
-from pathlib import Path
+import itertools
+from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
     Dict,
     Optional,
     TYPE_CHECKING,
+    Sequence,
+    Generator,
+    Iterator,
 )
+from pqlite import PQLite
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
@@ -18,9 +22,9 @@ if TYPE_CHECKING:
 
 @dataclass
 class PqliteConfig:
-    n_dim: int = 1
+    n_dim: int
     metric: str = 'cosine'
-    serialize_protocol: str = 'pickle'
+    serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
 
 
@@ -29,12 +33,13 @@ class BackendMixin(BaseBackendMixin):
 
     def _init_storage(
         self,
-        docs: Optional['DocumentArraySourceType'] = None,
+        _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[PqliteConfig, Dict]] = None,
+        **kwargs,
     ):
         if not config:
-            config = PqliteConfig()
-        if isinstance(config, dict):
+            raise ValueError('Config object must be specified')
+        elif isinstance(config, dict):
             config = dataclass_from_dict(PqliteConfig, config)
 
         self._persist = bool(config.data_path)
@@ -46,19 +51,50 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        from pqlite import PQLite
-        from .helper import OffsetMapping
-
         config = asdict(config)
         n_dim = config.pop('n_dim')
 
-        self._pqlite = PQLite(n_dim, **config)
-        self._offset2ids = OffsetMapping(
-            name='docarray',
-            data_path=Path(config['data_path']),
-            in_memory=False,
-        )
+        self._pqlite = PQLite(n_dim, lock=False, **config)
+        from ... import DocumentArray
+        from .... import Document
 
-        if docs is not None:
-            self.clear()
-            self.extend(docs)
+        super()._init_storage()
+
+        if _docs is None:
+            return
+
+        self.clear()
+
+        if isinstance(
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+        ):
+            self.extend(_docs)
+        elif isinstance(_docs, Document):
+            self.append(_docs)
+
+    def __getstate__(self):
+        state = dict(self.__dict__)
+        del state['_pqlite']
+        del state['_offsetmapping']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+
+        config = state['_config']
+        config = asdict(config)
+        n_dim = config.pop('n_dim')
+
+        from pqlite import PQLite
+
+        self._pqlite = PQLite(n_dim, lock=False, **config)
+
+    def _get_storage_infos(self) -> Dict:
+        storage_infos = super()._get_storage_infos()
+        return {
+            'Backend': 'PQLite (https://github.com/jina-ai/pqlite)',
+            'Distance Metric': self._pqlite.metric.name,
+            'Data Path': self._config.data_path,
+            'Serialization Protocol': self._config.serialize_config.get('protocol'),
+            **storage_infos,
+        }

@@ -4,6 +4,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.memory import BackendMixin, SequenceLikeMixin
 
 
@@ -13,27 +14,18 @@ class DummyGetSetDelMixin(BaseGetSetDelMixin):
     # essentials
 
     def _del_doc_by_id(self, _id: str):
-        del self._data[self._id2offset[_id]]
-        self._id2offset.pop(_id)
-
-    def _del_doc_by_offset(self, offset: int):
-        self._id2offset.pop(self._data[offset].id)
-        del self._data[offset]
+        del self._data[_id]
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        old_idx = self._id2offset.pop(_id)
-        self._data[old_idx] = value
-        self._id2offset[value.id] = old_idx
-
-    def _get_doc_by_offset(self, offset: int) -> 'Document':
-        return self._data[offset]
+        if _id != value.id:
+            del self._data[_id]
+        self._data[value.id] = value
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
-        return self._data[self._id2offset[_id]]
+        return self._data[_id]
 
-    def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        self._data[offset] = value
-        self._id2offset[value.id] = offset
+    def _clear_storage(self):
+        self._data.clear()
 
 
 class StorageMixins(BackendMixin, DummyGetSetDelMixin, SequenceLikeMixin, ABC):
@@ -43,6 +35,12 @@ class StorageMixins(BackendMixin, DummyGetSetDelMixin, SequenceLikeMixin, ABC):
 class DocumentArrayDummy(StorageMixins, DocumentArray):
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls)
+
+    def _load_offset2ids(self):
+        self._offset2ids = Offset2ID()
+
+    def _save_offset2ids(self):
+        pass
 
 
 @pytest.fixture(scope='function')

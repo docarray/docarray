@@ -1,42 +1,24 @@
-from typing import Iterator, Union, Iterable, Sequence, MutableSequence
+from typing import Union, Iterable, Sequence
 
-import numpy as np
-
-from ...memory import DocumentArrayInMemory
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 
+from ...memory import DocumentArrayInMemory
 
-class SequenceLikeMixin(MutableSequence[Document]):
+
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
-
-    def insert(self, index: int, value: 'Document'):
-        """Insert `doc` at `index`.
-
-        :param index: Position of the insertion.
-        :param value: The doc needs to be inserted.
-        """
-        if value.embedding is None:
-            value.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
-
-        self._pqlite.index(DocumentArrayInMemory([value]))
-        self._offset2ids.insert_at_offset(index, value.id)
-
-    def append(self, value: 'Document') -> None:
-        self._pqlite.index(DocumentArrayInMemory([value]))
-        self._offset2ids.extend_doc_ids([value.id])
 
     def extend(self, values: Iterable['Document']) -> None:
         docs = DocumentArrayInMemory(values)
-        for doc in docs:
-            if doc.embedding is None:
-                doc.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
-        self._pqlite.index(docs)
-        self._offset2ids.extend_doc_ids([doc.id for doc in docs])
+        if len(docs) == 0:
+            return
 
-    def clear(self):
-        """Clear the data of :class:`DocumentArray`"""
-        self._offset2ids.clear()
-        self._pqlite.clear()
+        for doc in docs:
+            self._to_numpy_embedding(doc)
+
+        self._pqlite.index(docs)
+        self._offset2ids.extend([doc.id for doc in docs])
 
     def __del__(self) -> None:
         if not self._persist:
@@ -50,21 +32,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
             and type(self._config) is type(other._config)
             and self._config == other._config
         )
-
-    def __len__(self):
-        return self._offset2ids.size
-
-    def __iter__(self) -> Iterator['Document']:
-        for i in range(len(self)):
-            yield self[i]
-
-    def __contains__(self, x: Union[str, 'Document']):
-        if isinstance(x, str):
-            return self._offset2ids.get_offset_by_id(x) is not None
-        elif isinstance(x, Document):
-            return self._offset2ids.get_offset_by_id(x.id) is not None
-        else:
-            return False
 
     def __bool__(self):
         """To simulate ```l = []; if l: ...```
@@ -80,3 +47,11 @@ class SequenceLikeMixin(MutableSequence[Document]):
         v = type(self)(self)
         v.extend(other)
         return v
+
+    def __contains__(self, x: Union[str, 'Document']):
+        if isinstance(x, str):
+            return self._pqlite.get_doc_by_id(x) is not None
+        elif isinstance(x, Document):
+            return self._pqlite.get_doc_by_id(x.id) is not None
+        else:
+            return False

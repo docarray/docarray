@@ -11,6 +11,7 @@ from transformers import TFViTModel, ViTConfig, ViTModel
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -61,6 +62,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
     [
         DocumentArray,
         DocumentArraySqlite,
+        DocumentArrayPqlite,
         # DocumentArrayWeaviate,  # TODO enable this
     ],
 )
@@ -78,6 +80,8 @@ def test_embedding_on_random_network(
 ):
     if da_cls == DocumentArrayWeaviate:
         da = da_cls.empty(N, config=WeaviateConfig(n_dim=embedding_shape))
+    elif da_cls == DocumentArrayPqlite:
+        da = da_cls.empty(N, config=PqliteConfig(n_dim=embedding_shape))
     else:
         da = da_cls.empty(N, config=None)
     da.tensors = np.random.random([N, *input_shape]).astype(np.float32)

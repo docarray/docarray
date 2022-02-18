@@ -203,10 +203,7 @@ class BinaryIOMixin:
         if isinstance(file, io.BufferedWriter):
             file_ctx = nullcontext(file)
         else:
-            if __windows__:
-                file_ctx = open(file, 'wb', newline='')
-            else:
-                file_ctx = open(file, 'wb')
+            file_ctx = open(file, 'wb')
 
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
 
