@@ -69,7 +69,7 @@ class JsonIOMixin:
     @classmethod
     def from_json(
         cls: Type['T'],
-        file: Union[str, TextIO],
+        file: Union[str, bytes, bytearray, TextIO],
         protocol: str = 'jsonschema',
         encoding: str = 'utf-8',
         **kwargs
