@@ -114,13 +114,10 @@ jobs:
           pip install --no-cache-dir ".[full,test]"
       - name: Test
         id: test
-        env:
-          TEST_PATH: ${{ matrix.test-path }}
         run: |
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "::set-output name=codecov_flag::docarray"
-          echo "::set-output name=codecov_name::$( echo "$TEST_PATH" | tr ' ' '-' )"
         timeout-minutes: 30
       - name: Check codecov file
         id: check_files
@@ -132,7 +129,6 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
         with:
           file: coverage.xml
-          name: ${{ steps.test.outputs.codecov_name }}-codecov
           flags: ${{ steps.test.outputs.codecov_flag }}
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
