@@ -322,7 +322,7 @@ da = DocumentArray([Document(tags={'category': 'c'}),
                     Document(tags={'category': 'a'}),
                     Document(tags={'category': 'a'})])
 
-rv = da.split(tag='category')
+rv = da.split_by_tag(tag='category')
 ```
 
 ```text
