@@ -52,9 +52,9 @@ class EvaluationMixin:
 
         metric_name = metric_name or metric_fn.__name__
         results = []
-        global_max_rel = kwargs.pop('max_rel', None)
+        caller_max_rel = kwargs.pop('max_rel', None)
         for d, gd in zip(self, other):
-            max_rel = global_max_rel or len(gd.matches)
+            max_rel = caller_max_rel or len(gd.matches)
             if strict and hash_fn(d) != hash_fn(gd):
                 raise ValueError(
                     f'Document {d} from the left-hand side and '
