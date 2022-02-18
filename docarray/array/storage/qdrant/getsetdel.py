@@ -51,9 +51,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
         )
 
-    def _get_doc_by_offset(self, offset: int) -> 'Document':
-        raise NotImplementedError()
-
     def _get_doc_by_id(self, _id: str) -> 'Document':
         try:
             resp = self.client.http.points_api.get_point(
@@ -64,18 +61,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             if response_error.status_code == 404:
                 raise KeyError(_id)
 
-    def _del_doc_by_offset(self, offset: int):
-        raise NotImplementedError()
-
     def _del_doc_by_id(self, _id: str):
         self.client.http.points_api.delete_points(
             name=self.collection_name,
             wait=True,
             points_selector=PointIdsList(points=[_id]),
         )
-
-    def _set_doc_by_offset(self, offset: int, value: 'Document'):
-        raise NotImplementedError()
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         if _id != value.id:

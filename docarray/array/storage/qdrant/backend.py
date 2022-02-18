@@ -89,6 +89,8 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
+        super()._init_storage()
+
         if docs is None and config.collection_name:
             return
 

@@ -3,8 +3,10 @@ from docarray import Document
 
 from qdrant_client import QdrantClient
 
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
 
-class SequenceLikeMixin(MutableSequence[Document]):
+
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     @property
     def client(self) -> QdrantClient:
         raise NotImplementedError()
@@ -15,14 +17,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     @property
     def config(self):
-        raise NotImplementedError()
-
-    def insert(self, index: int, value: 'Document'):
-        """Insert `doc` at `index`.
-
-        :param index: Position of the insertion.
-        :param value: The doc needs to be inserted.
-        """
         raise NotImplementedError()
 
     def __eq__(self, other):
