@@ -7,10 +7,10 @@
   <meta property="og:title" content=" Image" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/datatypes/image/index.html" />
-  <meta property="og:site_name" content="DocArray 0.6.3 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.7.0 Documentation" />
   <meta property="og:description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API Simple image processing: DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you ca..." />
   <meta property="og:image" content="https://docarray.jina.ai/_images/apple.png" />
-  <meta property="og:image:alt" content="DocArray 0.6.3 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.7.0 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -30,14 +30,14 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Video" href="../video/" /><link rel="prev" title="Text" href="../text/" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
-        <title>Image - DocArray 0.6.3 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
+        <title>Image - DocArray 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
     <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
@@ -77,17 +77,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" />
-      <line x1="4" y1="6" x2="20" y2="6" />
-      <line x1="10" y1="12" x2="20" y2="12" />
-      <line x1="6" y1="18" x2="20" y2="18" />
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
     </svg>
   </symbol>
   <symbol id="svg-menu" viewBox="0 0 24 24">
     <title>Menu</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -96,14 +92,14 @@
   </symbol>
   <symbol id="svg-arrow-right" viewBox="0 0 24 24">
     <title>Expand</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
       <polyline points="9 18 15 12 9 6"></polyline>
     </svg>
   </symbol>
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -118,7 +114,7 @@
   </symbol>
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
@@ -126,7 +122,7 @@
   </symbol>
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
@@ -164,7 +160,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.6.3 documentation</div>
+                <div class="brand">DocArray 0.7.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -302,6 +298,8 @@
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.base/">docarray.array.storage.base package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.backend/">docarray.array.storage.base.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.getsetdel/">docarray.array.storage.base.getsetdel module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.helper/">docarray.array.storage.base.helper module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.seqlike/">docarray.array.storage.base.seqlike module</a></li>
 </ul>
 </li>
 <li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.memory/">docarray.array.storage.memory package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -436,6 +434,7 @@
     </ul>
 </div>
 </div>
+
             </div>
             
         </div>
@@ -469,13 +468,13 @@
                     </label>
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image">
-<span id="image-type"></span><h1><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image" title="Permalink to this headline">¶</a></h1>
+<span id="image-type"></span><h1><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image" title="Permalink to this headline">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>This requires <code class="docutils literal notranslate"><span class="pre">Pillow</span></code> and <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> dependencies. You can install them via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code></p>
 </div>
 <section id="load-image-data">
-<h2>Load image data<a class="headerlink" href="#load-image-data" title="Permalink to this headline">¶</a></h2>
+<h2>Load image data<a class="headerlink" href="#load-image-data" title="Permalink to this headline">#</a></h2>
 <p>You can load image data by specifying the image URI and then convert it into <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> using Document API</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/apple.png"><img alt="../../_images/apple.png" src="../../_images/apple.png" style="width: 192.29999999999998px; height: 185.4px;"/></a>
@@ -498,7 +497,7 @@
 </div>
 </section>
 <section id="simple-image-processing">
-<h2>Simple image processing<a class="headerlink" href="#simple-image-processing" title="Permalink to this headline">¶</a></h2>
+<h2>Simple image processing<a class="headerlink" href="#simple-image-processing" title="Permalink to this headline">#</a></h2>
 <p>DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you can switch the channel axis of the <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> to meet certain requirements of other framework; and finally you can chain all these preprocessing steps together in one line. For example, before feeding data into a Pytorch-based ResNet Executor, the image needs to be normalized and the color axis should be at first, not at the last. You can do this via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -534,7 +533,7 @@
 <p>Yep, this looks uneatable. That’s often what you give to the deep learning algorithms.</p>
 </section>
 <section id="display-image-sprite">
-<h2>Display image sprite<a class="headerlink" href="#display-image-sprite" title="Permalink to this headline">¶</a></h2>
+<h2>Display image sprite<a class="headerlink" href="#display-image-sprite" title="Permalink to this headline">#</a></h2>
 <p>An image sprites is a collection of images put into a single image. When working with a DocumentArray of image Documents, you can directly view the image sprites via <code class="docutils literal notranslate"><span class="pre">plot_image_sprites</span></code>. This gives you a quick view of the dataset that you are working with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -548,7 +547,7 @@
 </figure>
 </section>
 <section id="segment-large-complicated-image-into-small-ones">
-<h2>Segment large complicated image into small ones<a class="headerlink" href="#segment-large-complicated-image-into-small-ones" title="Permalink to this headline">¶</a></h2>
+<h2>Segment large complicated image into small ones<a class="headerlink" href="#segment-large-complicated-image-into-small-ones" title="Permalink to this headline">#</a></h2>
 <p>A large complicated image is hard to search, as it may contain too many elements and interesting information and hence hard to define the search problem in the first place. Take the following image as an example,</p>
 <figure class="align-center">
 <a class="reference internal image-reference" href="../../_images/complicated-image.jpeg"><img alt="../../_images/complicated-image.jpeg" src="../../_images/complicated-image.jpeg" style="width: 80%;"/></a>
@@ -629,7 +628,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 14, 2022.
+                    Last updated on Feb 18, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
