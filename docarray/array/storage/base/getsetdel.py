@@ -18,7 +18,16 @@ class BaseGetSetDelMixin(ABC):
             - :meth:`._get_doc_by_id`
             - :meth:`._set_doc_by_id`
             - :meth:`._del_doc_by_id`
-            - :meth:`._clear_storage`
+        Keep in mind that these methods above ** must not ** handle offset2id of the DocumentArray.
+
+        These methods are actually wrapped by the following methods which handle the offset2id:
+            - :meth:`._set_doc`
+            - :meth:`._del_doc`
+            - :meth:`._del_all_docs`
+
+        Therefore, you should make sure to use the wrapper methods in case you expect offset2id to be updated, and use
+        the inner methods in case you don't want to handle offset2id (for example, if you want to handle it in a
+        later step)
 
         Other methods implemented a generic-but-slow version that leverage the methods above.
         Please override those methods in the subclass whenever a more efficient implementation is available.
@@ -26,6 +35,14 @@ class BaseGetSetDelMixin(ABC):
             - :meth:`._get_docs_by_ids`
             - :meth:`._set_docs_by_ids`
             - :meth:`._del_docs_by_ids`
+            - :meth:`._clear_storage`
+
+        Likewise, the methods above do not handle offset2id. They are wrapped by the following methods that update the
+        offset2id in a single step:
+            - :meth:`._set_docs`
+            - :meth:`._del_docs`
+            - :meth:`._del_all_docs`
+
 
     """
 
@@ -96,9 +113,6 @@ class BaseGetSetDelMixin(ABC):
         self._del_docs(ids)
 
     def _del_all_docs(self):
-        """This function is derived and may not have the most efficient implementation.
-
-        Override this function if there is a more efficient logic"""
         self._clear_storage()
         self._offset2ids = Offset2ID()
 
@@ -115,9 +129,13 @@ class BaseGetSetDelMixin(ABC):
         self._del_docs_by_ids(ids)
         self._offset2ids.delete_by_ids(ids)
 
-    @abstractmethod
     def _clear_storage(self):
-        ...
+        """This function is derived and may not have the most efficient implementation.
+
+        Override this function if there is a more efficient logic.
+        If you override this method, you should only take care of clearing the storage backend."""
+        for doc in self:
+            self._del_doc_by_id(doc.id)
 
     # Setitem API
 
@@ -129,9 +147,6 @@ class BaseGetSetDelMixin(ABC):
             self._offset2ids.update(self._offset2ids.index(_id), value.id)
         self._set_doc_by_id(_id, value)
 
-    # TODO: document clearly what is the expected behaviour of such methods
-    # e.g, _set_doc_by_id should not take care of offset2id but should take care of cases where _id is different
-    # from value.id
     @abstractmethod
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         ...
