@@ -55,7 +55,6 @@ setup(
             'uvicorn',
             'weaviate-client~=3.3.0',
             'pqlite>=0.2.1',
-            'strawberry-graphql[debug-server]',
             'qdrant-client~=0.5.0',
             'strawberry-graphql',
         ],
