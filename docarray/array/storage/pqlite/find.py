@@ -36,9 +36,9 @@ class FindMixin:
             else:
                 limit = int(limit)
 
-        if isinstance(query, (DocumentArray, Document)):
-            if isinstance(query, Document):
-                query = DocumentArray(query)
+        if isinstance(query, Document):
+            query = query.embedding
+        elif isinstance(query, DocumentArray):
             query = query.embeddings
 
         num_rows, _ = ndarray.get_array_rows(query)

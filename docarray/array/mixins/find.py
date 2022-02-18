@@ -52,11 +52,9 @@ class FindMixin:
             _, _ = ndarray.get_array_type(query)
             n_rows, _ = ndarray.get_array_rows(query)
             if n_rows == 1:
-                q = DocumentArray(Document(embedding=query))
-                return self._find_similar_docs(q, **kwargs)[0]
+                return self._find_similar_docs(query, **kwargs)[0]
             else:
-                q = DocumentArray([Document(embedding=x) for x in query])
-                return self._find_similar_docs(q, **kwargs)
+                return self._find_similar_docs(query, **kwargs)
         except TypeError:
             raise TypeError(
                 f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
@@ -66,7 +64,7 @@ class FindMixin:
 
     def _find_similar_docs(
         self: 'T',
-        query: 'DocumentArray',
+        query: 'np.ndarray',
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -83,8 +81,8 @@ class FindMixin:
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
 
-        :param query: the DocumentArray to search by their embeddings.
-        :param metric: the distance metric
+        :param query: the `np.ndarray` used containing embeddings as rows.
+        :param metric: the distance metric.
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
                                 the min distance will be rescaled to `a`, the max distance will be rescaled to `b`
