@@ -130,7 +130,7 @@ class BaseGetSetDelMixin(ABC):
         self._set_doc_by_id(_id, value)
 
     # TODO: document clearly what is the expected behaviour of such methods
-    # e.g, _set_doc_by_id should not take care of offset2id but should take care of cases where _id is different
+    # e.g, _set_doc_by_id should not take care of _ids but should take care of cases where _id is different
     # from value.id
     @abstractmethod
     def _set_doc_by_id(self, _id: str, value: 'Document'):

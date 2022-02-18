@@ -54,7 +54,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
         )
         self._offset2ids = Offset2ID()
-        self._offset2ids.offset2id = list(map(itemgetter(0), r))
+        self._offset2ids._ids = list(map(itemgetter(0), r))
 
     def _save_offset2ids(self):
         for offset, doc_id in enumerate(self._offset2ids):

@@ -180,14 +180,14 @@ class BackendMixin(BaseBackendMixin):
             self._offset2ids_wid
         ):
             self._client.data_object.update(
-                data_object={'_offset2ids': self._offset2ids.offset2id},
+                data_object={'_offset2ids': self._offset2ids._ids},
                 class_name=self._meta_name,
                 uuid=self._offset2ids_wid,
             )
         else:
             self._offset2ids_wid = str(uuid.uuid1())
             self._client.data_object.create(
-                data_object={'_offset2ids': self._offset2ids.offset2id},
+                data_object={'_offset2ids': self._offset2ids._ids},
                 class_name=self._meta_name,
                 uuid=self._offset2ids_wid,
             )
