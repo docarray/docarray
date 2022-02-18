@@ -44,11 +44,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             data_path=self._config.data_path, in_memory=False
         )
         self._offsetmapping.create_table()
-        self._offset2ids.offset2id = self._offsetmapping.get_all_ids()
+        self._offset2ids.ids = self._offsetmapping.get_all_ids()
 
     def _save_offset2ids(self):
         self._offsetmapping.drop()
         self._offsetmapping.create_table()
         self._offsetmapping._insert(
-            [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.offset2id)]
+            [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.ids)]
         )
