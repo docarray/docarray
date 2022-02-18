@@ -26,7 +26,7 @@ class DelItemMixin:
                     'Delete elements along traversal paths is not implemented'
                 )
             else:
-                self._del_doc_by_id(index)
+                self._del_doc(index)
         elif isinstance(index, slice):
             self._del_docs_by_slice(index)
         elif index is Ellipsis:

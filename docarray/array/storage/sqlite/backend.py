@@ -103,11 +103,15 @@ class BackendMixin(BaseBackendMixin):
             else _sanitize_table_name(config.table_name)
         )
         self._persist = bool(config.table_name)
+        config.table_name = self._table_name
         initialize_table(
             self._table_name, self.__class__.__name__, self.schema_version, self._cursor
         )
         self._connection.commit()
         self._config = config
+
+        super()._init_storage()
+
         from ... import DocumentArray
 
         if _docs is None:

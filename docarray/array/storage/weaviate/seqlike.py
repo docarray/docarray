@@ -1,21 +1,12 @@
-from typing import Iterator, Union, Iterable, MutableSequence
+from typing import Union, Iterable
 
+from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
 from ..registry import _REGISTRY
 
 
-class SequenceLikeMixin(MutableSequence[Document]):
+class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods for DocumentArray with weaviate as storage"""
-
-    def insert(self, index: int, value: 'Document'):
-        """Insert `doc` at `index`.
-
-        :param index: Position of the insertion.
-        :param value: The doc needs to be inserted.
-        """
-        self._offset2ids.insert(index, self._wmap(value.id))
-        self._client.data_object.create(**self._doc2weaviate_create_payload(value))
-        self._update_offset2ids_meta()
 
     def __eq__(self, other):
         """Compare this object to the other, returns True if and only if other
@@ -50,14 +41,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
         return cls_data[0]['meta']['count']
 
-    def __iter__(self) -> Iterator['Document']:
-        """Iterate over all the root-level documents in the array
-
-        :yield: root-level document stored in this :class:`DocumentArrayWeaviate` object
-        """
-        for wid in range(len(self._offset2ids)):
-            yield self[wid]
-
     def __contains__(self, x: Union[str, 'Document']):
         """Check if ``x`` is contained in this :class:`DocumentArray` with weaviate storage
 
@@ -73,6 +56,7 @@ class SequenceLikeMixin(MutableSequence[Document]):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayWeaviate` object"""
+        super().__del__()
         if (
             not self._persist
             and len(_REGISTRY[self.__class__.__name__][self._class_name]) == 1
@@ -80,16 +64,6 @@ class SequenceLikeMixin(MutableSequence[Document]):
             self._client.schema.delete_class(self._class_name)
             self._client.schema.delete_class(self._meta_name)
         _REGISTRY[self.__class__.__name__][self._class_name].remove(self)
-
-    def clear(self):
-        """Clear the data of :class:`DocumentArray` with weaviate storage"""
-        self._del_all_docs()
-
-    def __bool__(self):
-        """To simulate ```l = []; if l: ...```
-        :return: returns true if the length of the array is larger than 0
-        """
-        return len(self) > 0
 
     def __repr__(self):
         """Return the string representation of :class:`DocumentArrayWeaviate` object
@@ -105,5 +79,4 @@ class SequenceLikeMixin(MutableSequence[Document]):
         with self._client.batch(batch_size=50) as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
-                self._offset2ids.append(self._wmap(d.id))
-        self._update_offset2ids_meta()
+                self._offset2ids.append(d.id)

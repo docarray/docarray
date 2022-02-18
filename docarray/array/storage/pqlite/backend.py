@@ -51,18 +51,14 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        from .helper import OffsetMapping
-
         config = asdict(config)
         n_dim = config.pop('n_dim')
 
-        self._pqlite = PQLite(n_dim, **config)
-        self._offset2ids = OffsetMapping(
-            data_path=config['data_path'],
-            in_memory=False,
-        )
+        self._pqlite = PQLite(n_dim, lock=False, **config)
         from ... import DocumentArray
         from .... import Document
+
+        super()._init_storage()
 
         if _docs is None:
             return
@@ -79,7 +75,7 @@ class BackendMixin(BaseBackendMixin):
     def __getstate__(self):
         state = dict(self.__dict__)
         del state['_pqlite']
-        del state['_offset2ids']
+        del state['_offsetmapping']
         return state
 
     def __setstate__(self, state):
@@ -90,13 +86,8 @@ class BackendMixin(BaseBackendMixin):
         n_dim = config.pop('n_dim')
 
         from pqlite import PQLite
-        from .helper import OffsetMapping
 
-        self._pqlite = PQLite(n_dim, **config)
-        self._offset2ids = OffsetMapping(
-            data_path=config['data_path'],
-            in_memory=False,
-        )
+        self._pqlite = PQLite(n_dim, lock=False, **config)
 
     def _get_storage_infos(self) -> Dict:
         storage_infos = super()._get_storage_infos()
