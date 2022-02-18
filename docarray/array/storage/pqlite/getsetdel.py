@@ -39,12 +39,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._pqlite.delete(ids)
 
     def _load_offset2ids(self):
-        self._offset2ids = Offset2ID()
         self._offsetmapping = OffsetMapping(
             data_path=self._config.data_path, in_memory=False
         )
         self._offsetmapping.create_table()
-        self._offset2ids.ids = self._offsetmapping.get_all_ids()
+        self._offset2ids = Offset2ID(self._offsetmapping.get_all_ids())
 
     def _save_offset2ids(self):
         self._offsetmapping.drop()
