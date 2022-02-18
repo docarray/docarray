@@ -74,8 +74,7 @@ class EvaluationMixin:
 
             binary_relevance = [1 if hash_fn(m) in desired else 0 for m in d.matches]
 
-            if 'max_rel' not in kwargs:
-                kwargs['max_rel'] = len(gd.matches)
+            kwargs['max_rel'] = len(gd.matches)
 
             r = metric_fn(binary_relevance, **kwargs)
             d.evaluations[metric_name] = NamedScore(
