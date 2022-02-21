@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 @dataclass
 class QdrantConfig:
     n_dim: int
-    distance: Distance
+    distance: Distance = Distance.COSINE
     collection_name: Optional[str] = None
     connection: Optional[Union[str, QdrantClient]] = field(default="localhost:6333")
     serialize_config: Dict = field(default_factory=dict)
