@@ -108,6 +108,7 @@ datatypes/index
 :caption: Integrations
 :hidden:
 
+fundamentals/jina-support/index
 fundamentals/notebook-support/index
 fundamentals/fastapi-support/index
 advanced/graphql-support/index
