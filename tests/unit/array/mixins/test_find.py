@@ -7,7 +7,8 @@ from docarray.math import ndarray
 
 
 @pytest.mark.parametrize(
-    'storage, config', [('weaviate', WeaviateConfig(32)), ('pqlite', {'n_dim': 32})]
+    'storage, config',
+    [('memory', None), ('weaviate', WeaviateConfig(32)), ('pqlite', {'n_dim': 32})],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
 @pytest.mark.parametrize(
@@ -42,7 +43,7 @@ def test_find(storage, config, limit, query, start_weaviate):
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
             assert sorted(cosine_similarities, reverse=True) == cosine_similarities
-        elif storage == 'pqlite':
+        elif storage in ['memory', 'pqlite']:
             cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
     else:
@@ -52,7 +53,7 @@ def test_find(storage, config, limit, query, start_weaviate):
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
                 assert sorted(cosine_similarities, reverse=True) == cosine_similarities
-        elif storage == 'pqlite':
+        elif storage in ['memory', 'pqlite']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
