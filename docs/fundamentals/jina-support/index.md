@@ -1,13 +1,14 @@
+(jina-support)=
 # Jina
 
-DocArray focuses on the local & monolith developer experience. [Jina](https://github.com/jina-ai/jina) scales DocArray to the Cloud. The picture below shows their relations.
+DocArray focuses on the local & monolith developer experience. [Jina](https://github.com/jina-ai/jina) scales DocArray to the Cloud. DocArray is also the default transit format in Jina, Executors talk to each other via serialized DocArray. The picture below shows their relations.
 
 ```{figure} position-jina-docarray.svg
 :width: 80%
 
 ```
 
-The picture below summarizes your development journey with DocArray and Jina. First move horizontally left with DocArray, that often means improving quality and completing logics on a local environment. When you are ready, move vertically up with Jina, equipping your application with service endpoint, scalability and cloud-native features. Finally, you reach the point your service is ready for production.
+The next picture summarizes your development journey with DocArray and Jina. With a new project, first move horizontally left with DocArray, that often means improving quality and completing logics on a local environment. When you are ready, move vertically up with Jina, equipping your application with service endpoint, scalability and cloud-native features. Finally, you reach the point your service is ready for production.
 
 ```{figure} position-jina-docarray-2.svg
 :width: 80%

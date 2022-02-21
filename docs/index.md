@@ -73,13 +73,12 @@ This will install all requirements for reproducing tests on your local dev envir
 
 
 ```{important}
-Jina 3.x[^1] users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
+Jina 3.x users do not need to install `docarray` separately, as it is shipped with Jina. To check your Jina version, type `jina -vf` in the console.
 
 However, if the printed version is smaller than `0.1.0`, say `0.0.x`, then you are 
 not installing `docarray` correctly. You are probably still using an old `docarray` shipped with Jina 2.x. 
 ```
 
-[^1]: Jina 3.0rc will be released in Feb. 2022. Stay tune!
 
 
 ```{include} ../README.md
