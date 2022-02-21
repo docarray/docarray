@@ -6,6 +6,7 @@ from qdrant_openapi_client.models.models import PointIdsList, PointsList, Scroll
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.qdrant.helper import QdrantStorageHelper
 
 
@@ -41,7 +42,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _qdrant_to_document(self, qdrant_record: dict) -> 'Document':
         return Document.from_base64(
-            qdrant_record['payload']['_serialized'], **self.serialization_config
+            qdrant_record['_serialized'].value[0], **self.serialization_config
         )
 
     def _document_to_qdrant(self, doc: 'Document') -> dict:
@@ -56,7 +57,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             resp = self.client.http.points_api.get_point(
                 name=self.collection_name, id=_id
             )
-            return self._qdrant_to_document(resp.json())
+            return self._qdrant_to_document(resp.result.payload)
         except UnexpectedResponse as response_error:
             if response_error.status_code == 404:
                 raise KeyError(_id)
@@ -90,9 +91,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 ),
             )
             for point in response.result.points:
-                yield self._qdrant_to_document(point.json())
+                yield self._qdrant_to_document(point.payload)
 
             if response.result.next_page_offset:
                 offset = response.result.next_page_offset
             else:
                 break
+
+    def _load_offset2ids(self):
+        self._offset2ids = Offset2ID()
+
+    def _save_offset2ids(self):
+        ...

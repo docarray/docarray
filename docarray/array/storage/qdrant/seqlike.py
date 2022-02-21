@@ -53,11 +53,3 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __add__(self, other: Union['Document', Iterable['Document']]):
         raise NotImplementedError()
-
-    def append(self, value: 'Document'):
-        # optional, if you have better implementation than `insert`
-        raise NotImplementedError()
-
-    def extend(self, values: Iterable['Document']) -> None:
-        # optional, if you have better implementation than `insert` one by one
-        raise NotImplementedError()
