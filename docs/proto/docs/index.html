@@ -7,10 +7,10 @@
   <meta property="og:title" content="Protocol Documentation" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://docarray.jina.ai/proto/docs.html" />
-  <meta property="og:site_name" content="DocArray 0.7.0 Documentation" />
+  <meta property="og:site_name" content="DocArray 0.7.1 Documentation" />
   <meta property="og:description" content="Table of Contents: docarray.proto- DenseNdArrayProto, DocumentArrayProto, DocumentProto, DocumentProto.EvaluationsEntry, DocumentProto.ScoresEntry, NamedScoreProto, NdArrayProto, SparseNdArrayProto., Scalar Value Types. docarray.proto: DenseNdArrayProto: Represents a (quantized) dense n-dim array..." />
   <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  <meta property="og:image:alt" content="DocArray 0.7.0 Documentation" />
+  <meta property="og:image:alt" content="DocArray 0.7.1 Documentation" />
   <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -31,7 +31,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
-        <title>Protocol Documentation - DocArray 0.7.0 documentation</title>
+        <title>Protocol Documentation - DocArray 0.7.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -160,7 +160,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.7.0 documentation</div>
+                <div class="brand">DocArray 0.7.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -250,6 +250,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/graphql-support/">GraphQL</a></li>
@@ -473,26 +474,26 @@
 <section id="table-of-contents">
 <h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="#docarray.proto">docarray.proto</a></p>
+<li><p><a class="reference external" href="#docarray-proto">docarray.proto</a></p>
 <ul>
-<li><p><a class="reference external" href="#docarray.DenseNdArrayProto">DenseNdArrayProto</a></p></li>
-<li><p><a class="reference external" href="#docarray.DocumentArrayProto">DocumentArrayProto</a></p></li>
-<li><p><a class="reference external" href="#docarray.DocumentProto">DocumentProto</a></p></li>
-<li><p><a class="reference external" href="#docarray.DocumentProto.EvaluationsEntry">DocumentProto.EvaluationsEntry</a></p></li>
-<li><p><a class="reference external" href="#docarray.DocumentProto.ScoresEntry">DocumentProto.ScoresEntry</a></p></li>
-<li><p><a class="reference external" href="#docarray.NamedScoreProto">NamedScoreProto</a></p></li>
-<li><p><a class="reference external" href="#docarray.NdArrayProto">NdArrayProto</a></p></li>
-<li><p><a class="reference external" href="#docarray.SparseNdArrayProto">SparseNdArrayProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-DenseNdArrayProto">DenseNdArrayProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-DocumentArrayProto">DocumentArrayProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-DocumentProto">DocumentProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-DocumentProto-EvaluationsEntry">DocumentProto.EvaluationsEntry</a></p></li>
+<li><p><a class="reference external" href="#docarray-DocumentProto-ScoresEntry">DocumentProto.ScoresEntry</a></p></li>
+<li><p><a class="reference external" href="#docarray-NamedScoreProto">NamedScoreProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-NdArrayProto">NdArrayProto</a></p></li>
+<li><p><a class="reference external" href="#docarray-SparseNdArrayProto">SparseNdArrayProto</a></p></li>
 </ul>
 </li>
 <li><p><a class="reference external" href="#scalar-value-types">Scalar Value Types</a></p></li>
 </ul>
-<p><a name="docarray.proto"></a></p>
+<p><a name="docarray-proto"></a></p>
 <p align="right"><a href="#top">Top</a></p>
 </section>
 <section id="docarray-proto">
 <h2>docarray.proto<a class="headerlink" href="#docarray-proto" title="Permalink to this headline">#</a></h2>
-<p><a name="docarray.DenseNdArrayProto"></a></p>
+<p><a name="docarray-DenseNdArrayProto"></a></p>
 <section id="densendarrayproto">
 <h3>DenseNdArrayProto<a class="headerlink" href="#densendarrayproto" title="Permalink to this headline">#</a></h3>
 <p>Represents a (quantized) dense n-dim array</p>
@@ -526,7 +527,7 @@
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.DocumentArrayProto"></a></p>
+<p><a name="docarray-DocumentArrayProto"></a></p>
 </section>
 <section id="documentarrayproto">
 <h3>DocumentArrayProto<a class="headerlink" href="#documentarrayproto" title="Permalink to this headline">#</a></h3>
@@ -542,13 +543,13 @@
 <tbody>
 <tr>
 <td>docs</td>
-<td><a href="#docarray.DocumentProto">DocumentProto</a></td>
+<td><a href="#docarray-DocumentProto">DocumentProto</a></td>
 <td>repeated</td>
 <td>a list of Documents</td>
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.DocumentProto"></a></p>
+<p><a name="docarray-DocumentProto"></a></p>
 </section>
 <section id="documentproto">
 <h3>DocumentProto<a class="headerlink" href="#documentproto" title="Permalink to this headline">#</a></h3>
@@ -577,7 +578,7 @@
 </tr>
 <tr>
 <td>tensor</td>
-<td><a href="#docarray.NdArrayProto">NdArrayProto</a></td>
+<td><a href="#docarray-NdArrayProto">NdArrayProto</a></td>
 <td></td>
 <td>the ndarray of the image/audio/video document</td>
 </tr>
@@ -643,43 +644,43 @@
 </tr>
 <tr>
 <td>chunks</td>
-<td><a href="#docarray.DocumentProto">DocumentProto</a></td>
+<td><a href="#docarray-DocumentProto">DocumentProto</a></td>
 <td>repeated</td>
 <td>list of the sub-documents of this document (recursive structure)</td>
 </tr>
 <tr>
 <td>matches</td>
-<td><a href="#docarray.DocumentProto">DocumentProto</a></td>
+<td><a href="#docarray-DocumentProto">DocumentProto</a></td>
 <td>repeated</td>
 <td>the matched documents on the same level (recursive structure)</td>
 </tr>
 <tr>
 <td>embedding</td>
-<td><a href="#docarray.NdArrayProto">NdArrayProto</a></td>
+<td><a href="#docarray-NdArrayProto">NdArrayProto</a></td>
 <td></td>
 <td>the embedding of this document</td>
 </tr>
 <tr>
 <td>tags</td>
-<td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+<td><a href="#google-protobuf-Struct">google.protobuf.Struct</a></td>
 <td></td>
 <td>a structured data value, consisting of field which map to dynamically typed values.</td>
 </tr>
 <tr>
 <td>scores</td>
-<td><a href="#docarray.DocumentProto.ScoresEntry">DocumentProto.ScoresEntry</a></td>
+<td><a href="#docarray-DocumentProto-ScoresEntry">DocumentProto.ScoresEntry</a></td>
 <td>repeated</td>
 <td>Scores performed on the document, each element corresponds to a metric</td>
 </tr>
 <tr>
 <td>evaluations</td>
-<td><a href="#docarray.DocumentProto.EvaluationsEntry">DocumentProto.EvaluationsEntry</a></td>
+<td><a href="#docarray-DocumentProto-EvaluationsEntry">DocumentProto.EvaluationsEntry</a></td>
 <td>repeated</td>
 <td>Evaluations performed on the document, each element corresponds to a metric</td>
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.DocumentProto.EvaluationsEntry"></a></p>
+<p><a name="docarray-DocumentProto-EvaluationsEntry"></a></p>
 </section>
 <section id="documentproto-evaluationsentry">
 <h3>DocumentProto.EvaluationsEntry<a class="headerlink" href="#documentproto-evaluationsentry" title="Permalink to this headline">#</a></h3>
@@ -701,13 +702,13 @@
 </tr>
 <tr>
 <td>value</td>
-<td><a href="#docarray.NamedScoreProto">NamedScoreProto</a></td>
+<td><a href="#docarray-NamedScoreProto">NamedScoreProto</a></td>
 <td></td>
 <td></td>
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.DocumentProto.ScoresEntry"></a></p>
+<p><a name="docarray-DocumentProto-ScoresEntry"></a></p>
 </section>
 <section id="documentproto-scoresentry">
 <h3>DocumentProto.ScoresEntry<a class="headerlink" href="#documentproto-scoresentry" title="Permalink to this headline">#</a></h3>
@@ -729,13 +730,13 @@
 </tr>
 <tr>
 <td>value</td>
-<td><a href="#docarray.NamedScoreProto">NamedScoreProto</a></td>
+<td><a href="#docarray-NamedScoreProto">NamedScoreProto</a></td>
 <td></td>
 <td></td>
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.NamedScoreProto"></a></p>
+<p><a name="docarray-NamedScoreProto"></a></p>
 </section>
 <section id="namedscoreproto">
 <h3>NamedScoreProto<a class="headerlink" href="#namedscoreproto" title="Permalink to this headline">#</a></h3>
@@ -776,7 +777,7 @@
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.NdArrayProto"></a></p>
+<p><a name="docarray-NdArrayProto"></a></p>
 </section>
 <section id="ndarrayproto">
 <h3>NdArrayProto<a class="headerlink" href="#ndarrayproto" title="Permalink to this headline">#</a></h3>
@@ -793,13 +794,13 @@
 <tbody>
 <tr>
 <td>dense</td>
-<td><a href="#docarray.DenseNdArrayProto">DenseNdArrayProto</a></td>
+<td><a href="#docarray-DenseNdArrayProto">DenseNdArrayProto</a></td>
 <td></td>
 <td>dense representation of the ndarray</td>
 </tr>
 <tr>
 <td>sparse</td>
-<td><a href="#docarray.SparseNdArrayProto">SparseNdArrayProto</a></td>
+<td><a href="#docarray-SparseNdArrayProto">SparseNdArrayProto</a></td>
 <td></td>
 <td>sparse representation of the ndarray</td>
 </tr>
@@ -811,13 +812,13 @@
 </tr>
 <tr>
 <td>parameters</td>
-<td><a href="#google.protobuf.Struct">google.protobuf.Struct</a></td>
+<td><a href="#google-protobuf-Struct">google.protobuf.Struct</a></td>
 <td></td>
 <td></td>
 </tr>
 </tbody>
 </table></div>
-<p><a name="docarray.SparseNdArrayProto"></a></p>
+<p><a name="docarray-SparseNdArrayProto"></a></p>
 </section>
 <section id="sparsendarrayproto">
 <h3>SparseNdArrayProto<a class="headerlink" href="#sparsendarrayproto" title="Permalink to this headline">#</a></h3>
@@ -834,13 +835,13 @@
 <tbody>
 <tr>
 <td>indices</td>
-<td><a href="#docarray.DenseNdArrayProto">DenseNdArrayProto</a></td>
+<td><a href="#docarray-DenseNdArrayProto">DenseNdArrayProto</a></td>
 <td></td>
 <td>A 2-D int64 tensor of shape [N, ndims], which specifies the indices of the elements in the sparse tensor that contain nonzero values (elements are zero-indexed)</td>
 </tr>
 <tr>
 <td>values</td>
-<td><a href="#docarray.DenseNdArrayProto">DenseNdArrayProto</a></td>
+<td><a href="#docarray-DenseNdArrayProto">DenseNdArrayProto</a></td>
 <td></td>
 <td>A 1-D tensor of any type and shape [N], which supplies the values for each element in indices.</td>
 </tr>
@@ -1051,7 +1052,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 18, 2022.
+                    Last updated on Feb 21, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
