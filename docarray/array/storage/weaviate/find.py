@@ -6,6 +6,8 @@ from typing import (
     List,
 )
 
+import numpy as np
+
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....score import NamedScore
@@ -23,10 +25,17 @@ if TYPE_CHECKING:
         Sequence[float],
     )
 
+EPSILON = 1.0e-9
+
 
 class FindMixin:
-    def _find_similar_vectors(self, q: 'WeaviateArrayType', limit=10):
-        query_dict = {'vector': q}
+    def _find_similar_vectors(self, query: 'WeaviateArrayType', limit=10):
+
+        is_all_zero = np.all(query == 0)
+        if is_all_zero:
+            query = query + EPSILON
+
+        query_dict = {'vector': query}
         results = (
             self._client.query.get(
                 self._class_name,
@@ -37,12 +46,14 @@ class FindMixin:
             .do()
         )
         docs = []
+
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in results.get('data', {}).get('Get', {}).get(self._class_name, []):
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
             certainty = result['_additional']['certainty']
 
             doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
+
             if certainty is None:
                 doc.scores['cosine_similarity'] = NamedScore(value=None)
             else:
