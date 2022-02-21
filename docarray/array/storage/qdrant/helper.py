@@ -1,5 +1,6 @@
 from typing import List, TYPE_CHECKING
 
+import numpy as np
 import scipy.sparse
 
 if TYPE_CHECKING:
@@ -12,7 +13,7 @@ class QdrantStorageHelper:
         cls, embedding: 'ArrayType', default_dim: int
     ) -> List[float]:
         if embedding is None:
-            embedding = [0.0] * default_dim
+            embedding = np.random.rand(default_dim).tolist()  # [0.0] * default_dim
         elif isinstance(embedding, scipy.sparse.spmatrix):
             embedding = embedding.toarray().tolist()
         else:
