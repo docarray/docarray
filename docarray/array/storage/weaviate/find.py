@@ -37,13 +37,17 @@ class FindMixin:
             .do()
         )
         docs = []
-
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in results.get('data', {}).get('Get', {}).get(self._class_name, []):
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
             certainty = result['_additional']['certainty']
+
             doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
-            doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+            if certainty is None:
+                doc.scores['cosine_similarity'] = NamedScore(value=None)
+            else:
+                doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+
             doc.tags = {
                 'wid': result['_additional']['id'],
             }
