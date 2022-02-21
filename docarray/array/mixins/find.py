@@ -38,33 +38,41 @@ class FindMixin:
         from ... import Document, DocumentArray
 
         if isinstance(query, (DocumentArray, Document)):
+
+            print("\n\nHEREEEE!!!!\n\n")
+            import pdb
+
+            pdb.set_trace()
+
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
             result = self._find_similar_docs(query, **kwargs)
-
             if len(query) == 1:
                 return result[0]
 
             return result
 
-        try:
-            _, _ = ndarray.get_array_type(query)
-            n_rows, _ = ndarray.get_array_rows(query)
-            if n_rows == 1:
-                return self._find_similar_docs(query, **kwargs)[0]
-            else:
-                return self._find_similar_docs(query, **kwargs)
-        except TypeError:
-            raise TypeError(
-                f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
-            )
-        except Exception as ex:
-            raise ex
+        else:
+            try:
+                _, _ = ndarray.get_array_type(query)
+                n_rows, _ = ndarray.get_array_rows(query)
+                if n_rows == 1:
+                    query = DocumentArray(Document(embedding=query))
+                    return self._find_similar_docs(query, **kwargs)[0]
+                else:
+                    query = DocumentArray([Document(embedding=x) for x in query])
+                    return self._find_similar_docs(query, **kwargs)
+            except TypeError:
+                raise TypeError(
+                    f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
+                )
+            except Exception as ex:
+                raise ex
 
     def _find_similar_docs(
         self: 'T',
-        query: 'np.ndarray',
+        query: 'DocumentArray',
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -81,7 +89,7 @@ class FindMixin:
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
 
-        :param query: the `np.ndarray` used containing embeddings as rows.
+        :param query: the DocumentArray to search by their embeddings.
         :param metric: the distance metric.
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
