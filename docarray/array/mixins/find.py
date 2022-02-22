@@ -52,18 +52,18 @@ class FindMixin:
             try:
                 _, _ = ndarray.get_array_type(query)
                 n_rows, _ = ndarray.get_array_rows(query)
-                if n_rows == 1:
-                    query = DocumentArray(Document(embedding=query))
-                    return self._find_similar_docs(query, **kwargs)[0]
-                else:
-                    query = DocumentArray([Document(embedding=x) for x in query])
-                    return self._find_similar_docs(query, **kwargs)
             except TypeError:
                 raise TypeError(
                     f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
                 )
-            except Exception as ex:
-                raise ex
+
+            if n_rows == 1:
+                # Ensure query embedding to have the correct shape via `.flatten()`
+                query = DocumentArray(Document(embedding=query.flatten()))
+                return self._find_similar_docs(query, **kwargs)[0]
+            else:
+                query = DocumentArray([Document(embedding=x) for x in query])
+                return self._find_similar_docs(query, **kwargs)
 
     def _find_similar_docs(
         self: 'T',
@@ -185,14 +185,7 @@ class FindMixin:
         :return: distances and indices
         """
 
-        # Ensure query is a 'matrix' since cdist(X,Y) computes all pairwise distances
-        # between rows of X and rows of Y.
-        if query.embeddings.ndim != 2:
-            query_embeddings = query.embeddings.reshape(1, -1)
-        else:
-            query_embeddings = query.embeddings
-
-        dists = cdist(query_embeddings, self.embeddings, metric_name)
+        dists = cdist(query.embeddings, self.embeddings, metric_name)
         dist, idx = top_k(dists, min(limit, len(self)), descending=False)
         if isinstance(normalization, (tuple, list)) and normalization is not None:
             # normalization bound uses original distance not the top-k trimmed distance
