@@ -449,6 +449,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Optional</span><span class="p">,</span>
@@ -504,6 +505,7 @@
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">read_mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">to_dataturi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
@@ -518,6 +520,7 @@
 <span class="sd">        'r' for reading in text mode, 'rb' for reading in binary mode.</span>
 <span class="sd">        If `read_mode` is None, will iterate over filenames.</span>
 <span class="sd">    :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI</span>
+<span class="sd">    :param exclude_regex: if set, then filenames that match to this pattern are not included.</span>
 <span class="sd">    :yield: file paths or binary content</span>
 
 <span class="sd">    .. note::</span>
@@ -536,8 +539,18 @@
     <span class="n">num_docs</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+
+    <span class="n">_r</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">exclude_regex</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">exclude_regex</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">re</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'`</span><span class="si">{</span><span class="n">exclude_regex</span><span class="si">}</span><span class="s1">` is not a valid regex.'</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_iter_file_exts</span><span class="p">(</span><span class="n">patterns</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">_r</span> <span class="ow">and</span> <span class="n">_r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">sampling_rate</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">sampling_rate</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">read_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -767,7 +780,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 21, 2022.
+                    Last updated on Feb 22, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
