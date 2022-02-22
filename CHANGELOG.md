@@ -27,6 +27,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -687,4 +688,29 @@
  - [[```e7401285```](https://github.com/jina-ai/docarray/commit/e740128557870a1b147b14f76dc2421115540a4a)] __-__ fix type hint by following python standard json (#124) (*Han Xiao*)
  - [[```c9f872c7```](https://github.com/jina-ai/docarray/commit/c9f872c7c5c8d6af10abc3af74457525b783a39f)] __-__ use cloud push pull in readme (*Han Xiao*)
  - [[```97866c6d```](https://github.com/jina-ai/docarray/commit/97866c6dc27602364f76d7e582c3c26be40f7b99)] __-__ __version__: the next version will be 0.6.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-1></a>
+## Release Note (`0.7.1`)
+
+> Release time: 2022-02-22 17:12:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ cristian,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```5b083f7e```](https://github.com/jina-ai/docarray/commit/5b083f7ec422ee4f67427c96550bda7a108c8b8a)] __-__ __array__: add exclude in from_files (#134) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```c8fc4b8e```](https://github.com/jina-ai/docarray/commit/c8fc4b8e7941fc083636a79beafcd30ecceddf70)] __-__ fix typo (#133) (*cristian*)
+ - [[```8fe03dc8```](https://github.com/jina-ai/docarray/commit/8fe03dc88445ff89dc617f55a338f504bb138c09)] __-__ __jina__: add jina integration section (#129) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```88ac69ff```](https://github.com/jina-ai/docarray/commit/88ac69ff67c7390efff5705f1dc9609a1a1c7954)] __-__ Revert &#34;test: reduce test time (#118)&#34; (#127) (*Han Xiao*)
+ - [[```72425afe```](https://github.com/jina-ai/docarray/commit/72425afee18de88bf918b1e139293a1a90757980)] __-__ __version__: the next version will be 0.7.1 (*Jina Dev Bot*)
 
