@@ -14,6 +14,7 @@ class Document(AllMixins, BaseDCType):
 
     @overload
     def __init__(self):
+        """Create an empty Document."""
         ...
 
     @overload
@@ -28,6 +29,26 @@ class Document(AllMixins, BaseDCType):
         field_resolver: Optional[Dict[str, str]] = None,
         unknown_fields_handler: str = 'catch',
     ):
+        ...
+
+    @overload
+    def __init__(self, blob: Optional[bytes] = None, **kwargs):
+        """Create a Document with binary content."""
+        ...
+
+    @overload
+    def __init__(self, tensor: Optional['ArrayType'] = None, **kwargs):
+        """Create a Document with NdArray-like content."""
+        ...
+
+    @overload
+    def __init__(self, text: Optional[str] = None, **kwargs):
+        """Create a Document with string content."""
+        ...
+
+    @overload
+    def __init__(self, uri: Optional[str] = None, **kwargs):
+        """Create a Document with content from a URI."""
         ...
 
     @overload

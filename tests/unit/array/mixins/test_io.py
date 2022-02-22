@@ -4,7 +4,7 @@ import uuid
 import numpy as np
 import pytest
 
-from docarray import Document
+from docarray import Document, DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
@@ -100,6 +100,13 @@ def test_from_files(da_cls, config, start_weaviate):
         )
         == 1
     )
+
+
+def test_from_files_exclude():
+    da1 = DocumentArray.from_files('*.*')
+    assert '__init__.py' in da1[:, 'uri']
+    da2 = DocumentArray.from_files('*.*', exclude_regex=r'__.*\.py')
+    assert '__init__.py' not in da2[:, 'uri']
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
