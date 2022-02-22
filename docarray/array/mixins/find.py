@@ -39,11 +39,6 @@ class FindMixin:
 
         if isinstance(query, (DocumentArray, Document)):
 
-            print("\n\nHEREEEE!!!!\n\n")
-            import pdb
-
-            pdb.set_trace()
-
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
@@ -189,7 +184,15 @@ class FindMixin:
         :param metric_name: if provided, then match result will be marked with this string.
         :return: distances and indices
         """
-        dists = cdist(query.embeddings, self.embeddings, metric_name)
+
+        # Ensure query is a 'matrix' since cdist(X,Y) computes all pairwise distances
+        # between rows of X and rows of Y.
+        if query.embeddings.ndim != 2:
+            query_embeddings = query.embeddings.reshape(1, -1)
+        else:
+            query_embeddings = query.embeddings
+
+        dists = cdist(query_embeddings, self.embeddings, metric_name)
         dist, idx = top_k(dists, min(limit, len(self)), descending=False)
         if isinstance(normalization, (tuple, list)) and normalization is not None:
             # normalization bound uses original distance not the top-k trimmed distance
