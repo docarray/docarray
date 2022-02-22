@@ -28,6 +28,7 @@ da = DocumentArray(...)
 
 da[index]
 da[index] = Document(...)
+da[index] = DocumentArray(...)
 del da[index]
 ```
 
