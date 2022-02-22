@@ -27,7 +27,7 @@ Most of the examples below only show getting Documents for the sake of clarity. 
 da = DocumentArray(...)
 
 da[index]
-da[index] = DocumentArray(...)
+da[index] = Document(...)
 del da[index]
 ```
 
