@@ -19,6 +19,52 @@ class PlotMixin:
         """Displays the object in IPython as a side effect"""
         self.summary()
 
+    def _update_tables_exhaustive(self, tables, all_attrs_names):
+        from rich.table import Table
+        from rich import box
+
+        attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
+        attr_table.add_column('Attribute')
+        attr_table.add_column('Data type')
+        attr_table.add_column('#Unique values')
+        attr_table.add_column('Has empty value')
+
+        import ipdb
+
+        ipdb.set_trace()
+        all_attrs_values = self._get_attributes(*all_attrs_names)
+
+        if len(all_attrs_names) == 1:
+            all_attrs_values = [all_attrs_values]
+
+        for _a, _a_name in zip(all_attrs_values, all_attrs_names):
+            try:
+                _a = set(_a)
+            except:
+                pass  # intentional ignore as some fields are not hashable
+
+            _set_type_a = set(type(_aa).__name__ for _aa in _a)
+            attr_table.add_row(
+                _a_name,
+                str(tuple(_set_type_a)),
+                str(len(_a)),
+                str(any(_aa is None for _aa in _a)),
+            )
+        tables.append(attr_table)
+
+    def _update_tables_information(self, tables, all_attrs_names):
+        from rich.table import Table
+        from rich import box
+
+        attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
+        attr_table.add_column('Attribute')
+        attr_table.add_column('Data type')
+
+        # TODO use _get_attributes_information to extract 'metainformation about fields'
+        # without actually loading all of them in memory, sopecially for `embedding` and `tensor`
+
+        pass
+
     def summary(self):
         """Print the structure and attribute summary of this DocumentArray object.
 
@@ -30,6 +76,7 @@ class PlotMixin:
         from rich.table import Table
         from rich.console import Console
         from rich import box
+        from docarray.array.memory import DocumentArrayInMemory
 
         tables = []
         console = Console()
@@ -73,30 +120,12 @@ class PlotMixin:
         tables.append(table)
 
         all_attrs_names = tuple(sorted(all_attrs_names))
+
         if all_attrs_names:
-
-            attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
-            attr_table.add_column('Attribute')
-            attr_table.add_column('Data type')
-            attr_table.add_column('#Unique values')
-            attr_table.add_column('Has empty value')
-
-            all_attrs_values = self._get_attributes(*all_attrs_names)
-            if len(all_attrs_names) == 1:
-                all_attrs_values = [all_attrs_values]
-            for _a, _a_name in zip(all_attrs_values, all_attrs_names):
-                try:
-                    _a = set(_a)
-                except:
-                    pass  # intentional ignore as some fields are not hashable
-                _set_type_a = set(type(_aa).__name__ for _aa in _a)
-                attr_table.add_row(
-                    _a_name,
-                    str(tuple(_set_type_a)),
-                    str(len(_a)),
-                    str(any(_aa is None for _aa in _a)),
-                )
-            tables.append(attr_table)
+            if isinstance(self, DocumentArrayInMemory):
+                self._update_tables_exhaustive(tables, all_attrs_names)
+            else:
+                self._update_tables_information(tables, all_attrs_names)
 
         storage_table = Table(box=box.SIMPLE, title='Storage Summary')
         storage_table.show_header = False

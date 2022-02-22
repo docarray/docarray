@@ -33,6 +33,7 @@ class GetAttributeMixin:
 
             if len(fields) == 1:
                 contents = [contents]
+
             if b_index is not None:
                 contents.insert(b_index, self.tensors)
             if e_index is not None:
@@ -49,3 +50,12 @@ class GetAttributeMixin:
                 if b_index > e_index
                 else [self.tensors, self.embeddings]
             )
+
+    def _get_attributes_information(self, *fields: str) -> List:
+        """Return information about the values of the fields from all docs this array contains
+
+        :param fields: Variable length argument with the name of the fields to extract
+        :return: Returns a list of information for these fields.
+            When `fields` has multiple values, then it returns a list of list.
+        """
+        pass
