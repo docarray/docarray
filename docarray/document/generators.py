@@ -4,6 +4,7 @@ import itertools
 import json
 import os
 import random
+import re
 from contextlib import nullcontext
 from typing import (
     Optional,
@@ -59,6 +60,7 @@ def from_files(
     sampling_rate: Optional[float] = None,
     read_mode: Optional[str] = None,
     to_dataturi: bool = False,
+    exclude_regex: Optional[str] = None,
     *args,
     **kwargs,
 ) -> Generator['Document', None, None]:
@@ -73,6 +75,7 @@ def from_files(
         'r' for reading in text mode, 'rb' for reading in binary mode.
         If `read_mode` is None, will iterate over filenames.
     :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
+    :param exclude_regex: if set, then filenames that match to this pattern are not included.
     :yield: file paths or binary content
 
     .. note::
@@ -91,8 +94,18 @@ def from_files(
     num_docs = 0
     if isinstance(patterns, str):
         patterns = [patterns]
+
+    _r = None
+    if exclude_regex:
+        try:
+            _r = re.compile(exclude_regex)
+        except re.error:
+            raise ValueError(f'`{exclude_regex}` is not a valid regex.')
+
     for g in _iter_file_exts(patterns):
         if os.path.isdir(g):
+            continue
+        if _r and _r.match(g):
             continue
         if sampling_rate is None or random.random() < sampling_rate:
             if read_mode is None:

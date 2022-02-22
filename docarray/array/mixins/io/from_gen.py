@@ -67,6 +67,7 @@ class FromGeneratorMixin:
         sampling_rate: Optional[float] = None,
         read_mode: Optional[str] = None,
         to_dataturi: bool = False,
+        exclude_regex: Optional[str] = None,
         *args,
         **kwargs,
     ) -> 'T':
@@ -81,6 +82,8 @@ class FromGeneratorMixin:
             'r' for reading in text mode, 'rb' for reading in binary mode.
             If `read_mode` is None, will iterate over filenames.
         :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI
+        :param exclude_regex: if set, then filenames that match to this pattern are not included.
+
         """
         ...
 
