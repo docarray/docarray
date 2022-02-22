@@ -102,14 +102,24 @@ def test_from_files(da_cls, config, start_weaviate):
     )
 
 
-def test_from_files_exclude():
-    da1 = DocumentArray.from_files('*.*')
-    assert '__init__.py' in da1[:, 'uri']
-    da2 = DocumentArray.from_files('*.*', exclude_regex=r'__.*\.py')
-    assert '__init__.py' not in da2[:, 'uri']
-
-
 cur_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+def test_from_files_exclude():
+    da1 = DocumentArray.from_files(f'{cur_dir}/*.*')
+    has_init = False
+    for s in da1[:, 'uri']:
+        if s.endswith('__init__.py'):
+            has_init = True
+            break
+    assert has_init
+    da2 = DocumentArray.from_files('*.*', exclude_regex=r'__.*\.py')
+    has_init = False
+    for s in da2[:, 'uri']:
+        if s.endswith('__init__.py'):
+            has_init = True
+            break
+    assert not has_init
 
 
 @pytest.mark.parametrize(
