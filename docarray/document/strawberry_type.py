@@ -1,6 +1,6 @@
 import base64
 import json
-from typing import List, Dict, Union, NewType, Any, Optional
+from typing import List, Dict, Union, NewType, Any, Optional, Callable
 
 import numpy as np
 import strawberry
@@ -33,7 +33,6 @@ NdArray = strawberry.scalar(
 )
 
 
-@strawberry.input
 class _NamedScore:
     value: Optional[float] = None
     op_name: Optional[str] = None
@@ -41,30 +40,42 @@ class _NamedScore:
     ref_id: Optional[str] = None
 
 
-@strawberry.input
+NamedScore = strawberry.type(_NamedScore)
+
+
 class _NameScoreItem:
     name: str
     score: _NamedScore
 
 
-@strawberry.input
-class StrawberryDocument:
-    id: Optional[str] = None
-    parent_id: Optional[str] = None
-    granularity: Optional[int] = None
-    adjacency: Optional[int] = None
-    blob: Optional[Base64] = None
-    tensor: Optional[NdArray] = None
-    mime_type: Optional[str] = None
-    text: Optional[str] = None
-    weight: Optional[float] = None
-    uri: Optional[str] = None
-    tags: Optional[JSONScalar] = None
-    offset: Optional[float] = None
-    location: Optional[List[float]] = None
-    embedding: Optional[NdArray] = None
-    modality: Optional[str] = None
-    evaluations: Optional[List[_NameScoreItem]] = None
-    scores: Optional[List[_NameScoreItem]] = None
-    chunks: Optional[List['StrawberryDocument']] = None
-    matches: Optional[List['StrawberryDocument']] = None
+NameScoreItem = strawberry.type(_NameScoreItem)
+
+
+def get_strwaberry_doc_object(strawberry_wrapper: Callable):
+    @strawberry_wrapper
+    class StrawberryDocumentObject:
+        id: Optional[str] = None
+        parent_id: Optional[str] = None
+        granularity: Optional[int] = None
+        adjacency: Optional[int] = None
+        blob: Optional[Base64] = None
+        tensor: Optional[NdArray] = None
+        mime_type: Optional[str] = None
+        text: Optional[str] = None
+        weight: Optional[float] = None
+        uri: Optional[str] = None
+        tags: Optional[JSONScalar] = None
+        offset: Optional[float] = None
+        location: Optional[List[float]] = None
+        embedding: Optional[NdArray] = None
+        modality: Optional[str] = None
+        evaluations: Optional[List[strawberry_wrapper(_NameScoreItem)]] = None
+        scores: Optional[List[strawberry_wrapper(_NameScoreItem)]] = None
+        chunks: Optional[List['StrawberryDocument']] = None
+        matches: Optional[List['StrawberryDocument']] = None
+
+    return StrawberryDocumentObject
+
+
+StrawberryDocument = get_strwaberry_doc_object(strawberry.type)
+StrawberryDocumentInput = get_strwaberry_doc_object(strawberry.input)
