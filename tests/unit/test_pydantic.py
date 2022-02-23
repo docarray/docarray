@@ -131,6 +131,8 @@ def test_with_embedding_no_tensor():
         ('1', str),
         (True, bool),
         (False, bool),
+        ([1, 2, 3], list),
+        ({'x': 1}, dict),
     ],
 )
 @pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
