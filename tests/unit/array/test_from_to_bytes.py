@@ -108,7 +108,10 @@ def test_save_bytes_stream(tmpfile, protocol, compress):
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
 
     # note that save_binary will save protocol and compression in the filename
-    tmpfile += '.' + protocol + '.' + compress
+    if protocol:
+        tmpfile += '.' + protocol
+    if compress:
+        tmpfile += '.' + compress
 
     da_reconstructed = DocumentArray.load_binary(
         tmpfile, protocol=protocol, compress=compress, streaming=True
