@@ -68,17 +68,15 @@ class FindMixin:
             else:
                 limit = int(limit)
 
+        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+
         if isinstance(query, (DocumentArray, Document)):
-            _limit = (
-                len(self) if limit is None else (limit + (1 if exclude_self else 0))
-            )
 
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
             _query = query.embeddings
         else:
-            _limit = len(self) if limit is None else limit
             _query = query
 
         _, _ = ndarray.get_array_type(_query)
@@ -134,7 +132,7 @@ class FindMixin:
 
                     d.scores[metric_name] = NamedScore(value=_dist)
                     matches.append(d)
-                    if len(matches) >= limit:
+                    if len(matches) >= _limit:
                         break
                 result.append(matches)
         else:
@@ -145,7 +143,7 @@ class FindMixin:
         if exclude_self and isinstance(query, DocumentArray):
             for i, q in enumerate(query):
                 matches = result[i].traverse_flat('r', filter_fn=lambda d: d.id != q.id)
-                result[i] = matches[:limit] if _limit > limit else matches
+                result[i] = matches[:_limit]
 
         if len(result) == 1:
             return result[0]
@@ -156,4 +154,4 @@ class FindMixin:
     def _find(
         self, query: 'ArrayType', limit: int, **kwargs
     ) -> Tuple['np.ndarray', 'np.ndarray']:
-        ...
+        raise NotImplementedError
