@@ -66,12 +66,9 @@ class FindMixin:
 
         return DocumentArray(docs)
 
-    def find(
-        self,
-        query: Union['Document', 'DocumentArray', 'WeaviateArrayType'],
-        limit: int = 10,
-        **kwargs
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+    def _find(
+        self, query: 'WeaviateArrayType', limit: int = 10, **kwargs
+    ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
@@ -83,15 +80,10 @@ class FindMixin:
                   https://www.semi.technology/developers/weaviate/current/more-resources/faq.html#q-how-do-i-get-the-cosine-similarity-from-weaviates-certainty
         """
 
-        if isinstance(query, (DocumentArray, Document)):
-            if isinstance(query, Document):
-                query = DocumentArray(query)
-            query = query.embeddings
-
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return self._find_similar_vectors(query, limit=limit)
+            return [self._find_similar_vectors(query, limit=limit)]
         else:
             closest_docs = []
             for q in query:

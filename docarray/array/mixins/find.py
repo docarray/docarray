@@ -1,6 +1,7 @@
 from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_CHECKING
 from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 from ...score import NamedScore
+from ...math import ndarray
 import numpy as np
 
 
@@ -32,42 +33,79 @@ class FindMixin:
     def find(
         self: 'T',
         query: Union['DocumentArray', 'Document', 'ArrayType'],
+        limit: Optional[Union[int, float]] = 20,
+        exclude_self: bool = False,
+        only_id: bool = False,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
-        from ...math import ndarray
+        """Returns approximate nearest neighbors given an input query.
+
+        :param query: the input query to search by
+        :param limit: the maximum number of matches, when not given defaults to 20.
+        :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
+                        considered as matches. This is only applied when the input query is Document or DocumentArray.
+        :param only_id: if set, then returning matches will only contain ``id``
+        :param kwargs: other kwargs.
+
+        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
+        """
+
         from ... import Document, DocumentArray
 
+        if limit is not None:
+            if limit <= 0:
+                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
+            else:
+                limit = int(limit)
+
+        # _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+        _limit = len(self) if limit is None else limit
+
         if isinstance(query, (DocumentArray, Document)):
+            _limit = (
+                len(self) if limit is None else (limit + (1 if exclude_self else 0))
+            )
 
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
-            result = self._find_similar_docs(query, **kwargs)
-            if len(query) == 1:
-                return result[0]
-
-            return result
-
+            result = self._find(
+                query.embeddings,
+                limit=_limit,
+                only_id=only_id,
+                **kwargs,
+            )
+            if exclude_self:
+                for i, q in enumerate(query):
+                    matches = result[i].traverse_flat(
+                        'r', filter_fn=lambda d: d.id != q.id
+                    )
+                    result[i] = matches[:limit] if _limit > limit else matches
         else:
+            _limit = len(self) if limit is None else limit
+
             try:
                 _, _ = ndarray.get_array_type(query)
-                n_rows, _ = ndarray.get_array_rows(query)
+                n_rows, n_dim = ndarray.get_array_rows(query)
             except TypeError:
                 raise TypeError(
                     f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
                 )
 
-            if n_rows == 1:
-                # Ensure query embedding to have the correct shape via `.flatten()`
-                query = DocumentArray(Document(embedding=query.flatten()))
-                return self._find_similar_docs(query, **kwargs)[0]
-            else:
-                query = DocumentArray([Document(embedding=x) for x in query])
-                return self._find_similar_docs(query, **kwargs)
+            # Ensure query embedding to have the correct shape via `.flatten()`
+            if n_dim != 2:
+                query = query.reshape((n_rows, -1))
 
-    def _find_similar_docs(
+            result = self._find(query, limit=_limit, only_id=only_id, **kwargs)
+
+        if len(result) == 1:
+            return result[0]
+        else:
+            return result
+
+    def _find(
         self: 'T',
-        query: 'DocumentArray',
+        query: 'ArrayType',
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -75,7 +113,6 @@ class FindMixin:
         normalization: Optional[Tuple[float, float]] = None,
         metric_name: Optional[str] = None,
         batch_size: Optional[int] = None,
-        exclude_self: bool = False,
         only_id: bool = False,
         use_scipy: bool = False,
         device: str = 'cpu',
@@ -84,7 +121,7 @@ class FindMixin:
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
 
-        :param query: the DocumentArray to search by their embeddings.
+        :param query: the query embeddings to search
         :param metric: the distance metric.
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
@@ -93,8 +130,6 @@ class FindMixin:
         :param metric_name: if provided, then match result will be marked with this string.
         :param batch_size: if provided, then ``self.embeddings`` is loaded in batches, where each of them is at most ``batch_size``
             elements. When `self.embeddings` is big, this can significantly speedup the computation.
-        :param exclude_self: if set, Documents in ``darray`` with same ``id`` as the left-hand values will not be
-                        considered as matches.
         :param only_id: if set, then returning matches will only contain ``id``
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note, ``scipy`` does not support distance
             on sparse matrix.
@@ -108,11 +143,6 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
-        if limit is not None:
-            if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
-            else:
-                limit = int(limit)
 
         if batch_size is not None:
             if batch_size <= 0:
@@ -137,19 +167,18 @@ class FindMixin:
             )
 
         metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
-        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
         if batch_size:
             dist, idx = self._search_online(
-                query, cdist, _limit, normalization, metric_name, batch_size, num_worker
+                query, cdist, limit, normalization, metric_name, batch_size, num_worker
             )
         else:
-            dist, idx = self._search(query, cdist, _limit, normalization, metric_name)
+            dist, idx = self._search(query, cdist, limit, normalization, metric_name)
 
         from ... import Document, DocumentArray
 
         result = []
-        for _q, _ids, _dists in zip(query, idx, dist):
+        for _ids, _dists in zip(idx, dist):
             matches = DocumentArray()
             for _id, _dist in zip(_ids, _dists):
                 # Note, when match self with other, or both of them share the same Document
@@ -163,18 +192,17 @@ class FindMixin:
                 # to prevent self-reference and override on matches
                 d.pop('matches')
 
-                if not (d.id == _q.id and exclude_self):
-                    d.scores[metric_name] = NamedScore(value=_dist)
-                    matches.append(d)
-                    if len(matches) >= (limit or _limit):
-                        break
+                d.scores[metric_name] = NamedScore(value=_dist)
+                matches.append(d)
+                if len(matches) >= limit:
+                    break
             result.append(matches)
 
         return result
 
-    def _search(self, query: 'DocumentArray', cdist, limit, normalization, metric_name):
+    def _search(self, query: 'ArrayType', cdist, limit, normalization, metric_name):
         """
-        :param query: query: the DocumentArray to search by their embeddings.
+        :param query: the query embeddings to search by.
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `darray` are considered as matches
@@ -185,7 +213,7 @@ class FindMixin:
         :return: distances and indices
         """
 
-        dists = cdist(query.embeddings, self.embeddings, metric_name)
+        dists = cdist(query, self.embeddings, metric_name)
         dist, idx = top_k(dists, min(limit, len(self)), descending=False)
         if isinstance(normalization, (tuple, list)) and normalization is not None:
             # normalization bound uses original distance not the top-k trimmed distance
@@ -207,7 +235,7 @@ class FindMixin:
     ):
         """
 
-        :param query: the DocumentArray to search by their embeddings.
+        :param query: the query embeddings to search by.
         :param cdist: the distance metric
         :param limit: the maximum number of matches, when not given
                       all Documents in `another` are considered as matches
@@ -219,15 +247,14 @@ class FindMixin:
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
         :return: distances and indices
         """
-
-        n_q = len(query)
+        n_q, _ = ndarray.get_array_rows(query)
 
         idx = 0
         top_dists = np.inf * np.ones((n_q, limit))
         top_inds = np.zeros((n_q, limit), dtype=int)
 
         def _get_dist(da: 'DocumentArray'):
-            distances = cdist(query.embeddings, da.embeddings, metric_name)
+            distances = cdist(query, da.embeddings, metric_name)
             dists, inds = top_k(distances, limit, descending=False)
 
             if isinstance(normalization, (tuple, list)) and normalization is not None:
