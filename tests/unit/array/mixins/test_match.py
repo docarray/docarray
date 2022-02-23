@@ -10,6 +10,7 @@ from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
 from scipy.spatial.distance import cdist as scipy_cdist
 
 from docarray import Document, DocumentArray
+from docarray.array.storage.weaviate import WeaviateConfig
 
 
 @pytest.fixture()
@@ -69,6 +70,30 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
 
 
 @pytest.mark.parametrize(
+    'storage, config',
+    [('weaviate', WeaviateConfig(3)), ('pqlite', {'n_dim': 3})],
+)
+@pytest.mark.parametrize('limit', [1, 2, 3])
+def test_match(storage, config, doc_lists, limit, start_weaviate):
+    D1, D2 = doc_lists_to_doc_arrays(doc_lists)
+
+    if config:
+        da = DocumentArray(D2, storage=storage, config=config)
+    else:
+        da = DocumentArray(D2, storage=storage)
+
+    D1.match(da, limit=limit)
+    for m in D1[:, 'matches']:
+        assert len(m) == limit
+
+    expected_sorted_values = [
+        D1[0].matches[i].scores['cosine'].value for i in range(limit)
+    ]
+
+    assert expected_sorted_values == sorted(expected_sorted_values)
+
+
+@pytest.mark.parametrize(
     'limit, batch_size', [(1, None), (2, None), (None, None), (1, 1), (1, 2), (2, 1)]
 )
 @pytest.mark.parametrize('only_id', [True, False])
@@ -82,6 +107,7 @@ def test_matching_retrieves_correct_number(
     D1, D2 = doc_lists_to_doc_arrays(
         doc_lists,
     )
+
     D1.match(
         D2, metric='sqeuclidean', limit=limit, batch_size=batch_size, only_id=only_id
     )

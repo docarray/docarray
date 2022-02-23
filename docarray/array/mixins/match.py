@@ -1,12 +1,8 @@
 from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING
 
-import numpy as np
-
-from ...math.helper import top_k, minmax_normalize, update_rows_x_mat_best
-from ...score import NamedScore
-
 if TYPE_CHECKING:
-    from ...types import Document, ArrayType
+    import numpy as np
+    from ...types import ArrayType
     from ... import DocumentArray
 
 
@@ -65,170 +61,29 @@ class MatchMixin:
 
         :param kwargs: other kwargs.
         """
-        if limit is not None:
-            if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
-            else:
-                limit = int(limit)
 
-        if batch_size is not None:
-            if batch_size <= 0:
-                raise ValueError(
-                    f'`batch_size` must be larger than 0, receiving {batch_size}'
-                )
-            else:
-                batch_size = int(batch_size)
-
-        lhv = self
-        rhv = darray
-
-        if not (lhv and rhv):
+        if not (self and darray):
             return
 
-        if callable(metric):
-            cdist = metric
-        elif isinstance(metric, str):
-            if use_scipy:
-                from scipy.spatial.distance import cdist as cdist
-            else:
-                from ...math.distance import cdist as _cdist
+        for d in self:
+            d.matches.clear()
 
-                cdist = lambda *x: _cdist(*x, device=device)
-        else:
-            raise TypeError(
-                f'metric must be either string or a 2-arity function, received: {metric!r}'
-            )
+        match_docs = darray.find(
+            self,
+            metric=metric,
+            limit=limit,
+            normalization=normalization,
+            metric_name=metric_name,
+            batch_size=batch_size,
+            exclude_self=exclude_self,
+            only_id=only_id,
+            use_scipy=use_scipy,
+            device=device,
+            num_worker=num_worker,
+        )
 
-        metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
-        _limit = len(rhv) if limit is None else (limit + (1 if exclude_self else 0))
+        if not isinstance(match_docs, list):
+            match_docs = [match_docs]
 
-        if batch_size:
-            dist, idx = lhv._match_online(
-                rhv, cdist, _limit, normalization, metric_name, batch_size, num_worker
-            )
-        else:
-            dist, idx = lhv._match(rhv, cdist, _limit, normalization, metric_name)
-
-        from ... import Document
-
-        for _q, _ids, _dists in zip(lhv, idx, dist):
-            _q.matches.clear()
-            num_matches = 0
-            for _id, _dist in zip(_ids, _dists):
-                # Note, when match self with other, or both of them share the same Document
-                # we might have recursive matches .
-                # checkout https://github.com/jina-ai/jina/issues/3034
-                if only_id:
-                    d = Document(id=rhv[_id].id)
-                else:
-                    d = Document(rhv[int(_id)], copy=True)  # type: Document
-
-                if d.id in lhv:
-                    d = Document(
-                        d, copy=True
-                    )  # to prevent self-reference and override on matches
-                    d.pop('matches')
-                if not (d.id == _q.id and exclude_self):
-                    d.scores[metric_name] = NamedScore(value=_dist, ref_id=_q.id)
-                    _q.matches.append(d)
-                    num_matches += 1
-                    if num_matches >= (limit or _limit):
-                        break
-
-    def _match(self, darray, cdist, limit, normalization, metric_name):
-        """
-        Computes the matches between self and `darray` loading `darray` into main memory.
-        :param darray: the other DocumentArray or  to match against
-        :param cdist: the distance metric
-        :param limit: the maximum number of matches, when not given
-                      all Documents in `darray` are considered as matches
-        :param normalization: a tuple [a, b] to be used with min-max normalization,
-                                the min distance will be rescaled to `a`, the max distance will be rescaled to `b`
-                                all values will be rescaled into range `[a, b]`.
-        :param metric_name: if provided, then match result will be marked with this string.
-        :return: distances and indices
-        """
-
-        x_mat = self.embeddings
-        y_mat = darray.embeddings
-
-        dists = cdist(x_mat, y_mat, metric_name)
-        dist, idx = top_k(dists, min(limit, len(darray)), descending=False)
-        if isinstance(normalization, (tuple, list)) and normalization is not None:
-            # normalization bound uses original distance not the top-k trimmed distance
-            min_d = np.min(dists, axis=-1, keepdims=True)
-            max_d = np.max(dists, axis=-1, keepdims=True)
-            dist = minmax_normalize(dist, normalization, (min_d, max_d))
-
-        return dist, idx
-
-    def _match_online(
-        self,
-        darray,
-        cdist,
-        limit,
-        normalization,
-        metric_name,
-        batch_size,
-        num_worker,
-    ):
-        """
-        Computes the matches between self and `darray` loading `darray` into main memory in chunks of size `batch_size`.
-
-        :param darray: the other DocumentArray or  to match against
-        :param cdist: the distance metric
-        :param limit: the maximum number of matches, when not given
-                      all Documents in `another` are considered as matches
-        :param normalization: a tuple [a, b] to be used with min-max normalization,
-                              the min distance will be rescaled to `a`, the max distance will be rescaled to `b`
-                              all values will be rescaled into range `[a, b]`.
-        :param batch_size: length of the chunks loaded into memory from darray.
-        :param metric_name: if provided, then match result will be marked with this string.
-        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
-        :return: distances and indices
-        """
-
-        x_mat = self.embeddings
-        n_x = x_mat.shape[0]
-
-        idx = 0
-        top_dists = np.inf * np.ones((n_x, limit))
-        top_inds = np.zeros((n_x, limit), dtype=int)
-
-        def _get_dist(da: 'DocumentArray'):
-            y_batch = da.embeddings
-
-            distances = cdist(x_mat, y_batch, metric_name)
-            dists, inds = top_k(distances, limit, descending=False)
-
-            if isinstance(normalization, (tuple, list)) and normalization is not None:
-                dists = minmax_normalize(dists, normalization)
-
-            return dists, inds, y_batch.shape[0]
-
-        if num_worker is None or num_worker > 1:
-            # notice that all most all computations (regardless the framework) are conducted in C
-            # hence there is no worry on Python GIL and the backend can be safely put to `thread` to
-            # save unnecessary data passing. This in fact gives a huge boost on the performance.
-            _gen = darray.map_batch(
-                _get_dist,
-                batch_size=batch_size,
-                backend='thread',
-                num_worker=num_worker,
-            )
-        else:
-            _gen = (_get_dist(b) for b in darray.batch(batch_size=batch_size))
-
-        for (dists, inds, _bs) in _gen:
-            inds += idx
-            idx += _bs
-            top_dists, top_inds = update_rows_x_mat_best(
-                top_dists, top_inds, dists, inds, limit
-            )
-
-        # sort final the final `top_dists` and `top_inds` per row
-        permutation = np.argsort(top_dists, axis=1)
-        dist = np.take_along_axis(top_dists, permutation, axis=1)
-        idx = np.take_along_axis(top_inds, permutation, axis=1)
-
-        return dist, idx
+        for m, d in zip(match_docs, self):
+            d.matches = m
