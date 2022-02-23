@@ -58,9 +58,6 @@ class FindMixin:
             else:
                 limit = int(limit)
 
-        # _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
-        _limit = len(self) if limit is None else limit
-
         if isinstance(query, (DocumentArray, Document)):
             _limit = (
                 len(self) if limit is None else (limit + (1 if exclude_self else 0))
@@ -92,7 +89,7 @@ class FindMixin:
                     f'The find method of {self.__class__.__name__} does not support the type of query: {type(query)}'
                 )
 
-            # Ensure query embedding to have the correct shape via `.flatten()`
+            # Ensure query embedding to have the correct shape
             if n_dim != 2:
                 query = query.reshape((n_rows, -1))
 

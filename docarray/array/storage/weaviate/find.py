@@ -5,9 +5,7 @@ from typing import (
     Sequence,
     List,
 )
-
 import numpy as np
-
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....score import NamedScore
@@ -15,7 +13,6 @@ from ....score import NamedScore
 if TYPE_CHECKING:
     import tensorflow
     import torch
-    import numpy as np
 
     WeaviateArrayType = TypeVar(
         'WeaviateArrayType',
