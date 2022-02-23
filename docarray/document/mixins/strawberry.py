@@ -13,7 +13,7 @@ class StrawberryMixin:
     def to_strawberry_type(self) -> 'StrawberryDocument':
         """Convert a Document object into a Strawberry type."""
         from ..strawberry_type import StrawberryDocument as SD
-        from ..strawberry_type import NameScoreItem, NamedScore
+        from ..strawberry_type import _NameScoreItem, _NamedScore
 
         _p_dict = {}
         for f in self.non_empty_fields:
@@ -22,7 +22,7 @@ class StrawberryMixin:
                 _p_dict[f] = v.to_strawberry_type()
             elif f in ('scores', 'evaluations'):
                 _p_dict[f] = [
-                    NameScoreItem(k, NamedScore(**v.to_dict())) for k, v in v.items()
+                    _NameScoreItem(k, _NamedScore(**v.to_dict())) for k, v in v.items()
                 ]
 
             else:
