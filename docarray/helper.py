@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import uuid
+import pathlib
 import warnings
 from typing import Any, Dict, Optional, Sequence
 
@@ -321,3 +322,69 @@ def dataclass_from_dict(klass, dikt):
         if isinstance(dikt, (tuple, list)):
             return [dataclass_from_dict(klass.__args__[0], f) for f in dikt]
         return dikt
+
+
+def protocol_and_compress_from_file_path(
+    file_path: str,
+    default_protocol: Optional[str] = None,
+    default_compress: Optional[str] = None,
+) -> tuple[Optional[str], Opstional[str]]:
+    """Extract protocol and compression algorithm from a string, use defaults if not found.
+
+    :param file_path: path of a file.
+    :param default_protocol: default serialization protocol used in case not found.
+    :param default_compress: default compression method used in case not found.
+
+    Examples:
+
+    >>> protocol_and_compress_from_file_path('./docarray_fashion_mnist.protobuff.gzip')
+    ('protobuf', 'gzip')
+
+    >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.protobuff')
+    ('protobuf', None)
+
+    >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.gzip')
+    (None, gzip)
+    """
+
+    ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
+    ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
+
+    protocol = default_protocol
+    compress = default_compress
+
+    file_extensions = [e.replace('.', '') for e in pathlib.Path(file_path).suffixes]
+    for extension in file_extensions:
+        if extension in ALLOWED_PROTOCOLS:
+            protocol = extension
+        elif extension in ALLOWED_COMPRESSIONS:
+            compress = extension
+
+    return protocol, compress
+
+
+def add_protocol_and_compress_to_file_path(
+    file_path: str, protocol: Optional[str] = None, compress: Optional[str] = None
+) -> str:
+    """Creates a new file path with the protocol and compression methods as extensions.
+
+    :param file_path: path of a file.
+    :param protocol: chosen protocol.
+    :param compress: compression algorithm.
+
+    Examples:
+
+    >>> add_protocol_and_compress_to_file_path('docarray_fashion_mnist.bin')
+    'docarray_fashion_mnist.bin'
+
+    >>> add_protocol_and_compress_to_file_path('docarray_fashion_mnist', 'protobuf', 'gzip')
+    'docarray_fashion_mnist.protobuf.gzip'
+    """
+
+    file_path_extended = file_path
+    if protocol:
+        file_path_extended += '.' + protocol
+    if compress:
+        file_path_extended += '.' + compress
+
+    return file_path_extended

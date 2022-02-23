@@ -5,7 +5,13 @@ import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
-from ....helper import __windows__, get_compress_ctx, decompress_bytes
+from ....helper import (
+    __windows__,
+    get_compress_ctx,
+    decompress_bytes,
+    protocol_and_compress_from_file_path,
+    add_protocol_and_compress_to_file_path,
+)
 
 if TYPE_CHECKING:
     from ....types import T
@@ -42,6 +48,9 @@ class BinaryIOMixin:
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
         elif os.path.exists(file):
+            protocol, compress = protocol_and_compress_from_file_path(
+                file, protocol, compress
+            )
             file_ctx = open(file, 'rb')
         else:
             raise ValueError(f'unsupported input {file!r}')
@@ -203,6 +212,7 @@ class BinaryIOMixin:
         if isinstance(file, io.BufferedWriter):
             file_ctx = nullcontext(file)
         else:
+            file = add_protocol_and_compress_to_file_path(file, protocol, compress)
             file_ctx = open(file, 'wb')
 
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
