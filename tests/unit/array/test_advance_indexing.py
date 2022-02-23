@@ -20,10 +20,10 @@ def indices():
 @pytest.mark.parametrize(
     'storage,config',
     [
-        # ('memory', None),
-        # ('sqlite', None),
-        # ('weaviate', WeaviateConfig(n_dim=123)),
-        # ('pqlite', PqliteConfig(n_dim=123)),
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('pqlite', PqliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )

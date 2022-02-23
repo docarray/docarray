@@ -2,7 +2,12 @@ from typing import Iterable, Iterator
 
 from qdrant_client import QdrantClient
 from qdrant_openapi_client.exceptions import UnexpectedResponse
-from qdrant_openapi_client.models.models import PointIdsList, PointsList, ScrollRequest
+from qdrant_openapi_client.models.models import (
+    PointIdsList,
+    PointsList,
+    ScrollRequest,
+    PointStruct,
+)
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
@@ -45,8 +50,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             qdrant_record['_serialized'].value[0], **self.serialization_config
         )
 
-    def _document_to_qdrant(self, doc: 'Document') -> dict:
-        return dict(
+    def _document_to_qdrant(self, doc: 'Document') -> 'PointStruct':
+        return PointStruct(
             id=doc.id,
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
             vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
@@ -75,7 +80,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self.client.http.points_api.upsert_points(
             name=self.collection_name,
             wait=True,
-            point_insert_operations=[self._document_to_qdrant(value)],
+            point_insert_operations=PointsList(
+                points=[self._document_to_qdrant(value)]
+            ),
         )
 
     def scan(self) -> Iterator['Document']:

@@ -13,10 +13,11 @@ from typing import (
 )
 
 from qdrant_client import QdrantClient
-from qdrant_openapi_client.models.models import Distance
+from qdrant_openapi_client.models.models import Distance, CreateCollection
 
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray.helper import dataclass_from_dict, random_identity
 
 if TYPE_CHECKING:
     from docarray.types import (
@@ -73,6 +74,8 @@ class BackendMixin(BaseBackendMixin):
 
         if not config:
             raise ValueError('Empty config is not allowed for Qdrant storage')
+        elif isinstance(config, dict):
+            config = dataclass_from_dict(QdrantConfig, config)
 
         if not config.collection_name:
             config.collection_name = self._tmp_collection_name()
@@ -88,6 +91,16 @@ class BackendMixin(BaseBackendMixin):
             self._client = config.connection
 
         self._config = config
+        self._persist = bool(self._config.collection_name)
+
+        self._config.collection_name = (
+            self.__class__.__name__ + random_identity()
+            if self._config.collection_name is None
+            else self._config.collection_name
+        )
+
+        self._persist = self._config.collection_name
+        self._initialize_qdrant_schema()
 
         super()._init_storage()
 
@@ -104,3 +117,15 @@ class BackendMixin(BaseBackendMixin):
             self.extend(docs)
         elif isinstance(docs, Document):
             self.append(docs)
+
+    def _initialize_qdrant_schema(self):
+        if not self._collection_exists(self.collection_name):
+            self.client.http.collections_api.create_collection(
+                self.collection_name,
+                CreateCollection(vector_size=self.n_dim, distance=self.distance),
+            )
+
+    def _collection_exists(self, collection_name):
+        resp = self.client.http.collections_api.get_collections()
+        collections = [collection.name for collection in resp.result.collections]
+        return collection_name in collections
