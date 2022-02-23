@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class MatchMixin:
-    """ A mixin that provides match functionality to DocumentArrays """
+    """A mixin that provides match functionality to DocumentArrays"""
 
     def match(
         self,

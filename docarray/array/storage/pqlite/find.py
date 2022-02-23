@@ -5,7 +5,6 @@ from typing import (
     List,
 )
 
-
 if TYPE_CHECKING:
     import numpy as np
     from .... import DocumentArray

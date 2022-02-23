@@ -1,11 +1,12 @@
 from typing import (
-    Union,
     TYPE_CHECKING,
     TypeVar,
     Sequence,
     List,
 )
+
 import numpy as np
+
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....score import NamedScore
