@@ -28,6 +28,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -713,4 +714,35 @@
 
  - [[```88ac69ff```](https://github.com/jina-ai/docarray/commit/88ac69ff67c7390efff5705f1dc9609a1a1c7954)] __-__ Revert &#34;test: reduce test time (#118)&#34; (#127) (*Han Xiao*)
  - [[```72425afe```](https://github.com/jina-ai/docarray/commit/72425afee18de88bf918b1e139293a1a90757980)] __-__ __version__: the next version will be 0.7.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-2></a>
+## Release Note (`0.7.2`)
+
+> Release time: 2022-02-23 17:25:51
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Winston Wong,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```721ca753```](https://github.com/jina-ai/docarray/commit/721ca753e3b91392ac596e05d331a8000b4ac111)] __-__ integrate match and find function (#110) (*felix-wang*)
+
+### 🐞 Bug fixes
+
+ - [[```6932ed46```](https://github.com/jina-ai/docarray/commit/6932ed46d4c08b580b58b1796a96cb5dfd364631)] __-__ tags pydantic (#137) (*felix-wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```07b0c5ec```](https://github.com/jina-ai/docarray/commit/07b0c5ec50623db9e41ed87025d9f7feaaa83c18)] __-__ __array__: refactor autoboxing in find and _find (#139) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3a15fb38```](https://github.com/jina-ai/docarray/commit/3a15fb3814929d50d66a5140547d8e96db6d7422)] __-__ enable more tests for getset mixin (#135) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```66e533f8```](https://github.com/jina-ai/docarray/commit/66e533f8d99ea7bc2c12838c5ecfa9d2433b4bc8)] __-__ __version__: the next version will be 0.7.2 (*Jina Dev Bot*)
 
