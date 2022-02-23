@@ -6,6 +6,8 @@ import pathlib
 import warnings
 from typing import Any, Dict, Optional, Sequence, Tuple
 
+from docarray.array.mixins.io.binary import ALLOWED_PROTOCOLS, ALLOWED_COMPRESSIONS
+
 __windows__ = sys.platform == 'win32'
 
 __resources_path__ = os.path.join(
@@ -346,9 +348,6 @@ def protocol_and_compress_from_file_path(
     >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.gzip')
     (None, gzip)
     """
-
-    ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
-    ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
     protocol = default_protocol
     compress = default_compress
