@@ -1,6 +1,7 @@
 import base64
 import io
 import struct
+import warnings
 from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
@@ -48,25 +49,34 @@ class ImageDataMixin:
         self.tensor = tensor
         return self
 
-    def convert_image_tensor_to_uri(self: 'T', channel_axis: int = -1) -> 'T':
+    def convert_image_tensor_to_uri(
+        self: 'T', channel_axis: int = -1, image_format: str = 'png'
+    ) -> 'T':
         """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param image_format: either `png` or `jpeg`
         :return: itself after processed
         """
+
         tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
-        png_bytes = _to_png_buffer(tensor)
-        self.uri = 'data:image/png;base64,' + base64.b64encode(png_bytes).decode()
+        _bytes = _to_image_buffer(tensor, image_format)
+        self.uri = (
+            f'data:image/{image_format};base64,' + base64.b64encode(_bytes).decode()
+        )
         return self
 
-    def convert_image_tensor_to_blob(self: 'T', channel_axis: int = -1) -> 'T':
+    def convert_image_tensor_to_blob(
+        self: 'T', channel_axis: int = -1, image_format: str = 'png'
+    ) -> 'T':
         """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param image_format: either `png` or `jpeg`
         :return: itself after processed
         """
         tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
-        self.blob = _to_png_buffer(tensor)
+        self.blob = _to_image_buffer(tensor, image_format)
         return self
 
     def set_image_tensor_shape(
@@ -102,18 +112,27 @@ class ImageDataMixin:
         self: 'T',
         file: Union[str, BinaryIO],
         channel_axis: int = -1,
+        image_format: str = 'png',
     ) -> 'T':
         """Save :attr:`.tensor` into a file
 
         :param file: File or filename to which the data is saved.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param image_format: either `png` or `jpeg`
 
         :return: itself after processed
         """
+
+        if isinstance(file, str) and not file.endswith(image_format.lower()):
+            warnings.warn(
+                f'your output file extension `{file}` does not match your output image format `{image_format}`. '
+                f'This may result unreadable image file. Please double check your file name or `image_format`.'
+            )
+
         fp = _get_file_context(file)
         with fp:
             tensor = _move_channel_axis(self.tensor, channel_axis, -1)
-            buffer = _to_png_buffer(tensor)
+            buffer = _to_image_buffer(tensor, image_format)
             fp.write(buffer)
         return self
 
@@ -322,39 +341,48 @@ def _to_image_tensor(
         return np.array(raw_img)
 
 
-def _to_png_buffer(arr: 'np.ndarray') -> bytes:
+def _to_image_buffer(arr: 'np.ndarray', image_format: str) -> bytes:
     """
-    Convert png to buffer bytes.
+    Convert image-ndarray to buffer bytes.
 
     :param arr: Data representations of the png.
+    :param image_format: `png` or `jpeg`
     :return: Png in buffer bytes.
 
     ..note::
         if both :attr:`width` and :attr:`height` were provided, will not resize. Otherwise, will get image size
         by :attr:`arr` shape and apply resize method :attr:`resize_method`.
     """
+
+    if image_format not in ('png', 'jpeg', 'jpg'):
+        raise ValueError(
+            f'image_format must be either `png` or `jpeg`, receiving `{image_format}`'
+        )
+    if image_format == 'jpg':
+        image_format = 'jpeg'  # unify it to ISO standard
+
     arr = arr.astype(np.uint8).squeeze()
 
     if arr.ndim == 1:
         # note this should be only used for MNIST/FashionMNIST dataset, because of the nature of these two datasets
         # no other image data should flattened into 1-dim array.
-        png_bytes = _png_to_buffer_1d(arr, 28, 28)
+        image_bytes = _png_to_buffer_1d(arr, 28, 28)
     elif arr.ndim == 2:
         from PIL import Image
 
         im = Image.fromarray(arr).convert('L')
-        png_bytes = _pillow_image_to_buffer(im, image_format='PNG')
+        image_bytes = _pillow_image_to_buffer(im, image_format=image_format.upper())
     elif arr.ndim == 3:
         from PIL import Image
 
         im = Image.fromarray(arr).convert('RGB')
-        png_bytes = _pillow_image_to_buffer(im, image_format='PNG')
+        image_bytes = _pillow_image_to_buffer(im, image_format=image_format.upper())
     else:
         raise ValueError(
             f'{arr.shape} ndarray can not be converted into an image buffer.'
         )
 
-    return png_bytes
+    return image_bytes
 
 
 def _png_to_buffer_1d(arr: 'np.ndarray', width: int, height: int) -> bytes:
