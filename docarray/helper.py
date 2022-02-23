@@ -4,7 +4,7 @@ import sys
 import uuid
 import pathlib
 import warnings
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, Optional, Sequence, Tuple
 
 __windows__ = sys.platform == 'win32'
 
@@ -328,7 +328,7 @@ def protocol_and_compress_from_file_path(
     file_path: str,
     default_protocol: Optional[str] = None,
     default_compress: Optional[str] = None,
-) -> tuple[Optional[str], Optional[str]]:
+) -> Tuple[Optional[str], Optional[str]]:
     """Extract protocol and compression algorithm from a string, use defaults if not found.
 
     :param file_path: path of a file.
