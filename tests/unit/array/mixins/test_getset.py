@@ -31,6 +31,15 @@ def nested_docs():
 
 
 @pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', {}),
+        ('sqlite', {}),
+        ('pqlite', {'n_dim': 3}),
+        ('weaviate', {'n_dim': 3}),
+    ],
+)
+@pytest.mark.parametrize(
     'array',
     [
         rand_array,
@@ -39,9 +48,9 @@ def nested_docs():
         csr_matrix(rand_array),
     ],
 )
-def test_set_embeddings_multi_kind(array):
-    da = DocumentArray([Document() for _ in range(10)])
-    da.embeddings = array
+def test_set_embeddings_multi_kind(array, storage, config, start_weaviate):
+    da = DocumentArray([Document() for _ in range(10)], storage=storage, config=config)
+    da[:, 'embedding'] = array
 
 
 @pytest.mark.parametrize(
@@ -65,8 +74,10 @@ def test_da_get_embeddings(docs, config, da_cls, start_weaviate):
 
 @pytest.mark.parametrize(
     'da_cls,config',
-    # TODO: restore other backends
     [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
     ],
 )
@@ -77,16 +88,16 @@ def test_embeddings_setter_da(docs, config, da_cls, start_weaviate):
         da = da_cls()
     da.extend(docs)
     emb = np.random.random((100, 10))
-    da.embeddings = emb
+    da[:, 'embedding'] = emb
     np.testing.assert_almost_equal(da.embeddings, emb)
 
     for x, doc in zip(emb, da):
         np.testing.assert_almost_equal(x, doc.embedding)
 
-    da.embeddings = None
+    da[:, 'embedding'] = None
     if hasattr(da, 'flush'):
         da.flush()
-    assert not da.embeddings
+    assert da.embeddings is None or not np.any(da.embeddings)
 
 
 @pytest.mark.parametrize(
@@ -314,19 +325,31 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_weaviate):
     assert all(d.text == 'new' for d in da[...])
 
 
-def test_zero_embeddings():
+@pytest.mark.parametrize(
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayPqlite, PqliteConfig(n_dim=6)),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
+    ],
+)
+def test_zero_embeddings(da_cls, config, start_weaviate):
     a = np.zeros([10, 6])
-    da = DocumentArray.empty(10)
+    if config:
+        da = da_cls.empty(10, config=config)
+    else:
+        da = da_cls.empty(10)
 
     # all zero, dense
-    da.embeddings = a
+    da[:, 'embedding'] = a
     np.testing.assert_almost_equal(da.embeddings, a)
     for d in da:
         assert d.embedding.shape == (6,)
 
     # all zero, sparse
     sp_a = scipy.sparse.coo_matrix(a)
-    da.embeddings = sp_a
+    da[:, 'embedding'] = sp_a
     np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
     for d in da:
         # scipy sparse row-vector can only be a (1, m) not squeezible
@@ -336,7 +359,7 @@ def test_zero_embeddings():
     a = np.random.random([10, 6])
     a[a > 0.1] = 0
     sp_a = scipy.sparse.coo_matrix(a)
-    da.embeddings = sp_a
+    da[:, 'embedding'] = sp_a
     np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
     for d in da:
         # scipy sparse row-vector can only be a (1, m) not squeezible
