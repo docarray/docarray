@@ -33,7 +33,7 @@ NdArray = strawberry.scalar(
 )
 
 
-@strawberry.input
+@strawberry.type
 class _NamedScore:
     value: Optional[float] = None
     op_name: Optional[str] = None
@@ -41,13 +41,13 @@ class _NamedScore:
     ref_id: Optional[str] = None
 
 
-@strawberry.input
+@strawberry.type
 class _NameScoreItem:
     name: str
     score: _NamedScore
 
 
-@strawberry.input
+@strawberry.type
 class StrawberryDocument:
     id: Optional[str] = None
     parent_id: Optional[str] = None
@@ -68,3 +68,40 @@ class StrawberryDocument:
     scores: Optional[List[_NameScoreItem]] = None
     chunks: Optional[List['StrawberryDocument']] = None
     matches: Optional[List['StrawberryDocument']] = None
+
+
+@strawberry.input
+class _NamedScoreInput:
+    value: Optional[float] = None
+    op_name: Optional[str] = None
+    description: Optional[str] = None
+    ref_id: Optional[str] = None
+
+
+@strawberry.input
+class _NameScoreItemInput:
+    name: str
+    score: _NamedScoreInput
+
+
+@strawberry.input
+class StrawberryDocumentInput:
+    id: Optional[str] = None
+    parent_id: Optional[str] = None
+    granularity: Optional[int] = None
+    adjacency: Optional[int] = None
+    blob: Optional[Base64] = None
+    tensor: Optional[NdArray] = None
+    mime_type: Optional[str] = None
+    text: Optional[str] = None
+    weight: Optional[float] = None
+    uri: Optional[str] = None
+    tags: Optional[JSONScalar] = None
+    offset: Optional[float] = None
+    location: Optional[List[float]] = None
+    embedding: Optional[NdArray] = None
+    modality: Optional[str] = None
+    evaluations: Optional[List[_NameScoreItemInput]] = None
+    scores: Optional[List[_NameScoreItemInput]] = None
+    chunks: Optional[List['StrawberryDocumentInput']] = None
+    matches: Optional[List['StrawberryDocumentInput']] = None
