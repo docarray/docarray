@@ -72,7 +72,7 @@ def test_sprite_image_generator(
 
 
 @pytest.fixture
-def da_and_dam(start_weaviate):
+def da_and_dam(start_storage):
     embeddings = np.array([[1, 0, 0], [2, 0, 0], [3, 0, 0]])
     return [
         cls(

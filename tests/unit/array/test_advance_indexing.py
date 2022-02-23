@@ -33,8 +33,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
     else:
         docs = DocumentArray(docs, storage=storage)
     # getter
-    ids = [doc.id for doc in docs.scan()]
-    assert docs[0].text == '0'
+    assert docs[99].text == '99'
     assert docs[np.int(99)].text == '99'
     assert docs[-1].text == '99'
     assert docs[0].text == '0'
@@ -88,7 +87,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
-def test_del_int_str(docs, storage, config, start_weaviate, indices):
+def test_del_int_str(docs, storage, config, start_storage, indices):
     if config:
         docs = DocumentArray(docs, storage=storage, config=config)
     else:

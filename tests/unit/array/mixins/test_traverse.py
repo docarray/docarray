@@ -40,7 +40,7 @@ def doc_req():
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = doc_req.traverse('r', filter_fn=filter_fn)
     assert isinstance(ds, types.GeneratorType)
@@ -57,7 +57,7 @@ def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r', filter_fn=filter_fn))
     assert len(ds) == 1
@@ -74,7 +74,7 @@ def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('c', filter_fn=filter_fn))
     assert len(ds) == num_docs
@@ -91,7 +91,7 @@ def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + 1
@@ -109,7 +109,7 @@ def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_weav
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r,c', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs
@@ -127,7 +127,7 @@ def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_weav
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('m', filter_fn=filter_fn))
     assert len(ds) == num_docs
@@ -144,7 +144,7 @@ def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
@@ -161,7 +161,7 @@ def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs + num_docs + num_docs * num_chunks_per_doc
@@ -177,7 +177,7 @@ def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_wea
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     flattened_results = doc_req.traverse_flat('r,c', filter_fn=filter_fn)
     ds = flattened_results.embeddings
@@ -194,7 +194,7 @@ def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_we
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('r', filter_fn=filter_fn))
     assert len(ds) == num_docs
@@ -210,7 +210,7 @@ def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_weaviat
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('c', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
@@ -227,7 +227,7 @@ def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_weavia
     ],
 )
 def test_traverse_flatten_root_plus_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('c,r', filter_fn=filter_fn))
@@ -244,7 +244,7 @@ def test_traverse_flatten_root_plus_chunk(
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
     ],
 )
-def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_weaviate):
+def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('m', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_matches_per_doc
@@ -261,7 +261,7 @@ def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_weavia
     ],
 )
 def test_traverse_flatten_match_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('cm', filter_fn=filter_fn))
@@ -279,7 +279,7 @@ def test_traverse_flatten_match_chunk(
     ],
 )
 def test_traverse_flatten_root_match_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
@@ -303,7 +303,7 @@ def test_traverse_flatten_root_match_chunk(
     ],
 )
 def test_traverse_flattened_per_path_embedding(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     flattened_results = list(doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn))
@@ -325,7 +325,7 @@ def test_traverse_flattened_per_path_embedding(
     ],
 )
 def test_traverse_flattened_per_path_root(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('r', filter_fn=filter_fn))
@@ -343,7 +343,7 @@ def test_traverse_flattened_per_path_root(
     ],
 )
 def test_traverse_flattened_per_path_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('c', filter_fn=filter_fn))
@@ -361,7 +361,7 @@ def test_traverse_flattened_per_path_chunk(
     ],
 )
 def test_traverse_flattened_per_path_root_plus_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('c,r', filter_fn=filter_fn))
@@ -380,7 +380,7 @@ def test_traverse_flattened_per_path_root_plus_chunk(
     ],
 )
 def test_traverse_flattened_per_path_match(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('m', filter_fn=filter_fn))
@@ -398,7 +398,7 @@ def test_traverse_flattened_per_path_match(
     ],
 )
 def test_traverse_flattened_per_path_root_match_chunk(
-    doc_req, filter_fn, da_cls, kwargs, start_weaviate
+    doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
     ds = list(doc_req.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
