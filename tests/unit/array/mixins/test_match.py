@@ -70,7 +70,8 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
 
 
 @pytest.mark.parametrize(
-    'storage, config', [('weaviate', WeaviateConfig(3)), ('pqlite', {'n_dim': 3})]
+    'storage, config',
+    [('weaviate', WeaviateConfig(3)), ('pqlite', {'n_dim': 3})],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
 def test_match(storage, config, doc_lists, limit, start_weaviate):
@@ -84,6 +85,12 @@ def test_match(storage, config, doc_lists, limit, start_weaviate):
     D1.match(da, limit=limit)
     for m in D1[:, 'matches']:
         assert len(m) == limit
+
+    expected_sorted_values = [
+        D1[0].matches[i].scores['cosine'].value for i in range(limit)
+    ]
+
+    assert expected_sorted_values == sorted(expected_sorted_values)
 
 
 @pytest.mark.parametrize(
