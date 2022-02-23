@@ -6,7 +6,8 @@ import pathlib
 import warnings
 from typing import Any, Dict, Optional, Sequence, Tuple
 
-from docarray.array.mixins.io.binary import ALLOWED_PROTOCOLS, ALLOWED_COMPRESSIONS
+ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
+ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
 __windows__ = sys.platform == 'win32'
 

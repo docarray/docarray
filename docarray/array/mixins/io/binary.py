@@ -18,9 +18,6 @@ if TYPE_CHECKING:
     from ....proto.docarray_pb2 import DocumentArrayProto
     from .... import Document, DocumentArray
 
-ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
-ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
-
 
 class BinaryIOMixin:
     """Save/load an array to a binary file."""
