@@ -20,6 +20,7 @@ Submodules
    docarray.array.mixins.embed
    docarray.array.mixins.empty
    docarray.array.mixins.evaluation
+   docarray.array.mixins.find
    docarray.array.mixins.getattr
    docarray.array.mixins.getitem
    docarray.array.mixins.group

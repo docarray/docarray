@@ -8,6 +8,7 @@ Submodules
    :maxdepth: 4
 
    docarray.array.storage.memory.backend
+   docarray.array.storage.memory.find
    docarray.array.storage.memory.getsetdel
    docarray.array.storage.memory.seqlike
 
