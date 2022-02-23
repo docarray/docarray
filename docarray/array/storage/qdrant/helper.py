@@ -13,7 +13,7 @@ class QdrantStorageHelper:
         cls, embedding: 'ArrayType', default_dim: int
     ) -> List[float]:
         if embedding is None:
-            embedding = np.random.rand(default_dim).tolist()  # [0.0] * default_dim
+            embedding = np.random.rand(default_dim).tolist()
         elif isinstance(embedding, scipy.sparse.spmatrix):
             embedding = embedding.toarray().tolist()
         else:

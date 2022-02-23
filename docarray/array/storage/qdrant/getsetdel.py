@@ -59,7 +59,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             )
             return self._qdrant_to_document(resp.result.payload)
         except UnexpectedResponse as response_error:
-            if response_error.status_code == 404:
+            if response_error.status_code in [404, 400]:
                 raise KeyError(_id)
 
     def _del_doc_by_id(self, _id: str):
