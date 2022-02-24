@@ -1,8 +1,10 @@
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -29,6 +31,7 @@ def foo_batch(da: DocumentArray):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
@@ -78,6 +81,7 @@ def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_s
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
@@ -131,6 +135,7 @@ def test_parallel_map_batch(
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_storage):

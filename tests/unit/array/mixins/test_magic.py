@@ -1,8 +1,10 @@
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -27,6 +29,7 @@ def docs():
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
 def test_iter_len_bool(da_cls, config, start_storage):
@@ -51,6 +54,7 @@ def test_iter_len_bool(da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
 def test_repr(da_cls, config, start_storage):
@@ -89,6 +93,7 @@ def test_repr_str(docs, storage, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_iadd(da_cls, config, start_storage):

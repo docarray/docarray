@@ -6,8 +6,10 @@ import torch
 from scipy.sparse import csr_matrix
 
 from docarray import DocumentArray, Document
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
@@ -60,6 +62,7 @@ def test_set_embeddings_multi_kind(array, storage, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_da_get_embeddings(docs, config, da_cls, start_storage):
@@ -79,6 +82,7 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_embeddings_setter_da(docs, config, da_cls, start_storage):
@@ -107,6 +111,7 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
@@ -128,6 +133,7 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_tensors_getter_da(docs, config, da_cls, start_storage):
@@ -152,6 +158,7 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_texts_getter_da(docs, config, da_cls, start_storage):
@@ -185,6 +192,7 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_storage):
@@ -220,6 +228,7 @@ def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_sto
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_texts_wrong_len(docs, config, da_cls, start_storage):
@@ -241,6 +250,7 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_tensors_wrong_len(docs, config, da_cls, start_storage):
@@ -262,6 +272,7 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_blobs_getter_setter(docs, da_cls, config, start_storage):
@@ -292,6 +303,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
@@ -313,6 +325,7 @@ def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
@@ -332,6 +345,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=6)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=6)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):

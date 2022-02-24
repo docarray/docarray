@@ -6,8 +6,10 @@ import pytest
 
 from docarray import Document, DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from tests import random_docs
@@ -28,6 +30,7 @@ def docs():
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
     ],
 )
 def test_document_save_load(
@@ -59,6 +62,7 @@ def test_document_save_load(
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
     ],
 )
 def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storage):
@@ -76,6 +80,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storag
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
     ],
 )
 def test_from_ndarray(da_cls, config, start_storage):
@@ -91,6 +96,7 @@ def test_from_ndarray(da_cls, config, start_storage):
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
     ],
 )
 def test_from_files(da_cls, config, start_storage):
@@ -129,6 +135,7 @@ def test_from_files_exclude():
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
     ],
 )
 def test_from_ndjson(da_cls, config, start_storage):
@@ -144,6 +151,7 @@ def test_from_ndjson(da_cls, config, start_storage):
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=3)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=3)),
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_storage):
@@ -170,6 +178,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=3)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
@@ -199,6 +208,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_storage):
@@ -225,6 +235,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
         # (DocumentArrayPqlite, PqliteConfig(n_dim=3)), # TODO: enable this
     ],
 )

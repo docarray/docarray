@@ -2,7 +2,9 @@ import pytest
 
 from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -13,6 +15,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
     ],
 )
 def test_insert(da_cls, config, start_storage):
@@ -33,6 +36,7 @@ def test_insert(da_cls, config, start_storage):
         (DocumentArrayInMemory, lambda: None),
         (DocumentArraySqlite, lambda: None),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
     ],
 )
 def test_append_extend(da_cls, config, start_storage):

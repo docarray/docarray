@@ -4,6 +4,7 @@ import pytest
 
 from docarray import Document, DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.pqlite import DocumentArrayPqlite
@@ -38,6 +39,7 @@ def doc_req():
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -55,6 +57,7 @@ def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -72,6 +75,7 @@ def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -89,6 +93,7 @@ def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -107,6 +112,7 @@ def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_stor
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -125,6 +131,7 @@ def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_stor
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -142,6 +149,7 @@ def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -159,6 +167,7 @@ def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage)
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -175,6 +184,7 @@ def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_sto
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -192,6 +202,7 @@ def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_st
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -208,6 +219,7 @@ def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_storage
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -224,6 +236,7 @@ def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_storag
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root_plus_chunk(
@@ -242,6 +255,7 @@ def test_traverse_flatten_root_plus_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
@@ -258,6 +272,7 @@ def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_storag
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_match_chunk(
@@ -276,6 +291,7 @@ def test_traverse_flatten_match_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root_match_chunk(
@@ -300,6 +316,7 @@ def test_traverse_flatten_root_match_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_embedding(
@@ -322,6 +339,7 @@ def test_traverse_flattened_per_path_embedding(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root(
@@ -340,6 +358,7 @@ def test_traverse_flattened_per_path_root(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_chunk(
@@ -358,6 +377,7 @@ def test_traverse_flattened_per_path_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root_plus_chunk(
@@ -377,6 +397,7 @@ def test_traverse_flattened_per_path_root_plus_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_match(
@@ -395,6 +416,7 @@ def test_traverse_flattened_per_path_match(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root_match_chunk(
@@ -416,6 +438,7 @@ def test_traverse_flattened_per_path_root_match_chunk(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_docuset_traverse_over_iterator_HACKY(da_cls, kwargs, filter_fn):
@@ -441,6 +464,7 @@ def test_docuset_traverse_over_iterator_HACKY(da_cls, kwargs, filter_fn):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_docuset_traverse_over_iterator_CAVEAT(da_cls, kwargs, filter_fn):
@@ -505,6 +529,7 @@ def test_traverse_chunkarray(filter_fn):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 @pytest.mark.parametrize(
@@ -548,6 +573,7 @@ def test_filter_fn_traverse_flat(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 @pytest.mark.parametrize(
@@ -597,6 +623,7 @@ def test_filter_fn_traverse_flat_per_path(
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traversal_path(da_cls, kwargs):
@@ -613,6 +640,7 @@ def test_traversal_path(da_cls, kwargs):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flat_root_itself(da_cls, kwargs):
@@ -633,6 +661,7 @@ def da_and_dam(N):
         (DocumentArraySqlite, {}),
         (DocumentArrayPqlite, {'config': {'n_dim': 10}}),
         (DocumentArrayWeaviate, {'config': {'n_dim': 10}}),
+        (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
     ],
 )
 def test_flatten(da_cls, kwargs):

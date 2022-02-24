@@ -10,6 +10,7 @@ from transformers import TFViTModel, ViTConfig, ViTModel
 
 from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
@@ -63,6 +64,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
         DocumentArray,
         DocumentArraySqlite,
         DocumentArrayPqlite,
+        DocumentArrayQdrant,
         # DocumentArrayWeaviate,  # TODO enable this
     ],
 )
