@@ -100,15 +100,16 @@ def test_image_normalize(shape, channel_axis):
         ([32, 28, 1], -1, 32, 28),  # h, w, c, (greyscale)
     ],
 )
-def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height):
+@pytest.mark.parametrize('format', ['png', 'jpeg'])
+def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height, format):
     doc = Document(content=np.random.randint(0, 255, arr_size))
     assert doc.tensor.any()
     assert not doc.uri
     doc.set_image_tensor_shape(channel_axis=channel_axis, shape=(width, height))
 
-    doc.convert_image_tensor_to_uri(channel_axis=channel_axis)
-    assert doc.uri.startswith('data:image/png;base64,')
-    assert doc.mime_type == 'image/png'
+    doc.convert_image_tensor_to_uri(channel_axis=channel_axis, image_format=format)
+    assert doc.uri.startswith(f'data:image/{format};base64,')
+    assert doc.mime_type == f'image/{format}'
     assert doc.tensor.any()  # assure after conversion tensor still exist.
 
 
