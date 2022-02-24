@@ -70,7 +70,6 @@ class BinaryIOMixin:
                 _show_progress=_show_progress,
             )
         else:
-            print(protocol, compress)
             return cls._load_binary_all(
                 file_ctx, protocol, compress, _show_progress, *args, **kwargs
             )
@@ -238,7 +237,6 @@ class BinaryIOMixin:
 
             file_ctx = open(file, 'wb')
 
-        print(protocol, compress)
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
 
     def to_bytes(
