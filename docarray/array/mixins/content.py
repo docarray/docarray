@@ -57,9 +57,8 @@ class ContentPropertyMixin:
 
         :return: a :class:`ArrayType` of tensors
         """
-        if self and self[0].content_type == 'tensor':
-            if self:
-                return unravel(self, 'tensor')
+        if self:
+            return unravel(self, 'tensor')
 
     @tensors.setter
     def tensors(self, value: 'ArrayType'):
@@ -82,9 +81,8 @@ class ContentPropertyMixin:
 
         :return: a list of texts
         """
-        if self and self[0].content_type == 'text':
-            if self:
-                return [d.text for d in self]
+        if self:
+            return [d.text for d in self]
 
     @texts.setter
     def texts(self, value: Sequence[str]):
@@ -106,9 +104,8 @@ class ContentPropertyMixin:
 
         :return: a list of blobs
         """
-        if self and self[0].content_type == 'blob':
-            if self:
-                return [d.blob for d in self]
+        if self:
+            return [d.blob for d in self]
 
     @blobs.setter
     def blobs(self, value: List[bytes]):
@@ -133,9 +130,9 @@ class ContentPropertyMixin:
         :return: a list of texts, blobs or :class:`ArrayType`
         """
         if self:
-            content_type = self[0].content_type
+            content_type = self[0].content_type or self[-1].content_type
             if content_type:
-                return getattr(self, f'{self[0].content_type}s')
+                return getattr(self, f'{content_type}s')
 
     @contents.setter
     def contents(
@@ -146,9 +143,9 @@ class ContentPropertyMixin:
         :param value: a list of texts, blobs or :class:`ArrayType`
         """
         if self:
-            content_type = self[0].content_type
+            content_type = self[0].content_type or self[-1].content_type
             if content_type:
-                setattr(self, f'{self[0].content_type}s', value)
+                setattr(self, f'{content_type}s', value)
 
 
 def _get_len(value):
