@@ -48,7 +48,7 @@ def nested_docs():
         csr_matrix(rand_array),
     ],
 )
-def test_set_embeddings_multi_kind(array, storage, config, start_weaviate):
+def test_set_embeddings_multi_kind(array, storage, config, start_storage):
     da = DocumentArray([Document() for _ in range(10)], storage=storage, config=config)
     da[:, 'embedding'] = array
 
@@ -334,7 +334,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
     ],
 )
-def test_zero_embeddings(da_cls, config, start_weaviate):
+def test_zero_embeddings(da_cls, config, start_storage):
     a = np.zeros([10, 6])
     if config:
         da = da_cls.empty(10, config=config)

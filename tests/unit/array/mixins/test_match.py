@@ -74,7 +74,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
     [('weaviate', WeaviateConfig(3)), ('pqlite', {'n_dim': 3})],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
-def test_match(storage, config, doc_lists, limit, start_weaviate):
+def test_match(storage, config, doc_lists, limit, start_storage):
     D1, D2 = doc_lists_to_doc_arrays(doc_lists)
 
     if config:
