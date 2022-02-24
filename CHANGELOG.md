@@ -29,6 +29,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -745,4 +746,27 @@
 ### 🍹 Other Improvements
 
  - [[```66e533f8```](https://github.com/jina-ai/docarray/commit/66e533f8d99ea7bc2c12838c5ecfa9d2433b4bc8)] __-__ __version__: the next version will be 0.7.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-3></a>
+## Release Note (`0.7.3`)
+
+> Release time: 2022-02-24 16:23:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```e5a4ed59```](https://github.com/jina-ai/docarray/commit/e5a4ed59e5c9068d3f3980f00a5397ebd782d8a2)] __-__ __array__: add jpg support to converters (#140) (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```bf135471```](https://github.com/jina-ai/docarray/commit/bf135471ade735f205279967d4f68282397ac28f)] __-__ __notebook__: remove files prefix in notebook support (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```8bb3dc07```](https://github.com/jina-ai/docarray/commit/8bb3dc07854c4b34885d4c8e72bd74bd6d159bd6)] __-__ __version__: the next version will be 0.7.3 (*Jina Dev Bot*)
 
