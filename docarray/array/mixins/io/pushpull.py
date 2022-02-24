@@ -1,5 +1,6 @@
 import io
 import json
+import os
 from contextlib import nullcontext
 from functools import lru_cache
 from typing import Type, TYPE_CHECKING
@@ -18,17 +19,20 @@ def _get_cloud_api() -> str:
     :raises RuntimeError: Encounter error when fetching the cloud Api Url.
     :return: Cloud Api Url
     """
-    try:
-        req = Request(
-            'https://api.jina.ai/hub/hubble.json',
-            headers={'User-Agent': 'Mozilla/5.0'},
-        )
-        with urlopen(req) as resp:
-            u = json.load(resp)['url']
-    except Exception as ex:
-        raise RuntimeError(
-            f'Can not fetch Cloud API address from {req.full_url}'
-        ) from ex
+    if 'JINA_HUBBLE_REGISTRY' in os.environ:
+        u = os.environ['JINA_HUBBLE_REGISTRY']
+    else:
+        try:
+            req = Request(
+                'https://api.jina.ai/hub/hubble.json',
+                headers={'User-Agent': 'Mozilla/5.0'},
+            )
+            with urlopen(req) as resp:
+                u = json.load(resp)['url']
+        except Exception as ex:
+            raise RuntimeError(
+                f'Can not fetch Cloud API address from {req.full_url}'
+            ) from ex
 
     return u
 
@@ -85,9 +89,16 @@ class PushPullMixin:
 
         with progress as p_bar:
             body = BufferReader(data, p_bar, task_id)
-            requests.post(
+            res = requests.post(
                 f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
             )
+
+            if res.status_code != 200:
+                json_res = res.json()
+                raise RuntimeError(
+                    json_res.get('message', 'Failed to push DocumentArray.'),
+                    f'Status code: {res.status_code}',
+                )
 
     @classmethod
     def pull(
