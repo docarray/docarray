@@ -345,7 +345,6 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=6)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=6)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):
