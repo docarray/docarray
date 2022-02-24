@@ -40,7 +40,7 @@ def test_content_empty_getter_return_none(cls, content_attr):
     ],
 )
 def test_content_empty_setter(cls, content_attr):
-    if cls == DocumentArrayPqlite:
+    if cls in [DocumentArrayPqlite, DocumentArrayQdrant]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
