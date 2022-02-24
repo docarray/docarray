@@ -129,3 +129,12 @@ class BackendMixin(BaseBackendMixin):
         resp = self.client.http.collections_api.get_collections()
         collections = [collection.name for collection in resp.result.collections]
         return collection_name in collections
+
+    @staticmethod
+    def _qmap(doc_id: str):
+        # if doc_id is a random ID in hex format, just translate back to UUID str
+        # otherwise, create UUID5 from doc_id
+        try:
+            return str(uuid.UUID(hex=doc_id))
+        except ValueError:
+            return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id))

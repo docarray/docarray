@@ -37,13 +37,22 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __len__(self):
         return self.client.http.collections_api.get_collection(
             self.collection_name
-        ).vectors_count
-
-    def __iter__(self) -> Iterable['Document']:
-        raise NotImplementedError()
+        ).result.vectors_count
 
     def __contains__(self, x: Union[str, 'Document']):
-        raise NotImplementedError()
+        if isinstance(x, str):
+            return self._id_exists(x)
+        elif isinstance(x, Document):
+            return self._id_exists(x.id)
+        else:
+            return False
+
+    def _id_exists(self, x: str):
+        try:
+            self._get_doc_by_id(x)
+            return True
+        except KeyError:
+            return False
 
     def __bool__(self):
         raise NotImplementedError()
