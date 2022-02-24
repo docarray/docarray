@@ -111,3 +111,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _save_offset2ids(self):
         self._update_offset2ids_meta()
+
+    def _clear_storage(self):
+        self._client.recreate_collection(
+            self._config.collection_name,
+            vector_size=self._config.n_dim,
+            distance=self._config.distance,
+        )

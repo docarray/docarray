@@ -43,13 +43,6 @@ class QdrantConfig:
 
 
 class BackendMixin(BaseBackendMixin):
-    def clear(self):
-        self._client.recreate_collection(
-            self._config.collection_name,
-            vector_size=self._config.n_dim,
-            distance=self._config.distance,
-        )
-
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex
