@@ -54,11 +54,15 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         except KeyError:
             return False
 
-    def __bool__(self):
-        raise NotImplementedError()
-
     def __repr__(self):
-        raise NotImplementedError()
+        return f'<DocumentArray[Qdrant] (length={len(self)}) at {id(self)}>'
+
+    def __bool__(self):
+        """To simulate ```l = []; if l: ...```
+
+        :return: returns true if the length of the array is larger than 0
+        """
+        return len(self) > 0
 
     def __add__(self, other: Union['Document', Iterable['Document']]):
         raise NotImplementedError()
