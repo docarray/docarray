@@ -10,10 +10,16 @@ from typing import (
     Generator,
     Iterator,
     Iterable,
+    List,
 )
 
 from qdrant_client import QdrantClient
-from qdrant_openapi_client.models.models import Distance, CreateCollection
+from qdrant_openapi_client.models.models import (
+    Distance,
+    CreateCollection,
+    PointsList,
+    PointStruct,
+)
 
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
@@ -138,4 +144,32 @@ class BackendMixin(BaseBackendMixin):
         self.__dict__ = state
         self._client = QdrantClient(
             host=state['_config'].host, port=state['_config'].port
+        )
+
+    def _get_offset2ids_meta(self) -> List[str]:
+        if not self._collection_exists(self.collection_name_meta):
+            return []
+        return (
+            self.client.http.points_api.get_point(self.collection_name_meta, id=1)
+            .result.payload['offset2id']
+            .value
+        )
+
+    def _update_offset2ids_meta(self):
+        if not self._collection_exists(self.collection_name_meta):
+            self.client.http.collections_api.create_collection(
+                self.collection_name_meta,
+                CreateCollection(vector_size=1, distance=Distance.COSINE),
+            )
+
+        self.client.http.points_api.upsert_points(
+            name=self.collection_name_meta,
+            wait=True,
+            point_insert_operations=PointsList(
+                points=[
+                    PointStruct(
+                        id=1, payload={"offset2id": self._offset2ids.ids}, vector=[1]
+                    )
+                ]
+            ),
         )
