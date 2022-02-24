@@ -22,9 +22,6 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
     def distance(self) -> 'Distance':
         return self._config.distance
 
-    def __iter__(self) -> Iterable['Document']:
-        yield from self.scan()
-
     def extend(self, docs: Iterable['Document']):
         docs = list(docs)
         self._upload_batch(docs)
