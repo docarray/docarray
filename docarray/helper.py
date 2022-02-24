@@ -340,10 +340,10 @@ def protocol_and_compress_from_file_path(
 
     Examples:
 
-    >>> protocol_and_compress_from_file_path('./docarray_fashion_mnist.protobuff.gzip')
+    >>> protocol_and_compress_from_file_path('./docarray_fashion_mnist.protobuf.gzip')
     ('protobuf', 'gzip')
 
-    >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.protobuff')
+    >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.protobuf')
     ('protobuf', None)
 
     >>> protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.gzip')
@@ -361,30 +361,3 @@ def protocol_and_compress_from_file_path(
             compress = extension
 
     return protocol, compress
-
-
-def add_protocol_and_compress_to_file_path(
-    file_path: str, protocol: Optional[str] = None, compress: Optional[str] = None
-) -> str:
-    """Creates a new file path with the protocol and compression methods as extensions.
-
-    :param file_path: path of a file.
-    :param protocol: chosen protocol.
-    :param compress: compression algorithm.
-
-    Examples:
-
-    >>> add_protocol_and_compress_to_file_path('docarray_fashion_mnist.bin')
-    'docarray_fashion_mnist.bin'
-
-    >>> add_protocol_and_compress_to_file_path('docarray_fashion_mnist', 'protobuf', 'gzip')
-    'docarray_fashion_mnist.protobuf.gzip'
-    """
-
-    file_path_extended = file_path
-    if protocol:
-        file_path_extended += '.' + protocol
-    if compress:
-        file_path_extended += '.' + compress
-
-    return file_path_extended
