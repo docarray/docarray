@@ -64,7 +64,7 @@ def _html5_video_player(uri):
     src = f'''
     <body>
     <video width="320" height="240" autoplay muted controls>
-    <source src="files/{uri}">
+    <source src="{uri}">
     Your browser does not support the video tag.
     </video>
     </body>
@@ -78,7 +78,7 @@ def _html5_audio_player(uri):
     src = f'''
     <body>
     <audio controls="controls" style="width:320px" >
-      <source src="files/{uri}"/>
+      <source src="{uri}"/>
       Your browser does not support the audio element.
     </audio>
     </body>
