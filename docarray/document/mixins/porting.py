@@ -2,7 +2,7 @@ import base64
 import dataclasses
 import pickle
 import warnings
-from typing import Optional, TYPE_CHECKING, Type, Dict, Any
+from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
 
 from ...helper import compress_bytes, decompress_bytes
 
@@ -38,7 +38,10 @@ class PortingMixin:
 
     @classmethod
     def from_json(
-        cls: Type['T'], obj: str, protocol: str = 'jsonschema', **kwargs
+        cls: Type['T'],
+        obj: Union[str, bytes, bytearray],
+        protocol: str = 'jsonschema',
+        **kwargs,
     ) -> 'T':
         """Convert a JSON string into a Document.
 

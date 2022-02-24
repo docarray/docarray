@@ -1,10 +1,11 @@
 from typing import (
-    Union,
     TYPE_CHECKING,
     TypeVar,
     Sequence,
     List,
 )
+
+import numpy as np
 
 from .... import Document, DocumentArray
 from ....math import ndarray
@@ -13,7 +14,6 @@ from ....score import NamedScore
 if TYPE_CHECKING:
     import tensorflow
     import torch
-    import numpy as np
 
     WeaviateArrayType = TypeVar(
         'WeaviateArrayType',
@@ -23,10 +23,17 @@ if TYPE_CHECKING:
         Sequence[float],
     )
 
+EPSILON = 1.0e-9
+
 
 class FindMixin:
-    def _find_similar_vectors(self, q: 'WeaviateArrayType', limit=10):
-        query_dict = {'vector': q}
+    def _find_similar_vectors(self, query: 'WeaviateArrayType', limit=10):
+
+        is_all_zero = np.all(query == 0)
+        if is_all_zero:
+            query = query + EPSILON
+
+        query_dict = {'vector': query}
         results = (
             self._client.query.get(
                 self._class_name,
@@ -42,8 +49,14 @@ class FindMixin:
         for result in results.get('data', {}).get('Get', {}).get(self._class_name, []):
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
             certainty = result['_additional']['certainty']
+
             doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
-            doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+
+            if certainty is None:
+                doc.scores['cosine_similarity'] = NamedScore(value=None)
+            else:
+                doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+
             doc.tags = {
                 'wid': result['_additional']['id'],
             }
@@ -51,9 +64,9 @@ class FindMixin:
 
         return DocumentArray(docs)
 
-    def find(
-        self, query: 'WeaviateArrayType', limit: int = 10
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+    def _find(
+        self, query: 'WeaviateArrayType', limit: int = 10, **kwargs
+    ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
@@ -68,7 +81,7 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return self._find_similar_vectors(query, limit=limit)
+            return [self._find_similar_vectors(query, limit=limit)]
         else:
             closest_docs = []
             for q in query:

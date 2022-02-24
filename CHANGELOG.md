@@ -26,6 +26,9 @@
 
 
 
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -649,4 +652,97 @@
 ### 🍹 Other Improvements
 
  - [[```deaa2ab4```](https://github.com/jina-ai/docarray/commit/deaa2ab4aa0a198dc56ead62318f2659f05e78df)] __-__ __version__: the next version will be 0.6.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-0></a>
+## Release Note (`0.7.0`)
+
+> Release time: 2022-02-18 15:35:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Joan Fontanals,  Mohammad Kalim Akram,  Winston Wong,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```d046425a```](https://github.com/jina-ai/docarray/commit/d046425a81d9ea5c39904d63db901113cb9ba5f5)] __-__ max_rel args in evaluation (#120) (*Mohammad Kalim Akram*)
+
+### 🧼 Code Refactoring
+
+ - [[```0cdf5930```](https://github.com/jina-ai/docarray/commit/0cdf5930c689e9056ed426ff376c1fb0316a0818)] __-__ small refactor on Offset2ID (#122) (*Joan Fontanals*)
+ - [[```444ae47c```](https://github.com/jina-ai/docarray/commit/444ae47cdc80955425f77354b1754bf35d55baf9)] __-__ __array__: change primary view to dict and 2nd view to list (#116) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```4173fa5b```](https://github.com/jina-ai/docarray/commit/4173fa5b9d076d8c7606d6ec7829ff6d190aabf5)] __-__ update docs (#126) (*AlaeddineAbdessalem*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```1b33521c```](https://github.com/jina-ai/docarray/commit/1b33521c097f6d8b7e0d52a6887a416044998605)] __-__ restore feature hashing test params (#121) (*AlaeddineAbdessalem*)
+ - [[```bf74ec60```](https://github.com/jina-ai/docarray/commit/bf74ec60a060f9841c9e3999df9dea47072c50fd)] __-__ reduce test time (#118) (*Winston Wong*)
+ - [[```e8be5b8f```](https://github.com/jina-ai/docarray/commit/e8be5b8fcf21cf1eb36195d877640f7e7d6fdbc3)] __-__ enable traverse mixin tests for storages (#115) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```34b057a6```](https://github.com/jina-ai/docarray/commit/34b057a6498fa388e22120c91f05106f977eaf21)] __-__ bump version (*Han Xiao*)
+ - [[```e7401285```](https://github.com/jina-ai/docarray/commit/e740128557870a1b147b14f76dc2421115540a4a)] __-__ fix type hint by following python standard json (#124) (*Han Xiao*)
+ - [[```c9f872c7```](https://github.com/jina-ai/docarray/commit/c9f872c7c5c8d6af10abc3af74457525b783a39f)] __-__ use cloud push pull in readme (*Han Xiao*)
+ - [[```97866c6d```](https://github.com/jina-ai/docarray/commit/97866c6dc27602364f76d7e582c3c26be40f7b99)] __-__ __version__: the next version will be 0.6.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-1></a>
+## Release Note (`0.7.1`)
+
+> Release time: 2022-02-22 17:12:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ cristian,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```5b083f7e```](https://github.com/jina-ai/docarray/commit/5b083f7ec422ee4f67427c96550bda7a108c8b8a)] __-__ __array__: add exclude in from_files (#134) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```c8fc4b8e```](https://github.com/jina-ai/docarray/commit/c8fc4b8e7941fc083636a79beafcd30ecceddf70)] __-__ fix typo (#133) (*cristian*)
+ - [[```8fe03dc8```](https://github.com/jina-ai/docarray/commit/8fe03dc88445ff89dc617f55a338f504bb138c09)] __-__ __jina__: add jina integration section (#129) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```88ac69ff```](https://github.com/jina-ai/docarray/commit/88ac69ff67c7390efff5705f1dc9609a1a1c7954)] __-__ Revert &#34;test: reduce test time (#118)&#34; (#127) (*Han Xiao*)
+ - [[```72425afe```](https://github.com/jina-ai/docarray/commit/72425afee18de88bf918b1e139293a1a90757980)] __-__ __version__: the next version will be 0.7.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-7-2></a>
+## Release Note (`0.7.2`)
+
+> Release time: 2022-02-23 17:25:51
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Winston Wong,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```721ca753```](https://github.com/jina-ai/docarray/commit/721ca753e3b91392ac596e05d331a8000b4ac111)] __-__ integrate match and find function (#110) (*felix-wang*)
+
+### 🐞 Bug fixes
+
+ - [[```6932ed46```](https://github.com/jina-ai/docarray/commit/6932ed46d4c08b580b58b1796a96cb5dfd364631)] __-__ tags pydantic (#137) (*felix-wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```07b0c5ec```](https://github.com/jina-ai/docarray/commit/07b0c5ec50623db9e41ed87025d9f7feaaa83c18)] __-__ __array__: refactor autoboxing in find and _find (#139) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3a15fb38```](https://github.com/jina-ai/docarray/commit/3a15fb3814929d50d66a5140547d8e96db6d7422)] __-__ enable more tests for getset mixin (#135) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```66e533f8```](https://github.com/jina-ai/docarray/commit/66e533f8d99ea7bc2c12838c5ecfa9d2433b4bc8)] __-__ __version__: the next version will be 0.7.2 (*Jina Dev Bot*)
 

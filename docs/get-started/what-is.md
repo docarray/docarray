@@ -57,8 +57,6 @@ In DocArray, there will also be a couple of feature release soon to allow big da
 :width: 90%
 ```
 
-The data in transit part of DocArray will become much clearer with Jina 3.0 release (expected in Feb. 2022).
-
 
 ## To AwkwardArray
 
@@ -113,6 +111,8 @@ In DocArray, the basic element one would work with is a Document, not `ndarray`.
 
 ## To Jina Users
 
+DocArray focuses on the local & monolith developer experience. Jina scales DocArray to the Cloud. More details on their relations can be {ref}`found here<jina-support>`.
+
 Jina 2.0-2.6 *kind of* have their own "DocArray", with very similar `Document` and `DocumentArray` interface. However, it is an old design and codebase. Since then, many redesigns and improvements have been made to boost its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as future Jina 3.x and Finetuner will rely on.
 
 The first good reason to use DocArray is its efficiency. Here is a side-by-side speed comparison of Jina 2.6 vs. DocArray on some common tasks.
@@ -135,7 +135,3 @@ Beside code refactoring and optimization, many features have been improved, incl
 When first using DocArray, some Jina 2.x user may realize the static typing seems missing. This is due to a deliberate decision of DocArray: DocArray guarantees the types and constraints of the wire data, not the input data. In other words, only the functions that are listed under {ref}`docarray-serialization` chapter will trigger the data validation. 
 
 To learn DocArray, the recommendation here is to forget about everything in Jina 2.x, although some interfaces may look familiar. Read [the fundamental sections](../fundamentals/document/index.md) from beginning.
-
-```{important}
-The new Jina 3.0 (expected in Feb. 2022) will depend on the new DocArray. All Document & Document API from [Jina Docs](https://docs.jina.ai) will be removed. This documentation website of DocArray serves as the single source of truth. 
-```

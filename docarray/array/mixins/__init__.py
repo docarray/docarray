@@ -16,6 +16,7 @@ from .io.from_gen import FromGeneratorMixin
 from .io.json import JsonIOMixin
 from .io.pushpull import PushPullMixin
 from .match import MatchMixin
+from .find import FindMixin
 from .parallel import ParallelMixin
 from .plot import PlotMixin
 from .pydantic import PydanticMixin
@@ -44,6 +45,7 @@ class AllMixins(
     EmbedMixin,
     PushPullMixin,
     FromGeneratorMixin,
+    FindMixin,
     MatchMixin,
     TraverseMixin,
     PlotMixin,

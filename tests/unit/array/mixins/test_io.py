@@ -4,7 +4,7 @@ import uuid
 import numpy as np
 import pytest
 
-from docarray import Document
+from docarray import Document, DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
@@ -103,6 +103,23 @@ def test_from_files(da_cls, config, start_storage):
 
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
+
+
+def test_from_files_exclude():
+    da1 = DocumentArray.from_files(f'{cur_dir}/*.*')
+    has_init = False
+    for s in da1[:, 'uri']:
+        if s.endswith('__init__.py'):
+            has_init = True
+            break
+    assert has_init
+    da2 = DocumentArray.from_files('*.*', exclude_regex=r'__.*\.py')
+    has_init = False
+    for s in da2[:, 'uri']:
+        if s.endswith('__init__.py'):
+            has_init = True
+            break
+    assert not has_init
 
 
 @pytest.mark.parametrize(

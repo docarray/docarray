@@ -105,3 +105,30 @@ def test_adding_noise():
 
     for d in da2:
         assert 0.0 < d.evaluations['precision_at_k'].value < 1.0
+
+
+@pytest.mark.parametrize(
+    'metric_fn, kwargs',
+    [
+        ('recall_at_k', {}),
+        ('f1_score_at_k', {}),
+    ],
+)
+def test_diff_match_len_in_gd(metric_fn, kwargs):
+    da1 = DocumentArray.empty(10)
+    da1.embeddings = np.random.random([10, 128])
+    da1.match(da1, exclude_self=True)
+
+    da2 = copy.deepcopy(da1)
+    da2.embeddings = np.random.random([10, 128])
+    da2.match(da2, exclude_self=True)
+    # pop some matches from first document
+    da2[0].matches.pop(8)
+
+    r = da1.evaluate(da2, metric=metric_fn, **kwargs)
+    assert isinstance(r, float)
+    np.testing.assert_allclose(r, 1.0, rtol=1e-2)  #
+    for d in da1:
+        d: Document
+        # f1_score does not yield 1 for the first document as one of the match is missing
+        assert d.evaluations[metric_fn].value > 0.9

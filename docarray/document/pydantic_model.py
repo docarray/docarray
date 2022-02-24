@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from ..types import ArrayType
 
 # this order must be preserved: https://pydantic-docs.helpmanual.io/usage/types/#unions
-_ProtoValueType = Optional[Union[bool, float, str]]
+_ProtoValueType = Optional[Union[bool, float, str, list, dict]]
 _StructValueType = Union[
     _ProtoValueType, List[_ProtoValueType], Dict[str, _ProtoValueType]
 ]
