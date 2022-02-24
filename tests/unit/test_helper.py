@@ -1,4 +1,5 @@
 import pytest
+import pathlib
 
 from docarray.helper import (
     protocol_and_compress_from_file_path,
