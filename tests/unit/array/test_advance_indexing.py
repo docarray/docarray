@@ -408,7 +408,7 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
         ('pqlite', lambda: PqliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', lambda: QdrantConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -597,7 +597,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('pqlite', PqliteConfig(n_dim=123)),
-        ('qdrant', lambda: QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
 def test_offset2ids_persistence(storage, config, start_storage):
