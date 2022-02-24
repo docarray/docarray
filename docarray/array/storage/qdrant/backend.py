@@ -30,7 +30,8 @@ class QdrantConfig:
     n_dim: int
     distance: Distance = Distance.COSINE
     collection_name: Optional[str] = None
-    connection: Optional[Union[str, QdrantClient]] = field(default="localhost:6333")
+    host: Optional[str] = field(default="localhost")
+    port: Optional[int] = field(default=6333)
     serialize_config: Dict = field(default_factory=dict)
     scroll_batch_size: int = 64
 
@@ -77,12 +78,7 @@ class BackendMixin(BaseBackendMixin):
         self._n_dim = config.n_dim
         self._serialize_config = config.serialize_config
 
-        if isinstance(config.connection, str):
-            host, *port = config.connection.split(':')
-            if port:
-                self._client = QdrantClient(host=host, port=port[0])
-        else:
-            self._client = config.connection
+        self._client = QdrantClient(host=config.host, port=config.port)
 
         self._config = config
         self._persist = bool(self._config.collection_name)
@@ -132,3 +128,14 @@ class BackendMixin(BaseBackendMixin):
             return str(uuid.UUID(hex=doc_id))
         except ValueError:
             return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id))
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_client']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._client = QdrantClient(
+            host=state['_config'].host, port=state['_config'].port
+        )

@@ -12,13 +12,19 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 
 @pytest.mark.parametrize(
     'cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayPqlite, DocumentArrayQdrant],
+    [
+        DocumentArray,
+        DocumentArraySqlite,
+        DocumentArrayPqlite,
+        DocumentArrayWeaviate,
+        DocumentArrayQdrant,
+    ],
 )
 @pytest.mark.parametrize(
     'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
-def test_content_empty_getter_return_none(cls, content_attr):
-    if cls == DocumentArrayPqlite:
+def test_content_empty_getter_return_none(cls, content_attr, start_storage):
+    if cls in [DocumentArrayPqlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
@@ -27,7 +33,13 @@ def test_content_empty_getter_return_none(cls, content_attr):
 
 @pytest.mark.parametrize(
     'cls',
-    [DocumentArray, DocumentArraySqlite, DocumentArrayPqlite, DocumentArrayQdrant],
+    [
+        DocumentArray,
+        DocumentArraySqlite,
+        DocumentArrayPqlite,
+        DocumentArrayWeaviate,
+        DocumentArrayQdrant,
+    ],
 )
 @pytest.mark.parametrize(
     'content_attr',
@@ -39,8 +51,8 @@ def test_content_empty_getter_return_none(cls, content_attr):
         ('contents', []),
     ],
 )
-def test_content_empty_setter(cls, content_attr):
-    if cls in [DocumentArrayPqlite, DocumentArrayQdrant]:
+def test_content_empty_setter(cls, content_attr, start_storage):
+    if cls in [DocumentArrayPqlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
