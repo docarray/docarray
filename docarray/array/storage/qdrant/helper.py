@@ -13,12 +13,13 @@ class QdrantStorageHelper:
         cls, embedding: 'ArrayType', default_dim: int
     ) -> List[float]:
         if embedding is None:
-            embedding = np.random.rand(default_dim).tolist()
-        elif isinstance(embedding, scipy.sparse.spmatrix):
-            embedding = embedding.toarray().tolist()
+            embedding = np.random.rand(default_dim)
         else:
             from ....math.ndarray import to_numpy_array
 
-            embedding = to_numpy_array(embedding).tolist()
+            embedding = to_numpy_array(embedding)
 
-        return embedding
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
+
+        return embedding.tolist()
