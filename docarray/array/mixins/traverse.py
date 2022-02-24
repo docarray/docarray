@@ -99,7 +99,7 @@ class TraverseMixin:
         self,
         traversal_paths: str,
         filter_fn: Optional[Callable[['Document'], bool]] = None,
-    ) -> 'DocumentArray':
+    ) -> Iterable['Document']:
         """
         Returns a single flattened :class:``TraversableSequence`` with all Documents, that are reached
         via the ``traversal_paths``.
@@ -153,10 +153,9 @@ class TraverseMixin:
         return da
 
     @staticmethod
-    def _flatten(sequence) -> 'DocumentArray':
-        from ... import DocumentArray
+    def _flatten(sequence) -> Iterable['Document']:
 
-        return DocumentArray(list(itertools.chain.from_iterable(sequence)))
+        return itertools.chain.from_iterable(sequence)
 
 
 def _parse_path_string(p: str) -> Tuple[str, slice, str]:
