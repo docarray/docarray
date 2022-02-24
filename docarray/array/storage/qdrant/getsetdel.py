@@ -37,13 +37,26 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         raise NotImplementedError()
 
     def _upload_batch(self, docs: Iterable['Document']):
-        self.client.http.points_api.upsert_points(
-            name=self.collection_name,
-            wait=True,
-            point_insert_operations=PointsList(
-                points=[self._document_to_qdrant(doc) for doc in docs]
-            ),
-        )
+        batch = []
+        for doc in docs:
+            batch.append(self._document_to_qdrant(doc))
+            if len(batch) > self.scroll_batch_size:
+                self.client.http.points_api.upsert_points(
+                    name=self.collection_name,
+                    wait=True,
+                    point_insert_operations=PointsList(
+                        points=batch
+                    ),
+                )
+                batch = []
+        if len(batch) > 0:
+            self.client.http.points_api.upsert_points(
+                name=self.collection_name,
+                wait=True,
+                point_insert_operations=PointsList(
+                    points=batch
+                ),
+            )
 
     def _qdrant_to_document(self, qdrant_record: dict) -> 'Document':
         return Document.from_base64(

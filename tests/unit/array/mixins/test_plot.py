@@ -23,7 +23,7 @@ from docarray.array.storage.pqlite import PqliteConfig
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
 )
 def test_sprite_fail_tensor_success_uri(
@@ -55,7 +55,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
 )
 def test_sprite_image_generator(
