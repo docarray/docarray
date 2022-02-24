@@ -60,7 +60,7 @@ class FindMixin:
 
         for hit in search_result:
             doc = Document.from_base64(
-                hit.payload['_serialized'], **self.serialize_config
+                hit.payload['_serialized'].value[0], **self.serialize_config
             )
             doc.scores[f'{self.distance.lower()}_similarity'] = NamedScore(
                 value=hit.score
