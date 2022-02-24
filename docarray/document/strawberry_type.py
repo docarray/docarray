@@ -33,12 +33,42 @@ NdArray = strawberry.scalar(
 )
 
 
-@strawberry.type
-class _NamedScore:
+### interface
+
+
+@strawberry.interface
+class _NamedScoreInterface:
     value: Optional[float] = None
     op_name: Optional[str] = None
     description: Optional[str] = None
     ref_id: Optional[str] = None
+
+
+@strawberry.interface
+class _BaseStrawberryDocumentInterface:
+    id: Optional[str] = None
+    parent_id: Optional[str] = None
+    granularity: Optional[int] = None
+    adjacency: Optional[int] = None
+    blob: Optional[Base64] = None
+    tensor: Optional[NdArray] = None
+    mime_type: Optional[str] = None
+    text: Optional[str] = None
+    weight: Optional[float] = None
+    uri: Optional[str] = None
+    tags: Optional[JSONScalar] = None
+    offset: Optional[float] = None
+    location: Optional[List[float]] = None
+    embedding: Optional[NdArray] = None
+    modality: Optional[str] = None
+
+
+### type
+
+
+@strawberry.type
+class _NamedScore(_NamedScoreInterface):
+    ...
 
 
 @strawberry.type
@@ -48,34 +78,19 @@ class _NameScoreItem:
 
 
 @strawberry.type
-class StrawberryDocument:
-    id: Optional[str] = None
-    parent_id: Optional[str] = None
-    granularity: Optional[int] = None
-    adjacency: Optional[int] = None
-    blob: Optional[Base64] = None
-    tensor: Optional[NdArray] = None
-    mime_type: Optional[str] = None
-    text: Optional[str] = None
-    weight: Optional[float] = None
-    uri: Optional[str] = None
-    tags: Optional[JSONScalar] = None
-    offset: Optional[float] = None
-    location: Optional[List[float]] = None
-    embedding: Optional[NdArray] = None
-    modality: Optional[str] = None
+class StrawberryDocument(strawberry.type(_BaseStrawberryDocumentInterface)):
     evaluations: Optional[List[_NameScoreItem]] = None
     scores: Optional[List[_NameScoreItem]] = None
     chunks: Optional[List['StrawberryDocument']] = None
     matches: Optional[List['StrawberryDocument']] = None
 
 
+### input
+
+
 @strawberry.input
-class _NamedScoreInput:
-    value: Optional[float] = None
-    op_name: Optional[str] = None
-    description: Optional[str] = None
-    ref_id: Optional[str] = None
+class _NamedScoreInput(_NamedScoreInterface):
+    ...
 
 
 @strawberry.input
@@ -85,22 +100,7 @@ class _NameScoreItemInput:
 
 
 @strawberry.input
-class StrawberryDocumentInput:
-    id: Optional[str] = None
-    parent_id: Optional[str] = None
-    granularity: Optional[int] = None
-    adjacency: Optional[int] = None
-    blob: Optional[Base64] = None
-    tensor: Optional[NdArray] = None
-    mime_type: Optional[str] = None
-    text: Optional[str] = None
-    weight: Optional[float] = None
-    uri: Optional[str] = None
-    tags: Optional[JSONScalar] = None
-    offset: Optional[float] = None
-    location: Optional[List[float]] = None
-    embedding: Optional[NdArray] = None
-    modality: Optional[str] = None
+class StrawberryDocumentInput(strawberry.input(_BaseStrawberryDocumentInterface)):
     evaluations: Optional[List[_NameScoreItemInput]] = None
     scores: Optional[List[_NameScoreItemInput]] = None
     chunks: Optional[List['StrawberryDocumentInput']] = None
