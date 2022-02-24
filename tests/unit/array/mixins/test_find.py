@@ -8,7 +8,12 @@ from docarray.math import ndarray
 
 @pytest.mark.parametrize(
     'storage, config',
-    [('memory', None), ('weaviate', WeaviateConfig(32)), ('pqlite', {'n_dim': 32})],
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 32}),
+        ('pqlite', {'n_dim': 32}),
+        ('qdrant', {'n_dim': 32}),
+    ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
 @pytest.mark.parametrize(
