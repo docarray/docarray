@@ -43,12 +43,6 @@ class BackendMixin(BaseBackendMixin):
             distance=self._config.distance,
         )
 
-    def extend(self, docs: Iterable):
-        raise NotImplementedError()
-
-    def append(self, doc: Document):
-        raise NotImplementedError()
-
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex

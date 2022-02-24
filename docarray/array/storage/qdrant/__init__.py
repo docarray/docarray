@@ -27,9 +27,6 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
         self._upload_batch(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
-    def append(self, doc: 'Document'):
-        self._set_doc_by_id(doc.id, value=doc)
-
     @property
     def serialization_config(self) -> dict:
         return self._serialize_config
