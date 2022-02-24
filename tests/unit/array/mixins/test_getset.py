@@ -39,6 +39,7 @@ def nested_docs():
         ('sqlite', {}),
         ('pqlite', {'n_dim': 3}),
         ('weaviate', {'n_dim': 3}),
+        ('qdrant', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize(

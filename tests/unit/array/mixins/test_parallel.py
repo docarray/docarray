@@ -162,6 +162,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         ('sqlite', None),
         ('pqlite', PqliteConfig(n_dim=256)),
         ('weaviate', WeaviateConfig(n_dim=256)),
+        ('qdrant', QdrantConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
