@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.image/" />
   
-<meta property="og:site_name" content="DocArray 0.7.2 Documentation" />
+<meta property="og:site_name" content="DocArray 0.7.3 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.7.2 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.7.3 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -35,10 +35,10 @@
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins.mesh module" href="../docarray.document.mixins.mesh/" /><link rel="prev" title="docarray.document.mixins.helper module" href="../docarray.document.mixins.helper/" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
-        <title>docarray.document.mixins.image module - DocArray 0.7.2 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
+        <title>docarray.document.mixins.image module - DocArray 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
@@ -165,7 +165,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.7.2 documentation</div>
+                <div class="brand">DocArray 0.7.3 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -523,11 +523,14 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri">
-<span class="sig-name descname"><span class="pre">convert_image_tensor_to_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_image_tensor_to_uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri" title="Permalink to this definition">#</a></dt>
 <dd><p>Assuming <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> is a _valid_ image, set <code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code> accordingly</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p></li>
+<li><p><strong>image_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – either <cite>png</cite> or <cite>jpeg</cite></p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>T</p>
@@ -539,11 +542,14 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob">
-<span class="sig-name descname"><span class="pre">convert_image_tensor_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">convert_image_tensor_to_blob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.convert_image_tensor_to_blob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob" title="Permalink to this definition">#</a></dt>
 <dd><p>Assuming <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> is a _valid_ image, set <code class="xref py py-attr docutils literal notranslate"><span class="pre">blob</span></code> accordingly</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p></li>
+<li><p><strong>image_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – either <cite>png</cite> or <cite>jpeg</cite></p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>T</p>
@@ -575,13 +581,14 @@
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file">
-<span class="sig-name descname"><span class="pre">save_image_tensor_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.save_image_tensor_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">save_image_tensor_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'png'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/image/#ImageDataMixin.save_image_tensor_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.image.ImageDataMixin.save_image_tensor_to_file" title="Permalink to this definition">#</a></dt>
 <dd><p>Save <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIO</span></code>]) – File or filename to which the data is saved.</p></li>
 <li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p></li>
+<li><p><strong>image_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – either <cite>png</cite> or <cite>jpeg</cite></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -725,7 +732,7 @@ extracted. Default is False.</p></li>
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 23, 2022.
+                    Last updated on Feb 24, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

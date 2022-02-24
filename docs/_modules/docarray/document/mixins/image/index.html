@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.14.1"/>
-        <title>docarray.document.mixins.image - DocArray 0.7.2 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
+        <title>docarray.document.mixins.image - DocArray 0.7.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=a8f031f701c6af50c9919b48f173a5785af06fac" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
@@ -134,7 +134,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.7.2 documentation</div>
+                <div class="brand">DocArray 0.7.3 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -448,6 +448,7 @@
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -495,25 +496,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">tensor</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_uri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+<div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_uri"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_uri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_uri</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'png'</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly</span>
 
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
+<span class="sd">        :param image_format: either `png` or `jpeg`</span>
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
+
         <span class="n">tensor</span> <span class="o">=</span> <span class="n">_move_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">original_channel_axis</span><span class="o">=</span><span class="n">channel_axis</span><span class="p">)</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_to_png_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s1">'data:image/png;base64,'</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">png_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="n">_bytes</span> <span class="o">=</span> <span class="n">_to_image_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">image_format</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'data:image/</span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s1">;base64,'</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+<div class="viewcode-block" id="ImageDataMixin.convert_image_tensor_to_blob"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.convert_image_tensor_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_image_tensor_to_blob</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'png'</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly</span>
 
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
+<span class="sd">        :param image_format: either `png` or `jpeg`</span>
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
         <span class="n">tensor</span> <span class="o">=</span> <span class="n">_move_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">original_channel_axis</span><span class="o">=</span><span class="n">channel_axis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">_to_png_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">_to_image_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">image_format</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="ImageDataMixin.set_image_tensor_shape"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.image/#docarray.document.mixins.image.ImageDataMixin.set_image_tensor_shape">[docs]</a>    <span class="k">def</span> <span class="nf">set_image_tensor_shape</span><span class="p">(</span>
@@ -549,18 +559,27 @@
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
         <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">],</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'png'</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Save :attr:`.tensor` into a file</span>
 
 <span class="sd">        :param file: File or filename to which the data is saved.</span>
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
+<span class="sd">        :param image_format: either `png` or `jpeg`</span>
 
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">image_format</span><span class="o">.</span><span class="n">lower</span><span class="p">()):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'your output file extension `</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">` does not match your output image format `</span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s1">`. '</span>
+                <span class="sa">f</span><span class="s1">'This may result unreadable image file. Please double check your file name or `image_format`.'</span>
+            <span class="p">)</span>
+
         <span class="n">fp</span> <span class="o">=</span> <span class="n">_get_file_context</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">tensor</span> <span class="o">=</span> <span class="n">_move_channel_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">buffer</span> <span class="o">=</span> <span class="n">_to_png_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">_to_image_buffer</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">image_format</span><span class="p">)</span>
             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
@@ -769,39 +788,48 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_img</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_to_png_buffer</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_image_buffer</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="sd">"""</span>
-<span class="sd">    Convert png to buffer bytes.</span>
+<span class="sd">    Convert image-ndarray to buffer bytes.</span>
 
 <span class="sd">    :param arr: Data representations of the png.</span>
+<span class="sd">    :param image_format: `png` or `jpeg`</span>
 <span class="sd">    :return: Png in buffer bytes.</span>
 
 <span class="sd">    ..note::</span>
 <span class="sd">        if both :attr:`width` and :attr:`height` were provided, will not resize. Otherwise, will get image size</span>
 <span class="sd">        by :attr:`arr` shape and apply resize method :attr:`resize_method`.</span>
 <span class="sd">    """</span>
+
+    <span class="k">if</span> <span class="n">image_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'png'</span><span class="p">,</span> <span class="s1">'jpeg'</span><span class="p">,</span> <span class="s1">'jpg'</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'image_format must be either `png` or `jpeg`, receiving `</span><span class="si">{</span><span class="n">image_format</span><span class="si">}</span><span class="s1">`'</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">image_format</span> <span class="o">==</span> <span class="s1">'jpg'</span><span class="p">:</span>
+        <span class="n">image_format</span> <span class="o">=</span> <span class="s1">'jpeg'</span>  <span class="c1"># unify it to ISO standard</span>
+
     <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1"># note this should be only used for MNIST/FashionMNIST dataset, because of the nature of these two datasets</span>
         <span class="c1"># no other image data should flattened into 1-dim array.</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+        <span class="n">image_bytes</span> <span class="o">=</span> <span class="n">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">'L'</span><span class="p">)</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">'PNG'</span><span class="p">)</span>
+        <span class="n">image_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="n">image_format</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">'RGB'</span><span class="p">)</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">'PNG'</span><span class="p">)</span>
+        <span class="n">image_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="n">image_format</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> ndarray can not be converted into an image buffer.'</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">png_bytes</span>
+    <span class="k">return</span> <span class="n">image_bytes</span>
 
 
 <span class="k">def</span> <span class="nf">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
@@ -862,7 +890,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 23, 2022.
+                    Last updated on Feb 24, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
