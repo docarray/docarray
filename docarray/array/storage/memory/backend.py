@@ -49,8 +49,3 @@ class BackendMixin(BaseBackendMixin):
                     self.append(Document(_docs, copy=True))
                 else:
                     self.append(_docs)
-
-    def _get_storage_infos(self) -> Dict:
-        storage_infos = super()._get_storage_infos()
-        storage_infos['Backend'] = 'In Memory'
-        return storage_infos

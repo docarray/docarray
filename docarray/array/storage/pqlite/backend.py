@@ -90,11 +90,9 @@ class BackendMixin(BaseBackendMixin):
         self._pqlite = PQLite(n_dim, lock=False, **config)
 
     def _get_storage_infos(self) -> Dict:
-        storage_infos = super()._get_storage_infos()
         return {
-            'Backend': 'PQLite (https://github.com/jina-ai/pqlite)',
+            'Backend': 'PQLite',
             'Distance Metric': self._pqlite.metric.name,
             'Data Path': self._config.data_path,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
-            **storage_infos,
         }

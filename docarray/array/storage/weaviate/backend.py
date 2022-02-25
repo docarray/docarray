@@ -316,11 +316,9 @@ class BackendMixin(BaseBackendMixin):
         return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
 
     def _get_storage_infos(self) -> Dict:
-        storage_infos = super()._get_storage_infos()
         return {
-            'Backend': 'Weaviate (www.semi.technology/developers/weaviate)',
+            'Backend': 'Weaviate',
             'Hostname': self._config.client,
             'Schema Name': self._config.name,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
-            **storage_infos,
         }

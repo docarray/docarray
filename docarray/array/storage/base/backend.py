@@ -19,5 +19,5 @@ class BaseBackendMixin(ABC):
     ):
         self._load_offset2ids()
 
-    def _get_storage_infos(self) -> Dict:
-        return {'Class': self.__class__.__name__}
+    def _get_storage_infos(self) -> Optional[Dict]:
+        ...
