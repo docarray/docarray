@@ -145,6 +145,8 @@ class FindMixin:
                 matches = result[i].traverse_flat('r', filter_fn=lambda d: d.id != q.id)
                 if limit and len(matches) > limit:
                     result[i] = matches[:limit]
+                else:
+                    result[i] = matches
 
         if len(result) == 1:
             return result[0]
