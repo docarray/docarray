@@ -3,6 +3,8 @@ from typing import List, TYPE_CHECKING
 import numpy as np
 import scipy.sparse
 
+from docarray.math.helper import EPSILON
+
 if TYPE_CHECKING:
     from docarray.types import ArrayType
 
@@ -22,4 +24,6 @@ class QdrantStorageHelper:
         if embedding.ndim > 1:
             embedding = np.asarray(embedding).squeeze()
 
+        if np.all(embedding == 0):
+            embedding = embedding + EPSILON
         return embedding.tolist()

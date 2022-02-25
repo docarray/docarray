@@ -89,3 +89,6 @@ def update_rows_x_mat_best(
     x_mat_best = np.take_along_axis(all_dists, best_inds, axis=1)[:, :k]
     x_inds_best = np.take_along_axis(all_inds, best_inds, axis=1)[:, :k]
     return x_mat_best, x_inds_best
+
+
+EPSILON = 1.0e-9
