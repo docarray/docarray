@@ -30,6 +30,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -769,4 +770,32 @@
 ### 🍹 Other Improvements
 
  - [[```8bb3dc07```](https://github.com/jina-ai/docarray/commit/8bb3dc07854c4b34885d4c8e72bd74bd6d159bd6)] __-__ __version__: the next version will be 0.7.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-0></a>
+## Release Note (`0.8.0`)
+
+> Release time: 2022-02-25 20:22:07
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Andrey Vasnetsov,  David Buchaca Prats,  felix-wang,  Delgermurun,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fd15f054```](https://github.com/jina-ai/docarray/commit/fd15f054c71b460f5845db513f0b79696d967133)] __-__ __storage__: add Qdrant support (#99) (*Andrey Vasnetsov*)
+ - [[```fac597e6```](https://github.com/jina-ai/docarray/commit/fac597e60ac0047b270060ef38440fbb704f34ac)] __-__ add compression and protocol in file name (#138) (*David Buchaca Prats*)
+
+### 🐞 Bug fixes
+
+ - [[```b5649e61```](https://github.com/jina-ai/docarray/commit/b5649e617fc77d24c9b6602ed9af156395fb50b4)] __-__ __notebook__: remove files prefix in notebook support (#148) (*Han Xiao*)
+ - [[```354d2e43```](https://github.com/jina-ai/docarray/commit/354d2e4374bd00c37f32fd46de7296ad51ef3d74)] __-__ __array__: fix text getter (#142) (*Han Xiao*)
+ - [[```01b39769```](https://github.com/jina-ai/docarray/commit/01b397694fdf4d4ceded87d42dd6e452b7ee1253)] __-__ __match__: exclude_self (#147) (*felix-wang*)
+ - [[```d502925a```](https://github.com/jina-ai/docarray/commit/d502925aa1ecc3fa0cbba8dcc60bb7d9c83a2b1e)] __-__ __pushpull__: raise error if push failed (#144) (*Delgermurun*)
+
+### 🍹 Other Improvements
+
+ - [[```85b0fd2f```](https://github.com/jina-ai/docarray/commit/85b0fd2fb0f6911684de3a1673c2f4539e6594ee)] __-__ bump version (*Han Xiao*)
+ - [[```367b007b```](https://github.com/jina-ai/docarray/commit/367b007bea65140a0e5365f5843477b5c02684a9)] __-__ __version__: the next version will be 0.7.4 (*Jina Dev Bot*)
 
