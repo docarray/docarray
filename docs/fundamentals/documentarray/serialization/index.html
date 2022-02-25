@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.7.3 Documentation" />
+<meta property="og:site_name" content="DocArray 0.8.0 Documentation" />
   
-<meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. JSON string:.from_json()/.to_json()- Pydantic model:.from_pydanti..." />
+<meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. Moreover, there is the ability to store/load DocumentArray object..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.7.3 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.8.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -35,10 +35,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Serialization - DocArray 0.7.3 documentation</title>
+        <title>Serialization - DocArray 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -167,7 +168,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.7.3 documentation</div>
+                <div class="brand">DocArray 0.8.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -264,6 +265,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/sqlite/">SQLite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/qdrant/">Qdrant</a></li>
 </ul>
 </li>
 </ul>
@@ -326,14 +328,22 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.pqlite.seqlike/">docarray.array.storage.pqlite.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant/">docarray.array.storage.qdrant package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant.backend/">docarray.array.storage.qdrant.backend module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant.find/">docarray.array.storage.qdrant.find module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant.getsetdel/">docarray.array.storage.qdrant.getsetdel module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant.helper/">docarray.array.storage.qdrant.helper module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.qdrant.seqlike/">docarray.array.storage.qdrant.seqlike module</a></li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite.backend/">docarray.array.storage.sqlite.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite.getsetdel/">docarray.array.storage.sqlite.getsetdel module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite.helper/">docarray.array.storage.sqlite.helper module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.sqlite.seqlike/">docarray.array.storage.sqlite.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../../api/docarray.array.storage.weaviate/">docarray.array.storage.weaviate package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../../api/docarray.array.storage.weaviate/">docarray.array.storage.weaviate package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.weaviate.backend/">docarray.array.storage.weaviate.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.weaviate.find/">docarray.array.storage.weaviate.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.storage.weaviate.getsetdel/">docarray.array.storage.weaviate.getsetdel module</a></li>
@@ -349,12 +359,13 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.match/">docarray.array.match module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.memory/">docarray.array.memory module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.pqlite/">docarray.array.pqlite module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.qdrant/">docarray.array.qdrant module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.sqlite/">docarray.array.sqlite module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.array.weaviate/">docarray.array.weaviate module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
@@ -382,8 +393,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.document.strawberry_type/">docarray.document.strawberry_type module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.math.distance.numpy/">docarray.math.distance.numpy module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.math.distance.paddle/">docarray.math.distance.paddle module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.math.distance.tensorflow/">docarray.math.distance.tensorflow module</a></li>
@@ -395,16 +406,16 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.math.ndarray/">docarray.math.ndarray module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.proto.docarray_pb2/">docarray.proto.docarray_pb2 module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../api/docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.score.mixins.property/">docarray.score.mixins.property module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.score.mixins.representer/">docarray.score.mixins.representer module</a></li>
 </ul>
@@ -479,14 +490,20 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="serialization">
 <span id="docarray-serialization"></span><h1>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline">#</a></h1>
-<p>DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.</p>
+<p>DocArray is designed to be “ready-to-wire” at anytime. Serialization is important.
+DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
+Moreover, there is the ability to store/load <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> objects to/from disk.</p>
 <ul class="simple">
 <li><p>JSON string: <code class="docutils literal notranslate"><span class="pre">.from_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_json()</span></code></p>
 <ul>
 <li><p>Pydantic model: <code class="docutils literal notranslate"><span class="pre">.from_pydantic_model()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_pydantic_model()</span></code></p></li>
 </ul>
 </li>
-<li><p>Bytes (compressed): <code class="docutils literal notranslate"><span class="pre">.from_bytes()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code></p></li>
+<li><p>Bytes (compressed): <code class="docutils literal notranslate"><span class="pre">.from_bytes()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code></p>
+<ul>
+<li><p>Disk serialization: <code class="docutils literal notranslate"><span class="pre">.save_binary()</span></code>/<code class="docutils literal notranslate"><span class="pre">.load_binary()</span></code></p></li>
+</ul>
+</li>
 <li><p>Base64 (compressed): <code class="docutils literal notranslate"><span class="pre">.from_base64()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_base64()</span></code></p></li>
 <li><p>Protobuf Message: <code class="docutils literal notranslate"><span class="pre">.from_protobuf()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_protobuf()</span></code></p></li>
 <li><p>Python List: <code class="docutils literal notranslate"><span class="pre">.from_list()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_list()</span></code></p></li>
@@ -633,6 +650,40 @@
 <p>Here <code class="docutils literal notranslate"><span class="pre">version</span></code> is a <code class="docutils literal notranslate"><span class="pre">uint8</span></code> that specifies the serialization version of the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> serialization format, followed by <code class="docutils literal notranslate"><span class="pre">len(docs)</span></code> which is a <code class="docutils literal notranslate"><span class="pre">uint64</span></code> that specifies the amount of serialized documents.
 Afterwards, <code class="docutils literal notranslate"><span class="pre">doc1_bytes</span></code> describes how many bytes are used to serialize <code class="docutils literal notranslate"><span class="pre">doc1</span></code>, followed by <code class="docutils literal notranslate"><span class="pre">doc1.to_bytes()</span></code> which is the bytes data of the document itself.
 The pattern <code class="docutils literal notranslate"><span class="pre">dock_bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">dock.to_bytes</span></code> is repeated <code class="docutils literal notranslate"><span class="pre">len(docs)</span></code> times.</p>
+</section>
+<section id="from-to-disk">
+<h3>From/to Disk<a class="headerlink" href="#from-to-disk" title="Permalink to this headline">#</a></h3>
+<p>If you want to store a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> to disk you can use <code class="docutils literal notranslate"><span class="pre">.save_binary(filename,</span> <span class="pre">protocol,</span> <span class="pre">compress)</span></code> where <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> refer to the protocol and compression methods used to serialize the data.
+If you want to load a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> from disk you can use <code class="docutils literal notranslate"><span class="pre">.load_binary(filename,</span> <span class="pre">protocol,</span> <span class="pre">compress)</span></code>.</p>
+<p>For example, the following snippet shows how to save/load a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> in <code class="docutils literal notranslate"><span class="pre">my_docarray.bin</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)])</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'my_docarray.bin'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span>
+<span class="n">da_rec</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'my_docarray.bin'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span>
+<span class="n">da_rec</span> <span class="o">==</span> <span class="n">da</span>
+</pre></div>
+</div>
+<p>Note that in the previous code snippet the user needs to remember the protol and compression methods used to store the data in order to load it back correctly. <code class="docutils literal notranslate"><span class="pre">DocArray</span></code> allows you to specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> as file extensions.
+By doing so you can forget later on which protocol and compression methods were used to serialize the data to disk.
+This functionality assumes <code class="docutils literal notranslate"><span class="pre">.save_binary</span></code> and <code class="docutils literal notranslate"><span class="pre">.load_binary</span></code> are called with <code class="docutils literal notranslate"><span class="pre">filename</span></code> following the form <code class="docutils literal notranslate"><span class="pre">file_name.$protocol.$compress</span></code>,  where <code class="docutils literal notranslate"><span class="pre">$protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">$compress</span></code> refer to a  string interpolation of the respective <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> methods.</p>
+<p>For example if <code class="docutils literal notranslate"><span class="pre">file=my_docarray.protobuf.lz4</span></code> then the binary data will be created using <code class="docutils literal notranslate"><span class="pre">protocol=protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">compress=lz4</span></code>.</p>
+<p>The previous code snippet can be simplified to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)])</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'my_docarray.protobuf.lz4'</span><span class="p">)</span>
+<span class="n">da_rec</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'my_docarray.protobuf.lz4'</span><span class="p">)</span>
+<span class="n">da_rec</span> <span class="o">==</span> <span class="n">da</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you don’t want to specify and remember <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> to store/load to/from disk, save your <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> <code class="docutils literal notranslate"><span class="pre">da</span></code> using
+<code class="docutils literal notranslate"><span class="pre">da.save_binary('file_name.$protocol.$compress')</span></code> so that it can be loaded back with <code class="docutils literal notranslate"><span class="pre">DocumentArray.load_binary('file_name.$protocol.$compress')</span></code></p>
+</div>
 </section>
 <section id="stream-large-binary-serialization-from-disk">
 <h3>Stream large binary serialization from disk<a class="headerlink" href="#stream-large-binary-serialization-from-disk" title="Permalink to this headline">#</a></h3>
@@ -811,7 +862,7 @@ docs {
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Feb 24, 2022.
+                    Last updated on Feb 25, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -840,6 +891,7 @@ docs {
 <li><a class="reference internal" href="#from-to-json">From/to JSON</a></li>
 <li><a class="reference internal" href="#from-to-bytes">From/to bytes</a><ul>
 <li><a class="reference internal" href="#wire-format-of-pickle-and-protobuf">Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code></a></li>
+<li><a class="reference internal" href="#from-to-disk">From/to Disk</a></li>
 <li><a class="reference internal" href="#stream-large-binary-serialization-from-disk">Stream large binary serialization from disk</a></li>
 </ul>
 </li>
@@ -855,6 +907,18 @@ docs {
                     </div>
                 </div>
                 
+                <qa-bot
+                    theme="auto"
+                    title="DocArray Bot"
+                    description="The data structure for unstructured data"
+                >
+                    <dl>
+                        <dt>You can ask questions about our docs. Try:</dt>
+                        <dd>What is a DocumentArray?</dd>
+                        <dd>How to serialize a DocumentArray?</dd>
+                        <dd>How to find nearest neighbour of Documents?</dd>
+                    </dl>
+                </qa-bot>
             </div>
 
             
@@ -870,6 +934,35 @@ docs {
     <script src="../../../_static/copybutton.js"></script>
     <script src="../../../_static/tabs.js"></script>
     <script src="../../../_static/design-tabs.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
+            const theme = localStorage.getItem('theme');
+            if (theme) {
+                document.querySelector('qa-bot').setAttribute('theme', theme);
+            }
+        });
+        const ob = new MutationObserver(function(mutations) {
+            let shouldChange = false;
+            for (const m of mutations) {
+                if (m.type !== 'attributes') {
+                    continue;
+                }   
+                if (m.attributeName !== 'data-theme') {
+                    continue;
+                }
+                shouldChange = m.target.dataset.theme;
+            }
+            if (!shouldChange) {
+                return;
+            }
+            document.querySelector('qa-bot').setAttribute('theme', shouldChange);
+        });
+        ob.observe(document.body, {
+            attribute:true,
+            attributeFilter: ['data-theme']
+        });
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     </body>
 </html>

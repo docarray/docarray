@@ -22,6 +22,7 @@ Submodules
    docarray.array.match
    docarray.array.memory
    docarray.array.pqlite
+   docarray.array.qdrant
    docarray.array.sqlite
    docarray.array.weaviate
 
