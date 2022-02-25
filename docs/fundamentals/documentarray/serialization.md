@@ -164,8 +164,7 @@ The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
 
 ### From/to Disk
 
-If you want to store a `DocumentArray` to disk you can use `.save_binary(filename, protocol, compress)`
-where `protocol` and `compress` refer to the protocol and compression methods used to serialize the data.
+If you want to store a `DocumentArray` to disk you can use `.save_binary(filename, protocol, compress)` where `protocol` and `compress` refer to the protocol and compression methods used to serialize the data.
 If you want to load a `DocumentArray` from disk you can use `.load_binary(filename, protocol, compress)`.
 
 For example, the following snippet shows how to save/load a `DocumentArray` in `my_docarray.bin`.
@@ -180,11 +179,9 @@ da_rec = DocumentArray.load_binary('my_docarray.bin', protocol='protobuf', compr
 da_rec == da
 ```
 
-Note that in the previous code snippet the user needs to remember the protol and compression methods used to store the data
-in order to load it back correctly. `DocArray` allows you to specify `protocol` and `compress` as file extensions.
+Note that in the previous code snippet the user needs to remember the protol and compression methods used to store the data in order to load it back correctly. `DocArray` allows you to specify `protocol` and `compress` as file extensions.
 By doing so you can forget later on which protocol and compression methods were used to serialize the data to disk.
-This functionality assumes `.save_binary` and `.load_binary` are called with `filename` following the form
-`file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a  string interpolation of the respective `protocol` and `compress` methods. 
+This functionality assumes `.save_binary` and `.load_binary` are called with `filename` following the form `file_name.$protocol.$compress`,  where `$protocol` and `$compress` refer to a  string interpolation of the respective `protocol` and `compress` methods. 
 
 For example if `file=my_docarray.protobuf.lz4` then the binary data will be created using `protocol=protobuf` and `compress=lz4`.
 
@@ -201,8 +198,8 @@ da_rec == da
 ```
 
 ```{tip}
-If you don't want to specify and remember `protocol` and `compress` to store to disk, save your `DocumentArray` `da` using 
-`da.save_binary('file_name.$protocol.$compress')` so that when loading you don't need to specify anything.
+If you don't want to specify and remember `protocol` and `compress` to store/load to/from disk, save your `DocumentArray` `da` using 
+`da.save_binary('file_name.$protocol.$compress')` so that it can be loaded back with `DocumentArray.load_binary('file_name.$protocol.$compress')`
 ```
 
 ### Stream large binary serialization from disk
