@@ -96,7 +96,9 @@ class PushPullMixin:
             if res.status_code != 200:
                 json_res = res.json()
                 raise RuntimeError(
-                    json_res.get('message', 'Failed to push DocumentArray.'),
+                    json_res.get(
+                        'message', 'Failed to push DocumentArray to Jina Cloud'
+                    ),
                     f'Status code: {res.status_code}',
                 )
 
