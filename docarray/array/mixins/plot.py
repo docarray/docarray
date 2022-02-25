@@ -98,13 +98,15 @@ class PlotMixin:
                 )
             tables.append(attr_table)
 
-        storage_table = Table(box=box.SIMPLE, title='Storage Summary')
-        storage_table.show_header = False
         storage_infos = self._get_storage_infos()
-        for k, v in storage_infos.items():
-            storage_table.add_row(k, v)
+        if storage_infos:
+            storage_table = Table(box=box.SIMPLE, title='Storage Summary')
+            storage_table.show_header = False
 
-        tables.append(storage_table)
+            for k, v in storage_infos.items():
+                storage_table.add_row(k, v)
+
+            tables.append(storage_table)
 
         console.print(*tables)
 

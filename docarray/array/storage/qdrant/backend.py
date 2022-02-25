@@ -173,13 +173,11 @@ class BackendMixin(BaseBackendMixin):
         )
 
     def _get_storage_infos(self) -> Dict:
-        storage_infos = super()._get_storage_infos()
         return {
-            'Backend': 'Qdrant (https://qdrant.tech)',
+            'Backend': 'Qdrant',
             'Host': self._config.host,
             'Port': str(self._config.port),
             'Collection Name': self.collection_name,
             'Distance': self._config.distance,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
-            **storage_infos,
         }

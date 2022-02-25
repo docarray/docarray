@@ -163,7 +163,7 @@ Afterwards, `doc1_bytes` describes how many bytes are used to serialize `doc1`, 
 The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
 
 
-### From/to Disk
+### From/to disk
 
 If you want to store a `DocumentArray` to disk you can use `.save_binary(filename, protocol, compress)` where `protocol` and `compress` refer to the protocol and compression methods used to serialize the data.
 If you want to load a `DocumentArray` from disk you can use `.load_binary(filename, protocol, compress)`.
@@ -177,31 +177,49 @@ da = DocumentArray([Document(text='hello'), Document(text='world')])
 
 da.save_binary('my_docarray.bin', protocol='protobuf', compress='lz4')
 da_rec = DocumentArray.load_binary('my_docarray.bin', protocol='protobuf', compress='lz4')
-da_rec == da
+da_rec.summary()
 ```
 
-Note that in the previous code snippet the user needs to remember the protol and compression methods used to store the data in order to load it back correctly. `DocArray` allows you to specify `protocol` and `compress` as file extensions.
-By doing so you can forget later on which protocol and compression methods were used to serialize the data to disk.
-This functionality assumes `.save_binary` and `.load_binary` are called with `filename` following the form `file_name.$protocol.$compress`,  where `$protocol` and `$compress` refer to a  string interpolation of the respective `protocol` and `compress` methods. 
+```text
+                  Documents Summary                   
+                                                      
+  Length                 2                            
+  Homogenous Documents   True                         
+  Common Attributes      ('id', 'mime_type', 'text')  
+                                                      
+                     Attributes Summary                     
+                                                            
+  Attribute   Data type   #Unique values   Has empty value  
+ ────────────────────────────────────────────────────────── 
+  id          ('str',)    2                False            
+  mime_type   ('str',)    1                False            
+  text        ('str',)    2                False            
+                                                                                               
+```
 
-For example if `file=my_docarray.protobuf.lz4` then the binary data will be created using `protocol=protobuf` and `compress=lz4`.
+
+User do not need  to remember the protocol and compression methods on loading. You can simply specify `protocol` and `compress` in the file extension via:
+
+```text
+filename.protobuf.gzip
+         ~~~~~~~~ ^^^^
+             |      |
+             |      |-- compress
+             |
+             |-- protocol
+```
+
+
+When a filename is given as the above format in `.save_binary`, you can simply load it back with `.load_binary` without specifying the protocol and compress method again.
+
 
 The previous code snippet can be simplified to 
 
 ```python
-from docarray import DocumentArray, Document
-
-da = DocumentArray([Document(text='hello'), Document(text='world')])
-
 da.save_binary('my_docarray.protobuf.lz4')
 da_rec = DocumentArray.load_binary('my_docarray.protobuf.lz4')
-da_rec == da
 ```
 
-```{tip}
-If you don't want to specify and remember `protocol` and `compress` to store/load to/from disk, save your `DocumentArray` `da` using 
-`da.save_binary('file_name.$protocol.$compress')` so that it can be loaded back with `DocumentArray.load_binary('file_name.$protocol.$compress')`
-```
 
 ### Stream large binary serialization from disk
 

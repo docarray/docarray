@@ -143,11 +143,9 @@ class BackendMixin(BaseBackendMixin):
         )
 
     def _get_storage_infos(self) -> Dict:
-        storage_infos = super()._get_storage_infos()
         return {
-            'Backend': 'SQLite (https://www.sqlite.org)',
+            'Backend': 'SQLite',
             'Connection': self._config.connection,
             'Table Name': self._table_name,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
-            **storage_infos,
         }
