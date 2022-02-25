@@ -8,6 +8,7 @@ Moreover, there is the ability to store/load `DocumentArray` objects to disk.
 - JSON string: `.from_json()`/`.to_json()`
   - Pydantic model: `.from_pydantic_model()`/`.to_pydantic_model()`
 - Bytes (compressed): `.from_bytes()`/`.to_bytes()`
+  - Disk serialization: `.save_binary()`/`.load_binary()`
 - Base64 (compressed): `.from_base64()`/`.to_base64()` 
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
 - Python List: `.from_list()`/`.to_list()`
