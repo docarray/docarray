@@ -9,7 +9,6 @@ from typing import (
     Sequence,
     Generator,
     Iterator,
-    Iterable,
     List,
 )
 
@@ -23,6 +22,7 @@ from qdrant_openapi_client.models.models import (
 
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray.array.storage.qdrant import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 @dataclass
 class QdrantConfig:
     n_dim: int
-    distance: Distance = Distance.COSINE
+    distance: str = 'cosine'
     collection_name: Optional[str] = None
     host: Optional[str] = field(default="localhost")
     port: Optional[int] = field(default=6333)
@@ -51,7 +51,7 @@ class BackendMixin(BaseBackendMixin):
         self,
         docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[QdrantConfig, Dict]] = None,
-        **kwargs
+        **kwargs,
     ):
         """Initialize qdrant storage.
 
@@ -70,6 +70,11 @@ class BackendMixin(BaseBackendMixin):
             raise ValueError('Empty config is not allowed for Qdrant storage')
         elif isinstance(config, dict):
             config = dataclass_from_dict(QdrantConfig, config)
+
+        if config.distance not in DISTANCES.keys():
+            raise ValueError(
+                f'Invalid distance parameter, must be one of: {", ".join(DISTANCES.keys())}'
+            )
 
         if not config.collection_name:
             config.collection_name = self._tmp_collection_name()

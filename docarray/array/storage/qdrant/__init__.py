@@ -1,6 +1,7 @@
 from typing import Iterable, TYPE_CHECKING
 
 from .backend import BackendMixin, QdrantConfig
+from .helper import DISTANCES
 from .find import FindMixin
 from .getsetdel import GetSetDelMixin
 from .seqlike import SequenceLikeMixin
@@ -20,7 +21,7 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
 
     @property
     def distance(self) -> 'Distance':
-        return self._config.distance
+        return DISTANCES[self._config.distance]
 
     def extend(self, docs: Iterable['Document']):
         docs = list(docs)

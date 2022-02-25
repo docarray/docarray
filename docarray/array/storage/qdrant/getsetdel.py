@@ -129,7 +129,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _clear_storage(self):
         self._client.recreate_collection(
-            self._config.collection_name,
-            vector_size=self._config.n_dim,
-            distance=self._config.distance,
+            self.collection_name,
+            vector_size=self.n_dim,
+            distance=self.distance,
         )

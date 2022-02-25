@@ -2,6 +2,7 @@ from typing import List, TYPE_CHECKING
 
 import numpy as np
 import scipy.sparse
+from qdrant_openapi_client.models.models import Distance
 
 from docarray.math.helper import EPSILON
 
@@ -27,3 +28,10 @@ class QdrantStorageHelper:
         if np.all(embedding == 0):
             embedding = embedding + EPSILON
         return embedding.tolist()
+
+
+DISTANCES = {
+    'cosine': Distance.COSINE,
+    'euclidean': Distance.EUCLID,
+    'dot': Distance.DOT,
+}
