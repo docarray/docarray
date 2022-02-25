@@ -11,6 +11,9 @@ from docarray.math.ndarray import to_numpy_array
 from tests import random_docs
 
 
+from docarray.helper import add_protocol_and_compress_to_file_path
+
+
 def get_ndarrays_for_ravel():
     a = np.random.random([100, 3])
     a[a > 0.5] = 0
@@ -60,16 +63,29 @@ def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_save_bytes(target_da, protocol, compress, tmpfile):
+
+    # tests .save_binary(file, protocol=protocol, compress=compress)
     target_da.save_binary(tmpfile, protocol=protocol, compress=compress)
     target_da.save_binary(str(tmpfile), protocol=protocol, compress=compress)
 
     with open(tmpfile, 'wb') as fp:
         target_da.save_binary(fp, protocol=protocol, compress=compress)
 
-    DocumentArray.load_binary(tmpfile, protocol=protocol, compress=compress)
+    da_from_protocol_compress = DocumentArray.load_binary(
+        tmpfile, protocol=protocol, compress=compress
+    )
     DocumentArray.load_binary(str(tmpfile), protocol=protocol, compress=compress)
     with open(tmpfile, 'rb') as fp:
         DocumentArray.load_binary(fp, protocol=protocol, compress=compress)
+
+    # tests .save_binary(file.protocol.compress) without arguments `compression` and `protocol`
+    file_path_extended = add_protocol_and_compress_to_file_path(
+        str(tmpfile), protocol, compress
+    )
+
+    target_da.save_binary(file_path_extended)
+    da_from_file_extension = DocumentArray.load_binary(file_path_extended)
+    assert da_from_protocol_compress == da_from_file_extension
 
 
 @pytest.mark.parametrize('target_da', [DocumentArray.empty(100), random_docs(100)])
@@ -106,6 +122,7 @@ def test_save_bytes_stream(tmpfile, protocol, compress):
         [Document(text='aaa'), Document(text='bbb'), Document(text='ccc')]
     )
     da.save_binary(tmpfile, protocol=protocol, compress=compress)
+
     da_reconstructed = DocumentArray.load_binary(
         tmpfile, protocol=protocol, compress=compress, streaming=True
     )

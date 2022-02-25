@@ -1,11 +1,17 @@
 import base64
 import io
 import os.path
+import os
 import pickle
 from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
-from ....helper import __windows__, get_compress_ctx, decompress_bytes
+from ....helper import (
+    __windows__,
+    get_compress_ctx,
+    decompress_bytes,
+    protocol_and_compress_from_file_path,
+)
 
 if TYPE_CHECKING:
     from ....types import T
@@ -36,12 +42,23 @@ class BinaryIOMixin:
         :param streaming: if `True` returns a generator over `Document` objects.
         In case protocol is pickle the `Documents` are streamed from disk to save memory usage
         :return: a DocumentArray object
+
+        .. note::
+            If `file` is `str` it can specify `protocol` and `compress` as file extensions.
+            This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
+            string interpolation of the respective `protocol` and `compress` methods.
+            For example if `file=my_docarray.protobuf.lz4` then the binary data will be loaded assuming `protocol=protobuf`
+            and `compress=lz4`.
         """
+
         if isinstance(file, io.BufferedReader):
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
         elif os.path.exists(file):
+            protocol, compress = protocol_and_compress_from_file_path(
+                file, protocol, compress
+            )
             file_ctx = open(file, 'rb')
         else:
             raise ValueError(f'unsupported input {file!r}')
@@ -191,18 +208,33 @@ class BinaryIOMixin:
     ) -> None:
         """Save array elements into a binary file.
 
+        :param file: File or filename to which the data is saved.
+        :param protocol: protocol to use
+        :param compress: compress algorithm to use
+
+         .. note::
+            If `file` is `str` it can specify `protocol` and `compress` as file extensions.
+            This functionality assumes `file=file_name.$protocol.$compress` where `$protocol` and `$compress` refer to a
+            string interpolation of the respective `protocol` and `compress` methods.
+            For example if `file=my_docarray.protobuf.lz4` then the binary data will be created using `protocol=protobuf`
+            and `compress=lz4`.
+
         Comparing to :meth:`save_json`, it is faster and the file is smaller, but not human-readable.
 
         .. note::
             To get a binary presentation in memory, use ``bytes(...)``.
 
-        :param protocol: protocol to use
-        :param compress: compress algorithm to use
-        :param file: File or filename to which the data is saved.
         """
         if isinstance(file, io.BufferedWriter):
             file_ctx = nullcontext(file)
         else:
+            _protocol, _compress = protocol_and_compress_from_file_path(file)
+
+            if _protocol is not None:
+                protocol = _protocol
+            if _compress is not None:
+                compress = _compress
+
             file_ctx = open(file, 'wb')
 
         self.to_bytes(protocol=protocol, compress=compress, _file_ctx=file_ctx)
