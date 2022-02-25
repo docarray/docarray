@@ -74,7 +74,8 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
     [('weaviate', WeaviateConfig(3)), ('pqlite', {'n_dim': 3})],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
-def test_match(storage, config, doc_lists, limit, start_weaviate):
+@pytest.mark.parametrize('exclude_self', [True, False])
+def test_match(storage, config, doc_lists, limit, exclude_self, start_weaviate):
     D1, D2 = doc_lists_to_doc_arrays(doc_lists)
 
     if config:
@@ -82,7 +83,7 @@ def test_match(storage, config, doc_lists, limit, start_weaviate):
     else:
         da = DocumentArray(D2, storage=storage)
 
-    D1.match(da, limit=limit)
+    D1.match(da, limit=limit, exclude_self=exclude_self)
     for m in D1[:, 'matches']:
         assert len(m) == limit
 

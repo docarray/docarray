@@ -143,7 +143,8 @@ class FindMixin:
         if exclude_self and isinstance(query, DocumentArray):
             for i, q in enumerate(query):
                 matches = result[i].traverse_flat('r', filter_fn=lambda d: d.id != q.id)
-                result[i] = matches[:_limit]
+                if limit and len(matches) > limit:
+                    result[i] = matches[:limit]
 
         if len(result) == 1:
             return result[0]
