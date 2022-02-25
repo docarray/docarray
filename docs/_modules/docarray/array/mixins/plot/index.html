@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>docarray.array.mixins.plot - DocArray 0.8.0 documentation</title>
+        <title>docarray.array.mixins.plot - DocArray 0.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -134,7 +134,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.8.0 documentation</div>
+                <div class="brand">DocArray 0.8.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -555,13 +555,15 @@
                 <span class="p">)</span>
             <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr_table</span><span class="p">)</span>
 
-        <span class="n">storage_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Storage Summary'</span><span class="p">)</span>
-        <span class="n">storage_table</span><span class="o">.</span><span class="n">show_header</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">storage_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_infos</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">storage_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">storage_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">storage_infos</span><span class="p">:</span>
+            <span class="n">storage_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Storage Summary'</span><span class="p">)</span>
+            <span class="n">storage_table</span><span class="o">.</span><span class="n">show_header</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">storage_table</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">storage_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">storage_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+            <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">storage_table</span><span class="p">)</span>
 
         <span class="n">console</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">tables</span><span class="p">)</span></div>
 

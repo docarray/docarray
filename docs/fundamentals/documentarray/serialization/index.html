@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.8.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.8.1 Documentation" />
   
 <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. Moreover, there is the ability to store/load DocumentArray object..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.8.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.8.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Serialization - DocArray 0.8.0 documentation</title>
+        <title>Serialization - DocArray 0.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -168,7 +168,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.8.0 documentation</div>
+                <div class="brand">DocArray 0.8.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -652,7 +652,7 @@ Afterwards, <code class="docutils literal notranslate"><span class="pre">doc1_by
 The pattern <code class="docutils literal notranslate"><span class="pre">dock_bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">dock.to_bytes</span></code> is repeated <code class="docutils literal notranslate"><span class="pre">len(docs)</span></code> times.</p>
 </section>
 <section id="from-to-disk">
-<h3>From/to Disk<a class="headerlink" href="#from-to-disk" title="Permalink to this headline">#</a></h3>
+<h3>From/to disk<a class="headerlink" href="#from-to-disk" title="Permalink to this headline">#</a></h3>
 <p>If you want to store a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> to disk you can use <code class="docutils literal notranslate"><span class="pre">.save_binary(filename,</span> <span class="pre">protocol,</span> <span class="pre">compress)</span></code> where <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> refer to the protocol and compression methods used to serialize the data.
 If you want to load a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> from disk you can use <code class="docutils literal notranslate"><span class="pre">.load_binary(filename,</span> <span class="pre">protocol,</span> <span class="pre">compress)</span></code>.</p>
 <p>For example, the following snippet shows how to save/load a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> in <code class="docutils literal notranslate"><span class="pre">my_docarray.bin</span></code>.</p>
@@ -662,27 +662,39 @@ If you want to load a <code class="docutils literal notranslate"><span class="pr
 
 <span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'my_docarray.bin'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span>
 <span class="n">da_rec</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'my_docarray.bin'</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)</span>
-<span class="n">da_rec</span> <span class="o">==</span> <span class="n">da</span>
+<span class="n">da_rec</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Note that in the previous code snippet the user needs to remember the protol and compression methods used to store the data in order to load it back correctly. <code class="docutils literal notranslate"><span class="pre">DocArray</span></code> allows you to specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> as file extensions.
-By doing so you can forget later on which protocol and compression methods were used to serialize the data to disk.
-This functionality assumes <code class="docutils literal notranslate"><span class="pre">.save_binary</span></code> and <code class="docutils literal notranslate"><span class="pre">.load_binary</span></code> are called with <code class="docutils literal notranslate"><span class="pre">filename</span></code> following the form <code class="docutils literal notranslate"><span class="pre">file_name.$protocol.$compress</span></code>,  where <code class="docutils literal notranslate"><span class="pre">$protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">$compress</span></code> refer to a  string interpolation of the respective <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> methods.</p>
-<p>For example if <code class="docutils literal notranslate"><span class="pre">file=my_docarray.protobuf.lz4</span></code> then the binary data will be created using <code class="docutils literal notranslate"><span class="pre">protocol=protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">compress=lz4</span></code>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                  Documents Summary                   
+                                                      
+  Length                 2                            
+  Homogenous Documents   True                         
+  Common Attributes      ('id', 'mime_type', 'text')  
+                                                      
+                     Attributes Summary                     
+                                                            
+  Attribute   Data type   #Unique values   Has empty value  
+ ────────────────────────────────────────────────────────── 
+  id          ('str',)    2                False            
+  mime_type   ('str',)    1                False            
+  text        ('str',)    2                False            
+                                                                                               
+</pre></div>
+</div>
+<p>User do not need  to remember the protocol and compression methods on loading. You can simply specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> in the file extension via:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>filename.protobuf.gzip
+         ~~~~~~~~ ^^^^
+             |      |
+             |      |-- compress
+             |
+             |-- protocol
+</pre></div>
+</div>
+<p>When a filename is given as the above format in <code class="docutils literal notranslate"><span class="pre">.save_binary</span></code>, you can simply load it back with <code class="docutils literal notranslate"><span class="pre">.load_binary</span></code> without specifying the protocol and compress method again.</p>
 <p>The previous code snippet can be simplified to</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)])</span>
-
-<span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'my_docarray.protobuf.lz4'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'my_docarray.protobuf.lz4'</span><span class="p">)</span>
 <span class="n">da_rec</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'my_docarray.protobuf.lz4'</span><span class="p">)</span>
-<span class="n">da_rec</span> <span class="o">==</span> <span class="n">da</span>
 </pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>If you don’t want to specify and remember <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> to store/load to/from disk, save your <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> <code class="docutils literal notranslate"><span class="pre">da</span></code> using
-<code class="docutils literal notranslate"><span class="pre">da.save_binary('file_name.$protocol.$compress')</span></code> so that it can be loaded back with <code class="docutils literal notranslate"><span class="pre">DocumentArray.load_binary('file_name.$protocol.$compress')</span></code></p>
 </div>
 </section>
 <section id="stream-large-binary-serialization-from-disk">
@@ -891,7 +903,7 @@ docs {
 <li><a class="reference internal" href="#from-to-json">From/to JSON</a></li>
 <li><a class="reference internal" href="#from-to-bytes">From/to bytes</a><ul>
 <li><a class="reference internal" href="#wire-format-of-pickle-and-protobuf">Wire format of <code class="docutils literal notranslate"><span class="pre">pickle</span></code> and <code class="docutils literal notranslate"><span class="pre">protobuf</span></code></a></li>
-<li><a class="reference internal" href="#from-to-disk">From/to Disk</a></li>
+<li><a class="reference internal" href="#from-to-disk">From/to disk</a></li>
 <li><a class="reference internal" href="#stream-large-binary-serialization-from-disk">Stream large binary serialization from disk</a></li>
 </ul>
 </li>
