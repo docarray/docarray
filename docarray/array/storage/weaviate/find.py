@@ -9,6 +9,7 @@ import numpy as np
 
 from .... import Document, DocumentArray
 from ....math import ndarray
+from ....math.helper import EPSILON
 from ....score import NamedScore
 
 if TYPE_CHECKING:
@@ -22,8 +23,6 @@ if TYPE_CHECKING:
         torch.Tensor,
         Sequence[float],
     )
-
-EPSILON = 1.0e-9
 
 
 class FindMixin:

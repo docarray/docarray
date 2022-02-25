@@ -50,7 +50,7 @@ def test_del_by_multiple_idx(docs, deleted_ids, expected_ids):
         (DocumentArrayWeaviate, {'name': 'Storage', 'n_dim': 10}, True),
     ],
 )
-def test_del_da_persist(da_cls, config, persist, docs, start_weaviate):
+def test_del_da_persist(da_cls, config, persist, docs, start_storage):
     da = da_cls(docs, config=config)
     del da
 

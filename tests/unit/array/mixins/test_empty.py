@@ -1,8 +1,10 @@
 import pytest
 
 from docarray import DocumentArray
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -14,9 +16,10 @@ from docarray.array.weaviate import DocumentArrayWeaviate
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
     ],
 )
-def test_empty_non_zero(da_cls, config, start_weaviate):
+def test_empty_non_zero(da_cls, config, start_storage):
     if config:
         da = da_cls.empty(10, config=config)
     else:

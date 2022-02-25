@@ -70,6 +70,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .weaviate import DocumentArrayWeaviate
 
                 instance = super().__new__(DocumentArrayWeaviate)
+            elif storage == 'qdrant':
+                from .qdrant import DocumentArrayQdrant
+
+                instance = super().__new__(DocumentArrayQdrant)
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
         else:

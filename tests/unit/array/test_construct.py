@@ -2,8 +2,10 @@ import pytest
 
 from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
 
@@ -14,9 +16,10 @@ from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
-def test_construct_docarray(da_cls, config, start_weaviate):
+def test_construct_docarray(da_cls, config, start_storage):
     if config:
         da = da_cls(config=config)
         assert len(da) == 0
@@ -60,10 +63,11 @@ def test_construct_docarray(da_cls, config, start_weaviate):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
-def test_docarray_copy_singleton(da_cls, config, is_copy, start_weaviate):
+def test_docarray_copy_singleton(da_cls, config, is_copy, start_storage):
     d = Document()
     if config:
         da = da_cls(d, copy=is_copy, config=config)
@@ -87,10 +91,11 @@ def test_docarray_copy_singleton(da_cls, config, is_copy, start_weaviate):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
-def test_docarray_copy_da(da_cls, config, is_copy, start_weaviate):
+def test_docarray_copy_da(da_cls, config, is_copy, start_storage):
     d1 = Document()
     d2 = Document()
     if config:
@@ -113,10 +118,11 @@ def test_docarray_copy_da(da_cls, config, is_copy, start_weaviate):
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=1)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=1)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
-def test_docarray_copy_list(da_cls, config, is_copy, start_weaviate):
+def test_docarray_copy_list(da_cls, config, is_copy, start_storage):
     d1 = Document()
     d2 = Document()
     da = da_cls([d1, d2], copy=is_copy, config=config)

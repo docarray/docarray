@@ -8,14 +8,19 @@ from docarray.math import ndarray
 
 @pytest.mark.parametrize(
     'storage, config',
-    [('memory', None), ('weaviate', WeaviateConfig(32)), ('pqlite', {'n_dim': 32})],
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 32}),
+        ('pqlite', {'n_dim': 32}),
+        ('qdrant', {'n_dim': 32}),
+    ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
 @pytest.mark.parametrize(
     'query',
     [np.random.random(32), np.random.random((1, 32)), np.random.random((2, 32))],
 )
-def test_find(storage, config, limit, query, start_weaviate):
+def test_find(storage, config, limit, query, start_storage):
     embeddings = np.random.random((20, 32))
 
     if config:

@@ -6,8 +6,10 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
+from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.pqlite import DocumentArrayPqlite
@@ -21,10 +23,11 @@ from docarray.array.storage.pqlite import PqliteConfig
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
 )
 def test_sprite_fail_tensor_success_uri(
-    pytestconfig, tmpdir, da_cls, config, start_weaviate
+    pytestconfig, tmpdir, da_cls, config, start_storage
 ):
     files = [
         f'{pytestconfig.rootdir}/**/*.png',
@@ -52,10 +55,11 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
 )
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, config_gen, start_weaviate
+    pytestconfig, tmpdir, image_source, da_cls, config_gen, start_storage
 ):
     files = [
         f'{pytestconfig.rootdir}/**/*.png',
@@ -72,7 +76,7 @@ def test_sprite_image_generator(
 
 
 @pytest.fixture
-def da_and_dam(start_weaviate):
+def da_and_dam(start_storage):
     embeddings = np.array([[1, 0, 0], [2, 0, 0], [3, 0, 0]])
     return [
         cls(
@@ -87,6 +91,7 @@ def da_and_dam(start_weaviate):
             (DocumentArraySqlite, {}),
             (DocumentArrayWeaviate, {'config': {'n_dim': 3}}),
             (DocumentArrayPqlite, {'config': {'n_dim': 3}}),
+            (DocumentArrayQdrant, {'config': {'n_dim': 3}}),
         ]
     ]
 
@@ -113,9 +118,10 @@ def _test_plot_embeddings(da):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=5)),
     ],
 )
-def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
+def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
     if config_gen:
         da1 = da_cls.empty(100, config=config_gen())
         da2 = da_cls.empty(768, config=config_gen())
@@ -140,9 +146,10 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_weaviate):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
-def test_summary_homo_hetero(da_cls, config, start_weaviate):
+def test_summary_homo_hetero(da_cls, config, start_storage):
     if config:
         da = da_cls.empty(100, config=config)
     else:
@@ -161,9 +168,10 @@ def test_summary_homo_hetero(da_cls, config, start_weaviate):
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
 )
-def test_empty_get_attributes(da_cls, config, start_weaviate):
+def test_empty_get_attributes(da_cls, config, start_storage):
     if config:
         da = da_cls.empty(10, config=config)
     else:

@@ -75,7 +75,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
 @pytest.mark.parametrize('exclude_self', [True, False])
-def test_match(storage, config, doc_lists, limit, exclude_self, start_weaviate):
+def test_match(storage, config, doc_lists, limit, exclude_self, start_storage):
     D1, D2 = doc_lists_to_doc_arrays(doc_lists)
 
     if config:
