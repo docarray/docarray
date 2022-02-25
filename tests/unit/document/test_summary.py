@@ -27,3 +27,19 @@ def test_plot_image():
     d.uri = None
 
     d.display()
+
+
+def test_plot_audio():
+    d = Document(uri=os.path.join(cur_dir, 'toydata/hello.wav'))
+    d.display()
+
+    d.convert_uri_to_datauri()
+    d.display()
+
+
+def test_plot_video():
+    d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
+    d.display()
+
+    d.convert_uri_to_datauri()
+    d.display()
