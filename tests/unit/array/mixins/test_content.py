@@ -108,10 +108,15 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         da = da_cls.empty(da_len, config=config)
     else:
         da = da_cls.empty(da_len)
-    assert not da.texts
+
     assert not da.contents
     assert not da.tensors
-    assert not da.blobs
+    if da_len == 0:
+        assert not da.texts
+        assert not da.blobs
+    else:
+        assert da.texts == [''] * da_len
+        assert da.blobs == [b''] * da_len
 
     da.texts = ['hello'] * da_len
     if da_len == 0:
@@ -120,7 +125,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         assert da.contents == ['hello'] * da_len
         assert da.texts == ['hello'] * da_len
         assert not da.tensors
-        assert not da.blobs
+        assert da.blobs == [b''] * da_len
 
 
 @pytest.mark.parametrize('da_len', [0, 1, 2])

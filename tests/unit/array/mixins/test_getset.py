@@ -183,7 +183,7 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
-    assert not da.texts
+    assert set(da.texts) == set([''])
 
 
 @pytest.mark.parametrize(
@@ -294,7 +294,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
-    assert not da.blobs
+    assert set(da.blobs) == set([b''])
 
 
 @pytest.mark.parametrize(
