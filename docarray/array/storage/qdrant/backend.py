@@ -22,7 +22,7 @@ from qdrant_openapi_client.models.models import (
 
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
-from docarray.array.storage.qdrant import DISTANCES
+from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 
 if TYPE_CHECKING:
@@ -171,3 +171,15 @@ class BackendMixin(BaseBackendMixin):
                 ]
             ),
         )
+
+    def _get_storage_infos(self) -> Dict:
+        storage_infos = super()._get_storage_infos()
+        return {
+            'Backend': 'Qdrant (https://qdrant.tech)',
+            'Host': self._config.host,
+            'Port': str(self._config.port),
+            'Collection Name': self.collection_name,
+            'Distance': self._config.distance,
+            'Serialization Protocol': self._config.serialize_config.get('protocol'),
+            **storage_infos,
+        }
