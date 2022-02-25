@@ -3,7 +3,7 @@
 
 DocArray is designed to be "ready-to-wire" at anytime. Serialization is important.
 DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
-Moreover, there is the ability to store/load `DocumentArray` objects to disk.
+Moreover, there is the ability to store/load `DocumentArray` objects to/from disk.
 
 - JSON string: `.from_json()`/`.to_json()`
   - Pydantic model: `.from_pydantic_model()`/`.to_pydantic_model()`
