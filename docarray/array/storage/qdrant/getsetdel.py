@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Iterable, Iterator
 
 from qdrant_client import QdrantClient
@@ -17,22 +18,27 @@ from docarray.array.storage.qdrant.helper import QdrantStorageHelper
 
 class GetSetDelMixin(BaseGetSetDelMixin):
     @property
+    @abstractmethod
     def client(self) -> QdrantClient:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def serialization_config(self) -> dict:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def n_dim(self) -> int:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def collection_name(self) -> str:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def scroll_batch_size(self) -> int:
         raise NotImplementedError()
 

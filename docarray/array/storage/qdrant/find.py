@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import (
     Union,
     TYPE_CHECKING,
@@ -29,18 +30,22 @@ if TYPE_CHECKING:
 
 class FindMixin:
     @property
+    @abstractmethod
     def client(self) -> 'QdrantClient':
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def collection_name(self) -> str:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def serialize_config(self) -> dict:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def distance(self) -> 'Distance':
         raise NotImplementedError()
 

@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import MutableSequence, Iterable, Iterator, Union
 from docarray import Document
 
@@ -8,14 +9,17 @@ from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
     @property
+    @abstractmethod
     def client(self) -> QdrantClient:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def collection_name(self) -> str:
         raise NotImplementedError()
 
     @property
+    @abstractmethod
     def config(self):
         raise NotImplementedError()
 
@@ -63,6 +67,3 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: returns true if the length of the array is larger than 0
         """
         return len(self) > 0
-
-    def __add__(self, other: Union['Document', Iterable['Document']]):
-        raise NotImplementedError()
