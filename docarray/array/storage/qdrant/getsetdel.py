@@ -44,18 +44,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 self.client.http.points_api.upsert_points(
                     name=self.collection_name,
                     wait=True,
-                    point_insert_operations=PointsList(
-                        points=batch
-                    ),
+                    point_insert_operations=PointsList(points=batch),
                 )
                 batch = []
         if len(batch) > 0:
             self.client.http.points_api.upsert_points(
                 name=self.collection_name,
                 wait=True,
-                point_insert_operations=PointsList(
-                    points=batch
-                ),
+                point_insert_operations=PointsList(points=batch),
             )
 
     def _qdrant_to_document(self, qdrant_record: dict) -> 'Document':
