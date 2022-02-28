@@ -159,7 +159,7 @@ class FindMixin:
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 
-    def filter(self, *args, **kwargs):
+    def _filter(self, *args, **kwargs):
         from ... import DocumentArray
         from ...lookup import Q, filter_items
 
