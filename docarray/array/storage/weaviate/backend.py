@@ -187,7 +187,7 @@ class BackendMixin(BaseBackendMixin):
             )
         else:
             self._offset2ids_wid = str(uuid.uuid1())
-            self._client.data_object.up(
+            self._client.data_object.create(
                 data_object={'_offset2ids': self._offset2ids.ids},
                 class_name=self._meta_name,
                 uuid=self._offset2ids_wid,

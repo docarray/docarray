@@ -37,11 +37,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         if _id != value.id:
             self._del_doc_by_id(_id)
-        wid = self._wmap(value.id)
+
         payload = self._doc2weaviate_create_payload(value)
-        if self._client.data_object.exists(wid):
-            self._client.data_object.delete(wid)
-        self._client.data_object.create(**payload)
+        if self._client.data_object.exists(payload['uuid']):
+            self._client.data_object.update(**payload)
+        else:
+            self._client.data_object.create(**payload)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
