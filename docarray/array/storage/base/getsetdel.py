@@ -109,7 +109,7 @@ class BaseGetSetDelMixin(ABC):
         Override this function if there is a more efficient logic
         :param mask: the boolean mask used for indexing
         """
-        ids = list(itertools.compress(self._offset2ids, (not _i for _i in mask)))
+        ids = list(itertools.compress(self._offset2ids, (_i for _i in mask)))
         self._del_docs(ids)
 
     def _del_all_docs(self):
