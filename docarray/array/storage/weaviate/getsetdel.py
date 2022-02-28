@@ -14,12 +14,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :raises KeyError: raise error when weaviate id does not exist in storage
         :return: Document
         """
-        resp = self._client.data_object.get_by_id(wid, with_vector=True)
-        if not resp:
-            raise KeyError(wid)
-        return Document.from_base64(
-            resp['properties']['_serialized'], **self._serialize_config
-        )
+        try:
+            resp = self._client.data_object.get_by_id(wid, with_vector=True)
+            return Document.from_base64(
+                resp['properties']['_serialized'], **self._serialize_config
+            )
+        except Exception as ex:
+            raise KeyError(wid) from ex
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
         """Concrete implementation of base class' ``_get_doc_by_id``
@@ -40,9 +41,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         payload = self._doc2weaviate_create_payload(value)
         if self._client.data_object.exists(payload['uuid']):
-            self._client.data_object.update(**payload)
-        else:
-            self._client.data_object.create(**payload)
+            self._client.data_object.delete(payload['uuid'])
+        self._client.data_object.create(**payload)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
