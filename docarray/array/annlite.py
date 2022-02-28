@@ -1,7 +1,7 @@
 from .document import DocumentArray
 from .storage.annlite import StorageMixins, AnnliteConfig
 
-__all__ = ['AnnliteConfig', 'DocumentArrayPqlite']
+__all__ = ['AnnliteConfig', 'DocumentArrayAnnlite']
 
 
 class DocumentArrayAnnlite(StorageMixins, DocumentArray):
