@@ -281,6 +281,15 @@ class BackendMixin(BaseBackendMixin):
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+
+            # Weaviate expects vector to have dim 2 at least
+            # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
+            # hence we cast it to list of a single element
+            if len(embedding) == 1:
+                embedding = [embedding[0]]
         else:
             embedding = None
 
