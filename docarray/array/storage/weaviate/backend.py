@@ -38,6 +38,7 @@ class WeaviateConfig:
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
+    n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
 
 
 class BackendMixin(BaseBackendMixin):
@@ -186,7 +187,7 @@ class BackendMixin(BaseBackendMixin):
             )
         else:
             self._offset2ids_wid = str(uuid.uuid1())
-            self._client.data_object.create(
+            self._client.data_object.up(
                 data_object={'_offset2ids': self._offset2ids.ids},
                 class_name=self._meta_name,
                 uuid=self._offset2ids_wid,
