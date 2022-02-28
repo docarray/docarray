@@ -33,6 +33,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -842,4 +843,28 @@
 ### 🍹 Other Improvements
 
  - [[```8f8998cd```](https://github.com/jina-ai/docarray/commit/8f8998cdcf4cdf73ca3ed99cd3fe2cec6aa7e85e)] __-__ __version__: the next version will be 0.8.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-3></a>
+## Release Note (`0.8.3`)
+
+> Release time: 2022-02-28 20:20:29
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```78cadd08```](https://github.com/jina-ai/docarray/commit/78cadd08664035a3df0718f7c1134755fc50c42b)] __-__ __weaviate__: remove ndim requirement in weaviate (#159) (*Han Xiao*)
+ - [[```fd1f0f9a```](https://github.com/jina-ai/docarray/commit/fd1f0f9aa93f11d68eaadfa79dc334b04e788bff)] __-__ support torch.Tensor and other embeddings in match (#158) (*AlaeddineAbdessalem*)
+
+### 🧼 Code Refactoring
+
+ - [[```454fce03```](https://github.com/jina-ai/docarray/commit/454fce0374044ca35cb93460e1e7ec36597fa742)] __-__ split client config into separate parameters (#155) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```97b6bea0```](https://github.com/jina-ai/docarray/commit/97b6bea0803be6a8214c2695ebd82eff01595fa1)] __-__ __version__: the next version will be 0.8.3 (*Jina Dev Bot*)
 
