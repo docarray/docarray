@@ -10,6 +10,7 @@ import numpy as np
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....math.helper import EPSILON
+from ....math.ndarray import to_numpy_array
 from ....score import NamedScore
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
 
 class FindMixin:
     def _find_similar_vectors(self, query: 'WeaviateArrayType', limit=10):
-
+        query = to_numpy_array(query)
         is_all_zero = np.all(query == 0)
         if is_all_zero:
             query = query + EPSILON

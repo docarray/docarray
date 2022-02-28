@@ -74,21 +74,21 @@ class FindMixin:
 
         return DocumentArray(docs)
 
-    def find(
-        self, query: 'QdrantArrayType', limit: int = 10
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+    def _find(
+        self, query: 'QdrantArrayType', limit: int = 10, **kwargs
+    ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be used in Qdrant.
         :param limit: number of retrieved items
 
-        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
-           the closest Document objects for each of the queries in `query`.
+
+        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
 
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return self._find_similar_vectors(query, limit=limit)
+            return [self._find_similar_vectors(query, limit=limit)]
         else:
             closest_docs = []
             for q in query:
