@@ -48,14 +48,14 @@ class BaseGetSetDelMixin(ABC):
 
     # Getitem APIs
 
-    def _get_doc_by_offset(self, offset: int) -> "Document":
+    def _get_doc_by_offset(self, offset: int) -> 'Document':
         return self._get_doc_by_id(self._offset2ids.get_id(offset))
 
     @abstractmethod
-    def _get_doc_by_id(self, _id: str) -> "Document":
+    def _get_doc_by_id(self, _id: str) -> 'Document':
         ...
 
-    def _get_docs_by_slice(self, _slice: slice) -> Iterable["Document"]:
+    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
         Override this function if there is a more efficient logic
 
@@ -64,7 +64,7 @@ class BaseGetSetDelMixin(ABC):
         """
         return self._get_docs_by_ids(self._offset2ids.get_id(_slice))
 
-    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable["Document"]:
+    def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_offset`
         Override this function if there is a more efficient logic
 
@@ -73,7 +73,7 @@ class BaseGetSetDelMixin(ABC):
         """
         return (self._get_doc_by_offset(o) for o in offsets)
 
-    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable["Document"]:
+    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
         """This function is derived from :meth:`_get_doc_by_id`
         Override this function if there is a more efficient logic
 
@@ -139,19 +139,19 @@ class BaseGetSetDelMixin(ABC):
 
     # Setitem API
 
-    def _set_doc_by_offset(self, offset: int, value: "Document"):
+    def _set_doc_by_offset(self, offset: int, value: 'Document'):
         self._set_doc(self._offset2ids.get_id(offset), value)
 
-    def _set_doc(self, _id: str, value: "Document"):
+    def _set_doc(self, _id: str, value: 'Document'):
         if _id != value.id:
             self._offset2ids.update(self._offset2ids.index(_id), value.id)
         self._set_doc_by_id(_id, value)
 
     @abstractmethod
-    def _set_doc_by_id(self, _id: str, value: "Document"):
+    def _set_doc_by_id(self, _id: str, value: 'Document'):
         ...
 
-    def _set_docs_by_ids(self, ids, docs: Iterable["Document"]):
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
         """This function is derived from :meth:`_set_doc_by_id`
         Override this function if there is a more efficient logic
 
@@ -160,13 +160,13 @@ class BaseGetSetDelMixin(ABC):
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
 
-    def _set_docs(self, ids, docs: Iterable["Document"]):
+    def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
         self._set_docs_by_ids(ids, docs)
         mismatch_ids = {_id: doc.id for _id, doc in zip(ids, docs) if _id != doc.id}
         self._offset2ids.update_ids(mismatch_ids)
 
-    def _set_docs_by_slice(self, _slice: slice, value: Sequence["Document"]):
+    def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
         """This function is derived and may not have the most efficient implementation.
 
         Override this function if there is a more efficient logic
@@ -183,7 +183,7 @@ class BaseGetSetDelMixin(ABC):
         self._set_docs(ids, value)
 
     def _set_doc_value_pairs(
-        self, docs: Iterable["Document"], values: Sequence["Document"]
+        self, docs: Iterable['Document'], values: Sequence['Document']
     ):
         docs = list(docs)
         if len(docs) != len(values):
@@ -196,7 +196,7 @@ class BaseGetSetDelMixin(ABC):
             self._set_doc(_d.id, _v)
 
     def _set_doc_value_pairs_nested(
-        self, docs: Iterable["Document"], values: Sequence["Document"]
+        self, docs: Iterable['Document'], values: Sequence['Document']
     ):
         """This function is derived and may not have the most efficient implementation.
 
@@ -258,7 +258,7 @@ class BaseGetSetDelMixin(ABC):
             setattr(d, attr, value)
             self._set_doc(_id, d)
 
-    def _find_root_doc_and_modify(self, d: Document) -> "Document":
+    def _find_root_doc_and_modify(self, d: Document) -> 'Document':
         """Find `d`'s root Document in an exhaustive manner
         :param: d: the input document
         :return: the root of the input document
