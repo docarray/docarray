@@ -33,10 +33,9 @@ class WeaviateConfig:
     """This class stores the config variables to initialize
     connection to the Weaviate server"""
 
-    n_dim: int
-    host: Optional[str] = field(default="localhost")
+    host: Optional[str] = field(default='localhost')
     port: Optional[int] = field(default=8080)
-    protocol: Optional[int] = field(default="http")
+    protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
 
@@ -60,13 +59,12 @@ class BackendMixin(BaseBackendMixin):
         """
 
         if not config:
-            raise ValueError('Config object must be specified')
+            config = WeaviateConfig()
         elif isinstance(config, dict):
             config = dataclass_from_dict(WeaviateConfig, config)
 
         from ... import DocumentArray
 
-        self._n_dim = config.n_dim
         self._serialize_config = config.serialize_config
 
         if config.name and config.name != config.name.capitalize():
@@ -278,25 +276,12 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        if value.embedding is None:
-            embedding = np.zeros(self._n_dim)
-        else:
+        if value.embedding is not None:
             from ....math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(value.embedding)
-
-        if embedding.ndim > 1:
-            embedding = np.asarray(embedding).squeeze()
-        if embedding.shape != (self._n_dim,):
-            raise ValueError(
-                f'All documents must have embedding of shape n_dim: {self._n_dim}, receiving shape: {embedding.shape}'
-            )
-
-        # Weaviate expects vector to have dim 2 at least
-        # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
-        # hence we cast it to list of a single element
-        if len(embedding) == 1:
-            embedding = [embedding[0]]
+        else:
+            embedding = None
 
         return dict(
             data_object={'_serialized': value.to_base64(**self._serialize_config)},
