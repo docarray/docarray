@@ -176,7 +176,7 @@ class BaseGetSetDelMixin(ABC):
         """
         if not isinstance(value, Iterable):
             raise TypeError(
-                f"You right-hand assignment must be an iterable, receiving {type(value)}"
+                f'You right-hand assignment must be an iterable, receiving {type(value)}'
             )
 
         ids = self._offset2ids.get_id(_slice)
@@ -188,8 +188,8 @@ class BaseGetSetDelMixin(ABC):
         docs = list(docs)
         if len(docs) != len(values):
             raise ValueError(
-                f"length of docs to set({len(docs)}) does not match "
-                f"length of values({len(values)})"
+                f'length of docs to set({len(docs)}) does not match '
+                f'length of values({len(values)})'
             )
 
         for _d, _v in zip(docs, values):
@@ -207,14 +207,14 @@ class BaseGetSetDelMixin(ABC):
         docs = list(docs)
         if len(docs) != len(values):
             raise ValueError(
-                f"length of docs to set({len(docs)}) does not match "
-                f"length of values({len(values)})"
+                f'length of docs to set({len(docs)}) does not match '
+                f'length of values({len(values)})'
             )
 
         for _d, _v in zip(docs, values):
             if _d.id != _v.id:
                 raise ValueError(
-                    "Setting Documents by traversal paths with different IDs is not supported"
+                    'Setting Documents by traversal paths with different IDs is not supported'
                 )
             _d._data = _v._data
             if _d not in self:
@@ -248,9 +248,9 @@ class BaseGetSetDelMixin(ABC):
         :param attr: the attribute of document to update
         :param value: the value doc's attr will be updated to
         """
-        if attr == "id" and value is None:
+        if attr == 'id' and value is None:
             raise ValueError(
-                "setting the ID of a Document stored in a DocumentArray to None is not allowed"
+                'setting the ID of a Document stored in a DocumentArray to None is not allowed'
             )
 
         d = self._get_doc_by_id(_id)
@@ -267,7 +267,7 @@ class BaseGetSetDelMixin(ABC):
 
         for _d in self:
             da = DocumentArray(_d)[...]
-            _all_ids = set(da[:, "id"])
+            _all_ids = set(da[:, 'id'])
             if d.id in _all_ids:
                 da[d.id].copy_from(d)
                 return _d
