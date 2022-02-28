@@ -32,6 +32,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -818,4 +819,27 @@
 ### 🍹 Other Improvements
 
  - [[```d01fe858```](https://github.com/jina-ai/docarray/commit/d01fe8587d0ab8d7239bb45f208670b1c8238b4a)] __-__ __version__: the next version will be 0.8.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-2></a>
+## Release Note (`0.8.2`)
+
+> Release time: 2022-02-28 13:29:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```f68fe7b4```](https://github.com/jina-ai/docarray/commit/f68fe7b45e817f5809786e160d8d29eb4ecce828)] __-__ __graphql__: strawberry to input (#141) (*samsja*)
+
+### 🐞 Bug fixes
+
+ - [[```da0d84b0```](https://github.com/jina-ai/docarray/commit/da0d84b0f4a622a967b91e77c20765c151980e81)] __-__ bug with del with bool mask (#154) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```8f8998cd```](https://github.com/jina-ai/docarray/commit/8f8998cdcf4cdf73ca3ed99cd3fe2cec6aa7e85e)] __-__ __version__: the next version will be 0.8.2 (*Jina Dev Bot*)
 
