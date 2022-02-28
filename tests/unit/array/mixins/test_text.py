@@ -4,7 +4,7 @@ import pytest
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -25,7 +25,7 @@ def docs():
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -52,7 +52,7 @@ def test_da_vocabulary(da_cls, config, docs, min_freq, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -79,7 +79,7 @@ def test_da_text_to_tensor_non_max_len(docs, da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -108,7 +108,7 @@ def test_da_text_to_tensor_max_len_3(docs, da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -137,7 +137,7 @@ def test_da_text_to_tensor_max_len_1(docs, da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],

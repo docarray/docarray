@@ -3,7 +3,7 @@ import pytest
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -29,7 +29,7 @@ def foo_batch(da: DocumentArray):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
@@ -84,7 +84,7 @@ def test_parallel_map(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
@@ -154,7 +154,7 @@ def test_parallel_map_batch(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=10)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
@@ -181,7 +181,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
     [
         ('memory', None),
         ('sqlite', None),
-        ('pqlite', PqliteConfig(n_dim=256)),
+        ('annlite', AnnliteConfig(n_dim=256)),
         ('weaviate', WeaviateConfig(n_dim=256)),
         ('qdrant', QdrantConfig(n_dim=256)),
     ],

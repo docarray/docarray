@@ -17,16 +17,16 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         for doc in docs:
             doc.embedding = self._map_embedding(doc.embedding)
 
-        self._pqlite.index(docs)
+        self._annlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
     def __del__(self) -> None:
         if not self._persist:
             self._offset2ids.clear()
-            self._pqlite.clear()
+            self._annlite.clear()
 
     def __eq__(self, other):
-        """In pqlite backend, data are considered as identical if configs point to the same database source"""
+        """In annlite backend, data are considered as identical if configs point to the same database source"""
         return (
             type(self) is type(other)
             and type(self._config) is type(other._config)
@@ -41,7 +41,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         return len(self) > 0
 
     def __repr__(self):
-        return f'<DocumentArray[PQLite] (length={len(self)}) at {id(self)}>'
+        return f'<DocumentArray[AnnLite] (length={len(self)}) at {id(self)}>'
 
     def __add__(self, other: Union['Document', Sequence['Document']]):
         v = type(self)(self)
@@ -50,8 +50,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
-            return self._pqlite.get_doc_by_id(x) is not None
+            return self._annlite.get_doc_by_id(x) is not None
         elif isinstance(x, Document):
-            return self._pqlite.get_doc_by_id(x.id) is not None
+            return self._annlite.get_doc_by_id(x.id) is not None
         else:
             return False

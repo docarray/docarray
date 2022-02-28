@@ -7,7 +7,7 @@ from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate
-from docarray.array.pqlite import DocumentArrayPqlite
+from docarray.array.annlite import DocumentArrayAnnlite
 from tests import random_docs
 
 # some random prime number for sanity check

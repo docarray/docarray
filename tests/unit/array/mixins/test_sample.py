@@ -3,7 +3,7 @@ import pytest
 from docarray import DocumentArray
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -14,7 +14,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -38,7 +38,7 @@ def test_sample(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -61,7 +61,7 @@ def test_sample_with_seed(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -85,7 +85,7 @@ def test_shuffle(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],

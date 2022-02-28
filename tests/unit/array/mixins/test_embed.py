@@ -12,7 +12,7 @@ from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 

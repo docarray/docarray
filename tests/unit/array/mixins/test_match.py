@@ -71,21 +71,12 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
 
 @pytest.mark.parametrize(
     'storage, config',
-    [('weaviate', {'n_dim': 3}), ('pqlite', {'n_dim': 3}), ('qdrant', {'n_dim': 3})],
+    [('weaviate', WeaviateConfig(3)), ('annlite', {'n_dim': 3})],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
 @pytest.mark.parametrize('exclude_self', [True, False])
-@pytest.mark.parametrize('as_tensor', [True, False])
-def test_match(
-    storage, config, doc_lists, limit, exclude_self, start_storage, as_tensor
-):
+def test_match(storage, config, doc_lists, limit, exclude_self, start_storage):
     D1, D2 = doc_lists_to_doc_arrays(doc_lists)
-    if as_tensor:
-        for d in D1:
-            d.embedding = torch.from_numpy(d.embedding)
-
-        for d in D2:
-            d.embedding = torch.from_numpy(d.embedding)
 
     if config:
         da = DocumentArray(D2, storage=storage, config=config)

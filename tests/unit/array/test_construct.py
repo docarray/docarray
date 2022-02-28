@@ -4,7 +4,7 @@ from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 
@@ -14,7 +14,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -61,7 +61,7 @@ def test_construct_docarray(da_cls, config, start_storage):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -89,7 +89,7 @@ def test_docarray_copy_singleton(da_cls, config, is_copy, start_storage):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -117,7 +117,7 @@ def test_docarray_copy_da(da_cls, config, is_copy, start_storage):
     [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=1)),
+        (DocumentArrayPqlite, AnnliteConfig(n_dim=1)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=1)),
     ],
 )
