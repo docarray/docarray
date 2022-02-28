@@ -32,6 +32,28 @@ def test_del_all(docs, to_delete):
 
 
 @pytest.mark.parametrize(
+    'to_delete, missing_id',
+    [
+        ([True, False], ['1']),
+        ([True, True, False], ['1', '2']),
+        ([False, True], ['2']),
+        ([False, False, True, True], ['3', '4']),
+    ],
+)
+def test_del_boolean_mask(docs, to_delete, missing_id):
+
+    # assert each missing_id is present before deleting
+    for m_id in missing_id:
+        assert m_id in docs[:, 'id']
+
+    del docs[to_delete]
+
+    # assert each missing_id is NOT present AFTER deleting
+    for m_id in missing_id:
+        assert m_id not in docs[:, 'id']
+
+
+@pytest.mark.parametrize(
     ['deleted_ids', 'expected_ids'],
     [
         (['1', '2', '3', '4'], ['5', '6', '7', '8', '9']),
