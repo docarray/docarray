@@ -21,7 +21,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:1.9.0
+    image: semitechnologies/weaviate:1.10.0
     ports:
     - 8080:8080
     restart: on-failure:0
@@ -48,7 +48,7 @@ Assuming service is started using the default configuration (i.e. server address
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='weaviate', config={'n_dim': 10})
+da = DocumentArray(storage='weaviate')
 ```
 
 The usage would be the same as the ordinary DocumentArray.
@@ -60,7 +60,7 @@ Note, that the `name` parameter in `config` needs to be capitalized.
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='weaviate', config={'name': 'Persisted', 'host': 'localhost', 'port': 1234, 'n_dim': 10})
+da = DocumentArray(storage='weaviate', config={'name': 'Persisted', 'host': 'localhost', 'port': 1234})
 
 da.summary()
 ```
@@ -73,7 +73,6 @@ The following configs can be set:
 
 | Name               | Description                                                                            | Default                     |
 |--------------------|----------------------------------------------------------------------------------------|-----------------------------|
-| `n_dim`            | Number of dimensions of embeddings to be stored and retrieved                          | **This is always required** |
 | `host`             | Hostname of the Weaviate server                                                        | 'localhost'                 |
 | `port`             | port of the Weaviate server                                                            | 8080                        |
 | `protocol`         | protocol to be used. Can be 'http' or 'https'                                          | 'http'                      |
