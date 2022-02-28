@@ -320,7 +320,9 @@ class BackendMixin(BaseBackendMixin):
     def _get_storage_infos(self) -> Dict:
         return {
             'Backend': 'Weaviate',
-            'Hostname': self._config.client,
+            'Host': self._config.host,
+            'Port': str(self._config.port),
+            'Protocol': self._config.protocol,
             'Schema Name': self._config.name,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
         }
