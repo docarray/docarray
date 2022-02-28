@@ -15,6 +15,7 @@ from typing import (
 
 import numpy as np
 import weaviate
+from weaviate.auth import AuthCredentials
 
 from ..base.backend import BaseBackendMixin
 from .... import Document
@@ -33,7 +34,9 @@ class WeaviateConfig:
     connection to the Weaviate server"""
 
     n_dim: int
-    client: Union[str, weaviate.Client] = 'http://localhost:8080'
+    host: Optional[str] = field(default="localhost")
+    port: Optional[int] = field(default=8080)
+    protocol: Optional[int] = field(default="http")
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
 
@@ -74,10 +77,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._persist = bool(config.name)
 
-        if isinstance(config.client, str):
-            self._client = weaviate.Client(config.client)
-        else:
-            self._client = config.client
+        self._client = weaviate.Client(
+            f'{config.protocol}://{config.host}:{config.port}'
+        )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
@@ -322,3 +324,14 @@ class BackendMixin(BaseBackendMixin):
             'Schema Name': self._config.name,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
         }
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_client']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._client = weaviate.client(
+            host=state['_config'].host, port=state['_config'].port
+        )
