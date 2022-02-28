@@ -334,6 +334,6 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = weaviate.client(
-            host=state['_config'].host, port=state['_config'].port
+        self._client = weaviate.Client(
+            f'{state["_config"].protocol}://{state["_config"].host}:{state["_config"].port}'
         )
