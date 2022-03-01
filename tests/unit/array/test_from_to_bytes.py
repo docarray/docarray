@@ -104,8 +104,9 @@ def test_from_to_safe_list(target, protocol, to_fn):
 
 
 @pytest.mark.parametrize('target', [DocumentArray.empty(10), random_docs(10)])
-def test_from_to_safe_dict(target, protocol, to_fn):
-    da_r = getattr(DocumentArray, f'from_dict')(getattr(target, f'to__dict'))
+def test_from_to_safe_dict(target):
+    target_dict = getattr(target, f'to_dict')(target)
+    da_r = getattr(DocumentArray, f'from_dict')(target_dict)
     assert da_r == target
 
 

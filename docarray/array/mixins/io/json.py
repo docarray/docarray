@@ -99,7 +99,3 @@ class JsonIOMixin:
         :return: a Python list
         """
         return json.dumps(self.to_list(protocol=protocol, **kwargs))
-
-    # to comply with Document interfaces but less semantically accurate
-    # to_dict = to_list
-    # from_dict = from_list
