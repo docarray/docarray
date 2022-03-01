@@ -324,6 +324,32 @@ da.to_list()
 More parameters and usages can be found in the Document-level {ref}`doc-dict`.
 ```
 
+
+## From/to dict
+
+```{important}
+This feature requires `protobuf` or `pydantic` dependency. You can do `pip install "docarray[full]"` to install it.
+```
+
+Serializing to/from Python dict is less frequently used for the same reason as `Document.to_dict()`: it is often an intermediate step of serializing to JSON. You can do:
+
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray([Document(text='hello'), Document(text='world')])
+da.to_dict()
+```
+
+```text
+{0: {'id': '3b31cb4c993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'hello', 1: {'id': '3b31cca0993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'world'}}```
+```
+
+
+```{seealso}
+More parameters and usages can be found in the Document-level {ref}`doc-dict`.
+```
+
+
 ## From/to dataframe
 
 ```{important}
