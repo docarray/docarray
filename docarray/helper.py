@@ -396,8 +396,7 @@ def add_protocol_and_compress_to_file_path(
 
 
 def check_none(da: Union['Document', 'DocumentArray'], field: str):
-    """Returns TypeError if there is a None value in a field of a Document or a DocumentArray
-    """
+    """Returns TypeError if there is a None value in a field of a Document or a DocumentArray"""
 
     from .document import Document
     from .array import DocumentArray
@@ -409,4 +408,6 @@ def check_none(da: Union['Document', 'DocumentArray'], field: str):
         else:
             for d in da:
                 if type(getattr(d, field)) == type(None):
-                    raise TypeError('unsupported operation, one of the embeddings is None.')
+                    raise TypeError(
+                        'unsupported operation, one of the embeddings is None.'
+                    )
