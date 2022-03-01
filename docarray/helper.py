@@ -4,7 +4,8 @@ import sys
 import uuid
 import pathlib
 import warnings
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
+
 
 ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
@@ -17,6 +18,10 @@ __resources_path__ = os.path.join(
     ),
     'resources',
 )
+
+
+if TYPE_CHECKING:
+    from . import Document, DocumentArray
 
 
 def typename(obj):
@@ -388,3 +393,20 @@ def add_protocol_and_compress_to_file_path(
         file_path_extended += '.' + compress
 
     return file_path_extended
+
+
+def check_none(da: Union['Document', 'DocumentArray'], field: str):
+    """Returns TypeError if there is a None value in a field of a Document or a DocumentArray
+    """
+
+    from .document import Document
+    from .array import DocumentArray
+
+    if isinstance(da, (Document, DocumentArray)):
+        if isinstance(da, Document):
+            if type(getattr(da, field)) == type(None):
+                raise TypeError('unsupported operation, one of the embeddings is None.')
+        else:
+            for d in da:
+                if type(getattr(d, field)) == type(None):
+                    raise TypeError('unsupported operation, one of the embeddings is None.')

@@ -3,6 +3,7 @@ from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_
 
 import numpy as np
 
+from ...helper import check_none
 from ...math import ndarray
 from ...score import NamedScore
 
@@ -69,6 +70,9 @@ class FindMixin:
                 limit = int(limit)
 
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+
+        check_none(query, 'embedding')
+        check_none(self, 'embedding')
 
         if isinstance(query, (DocumentArray, Document)):
 

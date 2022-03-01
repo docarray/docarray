@@ -103,6 +103,20 @@ def test_match(
     assert expected_sorted_values == sorted(expected_sorted_values)
 
 
+def test_match_type_error_if_lhs_none(doc_lists):
+    D1, D2 = doc_lists_to_doc_arrays(doc_lists)
+    D1[0].embedding = None
+
+    with pytest.raises(TypeError):
+        D1.match(D2, limit=3)
+
+def test_match_type_error_if_rhs_none(doc_lists):
+    D1, D2 = doc_lists_to_doc_arrays(doc_lists)
+    D2[0].embedding = None
+
+    with pytest.raises(TypeError):
+        D1.match(D2, limit=3)
+
 @pytest.mark.parametrize(
     'limit, batch_size', [(1, None), (2, None), (None, None), (1, 1), (1, 2), (2, 1)]
 )
