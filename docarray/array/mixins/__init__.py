@@ -12,6 +12,7 @@ from .io.binary import BinaryIOMixin
 from .io.common import CommonIOMixin
 from .io.csv import CsvIOMixin
 from .io.dataframe import DataframeIOMixin
+from .io.dict import DictIOMixin
 from .io.from_gen import FromGeneratorMixin
 from .io.json import JsonIOMixin
 from .io.pushpull import PushPullMixin
@@ -40,7 +41,7 @@ class AllMixins(
     EmptyMixin,
     CsvIOMixin,
     JsonIOMixin,
-    BinaryIOMixin,
+    DictIOMixin,
     CommonIOMixin,
     EmbedMixin,
     PushPullMixin,
