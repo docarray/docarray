@@ -40,6 +40,8 @@ def test_update_embedding(docs, storage, config, start_storage):
     assert results[1].id == docs[1].id
     assert results[2].id == docs[2].id
 
+    assert np.testing.assert_almost_equal(da[0].embedding, np.array([1.1, 9.1]))
+
 
 @pytest.mark.parametrize(
     'storage,config',
@@ -69,6 +71,8 @@ def test_update_doc_embedding(docs, storage, config, start_storage):
     assert results[1].id == docs[1].id
     assert results[2].id == docs[2].id
 
+    assert np.testing.assert_almost_equal(da[0].embedding, np.array([1.1, 9.1]))
+
 
 @pytest.mark.parametrize(
     'storage,config',
@@ -97,6 +101,8 @@ def test_batch_update_embedding(docs, storage, config, start_storage):
     assert results[0].id == docs[0].id
     assert results[1].id == docs[1].id
     assert results[2].id == docs[2].id
+
+    assert np.testing.assert_almost_equal(da[0].embedding, np.array([0, 10]))
 
 
 @pytest.mark.parametrize(
@@ -129,3 +135,5 @@ def test_batch_update_doc_embedding(docs, storage, config, start_storage):
     assert results[0].id == docs[0].id
     assert results[1].id == docs[1].id
     assert results[2].id == docs[2].id
+
+    assert np.testing.assert_almost_equal(da[0].embedding, np.array([0, 10]))
