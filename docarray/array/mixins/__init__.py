@@ -41,6 +41,7 @@ class AllMixins(
     EmptyMixin,
     CsvIOMixin,
     JsonIOMixin,
+    BinaryIOMixin,
     DictIOMixin,
     CommonIOMixin,
     EmbedMixin,
