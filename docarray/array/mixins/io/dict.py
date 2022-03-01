@@ -24,8 +24,7 @@ class DictIOMixin:
         """
         from .... import Document, DocumentArray
 
-        da = cls(*args, **kwargs).empty(len(input_dict))
-        # da = DocumentArray(**kwargs).empty(len(input_dict))
+        da = cls.empty(len(input_dict), *args, **kwargs)
 
         for offset, d in input_dict.items():
             da[offset] = Document(
