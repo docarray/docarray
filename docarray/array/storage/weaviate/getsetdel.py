@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from ..base.getsetdel import BaseGetSetDelMixin
 from ..base.helper import Offset2ID
 from .... import Document
@@ -30,7 +32,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         return self._getitem(self._wmap(_id))
 
-    def _set_doc_by_id(self, _id: str, value: 'Document'):
+    def _set_doc_by_id(self, _id: str, value: 'Document', flush: bool = True):
         """Concrete implementation of base class' ``_set_doc_by_id``
 
         :param _id: the id of doc to update
@@ -40,9 +42,18 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._del_doc_by_id(_id)
 
         payload = self._doc2weaviate_create_payload(value)
-        if self._client.data_object.exists(payload['uuid']):
-            self._client.data_object.delete(payload['uuid'])
-        self._client.data_object.create(**payload)
+        self._client.batch.add_data_object(**payload)
+        if flush:
+            self._client.batch.flush()
+
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
+        """Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end
+
+        :param ids: the ids used for indexing
+        """
+        for _id, doc in zip(ids, docs):
+            self._set_doc_by_id(_id, doc, flush=False)
+        self._client.batch.flush()
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
