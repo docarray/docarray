@@ -18,8 +18,10 @@ class BaseBackendMixin(ABC):
     def _get_storage_infos(self) -> Optional[Dict]:
         ...
 
-    def _map_id(self, _id: str) -> str:
+    @staticmethod
+    def _map_id(_id: str) -> str:
         return _id
 
-    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
+    @staticmethod
+    def _map_embedding(embedding: 'ArrayType') -> 'ArrayType':
         return embedding
