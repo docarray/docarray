@@ -1,4 +1,5 @@
 import sys
+from math import ceil
 from types import LambdaType
 from typing import Callable, TYPE_CHECKING, Generator, Optional, overload, TypeVar
 
@@ -18,6 +19,7 @@ class ParallelMixin:
         func: Callable[['Document'], 'Document'],
         backend: str = 'thread',
         num_worker: Optional[int] = None,
+        show_progress: bool = False,
     ) -> 'T':
         """Apply each element in itself with ``func``, return itself after modified.
 
@@ -33,6 +35,7 @@ class ParallelMixin:
                 and the original object do **not** share the same memory.
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+        :param show_progress: show a progress bar
 
         """
         ...
@@ -56,6 +59,7 @@ class ParallelMixin:
         func: Callable[['Document'], 'T'],
         backend: str = 'thread',
         num_worker: Optional[int] = None,
+        show_progress: bool = False,
     ) -> Generator['T', None, None]:
         """Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.
 
@@ -76,12 +80,22 @@ class ParallelMixin:
                 and the original object do **not** share the same memory.
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+        :param show_progress: show a progress bar
+
         :yield: anything return from ``func``
         """
         if _is_lambda_or_local_function(func) and backend == 'process':
             func = _globalize_lambda_function(func)
+
+        if show_progress:
+            from rich.progress import track as _track
+
+            track = lambda x: _track(x, total=len(self))
+        else:
+            track = lambda x: x
+
         with _get_pool(backend, num_worker) as p:
-            for x in p.imap(func, self):
+            for x in track(p.imap(func, self)):
                 yield x
 
     @overload
@@ -92,6 +106,7 @@ class ParallelMixin:
         backend: str = 'thread',
         num_worker: Optional[int] = None,
         shuffle: bool = False,
+        show_progress: bool = False,
     ) -> 'T':
         """Apply each element in itself with ``func``, return itself after modified.
 
@@ -109,6 +124,8 @@ class ParallelMixin:
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
         :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+        :param show_progress: show a progress bar
+
         """
         ...
 
@@ -135,6 +152,7 @@ class ParallelMixin:
         backend: str = 'thread',
         num_worker: Optional[int] = None,
         shuffle: bool = False,
+        show_progress: bool = False,
     ) -> Generator['T', None, None]:
         """Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.
         Each element in the returned iterator is :class:`DocumentArray`.
@@ -158,13 +176,25 @@ class ParallelMixin:
                 and the original object do **not** share the same memory.
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+        :param show_progress: show a progress bar
+
         :yield: anything return from ``func``
         """
 
         if _is_lambda_or_local_function(func) and backend == 'process':
             func = _globalize_lambda_function(func)
+
+        if show_progress:
+            from rich.progress import track as _track
+
+            track = lambda x: _track(x, total=ceil(len(self) / batch_size))
+        else:
+            track = lambda x: x
+
         with _get_pool(backend, num_worker) as p:
-            for x in p.imap(func, self.batch(batch_size=batch_size, shuffle=shuffle)):
+            for x in track(
+                p.imap(func, self.batch(batch_size=batch_size, shuffle=shuffle))
+            ):
                 yield x
 
 

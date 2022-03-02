@@ -104,14 +104,21 @@ class PushPullMixin:
 
     @classmethod
     def pull(
-        cls: Type['T'], token: str, show_progress: bool = False, *args, **kwargs
+        cls: Type['T'],
+        token: str,
+        show_progress: bool = False,
+        local_cache: bool = False,
+        *args,
+        **kwargs,
     ) -> 'T':
         """Pulling a :class:`DocumentArray` from Jina Cloud Service to local.
 
         :param token: the upload token set during :meth:`.push`
         :param show_progress: if to show a progress bar on pulling
+        :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
         """
+
         import requests
 
         url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
@@ -127,9 +134,27 @@ class PushPullMixin:
             headers=get_request_header(),
         ) as r, progress:
             r.raise_for_status()
+
+            _da_len = int(r.headers['Content-length'])
+
+            if local_cache and os.path.exists(f'.cache/{token}'):
+                _cache_len = os.path.getsize(f'.cache/{token}')
+                if _cache_len == _da_len:
+                    if show_progress:
+                        progress.stop()
+
+                    return cls.load_binary(
+                        f'.cache/{token}',
+                        protocol='protobuf',
+                        compress='gzip',
+                        _show_progress=show_progress,
+                        *args,
+                        **kwargs,
+                    )
+
             if show_progress:
                 task_id = progress.add_task('download', start=False)
-                progress.update(task_id, total=int(r.headers['Content-length']))
+                progress.update(task_id, total=int(_da_len))
             with io.BytesIO() as f:
                 chunk_size = 8192
                 if show_progress:
@@ -139,8 +164,14 @@ class PushPullMixin:
                     if show_progress:
                         progress.update(task_id, advance=len(chunk))
 
+                if local_cache:
+                    os.makedirs('.cache', exist_ok=True)
+                    with open(f'.cache/{token}', 'wb') as fp:
+                        fp.write(f.getbuffer())
+
                 if show_progress:
                     progress.stop()
+
                 return cls.from_bytes(
                     f.getvalue(),
                     protocol='protobuf',
@@ -180,7 +211,7 @@ def _get_progressbar(show_progress):
         )
 
         return Progress(
-            BarColumn(bar_width=None),
+            BarColumn(),
             "[progress.percentage]{task.percentage:>3.1f}%",
             "•",
             DownloadColumn(),

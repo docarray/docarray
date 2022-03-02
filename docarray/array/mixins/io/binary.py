@@ -7,7 +7,6 @@ from contextlib import nullcontext
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
 from ....helper import (
-    __windows__,
     get_compress_ctx,
     decompress_bytes,
     protocol_and_compress_from_file_path,

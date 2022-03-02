@@ -303,6 +303,7 @@ class PlotMixin:
         min_size: int = 16,
         channel_axis: int = -1,
         image_source: str = 'tensor',
+        skip_empty: bool = False,
     ) -> None:
         """Generate a sprite image for all image tensors in this DocumentArray-like object.
 
@@ -314,6 +315,7 @@ class PlotMixin:
         :param min_size: the minimum size of the image
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
+        :param skip_empty: skip Document who has no .uri or .tensor.
         """
         if not self:
             raise ValueError(f'{self!r} is empty')
@@ -335,6 +337,15 @@ class PlotMixin:
         img_id = 0
         try:
             for d in self:
+
+                if not d.uri and d.tensor is None:
+                    if skip_empty:
+                        continue
+                    else:
+                        raise ValueError(
+                            f'Document has neither `uri` nor `tensor`, can not be plotted'
+                        )
+
                 _d = copy.deepcopy(d)
 
                 if image_source == 'uri' or (
