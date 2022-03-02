@@ -38,7 +38,7 @@ or via Conda:
 ```shell
 conda install -c conda-forge docarray
 ```
-[Additional features](https://docarray.jina.ai/#install) can be enabled by installing the full dependencies: `pip install "docarray[full]"`.
+[Commonly used features](https://docarray.jina.ai/#install) can be enabled via `pip install "docarray[common]"`.
 
 ## [Documentation](https://docarray.jina.ai)
 
