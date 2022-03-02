@@ -19,6 +19,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return doc
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
+        if _id != value.id:
+            self._pqlite.delete([_id])
         value.embedding = self._map_embedding(value.embedding)
         docs = DocumentArrayInMemory([value])
         self._pqlite.update(docs)
