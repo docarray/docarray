@@ -119,12 +119,12 @@ If you go with default `protcol` and `compress` settings, you can simply use `by
 
 The table below summarize the supported serialization protocols and compressions:
 
-| `protocol=...`           | Description                                                                                         | Remarks                                                                                                                     |
-|--------------------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `pickle-array` (default) | Serialize the whole array in one-shot using Python `pickle`                                         | Often fastest. Not portable to other languages. Insecure in production.                                                     |
+| `protocol=...`           | Description                                                                                          | Remarks                                                                                                                     |
+|--------------------------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| `pickle-array` (default) | Serialize the whole array in one-shot using Python `pickle`                                          | Often fastest. Not portable to other languages. Insecure in production.                                                     |
 | `protobuf-array`         | Serialize the whole array using [`DocumentArrayProto`](../../../proto/#docarray.DocumentArrayProto). | Portable to other languages if they implement `DocumentArrayProto`. 2GB max-size (pre-compression) restriction by Protobuf. |
-| `pickle`                 | Serialize elements one-by-one using Python `pickle`.                                                | Allow streaming. Not portable to other languages. Insecure in production.                                                   |
-| `protobuf`               | Serialize elements one-by-one using [`DocumentProto`](../../../proto/#docarray.DocumentProto). | Allow streaming. Portable to other languages if they implement `DocumentProto`. No max-size restriction                     |
+| `pickle`                 | Serialize elements one-by-one using Python `pickle`.                                                 | Allow streaming. Not portable to other languages. Insecure in production.                                                   |
+| `protobuf`               | Serialize elements one-by-one using [`DocumentProto`](../../../proto/#docarray.DocumentProto).       | Allow streaming. Portable to other languages if they implement `DocumentProto`. No max-size restriction                     |
 
 For compressions, the following algorithms are supported: `lz4`, `bz2`, `lzma`, `zlib`, `gzip`. The most frequently used ones are `lz4` (fastest) and `gzip` (most widely used).
 

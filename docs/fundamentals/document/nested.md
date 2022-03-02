@@ -6,12 +6,12 @@ Document can be nested both horizontally and vertically via `.matches` and `.chu
 ```{figure} images/nested-structure.svg
 ```
 
-|  Attribute   | Description                                                                                     |
-| --- |-------------------------------------------------------------------------------------------------|
-| `doc.chunks` | The list of sub-Documents of this Document. They have `granularity + 1` but same `adjacency`    |
-| `doc.matches` | The list of matched Documents of this Document. They have `adjacency + 1` but same `granularity` |
-| `doc.granularity` | The "depth" of the nested chunks structure                                             |
-| `doc.adjacency` | The "width" of the nested match structure                                             |
+| Attribute         | Description                                                                                      |
+|-------------------|--------------------------------------------------------------------------------------------------|
+| `doc.chunks`      | The list of sub-Documents of this Document. They have `granularity + 1` but same `adjacency`     |
+| `doc.matches`     | The list of matched Documents of this Document. They have `adjacency + 1` but same `granularity` |
+| `doc.granularity` | The "depth" of the nested chunks structure                                                       |
+| `doc.adjacency`   | The "width" of the nested match structure                                                        |
 
 You can add **chunks** (sub-Document) and **matches** (neighbour-Document) to a Document:
 
