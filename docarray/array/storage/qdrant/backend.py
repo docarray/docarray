@@ -125,7 +125,7 @@ class BackendMixin(BaseBackendMixin):
         return collection_name in collections
 
     @staticmethod
-    def _qmap(doc_id: str):
+    def _map_id(doc_id: str):
         # if doc_id is a random ID in hex format, just translate back to UUID str
         # otherwise, create UUID5 from doc_id
         try:

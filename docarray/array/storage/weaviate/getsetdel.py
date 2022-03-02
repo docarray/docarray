@@ -30,7 +30,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of the document
         :return: the retrieved document from weaviate
         """
-        return self._getitem(self._wmap(_id))
+        return self._getitem(self._map_id(_id))
 
     def _set_doc_by_id(self, _id: str, value: 'Document', flush: bool = True):
         """Concrete implementation of base class' ``_set_doc_by_id``
@@ -60,7 +60,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param _id: the id of the document to delete
         """
-        wid = self._wmap(_id)
+        wid = self._map_id(_id)
         if self._client.data_object.exists(wid):
             self._client.data_object.delete(wid)
 

@@ -296,11 +296,11 @@ class BackendMixin(BaseBackendMixin):
         return dict(
             data_object={'_serialized': value.to_base64(**self._serialize_config)},
             class_name=self._class_name,
-            uuid=self._wmap(value.id),
+            uuid=self._map_id(value.id),
             vector=embedding,
         )
 
-    def _wmap(self, doc_id: str):
+    def _map_id(self, doc_id: str):
         """the function maps doc id to weaviate id
 
         :param doc_id: id of the document
