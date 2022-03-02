@@ -9,15 +9,15 @@ from typing import (
     Generator,
     Iterator,
 )
+
+import numpy as np
 from pqlite import PQLite
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
-    from ....types import (
-        DocumentArraySourceType,
-    )
+    from ....types import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -96,3 +96,10 @@ class BackendMixin(BaseBackendMixin):
             'Data Path': self._config.data_path,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
         }
+
+    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
+        if embedding is None:
+            embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+        elif isinstance(embedding, list):
+            embedding = np.array(embedding, dtype=np.float32)
+        return embedding

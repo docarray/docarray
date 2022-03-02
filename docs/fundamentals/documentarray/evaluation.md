@@ -10,17 +10,17 @@ The results are stored in `.evaluations` field of each Document.
 
 DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. Different metric accepts different arguments as `kwargs`:
 
-| Metric              | Accept `kwargs`         |
-|---------------------|-------------------------|
-| `r_precision`       | None                    |
-| `average_precision` | None                    |            
-| `reciprocal_rank` | None                    |
-| `precision_at_k`    | `k`                     |
-| `hit_at_k`          | `k`                     |
-| `recall_at_k`       | `max_rel`, `k` |
-| `f1_score_at_k`     | `max_rel`, `k` |
-| `dcg_at_k`          | `method`, `k`           |
-| `ndcg_at_k`         | `method`, `k`           |
+| Metric              | Accept `kwargs`  |
+|---------------------|------------------|
+| `r_precision`       | None             |
+| `average_precision` | None             |            
+| `reciprocal_rank`   | None             |
+| `precision_at_k`    | `k`              |
+| `hit_at_k`          | `k`              |
+| `recall_at_k`       | `max_rel`, `k`   |
+| `f1_score_at_k`     | `max_rel`, `k`   |
+| `dcg_at_k`          | `method`, `k`    |
+| `ndcg_at_k`         | `method`, `k`    |
 
 
 For example, let's create a DocumentArray with random embeddings and matching it to itself:

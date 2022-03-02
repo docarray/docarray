@@ -4,6 +4,7 @@ from typing import (
     Sequence,
     Any,
     Iterable,
+    Dict,
 )
 
 from .helper import Offset2ID
@@ -151,7 +152,7 @@ class BaseGetSetDelMixin(ABC):
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         ...
 
-    def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document'], mismatch_ids: Dict):
         """This function is derived from :meth:`_set_doc_by_id`
         Override this function if there is a more efficient logic
 
@@ -162,8 +163,8 @@ class BaseGetSetDelMixin(ABC):
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
-        self._set_docs_by_ids(ids, docs)
         mismatch_ids = {_id: doc.id for _id, doc in zip(ids, docs) if _id != doc.id}
+        self._set_docs_by_ids(ids, docs, mismatch_ids)
         self._offset2ids.update_ids(mismatch_ids)
 
     def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):

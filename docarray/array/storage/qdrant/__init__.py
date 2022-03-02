@@ -1,9 +1,9 @@
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from .backend import BackendMixin, QdrantConfig
-from .helper import DISTANCES
 from .find import FindMixin
 from .getsetdel import GetSetDelMixin
+from .helper import DISTANCES
 from .seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'QdrantConfig']
@@ -11,7 +11,6 @@ __all__ = ['StorageMixins', 'QdrantConfig']
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
     from qdrant_openapi_client.models.models import Distance
-    from docarray import Document
 
 
 class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
@@ -22,11 +21,6 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
     @property
     def distance(self) -> 'Distance':
         return DISTANCES[self._config.distance]
-
-    def extend(self, docs: Iterable['Document']):
-        docs = list(docs)
-        self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
 
     @property
     def serialization_config(self) -> dict:

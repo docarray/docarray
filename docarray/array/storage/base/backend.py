@@ -1,12 +1,8 @@
 from abc import ABC
 from typing import Dict, Optional, TYPE_CHECKING
 
-from docarray.array.storage.base.helper import Offset2ID
-
 if TYPE_CHECKING:
-    from ....types import (
-        DocumentArraySourceType,
-    )
+    from ....types import DocumentArraySourceType, ArrayType
 
 
 class BaseBackendMixin(ABC):
@@ -21,3 +17,11 @@ class BaseBackendMixin(ABC):
 
     def _get_storage_infos(self) -> Optional[Dict]:
         ...
+
+    def _map_id(self, _id: str) -> str:
+        return _id
+
+    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
+        from ....math.ndarray import to_numpy_array
+
+        return to_numpy_array(embedding)

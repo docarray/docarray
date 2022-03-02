@@ -48,9 +48,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: True if ``x`` is contained in self
         """
         if isinstance(x, str):
-            return self._client.data_object.exists(self._wmap(x))
+            return self._client.data_object.exists(self._map_id(x))
         elif isinstance(x, Document):
-            return self._client.data_object.exists(self._wmap(x.id))
+            return self._client.data_object.exists(self._map_id(x.id))
         else:
             return False
 

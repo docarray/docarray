@@ -13,7 +13,6 @@ from qdrant_openapi_client.models.models import (
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from docarray.array.storage.qdrant.helper import QdrantStorageHelper
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -67,15 +66,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _document_to_qdrant(self, doc: 'Document') -> 'PointStruct':
         return PointStruct(
-            id=self._qmap(doc.id),
+            id=self._map_id(doc.id),
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
-            vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
+            vector=self._map_embedding(doc.embedding),
         )
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
         try:
             resp = self.client.http.points_api.get_point(
-                name=self.collection_name, id=self._qmap(_id)
+                name=self.collection_name, id=self._map_id(_id)
             )
             return self._qdrant_to_document(resp.result.payload)
         except UnexpectedResponse as response_error:
@@ -86,7 +85,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self.client.http.points_api.delete_points(
             name=self.collection_name,
             wait=True,
-            points_selector=PointIdsList(points=[self._qmap(_id)]),
+            points_selector=PointIdsList(points=[self._map_id(_id)]),
         )
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):

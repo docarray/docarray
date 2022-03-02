@@ -16,9 +16,3 @@ __all__ = ['StorageMixins', 'PqliteConfig']
 
 class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...
-
-    def _to_numpy_embedding(self, doc: 'Document'):
-        if doc.embedding is None:
-            doc.embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
-        elif isinstance(doc.embedding, list):
-            doc.embedding = np.array(doc.embedding, dtype=np.float32)

@@ -44,11 +44,11 @@ Among all attributes, content attributes, namely `.text`, `.tensor`, and `.blob`
 They correspond to string-like data (e.g. for natural language), `ndarray`-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively. 
 
 
-| Attribute | Accept type                                                                                                                                                                            | Use case |
-| --- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| --- |
-| `doc.text` | Python string                                                                                                                                                                          | Contain text |
-| `doc.tensor` | A Python (nested) list/tuple of numbers, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense & sparse tensor, PyTorch dense & sparse tensor, PaddlePaddle dense tensor | Contain image/video/audio |
-| `doc.blob` | 	Binary string                                                                                                                                                                         | Contain intermediate IO buffer |
+| Attribute    | Accept type                                                                                                                                                                             | Use case                         |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| `doc.text`   | Python string                                                                                                                                                                           | Contain text                     |
+| `doc.tensor` | A Python (nested) list/tuple of numbers, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense & sparse tensor, PyTorch dense & sparse tensor, PaddlePaddle dense tensor  | Contain image/video/audio        |
+| `doc.blob`   | Binary string                                                                                                                                                                           | Contain intermediate IO buffer   |
 
 
 Each Document can contain only one type of content. That means these three attributes are mutually exclusive. Let's see an example:
