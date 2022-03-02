@@ -23,11 +23,6 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
     def distance(self) -> 'Distance':
         return DISTANCES[self._config.distance]
 
-    def extend(self, docs: Iterable['Document']):
-        docs = list(docs)
-        self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
-
     @property
     def serialization_config(self) -> dict:
         return self._serialize_config

@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import MutableSequence, Iterable, Iterator, Union
+from typing import Iterable, Union
 from docarray import Document
 
 from qdrant_client import QdrantClient
@@ -21,6 +21,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     @property
     @abstractmethod
     def config(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _upload_batch(self, docs: Iterable['Document']):
         raise NotImplementedError()
 
     def __eq__(self, other):
@@ -67,3 +71,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: returns true if the length of the array is larger than 0
         """
         return len(self) > 0
+
+    def extend(self, docs: Iterable['Document']):
+        docs = list(docs)
+        self._upload_batch(docs)
+        self._offset2ids.extend([doc.id for doc in docs])
