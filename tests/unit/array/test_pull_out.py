@@ -147,6 +147,66 @@ def test_batch_update_doc_embedding(docs, storage, config, start_storage):
 @pytest.mark.parametrize(
     'storage,config',
     [
+        ('sqlite', None),
+        ('weaviate', {'n_dim': 2}),
+        ('pqlite', {'n_dim': 2}),
+        ('qdrant', {'n_dim': 2}),
+    ],
+)
+def test_update_id(docs, storage, config, start_storage):
+    if config:
+        da = DocumentArray(docs, storage=storage, config=config)
+    else:
+        da = DocumentArray(docs, storage=storage)
+
+    da[0, 'id'] = Document(embedding=np.random.rand(2)).id
+    assert docs[0] not in da
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', {'n_dim': 2}),
+        ('pqlite', {'n_dim': 2}),
+        ('qdrant', {'n_dim': 2}),
+    ],
+)
+def test_update_doc_id(docs, storage, config, start_storage):
+    if config:
+        da = DocumentArray(docs, storage=storage, config=config)
+    else:
+        da = DocumentArray(docs, storage=storage)
+
+    da[0] = Document(embedding=np.random.rand(2))
+    assert docs[0] not in da
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('sqlite', None),
+        ('weaviate', {'n_dim': 2}),
+        ('pqlite', {'n_dim': 2}),
+        ('qdrant', {'n_dim': 2}),
+    ],
+)
+def test_batch_update_id(docs, storage, config, start_storage):
+    if config:
+        da = DocumentArray(docs, storage=storage, config=config)
+    else:
+        da = DocumentArray(docs, storage=storage)
+
+    da[:, 'id'] = [Document(embedding=np.random.rand(2)).id for _ in range(3)]
+    assert docs[0] not in da
+    assert docs[1] not in da
+    assert docs[2] not in da
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
         ('memory', None),
         ('sqlite', None),
         ('weaviate', {'n_dim': 2}),
