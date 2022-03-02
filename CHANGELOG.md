@@ -35,6 +35,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -887,4 +888,24 @@
 ### 🍹 Other Improvements
 
  - [[```62c20a97```](https://github.com/jina-ai/docarray/commit/62c20a9736128f90301e6d9de0c307c167e01291)] __-__ __version__: the next version will be 0.8.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-5></a>
+## Release Note (`0.8.5`)
+
+> Release time: 2022-03-02 12:33:33
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```a35f49a6```](https://github.com/jina-ai/docarray/commit/a35f49a6c963928318f450bf30b60fdb8e236fca)] __-__ __array__: improve pull cache add pbar to map (#165) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```2ee63f44```](https://github.com/jina-ai/docarray/commit/2ee63f44250ca0a91d915976272911336885c14d)] __-__ fix docs layout (*Han Xiao*)
+ - [[```a2dfc32e```](https://github.com/jina-ai/docarray/commit/a2dfc32eff6107414376fd93245d2106d5ff3a44)] __-__ __version__: the next version will be 0.8.5 (*Jina Dev Bot*)
 
