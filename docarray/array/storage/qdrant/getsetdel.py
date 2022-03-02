@@ -13,7 +13,6 @@ from qdrant_openapi_client.models.models import (
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from docarray.array.storage.qdrant.helper import QdrantStorageHelper
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):

@@ -7,7 +7,6 @@ from typing import (
     List,
 )
 
-from .helper import QdrantStorageHelper
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....score import NamedScore
