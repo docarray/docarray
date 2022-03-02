@@ -46,6 +46,7 @@ The following dependencies will be installed to enable the most common features:
 | `Pillow` | image data-related IO |
 | `fastapi`| used in embedding projector of DocumentArray|
 | `uvicorn`| used in embedding projector of DocumentArray|
+
 ````
 
 ````{tab} Full install
