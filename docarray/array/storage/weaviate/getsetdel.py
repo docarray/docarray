@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Dict
 
 from ..base.getsetdel import BaseGetSetDelMixin
 from ..base.helper import Offset2ID
@@ -46,7 +46,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if flush:
             self._client.batch.flush()
 
-    def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document'], mismatch_ids: Dict):
         """Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end
 
         :param ids: the ids used for indexing
