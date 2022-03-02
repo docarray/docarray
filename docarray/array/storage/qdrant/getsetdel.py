@@ -69,7 +69,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return PointStruct(
             id=self._map_id(doc.id),
             payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
-            vector=QdrantStorageHelper.embedding_to_array(doc.embedding, self.n_dim),
+            vector=self._map_embedding(doc.embedding),
         )
 
     def _get_doc_by_id(self, _id: str) -> 'Document':

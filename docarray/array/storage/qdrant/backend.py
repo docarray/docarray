@@ -12,6 +12,7 @@ from typing import (
     List,
 )
 
+import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_openapi_client.models.models import (
     Distance,
@@ -24,6 +25,7 @@ from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin
 from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
+from docarray.math.helper import EPSILON
 
 if TYPE_CHECKING:
     from docarray.types import (
@@ -181,3 +183,18 @@ class BackendMixin(BaseBackendMixin):
             'Distance': self._config.distance,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
         }
+
+    def _map_embedding(self, embedding: 'ArrayType') -> List[float]:
+        if embedding is None:
+            embedding = np.random.rand(self.n_dim)
+        else:
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
+
+        if np.all(embedding == 0):
+            embedding = embedding + EPSILON
+        return embedding.tolist()

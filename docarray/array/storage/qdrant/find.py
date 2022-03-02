@@ -50,7 +50,7 @@ class FindMixin:
         raise NotImplementedError()
 
     def _find_similar_vectors(self, q: 'QdrantArrayType', limit=10):
-        query_vector = QdrantStorageHelper.embedding_to_array(q, default_dim=0)
+        query_vector = self._map_embedding(q)
 
         search_result = self.client.search(
             self.collection_name,

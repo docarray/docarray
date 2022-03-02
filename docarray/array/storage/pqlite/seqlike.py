@@ -15,7 +15,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             return
 
         for doc in docs:
-            self._to_numpy_embedding(doc)
+            doc.embedding = self._map_embedding(doc.embedding)
 
         self._pqlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])

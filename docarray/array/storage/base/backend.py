@@ -18,10 +18,10 @@ class BaseBackendMixin(ABC):
     def _get_storage_infos(self) -> Optional[Dict]:
         ...
 
-    @staticmethod
-    def _map_id(_id: str) -> str:
+    def _map_id(self, _id: str) -> str:
         return _id
 
-    @staticmethod
-    def _map_embedding(embedding: 'ArrayType') -> 'ArrayType':
-        return embedding
+    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
+        from ....math.ndarray import to_numpy_array
+
+        return to_numpy_array(embedding)

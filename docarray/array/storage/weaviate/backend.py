@@ -277,27 +277,11 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        if value.embedding is not None:
-            from ....math.ndarray import to_numpy_array
-
-            embedding = to_numpy_array(value.embedding)
-
-            if embedding.ndim > 1:
-                embedding = np.asarray(embedding).squeeze()
-
-            # Weaviate expects vector to have dim 2 at least
-            # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
-            # hence we cast it to list of a single element
-            if len(embedding) == 1:
-                embedding = [embedding[0]]
-        else:
-            embedding = None
-
         return dict(
             data_object={'_serialized': value.to_base64(**self._serialize_config)},
             class_name=self._class_name,
             uuid=self._map_id(value.id),
-            vector=embedding,
+            vector=self._map_embedding(value.embedding),
         )
 
     def _map_id(self, doc_id: str):
@@ -311,6 +295,24 @@ class BackendMixin(BaseBackendMixin):
         # daw2 = DocumentArrayWeaviate([Document(id=str(i), text='bye') for i in range(3)])
         # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
         return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
+
+    def _map_embedding(self, embedding: 'ArrayType'):
+        if embedding is not None:
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+
+            # Weaviate expects vector to have dim 2 at least
+            # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
+            # hence we cast it to list of a single element
+            if len(embedding) == 1:
+                embedding = [embedding[0]]
+        else:
+            embedding = None
+        return embedding
 
     def _get_storage_infos(self) -> Dict:
         return {
