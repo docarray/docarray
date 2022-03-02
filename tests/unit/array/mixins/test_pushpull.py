@@ -8,6 +8,7 @@ from tests import random_docs
 class PushMockResponse:
     def __init__(self, status_code: int = 200):
         self.status_code = status_code
+        self.headers = {'Content-length': 1}
 
     def json(self):
         return {'code': self.status_code}
@@ -16,6 +17,7 @@ class PushMockResponse:
 class PullMockResponse:
     def __init__(self, status_code: int = 200):
         self.status_code = status_code
+        self.headers = {'Content-length': 1}
 
     def json(self):
         return {
@@ -27,6 +29,7 @@ class PullMockResponse:
 class DownloadMockResponse:
     def __init__(self, status_code: int = 200):
         self.status_code = status_code
+        self.headers = {'Content-length': 1}
 
     def raise_for_status(self):
         pass

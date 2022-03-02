@@ -36,7 +36,10 @@ def foo_batch(da: DocumentArray):
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
-def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_storage):
+@pytest.mark.parametrize('show_progress', [True, False])
+def test_parallel_map(
+    pytestconfig, da_cls, config, backend, num_worker, start_storage, show_progress
+):
     if __name__ == '__main__':
 
         if config:
@@ -47,7 +50,9 @@ def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_s
             da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
 
         # use a generator
-        for d in da.map(foo, backend, num_worker=num_worker):
+        for d in da.map(
+            foo, backend, num_worker=num_worker, show_progress=show_progress
+        ):
             assert d.tensor.shape == (3, 222, 222)
 
         if config:
@@ -87,8 +92,16 @@ def test_parallel_map(pytestconfig, da_cls, config, backend, num_worker, start_s
 @pytest.mark.parametrize('backend', ['thread'])
 @pytest.mark.parametrize('num_worker', [1, 2, None])
 @pytest.mark.parametrize('b_size', [1, 2, 256])
+@pytest.mark.parametrize('show_progress', [True, False])
 def test_parallel_map_batch(
-    pytestconfig, da_cls, config, backend, num_worker, b_size, start_storage
+    pytestconfig,
+    da_cls,
+    config,
+    backend,
+    num_worker,
+    b_size,
+    start_storage,
+    show_progress,
 ):
     if __name__ == '__main__':
 
@@ -101,7 +114,11 @@ def test_parallel_map_batch(
 
         # use a generator
         for _da in da.map_batch(
-            foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+            foo_batch,
+            batch_size=b_size,
+            backend=backend,
+            num_worker=num_worker,
+            show_progress=True,
         ):
             for d in _da:
                 assert d.tensor.shape == (3, 222, 222)
@@ -116,7 +133,11 @@ def test_parallel_map_batch(
         # use as list, here the caveat is when using process backend you can not modify thing in-place
         list(
             da.map_batch(
-                foo_batch, batch_size=b_size, backend=backend, num_worker=num_worker
+                foo_batch,
+                batch_size=b_size,
+                backend=backend,
+                num_worker=num_worker,
+                show_progress=True,
             )
         )
         if backend == 'thread':
