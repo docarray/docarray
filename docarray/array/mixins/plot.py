@@ -81,14 +81,14 @@ class PlotMixin:
             attr_table.add_column('#Unique values')
             attr_table.add_column('Has empty value')
 
-            all_attrs_values = self._get_attributes(*all_attrs_names)
-            if len(all_attrs_names) == 1:
-                all_attrs_values = [all_attrs_values]
-            for _a, _a_name in zip(all_attrs_values, all_attrs_names):
+            for _a_name in all_attrs_names:
+
                 try:
+                    _a = [getattr(d, _a_name) for d in self]
                     _a = set(_a)
                 except:
                     pass  # intentional ignore as some fields are not hashable
+
                 _set_type_a = set(type(_aa).__name__ for _aa in _a)
                 attr_table.add_row(
                     _a_name,
