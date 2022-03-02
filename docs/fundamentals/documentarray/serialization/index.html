@@ -825,7 +825,7 @@ docs {
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># heavylifting, processing, GPU task, ...</span>
-<span class="n">da</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s1">'myda123'</span><span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s1">'myda123'</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -834,11 +834,12 @@ docs {
 <p>Then on your local laptop, simply pull it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s1">'myda123'</span><span class="p">)</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s1">'myda123'</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now you can continue the work at local, analyzing <code class="docutils literal notranslate"><span class="pre">da</span></code> or visualizing it. Your friends &amp; colleagues who know the token <code class="docutils literal notranslate"><span class="pre">myda123</span></code> can also pull that DocumentArray. It’s useful when you want to quickly share the results with your colleagues &amp; friends.</p>
 <p>The maximum size of an upload is 4GB under the <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> and <code class="docutils literal notranslate"><span class="pre">compress='gzip'</span></code> setting. The lifetime of an upload is one week after its creation.</p>
+<p>To avoid unnecessary download when upstream DocumentArray is unchanged, you can add <code class="docutils literal notranslate"><span class="pre">DocumentArray.pull(...,</span> <span class="pre">local_cache=True)</span></code>.</p>
 </section>
 </section>
 

@@ -456,6 +456,7 @@
                 </div>
                 <h1>Source code for docarray.array.mixins.parallel</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">LambdaType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TypeVar</span>
 
@@ -475,6 +476,7 @@
         <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">'Document'</span><span class="p">],</span> <span class="s1">'Document'</span><span class="p">],</span>
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Apply each element in itself with ``func``, return itself after modified.</span>
 
@@ -490,6 +492,7 @@
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
 
 <span class="sd">        """</span>
         <span class="o">...</span>
@@ -513,6 +516,7 @@
         <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">'Document'</span><span class="p">],</span> <span class="s1">'T'</span><span class="p">],</span>
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'T'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">"""Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
 
@@ -533,12 +537,22 @@
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
+
 <span class="sd">        :yield: anything return from ``func``</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">_is_lambda_or_local_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">'process'</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">_globalize_lambda_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
+
+            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
         <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">)):</span>
                 <span class="k">yield</span> <span class="n">x</span></div>
 
     <span class="nd">@overload</span>
@@ -549,6 +563,7 @@
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Apply each element in itself with ``func``, return itself after modified.</span>
 
@@ -566,6 +581,8 @@
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
 <span class="sd">        :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)</span>
 <span class="sd">        :param shuffle: If set, shuffle the Documents before dividing into minibatches.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
+
 <span class="sd">        """</span>
         <span class="o">...</span>
 
@@ -592,6 +609,7 @@
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'T'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">"""Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
 <span class="sd">        Each element in the returned iterator is :class:`DocumentArray`.</span>
@@ -615,13 +633,25 @@
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
+
 <span class="sd">        :yield: anything return from ``func``</span>
 <span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">_is_lambda_or_local_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">'process'</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">_globalize_lambda_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
+
+            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+
         <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">))</span>
+            <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">x</span></div></div>
 
 

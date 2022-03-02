@@ -366,7 +366,7 @@ Considering you are working on a GPU machine via Google Colab/Jupyter. After pre
 from docarray import DocumentArray
 
 da = DocumentArray(...)  # heavylifting, processing, GPU task, ...
-da.push(token='myda123')
+da.push(token='myda123', show_progress=True)
 ```
 
 ```{figure} images/da-push.png
@@ -377,11 +377,12 @@ Then on your local laptop, simply pull it:
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray.pull(token='myda123')
+da = DocumentArray.pull(token='myda123', show_progress=True)
 ```
 
 Now you can continue the work at local, analyzing `da` or visualizing it. Your friends & colleagues who know the token `myda123` can also pull that DocumentArray. It's useful when you want to quickly share the results with your colleagues & friends.
 
 The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compress='gzip'` setting. The lifetime of an upload is one week after its creation.
 
+To avoid unnecessary download when upstream DocumentArray is unchanged, you can add `DocumentArray.pull(..., local_cache=True)`.
 

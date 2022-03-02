@@ -561,14 +561,21 @@
 
 <div class="viewcode-block" id="PushPullMixin.pull"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">local_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Pulling a :class:`DocumentArray` from Jina Cloud Service to local.</span>
 
 <span class="sd">        :param token: the upload token set during :meth:`.push`</span>
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
+<span class="sd">        :param local_cache: store the downloaded DocumentArray to local folder</span>
 <span class="sd">        :return: a :class:`DocumentArray` object</span>
 <span class="sd">        """</span>
+
         <span class="kn">import</span> <span class="nn">requests</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/da.pull?token=</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">'</span>
@@ -584,9 +591,27 @@
             <span class="n">headers</span><span class="o">=</span><span class="n">get_request_header</span><span class="p">(),</span>
         <span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+            <span class="n">_da_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Content-length'</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">local_cache</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">'</span><span class="p">):</span>
+                <span class="n">_cache_len</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">_cache_len</span> <span class="o">==</span> <span class="n">_da_len</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+                        <span class="n">progress</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+                    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
+                        <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span>
+                        <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">,</span>
+                        <span class="n">_show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">,</span>
+                        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+
             <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
                 <span class="n">task_id</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="s1">'download'</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Content-length'</span><span class="p">]))</span>
+                <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">_da_len</span><span class="p">))</span>
             <span class="k">with</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">8192</span>
                 <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
@@ -596,8 +621,14 @@
                     <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
                         <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">advance</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
 
+                <span class="k">if</span> <span class="n">local_cache</span><span class="p">:</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">'.cache'</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">getbuffer</span><span class="p">())</span>
+
                 <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
                     <span class="n">progress</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
                 <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(),</span>
                     <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span>
@@ -637,7 +668,7 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Progress</span><span class="p">(</span>
-            <span class="n">BarColumn</span><span class="p">(</span><span class="n">bar_width</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+            <span class="n">BarColumn</span><span class="p">(),</span>
             <span class="s2">"[progress.percentage]</span><span class="si">{task.percentage:&gt;3.1f}</span><span class="s2">%"</span><span class="p">,</span>
             <span class="s2">"•"</span><span class="p">,</span>
             <span class="n">DownloadColumn</span><span class="p">(),</span>
