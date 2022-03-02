@@ -142,3 +142,25 @@ def test_batch_update_doc_embedding(docs, storage, config, start_storage):
     assert results[2].id == docs[2].id
 
     np.testing.assert_almost_equal(to_numpy_array(da[0].embedding), np.array([0, 10]))
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', {'n_dim': 2}),
+        ('pqlite', {'n_dim': 2}),
+        ('qdrant', {'n_dim': 2}),
+    ],
+)
+def test_batch_update_doc_id(docs, storage, config, start_storage):
+    if config:
+        da = DocumentArray(docs, storage=storage, config=config)
+    else:
+        da = DocumentArray(docs, storage=storage)
+
+    da[:] = [Document(embedding=np.random.rand(2)) for _ in range(3)]
+    assert docs[0] not in da
+    assert docs[1] not in da
+    assert docs[2] not in da
