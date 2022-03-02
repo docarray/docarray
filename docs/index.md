@@ -29,13 +29,13 @@ conda install -c conda-forge docarray
 No extra dependency will be installed.
 ````
 
-````{tab} Full install
+````{tab} Common install
 
 ```bash
-pip install "docarray[full]"
+pip install "docarray[common]"
 ```
 
-The following dependencies will be installed to enable additional features:
+The following dependencies will be installed to enable the most common features:
 
 | Package | Used in |
 |---|---|
@@ -44,10 +44,27 @@ The following dependencies will be installed to enable additional features:
 | `requests` | push/pull to Jina Cloud |
 | `matplotlib` | visualizing image sprites |
 | `Pillow` | image data-related IO |
-| `rich` | push/pull to Jina Cloud, summary of Document, DocumentArray |
-| `av` | video data-related IO |
-| `trimesh`| 3D mesh data-related IO |
 | `fastapi`| used in embedding projector of DocumentArray|
+| `uvicorn`| used in embedding projector of DocumentArray|
+````
+
+````{tab} Full install
+
+```bash
+pip install "docarray[full]"
+```
+
+In addition to `common`, the following dependencies will be installed to enable full features:
+
+| Package | Used in |
+|---|---|
+| `scipy` | for sparse embedding, tensors |
+| `av` | for video processing and IO |
+| `trimesh` | for 3D mesh processing and IO |
+| `weaviate-client` | for using Weaviate-based document store |
+| `pqlite` | for using PQLite-based document store |
+| `qdrant-client` | for using Qdrant-based document store |
+| `strawberry-graphql` | for GraphQL support |
 
 Alternatively, you can first do basic installation and then install missing dependencies on-demand. 
 ````
