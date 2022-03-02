@@ -23,9 +23,7 @@ from ....helper import dataclass_from_dict
 from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
-    from ....types import (
-        DocumentArraySourceType,
-    )
+    from ....types import DocumentArraySourceType, ArrayType
 
 
 @dataclass

@@ -17,9 +17,7 @@ from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
-    from ....types import (
-        DocumentArraySourceType,
-    )
+    from ....types import DocumentArraySourceType, ArrayType
 
 
 @dataclass
