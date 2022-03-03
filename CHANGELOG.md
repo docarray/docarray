@@ -38,6 +38,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -949,4 +950,20 @@
 ### 🍹 Other Improvements
 
  - [[```c0ffa595```](https://github.com/jina-ai/docarray/commit/c0ffa5952cc595fb57c65ecff8b5e72d86b2e63c)] __-__ __version__: the next version will be 0.8.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-8></a>
+## Release Note (`0.8.8`)
+
+> Release time: 2022-03-03 09:54:51
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```df59998e```](https://github.com/jina-ai/docarray/commit/df59998ee51c757a563dec3524ce92631a862be7)] __-__ Revert &#34;feat: add from to dict io (#160)&#34; (#167) (*Han Xiao*)
+ - [[```b15ae100```](https://github.com/jina-ai/docarray/commit/b15ae100ab38958a24bf6d6d826087da995651dd)] __-__ __version__: the next version will be 0.8.8 (*Jina Dev Bot*)
 
