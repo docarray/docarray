@@ -175,34 +175,6 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 @pytest.mark.parametrize(
     'da_cls, config',
     [
-        (DocumentArrayInMemory, lambda: None),
-        (DocumentArraySqlite, lambda: None),
-        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=3)),
-        (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
-        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=3)),
-    ],
-)
-def test_from_to_dict(da_cls, config, start_storage):
-    da_dict = da_cls.empty(2, config=config()).to_dict()
-    assert len(da_cls.from_dict(da_dict, config=config())) == 2
-
-    # more complicated
-    da = da_cls.empty(2, config=config())
-
-    da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
-    da[:, 'tensor'] = [[1, 2], [2, 1]]
-    da[0, 'tags'] = {'hello': 'world'}
-    da_dict = da.to_dict()
-
-    da2 = da_cls.from_dict(da_dict, config=config())
-
-    assert da2[0].tags == {'hello': 'world'}
-    assert da2[1].tags == {}
-
-
-@pytest.mark.parametrize(
-    'da_cls, config',
-    [
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayPqlite, PqliteConfig(n_dim=3)),
