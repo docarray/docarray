@@ -12,7 +12,6 @@ Moreover, there is the ability to store/load `DocumentArray` objects to/from dis
 - Base64 (compressed): `.from_base64()`/`.to_base64()` 
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
 - Python List: `.from_list()`/`.to_list()`
-- Python Dict: `.from_dict()`/`.to_dict()`
 - Pandas Dataframe: `.from_dataframe()`/`.to_dataframe()`
 - Cloud: `.push()`/`.pull()`
 
@@ -324,25 +323,6 @@ da.to_list()
 ```{seealso}
 More parameters and usages can be found in the Document-level {ref}`doc-dict`.
 ```
-
-
-## From/to dict
-
-
-Serializing to/from Python dict is less frequently used for the same reason as `Document.to_dict()`: it is often an intermediate step of serializing to JSON. You can do:
-
-```python
-from docarray import DocumentArray, Document
-
-da = DocumentArray([Document(text='hello'), Document(text='world')])
-da.to_dict()
-```
-
-```text
-{0: {'id': '3b31cb4c993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'hello', 1: {'id': '3b31cca0993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'world'}}```
-```
-
-
 
 ## From/to dataframe
 
