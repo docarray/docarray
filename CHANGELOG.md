@@ -37,6 +37,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -928,4 +929,24 @@
 ### 🍹 Other Improvements
 
  - [[```40705a44```](https://github.com/jina-ai/docarray/commit/40705a44ea295efabfdeac89a0cfb485fa220b2f)] __-__ __version__: the next version will be 0.8.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-7></a>
+## Release Note (`0.8.7`)
+
+> Release time: 2022-03-03 07:43:05
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```3b169d4d```](https://github.com/jina-ai/docarray/commit/3b169d4dbbd32381611d70a7ff3a604213bc2d86)] __-__ add from to dict io (#160) (*David Buchaca Prats*)
+ - [[```45a35a54```](https://github.com/jina-ai/docarray/commit/45a35a546e879f50cbdcd9e647fee25003c35b3d)] __-__ DocumentArray pull out columns (#162) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```c0ffa595```](https://github.com/jina-ai/docarray/commit/c0ffa5952cc595fb57c65ecff8b5e72d86b2e63c)] __-__ __version__: the next version will be 0.8.7 (*Jina Dev Bot*)
 
