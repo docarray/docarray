@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.8.6 Documentation" />
+<meta property="og:site_name" content="DocArray 0.8.7 Documentation" />
   
 <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. Moreover, there is the ability to store/load DocumentArray object..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.8.6 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.8.7 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Elements" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Serialization - DocArray 0.8.6 documentation</title>
+        <title>Serialization - DocArray 0.8.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -168,7 +168,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.8.6 documentation</div>
+                <div class="brand">DocArray 0.8.7 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -279,6 +279,7 @@
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.dataframe/">docarray.array.mixins.io.dataframe module</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.dict/">docarray.array.mixins.io.dict module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a></li>
@@ -507,6 +508,7 @@ Moreover, there is the ability to store/load <code class="docutils literal notra
 <li><p>Base64 (compressed): <code class="docutils literal notranslate"><span class="pre">.from_base64()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_base64()</span></code></p></li>
 <li><p>Protobuf Message: <code class="docutils literal notranslate"><span class="pre">.from_protobuf()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_protobuf()</span></code></p></li>
 <li><p>Python List: <code class="docutils literal notranslate"><span class="pre">.from_list()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_list()</span></code></p></li>
+<li><p>Python Dict: <code class="docutils literal notranslate"><span class="pre">.from_dict()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_dict()</span></code></p></li>
 <li><p>Pandas Dataframe: <code class="docutils literal notranslate"><span class="pre">.from_dataframe()</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_dataframe()</span></code></p></li>
 <li><p>Cloud: <code class="docutils literal notranslate"><span class="pre">.push()</span></code>/<code class="docutils literal notranslate"><span class="pre">.pull()</span></code></p></li>
 </ul>
@@ -790,6 +792,19 @@ docs {
 <p>More parameters and usages can be found in the Document-level <a class="reference internal" href="../../document/serialization/#doc-dict"><span class="std std-ref">From/to dict</span></a>.</p>
 </div>
 </section>
+<section id="from-to-dict">
+<h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this headline">#</a></h2>
+<p>Serializing to/from Python dict is less frequently used for the same reason as <code class="docutils literal notranslate"><span class="pre">Document.to_dict()</span></code>: it is often an intermediate step of serializing to JSON. You can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)])</span>
+<span class="n">da</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{0: {'id': '3b31cb4c993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'hello', 1: {'id': '3b31cca0993f11ec8d12787b8ab3f5de', 'mime_type': 'text/plain', 'text': 'world'}}```
+</pre></div>
+</div>
+</section>
 <section id="from-to-dataframe">
 <h2>From/to dataframe<a class="headerlink" href="#from-to-dataframe" title="Permalink to this headline">#</a></h2>
 <div class="admonition important">
@@ -875,7 +890,7 @@ docs {
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 02, 2022.
+                    Last updated on Mar 03, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -911,6 +926,7 @@ docs {
 <li><a class="reference internal" href="#from-to-base64">From/to base64</a></li>
 <li><a class="reference internal" href="#from-to-protobuf">From/to Protobuf</a></li>
 <li><a class="reference internal" href="#from-to-list">From/to list</a></li>
+<li><a class="reference internal" href="#from-to-dict">From/to dict</a></li>
 <li><a class="reference internal" href="#from-to-dataframe">From/to dataframe</a></li>
 <li><a class="reference internal" href="#from-to-cloud">From/to cloud</a></li>
 </ul>

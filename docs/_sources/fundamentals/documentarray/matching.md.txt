@@ -106,13 +106,13 @@ match emb =   (0, 0)	1.0
 
 The following metrics are supported:
 
-| Metric                                                                                                               | Frameworks                                                             |
-|----------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| Metric                                                                                                               | Frameworks                                |
+|----------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
 | `cosine`                                                                                                             | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
 | `sqeuclidean`                                                                                                        | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
 | `euclidean`                                                                                                          | Scipy, Numpy, Tensorflow, Pytorch, Paddle |
-| [Metrics supported by Scipy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html) | Scipy |
-| User defined callable                                                                                                | Depending on the callable |
+| [Metrics supported by Scipy](https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html) | Scipy                                     |
+| User defined callable                                                                                                | Depending on the callable                 |
 
 Note that framework is auto-chosen based on the type of `.embeddings`. For example, if `.embeddings` is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when `.embeddings` is a Numpy `ndarray`, you can choose to use Numpy or Scipy (by specify `.match(..., use_scipy=True)`) for computing. 
 

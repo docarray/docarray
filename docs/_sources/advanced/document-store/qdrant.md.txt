@@ -17,7 +17,7 @@ services:
   qdrant:
     image: qdrant/qdrant:v0.5.1
     ports:
-      - 6333:6333
+      - "6333:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
       nofile:
         soft: 65535
