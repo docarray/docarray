@@ -47,14 +47,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             batch.append(self._document_to_qdrant(doc))
             if len(batch) > self.scroll_batch_size:
                 self.client.http.points_api.upsert_points(
-                    name=self.collection_name,
+                    collection_name=self.collection_name,
                     wait=True,
                     point_insert_operations=PointsList(points=batch),
                 )
                 batch = []
         if len(batch) > 0:
             self.client.http.points_api.upsert_points(
-                name=self.collection_name,
+                collection_name=self.collection_name,
                 wait=True,
                 point_insert_operations=PointsList(points=batch),
             )
@@ -74,7 +74,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_doc_by_id(self, _id: str) -> 'Document':
         try:
             resp = self.client.http.points_api.get_point(
-                name=self.collection_name, id=self._map_id(_id)
+                collection_name=self.collection_name, id=self._map_id(_id)
             )
             return self._qdrant_to_document(resp.result.payload)
         except UnexpectedResponse as response_error:
@@ -83,7 +83,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         self.client.http.points_api.delete_points(
-            name=self.collection_name,
+            collection_name=self.collection_name,
             wait=True,
             points_selector=PointIdsList(points=[self._map_id(_id)]),
         )
@@ -92,7 +92,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if _id != value.id:
             self._del_doc_by_id(_id)
         self.client.http.points_api.upsert_points(
-            name=self.collection_name,
+            collection_name=self.collection_name,
             wait=True,
             point_insert_operations=PointsList(
                 points=[self._document_to_qdrant(value)]
@@ -103,7 +103,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         offset = None
         while True:
             response = self.client.http.points_api.scroll_points(
-                name=self.collection_name,
+                collection_name=self.collection_name,
                 scroll_request=ScrollRequest(
                     offset=offset,
                     limit=self.scroll_batch_size,
