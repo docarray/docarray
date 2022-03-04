@@ -20,7 +20,7 @@ To access a DocumentArray formerly persisted, one can specify the `data_path` in
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='annlite', config={'db_path': 'data_folder', 'n_dim': 10})
+da = DocumentArray(storage='annlite', config={'data_path': './data', 'n_dim': 10})
 
 da.summary()
 ```
