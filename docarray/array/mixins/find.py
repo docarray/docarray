@@ -161,7 +161,7 @@ class FindMixin:
 
     def _filter(self, *args, **kwargs):
         from ... import DocumentArray
-        from ...lookup import Q, filter_items
+        from docarray.array.queryset.lookup import filter_items
 
         result = filter_items(self, *args, **kwargs)
         return DocumentArray(result)

@@ -54,6 +54,9 @@ def lookup(key, val, doc):
     elif last == 'in':
         val = guard_iter(val)
         return value in val
+    elif last == 'nin':
+        val = guard_iter(val)
+        return not (value in val)
     elif last == 'startswith':
         val = guard_str(val)
         return iff_not_none(value, lambda y: y.startswith(val))
@@ -147,7 +150,7 @@ class LookupNode(LookupTreeElem):
         return newnode
 
     def __repr__(self):
-        return f'(op={self.op}, lookups={self.children})'
+        return f'{self.op}: [{self.children}]'
 
 
 class LookupLeaf(LookupTreeElem):
