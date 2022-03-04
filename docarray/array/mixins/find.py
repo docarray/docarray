@@ -68,8 +68,10 @@ class FindMixin:
             else:
                 limit = int(limit)
 
-        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+        if isinstance(query, dict):
+            return self._filter(query, limit=limit, only_id=only_id)
 
+        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
         if isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
@@ -159,10 +161,21 @@ class FindMixin:
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 
-    def _filter(self, query: Dict, **kwargs):
+    def _filter(
+        self,
+        query: Dict,
+        limit: Optional[Union[int, float]] = None,
+        only_id: bool = False,
+        **kwargs,
+    ):
         from ... import DocumentArray
-        from docarray.array.queryset.parser import QueryParser
+        from ..queryset import QueryParser
 
         parser = QueryParser(query)
 
-        return DocumentArray([d for d in self if parser.evaluate(d)])
+        result = DocumentArray()
+        for d in self:
+            if (limit is None or len(result) < limit) and parser.evaluate(d):
+                result.append(d if not only_id else Document(id=d.id))
+
+        return result
