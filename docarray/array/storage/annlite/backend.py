@@ -31,9 +31,14 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
-            embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
+            embedding = np.zeros(self.n_dim, dtype=np.float32)
         elif isinstance(embedding, list):
-            embedding = np.array(embedding, dtype=np.float32)
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
         return embedding
 
     def _init_storage(
