@@ -123,10 +123,10 @@ class LookupNode(LookupTreeElem):
 
     """
 
-    def __init__(self):
+    def __init__(self, op: str = 'and'):
         super(LookupNode, self).__init__()
         self.children = []
-        self.op = 'and'
+        self.op = op
 
     def add_child(self, child):
         self.children.append(child)
@@ -159,6 +159,11 @@ class LookupLeaf(LookupTreeElem):
     def __init__(self, **kwargs):
         super(LookupLeaf, self).__init__()
         self.lookups = kwargs
+
+    # def add_child(self, other):
+    #     node = LookupNode()
+    #     node.add_child(self)
+    #     node.add_child(other)
 
     def evaluate(self, item):
         """Evaluates the expression represented by the object for the item

@@ -1,9 +1,9 @@
-from typing import Dict, Callable, TYPE_CHECKING
+from typing import Dict, Callable, TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ... import Document
 
-from .lookup import Q
+from .lookup import Q, LookupNode, LookupLeaf
 
 LOGICAL_OPERATORS = {'$and': lambda x, y: x & y, '$or': lambda x, y: x | y}
 
@@ -27,16 +27,27 @@ SUPPORTED_OPERATORS = {
 }
 
 
-def _parse_lookups(data: Dict = {}, logic_op: Callable = LOGICAL_OPERATORS['$and']):
-    lookup_groups = None
+def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
+    # if isinstance(root_node, LookupLeaf):
+    #     root = LookupNode()
+    #     root.add_child(root_node)
+    #     root_node = root
+
     if isinstance(data, dict):
         for key, value in data.items():
+            if isinstance(root_node, LookupLeaf):
+                root = LookupNode()
+                root.add_child(root_node)
+                root_node = root
+
             if key in LOGICAL_OPERATORS:
-                _lookups = _parse_lookups(value, logic_op=LOGICAL_OPERATORS[key])
-                if lookup_groups is None:
-                    lookup_groups = _lookups
-                else:
-                    lookup_groups = LOGICAL_OPERATORS[key](lookup_groups, _lookups)
+                node = LookupNode(op=key[1:])
+                node = _parse_lookups(value, root_node=node)
+                # if root_node and node:
+                #     root_node.add_child(node)
+                # elif node:
+                #     root_node = node
+
             elif key.startswith('$'):
                 raise ValueError(
                     f'The operator {key} is not supported yet, please double check the given filters!'
@@ -49,38 +60,52 @@ def _parse_lookups(data: Dict = {}, logic_op: Callable = LOGICAL_OPERATORS['$and
                 elif len(items) == 1:
                     op, val = items[0]
                     if op in LOGICAL_OPERATORS:
-                        _lookups = _parse_lookups(val, logic_op=LOGICAL_OPERATORS[op])
+                        node = LookupNode(op=op[1:])
+                        node = _parse_lookups(val, root_node=node)
                     elif op in SUPPORTED_OPERATORS:
-                        _lookups = Q(**{f'{key}__{SUPPORTED_OPERATORS[op]}': val})
+                        node = Q(**{f'{key}__{SUPPORTED_OPERATORS[op]}': val})
                     else:
                         raise ValueError(
                             f'The operator {op} is not supported yet, please double check the given filters!'
                         )
-                    if lookup_groups is None:
-                        lookup_groups = _lookups
-                    else:
-                        lookup_groups = logic_op(lookup_groups, _lookups)
+
+                    # if root_node and node:
+                    #     root_node.add_child(node)
+                    # elif node:
+                    #     root_node = node
+
                 else:
+                    node = LookupNode()
                     for op, val in items:
-                        _lookups = _parse_lookups({key: {op: val}})
-                        print(f'===> inner: {_lookups}')
-                        if lookup_groups is None:
-                            lookup_groups = _lookups
-                        else:
-                            # lookup_groups &= _lookups
-                            # lookup_groups = logic_op(lookup_groups, _lookups)
-                            lookup_groups.add_child(_lookups)
+                        _node = _parse_lookups({key: {op: val}})
+                        node.add_child(_node)
+                        # if root_node and node:
+                        #     root_node.add_child(node)
+                        # elif node:
+                        #     root_node = node
+
+            if root_node and node:
+                root_node.add_child(node)
+            elif node:
+                root_node = node
+
     elif isinstance(data, list):
+        # node = LookupNode()
         for d in data:
-            _lookups = _parse_lookups(d)
-            if lookup_groups is None:
-                lookup_groups = _lookups
-            else:
-                lookup_groups = logic_op(lookup_groups, _lookups)
+            node = _parse_lookups(d)
+            # node.add_child(_node)
+            # if root_node and node:
+            #     root_node.add_child(node)
+            # elif node:
+            #     root_node = node
+            if root_node and node:
+                root_node.add_child(node)
+            elif node:
+                root_node = node
     else:
         raise ValueError(f'The query is illegal: {data}')
 
-    return lookup_groups
+    return root_node
 
 
 class QueryParser:
