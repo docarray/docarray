@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.io.binary - DocArray 0.8.10 documentation</title>
+        <title>docarray.array.mixins.io.binary - DocArray 0.8.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.8.10 documentation</div>
+                <div class="brand">DocArray 0.8.11 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -463,6 +463,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span>
 
 <span class="kn">from</span> <span class="nn">....helper</span> <span class="kn">import</span> <span class="p">(</span>
@@ -483,7 +484,7 @@
 <div class="viewcode-block" id="BinaryIOMixin.load_binary"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.load_binary">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_binary</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
-        <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span>
+        <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
         <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle-array'</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -513,13 +514,14 @@
             <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="c1"># by checking path existence we allow file to be of type Path, LocalPath, PurePath and str</span>
         <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
             <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span> <span class="o">=</span> <span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span>
                 <span class="n">file</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span>
             <span class="p">)</span>
             <span class="n">file_ctx</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'unsupported input </span><span class="si">{</span><span class="n">file</span><span class="si">!r}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'cannot find file </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">streaming</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_load_binary_stream</span><span class="p">(</span>
                 <span class="n">file_ctx</span><span class="p">,</span>
