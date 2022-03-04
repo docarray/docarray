@@ -161,7 +161,7 @@ class BackendMixin(BaseBackendMixin):
             )
 
         self.client.http.points_api.upsert_points(
-            name=self.collection_name_meta,
+            collection_name=self.collection_name_meta,
             wait=True,
             point_insert_operations=PointsList(
                 points=[
