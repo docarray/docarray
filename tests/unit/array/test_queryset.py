@@ -1,9 +1,15 @@
+import pytest
 from docarray.array.queryset import QueryParser
 
 
 def test_empty_query():
     query = QueryParser()
     assert query.lookup_groups is None
+
+
+def test_illegal_query():
+    with pytest.raises(ValueError):
+        query = QueryParser({'$may': {'brand': {'$lt': 1}, 'price': {'$gte': 50}}})
 
 
 def test_simple_query():

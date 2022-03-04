@@ -1,4 +1,4 @@
-from typing import Dict, Callable, TYPE_CHECKING, Optional
+from typing import Dict, TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ... import Document
@@ -28,11 +28,6 @@ SUPPORTED_OPERATORS = {
 
 
 def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
-    # if isinstance(root_node, LookupLeaf):
-    #     root = LookupNode()
-    #     root.add_child(root_node)
-    #     root_node = root
-
     if isinstance(data, dict):
         for key, value in data.items():
             if isinstance(root_node, LookupLeaf):
@@ -43,10 +38,6 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
             if key in LOGICAL_OPERATORS:
                 node = LookupNode(op=key[1:])
                 node = _parse_lookups(value, root_node=node)
-                # if root_node and node:
-                #     root_node.add_child(node)
-                # elif node:
-                #     root_node = node
 
             elif key.startswith('$'):
                 raise ValueError(
@@ -69,20 +60,11 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                             f'The operator {op} is not supported yet, please double check the given filters!'
                         )
 
-                    # if root_node and node:
-                    #     root_node.add_child(node)
-                    # elif node:
-                    #     root_node = node
-
                 else:
                     node = LookupNode()
                     for op, val in items:
                         _node = _parse_lookups({key: {op: val}})
                         node.add_child(_node)
-                        # if root_node and node:
-                        #     root_node.add_child(node)
-                        # elif node:
-                        #     root_node = node
 
             if root_node and node:
                 root_node.add_child(node)
@@ -90,14 +72,8 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                 root_node = node
 
     elif isinstance(data, list):
-        # node = LookupNode()
         for d in data:
             node = _parse_lookups(d)
-            # node.add_child(_node)
-            # if root_node and node:
-            #     root_node.add_child(node)
-            # elif node:
-            #     root_node = node
             if root_node and node:
                 root_node.add_child(node)
             elif node:

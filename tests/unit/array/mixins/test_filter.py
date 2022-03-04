@@ -14,6 +14,11 @@ def docs():
     return docs
 
 
+def test_empty_filter(docs):
+    result = docs._filter({})
+    assert len(result) == 5
+
+
 def test_sample_filter(docs):
     result = docs._filter({'text': {'$eq': 'hello'}})
     assert len(result) == 1
