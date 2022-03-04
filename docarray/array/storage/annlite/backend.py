@@ -31,7 +31,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'np.ndarray':
         if embedding is None:
-            embedding = np.random.rand(self.n_dim)
+            embedding = np.zeros(self.n_dim)
         else:
             from ....math.ndarray import to_numpy_array
 
