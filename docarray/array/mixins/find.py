@@ -36,7 +36,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType'],
+        query: Union['DocumentArray', 'Document', 'ArrayType', Dict],
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
