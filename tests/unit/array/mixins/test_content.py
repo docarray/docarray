@@ -4,7 +4,7 @@ import pytest
 from docarray import DocumentArray
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -15,7 +15,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     [
         DocumentArray,
         DocumentArraySqlite,
-        DocumentArrayPqlite,
+        DocumentArrayAnnlite,
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
     ],
@@ -24,7 +24,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
 def test_content_empty_getter_return_none(cls, content_attr, start_storage):
-    if cls in [DocumentArrayPqlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
+    if cls in [DocumentArrayAnnlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
@@ -36,7 +36,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
     [
         DocumentArray,
         DocumentArraySqlite,
-        DocumentArrayPqlite,
+        DocumentArrayAnnlite,
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
     ],
@@ -52,7 +52,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
     ],
 )
 def test_content_empty_setter(cls, content_attr, start_storage):
-    if cls in [DocumentArrayPqlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
+    if cls in [DocumentArrayAnnlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
@@ -65,7 +65,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -98,7 +98,7 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -134,7 +134,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=5)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
     ],

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Optional, List, Tuple
 
-from pqlite.storage.table import Table
+from annlite.storage.table import Table
 
 
 class OffsetMapping(Table):

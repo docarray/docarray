@@ -8,12 +8,12 @@ import pytest
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
-from docarray.array.pqlite import DocumentArrayPqlite
-from docarray.array.storage.pqlite import PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite
+from docarray.array.storage.annlite import AnnliteConfig
 
 
 @pytest.mark.parametrize(
@@ -21,7 +21,7 @@ from docarray.array.storage.pqlite import PqliteConfig
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
@@ -53,7 +53,7 @@ def test_sprite_fail_tensor_success_uri(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
@@ -90,7 +90,7 @@ def da_and_dam(start_storage):
             (DocumentArray, {}),
             (DocumentArraySqlite, {}),
             (DocumentArrayWeaviate, {'config': {'n_dim': 3}}),
-            (DocumentArrayPqlite, {'config': {'n_dim': 3}}),
+            (DocumentArrayAnnlite, {'config': {'n_dim': 3}}),
             (DocumentArrayQdrant, {'config': {'n_dim': 3}}),
         ]
     ]
@@ -116,7 +116,7 @@ def _test_plot_embeddings(da):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, lambda: PqliteConfig(n_dim=5)),
+        (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=5)),
     ],
@@ -144,7 +144,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -166,7 +166,7 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, PqliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],

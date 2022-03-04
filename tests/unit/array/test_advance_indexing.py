@@ -3,7 +3,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.storage.weaviate import WeaviateConfig
-from docarray.array.pqlite import PqliteConfig
+from docarray.array.annlite import AnnliteConfig
 from docarray.array.qdrant import QdrantConfig
 
 
@@ -23,7 +23,7 @@ def indices():
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -55,7 +55,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -83,7 +83,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -116,7 +116,7 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -153,7 +153,7 @@ def test_slice(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -198,7 +198,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -233,7 +233,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -266,7 +266,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -285,7 +285,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -323,7 +323,7 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )
@@ -407,7 +407,7 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', lambda: PqliteConfig(n_dim=123)),
+        ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
     ],
 )
@@ -439,7 +439,7 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
 
 
 @pytest.mark.parametrize(
-    'storage', ['memory', 'sqlite', 'weaviate', 'pqlite', 'qdrant']
+    'storage', ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant']
 )
 def test_tensor_attribute_selector(storage, start_storage):
     import scipy.sparse
@@ -448,7 +448,7 @@ def test_tensor_attribute_selector(storage, start_storage):
     sp_embed[sp_embed > 0.1] = 0
     sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
-    if storage in ('pqlite', 'weaviate', 'qdrant'):
+    if storage in ('annlite', 'weaviate', 'qdrant'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
     else:
         da = DocumentArray(storage=storage)
@@ -474,9 +474,9 @@ def test_tensor_attribute_selector(storage, start_storage):
 # TODO: since match function is not implemented, this test will
 # not work with weaviate storage atm, will be addressed in
 # next version
-@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'pqlite'])
+@pytest.mark.parametrize('storage', ['memory', 'sqlite', 'annlite'])
 def test_advance_selector_mixed(storage):
-    if storage == 'pqlite':
+    if storage == 'annlite':
         da = DocumentArray(storage=storage, config={'n_dim': 3})
     else:
         da = DocumentArray(storage=storage)
@@ -491,10 +491,10 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize(
-    'storage', ['memory', 'sqlite', 'weaviate', 'pqlite', 'qdrant']
+    'storage', ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant']
 )
 def test_single_boolean_and_padding(storage, start_storage):
-    if storage in ('pqlite', 'weaviate', 'qdrant'):
+    if storage in ('annlite', 'weaviate', 'qdrant'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
     else:
         da = DocumentArray(storage=storage)
@@ -520,7 +520,7 @@ def test_single_boolean_and_padding(storage, start_storage):
         ('memory', None),
         ('sqlite', None),
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
-        ('pqlite', lambda: PqliteConfig(n_dim=123)),
+        ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
     ],
 )
@@ -596,7 +596,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
     [
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('pqlite', PqliteConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
     ],
 )

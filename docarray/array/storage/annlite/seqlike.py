@@ -26,7 +26,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             self._pqlite.clear()
 
     def __eq__(self, other):
-        """In pqlite backend, data are considered as identical if configs point to the same database source"""
+        """In annlite backend, data are considered as identical if configs point to the same database source"""
         return (
             type(self) is type(other)
             and type(self._config) is type(other._config)

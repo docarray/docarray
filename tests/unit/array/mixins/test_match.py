@@ -71,7 +71,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
 
 @pytest.mark.parametrize(
     'storage, config',
-    [('weaviate', {'n_dim': 3}), ('pqlite', {'n_dim': 3}), ('qdrant', {'n_dim': 3})],
+    [('weaviate', {'n_dim': 3}), ('annlite', {'n_dim': 3}), ('qdrant', {'n_dim': 3})],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
 @pytest.mark.parametrize('exclude_self', [True, False])
