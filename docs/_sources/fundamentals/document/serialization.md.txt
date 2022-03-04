@@ -240,6 +240,7 @@ mime_type: "image/jpeg"
 
 One can refer to the [Protobuf specification of `Document`](../../proto/index.md) for details.  
 
+When `.tensor` or `.embedding` contains frameworks-specific ndarray-like object, you can use `.to_protobuf(..., ndarray_type='numpy')` or `.to_protobuf(..., ndarray_type='list')` to cast them into `list` or `numpy.ndarray` automatically. This will help to ensure the maximum compatability between different microservices.
 
 ## What's next?
 
