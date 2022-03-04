@@ -54,11 +54,15 @@ class BinaryIOMixin:
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
-        elif os.path.exists(file):
-            protocol, compress = protocol_and_compress_from_file_path(
-                file, protocol, compress
-            )
-            file_ctx = open(file, 'rb')
+        elif isinstance(file, str):
+            if os.path.exists(file):
+                protocol, compress = protocol_and_compress_from_file_path(
+                    file, protocol, compress
+                )
+                file_ctx = open(file, 'rb')
+            else:
+                if not os.path.exists(file):
+                    raise FileNotFoundError(f'cannot find file {file}')
         else:
             raise ValueError(f'unsupported input {file!r}')
         if streaming:

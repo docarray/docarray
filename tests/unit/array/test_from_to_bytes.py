@@ -93,6 +93,11 @@ def test_from_to_protobuf(target_da):
     DocumentArray.from_protobuf(target_da.to_protobuf())
 
 
+def test_non_existing_file_raises_file_not_found_error():
+    with pytest.raises(FileNotFoundError):
+        DocumentArray.load_binary('file_does_not_exists.bin')
+
+
 @pytest.mark.parametrize('target', [DocumentArray.empty(10), random_docs(10)])
 @pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
 @pytest.mark.parametrize('to_fn', ['dict', 'json'])
