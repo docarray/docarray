@@ -13,7 +13,7 @@ def start_storage():
         f"docker-compose -f {compose_yml} --project-directory . up  --build -d "
         f"--remove-orphans"
     )
-    time.sleep(8)
+    time.sleep(5)
     yield
     os.system(
         f"docker-compose -f {compose_yml} --project-directory . down "
