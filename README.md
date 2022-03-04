@@ -22,7 +22,11 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 
 🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. 
 
+🎡 **Scale to big data**: handle out-of-memory data via on-disk document store while staying with exact same API experience. Supporting classic databases and vector databases to enable faster nearest neighbour search.
+
 👒 **For modern apps**: GraphQL support makes your server versatile on request and response; built-in data validation and JSON Schema (OpenAPI) help you build reliable webservices.
+
+🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
 <!-- end elevator-pitch -->
 
