@@ -1,46 +1,28 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ... import Document
 import re
 from functools import partial
 
 
-## filter and lookup functions
-
-
-def filter_items(items, *args, **kwargs):
-    """Filters an iterable using lookup parameters
-
-    :param items  : iterable
-    :param args   : ``Q`` objects
-    :param kwargs : lookup parameters
-    :rtype        : lazy iterable (generator)
-
-    """
-    q1 = list(args) if args is not None else []
-    q2 = [Q(**kwargs)] if kwargs is not None else []
-    lookup_groups = q1 + q2
-    pred = lambda item: all(lg.evaluate(item) for lg in lookup_groups)
-    return (item for item in items if pred(item))
-
-
-def lookup(key, val, doc):
-    """Checks if key-val pair exists in item using various lookup types
+def lookup(key, val, doc: 'Document') -> bool:
+    """Checks if key-val pair exists in doc using various lookup types
 
     The lookup types are derived from the `key` and then used to check
-    if the lookup holds true for the item::
+    if the lookup holds true for the document::
 
-        >>> lookup('request__url__exact', 'http://example.com', item)
+        >>> lookup('text__exact', 'hello', doc)
 
-    The above will return True if item['request']['url'] ==
-    'http://example.com' else False
+    The above will return True if doc.text == 'hello' else False
 
-    :param key  : (str) that represents the field name to find
-    :param val  : (mixed) object to match the value in the item against
-    :param item : (dict)
-    :rtype      : (boolean) True if field-val exists else False
-
+    :param key  : the field name to find
+    :param val  : object to match the value in the document against
+    :param doc : the document to match
     """
     get_key, last = dunder_partition(key)
-
     value = doc._get_attributes(get_key)
+
     if last == 'exact':
         return value == val
     elif last == 'neq':
@@ -131,14 +113,13 @@ class LookupNode(LookupTreeElem):
     def add_child(self, child):
         self.children.append(child)
 
-    def evaluate(self, item):
-        """Evaluates the expression represented by the object for the item
+    def evaluate(self, doc: 'Document'):
+        """Evaluates the expression represented by the object for the document
 
-        :param item : (dict) item
-        :rtype      : (boolean) whether lookup passed or failed
-
+        :param doc : the document to match
+        :return: returns true if lookup passed
         """
-        results = map(lambda x: x.evaluate(item), self.children)
+        results = map(lambda x: x.evaluate(doc), self.children)
         result = any(results) if self.op == 'or' else all(results)
         return not result if self.negate else result
 
@@ -160,19 +141,13 @@ class LookupLeaf(LookupTreeElem):
         super(LookupLeaf, self).__init__()
         self.lookups = kwargs
 
-    # def add_child(self, other):
-    #     node = LookupNode()
-    #     node.add_child(self)
-    #     node.add_child(other)
+    def evaluate(self, doc: 'Document'):
+        """Evaluates the expression represented by the object for the document
 
-    def evaluate(self, item):
-        """Evaluates the expression represented by the object for the item
-
-        :param item : (dict) item
-        :rtype      : (boolean) whether lookup passed or failed
-
+        :param doc : the document to match
+        :return: returns true if lookup passed
         """
-        result = all(lookup(k, v, item) for k, v in self.lookups.items())
+        result = all(lookup(k, v, doc) for k, v in self.lookups.items())
         return not result if self.negate else result
 
     def __invert__(self):
@@ -206,8 +181,6 @@ def dunder_partition(key):
     The second part is after the final double underscore
         >>> dunder_partition('a__b__c')
         >>> ('a__b', 'c')
-    :param neskey : String
-    :rtype        : 2 Tuple
     """
     parts = key.rsplit('__', 1)
     return tuple(parts) if len(parts) > 1 else (parts[0], None)

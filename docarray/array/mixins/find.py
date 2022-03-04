@@ -159,9 +159,10 @@ class FindMixin:
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 
-    def _filter(self, *args, **kwargs):
+    def _filter(self, query: Dict, **kwargs):
         from ... import DocumentArray
-        from docarray.array.queryset.lookup import filter_items
+        from docarray.array.queryset.parser import QueryParser
 
-        result = filter_items(self, *args, **kwargs)
-        return DocumentArray(result)
+        parser = QueryParser(query)
+
+        return DocumentArray([d for d in self if parser.evaluate(d)])

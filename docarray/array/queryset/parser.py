@@ -115,5 +115,8 @@ class QueryParser:
         self.conditions = conditions
         self.lookup_groups = _parse_lookups(self.conditions)
 
-    def __call__(self, doc: 'Document'):
+    def evaluate(self, doc: 'Document'):
         return self.lookup_groups.evaluate(doc) if self.lookup_groups else True
+
+    def __call__(self, doc: 'Document'):
+        return self.evaluate(doc)

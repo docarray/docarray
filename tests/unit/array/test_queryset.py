@@ -39,22 +39,37 @@ def test_logic_query():
 def test_complex_query():
     conditions = {
         '$and': {
-            'price': {'$lt': 50},
+            'price': {'$or': [{'price': {'$gte': 0}}, {'price': {'$lte': 54}}]},
             'rating': {'$gte': 1},
-            'year': {'$gte': 2007},
+            'year': {'$gte': 2007, '$lte': 2010},
         }
     }
     query = QueryParser(conditions)
-    print(conditions)
-    print(query.lookup_groups)
 
-    # conditions = {
-    #     '$and': {
-    #         'price': {'$or': [{'price': {'$gte': 0}}, {'price': {'$lte': 54}}]},
-    #         'rating': {'$gte': 1},
-    #         'year': {'$gte': 2007, '$lte': 2010},
-    #     }
-    # }
-    # query = QueryParser(conditions)
-    # print(conditions)
-    # print(query.lookup_groups)
+    assert query.lookup_groups.op == 'and'
+    assert len(query.lookup_groups.children) == 3
+
+    assert query.lookup_groups.children[0].op == 'or'
+    assert query.lookup_groups.children[0].children[0].lookups == {'price__gte': 0}
+    assert query.lookup_groups.children[0].children[1].lookups == {'price__lte': 54}
+
+    assert query.lookup_groups.children[1].lookups == {'rating__gte': 1}
+
+    assert query.lookup_groups.children[2].op == 'and'
+    assert query.lookup_groups.children[2].children[0].lookups == {'year__gte': 2007}
+    assert query.lookup_groups.children[2].children[1].lookups == {'year__lte': 2010}
+
+    conditions = {
+        '$and': {
+            '$or': [{'price': {'$gte': 0}}, {'price': {'$lte': 54}}],
+            'rating': {'$gte': 1},
+            'year': {'$gte': 2007, '$lte': 2010},
+        }
+    }
+    query = QueryParser(conditions)
+
+    assert query.lookup_groups.op == 'and'
+    assert len(query.lookup_groups.children) == 3
+    assert query.lookup_groups.children[0].op == 'or'
+    assert query.lookup_groups.children[0].children[0].lookups == {'price__gte': 0}
+    assert query.lookup_groups.children[0].children[1].lookups == {'price__lte': 54}
