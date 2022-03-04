@@ -4,6 +4,7 @@ import os.path
 import os
 import pickle
 from contextlib import nullcontext
+from pathlib import Path
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
 from ....helper import (
@@ -24,7 +25,7 @@ class BinaryIOMixin:
     @classmethod
     def load_binary(
         cls: Type['T'],
-        file: Union[str, BinaryIO, bytes],
+        file: Union[str, BinaryIO, bytes, Path],
         protocol: str = 'pickle-array',
         compress: Optional[str] = None,
         _show_progress: bool = False,
@@ -54,13 +55,14 @@ class BinaryIOMixin:
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
+        # by checking path existence we allow file to be of type Path, LocalPath, PurePath and str
         elif os.path.exists(file):
             protocol, compress = protocol_and_compress_from_file_path(
                 file, protocol, compress
             )
             file_ctx = open(file, 'rb')
         else:
-            raise ValueError(f'unsupported input {file!r}')
+            raise FileNotFoundError(f'cannot find file {file}')
         if streaming:
             return cls._load_binary_stream(
                 file_ctx,
