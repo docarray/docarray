@@ -1,10 +1,4 @@
 from abc import ABC
-import numpy as np
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .... import Document
 
 from .backend import BackendMixin, AnnliteConfig
 from .find import FindMixin
@@ -16,9 +10,3 @@ __all__ = ['StorageMixins', 'AnnliteConfig']
 
 class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin, ABC):
     ...
-
-    def _to_numpy_embedding(self, doc: 'Document'):
-        if doc.embedding is None:
-            doc.embedding = np.zeros(self._annlite.dim, dtype=np.float32)
-        elif isinstance(doc.embedding, list):
-            doc.embedding = np.array(doc.embedding, dtype=np.float32)

@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
@@ -30,6 +31,19 @@ class AnnliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend. """
 
+    def _map_embedding(self, embedding: 'ArrayType') -> 'np.ndarray':
+        if embedding is None:
+            embedding = np.random.rand(self.n_dim)
+        else:
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
+
+        return embedding
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -51,11 +65,11 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
 
         config = asdict(config)
-        n_dim = config.pop('n_dim')
+        self.n_dim = config.pop('n_dim')
 
         from annlite import AnnLite
 
-        self._annlite = AnnLite(n_dim, lock=False, **config)
+        self._annlite = AnnLite(self.n_dim, lock=False, **config)
         from ... import DocumentArray
         from .... import Document
 

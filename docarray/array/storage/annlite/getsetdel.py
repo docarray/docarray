@@ -19,7 +19,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return doc
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        self._to_numpy_embedding(value)
+        value.embedding = self._map_embedding(value.embedding)
         docs = DocumentArrayInMemory([value])
         self._annlite.update(docs)
 
@@ -32,7 +32,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_docs_by_ids(self, ids, docs: Iterable['Document']):
         docs = DocumentArrayInMemory(docs)
         for doc in docs:
-            self._to_numpy_embedding(doc)
+            doc.embedding = self._map_embedding(doc.embedding)
         self._annlite.update(docs)
 
     def _del_docs_by_ids(self, ids):
