@@ -63,7 +63,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
     [
         DocumentArray,
         DocumentArraySqlite,
-        DocumentArrayPqlite,
+        DocumentArrayAnnlite,
         DocumentArrayQdrant,
         # DocumentArrayWeaviate, TODO: enable this
     ],
@@ -81,7 +81,7 @@ def test_embedding_on_random_network(
     to_numpy,
     start_storage,
 ):
-    if da_cls in [DocumentArrayWeaviate, DocumentArrayPqlite, DocumentArrayQdrant]:
+    if da_cls in [DocumentArrayWeaviate, DocumentArrayAnnlite, DocumentArrayQdrant]:
         da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)

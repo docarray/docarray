@@ -29,7 +29,7 @@ def foo_batch(da: DocumentArray):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
@@ -84,7 +84,7 @@ def test_parallel_map(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],
@@ -154,7 +154,7 @@ def test_parallel_map_batch(
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],

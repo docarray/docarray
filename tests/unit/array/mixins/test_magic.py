@@ -27,7 +27,7 @@ def docs():
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -52,7 +52,7 @@ def test_iter_len_bool(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -92,7 +92,7 @@ def test_repr_str(docs, storage, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=10)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
     ],

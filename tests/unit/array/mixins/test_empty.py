@@ -14,7 +14,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=5)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
     ],

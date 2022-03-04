@@ -14,7 +14,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -38,7 +38,7 @@ def test_sample(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -61,7 +61,7 @@ def test_sample_with_seed(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
@@ -85,7 +85,7 @@ def test_shuffle(da_cls, config, start_storage):
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayPqlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
     ],
