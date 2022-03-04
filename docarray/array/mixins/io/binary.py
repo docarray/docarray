@@ -311,12 +311,18 @@ class BinaryIOMixin:
             if not _file_ctx:
                 return bf.getvalue()
 
-    def to_protobuf(self) -> 'DocumentArrayProto':
+    def to_protobuf(self, ndarray_type: Optional[str] = None) -> 'DocumentArrayProto':
+        """Convert DocumentArray into a Protobuf message.
+
+        :param ndarray_type: can be ``list`` or ``numpy``, if set it will force all ndarray-like object from all
+            Documents to ``List`` or ``numpy.ndarray``.
+        :return: the protobuf message
+        """
         from ....proto.docarray_pb2 import DocumentArrayProto
 
         dap = DocumentArrayProto()
         for d in self:
-            dap.docs.append(d.to_protobuf())
+            dap.docs.append(d.to_protobuf(ndarray_type))
         return dap
 
     @classmethod

@@ -1,3 +1,4 @@
+import numpy as np
 import paddle
 import pytest
 import tensorflow as tf
@@ -5,6 +6,8 @@ import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
 from docarray.math.ndarray import get_array_rows
+from docarray.proto.docarray_pb2 import NdArrayProto
+from docarray.proto.io import flush_ndarray, read_ndarray
 
 
 @pytest.mark.parametrize(
@@ -30,7 +33,8 @@ from docarray.math.ndarray import get_array_rows
         csc_matrix,
     ],
 )
-def test_get_array_rows(data, expected_result, arraytype):
+@pytest.mark.parametrize('ndarray_type', ['list', 'numpy'])
+def test_get_array_rows(data, expected_result, arraytype, ndarray_type):
     data_array = arraytype(data)
 
     num_rows, ndim = get_array_rows(data_array)
@@ -39,3 +43,11 @@ def test_get_array_rows(data, expected_result, arraytype):
         assert expected_result[0] == num_rows
     else:
         assert expected_result == (num_rows, ndim)
+
+    na_proto = NdArrayProto()
+    flush_ndarray(na_proto, value=data_array, ndarray_type=ndarray_type)
+    r_data_array = read_ndarray(na_proto)
+    if ndarray_type == 'list':
+        assert isinstance(r_data_array, list)
+    elif ndarray_type == 'numpy':
+        assert isinstance(r_data_array, np.ndarray)

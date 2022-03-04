@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 
-from ...math.ndarray import get_array_type
+from ...math.ndarray import get_array_type, to_numpy_array
 
 if TYPE_CHECKING:
     from ...types import ArrayType
@@ -44,7 +44,14 @@ def read_ndarray(pb_msg: 'NdArrayProto') -> 'ArrayType':
             return _to_framework_array(x, framework)
 
 
-def flush_ndarray(pb_msg: 'NdArrayProto', value: 'ArrayType'):
+def flush_ndarray(
+    pb_msg: 'NdArrayProto', value: 'ArrayType', ndarray_type: Optional[str] = None
+):
+    if ndarray_type == 'list':
+        value = to_numpy_array(value).tolist()
+    elif ndarray_type == 'numpy':
+        value = to_numpy_array(value)
+
     framework, is_sparse = get_array_type(value)
 
     if framework == 'docarray':
