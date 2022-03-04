@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from google.protobuf.json_format import MessageToDict
 from google.protobuf.struct_pb2 import Struct
@@ -37,13 +37,13 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
     return Document(**fields)
 
 
-def flush_proto(doc: 'Document') -> 'DocumentProto':
+def flush_proto(doc: 'Document', ndarray_type: Optional[str] = None) -> 'DocumentProto':
     pb_msg = DocumentProto()
     for key in doc.non_empty_fields:
         try:
             value = getattr(doc, key)
             if key in ('tensor', 'embedding'):
-                flush_ndarray(getattr(pb_msg, key), value)
+                flush_ndarray(getattr(pb_msg, key), value, ndarray_type=ndarray_type)
             elif key in ('chunks', 'matches'):
                 for d in value:
                     d: Document
