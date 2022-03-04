@@ -61,10 +61,6 @@ def lookup(key, val, doc: 'Document') -> bool:
         return iff_not_none(value, lambda y: y <= val)
     elif last == 'regex':
         return iff_not_none(value, lambda y: re.search(val, y) is not None)
-    elif last == 'filter':
-        val = guard_Q(val)
-        result = guard_list(value)
-        return len(list(filter_items(result, val))) > 0
     else:
         return value == val
 
