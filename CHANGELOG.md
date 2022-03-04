@@ -41,6 +41,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1003,4 +1004,24 @@
 
  - [[```b2645541```](https://github.com/jina-ai/docarray/commit/b2645541aaa8c43f40cf79b84aac37e166bc720e)] __-__ update qdrant to v0.6.0 (#170) (*Andrey Vasnetsov*)
  - [[```887c318e```](https://github.com/jina-ai/docarray/commit/887c318ee1148949f4b4217bf69a1acc20848d6d)] __-__ __version__: the next version will be 0.8.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-8-11></a>
+## Release Note (`0.8.11`)
+
+> Release time: 2022-03-04 14:46:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```01b903c9```](https://github.com/jina-ai/docarray/commit/01b903c98fabe9a7674f1cd57bd547e39e9a5ce2)] __-__ correct file not found error (#171) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```8b68d291```](https://github.com/jina-ai/docarray/commit/8b68d291e36b433996c9b95551d74062ed46ed43)] __-__ fix readme (*Han Xiao*)
+ - [[```d7062b75```](https://github.com/jina-ai/docarray/commit/d7062b75e4da50c02e3cc7098378f6bb7fa04cc1)] __-__ __version__: the next version will be 0.8.11 (*Jina Dev Bot*)
 
