@@ -322,7 +322,7 @@ class BinaryIOMixin:
 
         dap = DocumentArrayProto()
         for d in self:
-            dap.docs.append(d.to_protobuf(), ndarray_type=ndarray_type)
+            dap.docs.append(d.to_protobuf(ndarray_type))
         return dap
 
     @classmethod
