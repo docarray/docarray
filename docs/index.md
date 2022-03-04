@@ -63,7 +63,7 @@ In addition to `common`, the following dependencies will be installed to enable 
 | `av` | for video processing and IO |
 | `trimesh` | for 3D mesh processing and IO |
 | `weaviate-client` | for using Weaviate-based document store |
-| `pqlite` | for using PQLite-based document store |
+| `annlite` | for using Annlite-based document store |
 | `qdrant-client` | for using Qdrant-based document store |
 | `strawberry-graphql` | for GraphQL support |
 
