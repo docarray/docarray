@@ -105,7 +105,7 @@ class FindMixin:
         result: List['DocumentArray']
 
         if isinstance(_result, list) and isinstance(_result[0], DocumentArray):
-            # already auto-boxed by the storage backend, e.g. pqlite
+            # already auto-boxed by the storage backend, e.g. annlite
             result = _result
         elif (
             isinstance(_result, tuple)

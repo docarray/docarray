@@ -12,7 +12,7 @@ from docarray import DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.pqlite import DocumentArrayPqlite, PqliteConfig
+from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 
@@ -63,7 +63,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
     [
         DocumentArray,
         DocumentArraySqlite,
-        DocumentArrayPqlite,
+        DocumentArrayAnnlite,
         DocumentArrayQdrant,
         # DocumentArrayWeaviate, TODO: enable this
     ],
@@ -81,7 +81,7 @@ def test_embedding_on_random_network(
     to_numpy,
     start_storage,
 ):
-    if da_cls in [DocumentArrayWeaviate, DocumentArrayPqlite, DocumentArrayQdrant]:
+    if da_cls in [DocumentArrayWeaviate, DocumentArrayAnnlite, DocumentArrayQdrant]:
         da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)

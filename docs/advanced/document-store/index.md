@@ -6,6 +6,7 @@
 weaviate
 sqlite
 qdrant
+annlite
 
 ```
 

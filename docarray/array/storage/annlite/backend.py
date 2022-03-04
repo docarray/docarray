@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
@@ -10,9 +11,6 @@ from typing import (
     Iterator,
 )
 
-import numpy as np
-from pqlite import PQLite
-
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
 
@@ -21,7 +19,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class PqliteConfig:
+class AnnliteConfig:
     n_dim: int
     metric: str = 'cosine'
     serialize_config: Dict = field(default_factory=dict)
@@ -31,16 +29,28 @@ class PqliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend. """
 
+    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
+        if embedding is None:
+            embedding = np.zeros(self.n_dim, dtype=np.float32)
+        elif isinstance(embedding, list):
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+        return embedding
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[Union[PqliteConfig, Dict]] = None,
+        config: Optional[Union[AnnliteConfig, Dict]] = None,
         **kwargs,
     ):
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
-            config = dataclass_from_dict(PqliteConfig, config)
+            config = dataclass_from_dict(AnnliteConfig, config)
 
         self._persist = bool(config.data_path)
 
@@ -52,9 +62,11 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
 
         config = asdict(config)
-        n_dim = config.pop('n_dim')
+        self.n_dim = config.pop('n_dim')
 
-        self._pqlite = PQLite(n_dim, lock=False, **config)
+        from annlite import AnnLite
+
+        self._annlite = AnnLite(self.n_dim, lock=False, **config)
         from ... import DocumentArray
         from .... import Document
 
@@ -74,7 +86,7 @@ class BackendMixin(BaseBackendMixin):
 
     def __getstate__(self):
         state = dict(self.__dict__)
-        del state['_pqlite']
+        del state['_annlite']
         del state['_offsetmapping']
         return state
 
@@ -85,21 +97,14 @@ class BackendMixin(BaseBackendMixin):
         config = asdict(config)
         n_dim = config.pop('n_dim')
 
-        from pqlite import PQLite
+        from annlite import AnnLite
 
-        self._pqlite = PQLite(n_dim, lock=False, **config)
+        self._annlite = AnnLite(n_dim, lock=False, **config)
 
     def _get_storage_infos(self) -> Dict:
         return {
-            'Backend': 'PQLite',
-            'Distance Metric': self._pqlite.metric.name,
+            'Backend': 'AnnLite',
+            'Distance Metric': self._annlite.metric.name,
             'Data Path': self._config.data_path,
             'Serialization Protocol': self._config.serialize_config.get('protocol'),
         }
-
-    def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
-        if embedding is None:
-            embedding = np.zeros(self._pqlite.dim, dtype=np.float32)
-        elif isinstance(embedding, list):
-            embedding = np.array(embedding, dtype=np.float32)
-        return embedding
