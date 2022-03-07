@@ -26,13 +26,15 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
-
+import re
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ... import Document
 import re
 from functools import partial
+
+PLACEHOLDER_PATTERN = re.compile(r'\{\s*([a-zA-Z0-9_]*)\s*}')
 
 
 def lookup(key, val, doc: 'Document') -> bool:
@@ -43,13 +45,25 @@ def lookup(key, val, doc: 'Document') -> bool:
 
         >>> lookup('text__exact', 'hello', doc)
 
-    The above will return True if doc.text == 'hello' else False
+    The above will return True if doc.text == 'hello' else False. And
+
+        >>> lookup('text_exact', '{tags__name}', doc)
+
+    will return True if doc.text == doc.tags['name'] else False
 
     :param key  : the field name to find
     :param val  : object to match the value in the document against
     :param doc : the document to match
     """
     get_key, last = dunder_partition(key)
+
+    if val.startswith('{'):
+        r = PLACEHOLDER_PATTERN.findall(val)
+        if r and len(r) == 1:
+            val = doc._get_attributes(r[0])
+        else:
+            raise ValueError(f'The placeholder "{val}" is illegal')
+
     value = doc._get_attributes(get_key)
 
     if last == 'exact':
@@ -91,7 +105,10 @@ def lookup(key, val, doc: 'Document') -> bool:
     elif last == 'regex':
         return iff_not_none(value, lambda y: re.search(val, y) is not None)
     else:
-        return value == val
+        # return value == val
+        raise ValueError(
+            f'The given compare operator "{last}" (derived from "{key}") is not supported'
+        )
 
 
 ## Classes to compose compound lookups (Q object)

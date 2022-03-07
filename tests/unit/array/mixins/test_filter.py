@@ -7,10 +7,13 @@ from docarray import DocumentArray
 def docs():
     docs = DocumentArray.empty(5)
     docs[0].text = 'hello'
+    docs[0].tags['name'] = 'hello'
     docs[1].text = 'world'
+    docs[1].tags['name'] = 'hello'
     docs[2].tags['x'] = 0.3
     docs[2].tags['y'] = 0.6
     docs[3].tags['x'] = 0.8
+
     return docs
 
 
@@ -47,3 +50,9 @@ def test_logic_filter(docs):
     result = docs.find({'$and': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
     assert len(result) == 1
     assert result[0].tags['y'] == 0.6
+
+
+def test_placehold_filter(docs):
+    result = docs.find({'text': {'$eq': '{tags__name}'}})
+    assert len(result) == 1
+    assert result[0].id == docs[0].id
