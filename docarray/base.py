@@ -46,6 +46,11 @@ class BaseDCType:
                     kwargs.pop(k)
 
             self._data = self._data_class(self)
+
+            # ``id`` need to be set at the first place, since some other attributes would depends on it.
+            if 'id' in kwargs:
+                setattr(self._data, 'id', kwargs.pop('id'))
+
             for k, v in kwargs.items():
                 setattr(self._data, k, v)
 
