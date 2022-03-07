@@ -42,6 +42,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1024,4 +1025,33 @@
 
  - [[```8b68d291```](https://github.com/jina-ai/docarray/commit/8b68d291e36b433996c9b95551d74062ed46ed43)] __-__ fix readme (*Han Xiao*)
  - [[```d7062b75```](https://github.com/jina-ai/docarray/commit/d7062b75e4da50c02e3cc7098378f6bb7fa04cc1)] __-__ __version__: the next version will be 0.8.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-0></a>
+## Release Note (`0.9.0`)
+
+> Release time: 2022-03-07 18:05:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```85fa4b4e```](https://github.com/jina-ai/docarray/commit/85fa4b4ee5b33ad2a7ac55387058229690d77a7e)] __-__ query language supporting filter (#150) (*felix-wang*)
+
+### 🐞 Bug fixes
+
+ - [[```50722a82```](https://github.com/jina-ai/docarray/commit/50722a82e85b9cd3c4474e5c937c01cce58874ad)] __-__ set doc id first (#175) (*felix-wang*)
+ - [[```2196082c```](https://github.com/jina-ai/docarray/commit/2196082ce455f99a991ee2aee99c772ac6792df5)] __-__ rename pqlite to annlite (#151) (*felix-wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```62b816ad```](https://github.com/jina-ai/docarray/commit/62b816ad4b7cc33eb012e118839966144c4aedef)] __-__ __dataclass__: follow the order of dataclass field on assign (*Han Xiao*)
+ - [[```371eb746```](https://github.com/jina-ai/docarray/commit/371eb74640def1568eddef674dbf411a421d70ef)] __-__ __dataclass__: follow the order of dataclass field on assign (#176) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```a4e5a387```](https://github.com/jina-ai/docarray/commit/a4e5a3879b9680f26781aa90eb6f52423ba4dc14)] __-__ __version__: the next version will be 0.8.12 (*Jina Dev Bot*)
 
