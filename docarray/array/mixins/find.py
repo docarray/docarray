@@ -164,18 +164,20 @@ class FindMixin:
     def _filter(
         self,
         query: Dict,
-        limit: Optional[Union[int, float]] = None,
+        limit: Optional[int] = None,
         only_id: bool = False,
-        **kwargs,
-    ):
+    ) -> 'DocumentArray':
         from ... import DocumentArray
         from ..queryset import QueryParser
 
         parser = QueryParser(query)
 
         result = DocumentArray()
+        limit = len(self) if (limit is None) else limit
         for d in self:
-            if (limit is None or len(result) < limit) and parser.evaluate(d):
+            if parser.evaluate(d):
                 result.append(d if not only_id else Document(id=d.id))
+                if len(result) == limit:
+                    break
 
         return result
