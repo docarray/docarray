@@ -181,9 +181,9 @@ def test_convert_uri_to_text(uri, mimetype):
 
 def test_convert_text_to_uri_and_back():
     text_from_file = open(__file__).read()
-    doc = Document(content=text_from_file, mime_type='text/x-python')
+    doc = Document(content=text_from_file)
     assert doc.text
-    assert doc.mime_type == 'text/x-python'
+    assert doc.mime_type == 'text/plain'
     doc.convert_text_to_datauri()
     doc.load_uri_to_text()
     assert doc.mime_type == 'text/plain'
