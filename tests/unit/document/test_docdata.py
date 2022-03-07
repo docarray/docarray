@@ -23,6 +23,14 @@ def test_doc_hash_identical():
     assert d1 == d2
 
 
+def test_doc_id_setter():
+    d = Document(
+        chunks=[Document(id='c0')],
+        id='d0',
+    )
+    assert d.id == d.chunks[0].parent_id == 'd0'
+
+
 def test_doc_hash_complicate_content():
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
     d2 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
