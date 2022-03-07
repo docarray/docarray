@@ -36,7 +36,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType'],
+        query: Union['DocumentArray', 'Document', 'ArrayType', Dict],
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -68,8 +68,10 @@ class FindMixin:
             else:
                 limit = int(limit)
 
-        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+        if isinstance(query, dict):
+            return self._filter(query, limit=limit, only_id=only_id)
 
+        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
         if isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
@@ -158,3 +160,24 @@ class FindMixin:
         self, query: 'ArrayType', limit: int, **kwargs
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
+
+    def _filter(
+        self,
+        query: Dict,
+        limit: Optional[int] = None,
+        only_id: bool = False,
+    ) -> 'DocumentArray':
+        from ... import DocumentArray
+        from ..queryset import QueryParser
+
+        parser = QueryParser(query)
+
+        result = DocumentArray()
+        limit = len(self) if (limit is None) else limit
+        for d in self:
+            if parser.evaluate(d):
+                result.append(d if not only_id else Document(id=d.id))
+                if len(result) == limit:
+                    break
+
+        return result
