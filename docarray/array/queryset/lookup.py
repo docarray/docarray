@@ -57,7 +57,7 @@ def lookup(key, val, doc: 'Document') -> bool:
     """
     get_key, last = dunder_partition(key)
 
-    if val.startswith('{'):
+    if isinstance(val, str) and val.startswith('{'):
         r = PLACEHOLDER_PATTERN.findall(val)
         if r and len(r) == 1:
             val = doc._get_attributes(r[0])
