@@ -22,6 +22,8 @@ It is also powerful as Numpy `ndarray` and Pandas `DataFrame`, allowing you to e
 
 What makes it more exciting is those advanced features of DocumentArray. These features greatly accelerate data scientists work on accessing nested elements, evaluating, visualizing, parallel computing, serializing, matching etc. 
 
+Finally, if your data is too big to fit into memory, you can simply switch to an {ref}`on-disk/remote document store<doc-store>`. All API and user experiences remain the same. No need to learn anything else.
+
 ## What's next?
 
 Let's see how to construct a DocumentArray {ref}`in the next section<construct-array>`.

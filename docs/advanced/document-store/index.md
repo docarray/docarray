@@ -1,3 +1,4 @@
+(doc-store)=
 # Document Store
 
 ```{toctree}
