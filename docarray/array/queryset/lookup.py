@@ -147,10 +147,11 @@ class LookupNode(LookupTreeElem):
 
     """
 
-    def __init__(self, op: str = 'and'):
+    def __init__(self, op: str = 'and', negate: bool = False):
         super(LookupNode, self).__init__()
         self.children = []
         self.op = op
+        self.negate = negate
 
     def add_child(self, child):
         self.children.append(child)

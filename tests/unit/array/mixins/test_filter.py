@@ -59,6 +59,13 @@ def test_logic_filter(docs):
     assert len(result) == 1
     assert result[0].tags['y'] == 0.6
 
+    result = docs.find({'$not': {'tags__x': {'$gte': 0.5}}})
+    assert len(result) == 4
+    assert 'x' not in result[0].tags or result[0].tags['x'] < 0.5
+
+    result = docs.find({'$not': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
+    assert len(result) == 4
+
 
 def test_placehold_filter(docs):
     result = docs.find({'text': {'$eq': '{tags__name}'}})

@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 from .lookup import Q, LookupNode, LookupLeaf
 
-LOGICAL_OPERATORS = {'$and': lambda x, y: x & y, '$or': lambda x, y: x | y}
+LOGICAL_OPERATORS = {'$and': 'and', '$or': 'or', '$not': True}
 
 COMPARISON_OPERATORS = {
     '$lt': 'lt',
@@ -36,7 +36,10 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                 root_node = root
 
             if key in LOGICAL_OPERATORS:
-                node = LookupNode(op=key[1:])
+                if key == '$not':
+                    node = LookupNode(negate=LOGICAL_OPERATORS[key])
+                else:
+                    node = LookupNode(op=LOGICAL_OPERATORS[key])
                 node = _parse_lookups(value, root_node=node)
 
             elif key.startswith('$'):
@@ -51,7 +54,10 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                 elif len(items) == 1:
                     op, val = items[0]
                     if op in LOGICAL_OPERATORS:
-                        node = LookupNode(op=op[1:])
+                        if op == '$not':
+                            node = LookupNode(negate=LOGICAL_OPERATORS[op])
+                        else:
+                            node = LookupNode(op=LOGICAL_OPERATORS[op])
                         node = _parse_lookups(val, root_node=node)
                     elif op in SUPPORTED_OPERATORS:
                         node = Q(**{f'{key}__{SUPPORTED_OPERATORS[op]}': val})

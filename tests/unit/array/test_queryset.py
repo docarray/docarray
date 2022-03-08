@@ -36,10 +36,19 @@ def test_logic_query():
     assert query.lookup_groups.children[1].lookups == {'tags__y__gte': 50}
 
     query = QueryParser({'$or': [{'price': {'$gte': 0}}, {'price': {'$lte': 54}}]})
+    assert not query.lookup_groups.negate
     assert len(query.lookup_groups.children) == 2
     assert query.lookup_groups.op == 'or'
     assert query.lookup_groups.children[0].lookups == {'price__gte': 0}
     assert query.lookup_groups.children[1].lookups == {'price__lte': 54}
+
+    query = QueryParser({'$not': [{'price': {'$gte': 0}}, {'price': {'$lte': 54}}]})
+    assert query.lookup_groups.negate
+    assert query.lookup_groups.op == 'and'
+    assert len(query.lookup_groups.children) == 2
+
+    query = QueryParser({'$not': {'price': {'$gte': 0}}})
+    assert query.lookup_groups.negate
 
 
 def test_complex_query():

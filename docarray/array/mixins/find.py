@@ -191,6 +191,11 @@ class FindMixin:
             - `$nin` - Not included in an array
             - `$regex` - Match a specified regular expression
 
+        And the following boolean logic operators are supported:
+            - `$and` - Join query clauses with a logical AND
+            - `$or` - Join query clauses with a logical OR
+            - `$not` - Inverts the effect of a query expression
+
         :param query: the input query dictionary.
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param only_id: if set, then returning documents will only contain ``id``
