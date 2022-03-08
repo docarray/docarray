@@ -190,7 +190,7 @@ class FindMixin:
             - `$in` - Included in an array
             - `$nin` - Not included in an array
             - `$regex` - Match a specified regular expression
-            - `$size` - The array/dict field is a specified size.
+            - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
 
 
         And the following boolean logic operators are supported:
