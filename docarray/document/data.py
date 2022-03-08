@@ -65,8 +65,6 @@ class DocumentData:
                     self.text = None
                     self.tensor = None
                     self.blob = None
-                    if key == 'text':
-                        self.mime_type = 'text/plain'
             elif key == 'uri':
                 mime_type = mimetypes.guess_type(value)[0]
 
