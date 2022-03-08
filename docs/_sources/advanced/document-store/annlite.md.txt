@@ -41,4 +41,4 @@ The following configs can be set:
 |---------------------|---------------------------------------------------------------------------------|-----------------------------|
 | `n_dim`             | Number of dimensions of embeddings to be stored and retrieved                   | **This is always required** |
 | `data_path`         | The data folder where the data is located                                       | **A random temp folder**    |
-| `distance`          | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean' | 'cosine'                    |
+| `metric`            | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean' | 'cosine'                    |

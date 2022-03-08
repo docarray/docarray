@@ -632,6 +632,35 @@
         <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">only_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArray'</span><span class="p">:</span>
+        <span class="sd">"""Returns a subset of documents by filtering by the given query.</span>
+<span class="sd">        The query language we provide now is following the</span>
+<span class="sd">        [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/) query language. For example::</span>
+
+<span class="sd">            &gt;&gt;&gt; docs._filter({'text': {'$eq': 'hello'}})</span>
+
+<span class="sd">            The above will return a `DocumentArray` in which each document has doc.text == 'hello'. And we also support</span>
+<span class="sd">            placeholder format by using the following syntax::</span>
+
+<span class="sd">            &gt;&gt;&gt; docs._filter({'text': {'$eq': '{tags__name}'}})</span>
+
+<span class="sd">            will return a `DocumentArray` in which each document has doc.text == doc.tags['name'].</span>
+
+<span class="sd">        Now, only the subset of MongoDB's query operators are supported:</span>
+<span class="sd">            - `$eq` - Equal to (number, string)</span>
+<span class="sd">            - `$ne` - Not equal to (number, string)</span>
+<span class="sd">            - `$gt` - Greater than (number)</span>
+<span class="sd">            - `$gte` - Greater than or equal to (number)</span>
+<span class="sd">            - `$lt` - Less than (number)</span>
+<span class="sd">            - `$lte` - Less than or equal to (number)</span>
+<span class="sd">            - `$in` - Included in an array</span>
+<span class="sd">            - `$nin` - Not included in an array</span>
+<span class="sd">            - `$regex` - Match a specified regular expression</span>
+
+<span class="sd">        :param query: the input query dictionary.</span>
+<span class="sd">        :param limit: the maximum number of matches, when not given defaults to 20.</span>
+<span class="sd">        :param only_id: if set, then returning documents will only contain ``id``</span>
+<span class="sd">        :return: a `DocumentArray` containing the `Document` objects for matching with the query.</span>
+<span class="sd">        """</span>
         <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
         <span class="kn">from</span> <span class="nn">..queryset</span> <span class="kn">import</span> <span class="n">QueryParser</span>
 
@@ -657,7 +686,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 07, 2022.
+                    Last updated on Mar 08, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
