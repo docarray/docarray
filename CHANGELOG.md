@@ -44,6 +44,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1080,4 +1081,24 @@
  - [[```a045b376```](https://github.com/jina-ai/docarray/commit/a045b376f0382360221f471e60a9d6329defd327)] __-__ add docstr for filter function (#177) (*felix-wang*)
  - [[```fbde0622```](https://github.com/jina-ai/docarray/commit/fbde0622d1404e01ab9c04ae066ddccaeaa62939)] __-__ update docs (*Han Xiao*)
  - [[```3cf7d776```](https://github.com/jina-ai/docarray/commit/3cf7d77650eb80fa898269b1636602575d187cc1)] __-__ __version__: the next version will be 0.9.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-2></a>
+## Release Note (`0.9.2`)
+
+> Release time: 2022-03-08 14:40:18
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```4918cb3a```](https://github.com/jina-ai/docarray/commit/4918cb3a97932d134778941bee768761405e97ae)] __-__ __array__: add post interface (#181) (*Han Xiao*)
+ - [[```774d0ce1```](https://github.com/jina-ai/docarray/commit/774d0ce1bab043468fa5820cc6727b4fbec7ab45)] __-__ add more comparison/logic ops (#180) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```2a6d44c1```](https://github.com/jina-ai/docarray/commit/2a6d44c16f778935d1695c3921b7d07a7dc486e7)] __-__ __version__: the next version will be 0.9.2 (*Jina Dev Bot*)
 
