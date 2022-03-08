@@ -10,10 +10,10 @@ from docarray.helper import random_port
 @pytest.mark.parametrize(
     'conn_config',
     [
-        (dict(protocol='grpc'), 'grpc://0.0.0.0:$port/'),
-        (dict(protocol='grpc'), 'grpc://0.0.0.0:$port'),
-        (dict(protocol='websocket'), 'websocket://0.0.0.0:$port'),
-        (dict(protocol='http'), 'http://0.0.0.0:$port'),
+        (dict(protocol='grpc'), 'grpc://127.0.0.1:$port/'),
+        (dict(protocol='grpc'), 'grpc://127.0.0.1:$port'),
+        (dict(protocol='websocket'), 'websocket://127.0.0.1:$port'),
+        (dict(protocol='http'), 'http://127.0.0.1:$port'),
     ],
 )
 @pytest.mark.parametrize('show_pbar', [True, False])
