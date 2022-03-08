@@ -27,6 +27,7 @@ Submodules
    docarray.array.mixins.match
    docarray.array.mixins.parallel
    docarray.array.mixins.plot
+   docarray.array.mixins.post
    docarray.array.mixins.pydantic
    docarray.array.mixins.reduce
    docarray.array.mixins.sample

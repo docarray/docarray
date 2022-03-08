@@ -36,6 +36,10 @@ They work exactly same. You will be using the same install of `docarray` in your
 
 You can update DocArray package without updating Jina via `pip install -U docarray`. This often works unless otherwise specified in the release note of Jina.
 
+## Direct invoke Jina/Hub Executor
+
+As described {ref}`here <da-post>`, one can simply use an external Jina Flow/Executor as a regular function to process a DocumentArray. 
+
 ## Local code as a service
 
 Considering the example below, where we use DocArray to pre-process an image DocumentArray:
