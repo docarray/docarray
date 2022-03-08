@@ -34,6 +34,9 @@ def test_lookup_ops(doc):
     assert lookup('text__regex', '^test', doc)
     assert not lookup('text__regex', '^est', doc)
 
+    assert lookup('tags__size', 4, doc)
+    assert lookup('tags__labels__size', 3, doc)
+
 
 def test_lookup_pl(doc):
     from docarray.array.queryset.lookup import lookup

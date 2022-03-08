@@ -27,6 +27,9 @@ def test_simple_query():
     assert query.lookup_groups.children[0].lookups == {'tags__x__gte': 0}
     assert query.lookup_groups.children[1].lookups == {'tags__x__lte': 54}
 
+    query = QueryParser({'tags': {'$size': 1}})
+    assert query.lookup_groups.lookups == {'tags__size': 1}
+
 
 def test_logic_query():
     query = QueryParser({'$or': {'tags__x': {'$lt': 1}, 'tags__y': {'$gte': 50}}})

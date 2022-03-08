@@ -16,14 +16,17 @@ COMPARISON_OPERATORS = {
     '$neq': 'neq',
 }
 
-MEMBERSHIP_OPERATORS = {'$in': 'in', '$nin': 'nin'}
-
 REGEX_OPERATORS = {'$regex': 'regex'}
+
+ARRAY_OPERATORS = {'$size': 'size'}
+
+MEMBERSHIP_OPERATORS = {'$in': 'in', '$nin': 'nin'}
 
 SUPPORTED_OPERATORS = {
     **COMPARISON_OPERATORS,
-    **MEMBERSHIP_OPERATORS,
+    **ARRAY_OPERATORS,
     **REGEX_OPERATORS,
+    **MEMBERSHIP_OPERATORS,
 }
 
 

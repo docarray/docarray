@@ -39,6 +39,9 @@ def test_simple_filter(docs):
     assert len(result) == 1
     assert result[0].id == docs[0].id
 
+    result = docs.find({'tags': {'$size': 2}})
+    assert result[0].id == docs[2].id
+
 
 def test_logic_filter(docs):
     result = docs.find({'$or': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})
