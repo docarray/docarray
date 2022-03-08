@@ -189,6 +189,7 @@ class FindMixin:
             - `$lte` - Less than or equal to (number)
             - `$in` - Included in an array
             - `$nin` - Not included in an array
+            - `$regex` - Match a specified regular expression
 
         :param query: the input query dictionary.
         :param limit: the maximum number of matches, when not given defaults to 20.
