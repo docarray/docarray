@@ -43,6 +43,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1054,4 +1055,29 @@
 ### 🍹 Other Improvements
 
  - [[```a4e5a387```](https://github.com/jina-ai/docarray/commit/a4e5a3879b9680f26781aa90eb6f52423ba4dc14)] __-__ __version__: the next version will be 0.8.12 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-1></a>
+## Release Note (`0.9.1`)
+
+> Release time: 2022-03-08 09:32:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```c02a97a7```](https://github.com/jina-ai/docarray/commit/c02a97a771e2196c2fe444f07c0fecd97ecc33b7)] __-__ improve doc init speed (#179) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```5078e1e4```](https://github.com/jina-ai/docarray/commit/5078e1e44edf725332cfd1d7d3590875939fdff1)] __-__ fix field value in annlite construction (#178) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```a045b376```](https://github.com/jina-ai/docarray/commit/a045b376f0382360221f471e60a9d6329defd327)] __-__ add docstr for filter function (#177) (*felix-wang*)
+ - [[```fbde0622```](https://github.com/jina-ai/docarray/commit/fbde0622d1404e01ab9c04ae066ddccaeaa62939)] __-__ update docs (*Han Xiao*)
+ - [[```3cf7d776```](https://github.com/jina-ai/docarray/commit/3cf7d77650eb80fa898269b1636602575d187cc1)] __-__ __version__: the next version will be 0.9.1 (*Jina Dev Bot*)
 
