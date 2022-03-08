@@ -1,11 +1,17 @@
 import copy as cp
 from dataclasses import fields
+from functools import lru_cache
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
 
 from .helper import typename
 
 if TYPE_CHECKING:
     from .types import T
+
+
+@lru_cache()
+def _get_fields(dc):
+    return [f.name for f in fields(dc)]
 
 
 class BaseDCType:
@@ -32,9 +38,9 @@ class BaseDCType:
             if field_resolver:
                 kwargs = {field_resolver.get(k, k): v for k, v in kwargs.items()}
 
-            _fields = fields(self._data_class)
+            _fields = _get_fields(self._data_class)
             _unknown_kwargs = None
-            _unresolved = set(kwargs.keys()).difference({f.name for f in _fields})
+            _unresolved = set(kwargs.keys()).difference(_fields)
 
             if _unresolved:
                 if unknown_fields_handler == 'raise':
@@ -46,9 +52,9 @@ class BaseDCType:
 
             self._data = self._data_class(self)
 
-            for field in _fields:
-                if field.name in kwargs:
-                    setattr(self._data, field.name, kwargs[field.name])
+            for f in _fields:
+                if f in kwargs:
+                    setattr(self._data, f, kwargs[f])
 
             if _unknown_kwargs and unknown_fields_handler == 'catch':
                 getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)

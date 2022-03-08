@@ -146,7 +146,7 @@ def test_convert_blob_to_uri(converter):
     'converter', ['convert_text_to_datauri', 'convert_content_to_datauri']
 )
 def test_convert_text_to_uri(converter):
-    d = Document(content=open(__file__).read())
+    d = Document(content=open(__file__).read(), mime_type='text/plain')
     assert d.text
     getattr(d, converter)()
     assert d.uri.startswith('data:text/plain;')
@@ -183,7 +183,7 @@ def test_convert_text_to_uri_and_back():
     text_from_file = open(__file__).read()
     doc = Document(content=text_from_file)
     assert doc.text
-    assert doc.mime_type == 'text/plain'
+    assert not doc.mime_type
     doc.convert_text_to_datauri()
     doc.load_uri_to_text()
     assert doc.mime_type == 'text/plain'
