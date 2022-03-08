@@ -167,6 +167,35 @@ class FindMixin:
         limit: Optional[int] = None,
         only_id: bool = False,
     ) -> 'DocumentArray':
+        """Returns a subset of documents by filtering by the given query.
+        The query language we provide now is following the
+        [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/) query language. For example::
+
+            >>> docs._filter({'text': {'$eq': 'hello'}})
+
+            The above will return a `DocumentArray` in which each document has doc.text == 'hello'. And we also support
+            placeholder format by using the following syntax::
+
+            >>> docs._filter({'text': {'$eq': '{tags__name}'}})
+
+            will return a `DocumentArray` in which each document has doc.text == doc.tags['name'].
+
+        Now, only the subset of MongoDB's query operators are supported:
+            - `$eq` - Equal to (number, string)
+            - `$ne` - Not equal to (number, string)
+            - `$gt` - Greater than (number)
+            - `$gte` - Greater than or equal to (number)
+            - `$lt` - Less than (number)
+            - `$lte` - Less than or equal to (number)
+            - `$in` - Included in an array
+            - `$nin` - Not included in an array
+            - `$regex` - Match a specified regular expression
+
+        :param query: the input query dictionary.
+        :param limit: the maximum number of matches, when not given defaults to 20.
+        :param only_id: if set, then returning documents will only contain ``id``
+        :return: a `DocumentArray` containing the `Document` objects for matching with the query.
+        """
         from ... import DocumentArray
         from ..queryset import QueryParser
 
