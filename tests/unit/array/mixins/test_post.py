@@ -93,9 +93,9 @@ def test_endpoint():
     N = 100
     da = DocumentArray.empty(N)
     try:
-        assert da.post(f'grpc://0.0.0.0:{p}/')[:, 'text'] == [''] * N
-        assert da.post(f'grpc://0.0.0.0:{p}/foo').texts == ['foo'] * N
-        assert da.post(f'grpc://0.0.0.0:{p}/bar').texts == ['bar'] * N
+        assert da.post(f'grpc://127.0.0.1:{p}/')[:, 'text'] == [''] * N
+        assert da.post(f'grpc://127.0.0.1:{p}/foo').texts == ['foo'] * N
+        assert da.post(f'grpc://127.0.0.1:{p}/bar').texts == ['bar'] * N
     except:
         raise
     finally:
