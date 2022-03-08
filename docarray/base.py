@@ -1,11 +1,17 @@
 import copy as cp
 from dataclasses import fields
+from functools import lru_cache
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
 
 from .helper import typename
 
 if TYPE_CHECKING:
     from .types import T
+
+
+@lru_cache()
+def _get_fields(dc):
+    return [f.name for f in fields(dc)]
 
 
 class BaseDCType:
@@ -32,7 +38,7 @@ class BaseDCType:
             if field_resolver:
                 kwargs = {field_resolver.get(k, k): v for k, v in kwargs.items()}
 
-            _fields = {f.name for f in fields(self._data_class)}
+            _fields = _get_fields(self._data_class)
             _unknown_kwargs = None
             _unresolved = set(kwargs.keys()).difference(_fields)
 
