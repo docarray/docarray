@@ -36,7 +36,7 @@ class PostMixin:
         if r.scheme.startswith('jinahub'):
             from jina import Flow
 
-            f = Flow().add(uses=standardized_host)
+            f = Flow(quiet=True).add(uses=standardized_host)
             with f:
                 return f.post(_on, inputs=self, show_progress=show_progress)
         elif r.scheme in ('grpc', 'http', 'websocket'):
