@@ -104,6 +104,8 @@ def lookup(key, val, doc: 'Document') -> bool:
         return iff_not_none(value, lambda y: y <= val)
     elif last == 'regex':
         return iff_not_none(value, lambda y: re.search(val, y) is not None)
+    elif last == 'size':
+        return iff_not_none(value, lambda y: len(y) == val)
     else:
         # return value == val
         raise ValueError(
@@ -147,10 +149,11 @@ class LookupNode(LookupTreeElem):
 
     """
 
-    def __init__(self, op: str = 'and'):
+    def __init__(self, op: str = 'and', negate: bool = False):
         super(LookupNode, self).__init__()
         self.children = []
         self.op = op
+        self.negate = negate
 
     def add_child(self, child):
         self.children.append(child)

@@ -190,6 +190,13 @@ class FindMixin:
             - `$in` - Included in an array
             - `$nin` - Not included in an array
             - `$regex` - Match a specified regular expression
+            - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
+
+
+        And the following boolean logic operators are supported:
+            - `$and` - Join query clauses with a logical AND
+            - `$or` - Join query clauses with a logical OR
+            - `$not` - Inverts the effect of a query expression
 
         :param query: the input query dictionary.
         :param limit: the maximum number of matches, when not given defaults to 20.
