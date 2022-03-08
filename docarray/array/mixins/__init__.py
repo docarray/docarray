@@ -5,6 +5,7 @@ from .delitem import DelItemMixin
 from .embed import EmbedMixin
 from .empty import EmptyMixin
 from .evaluation import EvaluationMixin
+from .find import FindMixin
 from .getattr import GetAttributeMixin
 from .getitem import GetItemMixin
 from .group import GroupMixin
@@ -16,9 +17,9 @@ from .io.from_gen import FromGeneratorMixin
 from .io.json import JsonIOMixin
 from .io.pushpull import PushPullMixin
 from .match import MatchMixin
-from .find import FindMixin
 from .parallel import ParallelMixin
 from .plot import PlotMixin
+from .post import PostMixin
 from .pydantic import PydanticMixin
 from .reduce import ReduceMixin
 from .sample import SampleMixin
@@ -50,6 +51,7 @@ class AllMixins(
     TraverseMixin,
     PlotMixin,
     SampleMixin,
+    PostMixin,
     TextToolsMixin,
     EvaluationMixin,
     ReduceMixin,
