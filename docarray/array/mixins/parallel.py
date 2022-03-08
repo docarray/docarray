@@ -87,15 +87,12 @@ class ParallelMixin:
         if _is_lambda_or_local_function(func) and backend == 'process':
             func = _globalize_lambda_function(func)
 
-        if show_progress:
-            from rich.progress import track as _track
-
-            track = lambda x: _track(x, total=len(self))
-        else:
-            track = lambda x: x
+        from rich.progress import track
 
         with _get_pool(backend, num_worker) as p:
-            for x in track(p.imap(func, self)):
+            for x in track(
+                p.imap(func, self), total=len(self), disable=not show_progress
+            ):
                 yield x
 
     @overload
@@ -184,16 +181,13 @@ class ParallelMixin:
         if _is_lambda_or_local_function(func) and backend == 'process':
             func = _globalize_lambda_function(func)
 
-        if show_progress:
-            from rich.progress import track as _track
-
-            track = lambda x: _track(x, total=ceil(len(self) / batch_size))
-        else:
-            track = lambda x: x
+        from rich.progress import track
 
         with _get_pool(backend, num_worker) as p:
             for x in track(
-                p.imap(func, self.batch(batch_size=batch_size, shuffle=shuffle))
+                p.imap(func, self.batch(batch_size=batch_size, shuffle=shuffle)),
+                total=ceil(len(self) / batch_size),
+                disable=not show_progress,
             ):
                 yield x
 
