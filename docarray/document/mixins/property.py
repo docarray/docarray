@@ -40,13 +40,12 @@ class PropertyMixin(_PropertyMixin):
 
     @content.setter
     def content(self, value: 'DocumentContentType'):
-        if value is None:
-            self._clear_content()
-        elif isinstance(value, bytes):
+        self._clear_content()
+        if isinstance(value, bytes):
             self._data.blob = value
         elif isinstance(value, str):
             self._data.text = value
-        else:
+        elif value is not None:
             self._data.tensor = value
 
     @_PropertyMixin.uri.setter

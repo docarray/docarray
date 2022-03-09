@@ -40,7 +40,7 @@ class BaseDCType:
             except TypeError as ex:
                 if unknown_fields_handler == 'raise':
                     raise AttributeError(f'unknown attributes') from ex
-                elif unknown_fields_handler == 'catch':
+                else:
                     if field_resolver:
                         kwargs = {
                             field_resolver.get(k, k): v for k, v in kwargs.items()
@@ -57,7 +57,7 @@ class BaseDCType:
 
                     self._data = self._data_class(self, **kwargs)
 
-                    if _unknown_kwargs:
+                    if _unknown_kwargs and unknown_fields_handler == 'catch':
                         getattr(self, self._unresolved_fields_dest).update(
                             _unknown_kwargs
                         )
