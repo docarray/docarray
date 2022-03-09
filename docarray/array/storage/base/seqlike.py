@@ -13,7 +13,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
         """
-        self._set_doc_by_id(None, value)
+        self._set_doc_by_id(value.id, value)
         self._offset2ids.insert(index, value.id)
 
     def append(self, value: 'Document'):
@@ -21,7 +21,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
         :param value: The doc needs to be appended.
         """
-        self._set_doc_by_id(None, value)
+        self._set_doc_by_id(value.id, value)
         self._offset2ids.append(value.id)
 
     @abstractmethod

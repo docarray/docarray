@@ -17,7 +17,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         _vid = value.id
-        if _id is not None and _id != _vid:
+        if _id != _vid:
             del self._data[_id]
         self._data[_vid] = value
 
