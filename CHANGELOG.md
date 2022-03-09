@@ -46,6 +46,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1127,4 +1128,24 @@
  - [[```a4d1d4ef```](https://github.com/jina-ai/docarray/commit/a4d1d4ef10090f17751c94c36c43204d6a7be427)] __-__ fix docs link (*Han Xiao*)
  - [[```0b94e524```](https://github.com/jina-ai/docarray/commit/0b94e5246e1ad357e5030af7f4229c631603d4fa)] __-__ fix test host address (*Han Xiao*)
  - [[```88fb9d77```](https://github.com/jina-ai/docarray/commit/88fb9d7799ac55bc64b39b8b4234b749c9d5e72e)] __-__ __version__: the next version will be 0.9.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-4></a>
+## Release Note (`0.9.4`)
+
+> Release time: 2022-03-09 17:04:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```3e4bebee```](https://github.com/jina-ai/docarray/commit/3e4bebee8331575e3f77aa2845fc491ae56becbd)] __-__ optimize Document init (#184) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```fc06231d```](https://github.com/jina-ai/docarray/commit/fc06231dfff496db87fa151a0f9f97c70b3a34da)] __-__ remove any mention of traverse_flat (*Han Xiao*)
+ - [[```bb15a511```](https://github.com/jina-ai/docarray/commit/bb15a51186606a22e1ec486c79220ae4de1d080b)] __-__ __version__: the next version will be 0.9.4 (*Jina Dev Bot*)
 
