@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ... import DocumentArray
 
 
 class PostMixin:
-    """Helper functions for posting DocumentArray to Jina Flow. """
+    """Helper functions for posting DocumentArray to Jina Flow."""
 
-    def post(self, host: str, show_progress: bool = False) -> 'DocumentArray':
+    def post(
+        self, host: str, show_progress: bool = False, batch_size: Optional[int] = None
+    ) -> 'DocumentArray':
         """Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back
 
         :param host: a host string. Can be one of the following:
@@ -19,8 +21,12 @@ class PostMixin:
             - `jinahub+sandbox://Hello/endpoint`
 
         :param show_progress: if to show a progressbar
+        :param batch_size: number of Document on each request
         :return: the new DocumentArray returned from remote
         """
+
+        if not self:
+            return
 
         from urllib.parse import urlparse
 
@@ -32,13 +38,19 @@ class PostMixin:
             ._replace(path='')
             .geturl()
         )
+        batch_size = batch_size or len(self)
 
         if r.scheme.startswith('jinahub'):
             from jina import Flow
 
             f = Flow(quiet=True).add(uses=standardized_host)
             with f:
-                return f.post(_on, inputs=self, show_progress=show_progress)
+                return f.post(
+                    _on,
+                    inputs=self,
+                    show_progress=show_progress,
+                    request_size=batch_size,
+                )
         elif r.scheme in ('grpc', 'http', 'websocket'):
             if _port is None:
                 raise ValueError(f'can not determine port from {host}')
@@ -46,6 +58,8 @@ class PostMixin:
             from jina import Client
 
             c = Client(host=r.hostname, port=_port, protocol=r.scheme)
-            return c.post(_on, inputs=self, show_progress=show_progress)
+            return c.post(
+                _on, inputs=self, show_progress=show_progress, request_size=batch_size
+            )
         else:
             raise ValueError(f'unsupported scheme: {r.scheme}')

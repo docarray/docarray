@@ -13,7 +13,7 @@ import numpy as np
 
 
 class PlotMixin:
-    """Helper functions for plotting the arrays. """
+    """Helper functions for plotting the arrays."""
 
     def _ipython_display_(self):
         """Displays the object in IPython as a side effect"""
@@ -304,6 +304,7 @@ class PlotMixin:
         channel_axis: int = -1,
         image_source: str = 'tensor',
         skip_empty: bool = False,
+        show_progress: bool = False,
     ) -> None:
         """Generate a sprite image for all image tensors in this DocumentArray-like object.
 
@@ -316,6 +317,7 @@ class PlotMixin:
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :param skip_empty: skip Document who has no .uri or .tensor.
+        :param show_progress: show a progresbar.
         """
         if not self:
             raise ValueError(f'{self!r} is empty')
@@ -335,8 +337,11 @@ class PlotMixin:
             [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
         )
         img_id = 0
+
+        from rich.progress import track
+
         try:
-            for d in self:
+            for d in track(self, description='Plotting', disable=not show_progress):
 
                 if not d.uri and d.tensor is None:
                     if skip_empty:

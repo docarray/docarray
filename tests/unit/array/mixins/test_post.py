@@ -17,7 +17,8 @@ from docarray.helper import random_port
     ],
 )
 @pytest.mark.parametrize('show_pbar', [True, False])
-def test_post_to_a_flow(show_pbar, conn_config):
+@pytest.mark.parametrize('batch_size', [None, 1, 10])
+def test_post_to_a_flow(show_pbar, conn_config, batch_size):
     from jina import Flow
 
     def start_flow(stop_event, **kwargs):
@@ -41,7 +42,7 @@ def test_post_to_a_flow(show_pbar, conn_config):
 
     da = DocumentArray.empty(100)
     try:
-        da.post(conn_config[1].replace('$port', str(p)))
+        da.post(conn_config[1].replace('$port', str(p)), batch_size=batch_size)
     except:
         raise
     finally:

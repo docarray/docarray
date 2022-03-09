@@ -93,12 +93,7 @@ class BinaryIOMixin:
 
         from .... import Document
 
-        if _show_progress:
-            from rich.progress import track as _track
-
-            track = lambda x: _track(x, description='Deserializing')
-        else:
-            track = lambda x: x
+        from rich.progress import track
 
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
@@ -107,7 +102,9 @@ class BinaryIOMixin:
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
-            for _ in track(range(num_docs)):
+            for _ in track(
+                range(num_docs), description='Deserializing', disable=not _show_progress
+            ):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
                     f.read(4), 'big', signed=False
@@ -155,18 +152,14 @@ class BinaryIOMixin:
             version = int.from_bytes(d[0:1], 'big', signed=False)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(d[1:9], 'big', signed=False)
-            if show_progress:
-                from rich.progress import track as _track
 
-                track = lambda x: _track(x, description='Deserializing')
-            else:
-                track = lambda x: x
+            from rich.progress import track
 
             # this 9 is version + num_docs bytes used
             start_pos = 9
             docs = []
 
-            for _ in track(range(num_docs)):
+            for _ in track(range(num_docs), disable=not show_progress):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
                     d[start_pos : start_pos + 4], 'big', signed=False
@@ -280,12 +273,6 @@ class BinaryIOMixin:
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
                     # Binary format for streaming case
-                    if _show_progress:
-                        from rich.progress import track as _track
-
-                        track = lambda x: _track(x, description='Serializing')
-                    else:
-                        track = lambda x: x
 
                     # V1 DocArray streaming serialization format
                     # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
@@ -296,7 +283,11 @@ class BinaryIOMixin:
                     num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
                     f.write(version_byte + num_docs_as_bytes)
 
-                    for d in track(self):
+                    from rich.progress import track
+
+                    for d in track(
+                        self, description='Serializing', disable=not _show_progress
+                    ):
                         # 4 bytes (uint32)
                         doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
 
