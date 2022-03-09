@@ -180,44 +180,44 @@ def get_full_version() -> Dict:
 
 def random_port() -> Optional[int]:
     """
-    Get a random available port number from '49153' to '65535'.
+    Get a random available port number.
 
     :return: A random port.
     """
 
-    import threading
-    import multiprocessing
-    from contextlib import closing
-    import socket
+    def _random_port():
+        import socket
 
-    def _get_port(port=0):
-        with multiprocessing.Lock():
-            with threading.Lock():
-                with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
-                    try:
-                        s.bind(('', port))
-                        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                        return s.getsockname()[1]
-                    except OSError:
-                        pass
+        def _check_bind(port):
+            with socket.socket() as s:
+                try:
+                    s.bind(('', port))
+                    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    return port
+                except OSError:
+                    return None
 
-    _port = None
-    if 'JINA_RANDOM_PORT_MIN' in os.environ or 'JINA_RANDOM_PORT_MAX' in os.environ:
-        min_port = int(os.environ.get('JINA_RANDOM_PORT_MIN', '49153'))
-        max_port = int(os.environ.get('JINA_RANDOM_PORT_MAX', '65535'))
-        all_ports = list(range(min_port, max_port + 1))
-        random.shuffle(all_ports)
-        for _port in all_ports:
-            if _get_port(_port) is not None:
+        _port = None
+        if len(unassigned_ports) == 0:
+            reset_ports()
+        for idx, _port in enumerate(unassigned_ports):
+            if _check_bind(_port) is not None:
                 break
         else:
             raise OSError(
-                f'can not find an available port between [{min_port}, {max_port}].'
+                f'can not find an available port in {len(unassigned_ports)} unassigned ports, assigned already {len(assigned_ports)} ports'
             )
-    else:
-        _port = _get_port()
+        int_port = int(_port)
+        unassigned_ports.pop(idx)
+        assigned_ports.add(int_port)
+        return int_port
 
-    return int(_port)
+    try:
+        return _random_port()
+    except OSError:
+        assigned_ports.clear()
+        unassigned_ports.clear()
+        return _random_port()
 
 
 class cached_property:
