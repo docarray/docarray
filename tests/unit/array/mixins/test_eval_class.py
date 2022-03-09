@@ -7,29 +7,15 @@ from docarray import DocumentArray, Document
 
 
 @pytest.mark.parametrize(
-    'metric_fn, kwargs',
+    'storage, config',
     [
-        ('r_precision', {}),
-        ('precision_at_k', {}),
-        ('hit_at_k', {}),
-        ('average_precision', {}),
-        ('reciprocal_rank', {}),
-        ('recall_at_k', {'max_rel': 9}),
-        ('f1_score_at_k', {'max_rel': 9}),
-        ('ndcg_at_k', {}),
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
     ],
 )
-def test_eval_mixin_perfect_match(metric_fn, kwargs):
-    da = DocumentArray.empty(10)
-    da.embeddings = np.random.random([10, 256])
-    da.match(da, exclude_self=True)
-    r = da.evaluate(da, metric=metric_fn, **kwargs)
-    assert isinstance(r, float)
-    assert r == 1.0
-    for d in da:
-        assert d.evaluations[metric_fn].value == 1.0
-
-
 @pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
@@ -43,14 +29,51 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs):
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_zero_match(metric_fn, kwargs):
+def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_storage):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
-    da1.match(da1, exclude_self=True)
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1.match(da1_index, exclude_self=True)
+    r = da1.evaluate(da1, metric=metric_fn, strict=False, **kwargs)
+    assert isinstance(r, float)
+    assert r == 1.0
+    for d in da1:
+        assert d.evaluations[metric_fn].value == 1.0
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+    ],
+)
+@pytest.mark.parametrize(
+    'metric_fn, kwargs',
+    [
+        ('r_precision', {}),
+        ('precision_at_k', {}),
+        ('hit_at_k', {}),
+        ('average_precision', {}),
+        ('reciprocal_rank', {}),
+        ('recall_at_k', {'max_rel': 9}),
+        ('f1_score_at_k', {'max_rel': 9}),
+        ('ndcg_at_k', {}),
+    ],
+)
+def test_eval_mixin_zero_match(storage, config, metric_fn, kwargs):
+    da1 = DocumentArray.empty(10)
+    da1.embeddings = np.random.random([10, 256])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1.match(da1_index, exclude_self=True)
 
     da2 = copy.deepcopy(da1)
     da2.embeddings = np.random.random([10, 256])
-    da2.match(da2, exclude_self=True)
+    da2_index = DocumentArray(da2, storage=storage, config=config)
+    da2.match(da2_index, exclude_self=True)
 
     r = da1.evaluate(da2, metric=metric_fn, **kwargs)
     assert isinstance(r, float)
@@ -60,27 +83,59 @@ def test_eval_mixin_zero_match(metric_fn, kwargs):
         assert d.evaluations[metric_fn].value == 1.0
 
 
-def test_diff_len_should_raise():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+    ],
+)
+def test_diff_len_should_raise(storage, config):
     da1 = DocumentArray.empty(10)
-    da2 = DocumentArray.empty(5)
+    da2 = DocumentArray.empty(5, storage=storage, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(da2, metric='precision_at_k')
 
 
-def test_diff_hash_fun_should_raise():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+    ],
+)
+def test_diff_hash_fun_should_raise(storage, config):
     da1 = DocumentArray.empty(10)
-    da2 = DocumentArray.empty(10)
+    da2 = DocumentArray.empty(10, storage=storage, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(da2, metric='precision_at_k')
 
 
-def test_same_hash_same_len_fun_should_work():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 3}),
+        ('qdrant', {'n_dim': 3}),
+    ],
+)
+def test_same_hash_same_len_fun_should_work(storage, config):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 3])
-    da1.match(da1)
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1.match(da1_index)
     da2 = DocumentArray.empty(10)
     da2.embeddings = np.random.random([10, 3])
-    da2.match(da2)
+    da2_index = DocumentArray(da1, storage=storage, config=config)
+    da2.match(da2_index)
     with pytest.raises(ValueError):
         da1.evaluate(da2, metric='precision_at_k')
     for d1, d2 in zip(da1, da2):
@@ -89,11 +144,22 @@ def test_same_hash_same_len_fun_should_work():
     da1.evaluate(da2, metric='precision_at_k')
 
 
-def test_adding_noise():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 3}),
+        ('qdrant', {'n_dim': 3}),
+    ],
+)
+def test_adding_noise(storage, config):
     da = DocumentArray.empty(10)
 
     da.embeddings = np.random.random([10, 3])
-    da.match(da, exclude_self=True)
+    da_index = DocumentArray(da, storage=storage, config=config)
+    da.match(da_index, exclude_self=True)
 
     da2 = copy.deepcopy(da)
 
@@ -108,20 +174,32 @@ def test_adding_noise():
 
 
 @pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 128}),
+        ('qdrant', {'n_dim': 128}),
+    ],
+)
+@pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
         ('recall_at_k', {}),
         ('f1_score_at_k', {}),
     ],
 )
-def test_diff_match_len_in_gd(metric_fn, kwargs):
+def test_diff_match_len_in_gd(storage, config, metric_fn, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 128])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
     da1.match(da1, exclude_self=True)
 
     da2 = copy.deepcopy(da1)
     da2.embeddings = np.random.random([10, 128])
-    da2.match(da2, exclude_self=True)
+    da2_index = DocumentArray(da2, storage=storage, config=config)
+    da2.match(da2_index, exclude_self=True)
     # pop some matches from first document
     da2[0].matches.pop(8)
 
