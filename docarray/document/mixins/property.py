@@ -51,15 +51,16 @@ class PropertyMixin(_PropertyMixin):
 
     @_PropertyMixin.uri.setter
     def uri(self, value: str):
-        mime_type = mimetypes.guess_type(value)[0]
+        if value:
+            mime_type = mimetypes.guess_type(value)[0]
 
-        if mime_type:
-            self._data.mime_type = mime_type
+            if mime_type:
+                self._data.mime_type = mime_type
         self._data.uri = value
 
     @_PropertyMixin.mime_type.setter
     def mime_type(self, value: str):
-        if value not in _all_mime_types:
+        if value and value not in _all_mime_types:
             # given but not recognizable, do best guess
             r = mimetypes.guess_type(f'*.{value}')[0]
             value = r or value
