@@ -554,15 +554,12 @@
         <span class="k">if</span> <span class="n">_is_lambda_or_local_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">'process'</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">_globalize_lambda_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
-
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
         <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span>
+            <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">x</span></div>
 
     <span class="nd">@overload</span>
@@ -651,16 +648,13 @@
         <span class="k">if</span> <span class="n">_is_lambda_or_local_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">and</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">'process'</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">_globalize_lambda_function</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
-
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
         <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">))</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)),</span>
+                <span class="n">total</span><span class="o">=</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">),</span>
+                <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">x</span></div></div>
 
@@ -706,7 +700,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 08, 2022.
+                    Last updated on Mar 09, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

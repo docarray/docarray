@@ -645,46 +645,70 @@
     <span class="p">}</span></div>
 
 
+<span class="n">assigned_ports</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="n">unassigned_ports</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">DEFAULT_MIN_PORT</span> <span class="o">=</span> <span class="mi">49153</span>
+<span class="n">MAX_PORT</span> <span class="o">=</span> <span class="mi">65535</span>
+
+
+<div class="viewcode-block" id="reset_ports"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.reset_ports">[docs]</a><span class="k">def</span> <span class="nf">reset_ports</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">_get_unassigned_ports</span><span class="p">():</span>
+        <span class="c1"># if we are running out of ports, lower default minimum port</span>
+        <span class="k">if</span> <span class="n">MAX_PORT</span> <span class="o">-</span> <span class="n">DEFAULT_MIN_PORT</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MIN'</span><span class="p">,</span> <span class="s1">'16384'</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MIN'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">DEFAULT_MIN_PORT</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="n">max_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MAX'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MAX_PORT</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_port</span><span class="p">,</span> <span class="n">max_port</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span>
+
+    <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">assigned_ports</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_get_unassigned_ports</span><span class="p">())</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="random_port"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.random_port">[docs]</a><span class="k">def</span> <span class="nf">random_port</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
     <span class="sd">"""</span>
-<span class="sd">    Get a random available port number from '49153' to '65535'.</span>
+<span class="sd">    Get a random available port number.</span>
 
 <span class="sd">    :return: A random port.</span>
 <span class="sd">    """</span>
 
-    <span class="kn">import</span> <span class="nn">threading</span>
-    <span class="kn">import</span> <span class="nn">multiprocessing</span>
-    <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">closing</span>
-    <span class="kn">import</span> <span class="nn">socket</span>
+    <span class="k">def</span> <span class="nf">_random_port</span><span class="p">():</span>
+        <span class="kn">import</span> <span class="nn">socket</span>
 
-    <span class="k">def</span> <span class="nf">_get_port</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Lock</span><span class="p">():</span>
-            <span class="k">with</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">():</span>
-                <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">))</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">''</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
-                        <span class="n">s</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
-                        <span class="k">pass</span>
+        <span class="k">def</span> <span class="nf">_check_bind</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">''</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">port</span>
+                <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="n">_port</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="s1">'JINA_RANDOM_PORT_MIN'</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">or</span> <span class="s1">'JINA_RANDOM_PORT_MAX'</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-        <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MIN'</span><span class="p">,</span> <span class="s1">'49153'</span><span class="p">))</span>
-        <span class="n">max_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MAX'</span><span class="p">,</span> <span class="s1">'65535'</span><span class="p">))</span>
-        <span class="n">all_ports</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_port</span><span class="p">,</span> <span class="n">max_port</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">all_ports</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">_port</span> <span class="ow">in</span> <span class="n">all_ports</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">_get_port</span><span class="p">(</span><span class="n">_port</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_port</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reset_ports</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">_port</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_check_bind</span><span class="p">(</span><span class="n">_port</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'can not find an available port between [</span><span class="si">{</span><span class="n">min_port</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">max_port</span><span class="si">}</span><span class="s1">].'</span>
+                <span class="sa">f</span><span class="s1">'can not find an available port in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> unassigned ports, assigned already </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> ports'</span>
             <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_port</span> <span class="o">=</span> <span class="n">_get_port</span><span class="p">()</span>
+        <span class="n">int_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_port</span><span class="p">)</span>
+        <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="n">assigned_ports</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">int_port</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">int_port</span>
 
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">_port</span><span class="p">)</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_random_port</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+        <span class="n">assigned_ports</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_random_port</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">:</span>
@@ -866,7 +890,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 08, 2022.
+                    Last updated on Mar 09, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

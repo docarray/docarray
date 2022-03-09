@@ -560,12 +560,7 @@
 
         <span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">Document</span>
 
-        <span class="k">if</span> <span class="n">_show_progress</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
-
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Deserializing'</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+        <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
         <span class="k">with</span> <span class="n">file_ctx</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">version_numdocs_lendoc0</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
@@ -574,7 +569,9 @@
             <span class="c1"># 8 bytes (uint64)</span>
             <span class="n">num_docs</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">version_numdocs_lendoc0</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">9</span><span class="p">],</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Deserializing'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">_show_progress</span>
+            <span class="p">):</span>
                 <span class="c1"># 4 bytes (uint32)</span>
                 <span class="n">len_current_doc_in_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span>
@@ -622,18 +619,14 @@
             <span class="n">version</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="c1"># 8 bytes (uint64)</span>
             <span class="n">num_docs</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">9</span><span class="p">],</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
 
-                <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Deserializing'</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+            <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
             <span class="c1"># this 9 is version + num_docs bytes used</span>
             <span class="n">start_pos</span> <span class="o">=</span> <span class="mi">9</span>
             <span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">):</span>
                 <span class="c1"># 4 bytes (uint32)</span>
                 <span class="n">len_current_doc_in_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
                     <span class="n">d</span><span class="p">[</span><span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span>
@@ -747,12 +740,6 @@
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
                 <span class="k">elif</span> <span class="n">protocol</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="s1">'protobuf'</span><span class="p">):</span>
                     <span class="c1"># Binary format for streaming case</span>
-                    <span class="k">if</span> <span class="n">_show_progress</span><span class="p">:</span>
-                        <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span> <span class="k">as</span> <span class="n">_track</span>
-
-                        <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_track</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Serializing'</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">track</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
 
                     <span class="c1"># V1 DocArray streaming serialization format</span>
                     <span class="c1"># | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...</span>
@@ -763,7 +750,11 @@
                     <span class="n">num_docs_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">version_byte</span> <span class="o">+</span> <span class="n">num_docs_as_bytes</span><span class="p">)</span>
 
-                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                    <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
+
+                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Serializing'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">_show_progress</span>
+                    <span class="p">):</span>
                         <span class="c1"># 4 bytes (uint32)</span>
                         <span class="n">doc_as_bytes</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
 
@@ -840,7 +831,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 08, 2022.
+                    Last updated on Mar 09, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>

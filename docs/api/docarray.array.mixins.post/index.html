@@ -505,7 +505,7 @@
 <p>Helper functions for posting DocumentArray to Jina Flow.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.post.PostMixin.post">
-<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/post/#PostMixin.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.post.PostMixin.post" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/post/#PostMixin.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.post.PostMixin.post" title="Permalink to this definition">#</a></dt>
 <dd><p>Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -518,6 +518,7 @@
 - <cite>jinahub+docker://Hello/endpoint</cite>
 - <cite>jinahub+sandbox://Hello/endpoint</cite></p></li>
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progressbar</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – number of Document on each request</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -563,7 +564,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 08, 2022.
+                    Last updated on Mar 09, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
