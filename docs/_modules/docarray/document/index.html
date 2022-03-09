@@ -478,6 +478,16 @@
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../api/docarray.document/#docarray.document.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">AllMixins</span><span class="p">,</span> <span class="n">BaseDCType</span><span class="p">):</span>
     <span class="n">_data_class</span> <span class="o">=</span> <span class="n">DocumentData</span>
     <span class="n">_unresolved_fields_dest</span> <span class="o">=</span> <span class="s1">'tags'</span>
+    <span class="n">_post_init_fields</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">'text'</span><span class="p">,</span>
+        <span class="s1">'blob'</span><span class="p">,</span>
+        <span class="s1">'tensor'</span><span class="p">,</span>
+        <span class="s1">'content'</span><span class="p">,</span>
+        <span class="s1">'uri'</span><span class="p">,</span>
+        <span class="s1">'mime_type'</span><span class="p">,</span>
+        <span class="s1">'chunks'</span><span class="p">,</span>
+        <span class="s1">'matches'</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

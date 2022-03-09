@@ -471,7 +471,8 @@
 <span class="kn">from</span> <span class="nn">._property</span> <span class="kn">import</span> <span class="n">_PropertyMixin</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">...types</span> <span class="kn">import</span> <span class="n">DocumentContentType</span>
+    <span class="kn">from</span> <span class="nn">...types</span> <span class="kn">import</span> <span class="n">DocumentContentType</span><span class="p">,</span> <span class="n">ArrayType</span>
+    <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">_all_mime_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
@@ -489,16 +490,66 @@
         <span class="k">if</span> <span class="n">ct</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ct</span><span class="p">)</span>
 
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">blob</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">value</span>
+
     <span class="nd">@content</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'DocumentContentType'</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear_content</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">mime_type</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">mime_type</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">mime_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">mime_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_all_mime_types</span><span class="p">:</span>
+            <span class="c1"># given but not recognizable, do best guess</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="sa">f</span><span class="s1">'*.</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">r</span> <span class="ow">or</span> <span class="n">value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'DocumentArray'</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">...array.chunk</span> <span class="kn">import</span> <span class="n">ChunkArray</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ChunkArray</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">ChunkArray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">_reference_doc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@_PropertyMixin</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'DocumentArray'</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">...array.match</span> <span class="kn">import</span> <span class="n">MatchArray</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">MatchArray</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">MatchArray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">_reference_doc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>

@@ -502,29 +502,36 @@
             <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_obj</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">field_resolver</span><span class="p">:</span>
-                <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">field_resolver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-            <span class="n">_fields</span> <span class="o">=</span> <span class="n">_get_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">)</span>
-            <span class="n">_unknown_kwargs</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">_unresolved</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">_fields</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">_unresolved</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">unknown_fields_handler</span> <span class="o">==</span> <span class="s1">'raise'</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'unknown attributes: </span><span class="si">{</span><span class="n">_unresolved</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'unknown attributes'</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">field_resolver</span><span class="p">:</span>
+                        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="n">field_resolver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="p">}</span>
 
-                <span class="n">_unknown_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_unresolved</span><span class="p">}</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_unresolved</span><span class="p">:</span>
-                    <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                    <span class="n">_fields</span> <span class="o">=</span> <span class="n">_get_fields</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">)</span>
+                    <span class="n">_unknown_kwargs</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">_unresolved</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">_fields</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">_unresolved</span><span class="p">:</span>
+                        <span class="n">_unknown_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_unresolved</span><span class="p">}</span>
+                        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_unresolved</span><span class="p">:</span>
+                            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">_fields</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">_unknown_kwargs</span> <span class="ow">and</span> <span class="n">unknown_fields_handler</span> <span class="o">==</span> <span class="s1">'catch'</span><span class="p">:</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unresolved_fields_dest</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_unknown_kwargs</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">_unknown_kwargs</span> <span class="ow">and</span> <span class="n">unknown_fields_handler</span> <span class="o">==</span> <span class="s1">'catch'</span><span class="p">:</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unresolved_fields_dest</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                            <span class="n">_unknown_kwargs</span>
+                        <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_fields</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_obj</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
