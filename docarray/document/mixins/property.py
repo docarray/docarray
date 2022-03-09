@@ -1,11 +1,16 @@
 import mimetypes
-from typing import TYPE_CHECKING, Optional
+from collections import defaultdict
+from typing import TYPE_CHECKING, Optional, Dict, Union
 
 from ._property import _PropertyMixin
 
 if TYPE_CHECKING:
     from ...types import DocumentContentType, ArrayType
     from ... import DocumentArray
+    from ...array.chunk import ChunkArray
+    from ...array.match import MatchArray
+    from ...score import NamedScore
+
 
 _all_mime_types = set(mimetypes.types_map.values())
 
@@ -66,7 +71,33 @@ class PropertyMixin(_PropertyMixin):
 
         self._data.mime_type = value
 
-    @_PropertyMixin.chunks.setter
+    @property
+    def scores(self) -> Dict[str, Union['NamedScore', Dict]]:
+        if self._data.scores is None:
+            from ...score import NamedScore
+
+            self._data.scores = defaultdict(NamedScore)
+        return self._data.scores
+
+    @property
+    def evaluations(self) -> Dict[str, Union['NamedScore', Dict]]:
+        if self._data.evaluations is None:
+            from ...score import NamedScore
+
+            self._data.evaluations = defaultdict(NamedScore)
+        return self._data.evaluations
+
+    @property
+    def chunks(self) -> 'ChunkArray':
+        if self._data.chunks is None:
+            from ...array.chunk import ChunkArray
+
+            self._data.chunks = ChunkArray(
+                None, reference_doc=self._data._reference_doc
+            )
+        return self._data.chunks
+
+    @chunks.setter
     def chunks(self, value: 'DocumentArray'):
         from ...array.chunk import ChunkArray
 
@@ -75,7 +106,17 @@ class PropertyMixin(_PropertyMixin):
 
         self._data.chunks = value
 
-    @_PropertyMixin.matches.setter
+    @property
+    def matches(self) -> 'MatchArray':
+        if self._data.matches is None:
+            from ...array.match import MatchArray
+
+            self._data.matches = MatchArray(
+                None, reference_doc=self._data._reference_doc
+            )
+        return self._data.matches
+
+    @matches.setter
     def matches(self, value: 'DocumentArray'):
         from ...array.match import MatchArray
 

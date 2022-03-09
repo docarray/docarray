@@ -16,9 +16,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         del self._data[_id]
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        if _id != value.id:
+        _vid = value.id
+        if _id is not None and _id != _vid:
             del self._data[_id]
-        self._data[value.id] = value
+        self._data[_vid] = value
 
     def _set_doc_value_pairs(
         self, docs: Iterable['Document'], values: Sequence['Document']

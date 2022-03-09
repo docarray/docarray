@@ -1,5 +1,5 @@
 # auto-generated from /Users/hanxiao/Documents/docarray/scripts/gen_doc_property_mixin.py
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Union
 
 if TYPE_CHECKING:
     from ...score import NamedScore
@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 class _PropertyMixin:
     @property
     def id(self) -> str:
-        self._data._set_default_value_if_none('id')
         return self._data.id
 
     @id.setter
@@ -20,8 +19,7 @@ class _PropertyMixin:
         self._data.id = value
 
     @property
-    def parent_id(self) -> Optional[str]:
-        self._data._set_default_value_if_none('parent_id')
+    def parent_id(self) -> str:
         return self._data.parent_id
 
     @parent_id.setter
@@ -29,8 +27,7 @@ class _PropertyMixin:
         self._data.parent_id = value
 
     @property
-    def granularity(self) -> Optional[int]:
-        self._data._set_default_value_if_none('granularity')
+    def granularity(self) -> int:
         return self._data.granularity
 
     @granularity.setter
@@ -38,8 +35,7 @@ class _PropertyMixin:
         self._data.granularity = value
 
     @property
-    def adjacency(self) -> Optional[int]:
-        self._data._set_default_value_if_none('adjacency')
+    def adjacency(self) -> int:
         return self._data.adjacency
 
     @adjacency.setter
@@ -47,8 +43,7 @@ class _PropertyMixin:
         self._data.adjacency = value
 
     @property
-    def blob(self) -> Optional[bytes]:
-        self._data._set_default_value_if_none('blob')
+    def blob(self) -> bytes:
         return self._data.blob
 
     @blob.setter
@@ -56,8 +51,7 @@ class _PropertyMixin:
         self._data.blob = value
 
     @property
-    def tensor(self) -> Optional['ArrayType']:
-        self._data._set_default_value_if_none('tensor')
+    def tensor(self) -> 'ArrayType':
         return self._data.tensor
 
     @tensor.setter
@@ -65,8 +59,7 @@ class _PropertyMixin:
         self._data.tensor = value
 
     @property
-    def mime_type(self) -> Optional[str]:
-        self._data._set_default_value_if_none('mime_type')
+    def mime_type(self) -> str:
         return self._data.mime_type
 
     @mime_type.setter
@@ -74,8 +67,7 @@ class _PropertyMixin:
         self._data.mime_type = value
 
     @property
-    def text(self) -> Optional[str]:
-        self._data._set_default_value_if_none('text')
+    def text(self) -> str:
         return self._data.text
 
     @text.setter
@@ -83,8 +75,7 @@ class _PropertyMixin:
         self._data.text = value
 
     @property
-    def content(self) -> Optional['DocumentContentType']:
-        self._data._set_default_value_if_none('content')
+    def content(self) -> 'DocumentContentType':
         return self._data.content
 
     @content.setter
@@ -92,8 +83,7 @@ class _PropertyMixin:
         self._data.content = value
 
     @property
-    def weight(self) -> Optional[float]:
-        self._data._set_default_value_if_none('weight')
+    def weight(self) -> float:
         return self._data.weight
 
     @weight.setter
@@ -101,8 +91,7 @@ class _PropertyMixin:
         self._data.weight = value
 
     @property
-    def uri(self) -> Optional[str]:
-        self._data._set_default_value_if_none('uri')
+    def uri(self) -> str:
         return self._data.uri
 
     @uri.setter
@@ -110,8 +99,7 @@ class _PropertyMixin:
         self._data.uri = value
 
     @property
-    def tags(self) -> Optional[Dict[str, 'StructValueType']]:
-        self._data._set_default_value_if_none('tags')
+    def tags(self) -> Dict[str, 'StructValueType']:
         return self._data.tags
 
     @tags.setter
@@ -119,8 +107,7 @@ class _PropertyMixin:
         self._data.tags = value
 
     @property
-    def offset(self) -> Optional[float]:
-        self._data._set_default_value_if_none('offset')
+    def offset(self) -> float:
         return self._data.offset
 
     @offset.setter
@@ -128,8 +115,7 @@ class _PropertyMixin:
         self._data.offset = value
 
     @property
-    def location(self) -> Optional[List[float]]:
-        self._data._set_default_value_if_none('location')
+    def location(self) -> List[float]:
         return self._data.location
 
     @location.setter
@@ -137,8 +123,7 @@ class _PropertyMixin:
         self._data.location = value
 
     @property
-    def embedding(self) -> Optional['ArrayType']:
-        self._data._set_default_value_if_none('embedding')
+    def embedding(self) -> 'ArrayType':
         return self._data.embedding
 
     @embedding.setter
@@ -146,8 +131,7 @@ class _PropertyMixin:
         self._data.embedding = value
 
     @property
-    def modality(self) -> Optional[str]:
-        self._data._set_default_value_if_none('modality')
+    def modality(self) -> str:
         return self._data.modality
 
     @modality.setter
@@ -155,26 +139,23 @@ class _PropertyMixin:
         self._data.modality = value
 
     @property
-    def evaluations(self) -> Optional[Dict[str, 'NamedScore']]:
-        self._data._set_default_value_if_none('evaluations')
+    def evaluations(self) -> Dict[str, Union['NamedScore', Dict]]:
         return self._data.evaluations
 
     @evaluations.setter
-    def evaluations(self, value: Dict[str, 'NamedScore']):
+    def evaluations(self, value: Dict[str, Union['NamedScore', Dict]]):
         self._data.evaluations = value
 
     @property
-    def scores(self) -> Optional[Dict[str, 'NamedScore']]:
-        self._data._set_default_value_if_none('scores')
+    def scores(self) -> Dict[str, Union['NamedScore', Dict]]:
         return self._data.scores
 
     @scores.setter
-    def scores(self, value: Dict[str, 'NamedScore']):
+    def scores(self, value: Dict[str, Union['NamedScore', Dict]]):
         self._data.scores = value
 
     @property
-    def chunks(self) -> Optional['ChunkArray']:
-        self._data._set_default_value_if_none('chunks')
+    def chunks(self) -> 'ChunkArray':
         return self._data.chunks
 
     @chunks.setter
@@ -182,8 +163,7 @@ class _PropertyMixin:
         self._data.chunks = value
 
     @property
-    def matches(self) -> Optional['MatchArray']:
-        self._data._set_default_value_if_none('matches')
+    def matches(self) -> 'MatchArray':
         return self._data.matches
 
     @matches.setter
