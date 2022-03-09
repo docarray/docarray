@@ -35,7 +35,7 @@ _all_mime_types = set(mimetypes.types_map.values())
 @dataclass(unsafe_hash=True)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
-    id: str = ''
+    id: str = field(default_factory=lambda: uuid.uuid1().hex)
     parent_id: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
