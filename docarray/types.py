@@ -11,6 +11,10 @@ from typing import (
     Tuple,
 )
 
+import numpy as np
+import tensorflow
+import torch
+
 if TYPE_CHECKING:
     import scipy.sparse
     import tensorflow
@@ -61,3 +65,19 @@ if TYPE_CHECKING:
         DocumentArraySingleAttributeType,
         DocumentArrayMultipleAttributeType,
     ]
+
+
+ImageDocument = TypeVar(
+    'ImageDocument',
+    np.ndarray,
+    tensorflow.Tensor,
+    torch.Tensor,
+)
+
+BlobDocument = TypeVar(
+    'BlobDocument',
+    np.ndarray,
+    bytes,
+)
+
+TextDocument = TypeVar(str)

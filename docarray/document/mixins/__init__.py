@@ -7,6 +7,7 @@ from .dump import UriFileMixin
 from .featurehash import FeatureHashMixin
 from .image import ImageDataMixin
 from .mesh import MeshDataMixin
+from .multimodal import MultiModalMixin
 from .plot import PlotMixin
 from .porting import PortingMixin
 from .property import PropertyMixin
