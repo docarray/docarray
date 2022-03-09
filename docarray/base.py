@@ -35,29 +35,36 @@ class BaseDCType:
             kwargs.update(_obj)
 
         if kwargs:
-            if field_resolver:
-                kwargs = {field_resolver.get(k, k): v for k, v in kwargs.items()}
-
-            _fields = _get_fields(self._data_class)
-            _unknown_kwargs = None
-            _unresolved = set(kwargs.keys()).difference(_fields)
-
-            if _unresolved:
+            try:
+                self._data = self._data_class(self, **kwargs)
+            except TypeError as ex:
                 if unknown_fields_handler == 'raise':
-                    raise AttributeError(f'unknown attributes: {_unresolved}')
+                    raise AttributeError(f'unknown attributes') from ex
+                else:
+                    if field_resolver:
+                        kwargs = {
+                            field_resolver.get(k, k): v for k, v in kwargs.items()
+                        }
 
-                _unknown_kwargs = {k: kwargs[k] for k in _unresolved}
-                for k in _unresolved:
-                    kwargs.pop(k)
+                    _fields = _get_fields(self._data_class)
+                    _unknown_kwargs = None
+                    _unresolved = set(kwargs.keys()).difference(_fields)
 
-            self._data = self._data_class(self)
+                    if _unresolved:
+                        _unknown_kwargs = {k: kwargs[k] for k in _unresolved}
+                        for k in _unresolved:
+                            kwargs.pop(k)
 
-            for f in _fields:
-                if f in kwargs:
-                    setattr(self._data, f, kwargs[f])
+                    self._data = self._data_class(self, **kwargs)
 
-            if _unknown_kwargs and unknown_fields_handler == 'catch':
-                getattr(self, self._unresolved_fields_dest).update(_unknown_kwargs)
+                    if _unknown_kwargs and unknown_fields_handler == 'catch':
+                        getattr(self, self._unresolved_fields_dest).update(
+                            _unknown_kwargs
+                        )
+
+            for k in self._post_init_fields:
+                if k in kwargs:
+                    setattr(self, k, kwargs[k])
 
         if not _obj and not kwargs and self._data is None:
             self._data = self._data_class(self)

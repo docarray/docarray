@@ -11,6 +11,16 @@ if TYPE_CHECKING:
 class Document(AllMixins, BaseDCType):
     _data_class = DocumentData
     _unresolved_fields_dest = 'tags'
+    _post_init_fields = (
+        'text',
+        'blob',
+        'tensor',
+        'content',
+        'uri',
+        'mime_type',
+        'chunks',
+        'matches',
+    )
 
     @overload
     def __init__(self):
