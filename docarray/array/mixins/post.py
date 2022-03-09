@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
     from ... import DocumentArray
@@ -25,6 +25,9 @@ class PostMixin:
         :return: the new DocumentArray returned from remote
         """
 
+        if not self:
+            return
+
         from urllib.parse import urlparse
 
         r = urlparse(host)
@@ -35,6 +38,7 @@ class PostMixin:
             ._replace(path='')
             .geturl()
         )
+        batch_size = batch_size or len(self)
 
         if r.scheme.startswith('jinahub'):
             from jina import Flow
