@@ -35,7 +35,7 @@ _all_mime_types = set(mimetypes.types_map.values())
 @dataclass(unsafe_hash=True)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
-    id: str = field(default_factory=lambda: uuid.uuid1().hex)
+    id: str = ''
     parent_id: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
@@ -55,45 +55,6 @@ class DocumentData:
     scores: Optional[Dict[str, Union['NamedScore', Dict]]] = None
     chunks: Optional['DocumentArray'] = None
     matches: Optional['DocumentArray'] = None
-
-    def __setattr__(self, key, value):
-        if value is not None:
-            if key == 'text' or key == 'tensor' or key == 'blob':
-                # enable mutual exclusivity for content field
-                dv = default_values.get(key)
-                if type(value) != type(dv) or value != dv:
-                    self.text = None
-                    self.tensor = None
-                    self.blob = None
-            elif key == 'uri':
-                mime_type = mimetypes.guess_type(value)[0]
-
-                if mime_type:
-                    self.mime_type = mime_type
-            elif key == 'mime_type':
-                if value not in _all_mime_types:
-                    # given but not recognizable, do best guess
-                    r = mimetypes.guess_type(f'*.{value}')[0]
-                    value = r or value
-            elif key == 'content':
-                if isinstance(value, bytes):
-                    self.blob = value
-                elif isinstance(value, str):
-                    self.text = value
-                else:
-                    self.tensor = value
-                value = None
-            elif key == 'chunks':
-                from ..array.chunk import ChunkArray
-
-                if not isinstance(value, ChunkArray):
-                    value = ChunkArray(value, reference_doc=self._reference_doc)
-            elif key == 'matches':
-                from ..array.match import MatchArray
-
-                if not isinstance(value, MatchArray):
-                    value = MatchArray(value, reference_doc=self._reference_doc)
-        self.__dict__[key] = value
 
     @property
     def _non_empty_fields(self) -> Tuple[str]:
