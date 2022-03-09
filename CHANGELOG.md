@@ -45,6 +45,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1101,4 +1102,29 @@
 ### 🍹 Other Improvements
 
  - [[```2a6d44c1```](https://github.com/jina-ai/docarray/commit/2a6d44c16f778935d1695c3921b7d07a7dc486e7)] __-__ __version__: the next version will be 0.9.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-3></a>
+## Release Note (`0.9.3`)
+
+> Release time: 2022-03-09 09:31:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Winston Wong,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```4539a2ca```](https://github.com/jina-ai/docarray/commit/4539a2ca29abc223acbd43099ed28fa5bc7d4a01)] __-__ __array__: add batch_size (#182) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```77924777```](https://github.com/jina-ai/docarray/commit/77924777818b089dc586ae565d7ead15fc07183d)] __-__ enable evaluate mixin tests for backends (#174) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```a4d1d4ef```](https://github.com/jina-ai/docarray/commit/a4d1d4ef10090f17751c94c36c43204d6a7be427)] __-__ fix docs link (*Han Xiao*)
+ - [[```0b94e524```](https://github.com/jina-ai/docarray/commit/0b94e5246e1ad357e5030af7f4229c631603d4fa)] __-__ fix test host address (*Han Xiao*)
+ - [[```88fb9d77```](https://github.com/jina-ai/docarray/commit/88fb9d7799ac55bc64b39b8b4234b749c9d5e72e)] __-__ __version__: the next version will be 0.9.3 (*Jina Dev Bot*)
 
