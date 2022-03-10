@@ -99,8 +99,8 @@ class PushPullMixin:
                     self._total_size += len(chunk)
                     if self._offset == len(self._da):
                         chunk += self._payloads[1]
-                    print('2', chunk)
-                    return chunk
+                print('2', chunk)
+                return chunk
 
         delimiter = os.urandom(32)
         (data1, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
