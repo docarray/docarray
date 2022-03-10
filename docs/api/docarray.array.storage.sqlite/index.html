@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage.sqlite/" />
   
-<meta property="og:site_name" content="DocArray 0.9.4 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.5 Documentation" />
   
 <meta property="og:description" content="Submodules: docarray.array.storage.sqlite.backend module, docarray.array.storage.sqlite.getsetdel module, docarray.array.storage.sqlite.helper module, docarray.array.storage.sqlite.seqlike module. Module contents:" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.4 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.5 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -35,11 +35,10 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<script async defer src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.storage.sqlite.backend module" href="../docarray.array.storage.sqlite.backend/" /><link rel="prev" title="docarray.array.storage.qdrant.seqlike module" href="../docarray.array.storage.qdrant.seqlike/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.storage.sqlite package - DocArray 0.9.4 documentation</title>
+        <title>docarray.array.storage.sqlite package - DocArray 0.9.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.4 documentation</div>
+                <div class="brand">DocArray 0.9.5 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -582,7 +581,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 09, 2022.
+                    Last updated on Mar 10, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
@@ -617,24 +616,23 @@
                     </div>
                 </div>
                 
-                <qa-bot
-                    theme="auto"
-                    title="DocArray Bot"
-                    description="The data structure for unstructured data"
-                >
-                    <dl>
-                        <dt>You can ask questions about our docs. Try:</dt>
-                        <dd>What is a DocumentArray?</dd>
-                        <dd>How to serialize a DocumentArray?</dd>
-                        <dd>How to find nearest neighbour of Documents?</dd>
-                    </dl>
-                </qa-bot>
             </div>
 
             
         </aside>
 
     </div>
+    <qa-bot
+        title="DocArray Bot"
+        description="The data structure for unstructured data"
+    >
+        <dl>
+            <dt>You can ask questions about our docs. Try:</dt>
+            <dd>What is a DocumentArray?</dd>
+            <dd>How to serialize a DocumentArray?</dd>
+            <dd>How to find nearest neighbour of Documents?</dd>
+        </dl>
+    </qa-bot>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
@@ -647,32 +645,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() { 
             document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
-            const theme = localStorage.getItem('theme');
-            if (theme) {
-                document.querySelector('qa-bot').setAttribute('theme', theme);
-            }
-        });
-        const ob = new MutationObserver(function(mutations) {
-            let shouldChange = false;
-            for (const m of mutations) {
-                if (m.type !== 'attributes') {
-                    continue;
-                }   
-                if (m.attributeName !== 'data-theme') {
-                    continue;
-                }
-                shouldChange = m.target.dataset.theme;
-            }
-            if (!shouldChange) {
-                return;
-            }
-            document.querySelector('qa-bot').setAttribute('theme', shouldChange);
-        });
-        ob.observe(document.body, {
-            attribute:true,
-            attributeFilter: ['data-theme']
         });
         </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
     </body>
 </html>
