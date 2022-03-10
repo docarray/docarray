@@ -41,7 +41,7 @@ class MultiModalMixin:
                         tags[key] = attribute
                         multi_modal_schema[key] = {
                             'attribute_type': AttributeType.ITERABLE_PRIMITIVE,
-                            'type': field.type.__name__,
+                            'type': f'{field.type._name}[{sub_type.__name__}]',
                         }
 
                     else:
@@ -51,7 +51,7 @@ class MultiModalMixin:
                             chunk.chunks.append(doc)
                         multi_modal_schema[key] = {
                             'attribute_type': AttributeType.ITERABLE_DOCUMENT,
-                            'type': field.type.__name__,
+                            'type': f'{field.type._name}[{sub_type.__name__}]',
                             'position': len(root.chunks),
                         }
                         root.chunks.append(chunk)
