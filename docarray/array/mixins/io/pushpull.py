@@ -99,22 +99,11 @@ class PushPullMixin:
                     self._total_size += len(chunk)
                     if self._offset == len(self._da):
                         chunk += self._payloads[1]
-                print('2', chunk)
-                return chunk
+                    return chunk
 
         delimiter = os.urandom(32)
-        (data1, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
-            {
-                'file': (
-                    'DocumentArray',
-                    self.to_bytes(protocol='protobuf', compress='gzip'),
-                ),
-                'token': token,
-            }
-        )
-        print('1', data1)
 
-        (data2, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
+        (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
             {
                 'file': (
                     'DocumentArray',
@@ -133,12 +122,12 @@ class PushPullMixin:
                 task_id,
                 protocol='protobuf',
                 compress='gzip',
-                payloads=data2.split(delimiter),
+                payloads=data.split(delimiter),
             )
             res = requests.post(
                 f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
             )
-            print(res)
+            print(res.status_code)
 
             if res.status_code != 200:
                 json_res = res.json()
