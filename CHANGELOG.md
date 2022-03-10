@@ -47,6 +47,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1148,4 +1149,27 @@
 
  - [[```fc06231d```](https://github.com/jina-ai/docarray/commit/fc06231dfff496db87fa151a0f9f97c70b3a34da)] __-__ remove any mention of traverse_flat (*Han Xiao*)
  - [[```bb15a511```](https://github.com/jina-ai/docarray/commit/bb15a51186606a22e1ec486c79220ae4de1d080b)] __-__ __version__: the next version will be 0.9.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-5></a>
+## Release Note (`0.9.5`)
+
+> Release time: 2022-03-10 11:50:30
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Sha Zhou,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```62bb751a```](https://github.com/jina-ai/docarray/commit/62bb751a7a310a5b513fbd38f613e3d90538f151)] __-__ speedup id construction time (#191) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```09f43036```](https://github.com/jina-ai/docarray/commit/09f43036420dcae80d6d8f0a9aef273617eff6d2)] __-__ __qabot__: fix flash on ios and disappear on search&amp;404 page (#186) (*Sha Zhou*)
+
+### 🍹 Other Improvements
+
+ - [[```80c186a4```](https://github.com/jina-ai/docarray/commit/80c186a4be5217d9599d9060fd89a24533938311)] __-__ __version__: the next version will be 0.9.5 (*Jina Dev Bot*)
 
