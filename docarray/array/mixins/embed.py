@@ -1,9 +1,9 @@
 import warnings
 from typing import TYPE_CHECKING, Callable, Optional, Any
-from ... import DocumentArray
 
 if TYPE_CHECKING:
     from ...types import T, AnyDNN
+    from ... import DocumentArray
 
     CollateFnType = Callable[
         [DocumentArray],
@@ -60,7 +60,7 @@ class EmbedMixin:
         device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
         with device:
             for b_da in self.batch(batch_size):
-                batch_inputs = collate_fn(DocumentArray(b_da, copy=True))
+                batch_inputs = collate_fn(b_da)
                 r = embed_model(
                     **batch_inputs if isinstance(batch_inputs, dict) else batch_inputs,
                     training=False,
@@ -88,7 +88,7 @@ class EmbedMixin:
         embed_model.eval()
         with torch.inference_mode():
             for b_da in self.batch(batch_size):
-                batch_inputs = collate_fn(DocumentArray(b_da, copy=True))
+                batch_inputs = collate_fn(b_da)
                 if isinstance(batch_inputs, dict):
                     for k, v in batch_inputs.items():
                         batch_inputs[k] = torch.tensor(v, device=device)
@@ -129,7 +129,7 @@ class EmbedMixin:
         embed_model.to(device=device)
         embed_model.eval()
         for b_da in self.batch(batch_size):
-            batch_inputs = collate_fn(DocumentArray(b_da, copy=True))
+            batch_inputs = collate_fn(b_da)
             if isinstance(batch_inputs, dict):
                 for k, v in batch_inputs.items():
                     batch_inputs[k] = paddle.to_tensor(v, place=device)
@@ -165,7 +165,7 @@ class EmbedMixin:
                 )
 
         for b_da in self.batch(batch_size):
-            batch_inputs = collate_fn(DocumentArray(b_da, copy=True))
+            batch_inputs = collate_fn(b_da)
             if not isinstance(batch_inputs, dict):
                 batch_inputs = {embed_model.get_inputs()[0].name: batch_inputs}
 
