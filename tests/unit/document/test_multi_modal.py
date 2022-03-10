@@ -125,3 +125,10 @@ def test_iterable_doc():
         assert image_doc.tensor.shape == (10, 10, 3)
 
     assert 'multi_modal_schema' in doc.meta_tags
+
+    expected_schema = [
+        ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
+        ('ratings', AttributeType.ITERABLE_PRIMITIVE, 'List[int]', None),
+        ('images', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+    ]
+    _assert_doc_schema(doc, expected_schema)
