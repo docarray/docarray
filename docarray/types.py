@@ -80,4 +80,4 @@ BlobDocument = TypeVar(
     bytes,
 )
 
-TextDocument = TypeVar(str)
+TextDocument = TypeVar('TextDocument', bound=str)

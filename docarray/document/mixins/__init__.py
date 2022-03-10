@@ -38,6 +38,7 @@ class AllMixins(
     PortingMixin,
     FeatureHashMixin,
     GetAttributesMixin,
+    MultiModalMixin,
 ):
     """All plugins that can be used in :class:`Document`. """
 

@@ -15,7 +15,7 @@ class MultiModalMixin:
 
         root = Document()
         tags = {}
-        for position, (key, field) in enumerate(obj.__dataclass_fields__):
+        for position, (key, field) in enumerate(obj.__dataclass_fields__.items()):
             attribute = getattr(obj, key)
             if is_dataclass(field.type):
                 root.chunks.append(cls.from_dataclass(attribute))
@@ -37,3 +37,8 @@ class MultiModalMixin:
 
             elif field.type in [str, int, float]:
                 tags[key] = attribute
+
+        # TODO: may have to modify this?
+        root.tags = tags
+
+        return root
