@@ -119,6 +119,15 @@ class _PropertyMixin:
         self._data.tags = value
 
     @property
+    def meta_tags(self) -> Optional[Dict[str, 'StructValueType']]:
+        self._data._set_default_value_if_none('meta_tags')
+        return self._data.meta_tags
+
+    @meta_tags.setter
+    def meta_tags(self, value: Dict[str, 'StructValueType']):
+        self._data.meta_tags = value
+
+    @property
     def offset(self) -> Optional[float]:
         self._data._set_default_value_if_none('offset')
         return self._data.offset

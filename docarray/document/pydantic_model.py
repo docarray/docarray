@@ -39,6 +39,7 @@ class PydanticDocument(BaseModel):
     weight: Optional[float]
     uri: Optional[str]
     tags: Optional[Dict[str, '_StructValueType']]
+    meta_tags: Optional[Dict[str, '_StructValueType']]
     offset: Optional[float]
     location: Optional[List[float]]
     embedding: Optional[Any]

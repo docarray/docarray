@@ -120,6 +120,9 @@ message DocumentProto {
   // Evaluations performed on the document, each element corresponds to a metric
   map<string, NamedScoreProto> evaluations = 19;
 
+  // system-defined meta attributes represented in a structured data value.
+  google.protobuf.Struct meta_tags = 20;
+
 }
 
 message DocumentArrayProto {

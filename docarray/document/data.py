@@ -19,6 +19,7 @@ default_values = dict(
     uri='',
     mime_type='',
     tags=dict,
+    meta_tags=dict,
     offset=0.0,
     location=list,
     modality='',
@@ -47,6 +48,7 @@ class DocumentData:
     weight: Optional[float] = None
     uri: Optional[str] = None
     tags: Optional[Dict[str, 'StructValueType']] = None
+    meta_tags: Optional[Dict[str, 'StructValueType']] = None
     offset: Optional[float] = None
     location: Optional[List[float]] = None
     embedding: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
