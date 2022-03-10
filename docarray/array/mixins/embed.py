@@ -1,5 +1,5 @@
 import warnings
-from typing import TYPE_CHECKING, Callable, Optional, Any
+from typing import TYPE_CHECKING, Callable, Optional, Mapping, Any
 
 if TYPE_CHECKING:
     from ...types import T, AnyDNN
@@ -91,10 +91,14 @@ class EmbedMixin:
                 batch_inputs = collate_fn(self[b_ids])
 
                 if isinstance(batch_inputs, dict):
-                    for k, v in batch_inputs:
+                    for k, v in batch_inputs.items():
                         batch_inputs[k] = torch.tensor(v, device=device)
                 else:
-                    batch_inputs = torch.tensor(batch_inputs, device=device)
+                    to_device = getattr(batch_inputs, 'to', None)
+                    if callable(to_device):
+                        batch_inputs = batch_inputs.to(device)
+                    else:
+                        batch_inputs = torch.tensor(batch_inputs, device=device)
 
                 r = embed_model(
                     **batch_inputs if isinstance(batch_inputs, dict) else batch_inputs
@@ -128,7 +132,7 @@ class EmbedMixin:
             batch_inputs = collate_fn(self[b_ids])
 
             if isinstance(batch_inputs, dict):
-                for k, v in batch_inputs:
+                for k, v in batch_inputs.items():
                     batch_inputs[k] = paddle.to_tensor(v, place=device)
             else:
                 batch_inputs = paddle.to_tensor(batch_inputs, place=device)
