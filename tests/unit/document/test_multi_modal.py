@@ -1,3 +1,5 @@
+from typing import List
+
 from docarray import Document
 from docarray.types import TextDocument, ImageDocument, BlobDocument
 from dataclasses import dataclass
@@ -64,4 +66,21 @@ def test_with_tags():
 
 
 def test_iterable():
-    ...
+    @dataclass
+    class SocialPost:
+        comments: List[str]
+        ratings: List[int]
+        images: List[ImageDocument]
+
+    obj = SocialPost(
+        comments=['hello world', 'goodbye world'],
+        ratings=[1, 5, 4, 2],
+        images=[np.random.rand(10, 10, 3) for _ in range(3)],
+    )
+
+    doc = Document.from_dataclass(obj)
+    assert doc.tags['comments'] == ['hello world', 'goodbye world']
+    assert doc.tags['ratings'] == [1, 5, 4, 2]
+    assert len(doc.chunks[0].chunks) == 3
+    for image_doc in doc.chunks[0].chunks:
+        assert image_doc.tensor.shape == (10, 10, 3)
