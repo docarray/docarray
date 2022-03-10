@@ -5,6 +5,9 @@ from enum import Enum
 
 from docarray.types import ImageDocument, BlobDocument, TextDocument
 
+if typing.TYPE_CHECKING:
+    from docarray import Document
+
 
 class AttributeType(Enum):
     DOCUMENT = 1
