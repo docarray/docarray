@@ -1,5 +1,5 @@
 import warnings
-from typing import TYPE_CHECKING, Callable, Optional, Any
+from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping
 
 if TYPE_CHECKING:
     from ...types import T, AnyDNN
@@ -61,10 +61,11 @@ class EmbedMixin:
         with device:
             for b_da in self.batch(batch_size):
                 batch_inputs = collate_fn(b_da)
-                r = embed_model(
-                    **batch_inputs if isinstance(batch_inputs, dict) else batch_inputs,
-                    training=False,
-                )
+                if isinstance(batch_inputs, Mapping):
+                    r = embed_model(**batch_inputs, training=False)
+                else:
+                    r = embed_model(batch_inputs, training=False)
+
                 if not isinstance(r, tf.Tensor):
                     # NOTE: Transformers has own output class.
                     from transformers.modeling_outputs import ModelOutput
@@ -89,19 +90,15 @@ class EmbedMixin:
         with torch.inference_mode():
             for b_da in self.batch(batch_size):
                 batch_inputs = collate_fn(b_da)
-                if isinstance(batch_inputs, dict):
+
+                if isinstance(batch_inputs, Mapping):
                     for k, v in batch_inputs.items():
                         batch_inputs[k] = torch.tensor(v, device=device)
+                    r = embed_model(**batch_inputs)
                 else:
-                    to_device = getattr(batch_inputs, 'to', None)
-                    if callable(to_device):
-                        batch_inputs = batch_inputs.to(device)
-                    else:
-                        batch_inputs = torch.tensor(batch_inputs, device=device)
+                    batch_inputs = torch.tensor(batch_inputs, device=device)
+                    r = embed_model(batch_inputs)
 
-                r = embed_model(
-                    **batch_inputs if isinstance(batch_inputs, dict) else batch_inputs
-                )
                 if isinstance(r, torch.Tensor):
                     r = r.cpu().detach()
                 else:
@@ -130,15 +127,13 @@ class EmbedMixin:
         embed_model.eval()
         for b_da in self.batch(batch_size):
             batch_inputs = collate_fn(b_da)
-            if isinstance(batch_inputs, dict):
+            if isinstance(batch_inputs, Mapping):
                 for k, v in batch_inputs.items():
                     batch_inputs[k] = paddle.to_tensor(v, place=device)
+                r = embed_model(**batch_inputs)
             else:
                 batch_inputs = paddle.to_tensor(batch_inputs, place=device)
-
-            r = embed_model(
-                **batch_inputs if isinstance(batch_inputs, dict) else batch_inputs
-            )
+                r = embed_model(batch_inputs)
 
             b_da.embeddings = r.numpy() if to_numpy else r
 
@@ -166,7 +161,7 @@ class EmbedMixin:
 
         for b_da in self.batch(batch_size):
             batch_inputs = collate_fn(b_da)
-            if not isinstance(batch_inputs, dict):
+            if not isinstance(batch_inputs, Mapping):
                 batch_inputs = {embed_model.get_inputs()[0].name: batch_inputs}
 
             b_da.embeddings = embed_model.run(None, batch_inputs)[0]
