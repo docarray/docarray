@@ -1,15 +1,15 @@
 import io
 import json
 import os
-from contextlib import nullcontext
 from functools import lru_cache
 from typing import Type, TYPE_CHECKING
 from urllib.request import Request, urlopen
 
-from ....helper import get_request_header
+from ....helper import get_request_header, random_identity
 
 if TYPE_CHECKING:
     from ....types import T
+    from ... import DocumentArray
 
 
 @lru_cache()
@@ -57,41 +57,88 @@ class PushPullMixin:
         """
         import requests
 
-        dict_data = self._get_dict_data(token, show_progress)
-
         progress = _get_progressbar(show_progress)
-        task_id = progress.add_task('upload', start=False) if show_progress else None
+        task_id = progress.add_task('upload', start=False)
 
         class BufferReader(io.BytesIO):
-            def __init__(self, buf=b'', p_bar=None, task_id=None):
-                super().__init__(buf)
-                self._len = len(buf)
+            def __init__(
+                self,
+                da: 'DocumentArray',
+                p_bar=None,
+                task_id=None,
+                protocol=None,
+                compress=None,
+                payloads=None,
+            ):
+                super().__init__()
                 self._p_bar = p_bar
                 self._task_id = task_id
-                if show_progress:
-                    progress.update(task_id, total=self._len)
-                    progress.start_task(task_id)
+                self._da = da
+                self._offset = 0
+                self._total_size = 0
+                self._protocol = protocol
+                self._compress = compress
+                self._payloads = payloads
+                progress.update(task_id, total=len(self._da))
+                progress.start_task(task_id)
 
             def __len__(self):
-                return self._len
+                return len(self._da)
 
             def read(self, n=-1):
-                chunk = io.BytesIO.read(self, n)
-                if self._p_bar:
-                    self._p_bar.update(self._task_id, advance=len(chunk))
-                return chunk
+                chunk = b''
+                if self._offset == 0:
+                    chunk += self._payloads[0]
+                    chunk += self._da._to_stream_bytes()
+                if self._offset < len(self._da):
+                    chunk += self._da[self._offset]._to_stream_bytes(
+                        protocol=self._protocol, compress=self._compress
+                    )
+                    self._p_bar.update(self._task_id, advance=1)
+                    self._offset += 1
+                    self._total_size += len(chunk)
+                    if self._offset == len(self._da):
+                        chunk += self._payloads[1]
+                    print('2', chunk)
+                    return chunk
 
-        (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
-            dict_data
+        delimiter = os.urandom(32)
+        (data1, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
+            {
+                'file': (
+                    'DocumentArray',
+                    self.to_bytes(protocol='protobuf', compress='gzip'),
+                ),
+                'token': token,
+            }
+        )
+        print('1', data1)
+
+        (data2, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
+            {
+                'file': (
+                    'DocumentArray',
+                    delimiter,
+                ),
+                'token': token,
+            }
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
         with progress as p_bar:
-            body = BufferReader(data, p_bar, task_id)
+            body = BufferReader(
+                self,
+                p_bar,
+                task_id,
+                protocol='protobuf',
+                compress='gzip',
+                payloads=data2.split(delimiter),
+            )
             res = requests.post(
                 f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
             )
+            print(res)
 
             if res.status_code != 200:
                 json_res = res.json()
@@ -181,45 +228,25 @@ class PushPullMixin:
                     **kwargs,
                 )
 
-    def _get_dict_data(self, token, show_progress):
-        _serialized = self.to_bytes(
-            protocol='protobuf', compress='gzip', _show_progress=show_progress
-        )
-        if len(_serialized) > self._max_bytes:
-            raise ValueError(
-                f'DocumentArray is too big. '
-                f'Size of the serialization {len(_serialized)} is larger than {self._max_bytes}.'
-            )
-
-        return {
-            'file': (
-                'DocumentArray',
-                _serialized,
-            ),
-            'token': token,
-        }
-
 
 def _get_progressbar(show_progress):
-    if show_progress:
-        from rich.progress import (
-            BarColumn,
-            DownloadColumn,
-            Progress,
-            TimeRemainingColumn,
-            TransferSpeedColumn,
-        )
+    from rich.progress import (
+        BarColumn,
+        DownloadColumn,
+        Progress,
+        TimeRemainingColumn,
+        TransferSpeedColumn,
+    )
 
-        return Progress(
-            BarColumn(),
-            "[progress.percentage]{task.percentage:>3.1f}%",
-            "•",
-            DownloadColumn(),
-            "•",
-            TransferSpeedColumn(),
-            "•",
-            TimeRemainingColumn(),
-            transient=True,
-        )
-    else:
-        return nullcontext()
+    return Progress(
+        BarColumn(),
+        "[progress.percentage]{task.percentage:>3.1f}%",
+        "•",
+        DownloadColumn(),
+        "•",
+        TransferSpeedColumn(),
+        "•",
+        TimeRemainingColumn(),
+        transient=True,
+        disable=not show_progress,
+    )

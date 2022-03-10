@@ -254,6 +254,7 @@ class BinaryIOMixin:
         if protocol == 'protobuf-array' or protocol == 'pickle-array':
             compress_ctx = get_compress_ctx(compress, mode='wb')
         else:
+            # delegate the compression to per-doc compression
             compress_ctx = None
 
         with (_file_ctx or io.BytesIO()) as bf:
@@ -272,33 +273,19 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
-                    # Binary format for streaming case
-
-                    # V1 DocArray streaming serialization format
-                    # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
-
-                    # 1 byte (uint8)
-                    version_byte = b'\x01'
-                    # 8 bytes (uint64)
-                    num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
-                    f.write(version_byte + num_docs_as_bytes)
+                    f.write(self._to_stream_bytes())
 
                     from rich.progress import track
 
                     for d in track(
                         self, description='Serializing', disable=not _show_progress
                     ):
-                        # 4 bytes (uint32)
-                        doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
-
-                        # variable size bytes
-                        len_doc_as_bytes = len(doc_as_bytes).to_bytes(
-                            4, 'big', signed=False
+                        f.write(
+                            d._to_stream_bytes(protocol=protocol, compress=compress)
                         )
-                        f.write(len_doc_as_bytes + doc_as_bytes)
                 else:
                     raise ValueError(
-                        f'protocol={protocol} is not supported. Can be only `protobuf`,`pickle`,`protobuf-array`,`pickle-array`.'
+                        f'protocol={protocol} is not supported. Can be only `protobuf`, `pickle`, `protobuf-array`, `pickle-array`.'
                     )
 
             if not _file_ctx:
@@ -353,3 +340,15 @@ class BinaryIOMixin:
         _show_progress: bool = False,
     ) -> str:
         return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
+
+    def _to_stream_bytes(self) -> bytes:
+        # Binary format for streaming case
+
+        # V1 DocArray streaming serialization format
+        # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
+
+        # 1 byte (uint8)
+        version_byte = b'\x01'
+        # 8 bytes (uint64)
+        num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
+        return version_byte + num_docs_as_bytes
