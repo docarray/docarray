@@ -1,10 +1,21 @@
 from typing import List
 
 from docarray import Document
+from docarray.document.mixins.multimodal import AttributeType
 from docarray.types import TextDocument, ImageDocument, BlobDocument
 from dataclasses import dataclass
 import pytest
 import numpy as np
+
+
+def _assert_doc_schema(doc, schema):
+    for field, attr_type, _type, position in schema:
+        assert doc.meta_tags['multi_modal_schema'][field]['attribute_type'] == attr_type
+        assert doc.meta_tags['multi_modal_schema'][field]['type'] == _type
+        if position is not None:
+            assert doc.meta_tags['multi_modal_schema'][field]['position'] == position
+        else:
+            assert 'position' not in doc.meta_tags['multi_modal_schema'][field]
 
 
 def test_simple():
@@ -20,6 +31,15 @@ def test_simple():
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
     assert doc.tags['version'] == 20
 
+    assert 'multi_modal_schema' in doc.meta_tags
+
+    expected_schema = [
+        ('title', AttributeType.DOCUMENT, 'TextDocument', 0),
+        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('version', AttributeType.PRIMITIVE, 'int', None),
+    ]
+    _assert_doc_schema(doc, expected_schema)
+
 
 def test_nested():
     @dataclass
@@ -31,8 +51,8 @@ def test_nested():
     @dataclass
     class MMDocument:
         sub_doc: SubDocument
-        image: ImageDocument
         value: str
+        image: ImageDocument
 
     obj = MMDocument(
         sub_doc=SubDocument(audio=b'1234', date='10.03.2022', version=1.5),
@@ -49,6 +69,15 @@ def test_nested():
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
+    assert 'multi_modal_schema' in doc.meta_tags
+
+    expected_schema = [
+        ('sub_doc', AttributeType.NESTED, 'SubDocument', 0),
+        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('value', AttributeType.PRIMITIVE, 'str', None),
+    ]
+    _assert_doc_schema(doc, expected_schema)
+
 
 def test_with_tags():
     @dataclass
@@ -64,8 +93,18 @@ def test_with_tags():
     assert doc.tags['attr2'] == 10
     assert doc.tags['attr3'] == 1.1
 
+    assert 'multi_modal_schema' in doc.meta_tags
 
-def test_iterable():
+    expected_schema = [
+        ('attr1', AttributeType.PRIMITIVE, 'str', None),
+        ('attr2', AttributeType.PRIMITIVE, 'int', None),
+        ('attr3', AttributeType.PRIMITIVE, 'float', None),
+    ]
+    _assert_doc_schema(doc, expected_schema)
+
+
+# TODO: add test_iterable_primitive
+def test_iterable_doc():
     @dataclass
     class SocialPost:
         comments: List[str]
@@ -84,3 +123,5 @@ def test_iterable():
     assert len(doc.chunks[0].chunks) == 3
     for image_doc in doc.chunks[0].chunks:
         assert image_doc.tensor.shape == (10, 10, 3)
+
+    assert 'multi_modal_schema' in doc.meta_tags
