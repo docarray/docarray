@@ -103,7 +103,6 @@ def test_with_tags():
     _assert_doc_schema(doc, expected_schema)
 
 
-# TODO: add test_iterable_primitive
 def test_iterable_doc():
     @dataclass
     class SocialPost:
@@ -130,5 +129,44 @@ def test_iterable_doc():
         ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
         ('ratings', AttributeType.ITERABLE_PRIMITIVE, 'List[int]', None),
         ('images', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+    ]
+    _assert_doc_schema(doc, expected_schema)
+
+
+def test_iterable_nested():
+    @dataclass
+    class SubtitleDocument:
+        text: TextDocument
+        frames: List[int]
+
+    @dataclass
+    class VideoDocument:
+        frames: List[ImageDocument]
+        subtitles: List[SubtitleDocument]
+
+    obj = VideoDocument(
+        frames=[np.random.rand(10, 10, 3) for _ in range(3)],
+        subtitles=[
+            SubtitleDocument(text='subtitle 0', frames=[0]),
+            SubtitleDocument(text='subtitle 1', frames=[1, 2]),
+        ],
+    )
+
+    doc = Document.from_dataclass(obj)
+
+    assert len(doc.chunks) == 2
+    assert len(doc.chunks[0].chunks) == 3
+    for image_doc in doc.chunks[0].chunks:
+        assert image_doc.tensor.shape == (10, 10, 3)
+
+    assert len(doc.chunks[1].chunks) == 2
+    for i, subtitle_doc in enumerate(doc.chunks[1].chunks):
+        assert subtitle_doc.chunks[0].text == f'subtitle {i}'
+
+    assert 'multi_modal_schema' in doc.meta_tags
+
+    expected_schema = [
+        ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+        ('subtitles', AttributeType.ITERABLE_NESTED, 'List[SubtitleDocument]', 1),
     ]
     _assert_doc_schema(doc, expected_schema)
