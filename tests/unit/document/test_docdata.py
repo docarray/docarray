@@ -47,6 +47,10 @@ def test_doc_difference_complicate_content():
     d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
     assert d1 != d2
 
+    d1 = Document(text='hello', id=1)
+    d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
+    assert d1 != d2
+
 
 def test_pop_field():
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
