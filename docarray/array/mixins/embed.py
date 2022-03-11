@@ -17,20 +17,20 @@ class EmbedMixin:
     def embed(
         self: 'T',
         embed_model: 'AnyDNN',
-        collate_fn: Optional['CollateFnType'] = None,
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
+        collate_fn: Optional['CollateFnType'] = None,
     ) -> 'T':
         """Fill :attr:`.embedding` of Documents inplace by using `embed_model`
 
         :param embed_model: the embedding model written in Keras/Pytorch/Paddle
-        :param collate_fn: create a mini-batch of Input(s) from the given `DocumentArray`.  Default built-in collate_fn
-                is to use the `tensors` of the documents.
         :param device: the computational device for `embed_model`, can be either
             `cpu` or `cuda`.
         :param batch_size: number of Documents in a batch for embedding
         :param to_numpy: if to store embeddings back to Document in ``numpy.ndarray`` or original framework format.
+        :param collate_fn: create a mini-batch of Input(s) from the given `DocumentArray`.  Default built-in collate_fn
+                is to use the `tensors` of the documents.
         :return: itself after modified.
         """
 
