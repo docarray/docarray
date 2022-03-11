@@ -1,15 +1,14 @@
-import io
 import json
 import os
+import warnings
 from functools import lru_cache
 from typing import Type, TYPE_CHECKING
 from urllib.request import Request, urlopen
 
-from ....helper import get_request_header, random_identity
+from ....helper import get_request_header
 
 if TYPE_CHECKING:
     from ....types import T
-    from ... import DocumentArray
 
 
 @lru_cache()
@@ -57,50 +56,6 @@ class PushPullMixin:
         """
         import requests
 
-        progress = _get_progressbar(show_progress)
-        task_id = progress.add_task('upload', start=False)
-
-        class BufferReader(io.BytesIO):
-            def __init__(
-                self,
-                da: 'DocumentArray',
-                p_bar=None,
-                task_id=None,
-                protocol=None,
-                compress=None,
-                payloads=None,
-            ):
-                super().__init__()
-                self._p_bar = p_bar
-                self._task_id = task_id
-                self._da = da
-                self._offset = 0
-                self._total_size = 0
-                self._protocol = protocol
-                self._compress = compress
-                self._payloads = payloads
-                progress.update(task_id, total=len(self._da))
-                progress.start_task(task_id)
-
-            def __len__(self):
-                return len(self._da)
-
-            def read(self, n=-1):
-                chunk = b''
-                if self._offset == 0:
-                    chunk += self._payloads[0]
-                    chunk += self._da._to_stream_bytes()
-                if self._offset < len(self._da):
-                    chunk += self._da[self._offset]._to_stream_bytes(
-                        protocol=self._protocol, compress=self._compress
-                    )
-                    self._p_bar.update(self._task_id, advance=1)
-                    self._offset += 1
-                    self._total_size += len(chunk)
-                    if self._offset == len(self._da):
-                        chunk += self._payloads[1]
-                    return chunk
-
         delimiter = os.urandom(32)
 
         (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
@@ -115,28 +70,40 @@ class PushPullMixin:
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        with progress as p_bar:
-            body = BufferReader(
-                self,
-                p_bar,
-                task_id,
-                protocol='protobuf',
-                compress='gzip',
-                payloads=data.split(delimiter),
-            )
-            res = requests.post(
-                f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
-            )
-            print(res.status_code)
+        _head, _tail = data.split(delimiter)
+        from rich.progress import track
 
-            if res.status_code != 200:
-                json_res = res.json()
-                raise RuntimeError(
-                    json_res.get(
-                        'message', 'Failed to push DocumentArray to Jina Cloud'
-                    ),
-                    f'Status code: {res.status_code}',
-                )
+        def gen():
+            total_size = 0
+
+            for idx, d in enumerate(
+                track(self, description='Pushing', disable=not show_progress)
+            ):
+                chunk = b''
+                if idx == 0:
+                    chunk += _head
+                    chunk += self._to_stream_bytes()
+                if idx < len(self):
+                    chunk += d._to_stream_bytes(protocol='protobuf', compress='gzip')
+                    total_size += len(chunk)
+                    if total_size > self._max_bytes:
+                        warnings.warn(
+                            f'DocumentArray is too big. Only first {idx} Documents are pushed'
+                        )
+                        break
+                    yield chunk
+            yield _tail
+
+        res = requests.post(
+            f'{_get_cloud_api()}/v2/rpc/da.push', data=gen(), headers=headers
+        )
+
+        if res.status_code != 200:
+            json_res = res.json()
+            raise RuntimeError(
+                json_res.get('message', 'Failed to push DocumentArray to Jina Cloud'),
+                f'Status code: {res.status_code}',
+            )
 
     @classmethod
     def pull(
