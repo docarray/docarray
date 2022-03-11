@@ -55,7 +55,10 @@ def test_post_to_a_flow(show_pbar, conn_config, batch_size):
     'hub_uri', ['jinahub://Hello', 'jinahub+docker://Hello', 'jinahub+sandbox://Hello']
 )
 def test_post_with_jinahub(hub_uri):
-    print('a')
+    from jina.hubble.hubio import HubIO
+
+    executor, _ = HubIO.fetch_meta('Hello', 'latest')
+    print(f'===> image_name ({hub_uri}): {executor.image_name}')
     da = DocumentArray.empty(100)
     da.post(hub_uri)
 
