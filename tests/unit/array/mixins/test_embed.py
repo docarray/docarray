@@ -138,7 +138,6 @@ def test_embeded_paddle_model(paddle_model):
     docs.tensors = np.random.random([3, 5]).astype(np.float32)
     docs.embed(paddle_model, collate_fn=collate_fn, to_numpy=True)
     assert (docs.tensors == docs.embeddings).all()
-    # assert np.testing.assert_array_almost_equal(docs.tensors, docs.embeddings)
 
 
 @pytest.fixture
