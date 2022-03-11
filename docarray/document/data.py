@@ -116,6 +116,14 @@ class DocumentData:
 
     @staticmethod
     def _embedding_eq(array1: 'ArrayType', array2: 'ArrayType'):
+
+        if array1 is None and array2 is None:
+            return True
+        elif (array1 is None and array2 is not None) or (
+            array1 is not None and array2 is None
+        ):
+            return False
+
         if type(array1) == type(array2):
             return check_arraylike_equality(array1, array2)
         else:
@@ -126,11 +134,15 @@ class DocumentData:
             if key == '_reference_doc':
                 continue
             if hasattr(self, f'_{key}_eq'):
-                if (
-                    getattr(self, f'_{key}_eq')(getattr(self, key), getattr(other, key))
-                    == False
-                ):
-                    return False
+
+                if hasattr(DocumentData, f'_{key}_eq'):
+                    if (
+                        getattr(DocumentData, f'_{key}_eq')(
+                            getattr(self, key), getattr(other, key)
+                        )
+                        == False
+                    ):
+                        return False
             else:
                 if getattr(self, key) != getattr(other, key):
                     return False
