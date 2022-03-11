@@ -4,6 +4,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
+from ..math.helper import check_both_array_are_none
 from ..math.ndarray import check_arraylike_equality
 
 if TYPE_CHECKING:
@@ -117,17 +118,17 @@ class DocumentData:
     @staticmethod
     def _embedding_eq(array1: 'ArrayType', array2: 'ArrayType'):
 
-        if array1 is None and array2 is None:
+        if check_both_array_are_none(array1, array2):
             return True
-        elif (array1 is None and array2 is not None) or (
-            array1 is not None and array2 is None
-        ):
-            return False
 
         if type(array1) == type(array2):
             return check_arraylike_equality(array1, array2)
         else:
             return False
+
+    @staticmethod
+    def _tensor_eq(array1: 'ArrayType', array2: 'ArrayType'):
+        DocumentData._embedding_eq(array1, array2)
 
     def __eq__(self, other):
         for key in self.__dataclass_fields__.keys():
