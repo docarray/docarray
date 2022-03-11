@@ -7,6 +7,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
+
 from ....helper import (
     get_compress_ctx,
     decompress_bytes,
@@ -17,6 +18,17 @@ if TYPE_CHECKING:
     from ....types import T
     from ....proto.docarray_pb2 import DocumentArrayProto
     from .... import Document, DocumentArray
+
+
+class LazyRequestReader:
+    def __init__(self, r):
+        self._data = r.iter_content(chunk_size=8192)
+        self.content = b''
+
+    def __getitem__(self, item: slice):
+        while len(self.content) < item.stop:
+            self.content += next(self._data)
+        return self.content[item]
 
 
 class BinaryIOMixin:
@@ -51,7 +63,7 @@ class BinaryIOMixin:
             and `compress=lz4`.
         """
 
-        if isinstance(file, io.BufferedReader):
+        if isinstance(file, (io.BufferedReader, LazyRequestReader)):
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
@@ -159,7 +171,9 @@ class BinaryIOMixin:
             start_pos = 9
             docs = []
 
-            for _ in track(range(num_docs), disable=not show_progress):
+            for _ in track(
+                range(num_docs), description='Deserializing', disable=not show_progress
+            ):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
                     d[start_pos : start_pos + 4], 'big', signed=False

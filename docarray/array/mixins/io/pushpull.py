@@ -160,62 +160,40 @@ class PushPullMixin:
         url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
         response = requests.get(url)
 
-        progress = _get_progressbar(show_progress)
-
         url = response.json()['data']['download']
 
         with requests.get(
             url,
             stream=True,
             headers=get_request_header(),
-        ) as r, progress:
+        ) as r:
             r.raise_for_status()
 
             _da_len = int(r.headers['Content-length'])
 
+            from .binary import LazyRequestReader
+
+            _source = LazyRequestReader(r)
             if local_cache and os.path.exists(f'.cache/{token}'):
                 _cache_len = os.path.getsize(f'.cache/{token}')
                 if _cache_len == _da_len:
-                    if show_progress:
-                        progress.stop()
+                    _source = f'.cache/{token}'
 
-                    return cls.load_binary(
-                        f'.cache/{token}',
-                        protocol='protobuf',
-                        compress='gzip',
-                        _show_progress=show_progress,
-                        *args,
-                        **kwargs,
-                    )
+            r = cls.load_binary(
+                _source,
+                protocol='protobuf',
+                compress='gzip',
+                _show_progress=show_progress,
+                *args,
+                **kwargs,
+            )
 
-            if show_progress:
-                task_id = progress.add_task('download', start=False)
-                progress.update(task_id, total=int(_da_len))
-            with io.BytesIO() as f:
-                chunk_size = 8192
-                if show_progress:
-                    progress.start_task(task_id)
-                for chunk in r.iter_content(chunk_size=chunk_size):
-                    f.write(chunk)
-                    if show_progress:
-                        progress.update(task_id, advance=len(chunk))
+            if isinstance(_source, LazyRequestReader) and local_cache:
+                os.makedirs('.cache', exist_ok=True)
+                with open(f'.cache/{token}', 'wb') as fp:
+                    fp.write(_source.content)
 
-                if local_cache:
-                    os.makedirs('.cache', exist_ok=True)
-                    with open(f'.cache/{token}', 'wb') as fp:
-                        fp.write(f.getbuffer())
-
-                if show_progress:
-                    progress.stop()
-
-                return cls.from_bytes(
-                    f.getvalue(),
-                    protocol='protobuf',
-                    compress='gzip',
-                    _show_progress=show_progress,
-                    *args,
-                    **kwargs,
-                )
+            return r
 
 
 def _get_progressbar(show_progress):
