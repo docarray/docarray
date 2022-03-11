@@ -15,6 +15,7 @@ class AttributeType(Enum):
     ITERABLE_PRIMITIVE = 3
     ITERABLE_DOCUMENT = 4
     NESTED = 5
+    ITERABLE_NESTED = 6
 
 
 class MultiModalMixin:
@@ -50,10 +51,18 @@ class MultiModalMixin:
                     else:
                         chunk = Document()
                         for element in attribute:
-                            doc, _ = cls._from_obj(element, sub_type)
+                            doc, attribute_type = cls._from_obj(element, sub_type)
+                            if attribute_type == AttributeType.DOCUMENT:
+                                attribute_type = AttributeType.ITERABLE_DOCUMENT
+                            elif attribute_type == AttributeType.NESTED:
+                                attribute_type = AttributeType.ITERABLE_NESTED
+                            else:
+                                raise ValueError(
+                                    f'Unsupported type annotation inside Iterable: {sub_type}'
+                                )
                             chunk.chunks.append(doc)
                         multi_modal_schema[key] = {
-                            'attribute_type': AttributeType.ITERABLE_DOCUMENT,
+                            'attribute_type': attribute_type,
                             'type': f'{field.type._name}[{sub_type.__name__}]',
                             'position': len(root.chunks),
                         }
@@ -74,6 +83,36 @@ class MultiModalMixin:
         root.meta_tags['multi_modal_schema'] = multi_modal_schema
 
         return root
+
+    def get_multi_modal_attribute(
+        self, attribute: str
+    ) -> typing.Union['Document', typing.Iterable['Document']]:
+        if 'multi_modal_schema' not in self.meta_tags:
+            raise ValueError(
+                'the Document does not correspond to a Multi Modal Document'
+            )
+
+        if attribute not in self.meta_tags['multi_modal_schema']:
+            raise ValueError(
+                f'the Document schema does not contain attribute {attribute}'
+            )
+
+        attribute_type = self.meta_tags['multi_modal_schema'][attribute][
+            'attribute_type'
+        ]
+        position = self.meta_tags['multi_modal_schema'][attribute]['position']
+
+        if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
+            return [self.chunks[position]]
+        elif attribute_type in [
+            AttributeType.ITERABLE_DOCUMENT,
+            AttributeType.ITERABLE_NESTED,
+        ]:
+            self.chunks[position].chunks
+        else:
+            raise ValueError(
+                f'Invalid attribute {attribute}: must a Document attribute or nested dataclass'
+            )
 
     @classmethod
     def _from_obj(cls, obj, obj_type) -> typing.Tuple['Document', AttributeType]:
