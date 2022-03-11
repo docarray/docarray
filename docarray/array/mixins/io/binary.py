@@ -159,7 +159,9 @@ class BinaryIOMixin:
             start_pos = 9
             docs = []
 
-            for _ in track(range(num_docs), disable=not show_progress):
+            for _ in track(
+                range(num_docs), description='Deserializing', disable=not show_progress
+            ):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
                     d[start_pos : start_pos + 4], 'big', signed=False
