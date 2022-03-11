@@ -191,7 +191,7 @@ class FindMixin:
             - `$nin` - Not included in an array
             - `$regex` - Match a specified regular expression
             - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
-
+            - `$exists` - Matches documents that have the specified field. And empty string content is also cosidered as not exists.
 
         And the following boolean logic operators are supported:
             - `$and` - Join query clauses with a logical AND

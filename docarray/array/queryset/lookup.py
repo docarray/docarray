@@ -106,6 +106,8 @@ def lookup(key, val, doc: 'Document') -> bool:
         return iff_not_none(value, lambda y: re.search(val, y) is not None)
     elif last == 'size':
         return iff_not_none(value, lambda y: len(y) == val)
+    elif last == 'exists':
+        return (value is None or value == '' or value == b'') != val
     else:
         # return value == val
         raise ValueError(

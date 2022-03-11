@@ -30,6 +30,9 @@ def test_simple_query():
     query = QueryParser({'tags': {'$size': 1}})
     assert query.lookup_groups.lookups == {'tags__size': 1}
 
+    query = QueryParser({'tags': {'$exists': True}})
+    assert query.lookup_groups.lookups == {'tags__exists': True}
+
 
 def test_logic_query():
     query = QueryParser({'$or': {'tags__x': {'$lt': 1}, 'tags__y': {'$gte': 50}}})

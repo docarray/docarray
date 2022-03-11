@@ -37,6 +37,12 @@ def test_lookup_ops(doc):
     assert lookup('tags__size', 4, doc)
     assert lookup('tags__labels__size', 3, doc)
 
+    assert lookup('tags__exists', True, doc)
+    assert lookup('tags__foo__exists', False, doc)
+    assert lookup('tensor__exists', False, doc)
+    assert lookup('blob__exists', False, doc)
+    assert lookup('text__exists', True, doc)
+
 
 def test_lookup_pl(doc):
     from docarray.array.queryset.lookup import lookup
