@@ -35,7 +35,8 @@ class DownloadMockResponse:
         pass
 
     def iter_content(self, chunk_size):
-        yield b's' * chunk_size
+        for _ in range(10):
+            yield b'' * chunk_size
 
     def __enter__(self):
         return self

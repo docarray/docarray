@@ -27,7 +27,10 @@ class LazyRequestReader:
 
     def __getitem__(self, item: slice):
         while len(self.content) < item.stop:
-            self.content += next(self._data)
+            try:
+                self.content += next(self._data)
+            except StopIteration:
+                return self.content[item.start : -1 : item.step]
         return self.content[item]
 
 
