@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.io.binary - DocArray 0.9.5 documentation</title>
+        <title>docarray.array.mixins.io.binary - DocArray 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.9.5 documentation</div>
+                <div class="brand">DocArray 0.9.6 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -474,6 +474,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span>
 
+
 <span class="kn">from</span> <span class="nn">....helper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">get_compress_ctx</span><span class="p">,</span>
     <span class="n">decompress_bytes</span><span class="p">,</span>
@@ -484,6 +485,20 @@
     <span class="kn">from</span> <span class="nn">....types</span> <span class="kn">import</span> <span class="n">T</span>
     <span class="kn">from</span> <span class="nn">....proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentArrayProto</span>
     <span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+
+<div class="viewcode-block" id="LazyRequestReader"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.LazyRequestReader">[docs]</a><span class="k">class</span> <span class="nc">LazyRequestReader</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">slice</span><span class="p">):</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">item</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">+=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">start</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">step</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="n">item</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BinaryIOMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin">[docs]</a><span class="k">class</span> <span class="nc">BinaryIOMixin</span><span class="p">:</span>
@@ -518,7 +533,7 @@
 <span class="sd">            and `compress=lz4`.</span>
 <span class="sd">        """</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">,</span> <span class="n">LazyRequestReader</span><span class="p">)):</span>
             <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -626,7 +641,9 @@
             <span class="n">start_pos</span> <span class="o">=</span> <span class="mi">9</span>
             <span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Deserializing'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span>
+            <span class="p">):</span>
                 <span class="c1"># 4 bytes (uint32)</span>
                 <span class="n">len_current_doc_in_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
                     <span class="n">d</span><span class="p">[</span><span class="n">start_pos</span> <span class="p">:</span> <span class="n">start_pos</span> <span class="o">+</span> <span class="mi">4</span><span class="p">],</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span>
@@ -721,6 +738,7 @@
         <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf-array'</span> <span class="ow">or</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'pickle-array'</span><span class="p">:</span>
             <span class="n">compress_ctx</span> <span class="o">=</span> <span class="n">get_compress_ctx</span><span class="p">(</span><span class="n">compress</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'wb'</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># delegate the compression to per-doc compression</span>
             <span class="n">compress_ctx</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">with</span> <span class="p">(</span><span class="n">_file_ctx</span> <span class="ow">or</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">())</span> <span class="k">as</span> <span class="n">bf</span><span class="p">:</span>
@@ -739,33 +757,19 @@
                 <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'pickle-array'</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
                 <span class="k">elif</span> <span class="n">protocol</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="s1">'protobuf'</span><span class="p">):</span>
-                    <span class="c1"># Binary format for streaming case</span>
-
-                    <span class="c1"># V1 DocArray streaming serialization format</span>
-                    <span class="c1"># | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...</span>
-
-                    <span class="c1"># 1 byte (uint8)</span>
-                    <span class="n">version_byte</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x01</span><span class="s1">'</span>
-                    <span class="c1"># 8 bytes (uint64)</span>
-                    <span class="n">num_docs_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">version_byte</span> <span class="o">+</span> <span class="n">num_docs_as_bytes</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_stream_header</span><span class="p">)</span>
 
                     <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
                     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
                         <span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Serializing'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">_show_progress</span>
                     <span class="p">):</span>
-                        <span class="c1"># 4 bytes (uint32)</span>
-                        <span class="n">doc_as_bytes</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
-
-                        <span class="c1"># variable size bytes</span>
-                        <span class="n">len_doc_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_as_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span>
-                            <span class="mi">4</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                            <span class="n">d</span><span class="o">.</span><span class="n">_to_stream_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
                         <span class="p">)</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">len_doc_as_bytes</span> <span class="o">+</span> <span class="n">doc_as_bytes</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf`,`pickle`,`protobuf-array`,`pickle-array`.'</span>
+                        <span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf`, `pickle`, `protobuf-array`, `pickle-array`.'</span>
                     <span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_file_ctx</span><span class="p">:</span>
@@ -819,7 +823,20 @@
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_stream_header</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+        <span class="c1"># Binary format for streaming case</span>
+
+        <span class="c1"># V1 DocArray streaming serialization format</span>
+        <span class="c1"># | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...</span>
+
+        <span class="c1"># 1 byte (uint8)</span>
+        <span class="n">version_byte</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x01</span><span class="s1">'</span>
+        <span class="c1"># 8 bytes (uint64)</span>
+        <span class="n">num_docs_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">version_byte</span> <span class="o">+</span> <span class="n">num_docs_as_bytes</span></div>
 </pre></div>
             </article>
             <footer>
@@ -831,7 +848,7 @@
 
                 <div class="related-information sd-d-inline-flex">
                     <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                    Last updated on Mar 10, 2022.
+                    Last updated on Mar 11, 2022.
                     <div class="social-btns">
                     <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
                     <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
