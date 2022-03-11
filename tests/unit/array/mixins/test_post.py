@@ -55,6 +55,7 @@ def test_post_to_a_flow(show_pbar, conn_config, batch_size):
     'hub_uri', ['jinahub://Hello', 'jinahub+docker://Hello', 'jinahub+sandbox://Hello']
 )
 def test_post_with_jinahub(hub_uri):
+    print('a')
     da = DocumentArray.empty(100)
     da.post(hub_uri)
 
