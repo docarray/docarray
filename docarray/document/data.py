@@ -4,6 +4,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
+from ..math.ndarray import check_arraylike_equality
+
 if TYPE_CHECKING:
     from ..score import NamedScore
     from .. import DocumentArray, Document
@@ -32,7 +34,7 @@ default_values = dict(
 _all_mime_types = set(mimetypes.types_map.values())
 
 
-@dataclass(unsafe_hash=True)
+@dataclass(unsafe_hash=True, eq=False)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(
@@ -111,3 +113,25 @@ class DocumentData:
                     setattr(self, key, defaultdict(NamedScore))
                 else:
                     setattr(self, key, v() if callable(v) else v)
+
+    @staticmethod
+    def _embedding_eq(array1: 'ArrayType', array2: 'ArrayType'):
+        if type(array1) == type(array2):
+            return check_arraylike_equality(array1, array2)
+        else:
+            return False
+
+    def __eq__(self, other):
+        for key in self.__dataclass_fields__.keys():
+            if key == '_reference_doc':
+                continue
+            if hasattr(self, f'_{key}_eq'):
+                if (
+                    getattr(self, f'_{key}_eq')(getattr(self, key), getattr(other, key))
+                    == False
+                ):
+                    return False
+            else:
+                if getattr(self, key) != getattr(other, key):
+                    return False
+        return True

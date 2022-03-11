@@ -38,6 +38,16 @@ def test_doc_hash_complicate_content():
     assert hash(d1) == hash(d2)
 
 
+def test_doc_difference_complicate_content():
+    d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
+    d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
+    assert d1 != d2
+
+    d1 = Document(text='hello', embedding=np.array([1, 2, 3, 5]), id=1)
+    d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
+    assert d1 != d2
+
+
 def test_pop_field():
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
     assert d1.non_empty_fields == ('id', 'text', 'embedding')
