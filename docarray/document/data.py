@@ -4,7 +4,6 @@ from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
-from ..math.helper import check_both_array_are_none
 from ..math.ndarray import check_arraylike_equality
 
 if TYPE_CHECKING:
