@@ -92,12 +92,3 @@ def update_rows_x_mat_best(
 
 
 EPSILON = 1.0e-9
-
-
-def check_both_array_are_none(array1: 'ArrayType', array2: 'ArrayType'):
-    if array1 is None and array2 is None:
-        return True
-    elif (array1 is None and array2 is not None) or (
-        array1 is not None and array2 is None
-    ):
-        return False

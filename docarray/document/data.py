@@ -118,7 +118,7 @@ class DocumentData:
     @staticmethod
     def _embedding_eq(array1: 'ArrayType', array2: 'ArrayType'):
 
-        if check_both_array_are_none(array1, array2):
+        if array1 is None and array2 is None:
             return True
 
         if type(array1) == type(array2):
