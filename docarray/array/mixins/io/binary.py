@@ -287,7 +287,7 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
-                    f.write(self._to_stream_bytes())
+                    f.write(self._stream_header)
 
                     from rich.progress import track
 
@@ -355,7 +355,8 @@ class BinaryIOMixin:
     ) -> str:
         return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
 
-    def _to_stream_bytes(self) -> bytes:
+    @property
+    def _stream_header(self) -> bytes:
         # Binary format for streaming case
 
         # V1 DocArray streaming serialization format

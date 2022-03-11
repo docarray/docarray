@@ -82,7 +82,7 @@ class PushPullMixin:
                 chunk = b''
                 if idx == 0:
                     chunk += _head
-                    chunk += self._to_stream_bytes()
+                    chunk += self._stream_header
                 if idx < len(self):
                     chunk += d._to_stream_bytes(protocol='protobuf', compress='gzip')
                     total_size += len(chunk)
