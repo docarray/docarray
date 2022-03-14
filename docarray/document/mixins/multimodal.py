@@ -6,7 +6,7 @@ from enum import Enum
 from docarray.types import ImageDocument, BlobDocument, TextDocument
 
 if typing.TYPE_CHECKING:
-    from docarray import Document
+    from docarray import Document, DocumentArray
 
 
 class AttributeType(Enum):
@@ -84,9 +84,9 @@ class MultiModalMixin:
 
         return root
 
-    def get_multi_modal_attribute(
-        self, attribute: str
-    ) -> typing.Union['Document', typing.Iterable['Document']]:
+    def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
+        from docarray import DocumentArray
+
         if 'multi_modal_schema' not in self.metadata:
             raise ValueError(
                 'the Document does not correspond to a Multi Modal Document'
@@ -100,15 +100,15 @@ class MultiModalMixin:
         attribute_type = self.metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self.metadata['multi_modal_schema'][attribute]['position']
+        position = self.metadata['multi_modal_schema'][attribute].get('position')
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
-            return [self.chunks[position]]
+            return DocumentArray([self.chunks[position]])
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
         ]:
-            self.chunks[position].chunks
+            return self.chunks[position].chunks
         else:
             raise ValueError(
                 f'Invalid attribute {attribute}: must a Document attribute or nested dataclass'
