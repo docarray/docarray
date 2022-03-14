@@ -166,7 +166,14 @@ def test_iterable_nested():
     assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
-        ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+        ('text', AttributeType.DOCUMENT, 'TextDocument', 0),
         ('subtitles', AttributeType.ITERABLE_NESTED, 'List[SubtitleDocument]', 1),
     ]
     _assert_doc_schema(doc, expected_schema)
+
+    expected_nested_schema = [
+        ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+        ('frames', AttributeType.ITERABLE_PRIMITIVE, 'List[int]', None),
+    ]
+    for subtitle in doc.chunks[1].chunks:
+        _assert_doc_schema(doc.chunks[1], expected_schema)
