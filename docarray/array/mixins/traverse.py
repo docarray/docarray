@@ -6,6 +6,7 @@ from typing import (
     Optional,
     Callable,
     Tuple,
+    Dict,
 )
 
 if TYPE_CHECKING:
@@ -53,21 +54,33 @@ class TraverseMixin:
     ):
         path = re.sub(r'\s+', '', path)
         if path:
-            cur_loc, cur_slice, _left = _parse_path_string(path)
+            group_dict = _parse_path_string(path)
+            cur_loc = group_dict['this']
+            cur_slice = group_dict['slice']
+            remainder = group_dict['remainder']
+
             if cur_loc == 'r':
                 yield from TraverseMixin._traverse(
-                    docs[cur_slice], _left, filter_fn=filter_fn
+                    docs[cur_slice], remainder, filter_fn=filter_fn
                 )
             elif cur_loc == 'm':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.matches[cur_slice], _left, filter_fn=filter_fn
+                        d.matches[cur_slice], remainder, filter_fn=filter_fn
                     )
             elif cur_loc == 'c':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.chunks[cur_slice], _left, filter_fn=filter_fn
+                        d.chunks[cur_slice], remainder, filter_fn=filter_fn
                     )
+            elif cur_loc.startswith('a'):
+                for d in docs:
+                    for attribute in group_dict['attributes']:
+                        yield from TraverseMixin._traverse(
+                            d.get_multi_modal_attribute(attribute)[cur_slice],
+                            remainder,
+                            filter_fn=filter_fn,
+                        )
             else:
                 raise ValueError(
                     f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
@@ -159,12 +172,23 @@ class TraverseMixin:
         return DocumentArray(list(itertools.chain.from_iterable(sequence)))
 
 
-def _parse_path_string(p: str) -> Tuple[str, slice, str]:
-    g = re.match(r'^([rcm])([-\d:]+)?([rcm].*)?$', p)
-    _this = g.group(1)
-    slice_str = g.group(2)
-    _next = g.group(3)
-    return _this, _parse_slice(slice_str or ':'), _next or ''
+def _parse_path_string(p: str) -> Dict[str, str]:
+    remainder_pattern = r'(?P<remainder>[rcm].*)?'
+    slice_pattern = r'(?P<slice>[-\d:]+)?'
+    attribute_name_pattern = r'[a-zA-Z][a-zA-Z0-9]*'
+    attributed_pattern = (
+        rf'a\[(?P<attributes>{attribute_name_pattern}(-{attribute_name_pattern})*)\]'
+    )
+    this_pattern = rf'(?P<this>r|c|m|{attributed_pattern})'
+    pattern = rf'^{this_pattern}{slice_pattern}{remainder_pattern}$'
+    g = re.match(pattern, p)
+    group_dict = g.groupdict()
+    group_dict['remainder'] = group_dict.get('remainder') or ''
+    group_dict['slice'] = _parse_slice(group_dict.get('slice') or ':')
+    if group_dict.get('attributes'):
+        group_dict['attributes'] = group_dict['attributes'].split('-')
+
+    return group_dict
 
 
 def _parse_slice(value):
