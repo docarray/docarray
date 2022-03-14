@@ -1,6 +1,6 @@
 from typing import List
 
-from docarray import Document
+from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
 from docarray.types import TextDocument, ImageDocument, BlobDocument
 from dataclasses import dataclass
@@ -209,3 +209,25 @@ def test_get_multi_modal_attribute():
 
     with pytest.raises(ValueError):
         doc.get_multi_modal_attribute('primitive')
+
+
+def test_traverse_simple():
+    @dataclass
+    class MMDocument:
+        text: TextDocument
+        audio: BlobDocument
+
+    mm_docs = DocumentArray(
+        [
+            Document.from_dataclass(MMDocument(text=f'text {i}', audio=b'audio'))
+            for i in range(5)
+        ]
+    )
+
+    assert len(mm_docs['@a[text]']) == 5
+    for i, doc in enumerate(mm_docs['@a[text]']):
+        assert doc.text == f'text {i}'
+
+    assert len(mm_docs['@a[audio]']) == 5
+    for i, doc in enumerate(mm_docs['@a[audio]']):
+        assert doc.blob == b'audio'
