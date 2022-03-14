@@ -80,27 +80,27 @@ class MultiModalMixin:
 
         # TODO: may have to modify this?
         root.tags = tags
-        root.meta_tags['multi_modal_schema'] = multi_modal_schema
+        root.metadata['multi_modal_schema'] = multi_modal_schema
 
         return root
 
     def get_multi_modal_attribute(
         self, attribute: str
     ) -> typing.Union['Document', typing.Iterable['Document']]:
-        if 'multi_modal_schema' not in self.meta_tags:
+        if 'multi_modal_schema' not in self.metadata:
             raise ValueError(
                 'the Document does not correspond to a Multi Modal Document'
             )
 
-        if attribute not in self.meta_tags['multi_modal_schema']:
+        if attribute not in self.metadata['multi_modal_schema']:
             raise ValueError(
                 f'the Document schema does not contain attribute {attribute}'
             )
 
-        attribute_type = self.meta_tags['multi_modal_schema'][attribute][
+        attribute_type = self.metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self.meta_tags['multi_modal_schema'][attribute]['position']
+        position = self.metadata['multi_modal_schema'][attribute]['position']
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
             return [self.chunks[position]]

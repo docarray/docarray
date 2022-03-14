@@ -121,7 +121,7 @@ message DocumentProto {
   map<string, NamedScoreProto> evaluations = 19;
 
   // system-defined meta attributes represented in a structured data value.
-  google.protobuf.Struct meta_tags = 20;
+  google.protobuf.Struct _metadata = 20;
 
 }
 

@@ -10,12 +10,12 @@ import numpy as np
 
 def _assert_doc_schema(doc, schema):
     for field, attr_type, _type, position in schema:
-        assert doc.meta_tags['multi_modal_schema'][field]['attribute_type'] == attr_type
-        assert doc.meta_tags['multi_modal_schema'][field]['type'] == _type
+        assert doc.metadata['multi_modal_schema'][field]['attribute_type'] == attr_type
+        assert doc.metadata['multi_modal_schema'][field]['type'] == _type
         if position is not None:
-            assert doc.meta_tags['multi_modal_schema'][field]['position'] == position
+            assert doc.metadata['multi_modal_schema'][field]['position'] == position
         else:
-            assert 'position' not in doc.meta_tags['multi_modal_schema'][field]
+            assert 'position' not in doc.metadata['multi_modal_schema'][field]
 
 
 def test_simple():
@@ -31,7 +31,7 @@ def test_simple():
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
     assert doc.tags['version'] == 20
 
-    assert 'multi_modal_schema' in doc.meta_tags
+    assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
         ('title', AttributeType.DOCUMENT, 'TextDocument', 0),
@@ -69,7 +69,7 @@ def test_nested():
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc.meta_tags
+    assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
         ('sub_doc', AttributeType.NESTED, 'SubDocument', 0),
@@ -93,7 +93,7 @@ def test_with_tags():
     assert doc.tags['attr2'] == 10
     assert doc.tags['attr3'] == 1.1
 
-    assert 'multi_modal_schema' in doc.meta_tags
+    assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
         ('attr1', AttributeType.PRIMITIVE, 'str', None),
@@ -123,7 +123,7 @@ def test_iterable_doc():
     for image_doc in doc.chunks[0].chunks:
         assert image_doc.tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc.meta_tags
+    assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
         ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
@@ -163,7 +163,7 @@ def test_iterable_nested():
     for i, subtitle_doc in enumerate(doc.chunks[1].chunks):
         assert subtitle_doc.chunks[0].text == f'subtitle {i}'
 
-    assert 'multi_modal_schema' in doc.meta_tags
+    assert 'multi_modal_schema' in doc.metadata
 
     expected_schema = [
         ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),

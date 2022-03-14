@@ -32,6 +32,7 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
                 fields[f_name][k] = NamedScore(
                     {ff.name: vv for (ff, vv) in v.ListFields()}
                 )
+        # TODO: handle meta_tags here
         else:
             fields[f_name] = value
     return Document(**fields)
