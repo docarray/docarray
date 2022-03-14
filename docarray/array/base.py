@@ -11,7 +11,7 @@ class BaseDocumentArray(MutableSequence[Document]):
         super().__init__()
         self._init_storage(*args, **kwargs)
 
-    def __add__(self: Type['T'], other: Union['Document', Iterable['Document']]) -> 'T':
+    def __add__(self: 'T', other: Union['Document', Iterable['Document']]) -> 'T':
         v = type(self)(self)
         v.extend(other)
         return v
