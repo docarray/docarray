@@ -49,6 +49,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1193,4 +1194,28 @@
 
  - [[```47d69869```](https://github.com/jina-ai/docarray/commit/47d69869876d31e6949dd46e8ed7afdf4e88dfb2)] __-__ fix progressbar description (*Han Xiao*)
  - [[```78ea85f0```](https://github.com/jina-ai/docarray/commit/78ea85f005532c1c75b85feb26586f527d507461)] __-__ __version__: the next version will be 0.9.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-7></a>
+## Release Note (`0.9.7`)
+
+> Release time: 2022-03-14 07:58:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Winston Wong,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```5a0e365f```](https://github.com/jina-ai/docarray/commit/5a0e365f2093e09042841cdd84fded1bc1b8395a)] __-__ __array__: add post parameters (#196) (*Han Xiao*)
+ - [[```49404ff1```](https://github.com/jina-ai/docarray/commit/49404ff1cb5aa38f7a89d2c1f7957a6cac95517f)] __-__ add `$exists` logic (#192) (*felix-wang*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```01f38d09```](https://github.com/jina-ai/docarray/commit/01f38d09fb6e08630957e32dfdf783813beba5bf)] __-__ fix failing tests (#193) (*Winston Wong*)
+
+### 🍹 Other Improvements
+
+ - [[```a36aeeac```](https://github.com/jina-ai/docarray/commit/a36aeeacab70eb00c3bac20d5d326589c0a31e92)] __-__ __version__: the next version will be 0.9.7 (*Jina Dev Bot*)
 

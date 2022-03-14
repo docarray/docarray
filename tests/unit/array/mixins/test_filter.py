@@ -42,6 +42,11 @@ def test_simple_filter(docs):
     result = docs.find({'tags': {'$size': 2}})
     assert result[0].id == docs[2].id
 
+    result = docs.find({'text': {'$exists': True}})
+    assert len(result) == 2
+    result = docs.find({'tensor': {'$exists': True}})
+    assert len(result) == 0
+
 
 def test_logic_filter(docs):
     result = docs.find({'$or': {'tags__x': {'$gte': 0.1}, 'tags__y': {'$gte': 0.5}}})

@@ -6,7 +6,7 @@ from docarray import Document
 def doc():
     d = Document(
         text='test',
-        tags={'x': 0.1, 'y': 1.5, 'name': 'test', 'labels': ['a', 'b', 'test']},
+        tags={'x': 0.1, 'y': 1.5, 'z': 0, 'name': 'test', 'labels': ['a', 'b', 'test']},
     )
     return d
 
@@ -34,8 +34,15 @@ def test_lookup_ops(doc):
     assert lookup('text__regex', '^test', doc)
     assert not lookup('text__regex', '^est', doc)
 
-    assert lookup('tags__size', 4, doc)
+    assert lookup('tags__size', 5, doc)
     assert lookup('tags__labels__size', 3, doc)
+
+    assert lookup('tags__exists', True, doc)
+    assert lookup('tags__z__exists', True, doc)
+    assert lookup('tags__foo__exists', False, doc)
+    assert lookup('tensor__exists', False, doc)
+    assert lookup('blob__exists', False, doc)
+    assert lookup('text__exists', True, doc)
 
 
 def test_lookup_pl(doc):
