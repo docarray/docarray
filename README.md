@@ -86,14 +86,14 @@ Here the feature embedding is done by simple [feature hashing](https://en.wikipe
 
 ### External storage backends for out-of-memory data
 
-When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you will only need to change one line:
+When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
 
 ```python
 da = DocumentArray((Document(text=s.strip()) for s in d.text.split('\n') if s.strip()), storage='sqlite')
                                                                                         ^^^^^^^^^^^^^^^^
 ```
 
-The code snippet can still run **as-is**. Here `DocumentArray(..., storage='sqlite')` indicates that your Documents are now stored in a SQLite database. All APIs remain the same, the code after are then running in a "in-database" manner. 
+The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
 
 Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
 
