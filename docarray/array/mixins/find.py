@@ -81,7 +81,7 @@ class FindMixin:
             - `$not` - Inverts the effect of a query expression
 
         :param query: the query language in a dict object
-        :return: selected Documents
+        :return: selected Documents in a DocumentArray
         """
         ...
 
