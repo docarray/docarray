@@ -54,4 +54,4 @@ def test_add_protocol_and_compress_to_file_path(file_path, compress, protocol):
 
 def test_ci_vendor():
     if 'GITHUB_WORKFLOW' in os.environ:
-        assert get_full_version()['ci-vendor'] == 'GitHub Actions'
+        assert get_full_version()['ci-vendor'] == 'GITHUB_ACTIONS'
