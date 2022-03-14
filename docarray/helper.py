@@ -1,8 +1,9 @@
+import json
 import os
+import pathlib
 import random
 import sys
 import uuid
-import pathlib
 import warnings
 from typing import Any, Dict, Optional, Sequence, Tuple
 
@@ -175,7 +176,25 @@ def get_full_version() -> Dict:
         'processor': platform.processor(),
         'uid': getnode(),
         'session-id': str(random_uuid(use_uuid1=True)),
+        'ci-vendor': get_ci_vendor(),
     }
+
+
+def get_ci_vendor() -> str:
+    with open(os.path.join(__resources_path__, 'ci-vendors.json')) as fp:
+        all_cis = json.load(fp)
+        for c in all_cis:
+            if isinstance(c['env'], str) and c['env'] in os.environ:
+                return c['constant']
+            elif isinstance(c['env'], dict):
+                for k, v in c['env'].items():
+                    if os.environ.get(k, None) == v:
+                        return c['constant']
+            elif isinstance(c['env'], list):
+                for k in c['env']:
+                    if k in os.environ:
+                        return c['constant']
+        return 'unset'
 
 
 assigned_ports = set()
