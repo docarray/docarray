@@ -48,6 +48,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1172,4 +1173,24 @@
 ### 🍹 Other Improvements
 
  - [[```80c186a4```](https://github.com/jina-ai/docarray/commit/80c186a4be5217d9599d9060fd89a24533938311)] __-__ __version__: the next version will be 0.9.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-6></a>
+## Release Note (`0.9.6`)
+
+> Release time: 2022-03-11 17:46:49
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```e9f26c72```](https://github.com/jina-ai/docarray/commit/e9f26c72b6d9b4acee718748b960bb1cc91e2994)] __-__ __array__: reduce memory footprint of pushpull (#195) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```47d69869```](https://github.com/jina-ai/docarray/commit/47d69869876d31e6949dd46e8ed7afdf4e88dfb2)] __-__ fix progressbar description (*Han Xiao*)
+ - [[```78ea85f0```](https://github.com/jina-ai/docarray/commit/78ea85f005532c1c75b85feb26586f527d507461)] __-__ __version__: the next version will be 0.9.6 (*Jina Dev Bot*)
 

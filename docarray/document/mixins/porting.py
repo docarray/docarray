@@ -170,3 +170,12 @@ class PortingMixin:
         :return: a Document object
         """
         return cls.from_bytes(base64.b64decode(data), protocol, compress)
+
+    def _to_stream_bytes(self, protocol, compress) -> bytes:
+        # 4 bytes (uint32)
+        doc_as_bytes = self.to_bytes(protocol=protocol, compress=compress)
+
+        # variable size bytes
+        len_doc_as_bytes = len(doc_as_bytes).to_bytes(4, 'big', signed=False)
+
+        return len_doc_as_bytes + doc_as_bytes
