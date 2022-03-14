@@ -138,29 +138,43 @@
                     {%- endif %}
                 </div>
 
-                <div class="related-information sd-d-inline-flex">
-                    {%- if show_copyright %}
-                    {%- if hasdoc('copyright') %}
-                    {% trans path=pathto('copyright'), copyright=copyright|e -%}
-                    <a href="{{ path }}">Copyright &#169; {{ copyright }}.</a>
-                    {%- endtrans %}
-                    {%- else %}
-                    {% trans copyright=copyright|e -%}
-                    <a href="https://jina.ai">Copyright &#169; {{ copyright }}</a>
-                    {%- endtrans %}
-                    {%- endif %}
-                    {%- endif %}
-                    {%- if last_updated %}
-                    {% trans last_updated=last_updated|e -%}
-                    Last updated on {{ last_updated }}.
-                    {%- endtrans %}
-                    {%- endif %}
-                    <div class="social-btns">
-                    <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub" target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
-                    <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank" rel="noreferrer"> <i class="fab fa-slack"></i></a>
-                    <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube" target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
-                    <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter" target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
-                    <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn" target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                <div class="bottom-of-page">
+
+                    <div class="left-details">
+                        {%- if show_copyright %}
+                        <div class="copyright">
+                            {%- if hasdoc('copyright') %}
+                            {% trans path=pathto('copyright'), copyright=copyright|e -%}
+                            <a href="{{ path }}">Copyright &#169; {{ copyright }}.</a>
+                            {%- endtrans %}
+                            {%- else %}
+                            {% trans copyright=copyright|e -%}
+                            <a href="https://jina.ai">Copyright &#169; {{ copyright }}</a>
+                            {%- endtrans %}
+                            {%- endif %}
+                        </div>
+                        {%- endif %}
+                        {%- if last_updated %}
+                        <div class="last-updated">
+                            {% trans last_updated=last_updated|e -%}
+                            Last updated on {{ last_updated }}.
+                            {%- endtrans %}
+                        </div>
+                        {%- endif %}
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
                     </div>
                 </div>
                 {% endblock footer %}
@@ -189,8 +203,8 @@
 
     </div>
     <qa-bot
-        title="DocArray Bot"
-        description="The data structure for unstructured data"
+            title="DocArray Bot"
+            description="The data structure for unstructured data"
     >
         <dl>
             <dt>You can ask questions about our docs. Try:</dt>
