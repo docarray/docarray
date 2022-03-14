@@ -1,8 +1,14 @@
 import warnings
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping
 
 if TYPE_CHECKING:
     from ...types import T, AnyDNN
+    from ... import DocumentArray
+
+    CollateFnType = Callable[
+        [DocumentArray],
+        Any,
+    ]  #: The type of collate function
 
 
 class EmbedMixin:
@@ -14,6 +20,7 @@ class EmbedMixin:
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
+        collate_fn: Optional['CollateFnType'] = None,
     ) -> 'T':
         """Fill :attr:`.embedding` of Documents inplace by using `embed_model`
 
@@ -22,18 +29,28 @@ class EmbedMixin:
             `cpu` or `cuda`.
         :param batch_size: number of Documents in a batch for embedding
         :param to_numpy: if to store embeddings back to Document in ``numpy.ndarray`` or original framework format.
+        :param collate_fn: create a mini-batch of Input(s) from the given `DocumentArray`.  Default built-in collate_fn
+                is to use the `tensors` of the documents.
         :return: itself after modified.
         """
 
+        if collate_fn is None:
+
+            def default_collate_fn(da: 'DocumentArray'):
+                return da.tensors
+
+            collate_fn = default_collate_fn
+
         fm = get_framework(embed_model)
         getattr(self, f'_set_embeddings_{fm}')(
-            embed_model, device, batch_size, to_numpy
+            embed_model, collate_fn, device, batch_size, to_numpy
         )
         return self
 
     def _set_embeddings_keras(
         self: 'T',
         embed_model: 'AnyDNN',
+        collate_fn: 'CollateFnType',
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
@@ -43,7 +60,12 @@ class EmbedMixin:
         device = tf.device('/GPU:0') if device == 'cuda' else tf.device('/CPU:0')
         with device:
             for b_ids in self.batch_ids(batch_size):
-                r = embed_model(self[b_ids, 'tensor'], training=False)
+                batch_inputs = collate_fn(self[b_ids])
+                if isinstance(batch_inputs, Mapping):
+                    r = embed_model(**batch_inputs, training=False)
+                else:
+                    r = embed_model(batch_inputs, training=False)
+
                 if not isinstance(r, tf.Tensor):
                     # NOTE: Transformers has own output class.
                     from transformers.modeling_outputs import ModelOutput
@@ -55,6 +77,7 @@ class EmbedMixin:
     def _set_embeddings_torch(
         self: 'T',
         embed_model: 'AnyDNN',
+        collate_fn: 'CollateFnType',
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
@@ -66,8 +89,16 @@ class EmbedMixin:
         embed_model.eval()
         with torch.inference_mode():
             for b_ids in self.batch_ids(batch_size):
-                batch_inputs = torch.tensor(self[b_ids, 'tensor'], device=device)
-                r = embed_model(batch_inputs)
+                batch_inputs = collate_fn(self[b_ids])
+
+                if isinstance(batch_inputs, Mapping):
+                    for k, v in batch_inputs.items():
+                        batch_inputs[k] = torch.tensor(v, device=device)
+                    r = embed_model(**batch_inputs)
+                else:
+                    batch_inputs = torch.tensor(batch_inputs, device=device)
+                    r = embed_model(batch_inputs)
+
                 if isinstance(r, torch.Tensor):
                     r = r.cpu().detach()
                 else:
@@ -75,6 +106,7 @@ class EmbedMixin:
                     from transformers.modeling_outputs import ModelOutput
 
                     r = r.pooler_output.cpu().detach()  # type: ModelOutput
+
                 self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
         if is_training_before:
@@ -83,6 +115,7 @@ class EmbedMixin:
     def _set_embeddings_paddle(
         self: 'T',
         embed_model,
+        collate_fn: 'CollateFnType',
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
@@ -93,8 +126,15 @@ class EmbedMixin:
         embed_model.to(device=device)
         embed_model.eval()
         for b_ids in self.batch_ids(batch_size):
-            batch_inputs = paddle.to_tensor(self[b_ids, 'tensor'], place=device)
-            r = embed_model(batch_inputs)
+            batch_inputs = collate_fn(self[b_ids])
+            if isinstance(batch_inputs, Mapping):
+                for k, v in batch_inputs.items():
+                    batch_inputs[k] = paddle.to_tensor(v, place=device)
+                r = embed_model(**batch_inputs)
+            else:
+                batch_inputs = paddle.to_tensor(batch_inputs, place=device)
+                r = embed_model(batch_inputs)
+
             self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
 
         if is_training_before:
@@ -103,6 +143,7 @@ class EmbedMixin:
     def _set_embeddings_onnx(
         self: 'T',
         embed_model,
+        collate_fn: 'CollateFnType',
         device: str = 'cpu',
         batch_size: int = 256,
         *args,
@@ -119,9 +160,11 @@ class EmbedMixin:
                 )
 
         for b_ids in self.batch_ids(batch_size):
-            self[b_ids, 'embedding'] = embed_model.run(
-                None, {embed_model.get_inputs()[0].name: self[b_ids, 'tensor']}
-            )[0]
+            batch_inputs = collate_fn(self[b_ids])
+            if not isinstance(batch_inputs, Mapping):
+                batch_inputs = {embed_model.get_inputs()[0].name: batch_inputs}
+
+            self[b_ids, 'embedding'] = embed_model.run(None, batch_inputs)[0]
 
 
 def get_framework(dnn_model) -> str:

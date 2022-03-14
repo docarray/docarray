@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Dict
 
 if TYPE_CHECKING:
     from ... import DocumentArray
@@ -8,7 +8,11 @@ class PostMixin:
     """Helper functions for posting DocumentArray to Jina Flow."""
 
     def post(
-        self, host: str, show_progress: bool = False, batch_size: Optional[int] = None
+        self,
+        host: str,
+        show_progress: bool = False,
+        batch_size: Optional[int] = None,
+        parameters: Optional[Dict] = None,
     ) -> 'DocumentArray':
         """Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back
 
@@ -43,13 +47,14 @@ class PostMixin:
         if r.scheme.startswith('jinahub'):
             from jina import Flow
 
-            f = Flow(quiet=True).add(uses=standardized_host)
+            f = Flow(quiet=True, prefetch=1).add(uses=standardized_host)
             with f:
                 return f.post(
                     _on,
                     inputs=self,
                     show_progress=show_progress,
                     request_size=batch_size,
+                    parameters=parameters,
                 )
         elif r.scheme in ('grpc', 'http', 'websocket'):
             if _port is None:
@@ -59,7 +64,11 @@ class PostMixin:
 
             c = Client(host=r.hostname, port=_port, protocol=r.scheme)
             return c.post(
-                _on, inputs=self, show_progress=show_progress, request_size=batch_size
+                _on,
+                inputs=self,
+                show_progress=show_progress,
+                request_size=batch_size,
+                parameters=parameters,
             )
         else:
             raise ValueError(f'unsupported scheme: {r.scheme}')

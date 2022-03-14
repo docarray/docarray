@@ -19,19 +19,23 @@ class FindMixin:
     """
 
     @overload
-    def find(self: 'T', query: 'ArrayType', **kwargs):
+    def find(
+        self: 'T', query: 'ArrayType', **kwargs
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         ...
 
     @overload
-    def find(self: 'T', query: Union['Document', 'DocumentArray'], **kwargs):
+    def find(
+        self: 'T', query: Union['Document', 'DocumentArray'], **kwargs
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         ...
 
     @overload
-    def find(self: 'T', query: Dict, **kwargs):
+    def find(self: 'T', query: Dict, **kwargs) -> 'DocumentArray':
         ...
 
     @overload
-    def find(self: 'T', query: str, **kwargs):
+    def find(self: 'T', query: str, **kwargs) -> 'DocumentArray':
         ...
 
     def find(
@@ -191,7 +195,7 @@ class FindMixin:
             - `$nin` - Not included in an array
             - `$regex` - Match a specified regular expression
             - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
-
+            - `$exists` - Matches documents that have the specified field. And empty string content is also cosidered as not exists.
 
         And the following boolean logic operators are supported:
             - `$and` - Join query clauses with a logical AND

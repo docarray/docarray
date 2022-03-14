@@ -14,6 +14,7 @@ COMPARISON_OPERATORS = {
     '$gte': 'gte',
     '$eq': 'exact',
     '$neq': 'neq',
+    '$exists': 'exists',
 }
 
 REGEX_OPERATORS = {'$regex': 'regex'}

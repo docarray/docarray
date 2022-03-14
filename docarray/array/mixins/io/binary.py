@@ -7,6 +7,7 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
+
 from ....helper import (
     get_compress_ctx,
     decompress_bytes,
@@ -17,6 +18,20 @@ if TYPE_CHECKING:
     from ....types import T
     from ....proto.docarray_pb2 import DocumentArrayProto
     from .... import Document, DocumentArray
+
+
+class LazyRequestReader:
+    def __init__(self, r):
+        self._data = r.iter_content(chunk_size=8192)
+        self.content = b''
+
+    def __getitem__(self, item: slice):
+        while len(self.content) < item.stop:
+            try:
+                self.content += next(self._data)
+            except StopIteration:
+                return self.content[item.start : -1 : item.step]
+        return self.content[item]
 
 
 class BinaryIOMixin:
@@ -51,7 +66,7 @@ class BinaryIOMixin:
             and `compress=lz4`.
         """
 
-        if isinstance(file, io.BufferedReader):
+        if isinstance(file, (io.BufferedReader, LazyRequestReader)):
             file_ctx = nullcontext(file)
         elif isinstance(file, bytes):
             file_ctx = nullcontext(file)
@@ -159,7 +174,9 @@ class BinaryIOMixin:
             start_pos = 9
             docs = []
 
-            for _ in track(range(num_docs), disable=not show_progress):
+            for _ in track(
+                range(num_docs), description='Deserializing', disable=not show_progress
+            ):
                 # 4 bytes (uint32)
                 len_current_doc_in_bytes = int.from_bytes(
                     d[start_pos : start_pos + 4], 'big', signed=False
@@ -254,6 +271,7 @@ class BinaryIOMixin:
         if protocol == 'protobuf-array' or protocol == 'pickle-array':
             compress_ctx = get_compress_ctx(compress, mode='wb')
         else:
+            # delegate the compression to per-doc compression
             compress_ctx = None
 
         with (_file_ctx or io.BytesIO()) as bf:
@@ -272,33 +290,19 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
-                    # Binary format for streaming case
-
-                    # V1 DocArray streaming serialization format
-                    # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
-
-                    # 1 byte (uint8)
-                    version_byte = b'\x01'
-                    # 8 bytes (uint64)
-                    num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
-                    f.write(version_byte + num_docs_as_bytes)
+                    f.write(self._stream_header)
 
                     from rich.progress import track
 
                     for d in track(
                         self, description='Serializing', disable=not _show_progress
                     ):
-                        # 4 bytes (uint32)
-                        doc_as_bytes = d.to_bytes(protocol=protocol, compress=compress)
-
-                        # variable size bytes
-                        len_doc_as_bytes = len(doc_as_bytes).to_bytes(
-                            4, 'big', signed=False
+                        f.write(
+                            d._to_stream_bytes(protocol=protocol, compress=compress)
                         )
-                        f.write(len_doc_as_bytes + doc_as_bytes)
                 else:
                     raise ValueError(
-                        f'protocol={protocol} is not supported. Can be only `protobuf`,`pickle`,`protobuf-array`,`pickle-array`.'
+                        f'protocol={protocol} is not supported. Can be only `protobuf`, `pickle`, `protobuf-array`, `pickle-array`.'
                     )
 
             if not _file_ctx:
@@ -353,3 +357,16 @@ class BinaryIOMixin:
         _show_progress: bool = False,
     ) -> str:
         return base64.b64encode(self.to_bytes(protocol, compress)).decode('utf-8')
+
+    @property
+    def _stream_header(self) -> bytes:
+        # Binary format for streaming case
+
+        # V1 DocArray streaming serialization format
+        # | 1 byte | 8 bytes | 4 bytes | variable | 4 bytes | variable ...
+
+        # 1 byte (uint8)
+        version_byte = b'\x01'
+        # 8 bytes (uint64)
+        num_docs_as_bytes = len(self).to_bytes(8, 'big', signed=False)
+        return version_byte + num_docs_as_bytes

@@ -1,9 +1,12 @@
-import pytest
+import os
 import pathlib
+
+import pytest
 
 from docarray.helper import (
     protocol_and_compress_from_file_path,
     add_protocol_and_compress_to_file_path,
+    get_full_version,
 )
 
 
@@ -15,7 +18,6 @@ from docarray.helper import (
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_protocol_and_compress_from_file_path(file_path, protocol, compress):
-
     file_path_extended = file_path
     if protocol:
         file_path_extended += '.' + protocol
@@ -48,3 +50,8 @@ def test_add_protocol_and_compress_to_file_path(file_path, compress, protocol):
         assert compress in file_path_suffixes
     if protocol:
         assert protocol in file_path_suffixes
+
+
+def test_ci_vendor():
+    if 'GITHUB_WORKFLOW' in os.environ:
+        assert get_full_version()['ci-vendor'] == 'GITHUB_ACTIONS'
