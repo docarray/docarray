@@ -223,5 +223,8 @@ class FindMixin:
         from ... import DocumentArray
         from ..queryset import QueryParser
 
-        parser = QueryParser(query)
-        return DocumentArray(d for d in self if parser.evaluate(d))
+        if query:
+            parser = QueryParser(query)
+            return DocumentArray(d for d in self if parser.evaluate(d))
+        else:
+            return self
