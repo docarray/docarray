@@ -33,20 +33,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             and self._config == other._config
         )
 
-    def __bool__(self):
-        """To simulate ```l = []; if l: ...```
-
-        :return: returns true if the length of the array is larger than 0
-        """
-        return len(self) > 0
-
     def __repr__(self):
         return f'<DocumentArray[AnnLite] (length={len(self)}) at {id(self)}>'
-
-    def __add__(self, other: Union['Document', Sequence['Document']]):
-        v = type(self)(self)
-        v.extend(other)
-        return v
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):

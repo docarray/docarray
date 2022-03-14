@@ -65,13 +65,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __repr__(self):
         return f'<DocumentArray[Qdrant] (length={len(self)}) at {id(self)}>'
 
-    def __bool__(self):
-        """To simulate ```l = []; if l: ...```
-
-        :return: returns true if the length of the array is larger than 0
-        """
-        return len(self) > 0
-
     def extend(self, docs: Iterable['Document']):
         docs = list(docs)
         self._upload_batch(docs)
