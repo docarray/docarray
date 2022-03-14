@@ -9,11 +9,8 @@ from typing import (
     Generator,
     Iterable,
     Tuple,
+    ForwardRef,
 )
-
-import numpy as np
-import tensorflow
-import torch
 
 if TYPE_CHECKING:
     import scipy.sparse
@@ -69,14 +66,14 @@ if TYPE_CHECKING:
 
 ImageDocument = TypeVar(
     'ImageDocument',
-    np.ndarray,
-    tensorflow.Tensor,
-    torch.Tensor,
+    ForwardRef('np.ndarray'),
+    ForwardRef('tensorflow.Tensor'),
+    ForwardRef('torch.Tensor'),
 )
 
 BlobDocument = TypeVar(
     'BlobDocument',
-    np.ndarray,
+    ForwardRef('np.ndarray'),
     bytes,
 )
 
