@@ -231,3 +231,31 @@ def test_traverse_simple():
     assert len(mm_docs['@a[audio]']) == 5
     for i, doc in enumerate(mm_docs['@a[audio]']):
         assert doc.blob == b'audio'
+
+
+def test_traverse_attributes():
+    @dataclass
+    class MMDocument:
+        attr1: TextDocument
+        attr2: BlobDocument
+        attr3: ImageDocument
+
+    mm_docs = DocumentArray(
+        [
+            Document.from_dataclass(
+                MMDocument(
+                    attr1='text',
+                    attr2=b'1234',
+                    attr3=np.random.rand(10, 10, 3),
+                )
+            )
+            for _ in range(5)
+        ]
+    )
+
+    assert len(mm_docs['@a[attr1-attr3]']) == 10
+    for i, doc in enumerate(mm_docs['@a[attr1-attr3]']):
+        if i < 5:
+            assert doc.text == f'text'
+        else:
+            assert doc.tensor.shape == (10, 10, 3)
