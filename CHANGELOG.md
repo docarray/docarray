@@ -50,6 +50,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1218,4 +1219,34 @@
 ### 🍹 Other Improvements
 
  - [[```a36aeeac```](https://github.com/jina-ai/docarray/commit/a36aeeacab70eb00c3bac20d5d326589c0a31e92)] __-__ __version__: the next version will be 0.9.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-8></a>
+## Release Note (`0.9.8`)
+
+> Release time: 2022-03-14 10:06:33
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```4ee76110```](https://github.com/jina-ai/docarray/commit/4ee76110d40e48abb19324ba44084db534ab4c1e)] __-__ add ci vendor detection (#200) (*Han Xiao*)
+ - [[```34ad3fd3```](https://github.com/jina-ai/docarray/commit/34ad3fd396760bedda662941cdfde516dcb8ae5e)] __-__ collate function in embed function (#187) (*felix-wang*)
+
+### 🐞 Bug fixes
+
+ - [[```c4d9a85a```](https://github.com/jina-ai/docarray/commit/c4d9a85a1d3dd1ec23633328fabe88cd16db2399)] __-__ exist validate (#199) (*felix-wang*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```b19bdddf```](https://github.com/jina-ai/docarray/commit/b19bdddf29a827554e6a99c450610398f6f4e63a)] __-__ disable weaviate test in plot (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f1287e36```](https://github.com/jina-ai/docarray/commit/f1287e36e1390935da9914b23e816fa39a07669e)] __-__ fix readme (*Han Xiao*)
+ - [[```c12c93af```](https://github.com/jina-ai/docarray/commit/c12c93af18b002d6cbdf3a9b95e5316c881f39c6)] __-__ update readme (*Han Xiao*)
+ - [[```582c784b```](https://github.com/jina-ai/docarray/commit/582c784bc68b52b973f09e8e5f92e6f2280d6f48)] __-__ __version__: the next version will be 0.9.8 (*Jina Dev Bot*)
 
