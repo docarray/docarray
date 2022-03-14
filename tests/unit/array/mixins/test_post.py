@@ -38,7 +38,7 @@ def test_post_to_a_flow(show_pbar, conn_config, batch_size):
     )
     t.start()
 
-    time.sleep(1)
+    time.sleep(3)
 
     da = DocumentArray.empty(100)
     try:
