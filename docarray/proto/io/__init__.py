@@ -22,6 +22,8 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
             fields[f_name] = [Document.from_protobuf(d) for d in value]
         elif isinstance(value, NdArrayProto):
             fields[f_name] = read_ndarray(value)
+        elif isinstance(value, Struct) and f_name == '_metadata':
+            fields['metadata'] = MessageToDict(value, preserving_proto_field_name=True)
         elif isinstance(value, Struct):
             fields[f_name] = MessageToDict(value, preserving_proto_field_name=True)
         elif f_name == 'location':
@@ -32,7 +34,6 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
                 fields[f_name][k] = NamedScore(
                     {ff.name: vv for (ff, vv) in v.ListFields()}
                 )
-        # TODO: handle meta_tags here
         else:
             fields[f_name] = value
     return Document(**fields)
@@ -52,7 +53,8 @@ def flush_proto(doc: 'Document', ndarray_type: Optional[str] = None) -> 'Documen
                     docs.append(d.to_protobuf())
             elif key == 'tags':
                 pb_msg.tags.update(value)
-            # TODO: handle meta_tags here
+            elif key == 'metadata':
+                pb_msg._metadata.update(value)
             elif key in ('scores', 'evaluations'):
                 for kk, vv in value.items():
                     for ff in vv.non_empty_fields:
