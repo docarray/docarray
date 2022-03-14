@@ -335,6 +335,7 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 <!-- start support-pitch -->
 ## Support
 
+- Checkout the [Learning Bootcamp](https://learn.jina.ai) to get started with DocArray.
 - Use [Discussions](https://github.com/jina-ai/docarray/discussions) to talk about your use cases, questions, and
   support queries.
 - Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
