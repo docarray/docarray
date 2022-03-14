@@ -177,3 +177,35 @@ def test_iterable_nested():
     ]
     for subtitle in doc.chunks[1].chunks:
         _assert_doc_schema(subtitle, expected_nested_schema)
+
+
+def test_get_multi_modal_attribute():
+    @dataclass
+    class MMDocument:
+        image: ImageDocument
+        texts: List[TextDocument]
+        audio: BlobDocument
+        primitive: int
+
+    mm_doc = MMDocument(
+        image=np.random.rand(10, 10, 3),
+        texts=['text 1', 'text 2'],
+        audio=b'1234',
+        primitive=1,
+    )
+
+    doc = Document.from_dataclass(mm_doc)
+    images = doc.get_multi_modal_attribute('image')
+    texts = doc.get_multi_modal_attribute('texts')
+    audios = doc.get_multi_modal_attribute('audio')
+
+    assert len(images) == 1
+    assert len(texts) == 2
+    assert len(audios) == 1
+
+    assert images[0].tensor.shape == (10, 10, 3)
+    assert texts[0].text == 'text 1'
+    assert audios[0].blob == b'1234'
+
+    with pytest.raises(ValueError):
+        doc.get_multi_modal_attribute('primitive')
