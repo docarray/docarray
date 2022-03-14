@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.embed/" />
   
-<meta property="og:site_name" content="DocArray 0.9.7 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.8 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.7 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.8 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.empty module" href="../docarray.array.mixins.empty/" /><link rel="prev" title="docarray.array.mixins.delitem module" href="../docarray.array.mixins.delitem/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.embed module - DocArray 0.9.7 documentation</title>
+        <title>docarray.array.mixins.embed module - DocArray 0.9.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.7 documentation</div>
+                <div class="brand">DocArray 0.9.8 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -504,7 +504,7 @@
 <p>Helper functions for embedding with a model</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.embed.EmbedMixin.embed">
-<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numpy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/embed/#EmbedMixin.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.embed.EmbedMixin.embed" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numpy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/embed/#EmbedMixin.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.embed.EmbedMixin.embed" title="Permalink to this definition">#</a></dt>
 <dd><p>Fill <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.embedding" title="docarray.document.data.DocumentData.embedding"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code></a> of Documents inplace by using <cite>embed_model</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -514,6 +514,8 @@
 <cite>cpu</cite> or <cite>cuda</cite>.</p></li>
 <li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of Documents in a batch for embedding</p></li>
 <li><p><strong>to_numpy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to store embeddings back to Document in <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or original framework format.</p></li>
+<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – create a mini-batch of Input(s) from the given <cite>DocumentArray</cite>.  Default built-in collate_fn
+is to use the <cite>tensors</cite> of the documents.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

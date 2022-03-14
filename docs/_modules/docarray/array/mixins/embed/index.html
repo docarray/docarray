@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.embed - DocArray 0.9.7 documentation</title>
+        <title>docarray.array.mixins.embed - DocArray 0.9.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.9.7 documentation</div>
+                <div class="brand">DocArray 0.9.8 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -466,10 +466,16 @@
                 </div>
                 <h1>Source code for docarray.array.mixins.embed</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">...types</span> <span class="kn">import</span> <span class="n">T</span><span class="p">,</span> <span class="n">AnyDNN</span>
+    <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+    <span class="n">CollateFnType</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[</span>
+        <span class="p">[</span><span class="n">DocumentArray</span><span class="p">],</span>
+        <span class="n">Any</span><span class="p">,</span>
+    <span class="p">]</span>  <span class="c1">#: The type of collate function</span>
 
 
 <div class="viewcode-block" id="EmbedMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin">[docs]</a><span class="k">class</span> <span class="nc">EmbedMixin</span><span class="p">:</span>
@@ -481,6 +487,7 @@
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'CollateFnType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Fill :attr:`.embedding` of Documents inplace by using `embed_model`</span>
 
@@ -489,18 +496,28 @@
 <span class="sd">            `cpu` or `cuda`.</span>
 <span class="sd">        :param batch_size: number of Documents in a batch for embedding</span>
 <span class="sd">        :param to_numpy: if to store embeddings back to Document in ``numpy.ndarray`` or original framework format.</span>
+<span class="sd">        :param collate_fn: create a mini-batch of Input(s) from the given `DocumentArray`.  Default built-in collate_fn</span>
+<span class="sd">                is to use the `tensors` of the documents.</span>
 <span class="sd">        :return: itself after modified.</span>
 <span class="sd">        """</span>
 
+        <span class="k">if</span> <span class="n">collate_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">default_collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">:</span> <span class="s1">'DocumentArray'</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">da</span><span class="o">.</span><span class="n">tensors</span>
+
+            <span class="n">collate_fn</span> <span class="o">=</span> <span class="n">default_collate_fn</span>
+
         <span class="n">fm</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">embed_model</span><span class="p">)</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'_set_embeddings_</span><span class="si">{</span><span class="n">fm</span><span class="si">}</span><span class="s1">'</span><span class="p">)(</span>
-            <span class="n">embed_model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">to_numpy</span>
+            <span class="n">embed_model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">to_numpy</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_set_embeddings_keras</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="s1">'CollateFnType'</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -510,7 +527,12 @@
         <span class="n">device</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'/GPU:0'</span><span class="p">)</span> <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span> <span class="k">else</span> <span class="n">tf</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'/CPU:0'</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">device</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">b_ids</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_ids</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">],</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="o">**</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
                     <span class="c1"># NOTE: Transformers has own output class.</span>
                     <span class="kn">from</span> <span class="nn">transformers.modeling_outputs</span> <span class="kn">import</span> <span class="n">ModelOutput</span>
@@ -522,6 +544,7 @@
     <span class="k">def</span> <span class="nf">_set_embeddings_torch</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">:</span> <span class="s1">'AnyDNN'</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="s1">'CollateFnType'</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -533,8 +556,16 @@
         <span class="n">embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">b_ids</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_ids</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
-                <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">],</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+                <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch_inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">batch_inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="o">**</span><span class="n">batch_inputs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
                     <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -542,6 +573,7 @@
                     <span class="kn">from</span> <span class="nn">transformers.modeling_outputs</span> <span class="kn">import</span> <span class="n">ModelOutput</span>
 
                     <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">pooler_output</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>  <span class="c1"># type: ModelOutput</span>
+
                 <span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">to_numpy</span> <span class="k">else</span> <span class="n">r</span>
 
         <span class="k">if</span> <span class="n">is_training_before</span><span class="p">:</span>
@@ -550,6 +582,7 @@
     <span class="k">def</span> <span class="nf">_set_embeddings_paddle</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="s1">'CollateFnType'</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">to_numpy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -560,8 +593,15 @@
         <span class="n">embed_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
         <span class="n">embed_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">b_ids</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_ids</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
-            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">],</span> <span class="n">place</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">batch_inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">batch_inputs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="o">**</span><span class="n">batch_inputs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">place</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">embed_model</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="k">if</span> <span class="n">to_numpy</span> <span class="k">else</span> <span class="n">r</span>
 
         <span class="k">if</span> <span class="n">is_training_before</span><span class="p">:</span>
@@ -570,6 +610,7 @@
     <span class="k">def</span> <span class="nf">_set_embeddings_onnx</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
         <span class="n">embed_model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="p">:</span> <span class="s1">'CollateFnType'</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -586,9 +627,11 @@
                 <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">b_ids</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_ids</span><span class="p">(</span><span class="n">batch_size</span><span class="p">):</span>
-            <span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                <span class="kc">None</span><span class="p">,</span> <span class="p">{</span><span class="n">embed_model</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">]}</span>
-            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+            <span class="n">batch_inputs</span> <span class="o">=</span> <span class="n">collate_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">batch_inputs</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+                <span class="n">batch_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">embed_model</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">batch_inputs</span><span class="p">}</span>
+
+            <span class="bp">self</span><span class="p">[</span><span class="n">b_ids</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">]</span> <span class="o">=</span> <span class="n">embed_model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_inputs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">dnn_model</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
