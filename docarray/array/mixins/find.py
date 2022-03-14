@@ -19,19 +19,23 @@ class FindMixin:
     """
 
     @overload
-    def find(self: 'T', query: 'ArrayType', **kwargs):
+    def find(
+        self: 'T', query: 'ArrayType', **kwargs
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         ...
 
     @overload
-    def find(self: 'T', query: Union['Document', 'DocumentArray'], **kwargs):
+    def find(
+        self: 'T', query: Union['Document', 'DocumentArray'], **kwargs
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         ...
 
     @overload
-    def find(self: 'T', query: Dict, **kwargs):
+    def find(self: 'T', query: Dict, **kwargs) -> 'DocumentArray':
         ...
 
     @overload
-    def find(self: 'T', query: str, **kwargs):
+    def find(self: 'T', query: str, **kwargs) -> 'DocumentArray':
         ...
 
     def find(
