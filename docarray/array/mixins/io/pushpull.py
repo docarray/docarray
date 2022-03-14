@@ -1,7 +1,6 @@
-import io
 import json
 import os
-from contextlib import nullcontext
+import warnings
 from functools import lru_cache
 from typing import Type, TYPE_CHECKING
 from urllib.request import Request, urlopen
@@ -57,50 +56,54 @@ class PushPullMixin:
         """
         import requests
 
-        dict_data = self._get_dict_data(token, show_progress)
-
-        progress = _get_progressbar(show_progress)
-        task_id = progress.add_task('upload', start=False) if show_progress else None
-
-        class BufferReader(io.BytesIO):
-            def __init__(self, buf=b'', p_bar=None, task_id=None):
-                super().__init__(buf)
-                self._len = len(buf)
-                self._p_bar = p_bar
-                self._task_id = task_id
-                if show_progress:
-                    progress.update(task_id, total=self._len)
-                    progress.start_task(task_id)
-
-            def __len__(self):
-                return self._len
-
-            def read(self, n=-1):
-                chunk = io.BytesIO.read(self, n)
-                if self._p_bar:
-                    self._p_bar.update(self._task_id, advance=len(chunk))
-                return chunk
+        delimiter = os.urandom(32)
 
         (data, ctype) = requests.packages.urllib3.filepost.encode_multipart_formdata(
-            dict_data
+            {
+                'file': (
+                    'DocumentArray',
+                    delimiter,
+                ),
+                'token': token,
+            }
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        with progress as p_bar:
-            body = BufferReader(data, p_bar, task_id)
-            res = requests.post(
-                f'{_get_cloud_api()}/v2/rpc/da.push', data=body, headers=headers
-            )
+        _head, _tail = data.split(delimiter)
+        from rich.progress import track
 
-            if res.status_code != 200:
-                json_res = res.json()
-                raise RuntimeError(
-                    json_res.get(
-                        'message', 'Failed to push DocumentArray to Jina Cloud'
-                    ),
-                    f'Status code: {res.status_code}',
-                )
+        def gen():
+            total_size = 0
+
+            for idx, d in enumerate(
+                track(self, description='Pushing', disable=not show_progress)
+            ):
+                chunk = b''
+                if idx == 0:
+                    chunk += _head
+                    chunk += self._stream_header
+                if idx < len(self):
+                    chunk += d._to_stream_bytes(protocol='protobuf', compress='gzip')
+                    total_size += len(chunk)
+                    if total_size > self._max_bytes:
+                        warnings.warn(
+                            f'DocumentArray is too big. Only first {idx} Documents are pushed'
+                        )
+                        break
+                    yield chunk
+            yield _tail
+
+        res = requests.post(
+            f'{_get_cloud_api()}/v2/rpc/da.push', data=gen(), headers=headers
+        )
+
+        if res.status_code != 200:
+            json_res = res.json()
+            raise RuntimeError(
+                json_res.get('message', 'Failed to push DocumentArray to Jina Cloud'),
+                f'Status code: {res.status_code}',
+            )
 
     @classmethod
     def pull(
@@ -124,102 +127,60 @@ class PushPullMixin:
         url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
         response = requests.get(url)
 
-        progress = _get_progressbar(show_progress)
-
         url = response.json()['data']['download']
 
         with requests.get(
             url,
             stream=True,
             headers=get_request_header(),
-        ) as r, progress:
+        ) as r:
             r.raise_for_status()
 
             _da_len = int(r.headers['Content-length'])
 
+            from .binary import LazyRequestReader
+
+            _source = LazyRequestReader(r)
             if local_cache and os.path.exists(f'.cache/{token}'):
                 _cache_len = os.path.getsize(f'.cache/{token}')
                 if _cache_len == _da_len:
-                    if show_progress:
-                        progress.stop()
+                    _source = f'.cache/{token}'
 
-                    return cls.load_binary(
-                        f'.cache/{token}',
-                        protocol='protobuf',
-                        compress='gzip',
-                        _show_progress=show_progress,
-                        *args,
-                        **kwargs,
-                    )
-
-            if show_progress:
-                task_id = progress.add_task('download', start=False)
-                progress.update(task_id, total=int(_da_len))
-            with io.BytesIO() as f:
-                chunk_size = 8192
-                if show_progress:
-                    progress.start_task(task_id)
-                for chunk in r.iter_content(chunk_size=chunk_size):
-                    f.write(chunk)
-                    if show_progress:
-                        progress.update(task_id, advance=len(chunk))
-
-                if local_cache:
-                    os.makedirs('.cache', exist_ok=True)
-                    with open(f'.cache/{token}', 'wb') as fp:
-                        fp.write(f.getbuffer())
-
-                if show_progress:
-                    progress.stop()
-
-                return cls.from_bytes(
-                    f.getvalue(),
-                    protocol='protobuf',
-                    compress='gzip',
-                    _show_progress=show_progress,
-                    *args,
-                    **kwargs,
-                )
-
-    def _get_dict_data(self, token, show_progress):
-        _serialized = self.to_bytes(
-            protocol='protobuf', compress='gzip', _show_progress=show_progress
-        )
-        if len(_serialized) > self._max_bytes:
-            raise ValueError(
-                f'DocumentArray is too big. '
-                f'Size of the serialization {len(_serialized)} is larger than {self._max_bytes}.'
+            r = cls.load_binary(
+                _source,
+                protocol='protobuf',
+                compress='gzip',
+                _show_progress=show_progress,
+                *args,
+                **kwargs,
             )
 
-        return {
-            'file': (
-                'DocumentArray',
-                _serialized,
-            ),
-            'token': token,
-        }
+            if isinstance(_source, LazyRequestReader) and local_cache:
+                os.makedirs('.cache', exist_ok=True)
+                with open(f'.cache/{token}', 'wb') as fp:
+                    fp.write(_source.content)
+
+            return r
 
 
 def _get_progressbar(show_progress):
-    if show_progress:
-        from rich.progress import (
-            BarColumn,
-            DownloadColumn,
-            Progress,
-            TimeRemainingColumn,
-            TransferSpeedColumn,
-        )
+    from rich.progress import (
+        BarColumn,
+        DownloadColumn,
+        Progress,
+        TimeRemainingColumn,
+        TransferSpeedColumn,
+    )
 
-        return Progress(
-            BarColumn(),
-            "[progress.percentage]{task.percentage:>3.1f}%",
-            "•",
-            DownloadColumn(),
-            "•",
-            TransferSpeedColumn(),
-            "•",
-            TimeRemainingColumn(),
-            transient=True,
-        )
-    else:
-        return nullcontext()
+    return Progress(
+        BarColumn(),
+        "[progress.percentage]{task.percentage:>3.1f}%",
+        "•",
+        DownloadColumn(),
+        "•",
+        TransferSpeedColumn(),
+        "•",
+        TimeRemainingColumn(),
+        transient=True,
+        disable=not show_progress,
+    )

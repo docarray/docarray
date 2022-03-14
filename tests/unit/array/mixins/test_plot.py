@@ -22,7 +22,7 @@ from docarray.array.storage.annlite import AnnliteConfig
         (DocumentArray, None),
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
     ],
 )
