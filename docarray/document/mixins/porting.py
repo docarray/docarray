@@ -1,5 +1,6 @@
 import base64
 import dataclasses
+import json
 import pickle
 import warnings
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
@@ -18,7 +19,7 @@ class PortingMixin:
         """Convert a dict object into a Document.
 
         :param obj: a Python dict object
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param kwargs: extra key-value args pass to pydantic and protobuf parser.
         :return: the parsed Document object
         """
@@ -33,6 +34,8 @@ class PortingMixin:
             pb_msg = DocumentProto()
             json_format.ParseDict(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
+        elif protocol == 'dynamic':
+            return cls(obj)
         else:
             raise ValueError(f'protocol=`{protocol}` is not supported')
 
@@ -46,7 +49,7 @@ class PortingMixin:
         """Convert a JSON string into a Document.
 
         :param obj: a valid JSON string
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param kwargs: extra key-value args pass to pydantic and protobuf parser.
         :return: the parsed Document object
         """
@@ -61,13 +64,15 @@ class PortingMixin:
             pb_msg = DocumentProto()
             json_format.Parse(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
+        elif protocol == 'dynamic':
+            return cls.from_dict(json.loads(obj), protocol=protocol)
         else:
             raise ValueError(f'protocol=`{protocol}` is not supported')
 
     def to_dict(self, protocol: str = 'jsonschema', **kwargs) -> Dict[str, Any]:
         """Convert itself into a Python dict object.
 
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param kwargs: extra key-value args pass to pydantic and protobuf dumper.
         :return: the dumped Document as a dict object
         """
@@ -80,12 +85,15 @@ class PortingMixin:
                 self.to_protobuf(),
                 **kwargs,
             )
-        else:
+        elif protocol == 'dynamic':
             warnings.warn(
-                f'protocol=`{protocol}` is not supported, '
-                f'the result dict is a Python dynamic typing dict without any promise on the schema.'
+                'The result dict is a Python dynamic typing dict without any promise on the schema.'
             )
-            return dataclasses.asdict(self._data)
+            res = dataclasses.asdict(self._data)
+            del res['_reference_doc']
+            return res
+        else:
+            raise ValueError(f'protocol=`{protocol}` is not supported')
 
     def to_bytes(
         self, protocol: str = 'pickle', compress: Optional[str] = None
@@ -131,7 +139,7 @@ class PortingMixin:
     def to_json(self, protocol: str = 'jsonschema', **kwargs) -> str:
         """Convert itself into a JSON string.
 
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param kwargs: extra key-value args pass to pydantic and protobuf dumper.
         :return: the dumped JSON string
         """
@@ -141,6 +149,8 @@ class PortingMixin:
             from google.protobuf.json_format import MessageToJson
 
             return MessageToJson(self.to_protobuf(), **kwargs)
+        elif protocol == 'dynamic':
+            return json.dumps(self.to_dict(protocol=protocol))
         else:
             raise ValueError(f'protocol={protocol} is not supported.')
 
