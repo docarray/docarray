@@ -4,7 +4,7 @@
 We can use {meth}`~docarray.array.mixins.find.FindMixin.find` to select Documents from a DocumentArray based the conditions specified in a `query` object. One can use `da.find(query)` to filter Documents and get nearest neighbours from `da`:
 
 - To filter Documents, the `query` object is a Python dictionary object that defines the filtering conditions using a [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/)-like query language.
-- To find nearest neighbours, the `query` object is a NdArray-like object that defines embedding. One can also use `.match()` function for this purpose, and there is a minor interface difference between these two functions.
+- To find nearest neighbours, the `query` object needs to be a NdArray-like, a Document, or a DocumentArray object that defines embedding. One can also use `.match()` function for this purpose, and there is a minor interface difference between these two functions, which will be described {ref}`in the next chapter<match-documentarray>`.
 
 Let's see some examples in action. First, let's prepare a DocumentArray we will use.
 
@@ -48,7 +48,9 @@ A query filter document can use the query operators to specify conditions in the
 
 Here `field1` is {ref}`any field name<doc-fields>` of a Document object.  To access nested fields, one can use the dunder expression. For example, `tags__timestamp` is to access `doc.tags['timestamp']` field.
 
-`operator1` can be one of the following:
+`value1` can be either a user given Python object, or a substitution field with curly bracket `{field}`   
+
+Finally, `operator1` can be one of the following:
 
 | Query Operator | Description                                                                                                |
 |----------------|------------------------------------------------------------------------------------------------------------|
@@ -155,6 +157,3 @@ r = da.find({'$or': [{'weight': {'$eq': 45}}, {'modality': {'$eq': 'D'}}]})
   'text': 'postcard',
   'weight': 45.0}]
 ```
-
-
-## Query nearest neighbours
