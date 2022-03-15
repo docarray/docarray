@@ -8,13 +8,13 @@ from .... import Document
 
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
-    and ``__delitem__`` for ``DocumentArrayWeaviate``"""
+    and ``__delitem__`` for ``DocumentArrayElastic``"""
 
     def _getitem(self, doc_id: str) -> 'Document':
-        """Helper method for getting item with weaviate as storage
+        """Helper method for getting item with elastic as storage
 
-        :param wid: weaviate id
-        :raises KeyError: raise error when weaviate id does not exist in storage
+        :param doc_id:  id of the document
+        :raises KeyError: raise error when elastic id does not exist in storage
         :return: Document
         """
         try:
@@ -29,7 +29,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """Concrete implementation of base class' ``_get_doc_by_id``
 
         :param _id: the id of the document
-        :return: the retrieved document from weaviate
+        :return: the retrieved document from elastic
         """
         return self._getitem(_id)
 
