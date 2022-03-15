@@ -1,0 +1,78 @@
+import copy
+from typing import Iterable, Dict
+
+from ..base.getsetdel import BaseGetSetDelMixin
+from ..base.helper import Offset2ID
+from .... import Document
+
+
+class GetSetDelMixin(BaseGetSetDelMixin):
+    """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
+    and ``__delitem__`` for ``DocumentArrayWeaviate``"""
+
+    def _getitem(self, doc_id: str) -> 'Document':
+        """Helper method for getting item with weaviate as storage
+
+        :param wid: weaviate id
+        :raises KeyError: raise error when weaviate id does not exist in storage
+        :return: Document
+        """
+        try:
+            result = self._client.get(index=self._elastic_config.index_name, id=doc_id)
+            doc = Document.from_base64(result['_source']['blob'])
+            doc.embedding = result['_source']['embedding']
+            return doc
+        except Exception as ex:
+            raise KeyError(doc_id) from ex
+
+    def _get_doc_by_id(self, _id: str) -> 'Document':
+        """Concrete implementation of base class' ``_get_doc_by_id``
+
+        :param _id: the id of the document
+        :return: the retrieved document from weaviate
+        """
+        return self._getitem(_id)
+
+    def _set_doc_by_id(self, _id: str, value: 'Document'):
+        """Concrete implementation of base class' ``_set_doc_by_id``
+
+        :param _id: the id of doc to update
+        :param value: the document to update to
+        """
+        doc_copy = copy.deepcopy(value)
+        embedding = value.embedding
+        doc_copy.embedding = None
+        request = [
+            {
+                "_op_type": "index",
+                '_id': value.id,
+                '_index': elastic_config.index_name,
+                'embedding': embedding,
+                'blob': doc_copy.to_base64(),
+            }
+        ]
+
+        self._send_requests(request)
+        self._refresh()
+
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document'], mismatch_ids: Dict):
+        """Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end
+
+        :param ids: the ids used for indexing
+        """
+        for _id, doc in zip(ids, docs):
+            self._set_doc_by_id(_id, doc)
+        self._refresh()
+
+    def _del_doc_by_id(self, _id: str):
+        """Concrete implementation of base class' ``_del_doc_by_id``
+
+        :param _id: the id of the document to delete
+        """
+        if self._doc_id_exists(_id, self._client, self._config):
+            self._client.delete(index=self._config.index_name, id=_id)
+        self._refresh()
+
+    def _clear_storage(self):
+        """ Concrete implementation of base class' ``_clear_storage``"""
+        self._client.indices.delete(index=self._config.index_name)
