@@ -99,7 +99,7 @@ def test_non_existing_file_raises_file_not_found_error():
 
 
 @pytest.mark.parametrize('target', [DocumentArray.empty(10), random_docs(10)])
-@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
+@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf', 'dynamic'])
 @pytest.mark.parametrize('to_fn', ['dict', 'json'])
 def test_from_to_safe_list(target, protocol, to_fn):
     da_r = getattr(DocumentArray, f'from_{to_fn}')(

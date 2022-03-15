@@ -135,7 +135,7 @@ def test_with_embedding_no_tensor():
         ({'x': 1}, dict),
     ],
 )
-@pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema'])
+@pytest.mark.parametrize('protocol', ['protobuf', 'jsonschema', 'dynamic'])
 def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
     d = Document(tags={'hello': tag_value})
     dd = d.to_dict(protocol=protocol)['tags']['hello']
@@ -159,7 +159,7 @@ def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
 @pytest.mark.parametrize(
     'blob', [None, b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
 )
-@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf'])
+@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf', 'dynamic'])
 @pytest.mark.parametrize('to_fn', ['dict', 'json'])
 def test_to_from_with_blob(protocol, to_fn, blob):
     d = Document(blob=blob)
