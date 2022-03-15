@@ -31,7 +31,7 @@ services:
 Then
 
 ```bash
-docker compose up
+docker-compose up
 ```
 
 ### Create DocumentArray with Qdrant backend

@@ -20,22 +20,69 @@ class FindMixin:
 
     @overload
     def find(
-        self: 'T', query: 'ArrayType', **kwargs
+        self: 'T',
+        query: Union['Document', 'DocumentArray', 'ArrayType'],
+        metric: Union[
+            str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
+        ] = 'cosine',
+        limit: Optional[Union[int, float]] = 20,
+        metric_name: Optional[str] = None,
+        exclude_self: bool = False,
+        only_id: bool = False,
+        **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
-        ...
+        """Returns approximate nearest neighbors given an input query.
 
-    @overload
-    def find(
-        self: 'T', query: Union['Document', 'DocumentArray'], **kwargs
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+        :param query: the input query to search by
+        :param limit: the maximum number of matches, when not given defaults to 20.
+        :param metric_name: if provided, then match result will be marked with this string.
+        :param metric: the distance metric.
+        :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
+                        considered as matches. This is only applied when the input query is Document or DocumentArray.
+        :param only_id: if set, then returning matches will only contain ``id``
+        :param kwargs: other kwargs.
+
+        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
+        """
         ...
 
     @overload
     def find(self: 'T', query: Dict, **kwargs) -> 'DocumentArray':
-        ...
+        """Find Documents that meet certain query language and return the result as a DocumentArray.
 
-    @overload
-    def find(self: 'T', query: str, **kwargs) -> 'DocumentArray':
+        The query language we provide now is following the
+        [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/) query language. For example::
+
+            >>> docs.find({'text': {'$eq': 'hello'}})
+
+            The above will return a `DocumentArray` in which each document has doc.text == 'hello'. And we also support
+            placeholder format by using the following syntax::
+
+            >>> docs.find({'text': {'$eq': '{tags__name}'}})
+
+            will return a `DocumentArray` in which each document has doc.text == doc.tags['name'].
+
+        Now, only the subset of MongoDB's query operators are supported:
+            - `$eq` - Equal to (number, string)
+            - `$ne` - Not equal to (number, string)
+            - `$gt` - Greater than (number)
+            - `$gte` - Greater than or equal to (number)
+            - `$lt` - Less than (number)
+            - `$lte` - Less than or equal to (number)
+            - `$in` - Included in an array
+            - `$nin` - Not included in an array
+            - `$regex` - Match a specified regular expression
+            - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
+            - `$exists` - Matches documents that have the specified field. And empty string content is also cosidered as not exists.
+
+        And the following boolean logic operators are supported:
+            - `$and` - Join query clauses with a logical AND
+            - `$or` - Join query clauses with a logical OR
+            - `$not` - Inverts the effect of a query expression
+
+        :param query: the query language in a dict object
+        :return: selected Documents in a DocumentArray
+        """
         ...
 
     def find(
@@ -66,16 +113,8 @@ class FindMixin:
 
         from ... import Document, DocumentArray
 
-        if limit is not None:
-            if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
-            else:
-                limit = int(limit)
-
         if isinstance(query, dict):
-            return self._filter(query, limit=limit, only_id=only_id)
-
-        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+            return self._filter(query)
         if isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
@@ -84,6 +123,14 @@ class FindMixin:
             _query = query.embeddings
         else:
             _query = query
+
+        if limit is not None:
+            if limit <= 0:
+                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
+            else:
+                limit = int(limit)
+
+        _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
         _, _ = ndarray.get_array_type(_query)
         n_rows, n_dim = ndarray.get_array_rows(_query)
@@ -168,56 +215,16 @@ class FindMixin:
     def _filter(
         self,
         query: Dict,
-        limit: Optional[int] = None,
-        only_id: bool = False,
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given query.
-        The query language we provide now is following the
-        [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/) query language. For example::
 
-            >>> docs._filter({'text': {'$eq': 'hello'}})
-
-            The above will return a `DocumentArray` in which each document has doc.text == 'hello'. And we also support
-            placeholder format by using the following syntax::
-
-            >>> docs._filter({'text': {'$eq': '{tags__name}'}})
-
-            will return a `DocumentArray` in which each document has doc.text == doc.tags['name'].
-
-        Now, only the subset of MongoDB's query operators are supported:
-            - `$eq` - Equal to (number, string)
-            - `$ne` - Not equal to (number, string)
-            - `$gt` - Greater than (number)
-            - `$gte` - Greater than or equal to (number)
-            - `$lt` - Less than (number)
-            - `$lte` - Less than or equal to (number)
-            - `$in` - Included in an array
-            - `$nin` - Not included in an array
-            - `$regex` - Match a specified regular expression
-            - `$size` - The array/dict field is a specified size. $size does not accept ranges of values.
-            - `$exists` - Matches documents that have the specified field. And empty string content is also cosidered as not exists.
-
-        And the following boolean logic operators are supported:
-            - `$and` - Join query clauses with a logical AND
-            - `$or` - Join query clauses with a logical OR
-            - `$not` - Inverts the effect of a query expression
-
-        :param query: the input query dictionary.
-        :param limit: the maximum number of matches, when not given defaults to 20.
-        :param only_id: if set, then returning documents will only contain ``id``
         :return: a `DocumentArray` containing the `Document` objects for matching with the query.
         """
         from ... import DocumentArray
         from ..queryset import QueryParser
 
-        parser = QueryParser(query)
-
-        result = DocumentArray()
-        limit = len(self) if (limit is None) else limit
-        for d in self:
-            if parser.evaluate(d):
-                result.append(d if not only_id else Document(id=d.id))
-                if len(result) == limit:
-                    break
-
-        return result
+        if query:
+            parser = QueryParser(query)
+            return DocumentArray(d for d in self if parser.evaluate(d))
+        else:
+            return self
