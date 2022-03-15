@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/index/" />
   
-<meta property="og:site_name" content="DocArray 0.9.9 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.10 Documentation" />
   
 <meta property="og:description" content="Document is the basic data type in DocArray. Whether you’re working with text, image, video, audio, 3D meshes or the nested or the combined of them, you can always represent them as Document. A Document object has a predefined data schema as below, each of the attributes can be set/get with the d..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.9 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.10 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Construct" href="construct/" /><link rel="prev" title="What is DocArray?" href="../../get-started/what-is/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Document - DocArray 0.9.9 documentation</title>
+        <title>Document - DocArray 0.9.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.9 documentation</div>
+                <div class="brand">DocArray 0.9.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -238,9 +238,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/serialization/">Serialization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../documentarray/access-elements/">Access Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../documentarray/access-elements/">Access Documents</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/access-attributes/">Access Attributes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/embedding/">Embed via Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../documentarray/find/">Query by Conditions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/matching/">Match Nearest Neighbours</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/evaluation/">Evaluate Matches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/parallelization/">Parallelization</a></li>
@@ -501,109 +502,89 @@
 <h1>Document<a class="headerlink" href="#document" title="Permalink to this headline">#</a></h1>
 <p><a class="reference internal" href="../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> is the basic data type in DocArray. Whether you’re working with text, image, video, audio, 3D meshes or the nested or the combined of them, you can always represent them as Document.</p>
 <p>A Document object has a predefined data schema as below, each of the attributes can be set/get with the dot expression as you would do with any Python object.</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<div class="table-wrapper"><table class="colwidths-auto docutils align-default" id="doc-fields">
 <thead>
-<tr>
-<th>Attribute</th>
-<th>Type</th>
-<th>Description</th>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td>id</td>
-<td>string</td>
-<td>A hexdigest that represents a unique document ID</td>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>string</p></td>
+<td><p>A hexdigest that represents a unique document ID</p></td>
 </tr>
-<tr>
-<td>blob</td>
-<td>bytes</td>
-<td>the raw binary content of this document, which often represents the original document</td>
+<tr class="row-odd"><td><p>blob</p></td>
+<td><p>bytes</p></td>
+<td><p>the raw binary content of this document, which often represents the original document</p></td>
 </tr>
-<tr>
-<td>tensor</td>
-<td><code>ndarray</code>-like</td>
-<td>the ndarray of the image/audio/video document</td>
+<tr class="row-even"><td><p>tensor</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like</p></td>
+<td><p>the ndarray of the image/audio/video document</p></td>
 </tr>
-<tr>
-<td>text</td>
-<td>string</td>
-<td>a text document</td>
+<tr class="row-odd"><td><p>text</p></td>
+<td><p>string</p></td>
+<td><p>a text document</p></td>
 </tr>
-<tr>
-<td>granularity</td>
-<td>int</td>
-<td>the depth of the recursive chunk structure</td>
+<tr class="row-even"><td><p>granularity</p></td>
+<td><p>int</p></td>
+<td><p>the depth of the recursive chunk structure</p></td>
 </tr>
-<tr>
-<td>adjacency</td>
-<td>int</td>
-<td>the width of the recursive match structure</td>
+<tr class="row-odd"><td><p>adjacency</p></td>
+<td><p>int</p></td>
+<td><p>the width of the recursive match structure</p></td>
 </tr>
-<tr>
-<td>parent_id</td>
-<td>string</td>
-<td>the parent id from the previous granularity</td>
+<tr class="row-even"><td><p>parent_id</p></td>
+<td><p>string</p></td>
+<td><p>the parent id from the previous granularity</p></td>
 </tr>
-<tr>
-<td>weight</td>
-<td>float</td>
-<td>The weight of this document</td>
+<tr class="row-odd"><td><p>weight</p></td>
+<td><p>float</p></td>
+<td><p>The weight of this document</p></td>
 </tr>
-<tr>
-<td>uri</td>
-<td>string</td>
-<td>a uri of the document could be: a local file path, a remote url starts with http or https or data URI scheme</td>
+<tr class="row-even"><td><p>uri</p></td>
+<td><p>string</p></td>
+<td><p>a uri of the document could be: a local file path, a remote url starts with http or https or data URI scheme</p></td>
 </tr>
-<tr>
-<td>modality</td>
-<td>string</td>
-<td>modality, an identifier to the modality this document belongs to. In the scope of multi/cross modal search</td>
+<tr class="row-odd"><td><p>modality</p></td>
+<td><p>string</p></td>
+<td><p>modality, an identifier to the modality this document belongs to. In the scope of multi/cross modal search</p></td>
 </tr>
-<tr>
-<td>mime_type</td>
-<td>string</td>
-<td>mime type of this document, for blob content, this is required; for other contents, this can be guessed</td>
+<tr class="row-even"><td><p>mime_type</p></td>
+<td><p>string</p></td>
+<td><p>mime type of this document, for blob content, this is required; for other contents, this can be guessed</p></td>
 </tr>
-<tr>
-<td>offset</td>
-<td>float</td>
-<td>the offset of the doc</td>
+<tr class="row-odd"><td><p>offset</p></td>
+<td><p>float</p></td>
+<td><p>the offset of the doc</p></td>
 </tr>
-<tr>
-<td>location</td>
-<td>float</td>
-<td>the position of the doc, could be start and end index of a string; could be x,y (top, left) coordinate of an image crop; could be timestamp of an audio clip</td>
+<tr class="row-even"><td><p>location</p></td>
+<td><p>float</p></td>
+<td><p>the position of the doc, could be start and end index of a string; could be x,y (top, left) coordinate of an image crop; could be timestamp of an audio clip</p></td>
 </tr>
-<tr>
-<td>chunks</td>
-<td><code>DocumentArray</code></td>
-<td>list of the sub-documents of this document (recursive structure)</td>
+<tr class="row-odd"><td><p>chunks</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></p></td>
+<td><p>list of the sub-documents of this document (recursive structure)</p></td>
 </tr>
-<tr>
-<td>matches</td>
-<td><code>DocumentArray</code></td>
-<td>the matched documents on the same level (recursive structure)</td>
+<tr class="row-even"><td><p>matches</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></p></td>
+<td><p>the matched documents on the same level (recursive structure)</p></td>
 </tr>
-<tr>
-<td>embedding</td>
-<td><code>ndarray</code>-like</td>
-<td>the embedding of this document</td>
+<tr class="row-odd"><td><p>embedding</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like</p></td>
+<td><p>the embedding of this document</p></td>
 </tr>
-<tr>
-<td>tags</td>
-<td>dict</td>
-<td>a structured data value, consisting of field which map to dynamically typed values.</td>
+<tr class="row-even"><td><p>tags</p></td>
+<td><p>dict</p></td>
+<td><p>a structured data value, consisting of field which map to dynamically typed values.</p></td>
 </tr>
-<tr>
-<td>scores</td>
-<td><code>NamedScore</code></td>
-<td>Scores performed on the document, each element corresponds to a metric</td>
+<tr class="row-odd"><td><p>scores</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NamedScore</span></code></p></td>
+<td><p>Scores performed on the document, each element corresponds to a metric</p></td>
 </tr>
-<tr>
-<td>evaluations</td>
-<td><code>NamedScore</code></td>
-<td>Evaluations performed on the document, each element corresponds to a metric</td>
+<tr class="row-even"><td><p>evaluations</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NamedScore</span></code></p></td>
+<td><p>Evaluations performed on the document, each element corresponds to a metric</p></td>
 </tr>
 </tbody>
 </table></div>
@@ -671,7 +652,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 14, 2022.
+                            Last updated on Mar 15, 2022.
                         </div>
                     </div>
                     <div class="right-details">
