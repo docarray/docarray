@@ -20,6 +20,7 @@ from docarray.helper import random_port
 @pytest.mark.parametrize('batch_size', [None, 1, 10])
 def test_post_to_a_flow(show_pbar, conn_config, batch_size):
     from jina import Flow
+
     p = random_port()
     da = DocumentArray.empty(100)
     with Flow(**{**conn_config[0], 'port': p}):
@@ -70,7 +71,7 @@ def test_endpoint():
     )
     t.start()
 
-    time.sleep(1)
+    time.sleep(5)
     N = 100
     da = DocumentArray.empty(N)
     try:
