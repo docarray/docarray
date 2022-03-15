@@ -255,7 +255,7 @@ def test_traverse_attributes():
 
     assert len(mm_docs['@a[attr1-attr3]']) == 10
     for i, doc in enumerate(mm_docs['@a[attr1-attr3]']):
-        if i < 5:
+        if i % 2 == 0:
             assert doc.text == 'text'
         else:
             assert doc.tensor.shape == (10, 10, 3)
@@ -277,6 +277,36 @@ def test_traverse_slice():
         ]
     )
 
-    assert len(mm_docs['@a[attr]:-3']) == 3
-    for i, doc in enumerate(mm_docs['@a[attr]:-3'], start=2):
+    assert len(mm_docs['@r-3:a[attr]']) == 3
+    for i, doc in enumerate(mm_docs['@r-3:a[attr]'], start=2):
         assert doc.text == f'text {i}'
+
+
+def test_traverse_iterable():
+    @dataclass
+    class MMDocument:
+        attr1: List[TextDocument]
+        attr2: List[BlobDocument]
+
+    mm_da = DocumentArray(
+        [
+            Document.from_dataclass(
+                MMDocument(attr1=['text 1', 'text 2', 'text 3'], attr2=[b'1', b'2'])
+            ),
+            Document.from_dataclass(
+                MMDocument(attr1=['text 3', 'text 4'], attr2=[b'1', b'3', b'4'])
+            ),
+        ]
+    )
+
+    assert len(mm_da['@a[attr1]']) == 5
+    assert len(mm_da['@a[attr2]']) == 5
+
+    assert len(mm_da['@a[attr1]:1']) == 2
+    assert len(mm_da['@a[attr1]:1,a[attr2]-2:']) == 6
+
+    for i, text_doc in enumerate(mm_da['@a[attr1]:2'], start=1):
+        assert text_doc.text == f'text {i}'
+
+    for i, blob_doc in enumerate(mm_da['@a[attr2]-2:'], start=1):
+        assert blob_doc.blob == bytes(f'{i}', encoding='utf-8')
