@@ -256,6 +256,27 @@ def test_traverse_attributes():
     assert len(mm_docs['@a[attr1-attr3]']) == 10
     for i, doc in enumerate(mm_docs['@a[attr1-attr3]']):
         if i < 5:
-            assert doc.text == f'text'
+            assert doc.text == 'text'
         else:
             assert doc.tensor.shape == (10, 10, 3)
+
+
+def test_traverse_slice():
+    @dataclass
+    class MMDocument:
+        attr: TextDocument
+
+    mm_docs = DocumentArray(
+        [
+            Document.from_dataclass(
+                MMDocument(
+                    attr=f'text {i}',
+                )
+            )
+            for i in range(5)
+        ]
+    )
+
+    assert len(mm_docs['@a[attr]:-3']) == 3
+    for i, doc in enumerate(mm_docs['@a[attr]:-3'], start=2):
+        assert doc.text == f'text {i}'

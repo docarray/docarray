@@ -173,7 +173,7 @@ class TraverseMixin:
 
 
 def _parse_path_string(p: str) -> Dict[str, str]:
-    remainder_pattern = r'(?P<remainder>[rcm].*)?'
+    remainder_pattern = r'(?P<remainder>[rcma].*)?'
     slice_pattern = r'(?P<slice>[-\d:]+)?'
     attribute_name_pattern = r'[a-zA-Z][a-zA-Z0-9]*'
     attributed_pattern = (
