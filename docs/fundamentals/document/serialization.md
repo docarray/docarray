@@ -43,7 +43,7 @@ print(d_as_json, d)
 <Document ('id', 'mime_type', 'text', 'embedding') at 641032d677b311ecb67a1e008a366d49>
 ```
 
-By default, it uses {ref}`JSON Schema and pydantic model<schema-gen>` for serialization, i.e. `protocol='jsonschema'`. You can switch the method to `protocol='protobuf'`, which leverages Protobuf as the JSON serialization backend.
+By default, it uses {ref}`JSON Schema and pydantic model<schema-gen>` for serialization, i.e. `protocol='jsonschema'`. You can switch the method to `protocol='protobuf'`, which leverages Protobuf as the JSON serialization backend or `protocol='dynamic'` which accepts schemaless Documents.
 
 ```python
 from docarray import Document
@@ -91,6 +91,7 @@ It is easier to eyes. But when building REST API, you do not need to explicitly 
 To find out what extra parameters you can pass to `to_json()`/`to_dict()`, please check out:
 - [`protocol='jsonschema', **kwargs`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
 - [`protocol='protobuf', **kwargs`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
+- `protocol='dynamic': Accepts any json/dict schema and retrieves/puts all extra fields from/to `Document.tags`.
 ```
 
 (doc-in-bytes)=
