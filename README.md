@@ -53,6 +53,7 @@ DocArray consists of two simple concepts:
 - **Document**: a data structure for easily representing nested, unstructured data.
 - **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
 
+Let's see DocArray in action with three examples.
 
 ### A 10-liners text matching
 
@@ -63,7 +64,7 @@ from docarray import Document, DocumentArray
 
 d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
 da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
-da.apply(lambda d: d.embed_feature_hashing())
+da.apply(Document.embed_feature_hashing, backend='process')
 
 q = (Document(text='she smiled too much')
      .embed_feature_hashing()
@@ -82,6 +83,20 @@ print(q.matches[:5, ('text', 'scores__jaccard__value')])
 ```
 
 Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
+
+### External storage backends for out-of-memory data
+
+When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
+
+```python
+da = DocumentArray((Document(text=s.strip()) for s in d.text.split('\n') if s.strip()), storage='sqlite')
+                                                                                        ^^^^^^^^^^^^^^^^
+```
+
+The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
+
+Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
+
 
 ### A complete workflow of visual search 
 

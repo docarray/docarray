@@ -73,13 +73,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __repr__(self):
         return f'<DocumentArray[SQLite] (length={len(self)}) at {id(self)}>'
 
-    def __bool__(self):
-        """To simulate ```l = []; if l: ...```
-
-        :return: returns true if the length of the array is larger than 0
-        """
-        return len(self) > 0
-
     def __eq__(self, other):
         """In sqlite backend, data are considered as identical if configs point to the same database source"""
         return (
