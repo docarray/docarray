@@ -51,6 +51,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1249,4 +1250,28 @@
  - [[```f1287e36```](https://github.com/jina-ai/docarray/commit/f1287e36e1390935da9914b23e816fa39a07669e)] __-__ fix readme (*Han Xiao*)
  - [[```c12c93af```](https://github.com/jina-ai/docarray/commit/c12c93af18b002d6cbdf3a9b95e5316c881f39c6)] __-__ update readme (*Han Xiao*)
  - [[```582c784b```](https://github.com/jina-ai/docarray/commit/582c784bc68b52b973f09e8e5f92e6f2280d6f48)] __-__ __version__: the next version will be 0.9.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-9></a>
+## Release Note (`0.9.9`)
+
+> Release time: 2022-03-14 17:33:29
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```387f4eb4```](https://github.com/jina-ai/docarray/commit/387f4eb437dcd2f5e511089a071389d3f1e23730)] __-__ __array__: make type hint overload more clear (#203) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```4be7b1a2```](https://github.com/jina-ai/docarray/commit/4be7b1a2996f00fe6a3c844da9745afcf506648f)] __-__ change one default question (#198) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```3bd35b9c```](https://github.com/jina-ai/docarray/commit/3bd35b9cda7597fcf2fc7321aa7f1f38150333ba)] __-__ fix type hint (*Han Xiao*)
+ - [[```e8c01e37```](https://github.com/jina-ai/docarray/commit/e8c01e37d0f14cc44cf5257dac6bb62e27e78d80)] __-__ __version__: the next version will be 0.9.9 (*Jina Dev Bot*)
 

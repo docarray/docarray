@@ -1,4 +1,4 @@
-__version__ = '0.9.9'
+__version__ = '0.9.10'
 
 from .document import Document
 from .array import DocumentArray
