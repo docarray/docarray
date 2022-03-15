@@ -52,7 +52,7 @@ class JsonIOMixin:
         if hasattr(file, 'read'):
             file_ctx = nullcontext(file)
         else:
-            file_ctx = open(file, 'w', encoding=encoding)
+            file_ctx = open(file, 'r', encoding=encoding)
 
         with file_ctx as fp:
             return cls.from_json(fp.read(), protocol=protocol, **kwargs)
