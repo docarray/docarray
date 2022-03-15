@@ -17,15 +17,15 @@ Though both `.find()` and `.match()` is about finding nearest neighbours of a gi
 - `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neightbours you should write `one_million_docs.find(query)`;  
 - `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and save the results to A". So with `.match()` you should write `query.match(one_million_docs)`.
 
-##### What is type of the query?
+##### What is the type of the query?
   - query (RHS) in `.find()` can be plain NdArray-like object or a single Document or a DocumentArray.
-  - query (lHS) in `.match()` can be either a Document or a DocumentArray. 
+  - query (LHS) in `.match()` can be either a Document or a DocumentArray. 
 
 ##### What is the return?
   - `.find()` returns a List of DocumentArray, each of which corresponds to one element/row in the query.
   - `.match()` do not return anything. Match results are stored inside right-hand side's `.matches`.
 
-In the example below, we will use `.match()` to describe the feature. But keep in mind, `.find()` should always work by simply switching the right and left-hand sides.
+In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
 
 ## Example
 
