@@ -599,7 +599,64 @@
 <td>None</td>
 </tr>
 </tbody>
-</table></div></section>
+</table></div>
+</section>
+<section id="minimum-example">
+<h2>Minimum Example<a class="headerlink" href="#minimum-example" title="Permalink to this headline">#</a></h2>
+<p>The following example shows how to use DocArray with Weaviate Document Store in order to index and search text
+Documents.</p>
+<p>First, let’s run the create the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instance (make sure a Weaviate server is up and running):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">"weaviate"</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Persisted"</span><span class="p">,</span>
+        <span class="s2">"host"</span><span class="p">:</span> <span class="s2">"localhost"</span><span class="p">,</span>
+        <span class="s2">"port"</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we can index some Documents:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'Persist Documents with Weaviate.'</span><span class="p">),</span>
+    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'And enjoy fast nearest neighbor search.'</span><span class="p">),</span>
+    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'All while using DocArray API.'</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p>Now, we can generate embeddings inside the database using BERT model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">'bert-base-uncased'</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">'bert-base-uncased'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span>
+        <span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span>
+        <span class="n">return_tensors</span><span class="o">=</span><span class="s1">'pt'</span><span class="p">,</span>
+        <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">padding</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can query the database and print the results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'How to persist Documents'</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">),</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Persist Documents with Weaviate.
+</pre></div>
+</div>
+</section>
 </section>
 
             </article>
@@ -680,6 +737,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#minimum-example">Minimum Example</a></li>
 </ul>
 </li>
 </ul>

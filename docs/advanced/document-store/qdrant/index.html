@@ -515,7 +515,7 @@ server. Create <code class="docutils literal notranslate"><span class="pre">dock
 <span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.4'</span><span class="w"></span>
 <span class="nt">services</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.5.1</span><span class="w"></span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"6333:6333"</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span><span class="w"></span>
@@ -595,7 +595,46 @@ instantiate a DocumentArray with Qdrant storage like so:</p>
 <td>64</td>
 </tr>
 </tbody>
-</table></div></section>
+</table></div>
+</section>
+<section id="minimum-example">
+<h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this headline">#</a></h2>
+<p>Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.4'</span><span class="w"></span>
+<span class="nt">services</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.6.0</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"6333:6333"</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span><span class="w"></span>
+<span class="w">      </span><span class="nt">nofile</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">soft</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
+<span class="w">        </span><span class="nt">hard</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">65535</span><span class="w"></span>
+<span class="nn">...</span><span class="w"></span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U docarray<span class="o">[</span>qdrant<span class="o">]</span>
+docker compose up
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">128</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">storage</span><span class="o">=</span><span class="s1">'qdrant'</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">'n_dim'</span><span class="p">:</span> <span class="n">D</span><span class="p">})</span>  <span class="c1"># init</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">D</span><span class="p">),</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray <span class="o">(</span><span class="nv">length</span><span class="o">=</span><span class="m">10</span><span class="o">)</span> at <span class="m">4917906896</span>&gt;
+</pre></div>
+</div>
+</section>
 </section>
 
             </article>
@@ -676,6 +715,7 @@ instantiate a DocumentArray with Qdrant storage like so:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#minimum-example">Minimum example</a></li>
 </ul>
 </li>
 </ul>
