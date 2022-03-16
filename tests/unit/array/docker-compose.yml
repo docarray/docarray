@@ -17,3 +17,16 @@ services:
       nofile:
         soft: 65535
         hard: 65535
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    networks:
+      - elastic
+
+networks:
+  elastic:
+    name: elastic
