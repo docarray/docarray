@@ -219,30 +219,36 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
 
     same_array = False
     if x_type == y_type and x_is_sparse == y_is_sparse:
-        if isinstance(x, list):
-            return x == y
 
-        if x.shape == y.shape:
-            if x_type == 'numpy':
-                # Numpy does not support sparse tensors
-                same_array = (x == y).all()
-            elif x_type == 'torch':
-                if x_is_sparse:
-                    same_array = all((x - y).coalesce().values() == 0)
-                else:
-                    same_array = (x == y).numpy().all()
-            elif x_type == 'scipy':
-                same_array = (x - y).sum() == 0
-            elif x_type == 'tensorflow':
-                if x_is_sparse:
-                    same_array = x == y
-                else:
-                    same_array = (x == y).numpy().all()
-            elif x_type == 'paddle':
-                # Paddle does not support sparse tensor on 11/8/2021
-                # https://github.com/PaddlePaddle/Paddle/issues/36697
+        if x_type == 'numpy':
+            # Numpy does not support sparse tensors
+            import numpy as np
+
+            same_array = np.array_equal(x, y)
+        elif x_type == 'torch':
+            import torch
+
+            if x_is_sparse:
+                # torch.equal NotImplementedError for sparse
+                same_array = all((x - y).coalesce().values() == 0)
+            else:
+                same_array = torch.equal(x, y)
+        elif x_type == 'scipy':
+            # Not implemented in scipy this should work for all types
+            # Note: you can't simply look at nonzero values because they can be in
+            # different positions.
+            same_array = (x - y).sum() == 0
+        elif x_type == 'tensorflow':
+            if x_is_sparse:
+                same_array = x == y
+            else:
+                # Does not have equal implemented, only elementwise, therefore reduce .all is needed
                 same_array = (x == y).numpy().all()
-
+        elif x_type == 'paddle':
+            # Paddle does not support sparse tensor on 11/8/2021
+            # https://github.com/PaddlePaddle/Paddle/issues/36697
+            # Does not have equal implemented, only elementwise, therefore reduce .all is needed
+            same_array = (x == x).numpy().all()
         return same_array
     else:
         return same_array
