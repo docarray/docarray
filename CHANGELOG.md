@@ -54,6 +54,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1328,4 +1329,26 @@
  - [[```a3538ee1```](https://github.com/jina-ai/docarray/commit/a3538ee1ee47ff32cfb09947ac3d12c507004322)] __-__ bump weaviate version (*Han Xiao*)
  - [[```178d4441```](https://github.com/jina-ai/docarray/commit/178d44414f381cdc3fe1e8d5ad00de11187fc662)] __-__ fix typo (*Han Xiao*)
  - [[```ff2e9f13```](https://github.com/jina-ai/docarray/commit/ff2e9f13cac5c3b3bdfeb4126ac356ef71c5d409)] __-__ __version__: the next version will be 0.9.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-12></a>
+## Release Note (`0.9.12`)
+
+> Release time: 2022-03-16 17:14:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```a57d9774```](https://github.com/jina-ai/docarray/commit/a57d97748ddbc588df8e2f69fff2553ed93cc46f)] __-__ __array__: fix save and load json behaviour (#205) (*AlaeddineAbdessalem*)
+ - [[```2b535b2f```](https://github.com/jina-ai/docarray/commit/2b535b2f3e361ec48d50877615b535f6dc361b45)] __-__ __array__: scheme offset (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```397d349b```](https://github.com/jina-ai/docarray/commit/397d349bf3d5184c5beefcc88e51f4dcf810ad7d)] __-__ improve docs on arbitrary json (*Han Xiao*)
+ - [[```74d7bcb1```](https://github.com/jina-ai/docarray/commit/74d7bcb104149826749de6051912133846d574e5)] __-__ improve docs on attribute setter (*Han Xiao*)
+ - [[```a7233417```](https://github.com/jina-ai/docarray/commit/a72334173af45fa142036f579738f1655c098e76)] __-__ __version__: the next version will be 0.9.12 (*Jina Dev Bot*)
 
