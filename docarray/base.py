@@ -32,7 +32,7 @@ class BaseDCType:
             else:
                 self._data = _obj._data
         elif isinstance(_obj, dict):
-            kwargs.update(_obj)
+            kwargs.update(dict(filter(lambda item: item[1], _obj.items())))
 
         if kwargs:
             try:
