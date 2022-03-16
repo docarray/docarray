@@ -248,7 +248,7 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
             # Paddle does not support sparse tensor on 11/8/2021
             # https://github.com/PaddlePaddle/Paddle/issues/36697
             # Does not have equal implemented, only elementwise, therefore reduce .all is needed
-            same_array = (x == x).numpy().all()
+            same_array = (x == y).numpy().all()
         return same_array
     else:
         return same_array
