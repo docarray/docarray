@@ -5,7 +5,7 @@ from .... import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
-    """Implement sequence-like methods for DocumentArray with weaviate as storage"""
+    """Implement sequence-like methods for DocumentArray with Elastic as storage"""
 
     def __eq__(self, other):
         """Compare this object to the other, returns True if and only if other
@@ -22,9 +22,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         )
 
     def __len__(self):
-        """Return the length of :class:`DocumentArray` that uses weaviate as storage
+        """Return the length of :class:`DocumentArray` that uses Elastic as storage
 
-        :return: the length of this :class:`DocumentArrayWeaviate` object
+        :return: the length of this :class:`DocumentArrayElastic` object
         """
         cls_data = (
             self._client.query.aggregate(self._class_name)
@@ -41,7 +41,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         return cls_data[0]['meta']['count']
 
     def __contains__(self, x: Union[str, 'Document']):
-        """Check if ``x`` is contained in this :class:`DocumentArray` with weaviate storage
+        """Check if ``x`` is contained in this :class:`DocumentArray` with Elastic storage
 
         :param x: the id of the document to check or the document object itself
         :return: True if ``x`` is contained in self
@@ -54,7 +54,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             return False
 
     def __del__(self):
-        """Delete this :class:`DocumentArrayWeaviate` object"""
+        """Delete this :class:`DocumentArrayElastic` object"""
         super().__del__()
         if (
             not self._persist
@@ -65,7 +65,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         _REGISTRY[self.__class__.__name__][self._class_name].remove(self)
 
     def __repr__(self):
-        """Return the string representation of :class:`DocumentArrayWeaviate` object
+        """Return the string representation of :class:`DocumentArrayElastic` object
         :return: string representation of this object
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'

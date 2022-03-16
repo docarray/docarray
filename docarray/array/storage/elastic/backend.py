@@ -118,7 +118,7 @@ class BackendMixin(BaseBackendMixin):
         if self._client.indices.exists(index=self._index_name_offset2id):
             requests = [
                 {
-                    "_op_type": "index",
+                    '_op_type': 'index',
                     '_id': offset_,  # note offset goes here because it's what we want to get by
                     '_index': self._index_name_offset2id,
                     'blob': f'{id_}',
