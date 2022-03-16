@@ -49,7 +49,7 @@ class PostMixin:
         _tls = False
 
         if _scheme in ('grpcs', 'https', 'wss'):
-            _scheme = _scheme[:-2]
+            _scheme = _scheme[:-1]
             _tls = True
 
         if _scheme == 'ws':
