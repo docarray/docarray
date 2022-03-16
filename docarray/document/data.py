@@ -137,8 +137,8 @@ class DocumentData:
             if hasattr(self, f'_{key}_eq'):
 
                 if hasattr(DocumentData, f'_{key}_eq'):
-                    result = getattr(self, key) == getattr(other, key)
-                    if result == False:
+                    are_equal = getattr(self, key) == getattr(other, key)
+                    if are_equal == False:
                         return False
             else:
                 if getattr(self, key) != getattr(other, key):
