@@ -159,8 +159,16 @@ def test_tags_int_float_str_bool(tag_type, tag_value, protocol):
 @pytest.mark.parametrize(
     'blob', [None, b'123', bytes(Document()), bytes(bytearray(os.urandom(512 * 4)))]
 )
-@pytest.mark.parametrize('protocol', ['jsonschema', 'protobuf', 'dynamic'])
-@pytest.mark.parametrize('to_fn', ['dict', 'json'])
+@pytest.mark.parametrize(
+    'to_fn,protocol',
+    [
+        ('dict', 'jsonschema'),
+        ('json', 'jsonschema'),
+        ('dict', 'protobuf'),
+        ('json', 'protobuf'),
+        ('dict', 'dynamic'),
+    ],
+)
 def test_to_from_with_blob(protocol, to_fn, blob):
     d = Document(blob=blob)
     r_d = getattr(Document, f'from_{to_fn}')(
