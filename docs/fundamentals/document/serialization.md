@@ -45,6 +45,8 @@ print(d_as_json, d)
 
 By default, it uses {ref}`JSON Schema and pydantic model<schema-gen>` for serialization, i.e. `protocol='jsonschema'`. You can switch the method to `protocol='protobuf'`, which leverages Protobuf as the JSON serialization backend.
 
+To load an arbitrary JSON file, please set `protocol=None`. But as it is "arbitrary", you should not expect it can be succesfully loaded. DocArray tries its best reasonable effort by first load this JSON into `dict` and then load it via `Document(dict)`.
+
 ```python
 from docarray import Document
 
@@ -91,7 +93,6 @@ It is easier to eyes. But when building REST API, you do not need to explicitly 
 To find out what extra parameters you can pass to `to_json()`/`to_dict()`, please check out:
 - [`protocol='jsonschema', **kwargs`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
 - [`protocol='protobuf', **kwargs`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
-- `protocol='dynamic': Used to load any json/dict schema and puts all fields to `Document.tags`.
 ```
 
 (doc-in-bytes)=
