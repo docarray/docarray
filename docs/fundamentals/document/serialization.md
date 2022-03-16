@@ -45,7 +45,6 @@ print(d_as_json, d)
 
 By default, it uses {ref}`JSON Schema and pydantic model<schema-gen>` for serialization, i.e. `protocol='jsonschema'`. You can switch the method to `protocol='protobuf'`, which leverages Protobuf as the JSON serialization backend.
 
-To load an arbitrary JSON file, please set `protocol=None`. But as it is "arbitrary", you should not expect it can be succesfully loaded. DocArray tries its best reasonable effort by first load this JSON into `dict` and then load it via `Document(dict)`.
 
 ```python
 from docarray import Document
@@ -94,6 +93,22 @@ To find out what extra parameters you can pass to `to_json()`/`to_dict()`, pleas
 - [`protocol='jsonschema', **kwargs`](https://pydantic-docs.helpmanual.io/usage/exporting_models/#modeljson) 
 - [`protocol='protobuf', **kwargs`](https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson)
 ```
+
+
+(arbitrary-json)=
+
+### From/to arbitrary JSON
+
+Arbitrary JSON is unschema-ed JSON. It often comes from a handcrafted JSON, or an export file from other libraries. Its schema is unknown to DocArray, so by principle we can not load it.
+
+But load it, we do. To load an arbitrary JSON file set `protocol=None`. 
+
+As an _arbitrary_ JSON, you should not expect it always works smoothly. DocArray will try its best reasonable effort to parse its fields: by first loading the JSON into a `dict` object; and then building a Document via `Document(dict)`; when encountering unknown attributes it follows the behavior {ref}`described here<unk-attribute>`.
+
+Rule of thumb, if you only work inside DocArray's ecosystem, please always prefer schema-ed JSON (`.to_json(protocol='jsonschema')`, or `.to_json(protocol='protobuf')`) over unschema-ed JSON. If you are exporting DocArray's JSON to other ecosystems, also prefer schema-ed JSON. Your engineer friends will appreciate it as it is easier for integration. In fact, DocArray does **not** unschema-ed JSON export, and your engineer friends will never be upset.
+
+Read more about {ref}`schema-gen` support in DocArray.
+
 
 (doc-in-bytes)=
 ## From/to bytes
