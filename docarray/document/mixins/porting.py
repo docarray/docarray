@@ -19,7 +19,7 @@ class PortingMixin:
         """Convert a dict object into a Document.
 
         :param obj: a Python dict object
-        :param protocol: `jsonschema`, `protobuf` or `dynamic`
+        :param protocol: `jsonschema` or `protobuf`
         :param kwargs: extra key-value args pass to pydantic and protobuf parser.
         :return: the parsed Document object
         """
@@ -34,10 +34,8 @@ class PortingMixin:
             pb_msg = DocumentProto()
             json_format.ParseDict(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
-        elif protocol == 'dynamic':
-            return cls(obj)
         else:
-            raise ValueError(f'protocol=`{protocol}` is not supported')
+            return cls(obj)
 
     @classmethod
     def from_json(
@@ -49,7 +47,7 @@ class PortingMixin:
         """Convert a JSON string into a Document.
 
         :param obj: a valid JSON string
-        :param protocol: `jsonschema`, `protobuf` or `dynamic`
+        :param protocol: `jsonschema` or `protobuf`
         :param kwargs: extra key-value args pass to pydantic and protobuf parser.
         :return: the parsed Document object
         """
@@ -64,10 +62,8 @@ class PortingMixin:
             pb_msg = DocumentProto()
             json_format.Parse(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
-        elif protocol == 'dynamic':
-            return cls.from_dict(json.loads(obj), protocol=protocol)
         else:
-            raise ValueError(f'protocol=`{protocol}` is not supported')
+            return cls.from_dict(json.loads(obj), protocol=protocol)
 
     def to_dict(self, protocol: str = 'jsonschema', **kwargs) -> Dict[str, Any]:
         """Convert itself into a Python dict object.

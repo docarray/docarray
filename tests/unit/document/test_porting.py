@@ -39,7 +39,7 @@ def test_schemaless(to_fn, preproc):
             'attr7': 1,
         },
     }
-    doc = getattr(Document, f'from_{to_fn}')(preproc(input), protocol='dynamic')
+    doc = getattr(Document, f'from_{to_fn}')(preproc(input), protocol=None)
     assert doc.tags['attr1'] == 123
     assert doc.tags['attr2'] == 'abc'
     assert doc.tags['attr3'] == [1, 2, 3]

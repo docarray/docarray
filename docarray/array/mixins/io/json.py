@@ -44,7 +44,7 @@ class JsonIOMixin:
         """Load array elements from a JSON file.
 
         :param file: File or filename or a JSON string to which the data is saved.
-        :param protocol: `jsonschema`, `protobuf` or `dynamic`
+        :param protocol: `jsonschema` or `protobuf`
         :param encoding: encoding used to load data from a JSON file. By default, ``utf-8`` is used.
 
         :return: a DocumentArrayLike object
