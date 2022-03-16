@@ -530,6 +530,7 @@ def get_ndarrays():
     a = np.random.random([10, 3])
     a[a > 0.5] = 0
     return [
+        a.tolist(),
         a,
         torch.tensor(a),
         tf.constant(a),

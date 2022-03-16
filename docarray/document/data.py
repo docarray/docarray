@@ -132,13 +132,14 @@ class DocumentData:
     def __eq__(self, other):
         for key in self._non_empty_fields:
 
-            if key == '_reference_doc':
-                continue
             if hasattr(self, f'_{key}_eq'):
 
                 if hasattr(DocumentData, f'_{key}_eq'):
                     are_equal = getattr(DocumentData, f'_{key}_eq')(
                         getattr(self, key), getattr(other, key)
+                    )
+                    print(
+                        f'are_equal( {getattr(self, key)}, { getattr(other, key)}) ---> {are_equal}'
                     )
                     if are_equal == False:
                         return False

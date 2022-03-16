@@ -220,6 +220,9 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
     same_array = False
     if x_type == y_type and x_is_sparse == y_is_sparse:
 
+        if x_type == 'python':
+            same_array = x == y
+
         if x_type == 'numpy':
             # Numpy does not support sparse tensors
             import numpy as np
