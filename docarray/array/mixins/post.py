@@ -18,7 +18,7 @@ class PostMixin:
 
         :param host: a host string. Can be one of the following:
             - `grpc://192.168.0.123:8080/endpoint`
-            - `websocket://192.168.0.123:8080/endpoint`
+            - `ws://192.168.0.123:8080/endpoint`
             - `http://192.168.0.123:8080/endpoint`
             - `jinahub://Hello/endpoint`
             - `jinahub+docker://Hello/endpoint`
