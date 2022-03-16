@@ -51,11 +51,15 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
                     f'The operator {key} is not supported yet, please double check the given filters!'
                 )
             else:
-                items = list(value.items())
-                if len(items) == 0:
-                    raise ValueError(f'The query is illegal: {data}')
+                if not value or not isinstance(value, dict):
+                    raise ValueError(
+                        '''Not a valid query. It should follow the format:
+                    { <field1>: { <operator1>: <value1> }, ... } 
+                    '''
+                    )
 
-                elif len(items) == 1:
+                items = list(value.items())
+                if len(items) == 1:
                     op, val = items[0]
                     if op in LOGICAL_OPERATORS:
                         if op == '$not':

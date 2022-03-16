@@ -24,7 +24,7 @@ services:
       - '8080'
       - --scheme
       - http
-    image: semitechnologies/weaviate:1.10.0
+    image: semitechnologies/weaviate:1.11.0
     ports:
       - "8080:8080"
     restart: on-failure:0
@@ -81,3 +81,69 @@ The following configs can be set:
 | `protocol`         | protocol to be used. Can be 'http' or 'https'                                          | 'http'                      |
 | `name`             | Weaviate class name; the class name of Weaviate object to presesent this DocumentArray | None                        |
 | `serialize_config` | [Serialization config of each Document](../../fundamentals/document/serialization.md)  | None                        |
+
+## Minimum Example
+
+The following example shows how to use DocArray with Weaviate Document Store in order to index and search text 
+Documents.
+
+First, let's run the create the `DocumentArray` instance (make sure a Weaviate server is up and running):
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray(
+    storage="weaviate",
+    config={
+        "name": "Persisted",
+        "host": "localhost",
+        "port": 8080}
+)
+```
+
+Then, we can index some Documents:
+
+```python
+from docarray import Document
+
+da.extend([
+    Document(text='Persist Documents with Weaviate.'),
+    Document(text='And enjoy fast nearest neighbor search.'),
+    Document(text='All while using DocArray API.'),
+])
+```
+
+Now, we can generate embeddings inside the database using BERT model:
+
+```python
+from transformers import AutoModel, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+model = AutoModel.from_pretrained('bert-base-uncased')
+
+def collate_fn(da):
+    return tokenizer(
+        da.texts,
+        return_tensors='pt',
+        truncation=True,
+        padding=True
+    )
+
+da.embed(model, collate_fn=collate_fn)
+```
+
+
+Finally, we can query the database and print the results:
+
+```python
+results = da.find(
+    DocumentArray([Document(text='How to persist Documents')]).embed(model, collate_fn=collate_fn),
+    limit=1
+)
+
+print(results[0].text)
+```
+
+```text
+Persist Documents with Weaviate.
+```

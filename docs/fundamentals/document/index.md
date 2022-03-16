@@ -4,6 +4,7 @@
 
 A Document object has a predefined data schema as below, each of the attributes can be set/get with the dot expression as you would do with any Python object.
 
+(doc-fields)=
 | Attribute   | Type            | Description                                                                                                                                                  |
 |-------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | id          | string          | A hexdigest that represents a unique document ID                                                                                                             |
