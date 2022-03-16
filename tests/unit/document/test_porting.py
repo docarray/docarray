@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from docarray import Document, DocumentArray
@@ -23,6 +25,30 @@ def test_dict_json(target, protocol, to_fn):
             getattr(d, f'to_{to_fn}')(protocol=protocol), protocol=protocol
         )
         assert d == d_r
+
+
+@pytest.mark.parametrize('to_fn,preproc', [('dict', dict), ('json', json.dumps)])
+def test_schemaless(to_fn, preproc):
+    input = {
+        'attr1': 123,
+        'attr2': 'abc',
+        'attr3': [1, 2, 3],
+        'attr4': ['a', 'b', 'c'],
+        'attr5': {
+            'attr6': 'a',
+            'attr7': 1,
+        },
+    }
+    doc = getattr(Document, f'from_{to_fn}')(preproc(input), protocol='dynamic')
+    assert doc.tags['attr1'] == 123
+    assert doc.tags['attr2'] == 'abc'
+    assert doc.tags['attr3'] == [1, 2, 3]
+    assert doc.tags['attr4'] == ['a', 'b', 'c']
+
+    assert doc.tags['attr5'] == {
+        'attr6': 'a',
+        'attr7': 1,
+    }
 
 
 @pytest.mark.parametrize('protocol', ['protobuf', 'pickle'])
