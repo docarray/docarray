@@ -53,6 +53,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1300,4 +1301,31 @@
 
  - [[```6427f42c```](https://github.com/jina-ai/docarray/commit/6427f42c6f51ec53c0f476e04fc33ac7d96dbbaa)] __-__ add learning bootcamp call to action (#202) (*Shubham Saboo*)
  - [[```c1c99e0f```](https://github.com/jina-ai/docarray/commit/c1c99e0fadcf7cbe1e1c3c1ff7847d2ef7715982)] __-__ __version__: the next version will be 0.9.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-11></a>
+## Release Note (`0.9.11`)
+
+> Release time: 2022-03-16 11:44:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```7d5c3ade```](https://github.com/jina-ai/docarray/commit/7d5c3ade173ce1f8a7898bd71c3105e16f034fc7)] __-__ ws scheme (#211) (*Han Xiao*)
+ - [[```3380b3be```](https://github.com/jina-ai/docarray/commit/3380b3be1ae5317202c5f8d9c23c813f2eb2fd70)] __-__ ws scheme (#210) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```62bc8bee```](https://github.com/jina-ai/docarray/commit/62bc8bee01828a5d19e5a1c59ea2d823f219a964)] __-__ add weaviate minimum working example (#206) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```db651675```](https://github.com/jina-ai/docarray/commit/db651675184b799c62d60353820769992413450e)] __-__ add mwu to qdrant (*Han Xiao*)
+ - [[```a3538ee1```](https://github.com/jina-ai/docarray/commit/a3538ee1ee47ff32cfb09947ac3d12c507004322)] __-__ bump weaviate version (*Han Xiao*)
+ - [[```178d4441```](https://github.com/jina-ai/docarray/commit/178d44414f381cdc3fe1e8d5ad00de11187fc662)] __-__ fix typo (*Han Xiao*)
+ - [[```ff2e9f13```](https://github.com/jina-ai/docarray/commit/ff2e9f13cac5c3b3bdfeb4126ac356ef71c5d409)] __-__ __version__: the next version will be 0.9.11 (*Jina Dev Bot*)
 
