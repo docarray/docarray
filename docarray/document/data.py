@@ -130,7 +130,8 @@ class DocumentData:
         DocumentData._embedding_eq(array1, array2)
 
     def __eq__(self, other):
-        for key in self.__dataclass_fields__.keys():
+        for key in self._non_empty_fields:
+
             if key == '_reference_doc':
                 continue
             if hasattr(self, f'_{key}_eq'):
