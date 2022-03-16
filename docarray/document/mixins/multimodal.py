@@ -80,27 +80,27 @@ class MultiModalMixin:
 
         # TODO: may have to modify this?
         root.tags = tags
-        root.metadata['multi_modal_schema'] = multi_modal_schema
+        root._metadata['multi_modal_schema'] = multi_modal_schema
 
         return root
 
     def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
         from docarray import DocumentArray
 
-        if 'multi_modal_schema' not in self.metadata:
+        if 'multi_modal_schema' not in self._metadata:
             raise ValueError(
                 'the Document does not correspond to a Multi Modal Document'
             )
 
-        if attribute not in self.metadata['multi_modal_schema']:
+        if attribute not in self._metadata['multi_modal_schema']:
             raise ValueError(
                 f'the Document schema does not contain attribute {attribute}'
             )
 
-        attribute_type = self.metadata['multi_modal_schema'][attribute][
+        attribute_type = self._metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self.metadata['multi_modal_schema'][attribute].get('position')
+        position = self._metadata['multi_modal_schema'][attribute].get('position')
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
             return DocumentArray([self.chunks[position]])
