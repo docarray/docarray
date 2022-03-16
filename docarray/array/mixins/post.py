@@ -45,6 +45,8 @@ class PostMixin:
         )
         batch_size = batch_size or len(self)
 
+        _tls = r.scheme in ('grpcs', 'https', 'wss')
+
         if r.scheme.startswith('jinahub'):
             from jina import Flow
 
@@ -63,7 +65,10 @@ class PostMixin:
 
             from jina import Client
 
-            c = Client(host=r.hostname, port=_port, protocol=r.scheme)
+            if r.scheme.startswith('ws'):
+                r.scheme = 'websocket'  # temp patch for the core
+
+            c = Client(host=r.hostname, port=_port, protocol=r.scheme, https=_tls)
             return c.post(
                 _on,
                 inputs=self,
