@@ -12,7 +12,7 @@ from docarray.helper import random_port
     [
         (dict(protocol='grpc'), 'grpc://127.0.0.1:$port/'),
         (dict(protocol='grpc'), 'grpc://127.0.0.1:$port'),
-        (dict(protocol='websocket'), 'websocket://127.0.0.1:$port'),
+        (dict(protocol='websocket'), 'ws://127.0.0.1:$port'),
         # (dict(protocol='http'), 'http://127.0.0.1:$port'),  this somehow does not work on GH workflow
     ],
 )
