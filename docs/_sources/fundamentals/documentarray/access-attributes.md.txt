@@ -87,7 +87,15 @@ da.summary()
   mime_type   ('str',)          2                False            
 ```
 
-We can see `mime_type` are set. One can also select multiple attributes in one shot:
+We can see `mime_type` are set.
+
+If you want to set an attribute of all Documents to the same value without looping:
+
+```python
+da[:, 'mime_type'] = 'hello'
+```
+
+One can also select multiple attributes in one-shot:
 
 ```python
 da[:, ['mime_type', 'id']]

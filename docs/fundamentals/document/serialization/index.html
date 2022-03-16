@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.9.11 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.14 Documentation" />
   
 <meta property="og:description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. From/to JSON: You can serialize a Document..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.11 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.14 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../attribute/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Serialization - DocArray 0.9.11 documentation</title>
+        <title>Serialization - DocArray 0.9.14 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.9.11 documentation</div>
+                <div class="brand">DocArray 0.9.14 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -579,6 +579,14 @@
 <li><p><a class="reference external" href="https://googleapis.dev/python/protobuf/latest/google/protobuf/json_format.html#google.protobuf.json_format.MessageToJson"><code class="docutils literal notranslate"><span class="pre">protocol='protobuf',</span> <span class="pre">**kwargs</span></code></a></p></li>
 </ul>
 </div>
+<section id="from-to-arbitrary-json">
+<span id="arbitrary-json"></span><h3>From/to arbitrary JSON<a class="headerlink" href="#from-to-arbitrary-json" title="Permalink to this headline">#</a></h3>
+<p>Arbitrary JSON is unschema-ed JSON. It often comes from a handcrafted JSON, or an export file from other libraries. Its schema is unknown to DocArray, so by principle we can not load it.</p>
+<p>But load it, we do. To load an arbitrary JSON file set <code class="docutils literal notranslate"><span class="pre">protocol=None</span></code>.</p>
+<p>As an <em>arbitrary</em> JSON, you should not expect it always works smoothly. DocArray will try its best reasonable effort to parse its fields: by first loading the JSON into a <code class="docutils literal notranslate"><span class="pre">dict</span></code> object; and then building a Document via <code class="docutils literal notranslate"><span class="pre">Document(dict)</span></code>; when encountering unknown attributes it follows the behavior <a class="reference internal" href="../construct/#unk-attribute"><span class="std std-ref">described here</span></a>.</p>
+<p>Rule of thumb, if you only work inside DocArray’s ecosystem, please always prefer schema-ed JSON (<code class="docutils literal notranslate"><span class="pre">.to_json(protocol='jsonschema')</span></code>, or <code class="docutils literal notranslate"><span class="pre">.to_json(protocol='protobuf')</span></code>) over unschema-ed JSON. If you are exporting DocArray’s JSON to other ecosystems, also prefer schema-ed JSON. Your engineer friends will appreciate it as it is easier for integration. In fact, DocArray does <strong>not</strong> unschema-ed JSON export, and your engineer friends will never be upset.</p>
+<p>Read more about <a class="reference internal" href="../../fastapi-support/#schema-gen"><span class="std std-ref">JSON Schema</span></a> support in DocArray.</p>
+</section>
 </section>
 <section id="from-to-bytes">
 <span id="doc-in-bytes"></span><h2>From/to bytes<a class="headerlink" href="#from-to-bytes" title="Permalink to this headline">#</a></h2>
@@ -780,7 +788,10 @@ mime_type: "image/jpeg"
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Serialization</a><ul>
-<li><a class="reference internal" href="#from-to-json">From/to JSON</a></li>
+<li><a class="reference internal" href="#from-to-json">From/to JSON</a><ul>
+<li><a class="reference internal" href="#from-to-arbitrary-json">From/to arbitrary JSON</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#from-to-bytes">From/to bytes</a></li>
 <li><a class="reference internal" href="#from-to-base64">From/to base64</a></li>
 <li><a class="reference internal" href="#from-to-dict">From/to dict</a></li>
