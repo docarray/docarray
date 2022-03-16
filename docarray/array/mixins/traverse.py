@@ -177,7 +177,7 @@ def _parse_path_string(p: str) -> Dict[str, str]:
     slice_pattern = r'(?P<slice>[-\d:]+)?'
     attribute_name_pattern = r'[a-zA-Z][a-zA-Z0-9]*'
     attributed_pattern = (
-        rf'a\[(?P<attributes>{attribute_name_pattern}(-{attribute_name_pattern})*)\]'
+        rf'a\[(?P<attributes>{attribute_name_pattern}(,{attribute_name_pattern})*)\]'
     )
     this_pattern = rf'(?P<this>r|c|m|{attributed_pattern})'
     pattern = rf'^{this_pattern}{slice_pattern}{remainder_pattern}$'
