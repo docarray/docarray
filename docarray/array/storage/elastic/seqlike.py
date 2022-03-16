@@ -26,19 +26,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :return: the length of this :class:`DocumentArrayElastic` object
         """
-        cls_data = (
-            self._client.query.aggregate(self._class_name)
-            .with_meta_count()
-            .do()
-            .get('data', {})
-            .get('Aggregate', {})
-            .get(self._class_name, [])
-        )
-
-        if not cls_data:
-            return 0
-
-        return cls_data[0]['meta']['count']
+        return self._client.count(index=self._elastic_config.index_name)["count"]
 
     def __contains__(self, x: Union[str, 'Document']):
         """Check if ``x`` is contained in this :class:`DocumentArray` with Elastic storage
