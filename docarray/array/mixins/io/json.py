@@ -22,7 +22,7 @@ class JsonIOMixin:
         Comparing to :meth:`save_binary`, it is human-readable but slower to save/load and the file size larger.
 
         :param file: File or filename to which the data is saved.
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param encoding: encoding used to save data into a JSON file. By default, ``utf-8`` is used.
         """
         if hasattr(file, 'write'):
@@ -44,7 +44,7 @@ class JsonIOMixin:
         """Load array elements from a JSON file.
 
         :param file: File or filename or a JSON string to which the data is saved.
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :param encoding: encoding used to load data from a JSON file. By default, ``utf-8`` is used.
 
         :return: a DocumentArrayLike object
@@ -90,7 +90,7 @@ class JsonIOMixin:
     def to_json(self, protocol: str = 'jsonschema', **kwargs) -> str:
         """Convert the object into a JSON string. Can be loaded via :meth:`.load_json`.
 
-        :param protocol: `jsonschema` or `protobuf`
+        :param protocol: `jsonschema`, `protobuf` or `dynamic`
         :return: a Python list
         """
         return json.dumps(self.to_list(protocol=protocol, **kwargs))
