@@ -6,7 +6,7 @@ One can use [Weaviate](https://www.semi.technology) as the document store for Do
 This feature requires `weaviate-client`. You can install it via `pip install "docarray[full]".` 
 ````
 
-A video tutorial guides you to build a simple image search using Weaviate and Docarray.
+Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray.
 
 <center>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/rBKvoIGihnY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
