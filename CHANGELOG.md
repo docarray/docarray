@@ -56,6 +56,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1367,4 +1368,25 @@
 ### 🍹 Other Improvements
 
  - [[```37287c8e```](https://github.com/jina-ai/docarray/commit/37287c8e621d5c48347cd684954b5b7bf67b0fed)] __-__ __version__: the next version will be 0.9.13 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-14></a>
+## Release Note (`0.9.14`)
+
+> Release time: 2022-03-17 10:09:54
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  felix-wang,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```e6a078d6```](https://github.com/jina-ai/docarray/commit/e6a078d6f28677a4377d815411622f98844ba940)] __-__ __document__: allow eq to include ndarray comparison (*David Buchaca Prats*)
+ - [[```1e9e945e```](https://github.com/jina-ai/docarray/commit/1e9e945e21662ad7bce3b46822f32a2a95dc0a65)] __-__ use remote_load on http uri (#212) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```44b622a2```](https://github.com/jina-ai/docarray/commit/44b622a21033b4d7668e3e0a507b37b8923ba289)] __-__ add laura video to weaviate docs (*Han Xiao*)
+ - [[```08568a9f```](https://github.com/jina-ai/docarray/commit/08568a9fef3e97a386e0ef47331521282cba5c6a)] __-__ __version__: the next version will be 0.9.14 (*Jina Dev Bot*)
 
