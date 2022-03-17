@@ -18,7 +18,7 @@ server. Create `docker-compose.yml` as follows:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.5.1
+    image: qdrant/qdrant:v0.6.0
     ports:
       - "6333:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
@@ -74,3 +74,47 @@ The following configs can be set:
 | `port`               | [port of the Qdrant server                                                      | 6333                                 |
 | `distance`           | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean' | 'cosine'                             |
 | `scroll_batch_size`  | batch size used when scrolling over the storage                                 | 64                                   |
+
+## Minimum example
+
+Create `docker-compose.yml`:
+
+```yaml
+---
+version: '3.4'
+services:
+  qdrant:
+    image: qdrant/qdrant:v0.6.0
+    ports:
+      - "6333:6333"
+    ulimits: # Only required for tests, as there are a lot of collections created
+      nofile:
+        soft: 65535
+        hard: 65535
+...
+```
+
+```bash
+pip install -U docarray[qdrant]
+docker compose up
+```
+
+
+```python
+import numpy as np
+
+from docarray import DocumentArray
+
+N, D = 100, 128
+
+da = DocumentArray.empty(N, storage='qdrant', config={'n_dim': D})  # init
+
+da.embeddings = np.random.random([N, D])
+
+print(da.find(np.random.random(D), limit=10))
+```
+
+
+```bash
+<DocumentArray (length=10) at 4917906896>
+```

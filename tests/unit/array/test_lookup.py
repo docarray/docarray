@@ -11,7 +11,7 @@ def doc():
         tags={
             'x': 0.1,
             'y': 1.5,
-            'z': 0,
+            'z': 1,
             'name': 'test',
             'bar': '',
             'labels': ['a', 'b', 'test'],

@@ -18,7 +18,7 @@ class PostMixin:
 
         :param host: a host string. Can be one of the following:
             - `grpc://192.168.0.123:8080/endpoint`
-            - `websocket://192.168.0.123:8080/endpoint`
+            - `ws://192.168.0.123:8080/endpoint`
             - `http://192.168.0.123:8080/endpoint`
             - `jinahub://Hello/endpoint`
             - `jinahub+docker://Hello/endpoint`
@@ -26,6 +26,7 @@ class PostMixin:
 
         :param show_progress: if to show a progressbar
         :param batch_size: number of Document on each request
+        :param parameters: parameters to send in the request
         :return: the new DocumentArray returned from remote
         """
 
@@ -44,7 +45,17 @@ class PostMixin:
         )
         batch_size = batch_size or len(self)
 
-        if r.scheme.startswith('jinahub'):
+        _scheme = r.scheme
+        _tls = False
+
+        if _scheme in ('grpcs', 'https', 'wss'):
+            _scheme = _scheme[:-1]
+            _tls = True
+
+        if _scheme == 'ws':
+            _scheme = 'websocket'  # temp fix for the core
+
+        if _scheme.startswith('jinahub'):
             from jina import Flow
 
             f = Flow(quiet=True, prefetch=1).add(uses=standardized_host)
@@ -56,13 +67,13 @@ class PostMixin:
                     request_size=batch_size,
                     parameters=parameters,
                 )
-        elif r.scheme in ('grpc', 'http', 'websocket'):
+        elif _scheme in ('grpc', 'http', 'ws', 'websocket'):
             if _port is None:
                 raise ValueError(f'can not determine port from {host}')
 
             from jina import Client
 
-            c = Client(host=r.hostname, port=_port, protocol=r.scheme)
+            c = Client(host=r.hostname, port=_port, protocol=_scheme, https=_tls)
             return c.post(
                 _on,
                 inputs=self,

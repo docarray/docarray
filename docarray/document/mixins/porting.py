@@ -1,5 +1,6 @@
 import base64
 import dataclasses
+import json
 import pickle
 import warnings
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
@@ -34,7 +35,7 @@ class PortingMixin:
             json_format.ParseDict(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
         else:
-            raise ValueError(f'protocol=`{protocol}` is not supported')
+            return cls(obj)
 
     @classmethod
     def from_json(
@@ -62,7 +63,7 @@ class PortingMixin:
             json_format.Parse(obj, pb_msg, **kwargs)
             return cls.from_protobuf(pb_msg)
         else:
-            raise ValueError(f'protocol=`{protocol}` is not supported')
+            return cls.from_dict(json.loads(obj), protocol=protocol)
 
     def to_dict(self, protocol: str = 'jsonschema', **kwargs) -> Dict[str, Any]:
         """Convert itself into a Python dict object.
@@ -81,11 +82,7 @@ class PortingMixin:
                 **kwargs,
             )
         else:
-            warnings.warn(
-                f'protocol=`{protocol}` is not supported, '
-                f'the result dict is a Python dynamic typing dict without any promise on the schema.'
-            )
-            return dataclasses.asdict(self._data)
+            raise ValueError(f'protocol=`{protocol}` is not supported')
 
     def to_bytes(
         self, protocol: str = 'pickle', compress: Optional[str] = None
