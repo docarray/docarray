@@ -7,11 +7,48 @@ from typing import (
     Callable,
     Tuple,
     Dict,
+    List,
 )
 
 if TYPE_CHECKING:
     from ... import DocumentArray, Document
     from ...types import T
+
+
+ATTRIBUTES_SEPARATOR = ','
+REMAINDER_PATTERN = r'(?P<remainder>[rcm.].*)?'
+SLICE_PATTERN = r'(?P<slice>[-\d:]+)?'
+ATTRIBUTE_NAME_PATTERN = r'[a-zA-Z][a-zA-Z0-9]*'
+ATTRIBUTE_PATTERN = rf'\.\[(?P<attributes>{ATTRIBUTE_NAME_PATTERN}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME_PATTERN})*)\]'
+THIS_PATTERN = rf'(?P<this>r|c|m|{ATTRIBUTE_PATTERN})'
+
+TRAVERSAL_PATH_PATTERN = rf'{THIS_PATTERN}{SLICE_PATTERN}{REMAINDER_PATTERN}'
+
+TRAVERSAL_PATH_PATTERN_UNWRAPPED = rf'(r|c|m|\.\[([a-zA-Z][a-zA-Z0-9]*({ATTRIBUTES_SEPARATOR}[a-zA-Z][a-zA-Z0-9]*)*)\])([-\d:]+)?([rcm.].*)?'
+TRAVERSAL_PATH_LIST_PATTERN = rf'^(?P<path>{TRAVERSAL_PATH_PATTERN_UNWRAPPED})(?P<remainder>,{TRAVERSAL_PATH_PATTERN_UNWRAPPED})*$'
+
+PATTERN_REGEX = re.compile(rf'^{TRAVERSAL_PATH_PATTERN}$')
+TRAVERSAL_PATH_LIST_REGEX = re.compile(TRAVERSAL_PATH_LIST_PATTERN)
+
+
+def _re_traversal_path_split(path: str) -> List[str]:
+    res = []
+    remainder = path
+    while True:
+        m = TRAVERSAL_PATH_LIST_REGEX.match(remainder)
+        if not m:
+            raise ValueError(
+                f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
+            )
+        group_dict = m.groupdict()
+        current, remainder = group_dict['path'], group_dict['remainder']
+        res.append(current)
+        if not remainder:
+            break
+        else:
+            remainder = remainder[1:]
+
+    return res
 
 
 class TraverseMixin:
@@ -43,7 +80,7 @@ class TraverseMixin:
             - `r,c`: docs in this TraversableSequence and all child-documents at granularity 1
 
         """
-        for p in traversal_paths.split(','):
+        for p in _re_traversal_path_split(traversal_paths):
             yield from self._traverse(self, p, filter_fn=filter_fn)
 
     @staticmethod
@@ -73,7 +110,7 @@ class TraverseMixin:
                     yield from TraverseMixin._traverse(
                         d.chunks[cur_slice], remainder, filter_fn=filter_fn
                     )
-            elif cur_loc.startswith('a'):
+            elif cur_loc.startswith('.'):
                 for d in docs:
                     for attribute in group_dict['attributes']:
                         yield from TraverseMixin._traverse(
@@ -105,7 +142,7 @@ class TraverseMixin:
         :param filter_fn: function to filter docs during traversal
         :yield: :class:``TraversableSequence`` containing the document of all leaves per path.
         """
-        for p in traversal_paths.split(','):
+        for p in _re_traversal_path_split(traversal_paths):
             yield self._flatten(self._traverse(self, p, filter_fn=filter_fn))
 
     def traverse_flat(
@@ -173,20 +210,12 @@ class TraverseMixin:
 
 
 def _parse_path_string(p: str) -> Dict[str, str]:
-    remainder_pattern = r'(?P<remainder>[rcma].*)?'
-    slice_pattern = r'(?P<slice>[-\d:]+)?'
-    attribute_name_pattern = r'[a-zA-Z][a-zA-Z0-9]*'
-    attributed_pattern = (
-        rf'a\[(?P<attributes>{attribute_name_pattern}(,{attribute_name_pattern})*)\]'
-    )
-    this_pattern = rf'(?P<this>r|c|m|{attributed_pattern})'
-    pattern = rf'^{this_pattern}{slice_pattern}{remainder_pattern}$'
-    g = re.match(pattern, p)
+    g = PATTERN_REGEX.match(p)
     group_dict = g.groupdict()
     group_dict['remainder'] = group_dict.get('remainder') or ''
     group_dict['slice'] = _parse_slice(group_dict.get('slice') or ':')
     if group_dict.get('attributes'):
-        group_dict['attributes'] = group_dict['attributes'].split('-')
+        group_dict['attributes'] = group_dict['attributes'].split(ATTRIBUTES_SEPARATOR)
 
     return group_dict
 
