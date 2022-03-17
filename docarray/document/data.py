@@ -130,7 +130,14 @@ class DocumentData:
         DocumentData._embedding_eq(array1, array2)
 
     def __eq__(self, other):
-        for key in self._non_empty_fields:
+
+        self_non_empty_fields = self._non_empty_fields
+        other_non_empty_fields = other._non_empty_fields
+
+        if other_non_empty_fields != self_non_empty_fields:
+            return False
+
+        for key in self_non_empty_fields:
 
             if hasattr(self, f'_{key}_eq'):
 

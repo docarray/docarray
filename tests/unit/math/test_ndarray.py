@@ -58,6 +58,7 @@ def get_ndarrays():
     a[a > 0.5] = 0
     return [
         a,
+        a.tolist(),
         torch.tensor(a),
         tf.constant(a),
         paddle.to_tensor(a),
