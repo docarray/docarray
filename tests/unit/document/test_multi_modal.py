@@ -267,7 +267,8 @@ def test_traverse_attributes():
             assert doc.tensor.shape == (10, 10, 3)
 
 
-def test_traverse_slice():
+@pytest.mark.parametrize('selector', ['@r-3:.[attr]', '@r[-3:].[attr]'])
+def test_traverse_slice(selector):
     @dataclass
     class MMDocument:
         attr: TextDocument
@@ -283,8 +284,8 @@ def test_traverse_slice():
         ]
     )
 
-    assert len(mm_docs['@r-3:.[attr]']) == 3
-    for i, doc in enumerate(mm_docs['@r-3:.[attr]'], start=2):
+    assert len(mm_docs[selector]) == 3
+    for i, doc in enumerate(mm_docs[selector], start=2):
         assert doc.text == f'text {i}'
 
 
