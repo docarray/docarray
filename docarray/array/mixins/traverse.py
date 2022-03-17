@@ -26,6 +26,9 @@ SLICE_TAGGED = rf'(?P<slice>{SLICE})'
 
 ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
 
+# accepts both syntaxes: '.[att]' or '.att'
+# However, this makes the grammar ambiguous. E.g:
+# 'r.attr' should it be parsed into tokens 'r', '.', 'attr' or 'r', '.', 'att', 'r' ?
 ATTRIBUTE = rf'\.(\[({ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|{ATTRIBUTE_NAME})'
 ATTRIBUTE_TAGGED = rf'\.(\[(?P<attributes>{ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|(?P<attribute>{ATTRIBUTE_NAME}))'
 
