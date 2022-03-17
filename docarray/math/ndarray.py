@@ -240,7 +240,10 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
             # Not implemented in scipy this should work for all types
             # Note: you can't simply look at nonzero values because they can be in
             # different positions.
-            same_array = (x - y).sum() == 0
+            if x.shape != y.shape:
+                same_array = False
+            else:
+                same_array = (x != y).nnz == 0
         elif x_type == 'tensorflow':
             if x_is_sparse:
                 same_array = x == y
