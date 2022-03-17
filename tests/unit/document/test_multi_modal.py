@@ -211,7 +211,13 @@ def test_get_multi_modal_attribute():
         doc.get_multi_modal_attribute('primitive')
 
 
-def test_traverse_simple():
+@pytest.mark.parametrize(
+    'text_selector', ['@.[text]', '@r.[text]', '@r. [ text]', '@r:.[text]']
+)
+@pytest.mark.parametrize(
+    'audio_selector', ['@.[audio]', '@r.[audio]', '@r. [ audio]', '@r:.[audio]']
+)
+def test_traverse_simple(text_selector, audio_selector):
     @dataclass
     class MMDocument:
         text: TextDocument
@@ -224,12 +230,12 @@ def test_traverse_simple():
         ]
     )
 
-    assert len(mm_docs['@.[text]']) == 5
-    for i, doc in enumerate(mm_docs['@.[text]']):
+    assert len(mm_docs[text_selector]) == 5
+    for i, doc in enumerate(mm_docs[text_selector]):
         assert doc.text == f'text {i}'
 
-    assert len(mm_docs['@.[audio]']) == 5
-    for i, doc in enumerate(mm_docs['@.[audio]']):
+    assert len(mm_docs[audio_selector]) == 5
+    for i, doc in enumerate(mm_docs[audio_selector]):
         assert doc.blob == b'audio'
 
 
@@ -347,7 +353,7 @@ def test_paths_separator():
     )
     assert len(da['@r:2.[attr0,attr2,attr3],r:2.[attr1,attr4]']) == 10
 
-    flattened = da['@r.[attr0,attr1,attr2],.[attr3, attr4]']
+    flattened = da['@r.[attr0,attr1,attr2],.[attr3,attr4]']
     for i in range(9):
         if i % 3 == 0:
             assert flattened[i].text == 'text 0'
