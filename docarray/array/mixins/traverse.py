@@ -16,19 +16,40 @@ if TYPE_CHECKING:
 
 
 ATTRIBUTES_SEPARATOR = ','
-REMAINDER_PATTERN = r'(?P<remainder>[rcm.].*)?'
-SLICE_PATTERN = r'(?P<slice>[-\d:]+)?'
-ATTRIBUTE_NAME_PATTERN = r'[a-zA-Z][a-zA-Z0-9]*'
-ATTRIBUTE_PATTERN = rf'\.\[(?P<attributes>{ATTRIBUTE_NAME_PATTERN}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME_PATTERN})*)\]'
-THIS_PATTERN = rf'(?P<this>r|c|m|{ATTRIBUTE_PATTERN})'
+PATHS_SEPARATOR = ','
 
-TRAVERSAL_PATH_PATTERN = rf'{THIS_PATTERN}{SLICE_PATTERN}{REMAINDER_PATTERN}'
+SLICE = r'([-\d:]+)?'
+SLICE_TAGGED = r'(?P<slice>[-\d:]+)?'
 
-TRAVERSAL_PATH_PATTERN_UNWRAPPED = rf'(r|c|m|\.\[([a-zA-Z][a-zA-Z0-9]*({ATTRIBUTES_SEPARATOR}[a-zA-Z][a-zA-Z0-9]*)*)\])([-\d:]+)?([rcm.].*)?'
-TRAVERSAL_PATH_LIST_PATTERN = rf'^(?P<path>{TRAVERSAL_PATH_PATTERN_UNWRAPPED})(?P<remainder>,{TRAVERSAL_PATH_PATTERN_UNWRAPPED})*$'
+ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
 
-PATTERN_REGEX = re.compile(rf'^{TRAVERSAL_PATH_PATTERN}$')
-TRAVERSAL_PATH_LIST_REGEX = re.compile(TRAVERSAL_PATH_LIST_PATTERN)
+ATTRIBUTE = rf'\.\[({ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]'
+ATTRIBUTE_TAGGED = (
+    rf'\.\[(?P<attributes>{ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]'
+)
+
+SELECTOR = rf'(r|c|m|{ATTRIBUTE})'
+SELECTOR_TAGGED = rf'(?P<selector>r|c|m|{ATTRIBUTE_TAGGED})'
+
+REMAINDER = rf'({SELECTOR}{SLICE})*'
+REMAINDER_TAGGED = rf'(?P<remainder>({SELECTOR}{SLICE})*)'
+
+TRAVERSAL_PATH = rf'{SELECTOR}{SLICE}{REMAINDER}'
+TRAVERSAL_PATH_TAGGED = rf'(?P<path>{SELECTOR_TAGGED}{SLICE_TAGGED}){REMAINDER_TAGGED}'
+
+# TRAVERSAL_PATH_CHAIN = rf'{TRAVERSAL_PATH}({TRAVERSAL_PATH})*'
+# TRAVERSAL_PATH_CHAIN_TAGGED = rf'(?P<path>{TRAVERSAL_PATH_CHAIN})'
+
+# PATHS_REMAINDER = rf'({PATHS_SEPARATOR}{TRAVERSAL_PATH})*'
+PATHS_REMAINDER_TAGGED = rf'(?P<paths_remainder>({PATHS_SEPARATOR}{TRAVERSAL_PATH})*)'
+
+# TRAVERSAL_PATH_LIST = rf'^{TRAVERSAL_PATH}{PATHS_REMAINDER}$'
+TRAVERSAL_PATH_LIST_TAGGED = (
+    rf'^(?P<traversal_path>{TRAVERSAL_PATH}){PATHS_REMAINDER_TAGGED}$'
+)
+
+TRAVERSAL_PATH_REGEX = re.compile(rf'^{TRAVERSAL_PATH_TAGGED}$')
+TRAVERSAL_PATH_LIST_REGEX = re.compile(TRAVERSAL_PATH_LIST_TAGGED)
 
 
 def _re_traversal_path_split(path: str) -> List[str]:
@@ -41,7 +62,7 @@ def _re_traversal_path_split(path: str) -> List[str]:
                 f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
             )
         group_dict = m.groupdict()
-        current, remainder = group_dict['path'], group_dict['remainder']
+        current, remainder = group_dict['traversal_path'], group_dict['paths_remainder']
         res.append(current)
         if not remainder:
             break
@@ -92,7 +113,7 @@ class TraverseMixin:
         path = re.sub(r'\s+', '', path)
         if path:
             group_dict = _parse_path_string(path)
-            cur_loc = group_dict['this']
+            cur_loc = group_dict['selector']
             cur_slice = group_dict['slice']
             remainder = group_dict['remainder']
 
@@ -210,7 +231,7 @@ class TraverseMixin:
 
 
 def _parse_path_string(p: str) -> Dict[str, str]:
-    g = PATTERN_REGEX.match(p)
+    g = TRAVERSAL_PATH_REGEX.match(p)
     group_dict = g.groupdict()
     group_dict['remainder'] = group_dict.get('remainder') or ''
     group_dict['slice'] = _parse_slice(group_dict.get('slice') or ':')
