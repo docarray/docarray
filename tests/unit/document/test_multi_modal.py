@@ -39,8 +39,6 @@ def test_simple():
         ('version', AttributeType.PRIMITIVE, 'int', None),
     ]
     _assert_doc_schema(doc, expected_schema)
-    serialized = doc.to_json()
-    print(serialized)
 
 
 def test_nested():
@@ -328,3 +326,38 @@ def test_traverse_chunks_attribute():
     assert len(da['@r:3c:2.[attr]']) == 6
     for i, doc in enumerate(da['@r:3c:2.[attr]']):
         assert doc.text == f'text {int(i / 2)}{i % 2}'
+
+
+def test_paths_separator():
+    @dataclass
+    class MMDocument:
+        attr0: TextDocument
+        attr1: TextDocument
+        attr2: TextDocument
+        attr3: TextDocument
+        attr4: TextDocument
+
+    da = DocumentArray(
+        [
+            Document.from_dataclass(
+                MMDocument(**{f'attr{i}': f'text {i}' for i in range(5)})
+            )
+            for _ in range(3)
+        ]
+    )
+    assert len(da['@r:2.[attr0,attr2,attr3],r:2.[attr1,attr4]']) == 10
+
+    flattened = da['@r.[attr0,attr1,attr2],.[attr3, attr4]']
+    for i in range(9):
+        if i % 3 == 0:
+            assert flattened[i].text == 'text 0'
+        elif i % 3 == 1:
+            assert flattened[i].text == 'text 1'
+        else:
+            assert flattened[i].text == 'text 2'
+
+    for i in range(9, 15):
+        if i % 2 == 1:
+            assert flattened[i].text == 'text 3'
+        else:
+            assert flattened[i].text == 'text 4'
