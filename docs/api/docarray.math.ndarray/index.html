@@ -589,6 +589,30 @@
 </pre></div>
 </div>
 </dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.math.ndarray.check_arraylike_equality">
+<span class="sig-prename descclassname"><span class="pre">docarray.math.ndarray.</span></span><span class="sig-name descname"><span class="pre">check_arraylike_equality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/math/ndarray/#check_arraylike_equality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.math.ndarray.check_arraylike_equality" title="Permalink to this definition">#</a></dt>
+<dd><p>Check if two array type objects are the same with the supported frameworks.</p>
+<p>Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="go">    x = np.array([[1,2,0,0,3],[1,2,0,0,3]])</span>
+<span class="go">    check_arraylike_equality(x,x)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="go">    x = sp.csr_matrix([[1,2,0,0,3],[1,2,0,0,3]])</span>
+<span class="go">    check_arraylike_equality(x,x)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="go">    x = torch.tensor([1,2,3])</span>
+<span class="go">    check_arraylike_equality(x,x)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
 </section>
 
             </article>
@@ -628,7 +652,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 16, 2022.
+                            Last updated on Mar 17, 2022.
                         </div>
                     </div>
                     <div class="right-details">

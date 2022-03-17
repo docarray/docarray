@@ -487,18 +487,22 @@
 <span class="sd">        :return: itself after processed</span>
 <span class="sd">        """</span>
         <span class="kn">import</span> <span class="nn">trimesh</span>
+        <span class="kn">import</span> <span class="nn">urllib.parse</span>
+
+        <span class="n">scheme</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load_remote</span> <span class="k">if</span> <span class="n">scheme</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'http'</span><span class="p">,</span> <span class="s1">'https'</span><span class="p">]</span> <span class="k">else</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load</span>
 
         <span class="k">if</span> <span class="n">as_chunks</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
 
             <span class="c1"># try to coerce everything into a scene</span>
-            <span class="n">scene</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'scene'</span><span class="p">)</span>
+            <span class="n">scene</span> <span class="o">=</span> <span class="n">loader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'scene'</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">geo</span> <span class="ow">in</span> <span class="n">scene</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">geo</span><span class="p">:</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">geo</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">samples</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># combine a scene into a single mesh</span>
-            <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'mesh'</span><span class="p">)</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">loader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="s1">'mesh'</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div></div>
@@ -518,7 +522,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 16, 2022.
+                            Last updated on Mar 17, 2022.
                         </div>
                     </div>
                     <div class="right-details">

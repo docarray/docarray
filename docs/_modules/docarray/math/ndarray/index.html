@@ -660,6 +660,72 @@
         <span class="k">raise</span> <span class="ne">ValueError</span>
 
     <span class="k">return</span> <span class="n">num_rows</span><span class="p">,</span> <span class="n">ndim</span></div>
+
+
+<div class="viewcode-block" id="check_arraylike_equality"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.check_arraylike_equality">[docs]</a><span class="k">def</span> <span class="nf">check_arraylike_equality</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">):</span>
+    <span class="sd">"""Check if two array type objects are the same with the supported frameworks.</span>
+
+<span class="sd">    Examples</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        x = np.array([[1,2,0,0,3],[1,2,0,0,3]])</span>
+<span class="sd">        check_arraylike_equality(x,x)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; from scipy import sparse as sp</span>
+<span class="sd">        x = sp.csr_matrix([[1,2,0,0,3],[1,2,0,0,3]])</span>
+<span class="sd">        check_arraylike_equality(x,x)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">        x = torch.tensor([1,2,3])</span>
+<span class="sd">        check_arraylike_equality(x,x)</span>
+<span class="sd">    True</span>
+<span class="sd">    """</span>
+    <span class="n">x_type</span><span class="p">,</span> <span class="n">x_is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y_type</span><span class="p">,</span> <span class="n">y_is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="n">same_array</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="n">y_type</span> <span class="ow">and</span> <span class="n">x_is_sparse</span> <span class="o">==</span> <span class="n">y_is_sparse</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
+            <span class="n">same_array</span> <span class="o">=</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
+
+        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+            <span class="c1"># Numpy does not support sparse tensors</span>
+            <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+            <span class="n">same_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">torch</span>
+
+            <span class="k">if</span> <span class="n">x_is_sparse</span><span class="p">:</span>
+                <span class="c1"># torch.equal NotImplementedError for sparse</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="nb">all</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'scipy'</span><span class="p">:</span>
+            <span class="c1"># Not implemented in scipy this should work for all types</span>
+            <span class="c1"># Note: you can't simply look at nonzero values because they can be in</span>
+            <span class="c1"># different positions.</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x_is_sparse</span><span class="p">:</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Does not have equal implemented, only elementwise, therefore reduce .all is needed</span>
+                <span class="n">same_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+            <span class="c1"># Paddle does not support sparse tensor on 11/8/2021</span>
+            <span class="c1"># https://github.com/PaddlePaddle/Paddle/issues/36697</span>
+            <span class="c1"># Does not have equal implemented, only elementwise, therefore reduce .all is needed</span>
+            <span class="n">same_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">same_array</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">same_array</span></div>
 </pre></div>
             </article>
             <footer>
@@ -676,7 +742,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 16, 2022.
+                            Last updated on Mar 17, 2022.
                         </div>
                     </div>
                     <div class="right-details">
