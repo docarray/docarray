@@ -212,10 +212,20 @@ def test_get_multi_modal_attribute():
 
 
 @pytest.mark.parametrize(
-    'text_selector', ['@.[text]', '@r.[text]', '@r. [ text]', '@r:.[text]']
+    'text_selector',
+    [
+        '@.[text]',
+        '@r.[text]',
+        '@r. [ text]',
+        '@r:.[text]',
+        '@.text',
+        '@r.text',
+        '@r . text',
+    ],
 )
 @pytest.mark.parametrize(
-    'audio_selector', ['@.[audio]', '@r.[audio]', '@r. [ audio]', '@r:.[audio]']
+    'audio_selector',
+    ['@.[audio]', '@r.[audio]', '@r. [ audio]', '@r:.[audio]', '@.audio', '@ . audio'],
 )
 def test_traverse_simple(text_selector, audio_selector):
     @dataclass
@@ -267,7 +277,7 @@ def test_traverse_attributes():
             assert doc.tensor.shape == (10, 10, 3)
 
 
-@pytest.mark.parametrize('selector', ['@r-3:.[attr]', '@r[-3:].[attr]'])
+@pytest.mark.parametrize('selector', ['@r-3:.[attr]', '@r[-3:].[attr]', '@r[-3:].attr'])
 def test_traverse_slice(selector):
     @dataclass
     class MMDocument:
