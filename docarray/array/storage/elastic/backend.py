@@ -1,7 +1,6 @@
-import sqlite3
 import warnings
 from dataclasses import dataclass, field
-from typing import Dict, Optional, TYPE_CHECKING, Union, Tuple
+from typing import Dict, Optional, TYPE_CHECKING, Union, Tuple, List
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
@@ -25,12 +24,12 @@ def _sanitize_table_name(table_name: str) -> str:
 @dataclass
 class ElasticConfig:
     n_dim: int  # dims  in elastic
+    basic_auth: Optional[Tuple[str, str]] = None
+    ca_certs: Optional[str] = None
+    distance: str = 'cosine'  # similarity in elastic
     host: Optional[str] = field(default='http://localhost')
     port: Optional[int] = field(default=9200)
-    distance: str = 'cosine'  # similarity in elastic
     index_name: Optional[str] = field(default='index_name')
-    ca_certs: str = 'http_ca.crt'
-    basic_auth: Optional[str, str] = field(default=(None, None))
     serialize_config: Dict = field(default_factory=dict)
 
 
@@ -49,9 +48,17 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(ElasticConfig, config)
 
-        self._config = config
-        self._client = self._build_client(self._config)
         self._index_name_offset2id = 'index_offset2id'
+        self._config = config
+
+        self._client = self._build_client(self._config)
+        self._build_offset2id_index(self._index_name_offset2id)
+
+        super()._init_storage()  # CALLS _load_offset2ids > _get_offset2ids_meta
+
+    def _build_offset2id_index(self, index_name):
+        self._client.indices.delete(index=index_name, ignore=[404])
+        self._client.indices.create(index=index_name)
 
     def _build_hosts(self, elastic_config):
         return elastic_config.host + ':' + str(elastic_config.port)
@@ -127,10 +134,10 @@ class BackendMixin(BaseBackendMixin):
             ]
             r = bulk(self._client, requests)
 
-    def _get_offset2ids_meta(self) -> Tuple[List, List]:
+    def _get_offset2ids_meta(self) -> List:
         """Return the offset2ids stored in elastic
 
-        :return: a pair of lists containing offsets and ids
+        :return: a list containing ids
 
         :raises ValueError: error is raised if index _client is not found or no offsets are found
         """
@@ -138,11 +145,10 @@ class BackendMixin(BaseBackendMixin):
             raise ValueError('Elastic client does not exist')
 
         n_docs = self._client.count(index=self._index_name_offset2id)["count"]
-
-        if n_docs == 0:
+        if n_docs != 0:
             offsets = [x for x in range(n_docs)]
             resp = self._client.mget(index=self._index_name_offset2id, ids=offsets)
             ids = [x['_source']['blob'] for x in resp['docs']]
-            return offsets, ids
+            return ids
         else:
-            raise ValueError('No offsets stored in Elastic')
+            return []

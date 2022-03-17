@@ -26,7 +26,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :return: the length of this :class:`DocumentArrayElastic` object
         """
-        return self._client.count(index=self._elastic_config.index_name)["count"]
+        return self._client.count(index=self._config.index_name)["count"]
 
     def _doc_id_exists(doc_id, client, elastic_config):
         return client.exists(index=elastic_config.index_name, id=doc_id)

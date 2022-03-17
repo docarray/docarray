@@ -2,6 +2,7 @@ import pytest
 
 from docarray import Document
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
@@ -17,6 +18,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_construct_docarray(da_cls, config, start_storage):

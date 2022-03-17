@@ -18,7 +18,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :return: Document
         """
         try:
-            result = self._client.get(index=self._elastic_config.index_name, id=doc_id)
+            result = self._client.get(index=self._config.index_name, id=doc_id)
             doc = Document.from_base64(result['_source']['blob'])
             doc.embedding = result['_source']['embedding']
             return doc
@@ -78,7 +78,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._client.indices.delete(index=self._config.index_name)
 
     def _load_offset2ids(self):
-        ids, self._offset2ids_wid = self._get_offset2ids_meta()
+        ids = self._get_offset2ids_meta()
         self._offset2ids = Offset2ID(ids)
 
     def _save_offset2ids(self):
