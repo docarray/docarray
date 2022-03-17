@@ -226,12 +226,12 @@ def test_traverse_simple():
         ]
     )
 
-    assert len(mm_docs['@a[text]']) == 5
-    for i, doc in enumerate(mm_docs['@a[text]']):
+    assert len(mm_docs['@.[text]']) == 5
+    for i, doc in enumerate(mm_docs['@.[text]']):
         assert doc.text == f'text {i}'
 
-    assert len(mm_docs['@a[audio]']) == 5
-    for i, doc in enumerate(mm_docs['@a[audio]']):
+    assert len(mm_docs['@.[audio]']) == 5
+    for i, doc in enumerate(mm_docs['@.[audio]']):
         assert doc.blob == b'audio'
 
 
@@ -255,8 +255,8 @@ def test_traverse_attributes():
         ]
     )
 
-    assert len(mm_docs['@a[attr1,attr3]']) == 10
-    for i, doc in enumerate(mm_docs['@a[attr1-attr3]']):
+    assert len(mm_docs['@.[attr1,attr3]']) == 10
+    for i, doc in enumerate(mm_docs['@.[attr1,attr3]']):
         if i % 2 == 0:
             assert doc.text == 'text'
         else:
@@ -279,8 +279,8 @@ def test_traverse_slice():
         ]
     )
 
-    assert len(mm_docs['@r-3:a[attr]']) == 3
-    for i, doc in enumerate(mm_docs['@r-3:a[attr]'], start=2):
+    assert len(mm_docs['@r-3:.[attr]']) == 3
+    for i, doc in enumerate(mm_docs['@r-3:.[attr]'], start=2):
         assert doc.text == f'text {i}'
 
 
@@ -301,16 +301,16 @@ def test_traverse_iterable():
         ]
     )
 
-    assert len(mm_da['@a[attr1]']) == 5
-    assert len(mm_da['@a[attr2]']) == 5
+    assert len(mm_da['@.[attr1]']) == 5
+    assert len(mm_da['@.[attr2]']) == 5
 
-    assert len(mm_da['@a[attr1]:1']) == 2
-    assert len(mm_da['@a[attr1]:1,a[attr2]-2:']) == 6
+    assert len(mm_da['@.[attr1]:1']) == 2
+    assert len(mm_da['@.[attr1]:1,.[attr2]-2:']) == 6
 
-    for i, text_doc in enumerate(mm_da['@a[attr1]:2'], start=1):
+    for i, text_doc in enumerate(mm_da['@.[attr1]:2'], start=1):
         assert text_doc.text == f'text {i}'
 
-    for i, blob_doc in enumerate(mm_da['@a[attr2]-2:'], start=1):
+    for i, blob_doc in enumerate(mm_da['@.[attr2]-2:'], start=1):
         assert blob_doc.blob == bytes(f'{i}', encoding='utf-8')
 
 
@@ -325,6 +325,6 @@ def test_traverse_chunks_attribute():
             [Document.from_dataclass(MMDocument(attr=f'text {i}{j}')) for j in range(5)]
         )
 
-    assert len(da['@r:3c:2a[attr]']) == 6
-    for i, doc in enumerate(da['@r:3c:2a[attr]']):
+    assert len(da['@r:3c:2.[attr]']) == 6
+    for i, doc in enumerate(da['@r:3c:2.[attr]']):
         assert doc.text == f'text {int(i / 2)}{i % 2}'
