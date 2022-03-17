@@ -5,7 +5,7 @@ import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
-from docarray.math.ndarray import get_array_rows
+from docarray.math.ndarray import get_array_rows, check_arraylike_equality
 from docarray.proto.docarray_pb2 import NdArrayProto
 from docarray.proto.io import flush_ndarray, read_ndarray
 
@@ -51,3 +51,26 @@ def test_get_array_rows(data, expected_result, arraytype, ndarray_type):
         assert isinstance(r_data_array, list)
     elif ndarray_type == 'numpy':
         assert isinstance(r_data_array, np.ndarray)
+
+
+def get_ndarrays():
+    a = np.random.random([10, 3])
+    a[a > 0.5] = 0
+    return [
+        a,
+        a.tolist(),
+        torch.tensor(a),
+        tf.constant(a),
+        paddle.to_tensor(a),
+        torch.tensor(a).to_sparse(),
+        csr_matrix(a),
+        bsr_matrix(a),
+        coo_matrix(a),
+        csc_matrix(a),
+    ]
+
+
+@pytest.mark.parametrize('ndarray_val', get_ndarrays())
+def test_check_arraylike_equality(ndarray_val):
+    assert check_arraylike_equality(ndarray_val, ndarray_val) == True
+    assert check_arraylike_equality(ndarray_val, ndarray_val + ndarray_val) == False
