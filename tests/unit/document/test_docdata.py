@@ -35,21 +35,27 @@ def test_doc_hash_complicate_content():
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
     d2 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
     assert d1 == d2
+    assert d2 == d1
     assert hash(d1) == hash(d2)
 
 
 def test_doc_difference_complicate_content():
+    # Here we ensure != is symmetric therefore we put d1 != d2 and d2 != d1
+    # The __eq__ at DocumentData level is implemented in docarray/document/data.py
     d1 = Document(text='hello', embedding=np.array([1, 2, 3]), id=1)
     d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
     assert d1 != d2
+    assert d2 != d1
 
     d1 = Document(text='hello', embedding=np.array([1, 2, 3, 5]), id=1)
     d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
     assert d1 != d2
+    assert d2 != d1
 
     d1 = Document(text='hello', id=1)
     d2 = Document(text='hello', embedding=np.array([1, 2, 4]), id=1)
     assert d1 != d2
+    assert d2 != d1
 
 
 def test_pop_field():
