@@ -26,10 +26,8 @@ SLICE_TAGGED = rf'(?P<slice>{SLICE})'
 
 ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
 
-ATTRIBUTE = rf'\.\[({ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]'
-ATTRIBUTE_TAGGED = (
-    rf'\.\[(?P<attributes>{ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]'
-)
+ATTRIBUTE = rf'\.(\[({ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|{ATTRIBUTE_NAME})'
+ATTRIBUTE_TAGGED = rf'\.(\[(?P<attributes>{ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|(?P<attribute>{ATTRIBUTE_NAME}))'
 
 SELECTOR = rf'(r|c|m|{ATTRIBUTE})'
 SELECTOR_TAGGED = rf'(?P<selector>r|c|m|{ATTRIBUTE_TAGGED})'
@@ -242,6 +240,8 @@ def _parse_path_string(p: str) -> Dict[str, str]:
     group_dict['slice'] = _parse_slice(group_dict.get('slice') or ':')
     if group_dict.get('attributes'):
         group_dict['attributes'] = group_dict['attributes'].split(ATTRIBUTES_SEPARATOR)
+    elif group_dict.get('attribute'):
+        group_dict['attributes'] = [group_dict.get('attribute')]
 
     return group_dict
 
