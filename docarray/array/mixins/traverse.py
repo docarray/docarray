@@ -19,7 +19,7 @@ ATTRIBUTES_SEPARATOR = ','
 PATHS_SEPARATOR = ','
 
 SLICE = r'([-\d:]+)?'
-SLICE_TAGGED = r'(?P<slice>[-\d:]+)?'
+SLICE_TAGGED = r'(?P<slice>([-\d:]+)?)'
 
 ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
 
@@ -101,6 +101,7 @@ class TraverseMixin:
             - `r,c`: docs in this TraversableSequence and all child-documents at granularity 1
 
         """
+        traversal_paths = re.sub(r'\s+', '', traversal_paths)
         for p in _re_traversal_path_split(traversal_paths):
             yield from self._traverse(self, p, filter_fn=filter_fn)
 
@@ -163,6 +164,7 @@ class TraverseMixin:
         :param filter_fn: function to filter docs during traversal
         :yield: :class:``TraversableSequence`` containing the document of all leaves per path.
         """
+        traversal_paths = re.sub(r'\s+', '', traversal_paths)
         for p in _re_traversal_path_split(traversal_paths):
             yield self._flatten(self._traverse(self, p, filter_fn=filter_fn))
 
