@@ -18,8 +18,11 @@ if TYPE_CHECKING:
 ATTRIBUTES_SEPARATOR = ','
 PATHS_SEPARATOR = ','
 
-SLICE = r'([-\d:]+)?'
-SLICE_TAGGED = r'(?P<slice>([-\d:]+)?)'
+SLICE_BASE = r'[-\d:]+'
+WRAPPED_SLICE_BASE = r'\[[-\d:]+\]'
+
+SLICE = rf'({SLICE_BASE}|{WRAPPED_SLICE_BASE})?'
+SLICE_TAGGED = rf'(?P<slice>{SLICE})'
 
 ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
 
@@ -247,6 +250,9 @@ def _parse_slice(value):
     """
     Parses a `slice()` from string, like `start:stop:step`.
     """
+    if re.match(WRAPPED_SLICE_BASE, value):
+        value = value[1:-1]
+
     if value:
         parts = value.split(':')
         if len(parts) == 1:
