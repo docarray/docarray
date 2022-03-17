@@ -231,11 +231,21 @@ def test_convert_uri_to_data_uri(uri, mimetype):
     assert doc.mime_type == mimetype
 
 
-def test_glb_converters():
-    doc = Document(uri=os.path.join(cur_dir, 'toydata/test.glb'))
+@pytest.mark.parametrize(
+    'uri, chunk_num',
+    [
+        (os.path.join(cur_dir, 'toydata/test.glb'), 1),
+        (
+            'https://storage.googleapis.com/showcase-3d-models/ShapeNetV2/airplane_aeroplane_plane_0.glb',
+            16,
+        ),
+    ],
+)
+def test_glb_converters(uri, chunk_num):
+    doc = Document(uri=uri)
     doc.load_uri_to_point_cloud_tensor(2000)
     assert doc.tensor.shape == (2000, 3)
 
     doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
-    assert len(doc.chunks) == 1
+    assert len(doc.chunks) == chunk_num
     assert doc.chunks[0].tensor.shape == (2000, 3)
