@@ -62,9 +62,9 @@ class BackendMixin(BaseBackendMixin):
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
         super()._init_storage()
 
-    def _build_offset2id_index(self, index_name):
-        self._client.indices.delete(index=index_name, ignore=[404])
-        self._client.indices.create(index=index_name)
+    def _build_offset2id_index(self):
+        self._client.indices.delete(index=self.index_name, ignore=[404])
+        self._client.indices.create(index=self.index_name)
 
     def _build_hosts(self, elastic_config):
         return elastic_config.host + ':' + str(elastic_config.port)
@@ -86,23 +86,23 @@ class BackendMixin(BaseBackendMixin):
         }
         return da_schema
 
-    def _build_client(self, elastic_config):
+    def _build_client(self):
 
         client = Elasticsearch(
-            hosts=self._build_hosts(elastic_config),
-            ca_certs=elastic_config.ca_certs,
-            basic_auth=elastic_config.basic_auth,
+            hosts=self._build_hosts(),
+            ca_certs=self._config.ca_certs,
+            basic_auth=self._config.basic_auth,
         )
 
-        schema = self._build_schema_from_elastic_config(elastic_config)
+        schema = self._build_schema_from_elastic_config(self._config)
 
-        if client.indices.exists(index=elastic_config.index_name):
-            client.indices.delete(index=elastic_config.index_name)
+        if client.indices.exists(index=self._config.index_name):
+            client.indices.delete(index=self._config.index_name)
 
         client.indices.create(
-            index=elastic_config.index_name, mappings=schema['mappings']
+            index=self._config.index_name, mappings=schema['mappings']
         )
-        client.indices.refresh(index=elastic_config.index_name)
+        client.indices.refresh(index=self._config.index_name)
 
         return client
 
