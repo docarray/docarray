@@ -682,3 +682,28 @@ def test_flatten_no_copy():
     new_text = 'hi i changed it!'
     daf[53].text = new_text
     assert da[daf[53].id].text == new_text
+
+
+def test_traverse_flat_offset():
+    da = DocumentArray(
+        [
+            Document(id=f'r{i}', chunks=[Document(id=f'r{i}c{j}') for j in range(3)])
+            for i in range(3)
+        ]
+    )
+    flat_docs = da.traverse_flat('r1c2')
+    assert isinstance(flat_docs, DocumentArray)
+    assert len(flat_docs) == 1
+    assert flat_docs[0].id == 'r1c2'
+
+    flat_docs = da.traverse_flat('r:2c0')
+    assert isinstance(flat_docs, DocumentArray)
+    assert len(flat_docs) == 2
+    assert flat_docs[0].id == 'r0c0'
+    assert flat_docs[1].id == 'r1c0'
+
+    flat_docs = da.traverse_flat('r2c1:')
+    assert isinstance(flat_docs, DocumentArray)
+    assert len(flat_docs) == 2
+    assert flat_docs[0].id == 'r2c1'
+    assert flat_docs[1].id == 'r2c2'

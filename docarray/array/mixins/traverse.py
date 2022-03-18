@@ -260,7 +260,7 @@ def _parse_slice(value):
         parts = value.split(':')
         if len(parts) == 1:
             # slice(stop)
-            parts = [None, parts[0]]
+            parts = [parts[0], str(int(parts[0]) + 1)]
         # else: slice(start, stop[, step])
     else:
         # slice()
