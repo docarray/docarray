@@ -91,13 +91,15 @@ def test_with_tags():
         attr1: str
         attr2: int
         attr3: float
+        attr4: bool
 
-    obj = MMDocument(attr1='123', attr2=10, attr3=1.1)
+    obj = MMDocument(attr1='123', attr2=10, attr3=1.1, attr4=True)
 
     doc = Document.from_dataclass(obj)
     assert doc.tags['attr1'] == '123'
     assert doc.tags['attr2'] == 10
     assert doc.tags['attr3'] == 1.1
+    assert doc.tags['attr4'] == True
 
     assert 'multi_modal_schema' in doc._metadata
 
@@ -105,6 +107,7 @@ def test_with_tags():
         ('attr1', AttributeType.PRIMITIVE, 'str', None),
         ('attr2', AttributeType.PRIMITIVE, 'int', None),
         ('attr3', AttributeType.PRIMITIVE, 'float', None),
+        ('attr4', AttributeType.PRIMITIVE, 'bool', None),
     ]
     _assert_doc_schema(doc, expected_schema)
 

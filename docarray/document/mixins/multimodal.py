@@ -31,7 +31,7 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
-            if field.type in [str, int, float]:
+            if field.type in [str, int, float, bool]:
                 tags[key] = attribute
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
@@ -41,7 +41,7 @@ class MultiModalMixin:
             elif isinstance(field.type, typing._GenericAlias):
                 if field.type._name in ['List', 'Iterable']:
                     sub_type = field.type.__args__[0]
-                    if sub_type in [str, int, float]:
+                    if sub_type in [str, int, float, bool]:
                         tags[key] = attribute
                         multi_modal_schema[key] = {
                             'attribute_type': AttributeType.ITERABLE_PRIMITIVE,
