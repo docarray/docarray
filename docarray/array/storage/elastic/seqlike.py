@@ -66,7 +66,19 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :param values: Documents to be added
         """
-        with self._client.batch(batch_size=50) as _b:
-            for d in values:
-                _b.add_data_object(**self._doc2weaviate_create_payload(d))
-                self._offset2ids.append(d.id)
+        request = []
+        for value in values:
+            value.embedding = self._map_embedding(value.embedding)
+            request.append(
+                {
+                    "_op_type": "index",
+                    '_id': value.id,
+                    '_index': self._config.index_name,
+                    'embedding': value.embedding,
+                    'blob': value.to_base64(),
+                }
+            )
+            self._offset2ids.append(value.id)
+
+        self._send_requests(request)
+        self._refresh(self._config.index_name)

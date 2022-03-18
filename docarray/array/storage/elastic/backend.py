@@ -2,6 +2,8 @@ import warnings
 from dataclasses import dataclass, field
 from typing import Dict, Optional, TYPE_CHECKING, Union, Tuple, List
 
+import numpy as np
+
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
 
@@ -26,7 +28,7 @@ class ElasticConfig:
     n_dim: int  # dims  in elastic
     basic_auth: Optional[Tuple[str, str]] = None
     ca_certs: Optional[str] = None
-    distance: str = 'cosine'  # similarity in elastic
+    distance: str = 'l2_norm'  # similarity in elastic
     host: Optional[str] = field(default='http://localhost')
     port: Optional[int] = field(default=9200)
     index_name: Optional[str] = field(default='index_name')
@@ -50,6 +52,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._index_name_offset2id = 'index_offset2id'
         self._config = config
+        self.n_dim = self._config.n_dim
 
         self._client = self._build_client(self._config)
         self._build_offset2id_index(self._index_name_offset2id)
@@ -103,8 +106,8 @@ class BackendMixin(BaseBackendMixin):
     def _send_requests(self, request):
         bulk(self._client, request)
 
-    def _refresh(self):
-        self._client.indices.refresh(index=self._config.index_name)
+    def _refresh(self, index_name):
+        self._client.indices.refresh(index=index_name)
 
     def _doc_id_exists(self, doc_id):
         return self._client.exists(index=self._config.index_name, id=doc_id)
@@ -130,7 +133,7 @@ class BackendMixin(BaseBackendMixin):
                     '_index': self._index_name_offset2id,
                     'blob': f'{id_}',
                 }  # id here
-                for id_, offset_ in zip(self._offset2ids.ids, self._offset2ids.offsets)
+                for offset_, id_ in enumerate(self._offset2ids.ids)
             ]
             r = bulk(self._client, requests)
 
@@ -152,3 +155,18 @@ class BackendMixin(BaseBackendMixin):
             return ids
         else:
             return []
+
+    def _map_embedding(self, embedding: 'ArrayType') -> List[float]:
+        if embedding is None:
+            embedding = np.random.rand(self.n_dim)
+        else:
+            from ....math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+        if embedding.ndim > 1:
+            embedding = np.asarray(embedding).squeeze()
+
+        if np.all(embedding == 0):
+            embedding = embedding + EPSILON
+        return embedding.tolist()

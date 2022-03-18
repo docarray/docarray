@@ -20,7 +20,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         try:
             result = self._client.get(index=self._config.index_name, id=doc_id)
             doc = Document.from_base64(result['_source']['blob'])
-            doc.embedding = result['_source']['embedding']
+            # doc.embedding = result['_source']['embedding']
             return doc
         except Exception as ex:
             raise KeyError(doc_id) from ex
@@ -39,21 +39,20 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
-        doc_copy = copy.deepcopy(value)
-        embedding = value.embedding
-        doc_copy.embedding = None
+        # doc_copy = copy.deepcopy(value)
+        # doc_copy.embedding = None
+        value.embedding = self._map_embedding(value.embedding)
         request = [
             {
                 "_op_type": "index",
                 '_id': value.id,
-                '_index': elastic_config.index_name,
-                'embedding': embedding,
-                'blob': doc_copy.to_base64(),
+                '_index': self._config.index_name,
+                'embedding': value.embedding,
+                'blob': value.to_base64(),
             }
         ]
-
         self._send_requests(request)
-        self._refresh()
+        self._refresh(self._config.index_name)
 
     def _set_docs_by_ids(self, ids, docs: Iterable['Document'], mismatch_ids: Dict):
         """Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end
@@ -62,7 +61,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
-        self._refresh()
+        self._refresh(self._config.index_name)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
@@ -71,7 +70,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         if self._doc_id_exists(_id, self._client, self._config):
             self._client.delete(index=self._config.index_name, id=_id)
-        self._refresh()
+        self._refresh(self._config.index_name)
 
     def _clear_storage(self):
         """ Concrete implementation of base class' ``_clear_storage``"""
