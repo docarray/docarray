@@ -3,7 +3,7 @@ from typing import List
 from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
 from docarray.types import TextDocument, ImageDocument, BlobDocument
-from dataclasses import dataclass
+from docarray.types import dataclass
 import pytest
 import numpy as np
 
@@ -39,6 +39,9 @@ def test_simple():
         ('version', AttributeType.PRIMITIVE, 'int', None),
     ]
     _assert_doc_schema(doc, expected_schema)
+
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
 
 
 def test_nested():
@@ -78,6 +81,9 @@ def test_nested():
     ]
     _assert_doc_schema(doc, expected_schema)
 
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
+
 
 def test_with_tags():
     @dataclass
@@ -101,6 +107,9 @@ def test_with_tags():
         ('attr3', AttributeType.PRIMITIVE, 'float', None),
     ]
     _assert_doc_schema(doc, expected_schema)
+
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
 
 
 def test_iterable_doc():
@@ -131,6 +140,9 @@ def test_iterable_doc():
         ('images', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
     ]
     _assert_doc_schema(doc, expected_schema)
+
+    translated_obj = SocialPost.from_document(doc)
+    assert translated_obj == obj
 
 
 def test_iterable_nested():
@@ -177,6 +189,9 @@ def test_iterable_nested():
     ]
     for subtitle in doc.chunks[1].chunks:
         _assert_doc_schema(subtitle, expected_nested_schema)
+
+    translated_obj = VideoDocument.from_document(doc)
+    assert translated_obj == obj
 
 
 def test_get_multi_modal_attribute():
