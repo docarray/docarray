@@ -56,8 +56,8 @@ class BackendMixin(BaseBackendMixin):
         self.n_dim = self._config.n_dim
         self._index_name_offset2id = config.index_name + '__offset2id'
 
-        self._client = self._build_client(self._config)
-        self._build_offset2id_index(self._index_name_offset2id)
+        self._client = self._build_client()
+        self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
         super()._init_storage()
