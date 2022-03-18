@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, TYPE_CHECKING, Union, Tuple, List
 
 import numpy as np
+import uuid
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
@@ -50,14 +51,16 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(ElasticConfig, config)
 
-        self._index_name_offset2id = 'index_offset2id'
+        config.index_name += uuid.uuid4().hex
         self._config = config
         self.n_dim = self._config.n_dim
+        self._index_name_offset2id = config.index_name + '__offset2id'
 
         self._client = self._build_client(self._config)
         self._build_offset2id_index(self._index_name_offset2id)
 
-        super()._init_storage()  # CALLS _load_offset2ids > _get_offset2ids_meta
+        # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
+        super()._init_storage()
 
     def _build_offset2id_index(self, index_name):
         self._client.indices.delete(index=index_name, ignore=[404])

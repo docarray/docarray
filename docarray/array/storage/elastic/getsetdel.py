@@ -20,7 +20,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         try:
             result = self._client.get(index=self._config.index_name, id=doc_id)
             doc = Document.from_base64(result['_source']['blob'])
-            # doc.embedding = result['_source']['embedding']
             return doc
         except Exception as ex:
             raise KeyError(doc_id) from ex
@@ -39,8 +38,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
-        # doc_copy = copy.deepcopy(value)
-        # doc_copy.embedding = None
         value.embedding = self._map_embedding(value.embedding)
         request = [
             {
