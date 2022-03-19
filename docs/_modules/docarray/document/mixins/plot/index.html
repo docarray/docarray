@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.document.mixins.plot - DocArray 0.9.14 documentation</title>
+        <title>docarray.document.mixins.plot - DocArray 0.9.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.9.14 documentation</div>
+                <div class="brand">DocArray 0.9.15 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -476,26 +476,40 @@
         <span class="sd">"""Displays the object in IPython as a side effect"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">__rich_console__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">console</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="sa">f</span><span class="s2">":page_facing_up: [b]Document[/b]: [cyan]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">[cyan]"</span>
+        <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
+
+        <span class="n">my_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="s1">'Attribute'</span><span class="p">,</span> <span class="s1">'Value'</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">,</span> <span class="s1">'matches'</span><span class="p">):</span>
+                <span class="n">my_table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">my_table</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">my_table</span>
+
 <div class="viewcode-block" id="PlotMixin.summary"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">""" Print non-empty fields and nested structure of this Document object."""</span>
-        <span class="n">_str_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">(</span><span class="n">_str_list</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_str_list</span><span class="p">))</span></div>
+        <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span>
 
-    <span class="k">def</span> <span class="nf">_plot_recursion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_str_list</span><span class="p">,</span> <span class="n">indent</span><span class="p">,</span> <span class="n">box_char</span><span class="o">=</span><span class="s1">'├─'</span><span class="p">):</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="p">(</span><span class="s1">' '</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="n">box_char</span><span class="p">)</span> <span class="k">if</span> <span class="n">indent</span> <span class="k">else</span> <span class="s1">''</span>
-        <span class="n">_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">())</span></div>
 
+    <span class="k">def</span> <span class="nf">_plot_recursion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">tree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rich.tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+
+            <span class="n">tree</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tree</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'matches'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-                <span class="n">prefix</span> <span class="o">=</span> <span class="s1">' '</span> <span class="o">*</span> <span class="p">(</span><span class="n">indent</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'└─'</span>
-                <span class="n">_str_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">d</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">(</span><span class="n">_str_list</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">(</span>
-                    <span class="n">_str_list</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">box_char</span><span class="o">=</span><span class="s1">'└─'</span>
-                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="s1">'chunks'</span><span class="p">:</span>
+                    <span class="n">_icon</span> <span class="o">=</span> <span class="s1">':diamond_with_a_dot:'</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">_icon</span> <span class="o">=</span> <span class="s1">':large_orange_diamond:'</span>
+                <span class="n">_match_tree</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_icon</span><span class="si">}</span><span class="s1"> [b]</span><span class="si">{</span><span class="n">a</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s1">[/b]'</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">_plot_recursion</span><span class="p">(</span><span class="n">_match_tree</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tree</span>
 
 <div class="viewcode-block" id="PlotMixin.display"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">""" Plot image data from :attr:`.tensor` or :attr:`.uri`. """</span>
@@ -584,7 +598,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 17, 2022.
+                            Last updated on Mar 19, 2022.
                         </div>
                     </div>
                     <div class="right-details">
