@@ -51,10 +51,11 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(ElasticConfig, config)
 
-        config.index_name += uuid.uuid4().hex
+        id = uuid.uuid4().hex
+        config.index_name += id
         self._config = config
         self.n_dim = self._config.n_dim
-        self._index_name_offset2id = config.index_name + '__offset2id'
+        self._index_name_offset2id = 'offset2id__' + id
 
         self._client = self._build_client()
         self._build_offset2id_index()
@@ -63,11 +64,11 @@ class BackendMixin(BaseBackendMixin):
         super()._init_storage()
 
     def _build_offset2id_index(self):
-        self._client.indices.delete(index=self.index_name, ignore=[404])
-        self._client.indices.create(index=self.index_name)
+        self._client.indices.delete(index=self._index_name_offset2id, ignore=[404])
+        self._client.indices.create(index=self._index_name_offset2id)
 
-    def _build_hosts(self, elastic_config):
-        return elastic_config.host + ':' + str(elastic_config.port)
+    def _build_hosts(self):
+        return self._config.host + ':' + str(self._config.port)
 
     def _build_schema_from_elastic_config(self, elastic_config):
         da_schema = {

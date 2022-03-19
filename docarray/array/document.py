@@ -55,10 +55,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
     @overload
     def __new__(
         cls,
-        _docs: Optional['DocumentArrayElastic'] = None,
+        _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'elastic',
         config: Optional[Union['ElasticConfig', Dict]] = None,
-    ) -> 'DocumentArrayAnnlite':
+    ) -> 'DocumentArrayElastic':
         """Create a Elastic-powered DocumentArray object."""
         ...
 
