@@ -1,8 +1,11 @@
 __version__ = '0.9.14'
 
+import os
+
 from .document import Document
 from .array import DocumentArray
 
-from rich.traceback import install
+if 'DA_NO_RICH_HANDLER' not in os.environ:
+    from rich.traceback import install
 
-install(show_locals=True)
+    install()
