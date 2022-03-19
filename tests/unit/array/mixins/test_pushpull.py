@@ -18,6 +18,7 @@ class PullMockResponse:
     def __init__(self, status_code: int = 200):
         self.status_code = status_code
         self.headers = {'Content-length': 1}
+        self.ok = True
 
     def json(self):
         return {
