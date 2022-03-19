@@ -57,6 +57,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1389,4 +1390,23 @@
 
  - [[```44b622a2```](https://github.com/jina-ai/docarray/commit/44b622a21033b4d7668e3e0a507b37b8923ba289)] __-__ add laura video to weaviate docs (*Han Xiao*)
  - [[```08568a9f```](https://github.com/jina-ai/docarray/commit/08568a9fef3e97a386e0ef47331521282cba5c6a)] __-__ __version__: the next version will be 0.9.14 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-15></a>
+## Release Note (`0.9.15`)
+
+> Release time: 2022-03-19 14:04:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```1ae1ffa8```](https://github.com/jina-ai/docarray/commit/1ae1ffa8179bcbc23614e2467c404c5a6838824d)] __-__ add rich traceback handler as default (#215) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```5c33132c```](https://github.com/jina-ai/docarray/commit/5c33132cc6f45c1f2913b5652495eccddbd0f988)] __-__ __version__: the next version will be 0.9.15 (*Jina Dev Bot*)
 
