@@ -58,6 +58,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1409,4 +1410,27 @@
 ### 🍹 Other Improvements
 
  - [[```5c33132c```](https://github.com/jina-ai/docarray/commit/5c33132cc6f45c1f2913b5652495eccddbd0f988)] __-__ __version__: the next version will be 0.9.15 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-16></a>
+## Release Note (`0.9.16`)
+
+> Release time: 2022-03-21 21:11:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```4b70e5ad```](https://github.com/jina-ai/docarray/commit/4b70e5ad16abae5b384b658112abcf0ca2210671)] __-__ __array__: improve pull speed (#217) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3f4774af```](https://github.com/jina-ai/docarray/commit/3f4774afce0c327c76945e62beedb5d4badd862d)] __-__ __distance__: unit tests for distance (#216) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```eb92f14d```](https://github.com/jina-ai/docarray/commit/eb92f14d9c21e6609cf27fcdbdbfa38ff25cfaf7)] __-__ __version__: the next version will be 0.9.16 (*Jina Dev Bot*)
 
