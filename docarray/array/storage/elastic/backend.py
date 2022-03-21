@@ -28,6 +28,8 @@ if TYPE_CHECKING:
         DocumentArraySourceType,
     )
 
+from docarray.math.helper import EPSILON
+
 
 def _sanitize_table_name(table_name: str) -> str:
     ret = ''.join(c for c in table_name if c.isalnum() or c == '_')

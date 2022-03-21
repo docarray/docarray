@@ -9,9 +9,11 @@ if TYPE_CHECKING:
     from .sqlite import DocumentArraySqlite
     from .annlite import DocumentArrayAnnlite
     from .weaviate import DocumentArrayWeaviate
+    from .elastic import DocumentArrayElastic
     from .storage.sqlite import SqliteConfig
     from .storage.annlite import AnnliteConfig
     from .storage.weaviate import WeaviateConfig
+    from .storage.elastic import ElasticConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
