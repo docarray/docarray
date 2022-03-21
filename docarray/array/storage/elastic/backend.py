@@ -1,11 +1,23 @@
+import itertools
 import warnings
 from dataclasses import dataclass, field
-from typing import Dict, Optional, TYPE_CHECKING, Union, Tuple, List
+from typing import (
+    Dict,
+    Optional,
+    TYPE_CHECKING,
+    Union,
+    Tuple,
+    List,
+    Sequence,
+    Generator,
+    Iterator,
+)
 
 import numpy as np
 import uuid
 
 from ..base.backend import BaseBackendMixin
+from .... import DocumentArray, Document
 from ....helper import dataclass_from_dict
 
 from elasticsearch import Elasticsearch
@@ -62,6 +74,18 @@ class BackendMixin(BaseBackendMixin):
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
         super()._init_storage()
+
+        if _docs is None:
+            return
+        elif isinstance(
+            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
+        ):
+            self.clear()
+            self.extend(_docs)
+        else:
+            self.clear()
+            if isinstance(_docs, Document):
+                self.append(_docs)
 
     def _build_offset2id_index(self):
         self._client.indices.delete(index=self._index_name_offset2id, ignore=[404])
