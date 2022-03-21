@@ -11,14 +11,12 @@ from docarray.math.distance.tensorflow import cosine, euclidean, sqeuclidean
         (
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            np.array(
-                [[0.00000000e00, 2.53681537e-02], [2.53681537e-02, 2.22044605e-16]]
-            ),
+            np.array([[1.192093e-07, 2.53681537e-02], [2.53681537e-02, 0.000000e00]]),
         ),
         (
             tf.constant([[1, 2, 3]], dtype=tf.float32),
             tf.constant([[1, 2, 3]], dtype=tf.float32),
-            np.array([[1]]),
+            np.array([[1.192093e-07]]),
         ),
         (
             tf.constant([[0, 0, 0]], dtype=tf.float32),
@@ -33,7 +31,7 @@ from docarray.math.distance.tensorflow import cosine, euclidean, sqeuclidean
     ),
 )
 def test_cosine(x_mat, y_mat, result):
-    assert cosine(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +60,7 @@ def test_cosine(x_mat, y_mat, result):
     ),
 )
 def test_sqeuclidean(x_mat, y_mat, result):
-    assert sqeuclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sqeuclidean(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -91,4 +89,4 @@ def test_sqeuclidean(x_mat, y_mat, result):
     ),
 )
 def test_euclidean(x_mat, y_mat, result):
-    assert euclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(euclidean(x_mat, y_mat), result, rtol=1e-5)

@@ -11,14 +11,12 @@ from docarray.math.distance.torch import cosine, euclidean, sqeuclidean
         (
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
-            np.array(
-                [[0.00000000e00, 2.53681537e-02], [2.53681537e-02, 2.22044605e-16]]
-            ),
+            np.array([[1.192093e-07, 2.53681537e-02], [2.53681537e-02, 0.000000e00]]),
         ),
         (
             torch.tensor([[1.0, 2.0, 3.0]]),
             torch.tensor([[1.0, 2.0, 3.0]]),
-            np.array([[1]]),
+            np.array([[1.192093e-07]], dtype=np.float32),
         ),
         (
             torch.tensor([[0.0, 0.0, 0.0]]),
@@ -33,7 +31,7 @@ from docarray.math.distance.torch import cosine, euclidean, sqeuclidean
     ),
 )
 def test_cosine(x_mat, y_mat, result):
-    assert cosine(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -62,7 +60,7 @@ def test_cosine(x_mat, y_mat, result):
     ),
 )
 def test_sqeuclidean(x_mat, y_mat, result):
-    assert sqeuclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sqeuclidean(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -91,4 +89,4 @@ def test_sqeuclidean(x_mat, y_mat, result):
     ),
 )
 def test_euclidean(x_mat, y_mat, result):
-    assert euclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(euclidean(x_mat, y_mat), result, rtol=1e-5)

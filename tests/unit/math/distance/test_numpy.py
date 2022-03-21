@@ -28,7 +28,7 @@ from docarray.math.distance.numpy import (
     ),
 )
 def test_cosine(x_mat, y_mat, result):
-    assert cosine(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -51,7 +51,7 @@ def test_cosine(x_mat, y_mat, result):
     ),
 )
 def test_sparse_cosine(x_mat, y_mat, result):
-    assert sparse_cosine(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sparse_cosine(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -68,7 +68,7 @@ def test_sparse_cosine(x_mat, y_mat, result):
     ),
 )
 def test_sqeuclidean(x_mat, y_mat, result):
-    assert sqeuclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sqeuclidean(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -85,7 +85,7 @@ def test_sqeuclidean(x_mat, y_mat, result):
     ),
 )
 def test_sparse_sqeuclidean(x_mat, y_mat, result):
-    assert sparse_sqeuclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sparse_sqeuclidean(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -102,7 +102,7 @@ def test_sparse_sqeuclidean(x_mat, y_mat, result):
     ),
 )
 def test_euclidean(x_mat, y_mat, result):
-    assert euclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(euclidean(x_mat, y_mat), result, rtol=1e-5)
 
 
 @pytest.mark.parametrize(
@@ -123,4 +123,4 @@ def test_euclidean(x_mat, y_mat, result):
     ),
 )
 def test_sparse_euclidean(x_mat, y_mat, result):
-    assert sparse_euclidean(x_mat, y_mat).all() == result.all()
+    np.testing.assert_allclose(sparse_euclidean(x_mat, y_mat), result, rtol=1e-5)
