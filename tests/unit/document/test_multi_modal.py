@@ -1,11 +1,17 @@
+import os
 from typing import List
 
 from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
-from docarray.types import TextDocument, ImageDocument, BlobDocument
-from docarray.types import dataclass
+from docarray.types.multimodal import Text, Image, PILImage, AudioURI
+from docarray.types.multimodal import dataclass
 import pytest
 import numpy as np
+
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+
+AUDIO_URI = os.path.join(cur_dir, 'toydata/hello.wav')
+IMAGE_URI = os.path.join(cur_dir, 'toydata/test.png')
 
 
 def _assert_doc_schema(doc, schema):
@@ -21,8 +27,8 @@ def _assert_doc_schema(doc, schema):
 def test_simple():
     @dataclass
     class MMDocument:
-        title: TextDocument
-        image: ImageDocument
+        title: Text
+        image: Image
         version: int
 
     obj = MMDocument(title='hello world', image=np.random.rand(10, 10, 3), version=20)
@@ -34,8 +40,8 @@ def test_simple():
     assert 'multi_modal_schema' in doc._metadata
 
     expected_schema = [
-        ('title', AttributeType.DOCUMENT, 'TextDocument', 0),
-        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('title', AttributeType.DOCUMENT, 'Text', 0),
+        ('image', AttributeType.DOCUMENT, 'Image', 1),
         ('version', AttributeType.PRIMITIVE, 'int', None),
     ]
     _assert_doc_schema(doc, expected_schema)
@@ -45,9 +51,11 @@ def test_simple():
 
 
 def test_nested():
+    from PIL.Image import open as PIL_open
+
     @dataclass
     class SubDocument:
-        audio: BlobDocument
+        image: Image
         date: str
         version: float
 
@@ -55,10 +63,12 @@ def test_nested():
     class MMDocument:
         sub_doc: SubDocument
         value: str
-        image: ImageDocument
+        image: Image
 
     obj = MMDocument(
-        sub_doc=SubDocument(audio=b'1234', date='10.03.2022', version=1.5),
+        sub_doc=SubDocument(
+            image=np.random.rand(10, 10, 3), date='10.03.2022', version=1.5
+        ),
         image=np.random.rand(10, 10, 3),
         value='abc',
     )
@@ -68,7 +78,7 @@ def test_nested():
 
     assert doc.chunks[0].tags['date'] == '10.03.2022'
     assert doc.chunks[0].tags['version'] == 1.5
-    assert doc.chunks[0].chunks[0].blob == b'1234'
+    assert doc.chunks[0].chunks[0].tensor.shape == (10, 10, 3)
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
@@ -76,7 +86,7 @@ def test_nested():
 
     expected_schema = [
         ('sub_doc', AttributeType.NESTED, 'SubDocument', 0),
-        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('image', AttributeType.DOCUMENT, 'Image', 1),
         ('value', AttributeType.PRIMITIVE, 'str', None),
     ]
     _assert_doc_schema(doc, expected_schema)
@@ -120,7 +130,7 @@ def test_iterable_doc():
     class SocialPost:
         comments: List[str]
         ratings: List[int]
-        images: List[ImageDocument]
+        images: List[Image]
 
     obj = SocialPost(
         comments=['hello world', 'goodbye world'],
@@ -140,7 +150,7 @@ def test_iterable_doc():
     expected_schema = [
         ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
         ('ratings', AttributeType.ITERABLE_PRIMITIVE, 'List[int]', None),
-        ('images', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+        ('images', AttributeType.ITERABLE_DOCUMENT, 'List[Image]', 0),
     ]
     _assert_doc_schema(doc, expected_schema)
 
@@ -151,12 +161,12 @@ def test_iterable_doc():
 def test_iterable_nested():
     @dataclass
     class SubtitleDocument:
-        text: TextDocument
+        text: Text
         frames: List[int]
 
     @dataclass
     class VideoDocument:
-        frames: List[ImageDocument]
+        frames: List[Image]
         subtitles: List[SubtitleDocument]
 
     obj = VideoDocument(
@@ -181,13 +191,13 @@ def test_iterable_nested():
     assert 'multi_modal_schema' in doc._metadata
 
     expected_schema = [
-        ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[ImageDocument]', 0),
+        ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[Image]', 0),
         ('subtitles', AttributeType.ITERABLE_NESTED, 'List[SubtitleDocument]', 1),
     ]
     _assert_doc_schema(doc, expected_schema)
 
     expected_nested_schema = [
-        ('text', AttributeType.DOCUMENT, 'TextDocument', 0),
+        ('text', AttributeType.DOCUMENT, 'Text', 0),
         ('frames', AttributeType.ITERABLE_PRIMITIVE, 'List[int]', None),
     ]
     for subtitle in doc.chunks[1].chunks:
@@ -200,15 +210,15 @@ def test_iterable_nested():
 def test_get_multi_modal_attribute():
     @dataclass
     class MMDocument:
-        image: ImageDocument
-        texts: List[TextDocument]
-        audio: BlobDocument
+        image: Image
+        texts: List[Text]
+        audio: AudioURI
         primitive: int
 
     mm_doc = MMDocument(
         image=np.random.rand(10, 10, 3),
         texts=['text 1', 'text 2'],
-        audio=b'1234',
+        audio=AUDIO_URI,
         primitive=1,
     )
 
@@ -223,7 +233,7 @@ def test_get_multi_modal_attribute():
 
     assert images[0].tensor.shape == (10, 10, 3)
     assert texts[0].text == 'text 1'
-    assert audios[0].blob == b'1234'
+    assert audios[0].tensor.shape == (15417,)
 
     with pytest.raises(ValueError):
         doc.get_multi_modal_attribute('primitive')
@@ -248,12 +258,12 @@ def test_get_multi_modal_attribute():
 def test_traverse_simple(text_selector, audio_selector):
     @dataclass
     class MMDocument:
-        text: TextDocument
-        audio: BlobDocument
+        text: Text
+        audio: AudioURI
 
     mm_docs = DocumentArray(
         [
-            Document.from_dataclass(MMDocument(text=f'text {i}', audio=b'audio'))
+            Document.from_dataclass(MMDocument(text=f'text {i}', audio=AUDIO_URI))
             for i in range(5)
         ]
     )
@@ -264,22 +274,22 @@ def test_traverse_simple(text_selector, audio_selector):
 
     assert len(mm_docs[audio_selector]) == 5
     for i, doc in enumerate(mm_docs[audio_selector]):
-        assert doc.blob == b'audio'
+        assert doc.tensor.shape == (15417,)
 
 
 def test_traverse_attributes():
     @dataclass
     class MMDocument:
-        attr1: TextDocument
-        attr2: BlobDocument
-        attr3: ImageDocument
+        attr1: Text
+        attr2: AudioURI
+        attr3: Image
 
     mm_docs = DocumentArray(
         [
             Document.from_dataclass(
                 MMDocument(
                     attr1='text',
-                    attr2=b'1234',
+                    attr2=AUDIO_URI,
                     attr3=np.random.rand(10, 10, 3),
                 )
             )
@@ -299,7 +309,7 @@ def test_traverse_attributes():
 def test_traverse_slice(selector):
     @dataclass
     class MMDocument:
-        attr: TextDocument
+        attr: Text
 
     mm_docs = DocumentArray(
         [
@@ -320,16 +330,16 @@ def test_traverse_slice(selector):
 def test_traverse_iterable():
     @dataclass
     class MMDocument:
-        attr1: List[TextDocument]
-        attr2: List[BlobDocument]
+        attr1: List[Text]
+        attr2: List[AudioURI]
 
     mm_da = DocumentArray(
         [
             Document.from_dataclass(
-                MMDocument(attr1=['text 1', 'text 2', 'text 3'], attr2=[b'1', b'2'])
+                MMDocument(attr1=['text 1', 'text 2', 'text 3'], attr2=[AUDIO_URI] * 2)
             ),
             Document.from_dataclass(
-                MMDocument(attr1=['text 3', 'text 4'], attr2=[b'1', b'3', b'4'])
+                MMDocument(attr1=['text 3', 'text 4'], attr2=[AUDIO_URI] * 3)
             ),
         ]
     )
@@ -344,13 +354,13 @@ def test_traverse_iterable():
         assert text_doc.text == f'text {i}'
 
     for i, blob_doc in enumerate(mm_da['@.[attr2]-2:'], start=1):
-        assert blob_doc.blob == bytes(f'{i}', encoding='utf-8')
+        assert blob_doc.tensor.shape == (15417,)
 
 
 def test_traverse_chunks_attribute():
     @dataclass
     class MMDocument:
-        attr: TextDocument
+        attr: Text
 
     da = DocumentArray.empty(5)
     for i, d in enumerate(da):
@@ -366,11 +376,11 @@ def test_traverse_chunks_attribute():
 def test_paths_separator():
     @dataclass
     class MMDocument:
-        attr0: TextDocument
-        attr1: TextDocument
-        attr2: TextDocument
-        attr3: TextDocument
-        attr4: TextDocument
+        attr0: Text
+        attr1: Text
+        attr2: Text
+        attr3: Text
+        attr4: Text
 
     da = DocumentArray(
         [
@@ -401,8 +411,8 @@ def test_paths_separator():
 def test_proto_serialization():
     @dataclass
     class MMDocument:
-        title: TextDocument
-        image: ImageDocument
+        title: Text
+        image: Image
         version: int
 
     obj = MMDocument(title='hello world', image=np.random.rand(10, 10, 3), version=20)
@@ -421,8 +431,8 @@ def test_proto_serialization():
     assert 'multi_modal_schema' in deserialized_doc._metadata
 
     expected_schema = [
-        ('title', AttributeType.DOCUMENT, 'TextDocument', 0),
-        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('title', AttributeType.DOCUMENT, 'Text', 0),
+        ('image', AttributeType.DOCUMENT, 'Image', 1),
         ('version', AttributeType.PRIMITIVE, 'int', None),
     ]
     _assert_doc_schema(deserialized_doc, expected_schema)
