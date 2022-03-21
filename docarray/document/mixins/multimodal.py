@@ -3,7 +3,8 @@ from dataclasses import is_dataclass
 import typing
 from enum import Enum
 
-from docarray.types import ImageDocument, BlobDocument, TextDocument
+from docarray.types.multimodal import Image, Text
+from docarray.types.multimodal import TYPES_REGISTRY
 
 if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray
@@ -123,12 +124,10 @@ class MultiModalMixin:
         if is_dataclass(obj_type):
             doc = cls.from_dataclass(obj)
             attribute_type = AttributeType.NESTED
-        elif obj_type == ImageDocument:
-            doc = Document(tensor=obj, modality='image')
-        elif obj_type == BlobDocument:
-            doc = Document(blob=obj, modality='blob')
-        elif obj_type == TextDocument:
-            doc = Document(text=obj, modality='text')
+        elif obj_type in TYPES_REGISTRY:
+            doc = Document()
+            serializer, _ = TYPES_REGISTRY[obj_type]
+            serializer(obj, doc)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
