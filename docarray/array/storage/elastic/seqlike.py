@@ -2,6 +2,7 @@ from typing import Union, Iterable
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
+from ..registry import _REGISTRY
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):

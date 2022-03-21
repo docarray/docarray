@@ -27,6 +27,7 @@ if TYPE_CHECKING:
     from ....types import (
         DocumentArraySourceType,
     )
+    from ....types import DocumentArraySourceType, ArrayType
 
 from docarray.math.helper import EPSILON
 
