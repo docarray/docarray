@@ -41,13 +41,9 @@ REMAINDER_TAGGED = rf'(?P<remainder>({SELECTOR}{SLICE})*)'
 TRAVERSAL_PATH = rf'{SELECTOR}{SLICE}{REMAINDER}'
 TRAVERSAL_PATH_TAGGED = rf'(?P<path>{SELECTOR_TAGGED}{SLICE_TAGGED}){REMAINDER_TAGGED}'
 
-# TRAVERSAL_PATH_CHAIN = rf'{TRAVERSAL_PATH}({TRAVERSAL_PATH})*'
-# TRAVERSAL_PATH_CHAIN_TAGGED = rf'(?P<path>{TRAVERSAL_PATH_CHAIN})'
 
-# PATHS_REMAINDER = rf'({PATHS_SEPARATOR}{TRAVERSAL_PATH})*'
 PATHS_REMAINDER_TAGGED = rf'(?P<paths_remainder>({PATHS_SEPARATOR}{TRAVERSAL_PATH})*)'
 
-# TRAVERSAL_PATH_LIST = rf'^{TRAVERSAL_PATH}{PATHS_REMAINDER}$'
 TRAVERSAL_PATH_LIST_TAGGED = (
     rf'^(?P<traversal_path>{TRAVERSAL_PATH}){PATHS_REMAINDER_TAGGED}$'
 )
@@ -99,10 +95,12 @@ class TraverseMixin:
             - `r`: docs in this TraversableSequence
             - `m`: all match-documents at adjacency 1
             - `c`: all child-documents at granularity 1
+            - `r.[attribute]`: access attribute of a multi modal document
             - `cc`: all child-documents at granularity 2
             - `mm`: all match-documents at adjacency 2
             - `cm`: all match-document at adjacency 1 and granularity 1
             - `r,c`: docs in this TraversableSequence and all child-documents at granularity 1
+            - `r[start:end]`: access sub document array using slice
 
         """
         traversal_paths = re.sub(r'\s+', '', traversal_paths)
