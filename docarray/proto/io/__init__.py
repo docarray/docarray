@@ -22,8 +22,6 @@ def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
             fields[f_name] = [Document.from_protobuf(d) for d in value]
         elif isinstance(value, NdArrayProto):
             fields[f_name] = read_ndarray(value)
-        elif isinstance(value, Struct) and f_name == '_metadata':
-            fields['_metadata'] = MessageToDict(value, preserving_proto_field_name=True)
         elif isinstance(value, Struct):
             fields[f_name] = MessageToDict(value, preserving_proto_field_name=True)
         elif f_name == 'location':
