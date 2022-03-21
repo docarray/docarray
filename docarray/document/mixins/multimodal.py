@@ -9,13 +9,13 @@ if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray
 
 
-class AttributeType(Enum):
-    DOCUMENT = 1
-    PRIMITIVE = 2
-    ITERABLE_PRIMITIVE = 3
-    ITERABLE_DOCUMENT = 4
-    NESTED = 5
-    ITERABLE_NESTED = 6
+class AttributeType(str, Enum):
+    DOCUMENT = 'document'
+    PRIMITIVE = 'primitive'
+    ITERABLE_PRIMITIVE = 'iterable_primitive'
+    ITERABLE_DOCUMENT = 'iterable_document'
+    NESTED = 'nested'
+    ITERABLE_NESTED = 'iterable_nested'
 
 
 class MultiModalMixin:

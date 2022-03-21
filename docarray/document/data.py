@@ -65,7 +65,7 @@ class DocumentData:
         r = []
         for f in fields(self):
             f_name = f.name
-            if not f_name.startswith('_'):
+            if not f_name.startswith('_') or f_name == '_metadata':
                 v = getattr(self, f_name)
                 if v is not None:
                     if f_name not in default_values:
