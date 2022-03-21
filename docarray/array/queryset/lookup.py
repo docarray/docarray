@@ -107,13 +107,22 @@ def lookup(key, val, doc: 'Document') -> bool:
     elif last == 'size':
         return iff_not_none(value, lambda y: len(y) == val)
     elif last == 'exists':
-        if value is None:
-            return True != val
-        elif isinstance(value, (str, bytes)):
-            return (value == '' or value == b'') != val
+        if not isinstance(val, bool):
+            raise ValueError(
+                '$exists operator can only accept True/False as value for comparison'
+            )
+
+        if '__' in get_key:
+            is_empty = False
+            try:
+                is_empty = not value
+            except:
+                # ndarray-like will end up here
+                pass
+
+            return is_empty != val
         else:
-            return True == val
-        # return (value is None or value == '' or value == b'') != val
+            return (get_key in doc.non_empty_fields) == val
     else:
         # return value == val
         raise ValueError(

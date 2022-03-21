@@ -1,5 +1,5 @@
 (access-elements)=
-# Access Elements
+# Access Documents
 
 This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what's the big deal?
 

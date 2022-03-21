@@ -52,6 +52,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1274,4 +1275,29 @@
 
  - [[```3bd35b9c```](https://github.com/jina-ai/docarray/commit/3bd35b9cda7597fcf2fc7321aa7f1f38150333ba)] __-__ fix type hint (*Han Xiao*)
  - [[```e8c01e37```](https://github.com/jina-ai/docarray/commit/e8c01e37d0f14cc44cf5257dac6bb62e27e78d80)] __-__ __version__: the next version will be 0.9.9 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-10></a>
+## Release Note (`0.9.10`)
+
+> Release time: 2022-03-15 12:49:35
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ felix-wang,  Shubham Saboo,  Joan Fontanals,  Andrey Vasnetsov,  Jina Dev Bot,  🙇
+
+
+### 📗 Documentation
+
+ - [[```81c436ab```](https://github.com/jina-ai/docarray/commit/81c436ab665d82cad91c1cb83c50af47d002b0d1)] __-__ __array__: add docs for find function (#197) (*felix-wang*)
+ - [[```a6d11a1f```](https://github.com/jina-ai/docarray/commit/a6d11a1f2fa5f2600720a358f9ee0383a7473240)] __-__ fix docker-compose command (#204) (*Andrey Vasnetsov*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```1b5f536d```](https://github.com/jina-ai/docarray/commit/1b5f536ddb5f3b83180ba5029d677b7171dc074a)] __-__ simplify post test (#201) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```6427f42c```](https://github.com/jina-ai/docarray/commit/6427f42c6f51ec53c0f476e04fc33ac7d96dbbaa)] __-__ add learning bootcamp call to action (#202) (*Shubham Saboo*)
+ - [[```c1c99e0f```](https://github.com/jina-ai/docarray/commit/c1c99e0fadcf7cbe1e1c3c1ff7847d2ef7715982)] __-__ __version__: the next version will be 0.9.10 (*Jina Dev Bot*)
 

@@ -18,7 +18,7 @@ class PostMixin:
 
         :param host: a host string. Can be one of the following:
             - `grpc://192.168.0.123:8080/endpoint`
-            - `websocket://192.168.0.123:8080/endpoint`
+            - `ws://192.168.0.123:8080/endpoint`
             - `http://192.168.0.123:8080/endpoint`
             - `jinahub://Hello/endpoint`
             - `jinahub+docker://Hello/endpoint`
@@ -26,6 +26,7 @@ class PostMixin:
 
         :param show_progress: if to show a progressbar
         :param batch_size: number of Document on each request
+        :param parameters: parameters to send in the request
         :return: the new DocumentArray returned from remote
         """
 
@@ -56,7 +57,7 @@ class PostMixin:
                     request_size=batch_size,
                     parameters=parameters,
                 )
-        elif r.scheme in ('grpc', 'http', 'websocket'):
+        elif r.scheme in ('grpc', 'http', 'ws'):
             if _port is None:
                 raise ValueError(f'can not determine port from {host}')
 
