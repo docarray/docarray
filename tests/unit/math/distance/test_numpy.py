@@ -2,9 +2,14 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from docarray.math.distance.numpy import (cosine, euclidean, sparse_cosine,
-                                          sparse_euclidean, sparse_sqeuclidean,
-                                          sqeuclidean)
+from docarray.math.distance.numpy import (
+    cosine,
+    euclidean,
+    sparse_cosine,
+    sparse_euclidean,
+    sparse_sqeuclidean,
+    sqeuclidean,
+)
 
 
 @pytest.mark.parametrize(
