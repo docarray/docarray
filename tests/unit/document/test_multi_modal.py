@@ -396,3 +396,36 @@ def test_paths_separator():
             assert flattened[i].text == 'text 3'
         else:
             assert flattened[i].text == 'text 4'
+
+
+def test_proto_serialization():
+    @dataclass
+    class MMDocument:
+        title: TextDocument
+        image: ImageDocument
+        version: int
+
+    obj = MMDocument(title='hello world', image=np.random.rand(10, 10, 3), version=20)
+    doc = Document.from_dataclass(obj)
+
+    proto = doc.to_protobuf()
+    assert proto._metadata is not None
+    assert proto._metadata['multi_modal_schema']
+
+    deserialized_doc = Document.from_protobuf(proto)
+
+    assert deserialized_doc.chunks[0].text == 'hello world'
+    assert deserialized_doc.chunks[1].tensor.shape == (10, 10, 3)
+    assert deserialized_doc.tags['version'] == 20
+
+    assert 'multi_modal_schema' in deserialized_doc._metadata
+
+    expected_schema = [
+        ('title', AttributeType.DOCUMENT, 'TextDocument', 0),
+        ('image', AttributeType.DOCUMENT, 'ImageDocument', 1),
+        ('version', AttributeType.PRIMITIVE, 'int', None),
+    ]
+    _assert_doc_schema(deserialized_doc, expected_schema)
+
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
