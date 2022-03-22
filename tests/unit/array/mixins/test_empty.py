@@ -22,11 +22,19 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
     ],
 )
 def test_empty_non_zero(da_cls, config, start_storage):
+
+    # Assert .empty provides a da with 0 docs
+    if config:
+        da = da_cls.empty(config=config)
+    else:
+        da = da_cls.empty()
+
+    assert len(da) == 0
+
+    # Assert .empty provides a da of the correct length
     if config:
         da = da_cls.empty(10, config=config)
     else:
         da = da_cls.empty(10)
-    da = DocumentArray.empty(10)
+
     assert len(da) == 10
-    da = DocumentArray.empty()
-    assert len(da) == 0
