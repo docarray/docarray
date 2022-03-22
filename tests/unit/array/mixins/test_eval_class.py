@@ -14,6 +14,7 @@ from docarray import DocumentArray, Document
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
+        ('elastic', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -49,6 +50,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
+        ('elastic', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -64,7 +66,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         ('ndcg_at_k', {}),
     ],
 )
-def test_eval_mixin_zero_match(storage, config, metric_fn, kwargs):
+def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
@@ -91,9 +93,10 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, kwargs):
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
+        ('elastic', {'n_dim': 256}),
     ],
 )
-def test_diff_len_should_raise(storage, config):
+def test_diff_len_should_raise(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
     da2 = DocumentArray.empty(5, storage=storage, config=config)
     with pytest.raises(ValueError):
@@ -108,9 +111,10 @@ def test_diff_len_should_raise(storage, config):
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
+        ('elastic', {'n_dim': 256}),
     ],
 )
-def test_diff_hash_fun_should_raise(storage, config):
+def test_diff_hash_fun_should_raise(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
     da2 = DocumentArray.empty(10, storage=storage, config=config)
     with pytest.raises(ValueError):
@@ -125,9 +129,10 @@ def test_diff_hash_fun_should_raise(storage, config):
         ('sqlite', {}),
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
+        ('elastic', {'n_dim': 3}),
     ],
 )
-def test_same_hash_same_len_fun_should_work(storage, config):
+def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 3])
     da1_index = DocumentArray(da1, storage=storage, config=config)
@@ -152,9 +157,10 @@ def test_same_hash_same_len_fun_should_work(storage, config):
         ('sqlite', {}),
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
+        ('elastic', {'n_dim': 3}),
     ],
 )
-def test_adding_noise(storage, config):
+def test_adding_noise(storage, config, start_storage):
     da = DocumentArray.empty(10)
 
     da.embeddings = np.random.random([10, 3])
@@ -181,6 +187,7 @@ def test_adding_noise(storage, config):
         ('sqlite', {}),
         ('annlite', {'n_dim': 128}),
         ('qdrant', {'n_dim': 128}),
+        ('elastic', {'n_dim': 128}),
     ],
 )
 @pytest.mark.parametrize(
@@ -190,7 +197,7 @@ def test_adding_noise(storage, config):
         ('f1_score_at_k', {}),
     ],
 )
-def test_diff_match_len_in_gd(storage, config, metric_fn, kwargs):
+def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs):
     da1 = DocumentArray.empty(10)
     da1.embeddings = np.random.random([10, 128])
     da1_index = DocumentArray(da1, storage=storage, config=config)

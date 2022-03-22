@@ -12,6 +12,7 @@ from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from tests import random_docs
 
 
@@ -31,6 +32,7 @@ def docs():
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
     ],
 )
 def test_document_save_load(
@@ -63,6 +65,7 @@ def test_document_save_load(
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
     ],
 )
 def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storage):
@@ -81,6 +84,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storag
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
     ],
 )
 def test_from_ndarray(da_cls, config, start_storage):
@@ -97,6 +101,7 @@ def test_from_ndarray(da_cls, config, start_storage):
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
     ],
 )
 def test_from_files(da_cls, config, start_storage):
@@ -136,6 +141,7 @@ def test_from_files_exclude():
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
     ],
 )
 def test_from_ndjson(da_cls, config, start_storage):
@@ -152,6 +158,7 @@ def test_from_ndjson(da_cls, config, start_storage):
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=3)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=3)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=3)),
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_storage):
@@ -179,6 +186,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=3)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
@@ -209,6 +217,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=256)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_storage):
@@ -237,6 +246,8 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
         (DocumentArraySqlite, None),
         # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)), # TODO: enable this
         # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=3)),
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):

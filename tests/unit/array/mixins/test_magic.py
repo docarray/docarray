@@ -7,6 +7,7 @@ from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 N = 100
 
@@ -30,6 +31,7 @@ def docs():
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_iter_len_bool(da_cls, config, start_storage):
@@ -55,6 +57,7 @@ def test_iter_len_bool(da_cls, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_repr(da_cls, config, start_storage):
@@ -73,6 +76,7 @@ def test_repr(da_cls, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=128)),
         ('weaviate', WeaviateConfig(n_dim=128)),
         ('qdrant', QdrantConfig(n_dim=128)),
+        ('elastic', ElasticConfig(n_dim=128)),
     ],
 )
 def test_repr_str(docs, storage, config, start_storage):
@@ -95,6 +99,7 @@ def test_repr_str(docs, storage, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=10)),
     ],
 )
 def test_iadd(da_cls, config, start_storage):
