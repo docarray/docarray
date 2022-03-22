@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.document.mixins.plot - DocArray 0.9.16 documentation</title>
+        <title>docarray.document.mixins.plot - DocArray 0.9.17 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.9.16 documentation</div>
+                <div class="brand">DocArray 0.9.17 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -516,12 +516,16 @@
         <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'audio'</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'audio'</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'data:audio/'</span><span class="p">):</span>
                 <span class="n">uri</span> <span class="o">=</span> <span class="n">_convert_display_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="p">)</span>
                 <span class="n">_html5_audio_player</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'video'</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'video'</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                <span class="s1">'data:video/'</span>
+            <span class="p">):</span>
                 <span class="n">uri</span> <span class="o">=</span> <span class="n">_convert_display_uri</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span><span class="p">)</span>
                 <span class="n">_html5_video_player</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'data:image/'</span><span class="p">):</span>
+                <span class="n">_html5_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">))</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -552,6 +556,18 @@
         <span class="n">blob</span> <span class="o">=</span> <span class="n">_uri_to_blob</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_to_datauri</span><span class="p">(</span><span class="n">mime_type</span><span class="p">,</span> <span class="n">blob</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">uri</span>
+
+
+<span class="k">def</span> <span class="nf">_html5_image</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+    <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>  <span class="c1"># noqa</span>
+
+    <span class="n">src</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'''</span>
+<span class="s1">    &lt;body&gt;</span>
+<span class="s1">    &lt;image src="</span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s1">" height="200px"&gt;</span>
+<span class="s1">    &lt;/body&gt;</span>
+<span class="s1">    '''</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>  <span class="c1"># noqa</span>
 
 
 <span class="k">def</span> <span class="nf">_html5_video_player</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
@@ -598,7 +614,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 21, 2022.
+                            Last updated on Mar 22, 2022.
                         </div>
                     </div>
                     <div class="right-details">
