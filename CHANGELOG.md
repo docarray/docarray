@@ -60,6 +60,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1457,4 +1458,23 @@
 ### 🍹 Other Improvements
 
  - [[```bbbf8816```](https://github.com/jina-ai/docarray/commit/bbbf881650af26a8d69ca923e7ca5e1417effc79)] __-__ __version__: the next version will be 0.9.17 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-18></a>
+## Release Note (`0.9.18`)
+
+> Release time: 2022-03-22 22:00:03
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6d2093ff```](https://github.com/jina-ai/docarray/commit/6d2093ff91766580a5021be090abe503b6472ffb)] __-__ __document__: set content field to none clear all attributes (#220) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```14be8f16```](https://github.com/jina-ai/docarray/commit/14be8f165fb0c8b547b5ed903362607b37acf1ab)] __-__ __version__: the next version will be 0.9.18 (*Jina Dev Bot*)
 
