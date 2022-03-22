@@ -67,7 +67,7 @@ class BackendMixin(BaseBackendMixin):
             config = dataclass_from_dict(ElasticConfig, config)
 
         id = uuid.uuid4().hex
-        config.index_name += id
+        config.index_name += '__' + id
         self._config = config
         self.n_dim = self._config.n_dim
         self._index_name_offset2id = 'offset2id__' + id
@@ -83,10 +83,8 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(
             _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
         ):
-            self.clear()
             self.extend(_docs)
         else:
-            self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
 
