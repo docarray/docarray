@@ -3,7 +3,7 @@ from dataclasses import is_dataclass
 import typing
 from enum import Enum
 
-from docarray.types.multimodal import Image, Text
+from docarray.types.multimodal import Image, Text, Field
 from docarray.types.multimodal import TYPES_REGISTRY
 
 if typing.TYPE_CHECKING:
@@ -32,7 +32,7 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
-            if field.type in [str, int, float, bool]:
+            if field.type in [str, int, float, bool] and not isinstance(field, Field):
                 tags[key] = attribute
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
@@ -52,7 +52,9 @@ class MultiModalMixin:
                     else:
                         chunk = Document()
                         for element in attribute:
-                            doc, attribute_type = cls._from_obj(element, sub_type)
+                            doc, attribute_type = cls._from_obj(
+                                element, sub_type, field
+                            )
                             if attribute_type == AttributeType.DOCUMENT:
                                 attribute_type = AttributeType.ITERABLE_DOCUMENT
                             elif attribute_type == AttributeType.NESTED:
@@ -71,7 +73,7 @@ class MultiModalMixin:
                 else:
                     raise ValueError(f'Unsupported type annotation {field.type._name}')
             else:
-                doc, attribute_type = cls._from_obj(attribute, field.type)
+                doc, attribute_type = cls._from_obj(attribute, field.type, field)
                 multi_modal_schema[key] = {
                     'attribute_type': attribute_type,
                     'type': field.type.__name__,
@@ -116,7 +118,7 @@ class MultiModalMixin:
             )
 
     @classmethod
-    def _from_obj(cls, obj, obj_type) -> typing.Tuple['Document', AttributeType]:
+    def _from_obj(cls, obj, obj_type, field) -> typing.Tuple['Document', AttributeType]:
         from docarray import Document
 
         attribute_type = AttributeType.DOCUMENT
@@ -124,10 +126,9 @@ class MultiModalMixin:
         if is_dataclass(obj_type):
             doc = cls.from_dataclass(obj)
             attribute_type = AttributeType.NESTED
-        elif obj_type in TYPES_REGISTRY:
+        elif isinstance(field, Field):
             doc = Document()
-            serializer, _ = TYPES_REGISTRY[obj_type]
-            serializer(obj, doc)
+            field.serializer(obj, doc)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type

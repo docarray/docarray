@@ -8,6 +8,8 @@ from dataclasses import (
 from pathlib import Path
 from typing import TypeVar, ForwardRef, Callable, Any, Optional, TYPE_CHECKING
 
+import typing
+
 from docarray.types.deserializers import (
     image_deserializer,
     text_deserializer,
@@ -78,11 +80,9 @@ TYPES_REGISTRY = {
 }
 
 
-def _get_doc_attribute(attribute_doc: 'Document', attribute_type: str):
-    for key in TYPES_REGISTRY:
-        if key.__name__ in attribute_type:
-            _, deserializer = TYPES_REGISTRY[key]
-            return deserializer(attribute_doc)
+def _get_doc_attribute(attribute_doc: 'Document', field):
+    if isinstance(field, Field):
+        return field.deserializer(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 
@@ -101,28 +101,29 @@ def from_document(cls: 'T', doc: 'Document'):
         raise ValueError('the Document does not correspond to a Multi Modal Document')
 
     attributes = {}
-    for key, field in doc._metadata['multi_modal_schema'].items():
+    for key, attribute_info in doc._metadata['multi_modal_schema'].items():
+        field = cls.__dataclass_fields__[key]
         position = doc._metadata['multi_modal_schema'][key].get('position')
-        if field['attribute_type'] in [
+        if attribute_info['attribute_type'] in [
             AttributeType.PRIMITIVE,
             AttributeType.ITERABLE_PRIMITIVE,
         ]:
             attributes[key] = doc.tags[key]
-        elif field['attribute_type'] == AttributeType.DOCUMENT:
+        elif attribute_info['attribute_type'] == AttributeType.DOCUMENT:
             attribute_doc = doc.chunks[position]
-            attribute = _get_doc_attribute(attribute_doc, field['type'])
+            attribute = _get_doc_attribute(attribute_doc, field)
             attributes[key] = attribute
-        elif field['attribute_type'] == AttributeType.ITERABLE_DOCUMENT:
+        elif attribute_info['attribute_type'] == AttributeType.ITERABLE_DOCUMENT:
             attribute_list = []
             for chunk_doc in doc.chunks[position].chunks:
-                attribute_list.append(_get_doc_attribute(chunk_doc, field['type']))
+                attribute_list.append(_get_doc_attribute(chunk_doc, field))
             attributes[key] = attribute_list
-        elif field['attribute_type'] == AttributeType.NESTED:
-            nested_cls = cls.__dataclass_fields__[key].type
+        elif attribute_info['attribute_type'] == AttributeType.NESTED:
+            nested_cls = field.type
             attributes[key] = _get_doc_nested_attribute(
                 doc.chunks[position], nested_cls
             )
-        elif field['attribute_type'] == AttributeType.ITERABLE_NESTED:
+        elif attribute_info['attribute_type'] == AttributeType.ITERABLE_NESTED:
             nested_cls = cls.__dataclass_fields__[key].type.__args__[0]
             attribute_list = []
             for chunk_doc in doc.chunks[position].chunks:
@@ -157,9 +158,26 @@ def dataclass(cls=None):
             frozen=False,
         )
         setattr(decorated_cls, from_document.__func__.__name__, from_document)
-        # for key, field in decorated_cls.__dataclass_fields__.items():
-        #     serializer, deserializer = TYPES_REGISTRY[field.type]
-        #     decorated_cls.__dataclass_fields__[key] = Field(serializer, deserializer, field)
+        for key, field in decorated_cls.__dataclass_fields__.items():
+            if isinstance(field, Field):
+                continue
+
+            if field.type in TYPES_REGISTRY:
+                serializer, deserializer = TYPES_REGISTRY[field.type]
+                decorated_cls.__dataclass_fields__[key] = Field(
+                    serializer, deserializer, field
+                )
+
+            elif isinstance(field.type, typing._GenericAlias) and field.type._name in [
+                'List',
+                'Iterable',
+            ]:
+                sub_type = field.type.__args__[0]
+                if sub_type in TYPES_REGISTRY:
+                    serializer, deserializer = TYPES_REGISTRY[sub_type]
+                    decorated_cls.__dataclass_fields__[key] = Field(
+                        serializer, deserializer, field
+                    )
 
         return decorated_cls
 
