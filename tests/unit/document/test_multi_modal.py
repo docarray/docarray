@@ -3,7 +3,7 @@ from typing import List
 
 from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
-from docarray.types.multimodal import Text, Image, PILImage, AudioURI
+from docarray.types.multimodal import Text, Image, Audio
 from docarray.types.multimodal import dataclass
 import pytest
 import numpy as np
@@ -51,8 +51,6 @@ def test_simple():
 
 
 def test_nested():
-    from PIL.Image import open as PIL_open
-
     @dataclass
     class SubDocument:
         image: Image
@@ -66,9 +64,7 @@ def test_nested():
         image: Image
 
     obj = MMDocument(
-        sub_doc=SubDocument(
-            image=np.random.rand(10, 10, 3), date='10.03.2022', version=1.5
-        ),
+        sub_doc=SubDocument(image=IMAGE_URI, date='10.03.2022', version=1.5),
         image=np.random.rand(10, 10, 3),
         value='abc',
     )
@@ -78,7 +74,7 @@ def test_nested():
 
     assert doc.chunks[0].tags['date'] == '10.03.2022'
     assert doc.chunks[0].tags['version'] == 1.5
-    assert doc.chunks[0].chunks[0].tensor.shape == (10, 10, 3)
+    assert doc.chunks[0].chunks[0].tensor.shape == (85, 152, 3)
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
@@ -212,7 +208,7 @@ def test_get_multi_modal_attribute():
     class MMDocument:
         image: Image
         texts: List[Text]
-        audio: AudioURI
+        audio: Audio
         primitive: int
 
     mm_doc = MMDocument(
@@ -256,14 +252,19 @@ def test_get_multi_modal_attribute():
     ['@.[audio]', '@r.[audio]', '@r. [ audio]', '@r:.[audio]', '@.audio', '@ . audio'],
 )
 def test_traverse_simple(text_selector, audio_selector):
+    from PIL.Image import open as PIL_open
+
     @dataclass
     class MMDocument:
         text: Text
-        audio: AudioURI
+        audio: Audio
+        image: Image
 
     mm_docs = DocumentArray(
         [
-            Document.from_dataclass(MMDocument(text=f'text {i}', audio=AUDIO_URI))
+            Document.from_dataclass(
+                MMDocument(text=f'text {i}', audio=AUDIO_URI, image=PIL_open(IMAGE_URI))
+            )
             for i in range(5)
         ]
     )
@@ -276,12 +277,16 @@ def test_traverse_simple(text_selector, audio_selector):
     for i, doc in enumerate(mm_docs[audio_selector]):
         assert doc.tensor.shape == (15417,)
 
+    assert len(mm_docs['@r.[image]']) == 5
+    for i, doc in enumerate(mm_docs['@r.[image]']):
+        assert doc.tensor.shape == (85, 152, 3)
+
 
 def test_traverse_attributes():
     @dataclass
     class MMDocument:
         attr1: Text
-        attr2: AudioURI
+        attr2: Audio
         attr3: Image
 
     mm_docs = DocumentArray(
@@ -331,7 +336,7 @@ def test_traverse_iterable():
     @dataclass
     class MMDocument:
         attr1: List[Text]
-        attr2: List[AudioURI]
+        attr2: List[Audio]
 
     mm_da = DocumentArray(
         [
