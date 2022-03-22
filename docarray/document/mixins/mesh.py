@@ -19,18 +19,22 @@ class MeshDataMixin:
         :return: itself after processed
         """
         import trimesh
+        import urllib.parse
+
+        scheme = urllib.parse.urlparse(self.uri).scheme
+        loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
         if as_chunks:
             from .. import Document
 
             # try to coerce everything into a scene
-            scene = trimesh.load(self.uri, force='scene')
+            scene = loader(self.uri, force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
                 self.chunks.append(Document(tensor=geo.sample(samples)))
         else:
             # combine a scene into a single mesh
-            mesh = trimesh.load(self.uri, force='mesh')
+            mesh = loader(self.uri, force='mesh')
             self.tensor = mesh.sample(samples)
 
         return self

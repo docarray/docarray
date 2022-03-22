@@ -127,7 +127,12 @@ class PushPullMixin:
         url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
         response = requests.get(url)
 
-        url = response.json()['data']['download']
+        if response.ok:
+            url = response.json()['data']['download']
+        else:
+            raise FileNotFoundError(
+                f'can not find `{token}` DocumentArray on the Cloud. Misspelled?'
+            )
 
         with requests.get(
             url,
@@ -161,26 +166,3 @@ class PushPullMixin:
                     fp.write(_source.content)
 
             return r
-
-
-def _get_progressbar(show_progress):
-    from rich.progress import (
-        BarColumn,
-        DownloadColumn,
-        Progress,
-        TimeRemainingColumn,
-        TransferSpeedColumn,
-    )
-
-    return Progress(
-        BarColumn(),
-        "[progress.percentage]{task.percentage:>3.1f}%",
-        "•",
-        DownloadColumn(),
-        "•",
-        TransferSpeedColumn(),
-        "•",
-        TimeRemainingColumn(),
-        transient=True,
-        disable=not show_progress,
-    )

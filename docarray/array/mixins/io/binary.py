@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 class LazyRequestReader:
     def __init__(self, r):
-        self._data = r.iter_content(chunk_size=8192)
+        self._data = r.iter_content(chunk_size=1024 * 1024)
         self.content = b''
 
     def __getitem__(self, item: slice):

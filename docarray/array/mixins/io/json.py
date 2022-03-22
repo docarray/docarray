@@ -31,9 +31,7 @@ class JsonIOMixin:
             file_ctx = open(file, 'w', encoding=encoding)
 
         with file_ctx as fp:
-            for d in self:
-                json.dump(d.to_dict(protocol=protocol, **kwargs), fp)
-                fp.write('\n')
+            fp.write(self.to_json(protocol=protocol, **kwargs))
 
     @classmethod
     def load_json(
@@ -51,30 +49,27 @@ class JsonIOMixin:
 
         :return: a DocumentArrayLike object
         """
-
-        from .... import Document
-
-        constructor = Document.from_json
         if hasattr(file, 'read'):
             file_ctx = nullcontext(file)
-        elif os.path.exists(file):
-            file_ctx = open(file, 'r', encoding=encoding)
         else:
-            file_ctx = nullcontext(json.loads(file))
-            constructor = Document.from_dict
+            file_ctx = open(file, 'r', encoding=encoding)
 
         with file_ctx as fp:
-            return cls([constructor(v, protocol=protocol) for v in fp], **kwargs)
+            return cls.from_json(fp.read(), protocol=protocol, **kwargs)
 
     @classmethod
     def from_json(
         cls: Type['T'],
-        file: Union[str, bytes, bytearray, TextIO],
+        file: Union[str, bytes, bytearray],
         protocol: str = 'jsonschema',
-        encoding: str = 'utf-8',
         **kwargs
     ) -> 'T':
-        return cls.load_json(file, protocol=protocol, encoding=encoding, **kwargs)
+        from .... import Document
+
+        json_docs = json.loads(file)
+        return cls(
+            [Document.from_dict(v, protocol=protocol) for v in json_docs], **kwargs
+        )
 
     @classmethod
     def from_list(
