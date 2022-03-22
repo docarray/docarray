@@ -11,11 +11,14 @@ _all_mime_types = set(mimetypes.types_map.values())
 
 
 class PropertyMixin(_PropertyMixin):
-    def _clear_content(self):
-        self._data.content = None
-        self._data.text = None
-        self._data.tensor = None
-        self._data.blob = None
+    def _clear_content(self, value):
+        if value is None:
+            return
+        else:
+            self._data.content = None
+            self._data.text = None
+            self._data.tensor = None
+            self._data.blob = None
 
     @property
     def content(self) -> Optional['DocumentContentType']:
@@ -25,22 +28,22 @@ class PropertyMixin(_PropertyMixin):
 
     @_PropertyMixin.text.setter
     def text(self, value: str):
-        self._clear_content()
+        self._clear_content(value)
         self._data.text = value
 
     @_PropertyMixin.blob.setter
     def blob(self, value: bytes):
-        self._clear_content()
+        self._clear_content(value)
         self._data.blob = value
 
     @_PropertyMixin.tensor.setter
     def tensor(self, value: 'ArrayType'):
-        self._clear_content()
+        self._clear_content(value)
         self._data.tensor = value
 
     @content.setter
     def content(self, value: 'DocumentContentType'):
-        self._clear_content()
+        self._clear_content(value)
         if isinstance(value, bytes):
             self._data.blob = value
         elif isinstance(value, str):
