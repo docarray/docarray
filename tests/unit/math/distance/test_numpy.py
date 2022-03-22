@@ -28,7 +28,7 @@ from docarray.math.distance.numpy import (
     ),
 )
 def test_cosine(x_mat, y_mat, result):
-    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-5)
+    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-4)
 
 
 @pytest.mark.parametrize(
