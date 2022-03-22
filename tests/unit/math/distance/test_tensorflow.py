@@ -31,7 +31,7 @@ from docarray.math.distance.tensorflow import cosine, euclidean, sqeuclidean
     ),
 )
 def test_cosine(x_mat, y_mat, result):
-    np.testing.assert_allclose(cosine(x_mat, y_mat), result, rtol=1e-5)
+    np.testing.assert_almost_equal(cosine(x_mat, y_mat), result, decimal=3)
 
 
 @pytest.mark.parametrize(
@@ -60,7 +60,7 @@ def test_cosine(x_mat, y_mat, result):
     ),
 )
 def test_sqeuclidean(x_mat, y_mat, result):
-    np.testing.assert_allclose(sqeuclidean(x_mat, y_mat), result, rtol=1e-5)
+    np.testing.assert_almost_equal(sqeuclidean(x_mat, y_mat), result, decimal=3)
 
 
 @pytest.mark.parametrize(
@@ -89,4 +89,4 @@ def test_sqeuclidean(x_mat, y_mat, result):
     ),
 )
 def test_euclidean(x_mat, y_mat, result):
-    np.testing.assert_allclose(euclidean(x_mat, y_mat), result, rtol=1e-5)
+    np.testing.assert_almost_equal(euclidean(x_mat, y_mat), result, decimal=3)
