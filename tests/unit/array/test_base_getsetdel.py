@@ -81,3 +81,21 @@ def test_getter_int_str(docs):
 
     with pytest.raises(KeyError):
         docs['adsad']
+
+
+def test_set_content_none():
+    da = DocumentArray(
+        [
+            Document(mime_type='image'),
+            Document(mime_type='image'),
+            Document(mime_type='text'),
+        ]
+    )
+
+    txt_da = da.find({'mime_type': {'$eq': 'image'}})
+    assert len(txt_da) == 2
+    txt_da.texts = ['hello', 'world']
+    assert txt_da.texts == ['hello', 'world']
+    assert da.texts == ['hello', 'world', '']
+    da.tensors = None
+    assert da.texts == ['hello', 'world', '']
