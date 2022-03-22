@@ -11,18 +11,22 @@ from typing import TypeVar, ForwardRef, Callable, Any, Optional, TYPE_CHECKING
 from docarray.types.deserializers import (
     image_deserializer,
     text_deserializer,
-    pil_image_deserializer,
+    audio_deserializer,
 )
 from docarray.types.serializers import (
     image_serializer,
     text_serializer,
-    pil_image_serializer,
-    image_uri_serializer,
-    audio_uri_serializer,
+    audio_serializer,
 )
 
 if TYPE_CHECKING:
-    import soundfile
+    import scipy.sparse
+    import tensorflow
+    import torch
+    import numpy as np
+    from . import T
+    from .. import Document
+    from PIL.Image import Image as PILImage
 
 
 class Field(StdField):
@@ -55,27 +59,22 @@ Image = TypeVar(
     ForwardRef('np.ndarray'),
     ForwardRef('tensorflow.Tensor'),
     ForwardRef('torch.Tensor'),
+    str,
+    ForwardRef('PILImage'),
 )
-
-PILImage = TypeVar('PILImage', bound=ForwardRef('PILImage'))
-
-ImageURI = TypeVar('ImageURI', bound=str)
 
 Text = TypeVar('Text', bound=str)
 
-AudioURI = TypeVar(
-    'AudioURI',
+Audio = TypeVar(
+    'Audio',
     str,
     Path,
-    ForwardRef('soundfile.SoundFile'),
 )
 
 TYPES_REGISTRY = {
     Image: (image_serializer, image_deserializer),
     Text: (text_serializer, text_deserializer),
-    PILImage: (pil_image_serializer, pil_image_deserializer),
-    ImageURI: (image_uri_serializer, None),
-    AudioURI: (audio_uri_serializer, None),
+    Audio: (audio_serializer, audio_deserializer),
 }
 
 
