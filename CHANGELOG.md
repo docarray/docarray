@@ -59,6 +59,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1433,4 +1434,27 @@
 ### 🍹 Other Improvements
 
  - [[```eb92f14d```](https://github.com/jina-ai/docarray/commit/eb92f14d9c21e6609cf27fcdbdbfa38ff25cfaf7)] __-__ __version__: the next version will be 0.9.16 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-17></a>
+## Release Note (`0.9.17`)
+
+> Release time: 2022-03-22 19:53:12
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```3944abc0```](https://github.com/jina-ai/docarray/commit/3944abc0f98c547c0345b9a0ea8464a33b9481ca)] __-__ __plot__: fix display on datauri image (#219) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```bdf34f34```](https://github.com/jina-ai/docarray/commit/bdf34f34154979952cc288169ed9f04bfa382479)] __-__ add more tolerance (#218) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```bbbf8816```](https://github.com/jina-ai/docarray/commit/bbbf881650af26a8d69ca923e7ca5e1417effc79)] __-__ __version__: the next version will be 0.9.17 (*Jina Dev Bot*)
 
