@@ -67,6 +67,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :param values: Documents to be added
         """
+
         request = []
         for value in values:
             value.embedding = self._map_embedding(value.embedding)
@@ -81,5 +82,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             )
             self._offset2ids.append(value.id)
 
-        self._send_requests(request)
-        self._refresh(self._config.index_name)
+        if len(request) > 0:
+            self._send_requests(request)
+            self._refresh(self._config.index_name)
