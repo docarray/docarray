@@ -47,7 +47,7 @@ class ElasticConfig:
     distance: str = 'l2_norm'  # similarity in elastic
     host: Optional[str] = field(default='http://localhost')
     port: Optional[int] = field(default=9200)
-    index_name: Optional[str] = field(default='index_name')
+    index_name: Optional[str] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
 
 
@@ -66,12 +66,13 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(ElasticConfig, config)
 
-        id = uuid.uuid4().hex
-        config.index_name += '__' + id
+        if config.index_name is None:
+            id = uuid.uuid4().hex
+            config.index_name = 'index_name__' + id
+
+        self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
         self.n_dim = self._config.n_dim
-        self._index_name_offset2id = 'offset2id__' + id
-
         self._client = self._build_client()
         self._build_offset2id_index()
 
@@ -90,7 +91,9 @@ class BackendMixin(BaseBackendMixin):
 
     def _build_offset2id_index(self):
         self._client.indices.delete(index=self._index_name_offset2id, ignore=[404])
-        self._client.indices.create(index=self._index_name_offset2id)
+        self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
+        # if not self._client.indices.exists(self._index_name_offset2id):
+        #    self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
 
     def _build_hosts(self):
         return self._config.host + ':' + str(self._config.port)
@@ -129,7 +132,6 @@ class BackendMixin(BaseBackendMixin):
             index=self._config.index_name, mappings=schema['mappings']
         )
         client.indices.refresh(index=self._config.index_name)
-
         return client
 
     def _send_requests(self, request):
