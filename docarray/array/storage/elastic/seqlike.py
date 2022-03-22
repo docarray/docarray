@@ -47,14 +47,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayElastic` object"""
-        super().__del__()
-        if (
-            not self._persist
-            and len(_REGISTRY[self.__class__.__name__][self._class_name]) == 1
-        ):
-            self._client.schema.delete_class(self._class_name)
-            self._client.schema.delete_class(self._meta_name)
-        _REGISTRY[self.__class__.__name__][self._class_name].remove(self)
+        pass
+        # if not self._persist:
+        #    self._offset2ids.clear()
 
     def __repr__(self):
         """Return the string representation of :class:`DocumentArrayElastic` object
