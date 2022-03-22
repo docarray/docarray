@@ -1,9 +1,11 @@
+import base64
 import os
+import pickle
 from typing import List
 
 from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
-from docarray.types.multimodal import Text, Image, Audio
+from docarray.types.multimodal import Text, Image, Audio, Field
 from docarray.types.multimodal import dataclass
 import pytest
 import numpy as np
@@ -444,3 +446,50 @@ def test_proto_serialization():
 
     translated_obj = MMDocument.from_document(doc)
     assert translated_obj == obj
+
+
+def test_custom_field_type():
+    from PIL.Image import Image as PILImage
+    from PIL.Image import open as PIL_open
+
+    def ndarray_serializer(inp, doc: 'Document'):
+        doc.blob = base64.b64encode(inp)
+
+    def ndarray_deserializer(doc: 'Document'):
+        return np.frombuffer(base64.decodebytes(doc.blob), dtype=np.float64)
+
+    def pil_image_serializer(inp, doc: 'Document'):
+        doc.blob = pickle.dumps(inp)
+
+    def pil_image_deserializer(doc: 'Document'):
+        return pickle.loads(doc.blob)
+
+    @dataclass
+    class MMDocument:
+        base64_encoded_ndarray: str = Field(
+            serializer=ndarray_serializer, deserializer=ndarray_deserializer
+        )
+        pickled_image: PILImage = Field(
+            serializer=pil_image_serializer, deserializer=pil_image_deserializer
+        )
+
+    obj = MMDocument(
+        base64_encoded_ndarray=np.array([1, 2, 3], dtype=np.float64),
+        pickled_image=PIL_open(IMAGE_URI),
+    )
+
+    doc = Document.from_dataclass(obj)
+
+    assert doc.chunks[0].blob is not None
+    assert doc.chunks[1].blob is not None
+
+    translated_obj: MMDocument = MMDocument.from_document(doc)
+    assert isinstance(translated_obj.pickled_image, PILImage)
+    assert isinstance(translated_obj.base64_encoded_ndarray, np.ndarray)
+
+    assert (obj.base64_encoded_ndarray == translated_obj.base64_encoded_ndarray).all()
+
+    assert (
+        np.array(obj.pickled_image).shape
+        == np.array(translated_obj.pickled_image).shape
+    )
