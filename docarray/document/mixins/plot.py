@@ -48,12 +48,16 @@ class PlotMixin:
         from IPython.display import Image, display
 
         if self.uri:
-            if self.mime_type.startswith('audio'):
+            if self.mime_type.startswith('audio') or self.uri.startswith('data:audio/'):
                 uri = _convert_display_uri(self.uri, self.mime_type)
                 _html5_audio_player(uri)
-            elif self.mime_type.startswith('video'):
+            elif self.mime_type.startswith('video') or self.uri.startswith(
+                'data:video/'
+            ):
                 uri = _convert_display_uri(self.uri, self.mime_type)
                 _html5_video_player(uri)
+            elif self.uri.startswith('data:image/'):
+                _html5_image(self.uri)
             else:
                 display(Image(self.uri))
         elif self.tensor is not None:
@@ -84,6 +88,18 @@ def _convert_display_uri(uri, mime_type):
         blob = _uri_to_blob(uri)
         return _to_datauri(mime_type, blob)
     return uri
+
+
+def _html5_image(uri):
+    from IPython.display import display
+    from IPython.core.display import HTML  # noqa
+
+    src = f'''
+    <body>
+    <image src="{uri}" height="200px">
+    </body>
+    '''
+    display(HTML(src))  # noqa
 
 
 def _html5_video_player(uri):
