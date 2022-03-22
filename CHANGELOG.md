@@ -53,6 +53,12 @@
 
 
 
+
+
+
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1300,4 +1306,131 @@
 
  - [[```6427f42c```](https://github.com/jina-ai/docarray/commit/6427f42c6f51ec53c0f476e04fc33ac7d96dbbaa)] __-__ add learning bootcamp call to action (#202) (*Shubham Saboo*)
  - [[```c1c99e0f```](https://github.com/jina-ai/docarray/commit/c1c99e0fadcf7cbe1e1c3c1ff7847d2ef7715982)] __-__ __version__: the next version will be 0.9.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-11></a>
+## Release Note (`0.9.11`)
+
+> Release time: 2022-03-16 11:44:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```7d5c3ade```](https://github.com/jina-ai/docarray/commit/7d5c3ade173ce1f8a7898bd71c3105e16f034fc7)] __-__ ws scheme (#211) (*Han Xiao*)
+ - [[```3380b3be```](https://github.com/jina-ai/docarray/commit/3380b3be1ae5317202c5f8d9c23c813f2eb2fd70)] __-__ ws scheme (#210) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```62bc8bee```](https://github.com/jina-ai/docarray/commit/62bc8bee01828a5d19e5a1c59ea2d823f219a964)] __-__ add weaviate minimum working example (#206) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```db651675```](https://github.com/jina-ai/docarray/commit/db651675184b799c62d60353820769992413450e)] __-__ add mwu to qdrant (*Han Xiao*)
+ - [[```a3538ee1```](https://github.com/jina-ai/docarray/commit/a3538ee1ee47ff32cfb09947ac3d12c507004322)] __-__ bump weaviate version (*Han Xiao*)
+ - [[```178d4441```](https://github.com/jina-ai/docarray/commit/178d44414f381cdc3fe1e8d5ad00de11187fc662)] __-__ fix typo (*Han Xiao*)
+ - [[```ff2e9f13```](https://github.com/jina-ai/docarray/commit/ff2e9f13cac5c3b3bdfeb4126ac356ef71c5d409)] __-__ __version__: the next version will be 0.9.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-12></a>
+## Release Note (`0.9.12`)
+
+> Release time: 2022-03-16 17:14:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```a57d9774```](https://github.com/jina-ai/docarray/commit/a57d97748ddbc588df8e2f69fff2553ed93cc46f)] __-__ __array__: fix save and load json behaviour (#205) (*AlaeddineAbdessalem*)
+ - [[```2b535b2f```](https://github.com/jina-ai/docarray/commit/2b535b2f3e361ec48d50877615b535f6dc361b45)] __-__ __array__: scheme offset (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```397d349b```](https://github.com/jina-ai/docarray/commit/397d349bf3d5184c5beefcc88e51f4dcf810ad7d)] __-__ improve docs on arbitrary json (*Han Xiao*)
+ - [[```74d7bcb1```](https://github.com/jina-ai/docarray/commit/74d7bcb104149826749de6051912133846d574e5)] __-__ improve docs on attribute setter (*Han Xiao*)
+ - [[```a7233417```](https://github.com/jina-ai/docarray/commit/a72334173af45fa142036f579738f1655c098e76)] __-__ __version__: the next version will be 0.9.12 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-13></a>
+## Release Note (`0.9.13`)
+
+> Release time: 2022-03-16 17:16:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```37287c8e```](https://github.com/jina-ai/docarray/commit/37287c8e621d5c48347cd684954b5b7bf67b0fed)] __-__ __version__: the next version will be 0.9.13 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-14></a>
+## Release Note (`0.9.14`)
+
+> Release time: 2022-03-17 10:09:54
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  felix-wang,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```e6a078d6```](https://github.com/jina-ai/docarray/commit/e6a078d6f28677a4377d815411622f98844ba940)] __-__ __document__: allow eq to include ndarray comparison (*David Buchaca Prats*)
+ - [[```1e9e945e```](https://github.com/jina-ai/docarray/commit/1e9e945e21662ad7bce3b46822f32a2a95dc0a65)] __-__ use remote_load on http uri (#212) (*felix-wang*)
+
+### 🍹 Other Improvements
+
+ - [[```44b622a2```](https://github.com/jina-ai/docarray/commit/44b622a21033b4d7668e3e0a507b37b8923ba289)] __-__ add laura video to weaviate docs (*Han Xiao*)
+ - [[```08568a9f```](https://github.com/jina-ai/docarray/commit/08568a9fef3e97a386e0ef47331521282cba5c6a)] __-__ __version__: the next version will be 0.9.14 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-15></a>
+## Release Note (`0.9.15`)
+
+> Release time: 2022-03-19 14:04:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```1ae1ffa8```](https://github.com/jina-ai/docarray/commit/1ae1ffa8179bcbc23614e2467c404c5a6838824d)] __-__ add rich traceback handler as default (#215) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```5c33132c```](https://github.com/jina-ai/docarray/commit/5c33132cc6f45c1f2913b5652495eccddbd0f988)] __-__ __version__: the next version will be 0.9.15 (*Jina Dev Bot*)
+
+<a name=release-note-0-9-16></a>
+## Release Note (`0.9.16`)
+
+> Release time: 2022-03-21 21:11:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```4b70e5ad```](https://github.com/jina-ai/docarray/commit/4b70e5ad16abae5b384b658112abcf0ca2210671)] __-__ __array__: improve pull speed (#217) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```3f4774af```](https://github.com/jina-ai/docarray/commit/3f4774afce0c327c76945e62beedb5d4badd862d)] __-__ __distance__: unit tests for distance (#216) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```eb92f14d```](https://github.com/jina-ai/docarray/commit/eb92f14d9c21e6609cf27fcdbdbfa38ff25cfaf7)] __-__ __version__: the next version will be 0.9.16 (*Jina Dev Bot*)
 

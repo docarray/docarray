@@ -28,7 +28,7 @@ str(uuid.UUID(d.id))
 
 Though possible, it is not recommended modifying `.id` of a Document frequently, as this will lead to unexpected behavior.
 
-
+(construct-from-dict)=
 ## Construct with attributes
 
 This is the most common usage of the constructor: initializing a Document object with given attributes.
@@ -135,7 +135,7 @@ When using in Jupyter notebook/Google Colab, Document is automatically prettifie
 ```{figure} images/doc-in-jupyter.png
 ```
 
-
+(unk-attribute)=
 ### Unknown attributes handling
 
 If you give an unknown attribute (i.e. not one of the built-in Document attributes), they will be automatically "caught" into `.tags` attributes. For example,

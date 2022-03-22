@@ -192,3 +192,69 @@ def get_array_rows(array: 'ArrayType') -> Tuple[int, int]:
         raise ValueError
 
     return num_rows, ndim
+
+
+def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
+    """Check if two array type objects are the same with the supported frameworks.
+
+    Examples
+
+    >>> import numpy as np
+        x = np.array([[1,2,0,0,3],[1,2,0,0,3]])
+        check_arraylike_equality(x,x)
+    True
+
+    >>> from scipy import sparse as sp
+        x = sp.csr_matrix([[1,2,0,0,3],[1,2,0,0,3]])
+        check_arraylike_equality(x,x)
+    True
+
+    >>> import torch
+        x = torch.tensor([1,2,3])
+        check_arraylike_equality(x,x)
+    True
+    """
+    x_type, x_is_sparse = get_array_type(x)
+    y_type, y_is_sparse = get_array_type(y)
+
+    same_array = False
+    if x_type == y_type and x_is_sparse == y_is_sparse:
+
+        if x_type == 'python':
+            same_array = x == y
+
+        if x_type == 'numpy':
+            # Numpy does not support sparse tensors
+            import numpy as np
+
+            same_array = np.array_equal(x, y)
+        elif x_type == 'torch':
+            import torch
+
+            if x_is_sparse:
+                # torch.equal NotImplementedError for sparse
+                same_array = all((x - y).coalesce().values() == 0)
+            else:
+                same_array = torch.equal(x, y)
+        elif x_type == 'scipy':
+            # Not implemented in scipy this should work for all types
+            # Note: you can't simply look at nonzero values because they can be in
+            # different positions.
+            if x.shape != y.shape:
+                same_array = False
+            else:
+                same_array = (x != y).nnz == 0
+        elif x_type == 'tensorflow':
+            if x_is_sparse:
+                same_array = x == y
+            else:
+                # Does not have equal implemented, only elementwise, therefore reduce .all is needed
+                same_array = (x == y).numpy().all()
+        elif x_type == 'paddle':
+            # Paddle does not support sparse tensor on 11/8/2021
+            # https://github.com/PaddlePaddle/Paddle/issues/36697
+            # Does not have equal implemented, only elementwise, therefore reduce .all is needed
+            same_array = (x == y).numpy().all()
+        return same_array
+    else:
+        return same_array
