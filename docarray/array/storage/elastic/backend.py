@@ -1,3 +1,4 @@
+import copy
 import itertools
 import warnings
 from dataclasses import dataclass, field
@@ -60,7 +61,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[ElasticConfig, Dict]] = None,
         **kwargs,
     ):
-
+        config = copy.deepcopy(config)
         if not config:
             raise ValueError('Empty config is not allowed for Elastic storage')
         elif isinstance(config, dict):
@@ -170,6 +171,7 @@ class BackendMixin(BaseBackendMixin):
                 for offset_, id_ in enumerate(self._offset2ids.ids)
             ]
             r = bulk(self._client, requests)
+            self._client.indices.refresh(index=self._index_name_offset2id)
 
     def _get_offset2ids_meta(self) -> List:
         """Return the offset2ids stored in elastic
