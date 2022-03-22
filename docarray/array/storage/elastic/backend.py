@@ -93,10 +93,8 @@ class BackendMixin(BaseBackendMixin):
                 self.append(_docs)
 
     def _build_offset2id_index(self):
-        self._client.indices.delete(index=self._index_name_offset2id, ignore=[404])
-        self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
-        # if not self._client.indices.exists(self._index_name_offset2id):
-        #    self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
+        if not self._client.indices.exists(index=self._index_name_offset2id):
+            self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
 
     def _build_hosts(self):
         return self._config.host + ':' + str(self._config.port)
@@ -184,6 +182,7 @@ class BackendMixin(BaseBackendMixin):
             raise ValueError('Elastic client does not exist')
 
         n_docs = self._client.count(index=self._index_name_offset2id)["count"]
+
         if n_docs != 0:
             offsets = [x for x in range(n_docs)]
             resp = self._client.mget(index=self._index_name_offset2id, ids=offsets)
