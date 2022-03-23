@@ -33,6 +33,8 @@ class PydanticMixin:
                 _p_dict[f] = v.to_pydantic_model()
             elif f in ('scores', 'evaluations'):
                 _p_dict[f] = {k: v.to_dict() for k, v in v.items()}
+            elif f == 'blob':
+                _p_dict[f] = base64.b64encode(v).decode('utf8')
             else:
                 _p_dict[f] = v
         return DP(**_p_dict)
@@ -72,7 +74,7 @@ class PydanticMixin:
                 # second time is at `from_dict/from_json`, it is unnecessary yet inevitable, the result string get
                 # converted into a binary string and encoded again.
                 # consequently, we need to decode two times here!
-                fields[f_name] = base64.b64decode(base64.b64decode(value))
+                fields[f_name] = base64.b64decode(value)
             else:
                 fields[f_name] = value
 

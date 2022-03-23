@@ -32,7 +32,7 @@ class PydanticDocument(BaseModel):
     parent_id: Optional[str]
     granularity: Optional[int]
     adjacency: Optional[int]
-    blob: Optional[bytes]
+    blob: Optional[str]
     tensor: Optional[Any]
     mime_type: Optional[str]
     text: Optional[str]
@@ -51,14 +51,6 @@ class PydanticDocument(BaseModel):
 
     _tensor2list = validator('tensor', allow_reuse=True)(_convert_ndarray_to_list)
     _embedding2list = validator('embedding', allow_reuse=True)(_convert_ndarray_to_list)
-
-    @validator('blob')
-    def _blob2base64(cls, v):
-        if v is not None:
-            if isinstance(v, bytes):
-                return base64.b64encode(v).decode('utf8')
-            else:
-                raise ValueError('must be bytes')
 
     class Config:
         smart_union = True
