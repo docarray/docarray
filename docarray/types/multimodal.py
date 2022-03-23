@@ -1,7 +1,7 @@
 import base64
 from dataclasses import (
     dataclass as std_dataclass,
-    is_dataclass,
+    is_dataclass as std_is_dataclass,
     MISSING,
     Field as StdField,
     field,
@@ -30,6 +30,10 @@ if TYPE_CHECKING:
     from . import T
     from .. import Document
     from PIL.Image import Image as PILImage
+
+
+def is_dataclass(cls):
+    return std_is_dataclass(cls) and hasattr(cls, 'from_document')
 
 
 class Field(StdField):
