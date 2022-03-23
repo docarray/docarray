@@ -48,6 +48,7 @@ TRAVERSAL_PATH_LIST_TAGGED = (
     rf'^(?P<traversal_path>{TRAVERSAL_PATH}){PATHS_REMAINDER_TAGGED}$'
 )
 
+ATTRIBUTE_REGEX = re.compile(rf'^{ATTRIBUTE}$')
 TRAVERSAL_PATH_REGEX = re.compile(rf'^{TRAVERSAL_PATH_TAGGED}$')
 TRAVERSAL_PATH_LIST_REGEX = re.compile(TRAVERSAL_PATH_LIST_TAGGED)
 
@@ -134,7 +135,7 @@ class TraverseMixin:
                     yield from TraverseMixin._traverse(
                         d.chunks[cur_slice], remainder, filter_fn=filter_fn
                     )
-            elif cur_loc.startswith('.'):
+            elif ATTRIBUTE_REGEX.match(cur_loc):
                 for d in docs:
                     for attribute in group_dict['attributes']:
                         yield from TraverseMixin._traverse(
