@@ -52,6 +52,28 @@ def test_simple():
     assert translated_obj == obj
 
 
+def test_simple_default():
+    @dataclass
+    class MMDocument:
+        title: Text = 'hello world'
+        image: Image = IMAGE_URI
+        version: int = 1
+
+    obj = MMDocument()
+    assert obj.title == 'hello world'
+    assert obj.image == IMAGE_URI
+    assert obj.version == 1
+    doc = Document.from_dataclass(obj)
+    assert doc.chunks[0].text == 'hello world'
+    assert doc.chunks[1].tensor.shape == (85, 152, 3)
+    assert doc.tags['version'] == 1
+
+    obj = MMDocument(title='custom text')
+    assert obj.title == 'custom text'
+    assert obj.image == IMAGE_URI
+    assert obj.version == 1
+
+
 def test_nested():
     @dataclass
     class SubDocument:
