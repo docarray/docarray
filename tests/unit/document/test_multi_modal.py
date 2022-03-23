@@ -1,11 +1,12 @@
 import base64
+import json
 import os
 import pickle
 from typing import List
 
 from docarray import Document, DocumentArray
 from docarray.document.mixins.multimodal import AttributeType
-from docarray.types.multimodal import Text, Image, Audio, Field
+from docarray.types.multimodal import Text, Image, Audio, Field, JSON
 from docarray.types.multimodal import dataclass
 import pytest
 import numpy as np
@@ -469,6 +470,26 @@ def test_proto_serialization():
     ]
     _assert_doc_schema(deserialized_doc, expected_schema)
 
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
+
+
+def test_json_type():
+    @dataclass
+    class MMDocument:
+        attr: JSON
+
+    inp = {'a': 123, 'b': 'abc', 'c': 1.1}
+    obj = MMDocument(attr=inp)
+    doc = Document.from_dataclass(obj)
+
+    assert doc.chunks[0].tags['attr'] == inp
+    translated_obj = MMDocument.from_document(doc)
+    assert translated_obj == obj
+
+    obj = MMDocument(attr=json.dumps(inp))
+    doc = Document.from_dataclass(obj)
+    assert doc.chunks[0].tags['attr'] == inp
     translated_obj = MMDocument.from_document(doc)
     assert translated_obj == obj
 
