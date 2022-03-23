@@ -15,11 +15,13 @@ from docarray.types.deserializers import (
     image_deserializer,
     text_deserializer,
     audio_deserializer,
+    json_deserializer,
 )
 from docarray.types.serializers import (
     image_serializer,
     text_serializer,
     audio_serializer,
+    json_serializer,
 )
 
 if TYPE_CHECKING:
@@ -78,16 +80,19 @@ Audio = TypeVar(
     Path,
 )
 
+JSON = TypeVar('JSON', str, dict)
+
 TYPES_REGISTRY = {
     Image: (image_serializer, image_deserializer),
     Text: (text_serializer, text_deserializer),
     Audio: (audio_serializer, audio_deserializer),
+    JSON: (json_serializer, json_deserializer),
 }
 
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
     if isinstance(field, Field):
-        return field.deserializer(attribute_doc)
+        return field.deserializer(field.name, attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 

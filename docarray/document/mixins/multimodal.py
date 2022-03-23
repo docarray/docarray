@@ -134,7 +134,7 @@ class MultiModalMixin:
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
             doc = Document()
-            field.serializer(obj, doc)
+            field.serializer(obj, field.name, doc)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
