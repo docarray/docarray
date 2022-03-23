@@ -8,38 +8,56 @@ class PlotMixin:
         """Displays the object in IPython as a side effect"""
         self.summary()
 
+    def __rich_console__(self, console, options):
+        yield f":page_facing_up: [b]Document[/b]: [cyan]{self.id}[cyan]"
+        from rich.table import Table
+
+        my_table = Table('Attribute', 'Value')
+        for f in self.non_empty_fields:
+            if f not in ('id', 'chunks', 'matches'):
+                my_table.add_row(f, str(getattr(self, f)))
+        if my_table.rows:
+            yield my_table
+
     def summary(self) -> None:
         """ Print non-empty fields and nested structure of this Document object."""
-        _str_list = []
-        self._plot_recursion(_str_list, indent=0)
-        print('\n'.join(_str_list))
+        from rich import print
 
-    def _plot_recursion(self, _str_list, indent, box_char='├─'):
-        prefix = (' ' * indent + box_char) if indent else ''
-        _str_list.append(f'{prefix} {self}')
+        print(self._plot_recursion())
 
+    def _plot_recursion(self, tree=None):
+        if tree is None:
+            from rich.tree import Tree
+
+            tree = Tree(self)
+        else:
+            tree = tree.add(self)
         for a in ('matches', 'chunks'):
             if getattr(self, a):
-                prefix = ' ' * (indent + 4) + '└─'
-                _str_list.append(f'{prefix} {a}')
-
-                for d in getattr(self, a)[:-1]:
-                    d._plot_recursion(_str_list, indent=len(prefix) + 4)
-                getattr(self, a)[-1]._plot_recursion(
-                    _str_list, indent=len(prefix) + 4, box_char='└─'
-                )
+                if a == 'chunks':
+                    _icon = ':diamond_with_a_dot:'
+                else:
+                    _icon = ':large_orange_diamond:'
+                _match_tree = tree.add(f'{_icon} [b]{a.capitalize()}[/b]')
+                for d in getattr(self, a):
+                    d._plot_recursion(_match_tree)
+        return tree
 
     def display(self):
         """ Plot image data from :attr:`.tensor` or :attr:`.uri`. """
         from IPython.display import Image, display
 
         if self.uri:
-            if self.mime_type.startswith('audio'):
+            if self.mime_type.startswith('audio') or self.uri.startswith('data:audio/'):
                 uri = _convert_display_uri(self.uri, self.mime_type)
                 _html5_audio_player(uri)
-            elif self.mime_type.startswith('video'):
+            elif self.mime_type.startswith('video') or self.uri.startswith(
+                'data:video/'
+            ):
                 uri = _convert_display_uri(self.uri, self.mime_type)
                 _html5_video_player(uri)
+            elif self.uri.startswith('data:image/'):
+                _html5_image(self.uri)
             else:
                 display(Image(self.uri))
         elif self.tensor is not None:
@@ -70,6 +88,18 @@ def _convert_display_uri(uri, mime_type):
         blob = _uri_to_blob(uri)
         return _to_datauri(mime_type, blob)
     return uri
+
+
+def _html5_image(uri):
+    from IPython.display import display
+    from IPython.core.display import HTML  # noqa
+
+    src = f'''
+    <body>
+    <image src="{uri}" height="200px">
+    </body>
+    '''
+    display(HTML(src))  # noqa
 
 
 def _html5_video_player(uri):

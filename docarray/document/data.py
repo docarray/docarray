@@ -4,6 +4,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
+from ..math.ndarray import check_arraylike_equality
+
 if TYPE_CHECKING:
     from ..score import NamedScore
     from .. import DocumentArray, Document
@@ -33,7 +35,7 @@ default_values = dict(
 _all_mime_types = set(mimetypes.types_map.values())
 
 
-@dataclass(unsafe_hash=True)
+@dataclass(unsafe_hash=True, eq=False)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(
@@ -113,3 +115,44 @@ class DocumentData:
                     setattr(self, key, defaultdict(NamedScore))
                 else:
                     setattr(self, key, v() if callable(v) else v)
+
+    @staticmethod
+    def _embedding_eq(array1: 'ArrayType', array2: 'ArrayType'):
+
+        if array1 is None and array2 is None:
+            return True
+
+        if type(array1) == type(array2):
+            return check_arraylike_equality(array1, array2)
+        else:
+            return False
+
+    @staticmethod
+    def _tensor_eq(array1: 'ArrayType', array2: 'ArrayType'):
+        DocumentData._embedding_eq(array1, array2)
+
+    def __eq__(self, other):
+
+        self_non_empty_fields = self._non_empty_fields
+        other_non_empty_fields = other._non_empty_fields
+
+        if other_non_empty_fields != self_non_empty_fields:
+            return False
+
+        for key in self_non_empty_fields:
+
+            if hasattr(self, f'_{key}_eq'):
+
+                if hasattr(DocumentData, f'_{key}_eq'):
+                    are_equal = getattr(DocumentData, f'_{key}_eq')(
+                        getattr(self, key), getattr(other, key)
+                    )
+                    print(
+                        f'are_equal( {getattr(self, key)}, { getattr(other, key)}) ---> {are_equal}'
+                    )
+                    if are_equal == False:
+                        return False
+            else:
+                if getattr(self, key) != getattr(other, key):
+                    return False
+        return True

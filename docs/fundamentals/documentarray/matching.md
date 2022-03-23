@@ -3,10 +3,31 @@
 
 ```{important}
 
-{meth}`~docarray.array.mixins.match.MatchMixin.match` supports both CPU & GPU.
+{meth}`~docarray.array.mixins.match.MatchMixin.match` and {meth}`~docarray.array.mixins.find.FindMixin.find` support both CPU & GPU.
 ```
 
-Once `.embeddings` is set, one can use {func}`~docarray.array.mixins.match.MatchMixin.match` function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their `.embeddings`.  
+Once `.embeddings` is set, one can use {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their `.embeddings` and distance metrics.  
+
+
+## Difference between find and match
+
+Though both `.find()` and `.match()` is about finding nearest neighbours of a given "query" and both accpet similar arguments, there are some differences between them:
+
+##### Which side is the query at?
+- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neightbours you should write `one_million_docs.find(query)`;  
+- `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and save the results to A". So with `.match()` you should write `query.match(one_million_docs)`.
+
+##### What is the type of the query?
+  - query (RHS) in `.find()` can be plain NdArray-like object or a single Document or a DocumentArray.
+  - query (LHS) in `.match()` can be either a Document or a DocumentArray. 
+
+##### What is the return?
+  - `.find()` returns a List of DocumentArray, each of which corresponds to one element/row in the query.
+  - `.match()` do not return anything. Match results are stored inside right-hand side's `.matches`.
+
+In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
+
+## Example
 
 The following example finds for each element in `da1` the three closest Documents from the elements in `da2` according to Euclidean distance.
 
@@ -103,6 +124,22 @@ match emb =   (0, 0)	1.0
 ```
 
 ````
+
+The above example when writing with `.find()`:
+
+```python
+da2.find(da1, metric='euclidean', limit=3)
+```
+
+or simply:
+
+```python
+da2.find(np.array(
+         [[0, 0, 0, 0, 1], 
+         [1, 0, 0, 0, 0],
+         [1, 1, 1, 1, 0], 
+         [1, 2, 2, 1, 0]]), metric='euclidean', limit=3)
+```
 
 The following metrics are supported:
 
