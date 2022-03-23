@@ -51,6 +51,8 @@ def flush_proto(doc: 'Document', ndarray_type: Optional[str] = None) -> 'Documen
                     docs.append(d.to_protobuf())
             elif key == 'tags':
                 pb_msg.tags.update(value)
+            elif key == '_metadata':
+                pb_msg._metadata.update(value)
             elif key in ('scores', 'evaluations'):
                 for kk, vv in value.items():
                     for ff in vv.non_empty_fields:

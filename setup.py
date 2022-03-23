@@ -92,6 +92,7 @@ setup(
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
             'jina',
+            'librosa==0.9.1',
         ],
     },
     classifiers=[
