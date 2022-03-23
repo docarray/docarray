@@ -55,7 +55,7 @@ class PydanticDocument(BaseModel):
     def _blob2base64(cls, v):
         if v is not None:
             if isinstance(v, bytes):
-                return base64.b64encode(v).decode('utf8')
+                return base64.b64encode(v)
             else:
                 raise ValueError('must be bytes')
 
