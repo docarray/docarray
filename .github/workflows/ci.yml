@@ -88,7 +88,7 @@ jobs:
       - uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          sudo apt-get install jq libsndfile1
+          sudo apt-get install jq
           echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -112,6 +112,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install wheel
           pip install --no-cache-dir ".[full,test]"
+          sudo apt-get install libsndfile1
       - name: Test
         id: test
         run: |
