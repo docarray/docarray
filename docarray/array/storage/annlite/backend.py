@@ -1,4 +1,3 @@
-import itertools
 import numpy as np
 from dataclasses import dataclass, asdict, field
 from typing import (
@@ -6,8 +5,7 @@ from typing import (
     Dict,
     Optional,
     TYPE_CHECKING,
-    Sequence,
-    Generator,
+    Iterable,
     Iterator,
 )
 
@@ -27,7 +25,7 @@ class AnnliteConfig:
 
 
 class BackendMixin(BaseBackendMixin):
-    """Provide necessary functions to enable this storage backend. """
+    """Provide necessary functions to enable this storage backend."""
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
@@ -77,9 +75,7 @@ class BackendMixin(BaseBackendMixin):
 
         self.clear()
 
-        if isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        if isinstance(_docs, (Iterable, Iterator)):
             self.extend(_docs)
         elif isinstance(_docs, Document):
             self.append(_docs)

@@ -1,11 +1,9 @@
-import itertools
 import uuid
 from dataclasses import dataclass, field
 from typing import (
-    Generator,
+    Iterable,
     Iterator,
     Dict,
-    Sequence,
     Optional,
     TYPE_CHECKING,
     Union,
@@ -90,9 +88,7 @@ class BackendMixin(BaseBackendMixin):
         # table and load the given `docs`
         if _docs is None:
             return
-        elif isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        elif isinstance(_docs, (Iterable, Iterator)):
             self.clear()
             self.extend(_docs)
         else:

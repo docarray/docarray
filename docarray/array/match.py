@@ -1,12 +1,9 @@
-import itertools
 from typing import (
     TYPE_CHECKING,
-    Generator,
+    Iterable,
     Iterator,
-    Sequence,
 )
 
-from .document import DocumentArray
 from .memory import DocumentArrayInMemory
 
 if TYPE_CHECKING:
@@ -25,12 +22,7 @@ class MatchArray(DocumentArrayInMemory):
     def __init__(self, docs, reference_doc: 'Document'):
         self._ref_doc = reference_doc
         super().__init__(docs)
-        if (
-            isinstance(
-                docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-            )
-            and self._ref_doc is not None
-        ):
+        if isinstance(docs, (Iterable, Iterator)) and self._ref_doc is not None:
             for d in docs:
                 d.adjacency = self._ref_doc.adjacency + 1
 

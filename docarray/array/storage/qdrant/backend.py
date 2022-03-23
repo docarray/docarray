@@ -1,4 +1,3 @@
-import itertools
 import uuid
 from dataclasses import dataclass, field
 from typing import (
@@ -6,8 +5,7 @@ from typing import (
     TYPE_CHECKING,
     Union,
     Dict,
-    Sequence,
-    Generator,
+    Iterable,
     Iterator,
     List,
 )
@@ -105,9 +103,7 @@ class BackendMixin(BaseBackendMixin):
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
         self.clear()
-        if isinstance(
-            docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        if isinstance(docs, (Iterable, Iterator)):
             self.extend(docs)
         elif isinstance(docs, Document):
             self.append(docs)

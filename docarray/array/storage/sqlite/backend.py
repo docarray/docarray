@@ -1,13 +1,11 @@
-import itertools
 import sqlite3
 import warnings
 from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile
 from typing import (
-    Generator,
+    Iterable,
     Iterator,
     Dict,
-    Sequence,
     Optional,
     TYPE_CHECKING,
     Union,
@@ -116,9 +114,7 @@ class BackendMixin(BaseBackendMixin):
 
         if _docs is None:
             return
-        elif isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        elif isinstance(_docs, (Iterable, Iterator)):
             self.clear()
             self.extend(_docs)
         else:
