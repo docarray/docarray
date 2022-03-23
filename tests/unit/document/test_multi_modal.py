@@ -100,14 +100,16 @@ def test_with_tags():
         attr2: int
         attr3: float
         attr4: bool
+        attr5: bytes
 
-    obj = MMDocument(attr1='123', attr2=10, attr3=1.1, attr4=True)
+    obj = MMDocument(attr1='123', attr2=10, attr3=1.1, attr4=True, attr5=b'ab1234')
 
     doc = Document.from_dataclass(obj)
     assert doc.tags['attr1'] == '123'
     assert doc.tags['attr2'] == 10
     assert doc.tags['attr3'] == 1.1
     assert doc.tags['attr4'] == True
+    assert doc.tags['attr5'] == base64.b64encode(b'ab1234').decode()
 
     assert 'multi_modal_schema' in doc._metadata
 
@@ -116,6 +118,7 @@ def test_with_tags():
         ('attr2', AttributeType.PRIMITIVE, 'int', None),
         ('attr3', AttributeType.PRIMITIVE, 'float', None),
         ('attr4', AttributeType.PRIMITIVE, 'bool', None),
+        ('attr5', AttributeType.PRIMITIVE, 'bytes', None),
     ]
     _assert_doc_schema(doc, expected_schema)
 

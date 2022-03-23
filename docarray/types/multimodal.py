@@ -1,3 +1,4 @@
+import base64
 from dataclasses import (
     dataclass as std_dataclass,
     is_dataclass,
@@ -104,7 +105,12 @@ def from_document(cls: 'T', doc: 'Document'):
     for key, attribute_info in doc._metadata['multi_modal_schema'].items():
         field = cls.__dataclass_fields__[key]
         position = doc._metadata['multi_modal_schema'][key].get('position')
-        if attribute_info['attribute_type'] in [
+        if (
+            attribute_info['type'] == 'bytes'
+            and attribute_info['attribute_type'] == AttributeType.PRIMITIVE
+        ):
+            attributes[key] = base64.b64decode(doc.tags[key].encode())
+        elif attribute_info['attribute_type'] in [
             AttributeType.PRIMITIVE,
             AttributeType.ITERABLE_PRIMITIVE,
         ]:

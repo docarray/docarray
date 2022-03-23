@@ -1,3 +1,4 @@
+import base64
 from dataclasses import is_dataclass
 
 import typing
@@ -39,6 +40,12 @@ class MultiModalMixin:
                     'type': field.type.__name__,
                 }
 
+            elif field.type == bytes and not isinstance(field, Field):
+                tags[key] = base64.b64encode(attribute).decode()
+                multi_modal_schema[key] = {
+                    'attribute_type': AttributeType.PRIMITIVE,
+                    'type': field.type.__name__,
+                }
             elif isinstance(field.type, typing._GenericAlias):
                 if field.type._name in ['List', 'Iterable']:
                     sub_type = field.type.__args__[0]
