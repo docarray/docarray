@@ -58,6 +58,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
+
         self._refresh(self._config.index_name)
 
     def _del_doc_by_id(self, _id: str):

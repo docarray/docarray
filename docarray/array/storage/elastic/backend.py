@@ -61,6 +61,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[ElasticConfig, Dict]] = None,
         **kwargs,
     ):
+
         config = copy.deepcopy(config)
         if not config:
             raise ValueError('Empty config is not allowed for Elastic storage')
@@ -195,7 +196,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType') -> List[float]:
         if embedding is None:
-            embedding = np.random.rand(self.n_dim)
+            embedding = np.zeros(self.n_dim) + EPSILON
         else:
             from ....math.ndarray import to_numpy_array
 
@@ -206,4 +207,5 @@ class BackendMixin(BaseBackendMixin):
 
         if np.all(embedding == 0):
             embedding = embedding + EPSILON
+
         return embedding.tolist()

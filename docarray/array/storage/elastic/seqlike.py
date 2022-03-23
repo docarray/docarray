@@ -29,9 +29,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return self._client.count(index=self._config.index_name)["count"]
 
-    def _doc_id_exists(doc_id, client, elastic_config):
-        return client.exists(index=elastic_config.index_name, id=doc_id)
-
     def __contains__(self, x: Union[str, 'Document']):
         """Check if ``x`` is contained in this :class:`DocumentArray` with Elastic storage
 
@@ -39,9 +36,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: True if ``x`` is contained in self
         """
         if isinstance(x, str):
-            return self._doc_id_exists(x, self._client, self._config)
+            return self._doc_id_exists(x)
         elif isinstance(x, Document):
-            return self._doc_id_exists(x.id, self._client, self._config)
+            return self._doc_id_exists(x.id)
         else:
             return False
 
