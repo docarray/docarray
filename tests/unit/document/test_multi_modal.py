@@ -498,16 +498,16 @@ def test_custom_field_type():
     from PIL.Image import Image as PILImage
     from PIL.Image import open as PIL_open
 
-    def ndarray_serializer(inp, doc: 'Document'):
+    def ndarray_serializer(inp, attribute_name, doc: 'Document'):
         doc.blob = base64.b64encode(inp)
 
-    def ndarray_deserializer(doc: 'Document'):
+    def ndarray_deserializer(attribute_name, doc: 'Document'):
         return np.frombuffer(base64.decodebytes(doc.blob), dtype=np.float64)
 
-    def pil_image_serializer(inp, doc: 'Document'):
+    def pil_image_serializer(inp, attribute_name, doc: 'Document'):
         doc.blob = pickle.dumps(inp)
 
-    def pil_image_deserializer(doc: 'Document'):
+    def pil_image_deserializer(attribute_name, doc: 'Document'):
         return pickle.loads(doc.blob)
 
     @dataclass
