@@ -41,13 +41,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if _id != value.id:
             self._del_doc_by_id(_id)
 
-        value.embedding = self._map_embedding(value.embedding)
         request = [
             {
                 "_op_type": "index",
                 '_id': value.id,
                 '_index': self._config.index_name,
-                'embedding': value.embedding,
+                'embedding': self._map_embedding(value.embedding),
                 'blob': value.to_base64(),
             }
         ]

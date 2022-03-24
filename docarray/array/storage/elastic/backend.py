@@ -202,10 +202,10 @@ class BackendMixin(BaseBackendMixin):
 
             embedding = to_numpy_array(embedding)
 
-        if embedding.ndim > 1:
-            embedding = np.asarray(embedding).squeeze()
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
 
         if np.all(embedding == 0):
             embedding = embedding + EPSILON
 
-        return embedding.tolist()
+        return embedding  # .tolist()
