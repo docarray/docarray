@@ -1,11 +1,7 @@
-import itertools
 from typing import (
-    Generator,
-    Iterator,
-    Dict,
-    Sequence,
     Optional,
     TYPE_CHECKING,
+    Iterable,
 )
 
 from ..base.backend import BaseBackendMixin
@@ -36,7 +32,7 @@ class BackendMixin(BaseBackendMixin):
             return
         elif isinstance(
             _docs,
-            (DocumentArray, Sequence, Generator, Iterator, itertools.chain),
+            Iterable,
         ):
             if copy:
                 for doc in _docs:
