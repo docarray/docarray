@@ -50,33 +50,41 @@ class ImageDataMixin:
         return self
 
     def convert_image_tensor_to_uri(
-        self: 'T', channel_axis: int = -1, image_format: str = 'png'
+        self: 'T',
+        channel_axis: int = -1,
+        image_format: str = 'png',
+        quality: int = 90,
     ) -> 'T':
         """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`uri` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_format: either `png` or `jpeg`
+        :param quality: quality of the image in case of using jpeg
         :return: itself after processed
         """
 
         tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
-        _bytes = _to_image_buffer(tensor, image_format)
+        _bytes = _to_image_buffer(tensor, image_format, quality)
         self.uri = (
             f'data:image/{image_format};base64,' + base64.b64encode(_bytes).decode()
         )
         return self
 
     def convert_image_tensor_to_blob(
-        self: 'T', channel_axis: int = -1, image_format: str = 'png'
+        self: 'T',
+        channel_axis: int = -1,
+        image_format: str = 'png',
+        quality: int = 90,
     ) -> 'T':
         """Assuming :attr:`.tensor` is a _valid_ image, set :attr:`blob` accordingly
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_format: either `png` or `jpeg`
+        :param quality: quality of the image in case of using jpeg
         :return: itself after processed
         """
         tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
-        self.blob = _to_image_buffer(tensor, image_format)
+        self.blob = _to_image_buffer(tensor, image_format, quality)
         return self
 
     def set_image_tensor_shape(
@@ -113,12 +121,14 @@ class ImageDataMixin:
         file: Union[str, BinaryIO],
         channel_axis: int = -1,
         image_format: str = 'png',
+        quality: int = 90,
     ) -> 'T':
         """Save :attr:`.tensor` into a file
 
         :param file: File or filename to which the data is saved.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_format: either `png` or `jpeg`
+        :param quality: quality of the image in case of using jpeg
 
         :return: itself after processed
         """
@@ -132,7 +142,7 @@ class ImageDataMixin:
         fp = _get_file_context(file)
         with fp:
             tensor = _move_channel_axis(self.tensor, channel_axis, -1)
-            buffer = _to_image_buffer(tensor, image_format)
+            buffer = _to_image_buffer(tensor, image_format, quality)
             fp.write(buffer)
         return self
 
@@ -341,7 +351,7 @@ def _to_image_tensor(
         return np.array(raw_img)
 
 
-def _to_image_buffer(arr: 'np.ndarray', image_format: str) -> bytes:
+def _to_image_buffer(arr: 'np.ndarray', image_format: str, quality: int) -> bytes:
     """
     Convert image-ndarray to buffer bytes.
 
@@ -354,7 +364,7 @@ def _to_image_buffer(arr: 'np.ndarray', image_format: str) -> bytes:
         by :attr:`arr` shape and apply resize method :attr:`resize_method`.
     """
 
-    if image_format not in ('png', 'jpeg', 'jpg'):
+    if image_format.lower() not in ('png', 'jpeg', 'jpg'):
         raise ValueError(
             f'image_format must be either `png` or `jpeg`, receiving `{image_format}`'
         )
@@ -371,12 +381,16 @@ def _to_image_buffer(arr: 'np.ndarray', image_format: str) -> bytes:
         from PIL import Image
 
         im = Image.fromarray(arr).convert('L')
-        image_bytes = _pillow_image_to_buffer(im, image_format=image_format.upper())
+        image_bytes = _pillow_image_to_buffer(
+            im, image_format=image_format.upper(), quality=quality
+        )
     elif arr.ndim == 3:
         from PIL import Image
 
         im = Image.fromarray(arr).convert('RGB')
-        image_bytes = _pillow_image_to_buffer(im, image_format=image_format.upper())
+        image_bytes = _pillow_image_to_buffer(
+            im, image_format=image_format.upper(), quality=quality
+        )
     else:
         raise ValueError(
             f'{arr.shape} ndarray can not be converted into an image buffer.'
@@ -420,9 +434,9 @@ def _png_to_buffer_1d(arr: 'np.ndarray', width: int, height: int) -> bytes:
     return png_bytes
 
 
-def _pillow_image_to_buffer(image, image_format: str) -> bytes:
+def _pillow_image_to_buffer(image, image_format: str, quality: int) -> bytes:
     img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format=image_format)
+    image.save(img_byte_arr, format=image_format, quality=quality)
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
 
