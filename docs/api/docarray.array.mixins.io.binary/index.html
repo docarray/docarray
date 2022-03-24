@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.io.binary/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.io.common module" href="../docarray.array.mixins.io.common/" /><link rel="prev" title="docarray.array.mixins.io package" href="../docarray.array.mixins.io/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.io.binary module - DocArray 0.9.18 documentation</title>
+        <title>docarray.array.mixins.io.binary module - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -384,6 +384,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -431,9 +432,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
@@ -460,6 +466,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -496,154 +506,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-docarray.array.mixins.io.binary">
-<span id="docarray-array-mixins-io-binary-module"></span><h1>docarray.array.mixins.io.binary module<a class="headerlink" href="#module-docarray.array.mixins.io.binary" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.LazyRequestReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.io.binary.</span></span><span class="sig-name descname"><span class="pre">LazyRequestReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#LazyRequestReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.LazyRequestReader" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.io.binary.</span></span><span class="sig-name descname"><span class="pre">BinaryIOMixin</span></span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Save/load an array to a binary file.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.load_binary">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">streaming</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.load_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.load_binary" title="Permalink to this definition">#</a></dt>
-<dd><p>Load array elements from a compressed binary file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIO</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code>]) – File or filename or serialized bytes where the data is stored.</p></li>
-<li><p><strong>protocol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – protocol to use</p></li>
-<li><p><strong>compress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – compress algorithm to use</p></li>
-<li><p><strong>_show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show progress bar, only works when protocol is <cite>pickle</cite> or <cite>protobuf</cite></p></li>
-<li><p><strong>streaming</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if <cite>True</cite> returns a generator over <cite>Document</cite> objects.</p></li>
-</ul>
-</dd>
-</dl>
-<p>In case protocol is pickle the <cite>Documents</cite> are streamed from disk to save memory usage
-:rtype: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]]
-:return: a DocumentArray object</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If <cite>file</cite> is <cite>str</cite> it can specify <cite>protocol</cite> and <cite>compress</cite> as file extensions.
-This functionality assumes <cite>file=file_name.$protocol.$compress</cite> where <cite>$protocol</cite> and <cite>$compress</cite> refer to a
-string interpolation of the respective <cite>protocol</cite> and <cite>compress</cite> methods.
-For example if <cite>file=my_docarray.protobuf.lz4</cite> then the binary data will be loaded assuming <cite>protocol=protobuf</cite>
-and <cite>compress=lz4</cite>.</p>
-</div>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.from_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>T</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.save_binary">
-<span class="sig-name descname"><span class="pre">save_binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.save_binary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.save_binary" title="Permalink to this definition">#</a></dt>
-<dd><p>Save array elements into a binary file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIO</span></code>]) – File or filename to which the data is saved.</p></li>
-<li><p><strong>protocol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – protocol to use</p></li>
-<li><p><strong>compress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – <p>compress algorithm to use</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If <cite>file</cite> is <cite>str</cite> it can specify <cite>protocol</cite> and <cite>compress</cite> as file extensions.
-This functionality assumes <cite>file=file_name.$protocol.$compress</cite> where <cite>$protocol</cite> and <cite>$compress</cite> refer to a
-string interpolation of the respective <cite>protocol</cite> and <cite>compress</cite> methods.
-For example if <cite>file=my_docarray.protobuf.lz4</cite> then the binary data will be created using <cite>protocol=protobuf</cite>
-and <cite>compress=lz4</cite>.</p>
-</div>
-</p></li>
-</ul>
-</dd>
-</dl>
-<p>Comparing to <code class="xref py py-meth docutils literal notranslate"><span class="pre">save_json()</span></code>, it is faster and the file is smaller, but not human-readable.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To get a binary presentation in memory, use <code class="docutils literal notranslate"><span class="pre">bytes(...)</span></code>.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes">
-<span class="sig-name descname"><span class="pre">to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_file_ctx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.to_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="Permalink to this definition">#</a></dt>
-<dd><p>Serialize itself into bytes.</p>
-<p>For more Pythonic code, please use <code class="docutils literal notranslate"><span class="pre">bytes(...)</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>_file_ctx</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIO</span></code>]) – File or filename or serialized bytes where the data is stored.</p></li>
-<li><p><strong>protocol</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – protocol to use</p></li>
-<li><p><strong>compress</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – compress algorithm to use</p></li>
-<li><p><strong>_show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show progress bar, only works when protocol is <cite>pickle</cite> or <cite>protobuf</cite></p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the binary serialization in bytes</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf">
-<span class="sig-name descname"><span class="pre">to_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndarray_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.to_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf" title="Permalink to this definition">#</a></dt>
-<dd><p>Convert DocumentArray into a Protobuf message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ndarray_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – can be <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, if set it will force all ndarray-like object from all
-Documents to <code class="docutils literal notranslate"><span class="pre">List</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>DocumentArrayProto</p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the protobuf message</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.from_protobuf">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pb_msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.from_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.from_protobuf" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>T</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.from_base64">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_base64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.from_base64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.from_base64" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>T</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.io.binary.BinaryIOMixin.to_base64">
-<span class="sig-name descname"><span class="pre">to_base64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pickle-array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/binary/#BinaryIOMixin.to_base64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.binary.BinaryIOMixin.to_base64" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
+                <section id="docarray-array-mixins-io-binary-module">
+<h1>docarray.array.mixins.io.binary module<a class="headerlink" href="#docarray-array-mixins-io-binary-module" title="Permalink to this headline">#</a></h1>
 </section>
 
             </article>
@@ -683,7 +547,7 @@ Documents to <code class="docutils literal notranslate"><span class="pre">List</
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">

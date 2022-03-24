@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/extend/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:description" content="DocumentArray can be easily extended to support different Document Store backend. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of onboarding a new Document Store backend is often: having persistence that better fits to the use case;, pul..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="prev" title="Changelog" href="../../../changelog/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Add New Document Store - DocArray 0.9.18 documentation</title>
+        <title>Add New Document Store - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -386,6 +386,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -433,9 +434,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
@@ -462,6 +468,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -570,12 +580,12 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Let’s call the above five functions as <strong>three essentials</strong>.</p>
-<p>If you aim for high performance, it is recommeneded to implement other methods <em>without</em> leveraging your three essentials. They are: <code class="docutils literal notranslate"><span class="pre">_get_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_del_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_clear_storage</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs_nested</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_docs_by_ids</span></code>. One can get their full signatures from <a class="reference internal" href="../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin" title="docarray.array.storage.base.getsetdel.BaseGetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code></a>. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray.</p>
+<p>If you aim for high performance, it is recommeneded to implement other methods <em>without</em> leveraging your three essentials. They are: <code class="docutils literal notranslate"><span class="pre">_get_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_del_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_clear_storage</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs_nested</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_docs_by_ids</span></code>. One can get their full signatures from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code>. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray.</p>
 <p>Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that is based on your five essentials.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>As a reference, you can check out how we implement for SQLite, check out <a class="reference internal" href="../../../api/docarray.array.storage.sqlite.getsetdel/#docarray.array.storage.sqlite.getsetdel.GetSetDelMixin" title="docarray.array.storage.sqlite.getsetdel.GetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code></a>.</p>
+<p>As a reference, you can check out how we implement for SQLite, check out <code class="xref py py-class docutils literal notranslate"><span class="pre">GetSetDelMixin</span></code>.</p>
 </div>
 </section>
 <section id="step-3-implement-seqlike-py">
@@ -625,7 +635,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <p>Most of the interfaces come from Python standard <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.MutableSequence">MutableSequence</a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>As a reference, to see how we implement for SQLite, check out <a class="reference internal" href="../../../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin" title="docarray.array.storage.sqlite.seqlike.SequenceLikeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code></a>.</p>
+<p>As a reference, to see how we implement for SQLite, check out <code class="xref py py-class docutils literal notranslate"><span class="pre">SequenceLikeMixin</span></code>.</p>
 </div>
 </section>
 <section id="step-4-implement-backend-py">
@@ -669,7 +679,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <p><code class="docutils literal notranslate"><span class="pre">MyDocStoreConfig</span></code> is a dataclass for containing the configs. You can expose arguments of your document store to this data class and allow users to customize them. In <code class="docutils literal notranslate"><span class="pre">init_storage</span></code> function, you need to parse <code class="docutils literal notranslate"><span class="pre">config</span></code> either from <code class="docutils literal notranslate"><span class="pre">MyDocStoreConfig</span></code> object or a <code class="docutils literal notranslate"><span class="pre">Dict</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>As a reference, you can check out how we implement for SQLite, check out <a class="reference internal" href="../../../api/docarray.array.storage.sqlite.backend/#docarray.array.storage.sqlite.backend.BackendMixin" title="docarray.array.storage.sqlite.backend.BackendMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMixin</span></code></a>.</p>
+<p>As a reference, you can check out how we implement for SQLite, check out <code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMixin</span></code>.</p>
 </div>
 </section>
 <section id="step-4-summarize-everything-in-init-py">
@@ -806,7 +816,7 @@ tests/unit/array/test_construct.py
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">

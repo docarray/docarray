@@ -83,6 +83,7 @@ Represents a Document
 | tags | [google.protobuf.Struct](#google-protobuf-Struct) |  | a structured data value, consisting of field which map to dynamically typed values. |
 | scores | [DocumentProto.ScoresEntry](#docarray-DocumentProto-ScoresEntry) | repeated | Scores performed on the document, each element corresponds to a metric |
 | evaluations | [DocumentProto.EvaluationsEntry](#docarray-DocumentProto-EvaluationsEntry) | repeated | Evaluations performed on the document, each element corresponds to a metric |
+| _metadata | [google.protobuf.Struct](#google-protobuf-Struct) |  | system-defined meta attributes represented in a structured data value. |
 
 
 

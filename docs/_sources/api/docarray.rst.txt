@@ -12,6 +12,7 @@ Subpackages
    docarray.math
    docarray.proto
    docarray.score
+   docarray.types
 
 Submodules
 ----------
@@ -21,7 +22,6 @@ Submodules
 
    docarray.base
    docarray.helper
-   docarray.types
 
 Module contents
 ---------------

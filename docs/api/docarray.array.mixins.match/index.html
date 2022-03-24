@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.match/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.parallel module" href="../docarray.array.mixins.parallel/" /><link rel="prev" title="docarray.array.mixins.group module" href="../docarray.array.mixins.group/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.match module - DocArray 0.9.18 documentation</title>
+        <title>docarray.array.mixins.match module - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -384,6 +384,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -431,9 +432,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
@@ -460,6 +466,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -496,69 +506,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-docarray.array.mixins.match">
-<span id="docarray-array-mixins-match-module"></span><h1>docarray.array.mixins.match module<a class="headerlink" href="#module-docarray.array.mixins.match" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.array.mixins.match.MatchMixin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.match.</span></span><span class="sig-name descname"><span class="pre">MatchMixin</span></span><a class="reference internal" href="../../_modules/docarray/array/mixins/match/#MatchMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.match.MatchMixin" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A mixin that provides match functionality to DocumentArrays</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.mixins.match.MatchMixin.match">
-<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">darray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/match/#MatchMixin.match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.match.MatchMixin.match" title="Permalink to this definition">#</a></dt>
-<dd><p>Compute embedding based nearest neighbour in <cite>another</cite> for each Document in <cite>self</cite>,
-and store results in <cite>matches</cite>.
-.. note:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>'cosine', 'euclidean', 'sqeuclidean' are supported natively without extra dependency.
-You can use other distance metric provided by ``scipy``, such as `braycurtis`, `canberra`, `chebyshev`,
-`cityblock`, `correlation`, `cosine`, `dice`, `euclidean`, `hamming`, `jaccard`, `jensenshannon`,
-`kulsinski`, `mahalanobis`, `matching`, `minkowski`, `rogerstanimoto`, `russellrao`, `seuclidean`,
-`sokalmichener`, `sokalsneath`, `sqeuclidean`, `wminkowski`, `yule`.
-To use scipy metric, please set ``use_scipy=True``.
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>To make all matches values in [0, 1], use <code class="docutils literal notranslate"><span class="pre">dA.match(dB,</span> <span class="pre">normalization=(0,</span> <span class="pre">1))</span></code></p></li>
-<li><dl class="simple">
-<dt>To invert the distance as score and make all values in range [0, 1],</dt><dd><p>use <code class="docutils literal notranslate"><span class="pre">dA.match(dB,</span> <span class="pre">normalization=(1,</span> <span class="pre">0))</span></code>. Note, how <code class="docutils literal notranslate"><span class="pre">normalization</span></code> differs from the previous.</p>
-</dd>
-</dl>
-</li>
-<li><p>If a custom metric distance is provided. Make sure that it returns scores as distances and not similarity, meaning the smaller the better.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>darray</strong> (<a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><em>DocumentArray</em></a>) – the other DocumentArray  to match against</p></li>
-<li><p><strong>metric</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]]) – the distance metric</p></li>
-<li><p><strong>limit</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – the maximum number of matches, when not given defaults to 20.</p></li>
-<li><p><strong>normalization</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – a tuple [a, b] to be used with min-max normalization,
-the min distance will be rescaled to <cite>a</cite>, the max distance will be rescaled to <cite>b</cite>
-all values will be rescaled into range <cite>[a, b]</cite>.</p></li>
-<li><p><strong>metric_name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – if provided, then match result will be marked with this string.</p></li>
-<li><p><strong>batch_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – if provided, then <code class="docutils literal notranslate"><span class="pre">darray</span></code> is loaded in batches, where each of them is at most <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>
-elements. When <cite>darray</cite> is big, this can significantly speedup the computation.</p></li>
-<li><p><strong>exclude_self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, Documents in <code class="docutils literal notranslate"><span class="pre">darray</span></code> with same <code class="docutils literal notranslate"><span class="pre">id</span></code> as the left-hand values will not be
-considered as matches.</p></li>
-<li><p><strong>only_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then returning matches will only contain <code class="docutils literal notranslate"><span class="pre">id</span></code></p></li>
-<li><p><strong>use_scipy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, use <code class="docutils literal notranslate"><span class="pre">scipy</span></code> as the computation backend. Note, <code class="docutils literal notranslate"><span class="pre">scipy</span></code> does not support distance
-on sparse matrix.</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the computational device for <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, can be either <cite>cpu</cite> or <cite>cuda</cite>.</p></li>
-<li><p><strong>num_worker</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – <p>the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This argument is only effective when <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is set.</p>
-</div>
-</p></li>
-<li><p><strong>kwargs</strong> – other kwargs.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
+                <section id="docarray-array-mixins-match-module">
+<h1>docarray.array.mixins.match module<a class="headerlink" href="#docarray-array-mixins-match-module" title="Permalink to this headline">#</a></h1>
 </section>
 
             </article>
@@ -598,7 +547,7 @@ on sparse matrix.</p></li>
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">

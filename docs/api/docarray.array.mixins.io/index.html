@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.io/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:description" content="Submodules: docarray.array.mixins.io.binary module, docarray.array.mixins.io.common module, docarray.array.mixins.io.csv module, docarray.array.mixins.io.dataframe module, docarray.array.mixins.io.from_gen module, docarray.array.mixins.io.json module, docarray.array.mixins.io.pushpull module. Mod..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.io.binary module" href="../docarray.array.mixins.io.binary/" /><link rel="prev" title="docarray.array.mixins package" href="../docarray.array.mixins/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.io package - DocArray 0.9.18 documentation</title>
+        <title>docarray.array.mixins.io package - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -386,6 +386,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -433,9 +434,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
@@ -462,6 +468,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -514,8 +524,8 @@
 </ul>
 </div>
 </section>
-<section id="module-docarray.array.mixins.io">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.mixins.io" title="Permalink to this headline">#</a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">#</a></h2>
 </section>
 </section>
 
@@ -556,7 +566,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -592,7 +602,7 @@
                         <ul>
 <li><a class="reference internal" href="#">docarray.array.mixins.io package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.array.mixins.io">Module contents</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

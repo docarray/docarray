@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage.base.helper/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.storage.base.seqlike module" href="../docarray.array.storage.base.seqlike/" /><link rel="prev" title="docarray.array.storage.base.getsetdel module" href="../docarray.array.storage.base.getsetdel/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>docarray.array.storage.base.helper module - DocArray 0.9.18 documentation</title>
+        <title>docarray.array.storage.base.helper module - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -384,6 +384,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -431,9 +432,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
@@ -460,6 +466,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -496,65 +506,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="module-docarray.array.storage.base.helper">
-<span id="docarray-array-storage-base-helper-module"></span><h1>docarray.array.storage.base.helper module<a class="headerlink" href="#module-docarray.array.storage.base.helper" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.base.helper.</span></span><span class="sig-name descname"><span class="pre">Offset2ID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.get_id">
-<span class="sig-name descname"><span class="pre">get_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.get_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.get_id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.append" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.extend">
-<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.extend" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.update" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.delete_by_id">
-<span class="sig-name descname"><span class="pre">delete_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.delete_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.delete_by_id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.index">
-<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.index" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.delete_by_offset">
-<span class="sig-name descname"><span class="pre">delete_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.delete_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.delete_by_offset" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.insert">
-<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.insert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.insert" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.clear" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.delete_by_ids">
-<span class="sig-name descname"><span class="pre">delete_by_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.delete_by_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.delete_by_ids" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.update_ids">
-<span class="sig-name descname"><span class="pre">update_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_ids_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.update_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.update_ids" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.save" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="docarray.array.storage.base.helper.Offset2ID.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/base/helper/#Offset2ID.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.base.helper.Offset2ID.load" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-</dd></dl>
+                <section id="docarray-array-storage-base-helper-module">
+<h1>docarray.array.storage.base.helper module<a class="headerlink" href="#docarray-array-storage-base-helper-module" title="Permalink to this headline">#</a></h1>
 </section>
 
             </article>
@@ -594,7 +547,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">

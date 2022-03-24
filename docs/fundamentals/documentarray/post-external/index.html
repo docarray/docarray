@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/post-external/" />
   
-<meta property="og:site_name" content="DocArray 0.9.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.9.19 Documentation" />
   
 <meta property="og:description" content="You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via post(). The external Flow/Executor can be either local, remote, or inside Docker container. For example, to use an existing Flow on 192.168.2.3 on port 12345 to process a DocumentArray: One can also use any Executor f..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.9.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.9.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Examples" href="../../../datatypes/" /><link rel="prev" title="Visualization" href="../visualization/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.4.0, furo 2022.03.04"/>
-        <title>Process via External Flow or Executor - DocArray 0.9.18 documentation</title>
+        <title>Process via External Flow or Executor - DocArray 0.9.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.9.18 documentation</div>
+                <div class="brand">DocArray 0.9.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -386,6 +386,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.helper/">docarray.document.mixins.helper module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.image/">docarray.document.mixins.image module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.mesh/">docarray.document.mixins.mesh module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.multimodal/">docarray.document.mixins.multimodal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.plot/">docarray.document.mixins.plot module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.porting/">docarray.document.mixins.porting module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/docarray.document.mixins.property/">docarray.document.mixins.property module</a></li>
@@ -433,9 +434,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.score.data/">docarray.score.data module</a></li>
 </ul>
 </li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../api/docarray.types/">docarray.types package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.deserializers/">docarray.types.deserializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.multimodal/">docarray.types.multimodal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/docarray.types.serializers/">docarray.types.serializers module</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.base/">docarray.base module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.helper/">docarray.helper module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/docarray.types/">docarray.types module</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
@@ -462,6 +468,10 @@
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
             DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
     </ul>
 </div>
 </div>
@@ -504,7 +514,7 @@
 <p class="admonition-title">Tip</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">jina</span></code> dependency. Please install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jina</span></code>.</p>
 </div>
-<p>You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via <a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a>. The external Flow/Executor can be either local, remote, or inside Docker container.</p>
+<p>You can call an external Flow/Sandbox/Executor to “process” a DocumentArray via <code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code>. The external Flow/Executor can be either local, remote, or inside Docker container.</p>
 <p>For example, to use an existing Flow on <code class="docutils literal notranslate"><span class="pre">192.168.2.3</span></code> on port <code class="docutils literal notranslate"><span class="pre">12345</span></code> to process a DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -541,7 +551,7 @@
 </div>
 <section id="accept-schemes">
 <h2>Accept schemes<a class="headerlink" href="#accept-schemes" title="Permalink to this headline">#</a></h2>
-<p><a class="reference internal" href="../../../api/docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin.post" title="docarray.array.mixins.post.PostMixin.post"><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code></a> accepts a URI-like scheme that supports a wide range of Flow/Hub Executor. It is described as below:</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">post()</span></code> accepts a URI-like scheme that supports a wide range of Flow/Hub Executor. It is described as below:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>scheme://netloc[:port][/path]
 </pre></div>
 </div>
@@ -637,7 +647,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 22, 2022.
+                            Last updated on Mar 24, 2022.
                         </div>
                     </div>
                     <div class="right-details">
