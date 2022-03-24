@@ -63,13 +63,12 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         request = []
         for value in values:
-            value.embedding = self._map_embedding(value.embedding)
             request.append(
                 {
                     "_op_type": "index",
                     '_id': value.id,
                     '_index': self._config.index_name,
-                    'embedding': value.embedding,
+                    'embedding': self._map_embedding(value.embedding),
                     'blob': value.to_base64(),
                 }
             )
