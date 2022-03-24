@@ -148,7 +148,6 @@ class BackendMixin(BaseBackendMixin):
     def _doc_id_exists(self, doc_id):
         return self._client.exists(index=self._config.index_name, id=doc_id)
 
-
     def _get_storage_infos(self) -> Dict:
         return {
             'Backend': 'ElasticConfig',
@@ -214,5 +213,5 @@ class BackendMixin(BaseBackendMixin):
         self.__dict__ = state
         self._client = self._build_client()
 
-    #def clear(self):
+    # def clear(self):
     #    self._client.indices.delete(index=self._config.index_name)
