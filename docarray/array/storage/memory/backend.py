@@ -1,7 +1,7 @@
 from typing import (
-    Iterator,
     Optional,
     TYPE_CHECKING,
+    Iterable,
 )
 
 from ..base.backend import BaseBackendMixin
@@ -32,7 +32,7 @@ class BackendMixin(BaseBackendMixin):
             return
         elif isinstance(
             _docs,
-            Iterator,
+            Iterable,
         ):
             if copy:
                 for doc in _docs:
