@@ -38,6 +38,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
+        if _id != value.id:
+            self._del_doc_by_id(_id)
+
         value.embedding = self._map_embedding(value.embedding)
         request = [
             {
