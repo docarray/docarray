@@ -209,3 +209,12 @@ class BackendMixin(BaseBackendMixin):
             embedding = embedding + EPSILON
 
         return embedding  # .tolist()
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_client']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._client = self._build_client()
