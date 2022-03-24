@@ -6,7 +6,6 @@ from typing import (
     Union,
     Dict,
     Iterable,
-    Iterator,
     List,
 )
 
@@ -103,7 +102,7 @@ class BackendMixin(BaseBackendMixin):
         # is provided, :class:`DocumentArraySqlite` will clear the existing
         # table and load the given `docs`
         self.clear()
-        if isinstance(docs, (Iterable, Iterator)):
+        if isinstance(docs, Iterable):
             self.extend(docs)
         elif isinstance(docs, Document):
             self.append(docs)

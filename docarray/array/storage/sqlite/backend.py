@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile
 from typing import (
     Iterable,
-    Iterator,
     Dict,
     Optional,
     TYPE_CHECKING,
@@ -114,7 +113,7 @@ class BackendMixin(BaseBackendMixin):
 
         if _docs is None:
             return
-        elif isinstance(_docs, (Iterable, Iterator)):
+        elif isinstance(_docs, Iterable):
             self.clear()
             self.extend(_docs)
         else:

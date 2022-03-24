@@ -6,7 +6,6 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Iterable,
-    Iterator,
 )
 
 from ..base.backend import BaseBackendMixin
@@ -75,7 +74,7 @@ class BackendMixin(BaseBackendMixin):
 
         self.clear()
 
-        if isinstance(_docs, (Iterable, Iterator)):
+        if isinstance(_docs, Iterable):
             self.extend(_docs)
         elif isinstance(_docs, Document):
             self.append(_docs)

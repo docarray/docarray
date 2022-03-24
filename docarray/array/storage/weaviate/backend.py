@@ -2,7 +2,6 @@ import uuid
 from dataclasses import dataclass, field
 from typing import (
     Iterable,
-    Iterator,
     Dict,
     Optional,
     TYPE_CHECKING,
@@ -13,7 +12,6 @@ from typing import (
 
 import numpy as np
 import weaviate
-from weaviate.auth import AuthCredentials
 
 from ..base.backend import BaseBackendMixin
 from .... import Document
@@ -88,7 +86,7 @@ class BackendMixin(BaseBackendMixin):
         # table and load the given `docs`
         if _docs is None:
             return
-        elif isinstance(_docs, (Iterable, Iterator)):
+        elif isinstance(_docs, Iterable):
             self.clear()
             self.extend(_docs)
         else:

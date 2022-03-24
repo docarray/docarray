@@ -1,7 +1,6 @@
 from typing import (
     TYPE_CHECKING,
     Iterable,
-    Iterator,
 )
 
 from .memory import DocumentArrayInMemory
@@ -28,7 +27,7 @@ class ChunkArray(DocumentArrayInMemory):
         """
         self._ref_doc = reference_doc
         super().__init__(docs)
-        if isinstance(docs, (Iterable, Iterator)) and self._ref_doc is not None:
+        if isinstance(docs, Iterable) and self._ref_doc is not None:
             for d in docs:
                 d.parent_id = self._ref_doc.id
                 d.granularity = self._ref_doc.granularity + 1
