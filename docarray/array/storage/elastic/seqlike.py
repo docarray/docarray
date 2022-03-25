@@ -27,7 +27,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :return: the length of this :class:`DocumentArrayElastic` object
         """
-        return self._client.count(index=self._config.index_name)["count"]
+        try:
+            return self._client.count(index=self._config.index_name)["count"]
+        except:
+            return 0
 
     def __contains__(self, x: Union[str, 'Document']):
         """Check if ``x`` is contained in this :class:`DocumentArray` with Elastic storage
