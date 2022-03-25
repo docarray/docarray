@@ -128,10 +128,7 @@ class BackendMixin(BaseBackendMixin):
 
         schema = self._build_schema_from_elastic_config(self._config)
 
-        # if client.indices.exists(index=self._config.index_name):
-        #    client.indices.delete(index=self._config.index_name)
         if not client.indices.exists(index=self._config.index_name):
-
             client.indices.create(
                 index=self._config.index_name, mappings=schema['mappings']
             )
