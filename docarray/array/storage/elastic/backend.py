@@ -155,6 +155,7 @@ class BackendMixin(BaseBackendMixin):
             'Port': self._config.port,
             'index_name': self._config.index_name,
             'distance': self._config.distance,
+            'Vector dimension': self._config.n_dim,
         }
 
     def _update_offset2ids_meta(self):
