@@ -54,6 +54,8 @@ To access a DocumentArray formerly persisted, one can specify the index name, th
 from docarray import DocumentArray
 
 da = DocumentArray(storage='elastic', config={'index_name':'ndim_128', 'n_dim':128, 'port': 9200})
+
+da.summary()
 ```
 
 Other functions behave the same as in-memory DocumentArray.
@@ -62,10 +64,11 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name               | Description                                                                           | Default     |
-|--------------------|---------------------------------------------------------------------------------------|-------------|
-| `host`             | Hostname of the Elastic server                                                        | 'localhost' |
-| `port`             | port of the Elastic server                                                            | 9200        |
-| `protocol`         | protocol to be used. Can be 'http' or 'https'                                         | 'http'      |
-| `index_name`       | Elastic index name; the class name of Elastic index object to set this DocumentArray  | None        |
+| Name         | Description                                                                          | Default     |
+|--------------|--------------------------------------------------------------------------------------|-------------|
+| `host`       | Hostname of the Elastic server                                                       | 'localhost' |
+| `port`       | port of the Elastic server                                                           | 9200        |
+| `protocol`   | protocol to be used. Can be 'http' or 'https'                                        | 'http'      |
+| `index_name` | Elastic index name; the class name of Elastic index object to set this DocumentArray | None        |
+| `n_dim`      | Dimensionality of the embeddings                                                     | None        |
 
