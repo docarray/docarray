@@ -68,7 +68,7 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query, limit=limit)]
+            return [self._find_similar_vectors(query[0], limit=limit)]
         else:
             closest_docs = []
             for q in query:

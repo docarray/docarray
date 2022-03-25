@@ -45,7 +45,7 @@ class ElasticConfig:
     n_dim: int  # dims  in elastic
     basic_auth: Optional[Tuple[str, str]] = None
     ca_certs: Optional[str] = None
-    distance: str = 'l2_norm'  # similarity in elastic
+    distance: str = 'cosine'  # similarity in elastic
     host: Optional[str] = field(default='http://localhost')
     port: Optional[int] = field(default=9200)
     index_name: Optional[str] = field(default=None)
