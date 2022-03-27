@@ -5,9 +5,12 @@ import numpy as np
 from PIL import Image
 
 from docarray import Document
-from docarray.types.deserializers import (audio_deserializer,
-                                          image_deserializer,
-                                          json_deserializer, text_deserializer)
+from docarray.types.deserializers import (
+    audio_deserializer,
+    image_deserializer,
+    json_deserializer,
+    text_deserializer,
+)
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
