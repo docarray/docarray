@@ -10,7 +10,7 @@ def image_deserializer(attribute_name, doc: 'Document'):
         if doc._metadata['image_type'] == 'uri':
             return doc._metadata['image_uri']
         elif doc._metadata['image_type'] == 'PIL':
-            from PIL.Image import Image
+            from PIL import Image
 
             return Image.fromarray(doc.tensor)
         elif doc._metadata['image_type'] == 'ndarray':
@@ -24,7 +24,7 @@ def text_deserializer(attribute_name, doc: 'Document'):
 
 
 def audio_deserializer(attribute_name, doc: 'Document'):
-    from PIL.Image import Image
+    from PIL import Image
 
     return Image.fromarray(doc.tensor)
 
