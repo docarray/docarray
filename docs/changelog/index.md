@@ -5,10 +5,16 @@ DocArray follows semantic versioning. However, before the project reach 1.0.0, a
 This chapter only tracks the most important breaking changes and explain the rationale behind them.
 
 
+## 0.10.0: add high-level dataclass API to Document
+
+0.10 introduces a high-level dataclass API for Document, which involves minor changes on Protobuf, selector syntax, etc. Its usage is intentionally undocumented as its feature is still under testing and refactoring. The full documentation about its usage is expected to be available in `0.12`.
+
+
+The change is backward-compatible.
+
 ## 0.5.0: add storage backend to DocumentArray
 
 0.5 introduces an important feature that enables external Document Store as the backend of DocumentArray. It also refactors the implementation of DocumentArray. The change should be backward-compatible; and the version bumping is mainly because of the introduction of the new concept "`storage`".
-
 
 ## 0.4.0: change on the DocumentArray serialization format
 
