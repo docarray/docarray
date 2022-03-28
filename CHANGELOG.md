@@ -61,6 +61,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1477,4 +1478,42 @@
 ### 🍹 Other Improvements
 
  - [[```14be8f16```](https://github.com/jina-ai/docarray/commit/14be8f165fb0c8b547b5ed903362607b37acf1ab)] __-__ __version__: the next version will be 0.9.18 (*Jina Dev Bot*)
+
+<a name=release-note-0-10-0></a>
+## Release Note (`0.10.0`)
+
+> Release time: 2022-03-28 12:05:42
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  Aziz Belaweid,  Wang Bo,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```482dcbf5```](https://github.com/jina-ai/docarray/commit/482dcbf597d1353892de250bd257024982e3e079)] __-__ __array__: add elastic storage support (#207) (*David Buchaca Prats*)
+ - [[```5a8544a7```](https://github.com/jina-ai/docarray/commit/5a8544a7e51eb3c235c704e2462e029ddd47e40e)] __-__ multi modal document (#188) (*AlaeddineAbdessalem*)
+
+### 🐞 Bug fixes
+
+ - [[```2eee6c55```](https://github.com/jina-ai/docarray/commit/2eee6c554011a4547e1f54dad38e898636748020)] __-__ encode and decode only once (#223) (*AlaeddineAbdessalem*)
+
+### 🧼 Code Refactoring
+
+ - [[```6dcd7f1b```](https://github.com/jina-ai/docarray/commit/6dcd7f1b49b22e9b6aca0ea8aba100ecb07dafa0)] __-__ __array__: unify summary fn on diff backends (#230) (*Han Xiao*)
+ - [[```c19f057c```](https://github.com/jina-ai/docarray/commit/c19f057c0a520a257ae9370a015711e3e99ce900)] __-__ simplify da type checking (#224) (*Wang Bo*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```0c891f80```](https://github.com/jina-ai/docarray/commit/0c891f80ef78ad311541a779bed9992b548deea3)] __-__ __multimodal__: more code coverage (#226) (*Aziz Belaweid*)
+ - [[```c2e8173f```](https://github.com/jina-ai/docarray/commit/c2e8173f33167fd23767955556f4864552f90c1d)] __-__ fix cd pipeline (*Han Xiao*)
+ - [[```60d1665c```](https://github.com/jina-ai/docarray/commit/60d1665ced4d6684aac1475effeb7d8493b66285)] __-__ add blacken docs precommit hook (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```5eb6150f```](https://github.com/jina-ai/docarray/commit/5eb6150f032ca290ebbc8af96a8bdb91319d0508)] __-__ version bump (*Han Xiao*)
+ - [[```fda457bb```](https://github.com/jina-ai/docarray/commit/fda457bbfcda0c00088854f889e7d4619695468a)] __-__ reformat code (#227) (*Han Xiao*)
+ - [[```d559f29a```](https://github.com/jina-ai/docarray/commit/d559f29a42920e2903243b33fdf25027ec04fe9d)] __-__ add cas logo in the navbar (*Han Xiao*)
+ - [[```21520e46```](https://github.com/jina-ai/docarray/commit/21520e46234c479343ab21b1a3cf8572f4893180)] __-__ __version__: the next version will be 0.9.19 (*Jina Dev Bot*)
 
