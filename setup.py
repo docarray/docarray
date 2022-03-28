@@ -80,7 +80,7 @@ setup(
             'pytest-reraise',
             'mock',
             'pytest-custom_exit_code',
-            'black',
+            'black==22.3.0',
             'tensorflow==2.7.0',
             'paddlepaddle==2.2.0',
             'torch==1.9.0',
