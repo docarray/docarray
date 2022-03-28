@@ -147,7 +147,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _get_storage_infos(self) -> Dict:
         return {
-            'Backend': 'ElasticConfig',
+            'Backend': 'ElasticSearch',
             'Host': str(self._config.host),
             'Port': str(self._config.port),
             'distance': str(self._config.distance),
