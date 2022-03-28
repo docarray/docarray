@@ -143,7 +143,6 @@ class BackendMixin(BaseBackendMixin):
         return (
             self.client.http.points_api.get_point(self.collection_name_meta, id=1)
             .result.payload['offset2id']
-            .value
         )
 
     def _update_offset2ids_meta(self):

@@ -2,8 +2,8 @@ from abc import abstractmethod
 from typing import Iterable, Iterator
 
 from qdrant_client import QdrantClient
-from qdrant_openapi_client.exceptions import UnexpectedResponse
-from qdrant_openapi_client.models.models import (
+from qdrant_client.http.exceptions import UnexpectedResponse
+from qdrant_client.http.models.models import (
     PointIdsList,
     PointsList,
     ScrollRequest,
@@ -61,7 +61,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _qdrant_to_document(self, qdrant_record: dict) -> 'Document':
         return Document.from_base64(
-            qdrant_record['_serialized'].value[0], **self.serialization_config
+            qdrant_record['_serialized'], **self.serialization_config
         )
 
     def _document_to_qdrant(self, doc: 'Document') -> 'PointStruct':
