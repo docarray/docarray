@@ -1,9 +1,9 @@
-# Elastic
+# Elasticsearch
 
-One can use [Elastic](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
+One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `elasticsearch-client`. You can install it via `pip install "docarray[full]".` 
+This feature requires `elasticsearch`. You can install it via `pip install "docarray[full]".` 
 ````
 
 ## Usage
@@ -43,7 +43,7 @@ Assuming service is started using the default configuration (i.e. server address
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='elastic',config={'n_dim':128})
+da = DocumentArray(storage='elasticsearch', config={'n_dim': 128})
 ```
 
 The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
@@ -53,7 +53,10 @@ To access a DocumentArray formerly persisted, one can specify the index name, th
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='elastic', config={'index_name':'ndim_128', 'n_dim':128, 'port': 9200})
+da = DocumentArray(
+    storage='elasticsearch',
+    config={'index_name': 'ndim_128', 'n_dim': 128, 'port': 9200},
+)
 
 da.summary()
 ```

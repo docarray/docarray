@@ -188,7 +188,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=256)),
         ('weaviate', WeaviateConfig(n_dim=256)),
         ('qdrant', QdrantConfig(n_dim=256)),
-        ('elastic', ElasticConfig(n_dim=256)),
+        ('elasticsearch', ElasticConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])

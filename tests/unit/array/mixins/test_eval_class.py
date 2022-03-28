@@ -14,7 +14,7 @@ from docarray import DocumentArray, Document
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
-        ('elastic', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -50,7 +50,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
-        ('elastic', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
     ],
 )
 @pytest.mark.parametrize(
@@ -93,7 +93,7 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
-        ('elastic', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
     ],
 )
 def test_diff_len_should_raise(storage, config, start_storage):
@@ -111,7 +111,7 @@ def test_diff_len_should_raise(storage, config, start_storage):
         ('sqlite', {}),
         ('annlite', {'n_dim': 256}),
         ('qdrant', {'n_dim': 256}),
-        ('elastic', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
     ],
 )
 def test_diff_hash_fun_should_raise(storage, config, start_storage):
@@ -129,7 +129,7 @@ def test_diff_hash_fun_should_raise(storage, config, start_storage):
         ('sqlite', {}),
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
-        ('elastic', {'n_dim': 3}),
+        ('elasticsearch', {'n_dim': 3}),
     ],
 )
 def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
@@ -157,7 +157,7 @@ def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
         ('sqlite', {}),
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
-        ('elastic', {'n_dim': 3}),
+        ('elasticsearch', {'n_dim': 3}),
     ],
 )
 def test_adding_noise(storage, config, start_storage):
@@ -187,7 +187,7 @@ def test_adding_noise(storage, config, start_storage):
         ('sqlite', {}),
         ('annlite', {'n_dim': 128}),
         ('qdrant', {'n_dim': 128}),
-        ('elastic', {'n_dim': 128}),
+        ('elasticsearch', {'n_dim': 128}),
     ],
 )
 @pytest.mark.parametrize(
