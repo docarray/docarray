@@ -3,8 +3,8 @@ from typing import Iterable, Union
 
 from qdrant_client import QdrantClient
 
-from .... import Document
 from ..base.seqlike import BaseSequenceLikeMixin
+from .... import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
