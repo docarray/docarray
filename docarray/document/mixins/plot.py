@@ -4,7 +4,7 @@ from ...helper import deprecate_by
 
 
 class PlotMixin:
-    """Provide helper functions for :class:`Document` to plot and visualize itself. """
+    """Provide helper functions for :class:`Document` to plot and visualize itself."""
 
     def _ipython_display_(self):
         """Displays the object in IPython as a side effect"""
@@ -26,7 +26,7 @@ class PlotMixin:
             yield my_table
 
     def summary(self) -> None:
-        """ Print non-empty fields and nested structure of this Document object."""
+        """Print non-empty fields and nested structure of this Document object."""
         from rich import print
 
         print(self._plot_recursion())
@@ -50,7 +50,7 @@ class PlotMixin:
         return tree
 
     def display(self):
-        """ Plot image data from :attr:`.tensor` or :attr:`.uri`. """
+        """Plot image data from :attr:`.tensor` or :attr:`.uri`."""
         from IPython.display import Image, display
 
         if self.uri:
