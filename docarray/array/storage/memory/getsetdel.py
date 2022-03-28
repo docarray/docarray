@@ -1,7 +1,6 @@
 from typing import (
     Sequence,
     Iterable,
-    Any,
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin

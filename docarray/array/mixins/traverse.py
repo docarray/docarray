@@ -6,11 +6,71 @@ from typing import (
     Optional,
     Callable,
     Tuple,
+    Dict,
+    List,
 )
 
 if TYPE_CHECKING:
     from ... import DocumentArray, Document
     from ...types import T
+
+
+ATTRIBUTES_SEPARATOR = ','
+PATHS_SEPARATOR = ','
+
+SLICE_BASE = r'[-\d:]+'
+WRAPPED_SLICE_BASE = r'\[[-\d:]+\]'
+
+SLICE = rf'({SLICE_BASE}|{WRAPPED_SLICE_BASE})?'
+SLICE_TAGGED = rf'(?P<slice>{SLICE})'
+
+ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
+
+# accepts both syntaxes: '.[att]' or '.att'
+# However, this makes the grammar ambiguous. E.g:
+# 'r.attr' should it be parsed into tokens 'r', '.', 'attr' or 'r', '.', 'att', 'r' ?
+ATTRIBUTE = rf'\.(\[({ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|{ATTRIBUTE_NAME})'
+ATTRIBUTE_TAGGED = rf'\.(\[(?P<attributes>{ATTRIBUTE_NAME}({ATTRIBUTES_SEPARATOR}{ATTRIBUTE_NAME})*)\]|(?P<attribute>{ATTRIBUTE_NAME}))'
+
+SELECTOR = rf'(r|c|m|{ATTRIBUTE})'
+SELECTOR_TAGGED = rf'(?P<selector>r|c|m|{ATTRIBUTE_TAGGED})'
+
+REMAINDER = rf'({SELECTOR}{SLICE})*'
+REMAINDER_TAGGED = rf'(?P<remainder>({SELECTOR}{SLICE})*)'
+
+TRAVERSAL_PATH = rf'{SELECTOR}{SLICE}{REMAINDER}'
+TRAVERSAL_PATH_TAGGED = rf'(?P<path>{SELECTOR_TAGGED}{SLICE_TAGGED}){REMAINDER_TAGGED}'
+
+
+PATHS_REMAINDER_TAGGED = rf'(?P<paths_remainder>({PATHS_SEPARATOR}{TRAVERSAL_PATH})*)'
+
+TRAVERSAL_PATH_LIST_TAGGED = (
+    rf'^(?P<traversal_path>{TRAVERSAL_PATH}){PATHS_REMAINDER_TAGGED}$'
+)
+
+ATTRIBUTE_REGEX = re.compile(rf'^{ATTRIBUTE}$')
+TRAVERSAL_PATH_REGEX = re.compile(rf'^{TRAVERSAL_PATH_TAGGED}$')
+TRAVERSAL_PATH_LIST_REGEX = re.compile(TRAVERSAL_PATH_LIST_TAGGED)
+
+
+def _re_traversal_path_split(path: str) -> List[str]:
+    res = []
+    remainder = path
+    while True:
+        m = TRAVERSAL_PATH_LIST_REGEX.match(remainder)
+        if not m:
+            raise ValueError(
+                f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
+            )
+        group_dict = m.groupdict()
+        current, remainder = group_dict['traversal_path'], group_dict['paths_remainder']
+        res.append(current)
+        if not remainder:
+            break
+        else:
+            remainder = remainder[1:]
+
+    return res
 
 
 class TraverseMixin:
@@ -36,13 +96,16 @@ class TraverseMixin:
             - `r`: docs in this TraversableSequence
             - `m`: all match-documents at adjacency 1
             - `c`: all child-documents at granularity 1
+            - `r.[attribute]`: access attribute of a multi modal document
             - `cc`: all child-documents at granularity 2
             - `mm`: all match-documents at adjacency 2
             - `cm`: all match-document at adjacency 1 and granularity 1
             - `r,c`: docs in this TraversableSequence and all child-documents at granularity 1
+            - `r[start:end]`: access sub document array using slice
 
         """
-        for p in traversal_paths.split(','):
+        traversal_paths = re.sub(r'\s+', '', traversal_paths)
+        for p in _re_traversal_path_split(traversal_paths):
             yield from self._traverse(self, p, filter_fn=filter_fn)
 
     @staticmethod
@@ -53,21 +116,33 @@ class TraverseMixin:
     ):
         path = re.sub(r'\s+', '', path)
         if path:
-            cur_loc, cur_slice, _left = _parse_path_string(path)
+            group_dict = _parse_path_string(path)
+            cur_loc = group_dict['selector']
+            cur_slice = group_dict['slice']
+            remainder = group_dict['remainder']
+
             if cur_loc == 'r':
                 yield from TraverseMixin._traverse(
-                    docs[cur_slice], _left, filter_fn=filter_fn
+                    docs[cur_slice], remainder, filter_fn=filter_fn
                 )
             elif cur_loc == 'm':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.matches[cur_slice], _left, filter_fn=filter_fn
+                        d.matches[cur_slice], remainder, filter_fn=filter_fn
                     )
             elif cur_loc == 'c':
                 for d in docs:
                     yield from TraverseMixin._traverse(
-                        d.chunks[cur_slice], _left, filter_fn=filter_fn
+                        d.chunks[cur_slice], remainder, filter_fn=filter_fn
                     )
+            elif ATTRIBUTE_REGEX.match(cur_loc):
+                for d in docs:
+                    for attribute in group_dict['attributes']:
+                        yield from TraverseMixin._traverse(
+                            d.get_multi_modal_attribute(attribute)[cur_slice],
+                            remainder,
+                            filter_fn=filter_fn,
+                        )
             else:
                 raise ValueError(
                     f'`path`:{path} is invalid, please refer to https://docarray.jina.ai/fundamentals/documentarray/access-elements/#index-by-nested-structure'
@@ -92,7 +167,8 @@ class TraverseMixin:
         :param filter_fn: function to filter docs during traversal
         :yield: :class:``TraversableSequence`` containing the document of all leaves per path.
         """
-        for p in traversal_paths.split(','):
+        traversal_paths = re.sub(r'\s+', '', traversal_paths)
+        for p in _re_traversal_path_split(traversal_paths):
             yield self._flatten(self._traverse(self, p, filter_fn=filter_fn))
 
     def traverse_flat(
@@ -159,23 +235,31 @@ class TraverseMixin:
         return DocumentArray(list(itertools.chain.from_iterable(sequence)))
 
 
-def _parse_path_string(p: str) -> Tuple[str, slice, str]:
-    g = re.match(r'^([rcm])([-\d:]+)?([rcm].*)?$', p)
-    _this = g.group(1)
-    slice_str = g.group(2)
-    _next = g.group(3)
-    return _this, _parse_slice(slice_str or ':'), _next or ''
+def _parse_path_string(p: str) -> Dict[str, str]:
+    g = TRAVERSAL_PATH_REGEX.match(p)
+    group_dict = g.groupdict()
+    group_dict['remainder'] = group_dict.get('remainder') or ''
+    group_dict['slice'] = _parse_slice(group_dict.get('slice') or ':')
+    if group_dict.get('attributes'):
+        group_dict['attributes'] = group_dict['attributes'].split(ATTRIBUTES_SEPARATOR)
+    elif group_dict.get('attribute'):
+        group_dict['attributes'] = [group_dict.get('attribute')]
+
+    return group_dict
 
 
 def _parse_slice(value):
     """
     Parses a `slice()` from string, like `start:stop:step`.
     """
+    if re.match(WRAPPED_SLICE_BASE, value):
+        value = value[1:-1]
+
     if value:
         parts = value.split(':')
         if len(parts) == 1:
             # slice(stop)
-            parts = [None, parts[0]]
+            parts = [parts[0], str(int(parts[0]) + 1)]
         # else: slice(start, stop[, step])
     else:
         # slice()

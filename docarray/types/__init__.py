@@ -11,13 +11,14 @@ from typing import (
     Tuple,
 )
 
+
 if TYPE_CHECKING:
     import scipy.sparse
     import tensorflow
     import torch
     import numpy as np
 
-    from . import Document
+    from .. import Document
 
     ArrayType = TypeVar(
         'ArrayType',
