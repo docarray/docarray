@@ -1,4 +1,3 @@
-import numpy as np
 from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
@@ -7,6 +6,8 @@ from typing import (
     TYPE_CHECKING,
     Iterable,
 )
+
+import numpy as np
 
 from ..base.backend import BaseBackendMixin
 from ....helper import dataclass_from_dict
@@ -64,7 +65,6 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **config)
-        from ... import DocumentArray
         from .... import Document
 
         super()._init_storage()

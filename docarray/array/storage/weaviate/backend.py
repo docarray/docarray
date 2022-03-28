@@ -14,9 +14,9 @@ import numpy as np
 import weaviate
 
 from ..base.backend import BaseBackendMixin
+from ..registry import _REGISTRY
 from .... import Document
 from ....helper import dataclass_from_dict
-from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
     from ....types import DocumentArraySourceType, ArrayType
@@ -57,8 +57,6 @@ class BackendMixin(BaseBackendMixin):
             config = WeaviateConfig()
         elif isinstance(config, dict):
             config = dataclass_from_dict(WeaviateConfig, config)
-
-        from ... import DocumentArray
 
         self._serialize_config = config.serialize_config
 

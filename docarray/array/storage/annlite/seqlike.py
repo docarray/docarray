@@ -1,9 +1,8 @@
-from typing import Union, Iterable, Sequence
+from typing import Union, Iterable
 
 from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
-
 from ...memory import DocumentArrayInMemory
+from .... import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):

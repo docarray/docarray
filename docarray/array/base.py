@@ -1,4 +1,4 @@
-from typing import MutableSequence, TYPE_CHECKING, Union, Iterable, Type
+from typing import MutableSequence, TYPE_CHECKING, Union, Iterable
 
 from .. import Document
 

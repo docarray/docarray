@@ -36,7 +36,6 @@ class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
 
     @property
     def collection_name_meta(self) -> str:
-
         return f'{self.collection_name}_meta'
 
     @property

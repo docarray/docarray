@@ -1,5 +1,5 @@
 import copy
-import itertools
+import uuid
 import warnings
 from dataclasses import dataclass, field
 from typing import (
@@ -9,21 +9,16 @@ from typing import (
     Union,
     Tuple,
     List,
-    Sequence,
-    Generator,
-    Iterator,
     Iterable,
 )
 
 import numpy as np
-import uuid
-
-from ..base.backend import BaseBackendMixin
-from .... import DocumentArray, Document
-from ....helper import dataclass_from_dict
-
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+
+from ..base.backend import BaseBackendMixin
+from .... import Document
+from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
     from ....types import (

@@ -1,12 +1,11 @@
 import base64
 import io
-import os.path
 import os
+import os.path
 import pickle
 from contextlib import nullcontext
 from pathlib import Path
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
-
 
 from ....helper import (
     get_compress_ctx,

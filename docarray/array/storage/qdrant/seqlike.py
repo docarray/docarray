@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from typing import Iterable, Union
-from docarray import Document
 
 from qdrant_client import QdrantClient
 
-from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from .... import Document
+from ..base.seqlike import BaseSequenceLikeMixin
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
