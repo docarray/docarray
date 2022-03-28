@@ -122,15 +122,6 @@ class BackendMixin(BaseBackendMixin):
     def _doc_id_exists(self, doc_id):
         return self._client.exists(index=self._config.index_name, id=doc_id)
 
-    def _get_storage_infos(self) -> Dict:
-        return {
-            'Backend': 'ElasticSearch',
-            'Hosts': str(self._config.hosts),
-            'ES config': str(self._config.es_config),
-            'Distance': str(self._config.distance),
-            'Vector dimension': str(self._config.n_dim),
-        }
-
     def _update_offset2ids_meta(self):
         """Update the offset2ids in elastic"""
         if self._client.indices.exists(index=self._index_name_offset2id):

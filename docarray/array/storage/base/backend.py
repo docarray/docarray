@@ -1,4 +1,5 @@
 from abc import ABC
+from dataclasses import is_dataclass, asdict
 from typing import Dict, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -16,7 +17,8 @@ class BaseBackendMixin(ABC):
         self._load_offset2ids()
 
     def _get_storage_infos(self) -> Optional[Dict]:
-        ...
+        if hasattr(self, '_config') and is_dataclass(self._config):
+            return {k: str(v) for k, v in asdict(self._config).items()}
 
     def _map_id(self, _id: str) -> str:
         return _id
