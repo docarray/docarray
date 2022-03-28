@@ -23,8 +23,13 @@ from docarray.types.serializers import (
 )
 
 if TYPE_CHECKING:
+    import scipy.sparse
+    import tensorflow
+    import torch
+    import numpy as np
     from . import T
     from .. import Document
+    from PIL.Image import Image as PILImage
 
 
 def is_dataclass(cls):
