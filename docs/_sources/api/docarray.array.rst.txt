@@ -21,6 +21,7 @@ Submodules
    docarray.array.base
    docarray.array.chunk
    docarray.array.document
+   docarray.array.elastic
    docarray.array.match
    docarray.array.memory
    docarray.array.qdrant
