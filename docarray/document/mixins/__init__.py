@@ -13,9 +13,9 @@ from .porting import PortingMixin
 from .property import PropertyMixin
 from .protobuf import ProtobufMixin
 from .pydantic import PydanticMixin
+from .strawberry import StrawberryMixin
 from .sugar import SingletonSugarMixin
 from .text import TextDataMixin
-from .strawberry import StrawberryMixin
 from .video import VideoDataMixin
 
 

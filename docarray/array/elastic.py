@@ -5,7 +5,7 @@ __all__ = ['DocumentArrayElastic', 'ElasticConfig']
 
 
 class DocumentArrayElastic(StorageMixins, DocumentArray):
-    """This is a :class:`DocumentArray` that uses Elastic Search as
+    """This is a :class:`DocumentArray` that uses Elasticsearch as
     vector search engine and storage.
     """
 

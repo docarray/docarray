@@ -29,6 +29,8 @@ class PlotMixin:
 
         from rich.table import Table
         from rich.console import Console
+        from rich.panel import Panel
+
         from rich import box
 
         tables = []
@@ -37,7 +39,7 @@ class PlotMixin:
         all_attrs = self._get_attributes('non_empty_fields')
         attr_counter = Counter(all_attrs)
 
-        table = Table(box=box.SIMPLE, title='Documents Summary')
+        table = Table(box=box.SIMPLE)
         table.show_header = False
         table.add_row('Length', str(len(self)))
         is_homo = len(attr_counter) == 1
@@ -70,12 +72,12 @@ class PlotMixin:
                     _text = f'{_doc_text} attributes'
                 table.add_row(_text, str(_a))
 
-        tables.append(table)
+        tables.append(Panel(table, title='Documents Summary', expand=False))
 
         all_attrs_names = tuple(sorted(all_attrs_names))
         if all_attrs_names:
 
-            attr_table = Table(box=box.SIMPLE, title='Attributes Summary')
+            attr_table = Table(box=box.SIMPLE)
             attr_table.add_column('Attribute')
             attr_table.add_column('Data type')
             attr_table.add_column('#Unique values')
@@ -96,16 +98,16 @@ class PlotMixin:
                     str(len(_a)),
                     str(any(_aa is None for _aa in _a)),
                 )
-            tables.append(attr_table)
+            tables.append(Panel(attr_table, title='Attributes Summary', expand=False))
 
         storage_infos = self._get_storage_infos()
         if storage_infos:
-            storage_table = Table(box=box.SIMPLE, title='Storage Summary')
+            storage_table = Table(box=box.SIMPLE)
             storage_table.show_header = False
             for k, v in storage_infos.items():
                 storage_table.add_row(k, v)
 
-            tables.append(storage_table)
+            tables.append(Panel(storage_table, title='Storage Summary', expand=False))
 
         console.print(*tables)
 

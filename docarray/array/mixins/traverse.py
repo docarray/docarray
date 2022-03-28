@@ -5,7 +5,6 @@ from typing import (
     TYPE_CHECKING,
     Optional,
     Callable,
-    Tuple,
     Dict,
     List,
 )
@@ -13,7 +12,6 @@ from typing import (
 if TYPE_CHECKING:
     from ... import DocumentArray, Document
     from ...types import T
-
 
 ATTRIBUTES_SEPARATOR = ','
 PATHS_SEPARATOR = ','
@@ -40,7 +38,6 @@ REMAINDER_TAGGED = rf'(?P<remainder>({SELECTOR}{SLICE})*)'
 
 TRAVERSAL_PATH = rf'{SELECTOR}{SLICE}{REMAINDER}'
 TRAVERSAL_PATH_TAGGED = rf'(?P<path>{SELECTOR_TAGGED}{SLICE_TAGGED}){REMAINDER_TAGGED}'
-
 
 PATHS_REMAINDER_TAGGED = rf'(?P<paths_remainder>({PATHS_SEPARATOR}{TRAVERSAL_PATH})*)'
 

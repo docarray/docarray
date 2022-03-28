@@ -1,5 +1,4 @@
 import json
-import os.path
 from contextlib import nullcontext
 from typing import Union, TextIO, TYPE_CHECKING, Type, List
 
