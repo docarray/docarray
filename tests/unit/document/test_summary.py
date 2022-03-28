@@ -1,5 +1,7 @@
 import os
 
+import numpy as np
+
 from docarray import Document
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,3 +45,12 @@ def test_plot_video():
 
     d.convert_uri_to_datauri()
     d.display()
+
+
+def test_plot_embedding():
+    d = Document(embedding=[1, 2, 3], tensor=np.random.random(128))
+    d.summary()
+
+    c = Document(embedding=[1, 2, 3], tensor=np.random.random(128))
+    d.chunks.append(c)
+    d.summary()

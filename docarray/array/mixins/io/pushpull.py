@@ -71,27 +71,36 @@ class PushPullMixin:
         headers = {'Content-Type': ctype, **get_request_header()}
 
         _head, _tail = data.split(delimiter)
-        from rich.progress import track
+        from rich import filesize
+        from .pbar import get_progressbar
+
+        pbar, t = get_progressbar('Pushing', disable=not show_progress, total=len(self))
 
         def gen():
             total_size = 0
 
-            for idx, d in enumerate(
-                track(self, description='Pushing', disable=not show_progress)
-            ):
-                chunk = b''
-                if idx == 0:
-                    chunk += _head
-                    chunk += self._stream_header
-                if idx < len(self):
-                    chunk += d._to_stream_bytes(protocol='protobuf', compress='gzip')
-                    total_size += len(chunk)
-                    if total_size > self._max_bytes:
-                        warnings.warn(
-                            f'DocumentArray is too big. Only first {idx} Documents are pushed'
+            with pbar:
+                pbar.start_task(t)
+
+                for idx, d in enumerate(self):
+                    chunk = b''
+                    if idx == 0:
+                        chunk += _head
+                        chunk += self._stream_header
+                    if idx < len(self):
+                        chunk += d._to_stream_bytes(
+                            protocol='protobuf', compress='gzip'
                         )
-                        break
-                    yield chunk
+                        total_size += len(chunk)
+                        if total_size > self._max_bytes:
+                            warnings.warn(
+                                f'DocumentArray is too big. Only first {idx} Documents are pushed'
+                            )
+                            break
+                        yield chunk
+                        pbar.update(
+                            t, advance=1, total_size=str(filesize.decimal(total_size))
+                        )
             yield _tail
 
         res = requests.post(
