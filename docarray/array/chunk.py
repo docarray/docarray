@@ -1,12 +1,8 @@
-import itertools
 from typing import (
     TYPE_CHECKING,
-    Generator,
-    Iterator,
-    Sequence,
+    Iterable,
 )
 
-from .document import DocumentArray
 from .memory import DocumentArrayInMemory
 
 if TYPE_CHECKING:
@@ -31,12 +27,7 @@ class ChunkArray(DocumentArrayInMemory):
         """
         self._ref_doc = reference_doc
         super().__init__(docs)
-        if (
-            isinstance(
-                docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-            )
-            and self._ref_doc is not None
-        ):
+        if isinstance(docs, Iterable) and self._ref_doc is not None:
             for d in docs:
                 d.parent_id = self._ref_doc.id
                 d.granularity = self._ref_doc.granularity + 1

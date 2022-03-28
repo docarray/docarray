@@ -21,6 +21,7 @@ default_values = dict(
     uri='',
     mime_type='',
     tags=dict,
+    _metadata=dict,
     offset=0.0,
     location=list,
     modality='',
@@ -51,6 +52,7 @@ class DocumentData:
     weight: Optional[float] = None
     uri: Optional[str] = None
     tags: Optional[Dict[str, 'StructValueType']] = None
+    _metadata: Optional[Dict[str, 'StructValueType']] = None
     offset: Optional[float] = None
     location: Optional[List[float]] = None
     embedding: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
@@ -65,7 +67,7 @@ class DocumentData:
         r = []
         for f in fields(self):
             f_name = f.name
-            if not f_name.startswith('_'):
+            if not f_name.startswith('_') or f_name == '_metadata':
                 v = getattr(self, f_name)
                 if v is not None:
                     if f_name not in default_values:

@@ -25,17 +25,20 @@ class PropertyMixin(_PropertyMixin):
 
     @_PropertyMixin.text.setter
     def text(self, value: str):
-        self._clear_content()
+        if value is not None:
+            self._clear_content()
         self._data.text = value
 
     @_PropertyMixin.blob.setter
     def blob(self, value: bytes):
-        self._clear_content()
+        if value is not None:
+            self._clear_content()
         self._data.blob = value
 
     @_PropertyMixin.tensor.setter
     def tensor(self, value: 'ArrayType'):
-        self._clear_content()
+        if value is not None:
+            self._clear_content()
         self._data.tensor = value
 
     @content.setter

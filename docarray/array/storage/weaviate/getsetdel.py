@@ -65,7 +65,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._client.data_object.delete(wid)
 
     def _clear_storage(self):
-        """ Concrete implementation of base class' ``_clear_storage``"""
+        """Concrete implementation of base class' ``_clear_storage``"""
         if self._class_name:
             self._client.schema.delete_class(self._class_name)
             self._client.schema.delete_class(self._meta_name)

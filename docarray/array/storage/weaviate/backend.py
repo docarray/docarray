@@ -1,11 +1,8 @@
-import itertools
 import uuid
 from dataclasses import dataclass, field
 from typing import (
-    Generator,
-    Iterator,
+    Iterable,
     Dict,
-    Sequence,
     Optional,
     TYPE_CHECKING,
     Union,
@@ -15,7 +12,6 @@ from typing import (
 
 import numpy as np
 import weaviate
-from weaviate.auth import AuthCredentials
 
 from ..base.backend import BaseBackendMixin
 from .... import Document
@@ -90,9 +86,7 @@ class BackendMixin(BaseBackendMixin):
         # table and load the given `docs`
         if _docs is None:
             return
-        elif isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        elif isinstance(_docs, Iterable):
             self.clear()
             self.extend(_docs)
         else:

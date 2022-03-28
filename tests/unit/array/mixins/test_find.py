@@ -13,6 +13,7 @@ from docarray.math import ndarray
         ('weaviate', {'n_dim': 32}),
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
+        ('elastic', {'n_dim': 32}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -48,7 +49,7 @@ def test_find(storage, config, limit, query, start_storage):
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
             assert sorted(cosine_similarities, reverse=True) == cosine_similarities
-        elif storage in ['memory', 'annlite']:
+        elif storage in ['memory', 'annlite', 'elastic']:
             cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
     else:
@@ -58,7 +59,7 @@ def test_find(storage, config, limit, query, start_storage):
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
                 assert sorted(cosine_similarities, reverse=True) == cosine_similarities
-        elif storage in ['memory', 'annlite']:
+        elif storage in ['memory', 'annlite', 'elastic']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances

@@ -112,6 +112,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install wheel
           pip install --no-cache-dir ".[full,test]"
+          sudo apt-get install libsndfile1
       - name: Test
         id: test
         run: |

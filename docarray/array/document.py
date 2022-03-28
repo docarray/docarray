@@ -9,9 +9,11 @@ if TYPE_CHECKING:
     from .sqlite import DocumentArraySqlite
     from .annlite import DocumentArrayAnnlite
     from .weaviate import DocumentArrayWeaviate
+    from .elastic import DocumentArrayElastic
     from .storage.sqlite import SqliteConfig
     from .storage.annlite import AnnliteConfig
     from .storage.weaviate import WeaviateConfig
+    from .storage.elastic import ElasticConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
@@ -52,6 +54,16 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         """Create a AnnLite-powered DocumentArray object."""
         ...
 
+    @overload
+    def __new__(
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        storage: str = 'elastic',
+        config: Optional[Union['ElasticConfig', Dict]] = None,
+    ) -> 'DocumentArrayElastic':
+        """Create a Elastic-powered DocumentArray object."""
+        ...
+
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
             if storage == 'memory':
@@ -74,6 +86,11 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .qdrant import DocumentArrayQdrant
 
                 instance = super().__new__(DocumentArrayQdrant)
+            elif storage == 'elastic':
+                from .elastic import DocumentArrayElastic
+
+                instance = super().__new__(DocumentArrayElastic)
+
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
         else:

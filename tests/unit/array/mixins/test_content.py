@@ -8,6 +8,7 @@ from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 
 @pytest.mark.parametrize(
@@ -18,13 +19,19 @@ from docarray.array.weaviate import DocumentArrayWeaviate
         DocumentArrayAnnlite,
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
+        DocumentArrayElastic,
     ],
 )
 @pytest.mark.parametrize(
     'content_attr', ['texts', 'embeddings', 'tensors', 'blobs', 'contents']
 )
 def test_content_empty_getter_return_none(cls, content_attr, start_storage):
-    if cls in [DocumentArrayAnnlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
+    if cls in [
+        DocumentArrayAnnlite,
+        DocumentArrayWeaviate,
+        DocumentArrayQdrant,
+        DocumentArrayElastic,
+    ]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
@@ -39,6 +46,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayAnnlite,
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
+        DocumentArrayElastic,
     ],
 )
 @pytest.mark.parametrize(
@@ -52,7 +60,12 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
     ],
 )
 def test_content_empty_setter(cls, content_attr, start_storage):
-    if cls in [DocumentArrayAnnlite, DocumentArrayWeaviate, DocumentArrayQdrant]:
+    if cls in [
+        DocumentArrayAnnlite,
+        DocumentArrayWeaviate,
+        DocumentArrayQdrant,
+        DocumentArrayElastic,
+    ]:
         da = cls(config={'n_dim': 3})
     else:
         da = cls()
@@ -68,6 +81,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize(
@@ -101,6 +115,7 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_content_empty(da_len, da_cls, config, start_storage):
@@ -137,6 +152,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=5)),
     ],
 )
 def test_embeddings_setter(da_len, da_cls, config, start_storage):

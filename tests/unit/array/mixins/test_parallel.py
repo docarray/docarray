@@ -7,6 +7,7 @@ from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 
 def foo(d: Document):
@@ -32,6 +33,7 @@ def foo_batch(da: DocumentArray):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
@@ -87,6 +89,7 @@ def test_parallel_map(
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
@@ -157,6 +160,7 @@ def test_parallel_map_batch(
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=10)),
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_storage):
@@ -184,6 +188,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=256)),
         ('weaviate', WeaviateConfig(n_dim=256)),
         ('qdrant', QdrantConfig(n_dim=256)),
+        ('elastic', ElasticConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
