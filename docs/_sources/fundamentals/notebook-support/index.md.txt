@@ -3,8 +3,9 @@
 Many data scientists work with Jupyter Notebook or Google Colab especially at the early prototyping stage. We understand that and that's why we optimize DocArray's user experience in these two environments. In this chapter, I use Jupyter Notebook as an example to demonstrate the features that can improve your productivity. On Google Colab, it is the same experience.
 
 ```{tip}
-Some features require extra dependencies beyond the basic install of DocArray. Use `pip install "docarray[full]"` to enable them.
+Some features require extra dependencies beyond the basic install of DocArray. Use `pip install "docarray[commnon]"` to enable them.
 ```
+
 
 ## Display Document
 
@@ -67,3 +68,14 @@ DocumentArray with non-empty `.embeddings`  and image Documents can be visualize
 ```{figure} embedding-ani2.gif
 ```
 
+## PyCharm users
+
+All rich visualization, progressbar, table are not shown correctly in PyCharm debug console. You may get broken visualization or empty visualization.
+
+PyCharm users will need to enable "emulate terminal" in output console option in run/debug configuration to see styled output.
+
+Please follow the steps below to enable it:
+
+```{figure} pycharm-rich.png
+:width: 80%
+```
