@@ -102,7 +102,6 @@ class PlotMixin:
         if storage_infos:
             storage_table = Table(box=box.SIMPLE, title='Storage Summary')
             storage_table.show_header = False
-
             for k, v in storage_infos.items():
                 storage_table.add_row(k, v)
 

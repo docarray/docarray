@@ -14,6 +14,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.storage.annlite import AnnliteConfig
+from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 
 @pytest.mark.parametrize(
@@ -24,6 +25,7 @@ from docarray.array.storage.annlite import AnnliteConfig
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_sprite_fail_tensor_success_uri(
@@ -56,6 +58,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
     ],
 )
 def test_sprite_image_generator(
@@ -119,6 +122,7 @@ def _test_plot_embeddings(da):
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=5)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=5)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=5)),
     ],
 )
 def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
@@ -147,6 +151,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_summary_homo_hetero(da_cls, config, start_storage):
@@ -169,6 +174,7 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_empty_get_attributes(da_cls, config, start_storage):

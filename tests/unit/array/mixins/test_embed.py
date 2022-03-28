@@ -21,6 +21,7 @@ from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.elastic import DocumentArrayElastic
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -72,6 +73,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
         DocumentArrayAnnlite,
         DocumentArrayQdrant,
         # DocumentArrayWeaviate, TODO: enable this
+        DocumentArrayElastic,
     ],
 )
 @pytest.mark.parametrize('N', [2, 10])
@@ -87,7 +89,12 @@ def test_embedding_on_random_network(
     to_numpy,
     start_storage,
 ):
-    if da_cls in [DocumentArrayWeaviate, DocumentArrayAnnlite, DocumentArrayQdrant]:
+    if da_cls in [
+        DocumentArrayWeaviate,
+        DocumentArrayAnnlite,
+        DocumentArrayQdrant,
+        DocumentArrayElastic,
+    ]:
         da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)
