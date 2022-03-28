@@ -539,3 +539,28 @@ def test_custom_field_type():
         np.array(obj.pickled_image).shape
         == np.array(translated_obj.pickled_image).shape
     )
+
+
+def test_invalid_type_annotations():
+    @dataclass
+    class MMDocument:
+        attr: List
+
+    inp = ['something']
+    obj = MMDocument(attr=inp)
+    with pytest.raises(Exception) as exc_info:
+        doc = Document.from_dataclass(obj)
+    assert exc_info.value.args[0] == 'Unsupported type annotation'
+    assert str(exc_info.value) == 'Unsupported type annotation'
+
+
+def test_not_data_class():
+    class MMDocument:
+        pass
+
+    obj = MMDocument()
+
+    with pytest.raises(Exception) as exc_info:
+        doc = Document.from_dataclass(obj)
+    assert exc_info.value.args[0] == 'Object MMDocument is not a dataclass instance'
+    assert str(exc_info.value) == 'Object MMDocument is not a dataclass instance'

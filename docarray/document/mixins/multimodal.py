@@ -23,7 +23,7 @@ class MultiModalMixin:
     @classmethod
     def from_dataclass(cls, obj):
         if not is_dataclass(obj):
-            raise ValueError(f'Object {obj.__name__} is not a dataclass instance')
+            raise ValueError(f'Object {type(obj).__name__} is not a dataclass instance')
 
         from docarray import Document
 
