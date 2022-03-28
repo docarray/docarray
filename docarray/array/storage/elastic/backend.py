@@ -12,6 +12,7 @@ from typing import (
     Sequence,
     Generator,
     Iterator,
+    Iterable,
 )
 
 import numpy as np
@@ -86,9 +87,7 @@ class BackendMixin(BaseBackendMixin):
 
         if _docs is None:
             return
-        elif isinstance(
-            _docs, (DocumentArray, Sequence, Generator, Iterator, itertools.chain)
-        ):
+        elif isinstance(_docs, Iterable):
             self.extend(_docs)
         else:
             if isinstance(_docs, Document):
