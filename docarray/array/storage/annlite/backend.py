@@ -95,11 +95,3 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(n_dim, lock=False, **config)
-
-    def _get_storage_infos(self) -> Dict:
-        return {
-            'Backend': 'AnnLite',
-            'Distance Metric': self._annlite.metric.name,
-            'Data Path': self._config.data_path,
-            'Serialization Protocol': self._config.serialize_config.get('protocol'),
-        }

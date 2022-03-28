@@ -304,16 +304,6 @@ class BackendMixin(BaseBackendMixin):
             embedding = None
         return embedding
 
-    def _get_storage_infos(self) -> Dict:
-        return {
-            'Backend': 'Weaviate',
-            'Host': self._config.host,
-            'Port': str(self._config.port),
-            'Protocol': self._config.protocol,
-            'Schema Name': self._config.name,
-            'Serialization Protocol': self._config.serialize_config.get('protocol'),
-        }
-
     def __getstate__(self):
         d = dict(self.__dict__)
         del d['_client']

@@ -134,11 +134,3 @@ class BackendMixin(BaseBackendMixin):
             check_same_thread=False,
             **_conn_kwargs,
         )
-
-    def _get_storage_infos(self) -> Dict:
-        return {
-            'Backend': 'SQLite',
-            'Connection': self._config.connection,
-            'Table Name': self._table_name,
-            'Serialization Protocol': self._config.serialize_config.get('protocol'),
-        }

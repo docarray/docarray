@@ -39,7 +39,7 @@ class PlotMixin:
         all_attrs = self._get_attributes('non_empty_fields')
         attr_counter = Counter(all_attrs)
 
-        table = Table(box=box.SIMPLE)
+        table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
         table.add_row('Length', str(len(self)))
         is_homo = len(attr_counter) == 1
@@ -77,7 +77,7 @@ class PlotMixin:
         all_attrs_names = tuple(sorted(all_attrs_names))
         if all_attrs_names:
 
-            attr_table = Table(box=box.SIMPLE)
+            attr_table = Table(box=box.SIMPLE, highlight=True)
             attr_table.add_column('Attribute')
             attr_table.add_column('Data type')
             attr_table.add_column('#Unique values')
@@ -102,12 +102,18 @@ class PlotMixin:
 
         storage_infos = self._get_storage_infos()
         if storage_infos:
-            storage_table = Table(box=box.SIMPLE)
+            storage_table = Table(box=box.SIMPLE, highlight=True)
             storage_table.show_header = False
             for k, v in storage_infos.items():
                 storage_table.add_row(k, v)
 
-            tables.append(Panel(storage_table, title='Storage Summary', expand=False))
+            tables.append(
+                Panel(
+                    storage_table,
+                    title=f'[bold]{self.__class__.__name__}[/bold] Config',
+                    expand=False,
+                )
+            )
 
         console.print(*tables)
 
