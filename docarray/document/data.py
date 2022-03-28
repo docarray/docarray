@@ -148,7 +148,7 @@ class DocumentData:
                         getattr(self, key), getattr(other, key)
                     )
                     print(
-                        f'are_equal( {getattr(self, key)}, { getattr(other, key)}) ---> {are_equal}'
+                        f'are_equal( {getattr(self, key)}, {getattr(other, key)}) ---> {are_equal}'
                     )
                     if are_equal == False:
                         return False

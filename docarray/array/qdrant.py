@@ -1,11 +1,7 @@
-from typing import Iterable
-
 from .document import DocumentArray
 from .storage.qdrant import StorageMixins, QdrantConfig
 
 __all__ = ['DocumentArrayQdrant', 'QdrantConfig']
-
-from .. import Document
 
 
 class DocumentArrayQdrant(StorageMixins, DocumentArray):

@@ -1,29 +1,23 @@
 import copy
-import itertools
-import warnings
+import uuid
 from dataclasses import dataclass, field
 from typing import (
     Dict,
     Optional,
     TYPE_CHECKING,
     Union,
-    Tuple,
     List,
-    Sequence,
-    Generator,
-    Iterator,
     Iterable,
+    Any,
 )
 
 import numpy as np
-import uuid
-
-from ..base.backend import BaseBackendMixin
-from .... import DocumentArray, Document
-from ....helper import dataclass_from_dict
-
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+
+from ..base.backend import BaseBackendMixin
+from .... import Document
+from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
     from ....types import (
@@ -31,26 +25,14 @@ if TYPE_CHECKING:
     )
     from ....types import DocumentArraySourceType, ArrayType
 
-from docarray.math.helper import EPSILON
-
-
-def _sanitize_table_name(table_name: str) -> str:
-    ret = ''.join(c for c in table_name if c.isalnum() or c == '_')
-    if ret != table_name:
-        warnings.warn(f'The table name is changed to {ret} due to illegal characters')
-    return ret
-
 
 @dataclass
 class ElasticConfig:
     n_dim: int  # dims  in elastic
-    basic_auth: Optional[Tuple[str, str]] = None
-    ca_certs: Optional[str] = None
     distance: str = 'cosine'  # similarity in elastic
-    host: Optional[str] = field(default='http://localhost')
-    port: Optional[int] = field(default=9200)
-    index_name: Optional[str] = field(default=None)
-    serialize_config: Dict = field(default_factory=dict)
+    hosts: str = 'http://localhost:9200'
+    index_name: Optional[str] = None
+    es_config: Dict[str, Any] = field(default_factory=dict)
 
 
 class BackendMixin(BaseBackendMixin):
@@ -97,9 +79,6 @@ class BackendMixin(BaseBackendMixin):
         if not self._client.indices.exists(index=self._index_name_offset2id):
             self._client.indices.create(index=self._index_name_offset2id, ignore=[404])
 
-    def _build_hosts(self):
-        return self._config.host + ':' + str(self._config.port)
-
     def _build_schema_from_elastic_config(self, elastic_config):
         da_schema = {
             "mappings": {
@@ -120,9 +99,8 @@ class BackendMixin(BaseBackendMixin):
     def _build_client(self):
 
         client = Elasticsearch(
-            hosts=self._build_hosts(),
-            ca_certs=self._config.ca_certs,
-            basic_auth=self._config.basic_auth,
+            hosts=self._config.hosts,
+            **self._config.es_config,
         )
 
         schema = self._build_schema_from_elastic_config(self._config)
@@ -147,9 +125,9 @@ class BackendMixin(BaseBackendMixin):
     def _get_storage_infos(self) -> Dict:
         return {
             'Backend': 'ElasticSearch',
-            'Host': str(self._config.host),
-            'Port': str(self._config.port),
-            'distance': str(self._config.distance),
+            'Hosts': str(self._config.hosts),
+            'ES config': str(self._config.es_config),
+            'Distance': str(self._config.distance),
             'Vector dimension': str(self._config.n_dim),
         }
 
@@ -189,6 +167,8 @@ class BackendMixin(BaseBackendMixin):
             return []
 
     def _map_embedding(self, embedding: 'ArrayType') -> List[float]:
+        from ....math.helper import EPSILON
+
         if embedding is None:
             embedding = np.zeros(self.n_dim) + EPSILON
         else:

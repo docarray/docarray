@@ -1,15 +1,13 @@
 import base64
+import typing
 from dataclasses import (
     dataclass as std_dataclass,
     is_dataclass as std_is_dataclass,
-    MISSING,
     Field as StdField,
     field,
 )
 from pathlib import Path
-from typing import TypeVar, ForwardRef, Callable, Any, Optional, TYPE_CHECKING
-
-import typing
+from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING
 
 from docarray.types.deserializers import (
     image_deserializer,

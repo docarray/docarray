@@ -76,7 +76,7 @@ def test_repr(da_cls, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=128)),
         ('weaviate', WeaviateConfig(n_dim=128)),
         ('qdrant', QdrantConfig(n_dim=128)),
-        ('elastic', ElasticConfig(n_dim=128)),
+        ('elasticsearch', ElasticConfig(n_dim=128)),
     ],
 )
 def test_repr_str(docs, storage, config, start_storage):

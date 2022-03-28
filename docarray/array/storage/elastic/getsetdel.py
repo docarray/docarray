@@ -1,4 +1,3 @@
-import copy
 from typing import Iterable, Dict
 
 from ..base.getsetdel import BaseGetSetDelMixin

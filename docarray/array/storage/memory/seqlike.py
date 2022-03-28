@@ -1,4 +1,4 @@
-from typing import Iterator, Union, Iterable
+from typing import Union, Iterable
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document

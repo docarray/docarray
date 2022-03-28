@@ -109,8 +109,6 @@ class BackendMixin(BaseBackendMixin):
 
         super()._init_storage()
 
-        from ... import DocumentArray
-
         if _docs is None:
             return
         elif isinstance(_docs, Iterable):

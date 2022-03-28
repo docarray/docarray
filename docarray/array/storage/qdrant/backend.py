@@ -59,8 +59,6 @@ class BackendMixin(BaseBackendMixin):
             raise an error if both are provided
         """
 
-        from ... import DocumentArray
-
         self._schemas = None
 
         if not config:

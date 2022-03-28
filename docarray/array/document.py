@@ -58,7 +58,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
     def __new__(
         cls,
         _docs: Optional['DocumentArraySourceType'] = None,
-        storage: str = 'elastic',
+        storage: str = 'elasticsearch',
         config: Optional[Union['ElasticConfig', Dict]] = None,
     ) -> 'DocumentArrayElastic':
         """Create a Elastic-powered DocumentArray object."""
@@ -86,7 +86,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .qdrant import DocumentArrayQdrant
 
                 instance = super().__new__(DocumentArrayQdrant)
-            elif storage == 'elastic':
+            elif storage == 'elasticsearch':
                 from .elastic import DocumentArrayElastic
 
                 instance = super().__new__(DocumentArrayElastic)

@@ -11,7 +11,6 @@ from typing import (
     Tuple,
 )
 
-
 if TYPE_CHECKING:
     import scipy.sparse
     import tensorflow

@@ -1,16 +1,16 @@
 from abc import abstractmethod
 from typing import (
-    Union,
     TYPE_CHECKING,
     TypeVar,
     Sequence,
     List,
 )
 
+from qdrant_openapi_client.models.models import Distance
+
 from .... import Document, DocumentArray
 from ....math import ndarray
 from ....score import NamedScore
-from qdrant_openapi_client.models.models import Distance
 
 if TYPE_CHECKING:
     import tensorflow

@@ -1,4 +1,3 @@
-import base64
 from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
 from pydantic import BaseModel, validator

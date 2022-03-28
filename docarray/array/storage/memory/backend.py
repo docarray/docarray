@@ -25,8 +25,6 @@ class BackendMixin(BaseBackendMixin):
     ):
         super()._init_storage(_docs, copy=copy, *args, **kwargs)
 
-        from ... import DocumentArray
-
         self._data = {}
         if _docs is None:
             return

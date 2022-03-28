@@ -1,10 +1,8 @@
 import base64
-
 import typing
 from enum import Enum
 
-from docarray.types.multimodal import Image, Text, Field, is_dataclass
-from docarray.types.multimodal import TYPES_REGISTRY
+from docarray.types.multimodal import Field, is_dataclass
 
 if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray
