@@ -62,6 +62,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1516,4 +1517,23 @@
  - [[```fda457bb```](https://github.com/jina-ai/docarray/commit/fda457bbfcda0c00088854f889e7d4619695468a)] __-__ reformat code (#227) (*Han Xiao*)
  - [[```d559f29a```](https://github.com/jina-ai/docarray/commit/d559f29a42920e2903243b33fdf25027ec04fe9d)] __-__ add cas logo in the navbar (*Han Xiao*)
  - [[```21520e46```](https://github.com/jina-ai/docarray/commit/21520e46234c479343ab21b1a3cf8572f4893180)] __-__ __version__: the next version will be 0.9.19 (*Jina Dev Bot*)
+
+<a name=release-note-0-10-1></a>
+## Release Note (`0.10.1`)
+
+> Release time: 2022-03-28 21:00:05
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```807bdb11```](https://github.com/jina-ai/docarray/commit/807bdb11439db79e47e0f5cc587a93814e1c1f48)] __-__ __document__: visualize embedding and tensor via colorbox (#232) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```dd2b17f1```](https://github.com/jina-ai/docarray/commit/dd2b17f14266c4f3b639807b9e3e2929633b4dda)] __-__ __version__: the next version will be 0.10.1 (*Jina Dev Bot*)
 
