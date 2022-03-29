@@ -107,7 +107,8 @@ class BinaryIOMixin:
 
         from .... import Document
 
-        from rich.progress import track
+        from .pbar import get_progressbar
+        from rich import filesize
 
         with file_ctx as f:
             version_numdocs_lendoc0 = f.read(9)
@@ -116,18 +117,27 @@ class BinaryIOMixin:
             # 8 bytes (uint64)
             num_docs = int.from_bytes(version_numdocs_lendoc0[1:9], 'big', signed=False)
 
-            for _ in track(
-                range(num_docs), description='Deserializing', disable=not _show_progress
-            ):
-                # 4 bytes (uint32)
-                len_current_doc_in_bytes = int.from_bytes(
-                    f.read(4), 'big', signed=False
-                )
-                yield Document.from_bytes(
-                    f.read(len_current_doc_in_bytes),
-                    protocol=protocol,
-                    compress=compress,
-                )
+            pbar, t = get_progressbar(
+                'Deserializing', disable=not _show_progress, total=num_docs
+            )
+
+            with pbar:
+                _total_size = 0
+                pbar.start_task(t)
+                for _ in range(num_docs):
+                    # 4 bytes (uint32)
+                    len_current_doc_in_bytes = int.from_bytes(
+                        f.read(4), 'big', signed=False
+                    )
+                    _total_size += len_current_doc_in_bytes
+                    yield Document.from_bytes(
+                        f.read(len_current_doc_in_bytes),
+                        protocol=protocol,
+                        compress=compress,
+                    )
+                    pbar.update(
+                        t, advance=1, total_size=str(filesize.decimal(_total_size))
+                    )
 
     @classmethod
     def _load_binary_all(
@@ -162,33 +172,45 @@ class BinaryIOMixin:
 
         # Binary format for streaming case
         else:
+            from rich import filesize
+            from .pbar import get_progressbar
+
             # 1 byte (uint8)
             version = int.from_bytes(d[0:1], 'big', signed=False)
             # 8 bytes (uint64)
             num_docs = int.from_bytes(d[1:9], 'big', signed=False)
 
-            from rich.progress import track
+            pbar, t = get_progressbar(
+                'Deserializing', disable=not show_progress, total=num_docs
+            )
 
             # this 9 is version + num_docs bytes used
             start_pos = 9
             docs = []
+            with pbar:
+                _total_size = 0
+                pbar.start_task(t)
 
-            for _ in track(
-                range(num_docs), description='Deserializing', disable=not show_progress
-            ):
-                # 4 bytes (uint32)
-                len_current_doc_in_bytes = int.from_bytes(
-                    d[start_pos : start_pos + 4], 'big', signed=False
-                )
-                start_doc_pos = start_pos + 4
-                end_doc_pos = start_doc_pos + len_current_doc_in_bytes
-                start_pos = end_doc_pos
+                for _ in range(num_docs):
+                    # 4 bytes (uint32)
+                    len_current_doc_in_bytes = int.from_bytes(
+                        d[start_pos : start_pos + 4], 'big', signed=False
+                    )
+                    start_doc_pos = start_pos + 4
+                    end_doc_pos = start_doc_pos + len_current_doc_in_bytes
+                    start_pos = end_doc_pos
 
-                # variable length bytes doc
-                doc = Document.from_bytes(
-                    d[start_doc_pos:end_doc_pos], protocol=protocol, compress=compress
-                )
-                docs.append(doc)
+                    # variable length bytes doc
+                    doc = Document.from_bytes(
+                        d[start_doc_pos:end_doc_pos],
+                        protocol=protocol,
+                        compress=compress,
+                    )
+                    docs.append(doc)
+                    _total_size += len_current_doc_in_bytes
+                    pbar.update(
+                        t, advance=1, total_size=str(filesize.decimal(_total_size))
+                    )
             return cls(docs, *args, **kwargs)
 
     @classmethod
@@ -289,16 +311,27 @@ class BinaryIOMixin:
                 elif protocol == 'pickle-array':
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
+                    from rich import filesize
+                    from .pbar import get_progressbar
+
+                    pbar, t = get_progressbar(
+                        'Serializing', disable=not _show_progress, total=len(self)
+                    )
+
                     f.write(self._stream_header)
 
-                    from rich.progress import track
-
-                    for d in track(
-                        self, description='Serializing', disable=not _show_progress
-                    ):
-                        f.write(
-                            d._to_stream_bytes(protocol=protocol, compress=compress)
-                        )
+                    with pbar:
+                        _total_size = 0
+                        pbar.start_task(t)
+                        for d in self:
+                            r = d._to_stream_bytes(protocol=protocol, compress=compress)
+                            f.write(r)
+                            _total_size += len(r)
+                            pbar.update(
+                                t,
+                                advance=1,
+                                total_size=str(filesize.decimal(_total_size)),
+                            )
                 else:
                     raise ValueError(
                         f'protocol={protocol} is not supported. Can be only `protobuf`, `pickle`, `protobuf-array`, `pickle-array`.'

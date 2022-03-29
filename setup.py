@@ -39,7 +39,7 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
-    install_requires=['numpy', 'rich'],
+    install_requires=['numpy', 'rich>=12.0.0'],
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
@@ -80,7 +80,7 @@ setup(
             'pytest-reraise',
             'mock',
             'pytest-custom_exit_code',
-            'black',
+            'black==22.3.0',
             'tensorflow==2.7.0',
             'paddlepaddle==2.2.0',
             'torch==1.9.0',

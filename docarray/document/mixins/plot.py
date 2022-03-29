@@ -1,8 +1,10 @@
+from rich import box
+
 from ...helper import deprecate_by
 
 
 class PlotMixin:
-    """Provide helper functions for :class:`Document` to plot and visualize itself. """
+    """Provide helper functions for :class:`Document` to plot and visualize itself."""
 
     def _ipython_display_(self):
         """Displays the object in IPython as a side effect"""
@@ -12,15 +14,19 @@ class PlotMixin:
         yield f":page_facing_up: [b]Document[/b]: [cyan]{self.id}[cyan]"
         from rich.table import Table
 
-        my_table = Table('Attribute', 'Value')
+        my_table = Table('Attribute', 'Value', width=80, box=box.ROUNDED)
         for f in self.non_empty_fields:
-            if f not in ('id', 'chunks', 'matches'):
+            if f in ('embedding', 'tensor'):
+                from .rich_embedding import ColorBoxEmbedding
+
+                my_table.add_row(f, ColorBoxEmbedding(getattr(self, f)))
+            elif f not in ('id', 'chunks', 'matches'):
                 my_table.add_row(f, str(getattr(self, f)))
         if my_table.rows:
             yield my_table
 
     def summary(self) -> None:
-        """ Print non-empty fields and nested structure of this Document object."""
+        """Print non-empty fields and nested structure of this Document object."""
         from rich import print
 
         print(self._plot_recursion())
@@ -44,7 +50,7 @@ class PlotMixin:
         return tree
 
     def display(self):
-        """ Plot image data from :attr:`.tensor` or :attr:`.uri`. """
+        """Plot image data from :attr:`.tensor` or :attr:`.uri`."""
         from IPython.display import Image, display
 
         if self.uri:
