@@ -55,10 +55,10 @@ def test_append_extend(da_cls, config, start_storage):
     da.append(Document())
     da.append(Document())
     assert len(da) == 2
-    assert len(da._offset2ids.ids) == 2
+    # assert len(da._offset2ids.ids) == 2 will not work unless used in a context manager
     da.extend([Document(), Document()])
     assert len(da) == 4
-    assert len(da._offset2ids.ids) == 4
+    # assert len(da._offset2ids.ids) == 4 will not work unless used in a context manager
 
 
 def update_config_inplace(config, tmpdir, tmpfile):
