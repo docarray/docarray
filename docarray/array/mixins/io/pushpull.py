@@ -2,13 +2,32 @@ import json
 import os
 import warnings
 from functools import lru_cache
-from typing import Type, TYPE_CHECKING
+from pathlib import Path
+from typing import Dict, Type, TYPE_CHECKING
 from urllib.request import Request, urlopen
 
+from ....exceptions import ObjectNotFoundError
 from ....helper import get_request_header
 
 if TYPE_CHECKING:
     from ....typing import T
+
+JINA_CLOUD_CONFIG = 'config.json'
+
+
+@lru_cache()
+def _get_hub_config() -> Dict:
+    hub_root = Path(os.environ.get('JINA_HUB_ROOT', Path.home().joinpath('.jina')))
+
+    if not hub_root.exists():
+        hub_root.mkdir(parents=True, exist_ok=True)
+
+    config_file = hub_root.joinpath(JINA_CLOUD_CONFIG)
+    if config_file.exists():
+        with open(config_file) as f:
+            return json.load(f)
+
+    return {}
 
 
 @lru_cache()
@@ -41,17 +60,17 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(self, token: str, show_progress: bool = False) -> None:
+    def push(self, name: str, show_progress: bool = False) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
-            - Push with the same ``token`` will override the existing content.
+            - Push with the same ``name`` will override the existing content.
             - Kinda like a public clipboard where everyone can override anyone's content.
-              So to make your content survive longer, you may want to use longer & more complicated token.
+              So to make your content survive longer, you may want to use longer & more complicated name.
             - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
               persistence. Only use this full temporary transmission/storage/clipboard.
 
-        :param token: a key that later can be used for retrieve this :class:`DocumentArray`.
+        :param name: a name that later can be used for retrieve this :class:`DocumentArray`.
         :param show_progress: if to show a progress bar on pulling
         """
         import requests
@@ -64,11 +83,16 @@ class PushPullMixin:
                     'DocumentArray',
                     delimiter,
                 ),
-                'token': token,
+                'name': name,
+                'type': 'documentArray',
             }
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
+
+        auth_token = _get_hub_config().get('auth_token')
+        if auth_token:
+            headers['Authorization'] = f'token {auth_token}'
 
         _head, _tail = data.split(delimiter)
         from rich import filesize
@@ -104,20 +128,22 @@ class PushPullMixin:
             yield _tail
 
         res = requests.post(
-            f'{_get_cloud_api()}/v2/rpc/da.push', data=gen(), headers=headers
+            f'{_get_cloud_api()}/v2/rpc/artifact.upload', data=gen(), headers=headers
         )
+        json_res = res.json()
 
         if res.status_code != 200:
-            json_res = res.json()
             raise RuntimeError(
                 json_res.get('message', 'Failed to push DocumentArray to Jina Cloud'),
                 f'Status code: {res.status_code}',
             )
 
+        return json_res.get('data')
+
     @classmethod
     def pull(
         cls: Type['T'],
-        token: str,
+        name: str,
         show_progress: bool = False,
         local_cache: bool = False,
         *args,
@@ -125,7 +151,7 @@ class PushPullMixin:
     ) -> 'T':
         """Pulling a :class:`DocumentArray` from Jina Cloud Service to local.
 
-        :param token: the upload token set during :meth:`.push`
+        :param name: the upload name set during :meth:`.push`
         :param show_progress: if to show a progress bar on pulling
         :param local_cache: store the downloaded DocumentArray to local folder
         :return: a :class:`DocumentArray` object
@@ -133,14 +159,24 @@ class PushPullMixin:
 
         import requests
 
-        url = f'{_get_cloud_api()}/v2/rpc/da.pull?token={token}'
-        response = requests.get(url)
+        headers = {}
+
+        auth_token = _get_hub_config().get('auth_token')
+        if auth_token:
+            headers['Authorization'] = f'token {auth_token}'
+
+        url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'
+        response = requests.get(url, headers=headers)
 
         if response.ok:
             url = response.json()['data']['download']
         else:
-            raise FileNotFoundError(
-                f'can not find `{token}` DocumentArray on the Cloud. Misspelled?'
+            json_res = response.json()
+            raise ObjectNotFoundError(
+                json_res.get(
+                    'message', 'Failed to pull DocumentArray from Jina Cloud.'
+                ),
+                f'Status code: {response.status_code}',
             )
 
         with requests.get(
@@ -155,10 +191,10 @@ class PushPullMixin:
             from .binary import LazyRequestReader
 
             _source = LazyRequestReader(r)
-            if local_cache and os.path.exists(f'.cache/{token}'):
-                _cache_len = os.path.getsize(f'.cache/{token}')
+            if local_cache and os.path.exists(f'.cache/{name}'):
+                _cache_len = os.path.getsize(f'.cache/{name}')
                 if _cache_len == _da_len:
-                    _source = f'.cache/{token}'
+                    _source = f'.cache/{name}'
 
             r = cls.load_binary(
                 _source,
@@ -171,7 +207,7 @@ class PushPullMixin:
 
             if isinstance(_source, LazyRequestReader) and local_cache:
                 os.makedirs('.cache', exist_ok=True)
-                with open(f'.cache/{token}', 'wb') as fp:
+                with open(f'.cache/{name}', 'wb') as fp:
                     fp.write(_source.content)
 
             return r
