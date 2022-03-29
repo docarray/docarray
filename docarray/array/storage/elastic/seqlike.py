@@ -46,7 +46,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayElastic` object"""
-        self._save_offset2ids()
+        self._save_offset2ids()  # calls _update_offset2ids_meta
 
         # if not self._persist:
         #    self._offset2ids.clear()
@@ -79,3 +79,4 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         if len(request) > 0:
             self._send_requests(request)
             self._refresh(self._config.index_name)
+            self._update_offset2ids_meta()
