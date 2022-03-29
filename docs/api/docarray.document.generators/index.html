@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.generators/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.pydantic_model module" href="../docarray.document.pydantic_model/" /><link rel="prev" title="docarray.document.data module" href="../docarray.document.data/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.document.generators module - DocArray 0.10.1 documentation</title>
+        <title>docarray.document.generators module - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -517,8 +517,172 @@
                         </i>
                     </label>
                 </div>
-                <section id="docarray-document-generators-module">
-<h1>docarray.document.generators module<a class="headerlink" href="#docarray-document-generators-module" title="Permalink to this headline">#</a></h1>
+                <section id="module-docarray.document.generators">
+<span id="docarray-document-generators-module"></span><h1>docarray.document.generators module<a class="headerlink" href="#module-docarray.document.generators" title="Permalink to this headline">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_ndarray">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_ndarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_ndarray" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a generator for a given dimension of a numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>array</strong> (<em>np.ndarray</em>) – the numpy ndarray data source</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – iterate over that axis</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the sub arrays</p></li>
+<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – shuffle the numpy data source beforehand</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>documents</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_files">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patterns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recursive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_dataturi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_regex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_files" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates an iterator over a list of file path or the content of the files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>patterns</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The pattern may contain simple shell-style wildcards, e.g. ‘*.py’, ‘[*.zip, *.gz]’</p></li>
+<li><p><strong>recursive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If recursive is true, the pattern ‘**’ will match any files
+and zero or more directories and subdirectories</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the files</p></li>
+<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
+<li><p><strong>read_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies the mode in which the file is opened.
+‘r’ for reading in text mode, ‘rb’ for reading in binary mode.
+If <cite>read_mode</cite> is None, will iterate over filenames.</p></li>
+<li><p><strong>to_dataturi</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then the Document.uri will be filled with DataURI instead of the plan URI</p></li>
+<li><p><strong>exclude_regex</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – if set, then filenames that match to this pattern are not included.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>file paths or binary content</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function should not be directly used, use <code class="xref py py-meth docutils literal notranslate"><span class="pre">Flow.index_files()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">Flow.search_files()</span></code> instead</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_csv">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dialect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'excel'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_csv" title="Permalink to this definition">#</a></dt>
+<dd><p>Generator function for CSV. Yields documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code>]) – file paths or file handler</p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in JSON, dict to the field
+names defined in Document.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
+<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
+<li><p><strong>dialect</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – define a set of parameters specific to a particular CSV dialect. could be a string that represents
+predefined dialects in your system, or could be a <code class="xref py py-class docutils literal notranslate"><span class="pre">csv.Dialect</span></code> class that groups specific formatting
+parameters together. If you don’t know the dialect and the default one does not work for you,
+you can try set it to <code class="docutils literal notranslate"><span class="pre">auto</span></code>.</p></li>
+<li><p><strong>encoding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – encoding used to read the CSV file. By default, <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>documents</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_huggingface_datasets">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_huggingface_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">datasets_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_huggingface_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_huggingface_datasets" title="Permalink to this definition">#</a></dt>
+<dd><p>Generator function for Hugging Face Datasets. Yields documents.</p>
+<p>This function helps to load datasets from Hugging Face Datasets Hub
+(<a class="reference external" href="https://huggingface.co/datasets">https://huggingface.co/datasets</a>) in Jina. Additional parameters can be
+passed to the <code class="docutils literal notranslate"><span class="pre">datasets</span></code> library using keyword arguments. The <code class="docutils literal notranslate"><span class="pre">load_dataset</span></code>
+method from <code class="docutils literal notranslate"><span class="pre">datasets</span></code> library is used to load the datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset_path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – a valid dataset path for Hugging Face Datasets library.</p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
+<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
+<li><p><strong>filter_fields</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – specifies whether to filter the dataset with the fields
+given in <code class="docutils literal notranslate"><span class="pre">`field_resolver</span></code> argument.</p></li>
+<li><p><strong>**datasets_kwargs</strong> – <p>additional arguments for <code class="docutils literal notranslate"><span class="pre">load_dataset</span></code> method
+from Datasets library. More details at
+<a class="reference external" href="https://huggingface.co/docs/datasets/package_reference/loading_methods.html#datasets.load_dataset">https://huggingface.co/docs/datasets/package_reference/loading_methods.html#datasets.load_dataset</a></p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>documents</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_ndjson">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_ndjson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_ndjson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_ndjson" title="Permalink to this definition">#</a></dt>
+<dd><p>Generator function for line separated JSON. Yields documents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fp</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – file paths</p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
+<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>documents</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="docarray.document.generators.from_lines">
+<span class="sig-prename descclassname"><span class="pre">docarray.document.generators.</span></span><span class="sig-name descname"><span class="pre">from_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/generators/#from_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.generators.from_lines" title="Permalink to this definition">#</a></dt>
+<dd><p>Generator function for lines, json and csv. Yields documents or strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a list of strings, each is considered as a document</p></li>
+<li><p><strong>filepath</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a text file that each line contains a document</p></li>
+<li><p><strong>read_mode</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – specifies the mode in which the file
+is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary</p></li>
+<li><p><strong>line_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the format of each line <code class="docutils literal notranslate"><span class="pre">json</span></code> or <code class="docutils literal notranslate"><span class="pre">csv</span></code></p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
+<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yield</dt>
+<dd class="field-even"><p>documents</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 
             </article>
@@ -558,7 +722,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

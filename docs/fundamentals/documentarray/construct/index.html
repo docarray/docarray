@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/construct/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:description" content="Construct an empty array: Now you can use list-like interfaces such as.append() and.extend() as you would add elements to a Python List. Directly printing a DocumentArray does not show you too much useful information, you can use summary(). Construct with empty Documents: Like numpy.zeros(), you ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Serialization" href="../serialization/" /><link rel="prev" title="DocumentArray" href="../" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Construct - DocArray 0.10.1 documentation</title>
+        <title>Construct - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -539,7 +539,7 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray (length=3) at 4446140816&gt;
 </pre></div>
 </div>
-<p>Directly printing a DocumentArray does not show you too much useful information, you can use <code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code>.</p>
+<p>Directly printing a DocumentArray does not show you too much useful information, you can use <a class="reference internal" href="../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary" title="docarray.array.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -681,7 +681,7 @@ hello
 </section>
 <section id="construct-from-local-files">
 <h2>Construct from local files<a class="headerlink" href="#construct-from-local-files" title="Permalink to this headline">#</a></h2>
-<p>You may recall the common pattern that <a class="reference internal" href="../../document/attribute/#content-uri"><span class="std std-ref">I mentioned here</span></a>. With <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_files()</span></code> One can easily construct a DocumentArray object with all file paths defined by a glob expression.</p>
+<p>You may recall the common pattern that <a class="reference internal" href="../../document/attribute/#content-uri"><span class="std std-ref">I mentioned here</span></a>. With <a class="reference internal" href="../../../api/docarray.document.generators/#docarray.document.generators.from_files" title="docarray.document.generators.from_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_files()</span></code></a> One can easily construct a DocumentArray object with all file paths defined by a glob expression.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da_jpg</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'images/*.jpg'</span><span class="p">)</span>
@@ -734,7 +734,7 @@ hello
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

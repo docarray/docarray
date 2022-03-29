@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/embedding/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:description" content="When DocumentArray has.tensors set, you can use a neural network to embed() it into vector representations, i.e. filling.embeddings. For example, our DocumentArray looks like the following: Let’s use a simple MLP in Pytorch/Keras/ONNX/Paddle as our embedding model: PyTorch Keras ONNX Preliminary:..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Query by Conditions" href="../find/" /><link rel="prev" title="Access Attributes" href="../access-attributes/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Embed via Neural Network - DocArray 0.10.1 documentation</title>
+        <title>Embed via Neural Network - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -523,9 +523,9 @@
 <span id="embed-via-model"></span><h1>Embed via Neural Network<a class="headerlink" href="#embed-via-neural-network" title="Permalink to this headline">#</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code> supports both CPU &amp; GPU.</p>
+<p><a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a> supports both CPU &amp; GPU.</p>
 </div>
-<p>When DocumentArray has <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> set, you can use a neural network to <code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code> it into vector representations, i.e. filling <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, our DocumentArray looks like the following:</p>
+<p>When DocumentArray has <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> set, you can use a neural network to <a class="reference internal" href="../../../api/docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin.embed" title="docarray.array.mixins.embed.EmbedMixin.embed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed()</span></code></a> it into vector representations, i.e. filling <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, our DocumentArray looks like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -617,7 +617,7 @@ For example let’s use the PyTorch one:</p>
 <span class="n">docs</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>After getting <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>, you can visualize it using <code class="xref py py-meth docutils literal notranslate"><span class="pre">plot_embeddings()</span></code>, <a class="reference internal" href="../visualization/#visualize-embeddings"><span class="std std-ref">find more details here</span></a>.</p>
+<p>After getting <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>, you can visualize it using <a class="reference internal" href="../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_embeddings" title="docarray.array.mixins.plot.PlotMixin.plot_embeddings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">plot_embeddings()</span></code></a>, <a class="reference internal" href="../visualization/#visualize-embeddings"><span class="std std-ref">find more details here</span></a>.</p>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">.embed()</span></code> only works when you have <code class="docutils literal notranslate"><span class="pre">.tensors</span></code> set, if you have <code class="docutils literal notranslate"><span class="pre">.texts</span></code> set and your model function supports string as the input, then you can always do the following to get embeddings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -664,7 +664,7 @@ For example let’s use the PyTorch one:</p>
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

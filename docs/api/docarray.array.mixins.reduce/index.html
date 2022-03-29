@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.reduce/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.mixins.sample module" href="../docarray.array.mixins.sample/" /><link rel="prev" title="docarray.array.mixins.pydantic module" href="../docarray.array.mixins.pydantic/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.reduce module - DocArray 0.10.1 documentation</title>
+        <title>docarray.array.mixins.reduce module - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -517,8 +517,69 @@
                         </i>
                     </label>
                 </div>
-                <section id="docarray-array-mixins-reduce-module">
-<h1>docarray.array.mixins.reduce module<a class="headerlink" href="#docarray-array-mixins-reduce-module" title="Permalink to this headline">#</a></h1>
+                <section id="module-docarray.array.mixins.reduce">
+<span id="docarray-array-mixins-reduce-module"></span><h1>docarray.array.mixins.reduce module<a class="headerlink" href="#module-docarray.array.mixins.reduce" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.array.mixins.reduce.ReduceMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.reduce.</span></span><span class="sig-name descname"><span class="pre">ReduceMixin</span></span><a class="reference internal" href="../../_modules/docarray/array/mixins/reduce/#ReduceMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.reduce.ReduceMixin" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A mixin that provides reducing logic for <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>
+Reducing 2 or more DocumentArrays consists in merging all Documents into the same DocumentArray.
+If a Document belongs to 2 or more DocumentArrays, it is added once and data attributes are merged with priority to
+the Document belonging to the left-most DocumentArray. Matches and chunks are also reduced in the same way.
+Reduction is applied to all levels of DocumentArrays, that is, from root Documents to all their chunk and match
+children.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.mixins.reduce.ReduceMixin.reduce">
+<span class="sig-name descname"><span class="pre">reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/reduce/#ReduceMixin.reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.reduce.ReduceMixin.reduce" title="Permalink to this definition">#</a></dt>
+<dd><p>Reduces other and the current DocumentArray into one DocumentArray in-place. Changes are applied to the current
+DocumentArray.
+Reducing 2 DocumentArrays consists in adding Documents in the second DocumentArray to the first DocumentArray
+if they do not exist. If a Document exists in both DocumentArrays, the data properties are merged with priority
+to the first Document (that is, to the current DocumentArray’s Document). The matches and chunks are also
+reduced in the same way.
+:type other: T
+:param other: DocumentArray
+:rtype: T
+:return: DocumentArray</p>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.mixins.reduce.ReduceMixin.reduce_all">
+<span class="sig-name descname"><span class="pre">reduce_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/reduce/#ReduceMixin.reduce_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.reduce.ReduceMixin.reduce_all" title="Permalink to this definition">#</a></dt>
+<dd><p>Reduces a list of DocumentArrays and this DocumentArray into one DocumentArray. Changes are applied to this
+DocumentArray in-place.</p>
+<p>Reduction consists in reducing this DocumentArray with every DocumentArray in <cite>others</cite> sequentially using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.:method:<cite>reduce</cite>.
+The resulting DocumentArray contains Documents of all DocumentArrays.
+If a Document exists in many DocumentArrays, data properties are merged with priority to the left-most
+DocumentArrays (that is, if a data attribute is set in a Document belonging to many DocumentArrays, the
+attribute value of the left-most DocumentArray is kept).
+Matches and chunks of a Document belonging to many DocumentArrays are also reduced in the same way.
+Other non-data properties are ignored.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Matches are not kept in a sorted order when they are reduced. You might want to re-sort them in a later</dt><dd><p>step.</p>
+</dd>
+</dl>
+</li>
+<li><p>The final result depends on the order of DocumentArrays when applying reduction.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>others</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – List of DocumentArrays to be reduced</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the resulting DocumentArray</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
             </article>
@@ -558,7 +619,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

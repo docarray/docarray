@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.protobuf/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.mixins.pydantic module" href="../docarray.document.mixins.pydantic/" /><link rel="prev" title="docarray.document.mixins.property module" href="../docarray.document.mixins.property/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.document.mixins.protobuf module - DocArray 0.10.1 documentation</title>
+        <title>docarray.document.mixins.protobuf module - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -517,8 +517,38 @@
                         </i>
                     </label>
                 </div>
-                <section id="docarray-document-mixins-protobuf-module">
-<h1>docarray.document.mixins.protobuf module<a class="headerlink" href="#docarray-document-mixins-protobuf-module" title="Permalink to this headline">#</a></h1>
+                <section id="module-docarray.document.mixins.protobuf">
+<span id="docarray-document-mixins-protobuf-module"></span><h1>docarray.document.mixins.protobuf module<a class="headerlink" href="#module-docarray.document.mixins.protobuf" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.document.mixins.protobuf.ProtobufMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.protobuf.</span></span><span class="sig-name descname"><span class="pre">ProtobufMixin</span></span><a class="reference internal" href="../../_modules/docarray/document/mixins/protobuf/#ProtobufMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.protobuf.ProtobufMixin" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.protobuf.ProtobufMixin.from_protobuf">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pb_msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/protobuf/#ProtobufMixin.from_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.protobuf.ProtobufMixin.from_protobuf" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>T</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.protobuf.ProtobufMixin.to_protobuf">
+<span class="sig-name descname"><span class="pre">to_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndarray_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/protobuf/#ProtobufMixin.to_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.protobuf.ProtobufMixin.to_protobuf" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert Document into a Protobuf message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ndarray_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – can be <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, if set it will force all ndarray-like object to be <code class="docutils literal notranslate"><span class="pre">List</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DocumentProto</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the protobuf message</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
             </article>
@@ -558,7 +588,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

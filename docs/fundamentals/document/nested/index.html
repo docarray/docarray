@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/nested/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:description" content="Document can be nested both horizontally and vertically via.matches and.chunks. The picture below illustrates the recursive Document structure. You can add chunks(sub-Document) and matches(neighbour-Document) to a Document: Add in constructor:, Add to existing Document:, Add to existing doc.chunk..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Visualization" href="../visualization/" /><link rel="prev" title="Embedding" href="../embedding/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Nested Structure - DocArray 0.10.1 documentation</title>
+        <title>Nested Structure - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -573,7 +573,7 @@
 </li>
 </ul>
 <p>Both <code class="docutils literal notranslate"><span class="pre">doc.chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">doc.matches</span></code> return <a class="reference internal" href="../../documentarray/#documentarray"><span class="std std-ref">DocumentArray</span></a>.</p>
-<p>To get a clear picture of a nested Document, use <code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code>, e.g.:</p>
+<p>To get a clear picture of a nested Document, use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>, e.g.:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -589,7 +589,7 @@
 <section id="what-s-next">
 <h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
 <p>When you have multiple Documents with nested structures, traversing over certain chunks and matches can be crucial. Fortunately, this is extremely simple thanks to DocumentArray as shown in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>.</p>
-<p>Note that some methods rely on these two attributes, some methods require these two attributes to be filled in advance. For example, <code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code> will fill <code class="docutils literal notranslate"><span class="pre">.matches</span></code>, whereas <code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code> requires <code class="docutils literal notranslate"><span class="pre">.matches</span></code> to be filled.</p>
+<p>Note that some methods rely on these two attributes, some methods require these two attributes to be filled in advance. For example, <a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a> will fill <code class="docutils literal notranslate"><span class="pre">.matches</span></code>, whereas <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a> requires <code class="docutils literal notranslate"><span class="pre">.matches</span></code> to be filled.</p>
 </section>
 </section>
 
@@ -630,7 +630,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.video/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.document.data module" href="../docarray.document.data/" /><link rel="prev" title="docarray.document.mixins.text module" href="../docarray.document.mixins.text/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.document.mixins.video module - DocArray 0.10.1 documentation</title>
+        <title>docarray.document.mixins.video module - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +167,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -517,8 +517,50 @@
                         </i>
                     </label>
                 </div>
-                <section id="docarray-document-mixins-video-module">
-<h1>docarray.document.mixins.video module<a class="headerlink" href="#docarray-document-mixins-video-module" title="Permalink to this headline">#</a></h1>
+                <section id="module-docarray.document.mixins.video">
+<span id="docarray-document-mixins-video-module"></span><h1>docarray.document.mixins.video module<a class="headerlink" href="#module-docarray.document.mixins.video" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.document.mixins.video.VideoDataMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.mixins.video.</span></span><span class="sig-name descname"><span class="pre">VideoDataMixin</span></span><a class="reference internal" href="../../_modules/docarray/document/mixins/video/#VideoDataMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.video.VideoDataMixin" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provide helper functions for <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to support video data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor">
+<span class="sig-name descname"><span class="pre">load_uri_to_video_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">only_keyframes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/video/#VideoDataMixin.load_uri_to_video_tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor" title="Permalink to this definition">#</a></dt>
+<dd><p>Convert a <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.uri" title="docarray.document.data.DocumentData.uri"><code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code></a> to a video ndarray <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>only_keyframes</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – only keep the keyframes in the video</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Document itself after processed</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file">
+<span class="sig-name descname"><span class="pre">save_video_tensor_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'h264'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/video/#VideoDataMixin.save_video_tensor_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file" title="Permalink to this definition">#</a></dt>
+<dd><p>Save <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> as a video mp4/h264 file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIO</span></code>]) – The file to open, which can be either a string or a file-like object.</p></li>
+<li><p><strong>frame_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – frames per second</p></li>
+<li><p><strong>codec</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of a decoder/encoder</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>itself after processed</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
             </article>
@@ -558,7 +600,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">

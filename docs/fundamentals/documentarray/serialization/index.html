@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.10.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.2 Documentation" />
   
 <meta property="og:description" content="DocArray is designed to be “ready-to-wire” at anytime. Serialization is important. DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices. Moreover, there is the ability to store/load DocumentArray object..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Documents" href="../access-elements/" /><link rel="prev" title="Construct" href="../construct/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Serialization - DocArray 0.10.1 documentation</title>
+        <title>Serialization - DocArray 0.10.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.10.1 documentation</div>
+                <div class="brand">DocArray 0.10.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -659,7 +659,7 @@ Moreover, there is the ability to store/load <code class="docutils literal notra
 </tbody>
 </table></div>
 <p>For compressions, the following algorithms are supported: <code class="docutils literal notranslate"><span class="pre">lz4</span></code>, <code class="docutils literal notranslate"><span class="pre">bz2</span></code>, <code class="docutils literal notranslate"><span class="pre">lzma</span></code>, <code class="docutils literal notranslate"><span class="pre">zlib</span></code>, <code class="docutils literal notranslate"><span class="pre">gzip</span></code>. The most frequently used ones are <code class="docutils literal notranslate"><span class="pre">lz4</span></code> (fastest) and <code class="docutils literal notranslate"><span class="pre">gzip</span></code> (most widely used).</p>
-<p>If you specified non-default <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> in <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code>, you will need to specify the same in <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code>.</p>
+<p>If you specified non-default <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> in <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a>, you will need to specify the same in <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes" title="docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code></a>.</p>
 <p>Depending on the use cases, you can choose the one works best for you. Here is a benchmark on serializing a DocumentArray with one million near-empty Documents (i.e. init with <code class="docutils literal notranslate"><span class="pre">DocumentArray.empty(...)</span></code> where each Document has only <code class="docutils literal notranslate"><span class="pre">id</span></code>).</p>
 <figure class="align-default">
 <img alt="../../../_images/benchmark-size.svg" src="../../../_images/benchmark-size.svg"/></figure>
@@ -749,7 +749,7 @@ If you want to load a <code class="docutils literal notranslate"><span class="pr
 <p class="admonition-title">Important</p>
 <p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
 </div>
-<p>Serialize into base64 can be useful when binary string is not allowed, e.g. in REST API. This can be easily done via <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code>. Like in binary serialization, one can specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code>:</p>
+<p>Serialize into base64 can be useful when binary string is not allowed, e.g. in REST API. This can be easily done via <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_base64" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_base64" title="docarray.array.mixins.io.binary.BinaryIOMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>. Like in binary serialization, one can specify <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
@@ -781,7 +781,7 @@ If you want to load a <code class="docutils literal notranslate"><span class="pr
 </section>
 <section id="from-to-protobuf">
 <h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this headline">#</a></h2>
-<p>Serializing to Protobuf Message is less frequently used, unless you are using Python Protobuf API. Nonetheless, you can use <code class="xref py py-meth docutils literal notranslate"><span class="pre">from_protobuf()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_protobuf()</span></code> to get a Protobuf Message object in Python.</p>
+<p>Serializing to Protobuf Message is less frequently used, unless you are using Python Protobuf API. Nonetheless, you can use <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_protobuf" title="docarray.array.mixins.io.binary.BinaryIOMixin.from_protobuf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_protobuf()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf" title="docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_protobuf()</span></code></a> to get a Protobuf Message object in Python.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'world'</span><span class="p">)])</span>
@@ -852,7 +852,7 @@ docs {
 <p class="admonition-title">Important</p>
 <p>This feature requires <code class="docutils literal notranslate"><span class="pre">rich</span></code> and <code class="docutils literal notranslate"><span class="pre">requests</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
 </div>
-<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">pull()</span></code> allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.</p>
+<p><a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull" title="docarray.array.mixins.io.pushpull.PushPullMixin.pull"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pull()</span></code></a> allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.</p>
 <p>Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily store it to the cloud via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -912,7 +912,7 @@ docs {
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 28, 2022.
+                            Last updated on Mar 29, 2022.
                         </div>
                     </div>
                     <div class="right-details">
