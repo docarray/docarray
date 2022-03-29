@@ -1,43 +1,73 @@
+import itertools
 from typing import (
     Sequence,
     Iterable,
+    Any,
 )
 
 from ..base.getsetdel import BaseGetSetDelMixin
-from ..base.helper import Offset2ID
+from ..memory.backend import needs_id2offset_rebuild
 from .... import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""
 
+    @needs_id2offset_rebuild
+    def _del_docs_by_mask(self, mask: Sequence[bool]):
+        self._data = list(itertools.compress(self._data, (not _i for _i in mask)))
+
+    @needs_id2offset_rebuild
+    def _del_docs_by_slice(self, _slice: slice):
+        del self._data[_slice]
+
     def _del_doc_by_id(self, _id: str):
-        del self._data[_id]
+        self._del_doc_by_offset(self._id2offset[_id])
+
+    @needs_id2offset_rebuild
+    def _del_doc_by_offset(self, offset: int):
+        del self._data[offset]
+
+    def _set_doc_by_offset(self, offset: int, value: 'Document'):
+        self._data[offset] = value
+        self._id2offset[value.id] = offset
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-        if _id != value.id:
-            del self._data[_id]
-        self._data[value.id] = value
+        old_idx = self._id2offset.pop(_id)
+        self._data[old_idx] = value
+        self._id2offset[value.id] = old_idx
 
-    def _set_doc_value_pairs(
-        self, docs: Iterable['Document'], values: Sequence['Document']
-    ):
-        docs = list(docs)
+    @needs_id2offset_rebuild
+    def _set_docs_by_slice(self, _slice: slice, value: Sequence['Document']):
+        self._data[_slice] = value
 
-        for _d, _v in zip(docs, values):
-            _d._data = _v._data
+    def _set_doc_attr_by_offset(self, offset: int, attr: str, value: Any):
+        if attr == 'id' and value is None:
+            raise ValueError(
+                'setting the ID of a Document stored in a DocumentArray to None is not allowed'
+            )
+
+        setattr(self._data[offset], attr, value)
+
+    def _get_doc_by_offset(self, offset: int) -> 'Document':
+        return self._data[offset]
 
     def _get_doc_by_id(self, _id: str) -> 'Document':
-        return self._data[_id]
+        return self._data[self._id2offset[_id]]
 
-    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
-        return (self._data[_id] for _id in ids)
+    def _get_docs_by_slice(self, _slice: slice) -> Iterable['Document']:
+        return self._data[_slice]
 
     def _clear_storage(self):
         self._data.clear()
+        self._id2offset.clear()
 
     def _load_offset2ids(self):
-        self._offset2ids = Offset2ID()
+        ...
 
     def _save_offset2ids(self):
         ...
+
+    _set_doc = _set_doc_by_id
+    _del_doc = _del_doc_by_id
+    _del_all_docs = _clear_storage
