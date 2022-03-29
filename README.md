@@ -33,41 +33,41 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 <table>
   <tr>
     <td width="160" align="center">
-      <img
+      <a href="https://weaviate.io/developers/weaviate/current/client-libraries/python.html#neural-search-frameworks"><img
         src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/weaviate.svg"
         width="160"
-      />
+      /></a>
     </td>
     <td width="160" align="center">
-      <img
+      <a href="https://qdrant.tech/documentation/install/#docarray"><img
         src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/qdrant.svg"
         width="160"
-      />
+      /></a>
     </td>
     <td width="160" align="center">
-      <img
+      <a href="https://docs.jina.ai"><img
         src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/jina.svg"
         width="160"
-      />
+      /></a>
     </td>
     <td width="160" align="center">
-      <img
+      <a href="https://clip-as-service.jina.ai"><img
         src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/cas.svg"
         width="160"
-      />
+      /></a>
     </td>
     <td width="160" align="center">
-      <img
+      <a href="https://finetuner.jina.ai"> <img
         src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/finetuner.svg"
         width="160"
-      />
+      /></a>
     </td>
   </tr>
 </table>
 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
 
-
+Are you also using it? [Tell us here](https://github.com/jina-ai/docarray/issues/237).
 <!-- end elevator-pitch -->
 
 
