@@ -2,13 +2,14 @@ import json
 from typing import TYPE_CHECKING
 
 import numpy as np
-from PIL.Image import Image
 
 if TYPE_CHECKING:
     from docarray import Document
 
 
 def image_serializer(inp, attribute_name, doc: 'Document'):
+    from PIL.Image import Image
+
     if isinstance(inp, str):
         doc.uri = inp
         doc._metadata['image_type'] = 'uri'
