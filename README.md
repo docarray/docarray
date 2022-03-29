@@ -28,9 +28,48 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 
 🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
-<!-- end elevator-pitch -->
+## Who is using it?
+
+<table>
+  <tr>
+    <td width="160" align="center">
+      <img
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/weaviate.svg"
+        width="160"
+      />
+    </td>
+    <td width="160" align="center">
+      <img
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/qdrant.svg"
+        width="160"
+      />
+    </td>
+    <td width="160" align="center">
+      <img
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/jina.svg"
+        width="160"
+      />
+    </td>
+    <td width="160" align="center">
+      <img
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/cas.svg"
+        width="160"
+      />
+    </td>
+    <td width="160" align="center">
+      <img
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/finetuner.svg"
+        width="160"
+      />
+    </td>
+  </tr>
+</table>
 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
+
+
+<!-- end elevator-pitch -->
+
 
 ## Install 
 
@@ -66,9 +105,11 @@ d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_
 da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
 da.apply(Document.embed_feature_hashing, backend='process')
 
-q = (Document(text='she smiled too much')
-     .embed_feature_hashing()
-     .match(da, metric='jaccard', use_scipy=True))
+q = (
+    Document(text='she smiled too much')
+    .embed_feature_hashing()
+    .match(da, metric='jaccard', use_scipy=True)
+)
 
 print(q.matches[:5, ('text', 'scores__jaccard__value')])
 ```
@@ -89,8 +130,10 @@ Here the feature embedding is done by simple [feature hashing](https://en.wikipe
 When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
 
 ```python
-da = DocumentArray((Document(text=s.strip()) for s in d.text.split('\n') if s.strip()), storage='sqlite')
-                                                                                        ^^^^^^^^^^^^^^^^
+da = DocumentArray(
+    (Document(text=s.strip()) for s in d.text.split('\n') if s.strip()),
+    storage='sqlite',
+)
 ```
 
 The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
@@ -158,10 +201,14 @@ Let's do some standard computer vision pre-processing:
 ```python
 from docarray import Document
 
+
 def preproc(d: Document):
-    return (d.load_uri_to_image_tensor()  # load
-             .set_image_tensor_normalization()  # normalize color 
-             .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
+    return (
+        d.load_uri_to_image_tensor()  # load
+        .set_image_tensor_normalization()  # normalize color
+        .set_image_tensor_channel_axis(-1, 0)
+    )  # switch color axis for the PyTorch model later
+
 
 left_da.apply(preproc)
 ```
@@ -174,6 +221,7 @@ Now convert images into embeddings using a pretrained ResNet50:
 
 ```python
 import torchvision
+
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 left_da.embed(model, device='cuda')  # embed via GPU to speed up
 ```
@@ -204,18 +252,20 @@ Fun is fun, but recall our goal is to match left images against right images and
 <td> 
 
 ```python
-right_da = (DocumentArray.pull('demo-rightda', show_progress=True)
-                         .apply(preproc)
-                         .embed(model, device='cuda'))
+right_da = (
+    DocumentArray.pull('demo-rightda', show_progress=True)
+    .apply(preproc)
+    .embed(model, device='cuda')
+)
 ```
      
 </td>
 <td>
 
 ```python
-right_da = (DocumentArray.from_files('right/*.jpg')
-                         .apply(preproc)
-                         .embed(model, device='cuda'))
+right_da = (
+    DocumentArray.from_files('right/*.jpg').apply(preproc).embed(model, device='cuda')
+)
 ```
 
 </td>
@@ -255,10 +305,15 @@ print(left_da['@m', ('uri', 'scores__cosine__value')])
 Better see it.
 
 ```python
-(DocumentArray(left_da[8].matches, copy=True)
-    .apply(lambda d: d.set_image_tensor_channel_axis(0, -1)
-                      .set_image_tensor_inv_normalization())
-    .plot_image_sprites())
+(
+    DocumentArray(left_da[8].matches, copy=True)
+    .apply(
+        lambda d: d.set_image_tensor_channel_axis(
+            0, -1
+        ).set_image_tensor_inv_normalization()
+    )
+    .plot_image_sprites()
+)
 ```
 
 <p align="center">
@@ -274,7 +329,9 @@ Serious as you are, visual inspection is surely not enough. Let's calculate the 
 
 ```python
 groundtruth = DocumentArray(
-    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))]) for d in left_da)
+    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
+    for d in left_da
+)
 ```
 
 Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
@@ -283,13 +340,12 @@ Now let's check recall rate from 1 to 5 over the full dataset:
 
 ```python
 for k in range(1, 6):
-    print(f'recall@{k}',
-          left_da.evaluate(
-            groundtruth,
-            hash_fn=lambda d: d.uri,
-            metric='recall_at_k',
-            k=k,
-            max_rel=1))
+    print(
+        f'recall@{k}',
+        left_da.evaluate(
+            groundtruth, hash_fn=lambda d: d.uri, metric='recall_at_k', k=k, max_rel=1
+        ),
+    )
 ```
 
 ```text
