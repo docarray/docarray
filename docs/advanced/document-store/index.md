@@ -115,7 +115,7 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 
 ### Using a context manager to ensure data and offset syncronization
 
-Modifications of a DocumentArray with a storage backend can be asyncronous and might not be reflected instantly to a DocumentArray.
+Modifications of a DocumentArray with a storage backend can be "lazy" and might not be reflected instantly to a DocumentArray.
 To ensure modifications are beeing sincronized with the storage backend one can use a context manager as in the following snipped:
 
 
@@ -136,6 +136,7 @@ with da as da_open:
     da_open.append(Document(embedding=np.random.random(128)))
     da_open.append(Document(embedding=np.random.random(128)))
 
+# Any changes done to da inside the context manager should be syncronized with the backend now
 print(f'len(da)={len(da)}')
 print(f'len(da._offset2ids.ids)={len(da._offset2ids.ids)}')
 ```
