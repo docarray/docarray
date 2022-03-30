@@ -150,7 +150,10 @@ Simply put, the reason of this behavior is that certain meta information **not s
 
 To solve this problem, simply use `with` statement and use DocumentArray as a context manager. The last example can be refactored into the following: 
 
-```python
+```{code-block} python
+---
+emphasize-lines: 4,5
+---
 from docarray import DocumentArray, Document
 
 da = DocumentArray(storage='annlite', config={'data_path': './temp4', 'n_dim': 2})
