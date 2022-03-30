@@ -70,6 +70,8 @@ Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/
 <!-- end elevator-pitch -->
 
 
+## [Documentation](https://docarray.jina.ai)
+
 ## Install 
 
 Requires Python 3.7+ and `numpy` only:
@@ -82,7 +84,6 @@ conda install -c conda-forge docarray
 ```
 [Commonly used features](https://docarray.jina.ai/#install) can be enabled via `pip install "docarray[common]"`.
 
-## [Documentation](https://docarray.jina.ai)
 
 ## Get Started
 
