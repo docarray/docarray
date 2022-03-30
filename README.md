@@ -5,9 +5,9 @@
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/docarray/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9 3.10" title="DocArray supports Python 3.7 and above"></a>
-<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
-<a href="https://codecov.io/gh/jina-ai/docarray"><img src="https://codecov.io/gh/jina-ai/docarray/branch/main/graph/badge.svg?token=9WGcGyyqtI"/></a>
+<a href="https://pypi.org/project/docarray/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/docarray?logo=python&logoColor=white&style=flat-square"></a>
+<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
+<a href="https://codecov.io/gh/jina-ai/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
