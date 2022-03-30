@@ -44,7 +44,7 @@ def _do_create_table(
             CREATE TABLE {table_name} (
             doc_id TEXT NOT NULL UNIQUE, 
             serialized_value Document NOT NULL, 
-            item_order INTEGER PRIMARY KEY)
+            item_order INTEGER)
             '''
     )
 

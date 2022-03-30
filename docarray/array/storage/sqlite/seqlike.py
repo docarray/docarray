@@ -11,19 +11,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         if idx is None:
             idx = len(self)
         self._sql(
-            f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-            (doc.id, doc, idx),
+            f'INSERT INTO {self._table_name} (doc_id, serialized_value) VALUES (?, ?)',
+            (doc.id, doc),
         )
         self._offset2ids.insert(idx, doc.id)
-
-    def _shift_index_right_backward(self, start: int):
-        idx = len(self) - 1
-        while idx >= start:
-            self._sql(
-                f'UPDATE {self._table_name} SET item_order = ? WHERE item_order = ?',
-                (idx + 1, idx),
-            )
-            idx -= 1
 
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
@@ -35,14 +26,13 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         if index < 0:
             index = length + index
         index = max(0, min(length, index))
-        self._shift_index_right_backward(index)
         self._insert_doc_at_idx(doc=value, idx=index)
         self._commit()
 
     def append(self, doc: 'Document') -> None:
         self._sql(
-            f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-            (doc.id, doc, len(self)),
+            f'INSERT INTO {self._table_name} (doc_id, serialized_value) VALUES (?, ?)',
+            (doc.id, doc),
         )
         self._offset2ids.append(doc.id)
         self._commit()
