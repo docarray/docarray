@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/parallelization/" />
   
-<meta property="og:site_name" content="DocArray 0.10.5 Documentation" />
+<meta property="og:site_name" content="DocArray 0.10.6 Documentation" />
   
 <meta property="og:description" content="Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides map() to speed up things quite a lot. It is like Python built-in map() function but mapping the function to every element of the Docu..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.10.5 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.10.6 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Visualization" href="../visualization/" /><link rel="prev" title="Evaluate Matches" href="../evaluation/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Parallelization - DocArray 0.10.5 documentation</title>
+        <title>Parallelization - DocArray 0.10.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.10.5 documentation</div>
+                <div class="brand">DocArray 0.10.6 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -587,17 +587,17 @@ apply ...	apply takes 3.5 seconds
 </div>
 <section id="use-map-to-overlap-cpu-gpu-computation">
 <h2>Use <code class="docutils literal notranslate"><span class="pre">map()</span></code> to overlap CPU &amp; GPU computation<a class="headerlink" href="#use-map-to-overlap-cpu-gpu-computation" title="Permalink to this headline">#</a></h2>
-<p>As I said, <code class="docutils literal notranslate"><span class="pre">map()</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">map_batch()</span></code> has its own charm: it returns an iterator where the partial result is immediately available, <em>regardless if your <code class="docutils literal notranslate"><span class="pre">fn</span></code> is still running</em>. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.</p>
-<p>Let’s see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core.</p>
+<p>As I said, <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map" title="docarray.array.mixins.parallel.ParallelMixin.map"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map()</span></code></a> / <a class="reference internal" href="../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.map_batch" title="docarray.array.mixins.parallel.ParallelMixin.map_batch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">map_batch()</span></code></a> has its own charm: it returns an iterator (of batch) where the partial result is immediately available, <em>regardless</em> if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.</p>
+<p>Let’s see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core as the total resources.</p>
 <p>Question: <strong>how long will it take to process 1024 Documents?</strong></p>
-<p>Before jump to the code, lets first whiteboard it, simple math:</p>
+<p>Before jump to the code, lets first whiteboard it, do a simple math:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>CPU time: 1024/16/4 * 1s = 16s
 GPU time: 1024/16 * 2s   = 128s
 Total time: 16s + 128s   = 144s   
 </pre></div>
 </div>
 <p>So 144s, right? Yes, if we implement with <code class="docutils literal notranslate"><span class="pre">apply()</span></code>, it is around 144s.</p>
-<p>However, we can do better. What if we overlap the computation of CPU and GPU, the whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch <strong>right away</strong> when it is ready, rather than waits until all batches are ready, then we can save a lot of time. To be precise, we should get 129s.</p>
+<p>However, we can do better. What if we overlap the computation of CPU and GPU? The whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch <strong>right away</strong> when it is ready from CPU, rather than waits until all batches are ready from CPU, then we can save a lot of time. To be precise, we could do it in <em>129s</em>.</p>
 <div class="tip admonition">
 <p class="admonition-title">Why 129s? Why not 128s</p>
 <p>Btw, if you immedidately know the answer you should <a class="reference external" href="https://jobs.jina.ai/">send your CV to us</a>.</p>
@@ -619,7 +619,7 @@ Total time: 16s + 128s   = 144s
 </div>
 </div>
 </div>
-<p>Run it you get:</p>
+<p>Which gives you,</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>apply: 144.476s
 map: 129.326s
 </pre></div>
