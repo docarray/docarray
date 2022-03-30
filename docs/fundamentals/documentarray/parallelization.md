@@ -79,10 +79,11 @@ It depends on how your `func` in `.apply(func)` look like, here are some tips:
 
 ## Use `map()` to overlap CPU & GPU computation
 
-As I said, `map()` & `map_batch()` has its own charm: it returns an iterator where the partial result is immediately available, *regardless if your `fn` is still running*. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.
+As I said, {meth}`~docarray.array.mixins.parallel.ParallelMixin.map` / {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` has its own charm: it returns an iterator (of batch) where the partial result is immediately available, *regardless* if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.
 
-Let's see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core. 
+Let's see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core as the total resources. 
 
+Question: **how long will it take to process 1024 Documents?**
 
 
 ```{python}
@@ -104,9 +105,8 @@ def gpu_job(da):
     time.sleep(2)
 ```
 
-Question: **how long will it take to process 1024 Documents?**
 
-Before jump to the code, lets first whiteboard it, simple math:
+Before jump to the code, lets first whiteboard it, do a simple math:
 
 ```text
 CPU time: 1024/16/4 * 1s = 16s
@@ -116,7 +116,7 @@ Total time: 16s + 128s   = 144s
 
 So 144s, right? Yes, if we implement with `apply()`, it is around 144s.
 
-However, we can do better. What if we overlap the computation of CPU and GPU, the whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch **right away** when it is ready, rather than waits until all batches are ready, then we can save a lot of time. To be precise, we should get 129s.
+However, we can do better. What if we overlap the computation of CPU and GPU? The whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch **right away** when it is ready from CPU, rather than waits until all batches are ready from CPU, then we can save a lot of time. To be precise, we could do it in _129s_.
 
 ```{admonition} Why 129s? Why not 128s
 :class: tip
@@ -143,7 +143,7 @@ for b in da.map_batch(cpu_job, batch_size=16, num_worker=4):
 ```
 ````
 
-Run it you get:
+Which gives you,
 
 ```text
 apply: 144.476s
