@@ -65,6 +65,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1586,4 +1587,22 @@
  - [[```b8e8d407```](https://github.com/jina-ai/docarray/commit/b8e8d40736090182593ecf8f4d603ad43f802d9f)] __-__ __docs__: update limitations in storage backend (*Han Xiao*)
  - [[```972a6a7a```](https://github.com/jina-ai/docarray/commit/972a6a7aa8accc6cb126b4dabdd2a867d67b22c6)] __-__ update setup.py (*Han Xiao*)
  - [[```ba044a4f```](https://github.com/jina-ai/docarray/commit/ba044a4fd121268b6a58a222f95997211e9a2ca1)] __-__ fix readme badge (*Han Xiao*)
+
+<a name=release-note-0-10-5></a>
+## Release Note (`0.10.5`)
+
+> Release time: 2022-03-30 20:55:17
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```5f1ba5d8```](https://github.com/jina-ai/docarray/commit/5f1ba5d8c099bf39bc2f8df46886d8880733f113)] __-__ __docs__: add remark for cpu-gpu map (*Han Xiao*)
+ - [[```0f03fed2```](https://github.com/jina-ai/docarray/commit/0f03fed21818f7ca03ee0499f7743ad62025f4f6)] __-__ fix readme (*Han Xiao*)
+ - [[```e98ae020```](https://github.com/jina-ai/docarray/commit/e98ae020e59f39c79a6d1d5f6f0fc2cdfeee9e61)] __-__ update readme (*Han Xiao*)
+ - [[```c21a14db```](https://github.com/jina-ai/docarray/commit/c21a14dbd6d12fa4a6d661952f90572e227b527a)] __-__ __version__: the next version will be 0.10.5 (*Jina Dev Bot*)
 
