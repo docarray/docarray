@@ -635,3 +635,26 @@ def test_offset2ids_persistence(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
 
     assert da[:, 'id'] == da_ids
+
+
+def test_dam_conflicting_ids():
+    docs = [
+        Document(id='1'),
+        Document(id='2'),
+        Document(id='3'),
+    ]
+
+    d = Document(id='1')
+    da = DocumentArray()
+    da.extend(docs)
+    da.append(d)
+
+    assert len(da) == 4
+    assert id(da[0]) == id(docs[0])
+    assert id(da[3]) == id(d)
+
+    da[0].text = 'd1'
+    da[3].text = 'd2'
+
+    assert docs[0].text == 'd1'
+    assert d.text == 'd2'
