@@ -1,5 +1,3 @@
-from rich import box
-
 from ...helper import deprecate_by
 
 
@@ -11,8 +9,10 @@ class PlotMixin:
         self.summary()
 
     def __rich_console__(self, console, options):
+
         yield f":page_facing_up: [b]Document[/b]: [cyan]{self.id}[cyan]"
         from rich.table import Table
+        from rich import box
 
         my_table = Table('Attribute', 'Value', width=80, box=box.ROUNDED)
         for f in self.non_empty_fields:
