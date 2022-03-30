@@ -17,13 +17,3 @@ class DocumentArrayQdrant(StorageMixins, DocumentArray):
         :return: the instantiated :class:`DocumentArrayQdrant` object
         """
         return super().__new__(cls)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        """
-        Ensures that offset2ids are stored in the db after
-        operations in the DocumentArray are performed.
-        """
-        self._save_offset2ids()
