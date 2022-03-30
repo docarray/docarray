@@ -113,36 +113,62 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 ## Known limitations
 
 
-### Using a context manager to ensure data and offset syncronization
+### Multiple references to the same storage backend
 
-Modifications of a DocumentArray with a storage backend can be "lazy" and might not be reflected instantly to a DocumentArray.
-To ensure modifications are beeing sincronized with the storage backend one can use a context manager as in the following snipped:
-
+Let's see an example with ANNLite storage backend, other storage backends would also have the same problem. Let's create two DocumentArrays `da` and `db` that point the same storage backend:
 
 ```python
-import numpy as np
 from docarray import DocumentArray, Document
 
-storage = 'sqlite'
-table_name = 'Test'
-connection = './test.db'
+da = DocumentArray(storage='annlite', config={'data_path': './temp3', 'n_dim': 2})
+da.append(Document(text='hello'))
+print(len(da))
 
-da = DocumentArray(
-    storage=storage,
-    config={'table_name': table_name, 'connection': connection},
-)
-
-with da as da_open:
-    da_open.append(Document(embedding=np.random.random(128)))
-    da_open.append(Document(embedding=np.random.random(128)))
-
-# Any changes done to da inside the context manager should be syncronized with the backend now
-print(f'len(da)={len(da)}')
-print(f'len(da._offset2ids.ids)={len(da._offset2ids.ids)}')
+db = DocumentArray(storage='annlite', config={'data_path': './temp3', 'n_dim': 2})
+print(len(db))
 ```
 
-This will ensure that the data and offsets are syncronized after the `with` statement. 
+The output is:
+```text
+1
+0
+```
 
+Looks like `db` is not really up-to-date with `da`. This is true and false. True in the sense that `1` is not `0`, number speaks by itself. False in the sense that, the Document is already written to the storage backend. You just can't see it. 
+
+To prove it does persist, run the following code snippet multiple times and you will see the length is increasing one at a time:
+
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray(storage='annlite', config={'data_path': './temp3', 'n_dim': 2})
+da.append(Document(text='hello'))
+print(len(da))
+```
+
+Simply put, the reason of this behavior is that certain meta information **not synced immediately** to the backend on *every* operation; it would be very costly to do so. As a consequence, your multiple references to the same backend  would look different if they are written in one code block as the example above.
+
+To solve this problem, simply use `with` statement and use DocumentArray as a context manager. The last example can be refactored into the following: 
+
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray(storage='annlite', config={'data_path': './temp4', 'n_dim': 2})
+with da:
+    da.append(Document(text='hello'))
+print(len(da))
+
+db = DocumentArray(storage='annlite', config={'data_path': './temp4', 'n_dim': 2})
+print(len(db))
+```
+
+Now you get the correct output:
+```text
+1
+1
+```
+
+Take home message is, use the context manager and put your write operations into the `with` block, when you work with multiple references in a row.
 
 ### Out-of-array modification
 
