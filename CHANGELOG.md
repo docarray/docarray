@@ -63,6 +63,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1536,4 +1537,27 @@
 ### 🍹 Other Improvements
 
  - [[```dd2b17f1```](https://github.com/jina-ai/docarray/commit/dd2b17f14266c4f3b639807b9e3e2929633b4dda)] __-__ __version__: the next version will be 0.10.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-10-2></a>
+## Release Note (`0.10.2`)
+
+> Release time: 2022-03-29 09:31:36
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```e332420e```](https://github.com/jina-ai/docarray/commit/e332420e81232c33d8474c450831ec2c59b92d17)] __-__ fix PIL dependency (#234) (*AlaeddineAbdessalem*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```876b4dad```](https://github.com/jina-ai/docarray/commit/876b4dad7de7b9538daef131fb6022720dc86934)] __-__ add basic import test (#235) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```2af5af3b```](https://github.com/jina-ai/docarray/commit/2af5af3bbb1a0d272b6fab7c0887897666483ffb)] __-__ __version__: the next version will be 0.10.2 (*Jina Dev Bot*)
 
