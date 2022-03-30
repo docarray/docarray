@@ -112,6 +112,37 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 
 ## Known limitations
 
+
+### Using a context manager to ensure data and offset syncronization
+
+Modifications of a DocumentArray with a storage backend can be asyncronous and might not be reflected instantly to a DocumentArray.
+To ensure modifications are beeing sincronized with the storage backend one can use a context manager as in the following snipped:
+
+
+```python
+import numpy as np
+from docarray import DocumentArray, Document
+
+storage = 'sqlite'
+table_name = 'Test'
+connection = './test.db'
+
+da = DocumentArray(
+    storage=storage,
+    config={'table_name': table_name, 'connection': connection},
+)
+
+with da as da_open:
+    da_open.append(Document(embedding=np.random.random(128)))
+    da_open.append(Document(embedding=np.random.random(128)))
+
+print(f'len(da)={len(da)}')
+print(f'len(da._offset2ids.ids)={len(da._offset2ids.ids)}')
+```
+
+This will ensure that the data and offsets are syncronized after the `with` statement. 
+
+
 ### Out-of-array modification
 
 One can not take a Document *out* from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.
