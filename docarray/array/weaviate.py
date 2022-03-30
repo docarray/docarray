@@ -17,13 +17,3 @@ class DocumentArrayWeaviate(StorageMixins, DocumentArray):
         :return: the instantiated :class:`DocumentArrayWeaviate` object
         """
         return super().__new__(cls)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args, **kwargs):
-        """
-        Ensures that offset2ids are stored in the db after
-        operations in the DocumentArray are performed.
-        """
-        self._update_offset2ids_meta()

@@ -26,4 +26,4 @@ class DocumentArrayQdrant(StorageMixins, DocumentArray):
         Ensures that offset2ids are stored in the db after
         operations in the DocumentArray are performed.
         """
-        self._update_offset2ids_meta()
+        self._save_offset2ids()

@@ -64,6 +64,16 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         """Create a Elastic-powered DocumentArray object."""
         ...
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        """
+        Ensures that offset2ids are stored in the db after
+        operations in the DocumentArray are performed.
+        """
+        self._save_offset2ids()
+
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
             if storage == 'memory':
