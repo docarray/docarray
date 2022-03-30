@@ -64,6 +64,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1560,4 +1561,29 @@
 ### 🍹 Other Improvements
 
  - [[```2af5af3b```](https://github.com/jina-ai/docarray/commit/2af5af3bbb1a0d272b6fab7c0887897666483ffb)] __-__ __version__: the next version will be 0.10.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-10-4></a>
+## Release Note (`0.10.4`)
+
+> Release time: 2022-03-30 14:27:25
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  Roshan Jossy,  🙇
+
+
+### 🆕 New Features
+
+ - [[```f86043ba```](https://github.com/jina-ai/docarray/commit/f86043baddbf0e0277b4a02289c9fd717164191c)] __-__ __array__: add the usage of context manager (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```99193656```](https://github.com/jina-ai/docarray/commit/99193656a4902afb187d3a3d6524cc474d7da120)] __-__ __tracking__: add scarf tracking (#231) (*Roshan Jossy*)
+
+### 🍹 Other Improvements
+
+ - [[```b8e8d407```](https://github.com/jina-ai/docarray/commit/b8e8d40736090182593ecf8f4d603ad43f802d9f)] __-__ __docs__: update limitations in storage backend (*Han Xiao*)
+ - [[```972a6a7a```](https://github.com/jina-ai/docarray/commit/972a6a7aa8accc6cb126b4dabdd2a867d67b22c6)] __-__ update setup.py (*Han Xiao*)
+ - [[```ba044a4f```](https://github.com/jina-ai/docarray/commit/ba044a4fd121268b6a58a222f95997211e9a2ca1)] __-__ fix readme badge (*Han Xiao*)
 
