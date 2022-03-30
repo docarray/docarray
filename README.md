@@ -5,7 +5,6 @@
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/docarray/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/docarray?logo=python&logoColor=white&style=flat-square"></a>
 <a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
 <a href="https://codecov.io/gh/jina-ai/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
 <a href="https://pypi.org/project/docarray/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dd/docarray?style=flat-square"></a>
