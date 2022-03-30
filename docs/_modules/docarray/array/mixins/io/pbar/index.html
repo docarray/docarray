@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.io.pbar - DocArray 0.10.2 documentation</title>
+        <title>docarray.array.mixins.io.pbar - DocArray 0.10.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.10.2 documentation</div>
+                <div class="brand">DocArray 0.10.3 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -494,15 +494,33 @@
     <span class="n">MofNCompleteColumn</span><span class="p">,</span>
     <span class="n">TextColumn</span><span class="p">,</span>
     <span class="n">TimeRemainingColumn</span><span class="p">,</span>
+    <span class="n">Text</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="get_progressbar"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.get_progressbar">[docs]</a><span class="k">def</span> <span class="nf">get_progressbar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">disable</span><span class="p">,</span> <span class="n">total</span><span class="p">):</span>
-    <span class="n">progress</span> <span class="o">=</span> <span class="n">Progress</span><span class="p">(</span>
+<div class="viewcode-block" id="QPSColumn"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn">[docs]</a><span class="k">class</span> <span class="nc">QPSColumn</span><span class="p">(</span><span class="n">TextColumn</span><span class="p">):</span>
+<div class="viewcode-block" id="QPSColumn.render"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">task</span><span class="o">.</span><span class="n">speed</span><span class="p">:</span>
+            <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">task</span><span class="o">.</span><span class="n">speed</span><span class="si">:</span><span class="s1">.0f</span><span class="si">}</span><span class="s1"> QPS'</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_text</span> <span class="o">=</span> <span class="s1">'unknown'</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">markup</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">Text</span><span class="o">.</span><span class="n">from_markup</span><span class="p">(</span><span class="n">_text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">justify</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">_text</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">justify</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">highlighter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">highlighter</span><span class="o">.</span><span class="n">highlight</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div></div>
+
+
+<div class="viewcode-block" id="get_pbar"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.get_pbar">[docs]</a><span class="k">def</span> <span class="nf">get_pbar</span><span class="p">(</span><span class="n">disable</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Progress</span><span class="p">(</span>
         <span class="n">SpinnerColumn</span><span class="p">(),</span>
-        <span class="n">TextColumn</span><span class="p">(</span><span class="n">description</span><span class="p">),</span>
+        <span class="n">TextColumn</span><span class="p">(</span><span class="s1">'[bold]</span><span class="si">{task.description}</span><span class="s1">'</span><span class="p">),</span>
         <span class="n">BarColumn</span><span class="p">(),</span>
         <span class="n">MofNCompleteColumn</span><span class="p">(),</span>
+        <span class="s1">'•'</span><span class="p">,</span>
+        <span class="n">QPSColumn</span><span class="p">(</span><span class="s1">'</span><span class="si">{task.speed}</span><span class="s1"> QPS'</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">'right'</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">'progress.data.speed'</span><span class="p">),</span>
         <span class="s1">'•'</span><span class="p">,</span>
         <span class="n">TimeRemainingColumn</span><span class="p">(),</span>
         <span class="s1">'•'</span><span class="p">,</span>
@@ -513,7 +531,11 @@
         <span class="p">),</span>
         <span class="n">transient</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">disable</span><span class="o">=</span><span class="n">disable</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_progressbar"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.get_progressbar">[docs]</a><span class="k">def</span> <span class="nf">get_progressbar</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">disable</span><span class="p">,</span> <span class="n">total</span><span class="p">):</span>
+    <span class="n">progress</span> <span class="o">=</span> <span class="n">get_pbar</span><span class="p">(</span><span class="n">disable</span><span class="p">)</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="n">total</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">total_size</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">progress</span><span class="p">,</span> <span class="n">task</span></div>
 </pre></div>
@@ -532,7 +554,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 29, 2022.
+                            Last updated on Mar 30, 2022.
                         </div>
                     </div>
                     <div class="right-details">
