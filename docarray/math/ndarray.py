@@ -258,3 +258,12 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
         return same_array
     else:
         return same_array
+
+
+def detach_tensor(x: 'ArrayType'):
+    x_type, x_sparse = get_array_type(x)
+    if x_type == 'torch':
+        import torch
+
+        x = torch.tensor(x.detach().numpy())
+    return x

@@ -1,6 +1,7 @@
 import itertools
 from abc import abstractmethod, ABC
 from typing import (
+    TYPE_CHECKING,
     Sequence,
     Any,
     Iterable,
@@ -9,7 +10,10 @@ from typing import (
 
 from .helper import Offset2ID
 from .... import Document
-from ....math.ndarray import get_array_type
+from ....math.ndarray import get_array_type, detach_tensor
+
+if TYPE_CHECKING:
+    from ..types import ArrayType
 
 
 class BaseGetSetDelMixin(ABC):
@@ -246,14 +250,6 @@ class BaseGetSetDelMixin(ABC):
             setattr(d, attr, value)
             self._set_doc(_id, d)
 
-    def _detach_tensor(self, x: 'ArrayType'):
-        x_type, x_sparse = get_array_type(x)
-        if x_type == 'torch':
-            import torch
-
-            x = torch.tensor(x.detach().numpy())
-        return x
-
     def _set_doc_attr_by_id(self, _id: str, attr: str, value: Any):
         """This function is derived and may not have the most efficient implementation.
 
@@ -269,8 +265,7 @@ class BaseGetSetDelMixin(ABC):
 
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
-            value = self._detach_tensor(value)
-            setattr(d, attr, value)
+            setattr(d, attr, detach_tensor(value))
             self._set_doc(_id, d)
 
     def _find_root_doc_and_modify(self, d: Document) -> 'Document':
