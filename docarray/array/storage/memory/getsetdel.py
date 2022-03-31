@@ -30,8 +30,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _set_doc_by_offset(self, offset: int, value: 'Document'):
         old_id = self._data[offset].id
-        self._data[offset] = value
         self._id2offset[value.id] = offset
+        self._data[offset] = value
         self._id2offset.pop(old_id)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
