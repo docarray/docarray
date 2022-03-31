@@ -13,7 +13,7 @@ from ...math.ndarray import to_numpy_array
 
 class ColorBoxEmbedding:
     def __init__(self, array):
-        self._array = minmax_normalize(to_numpy_array(array).reshape(-1), (0, 5))
+        self._array = minmax_normalize(array, (0, 5))
 
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
