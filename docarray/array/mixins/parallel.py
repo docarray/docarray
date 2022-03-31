@@ -1,4 +1,5 @@
 import sys
+from functools import lru_cache
 from math import ceil
 from types import LambdaType
 from typing import Callable, TYPE_CHECKING, Generator, Optional, overload, TypeVar
@@ -192,6 +193,7 @@ class ParallelMixin:
                 yield x
 
 
+@lru_cache
 def _get_pool(backend, num_worker):
     if backend == 'thread':
         from multiprocessing.pool import ThreadPool as Pool
