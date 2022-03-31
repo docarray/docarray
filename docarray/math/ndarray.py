@@ -267,7 +267,7 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
 
 def detach_tensor_if_present(x):
     x_type, x_sparse = get_array_type(x, raise_error_if_not_array=False)
-    if x_type == 'torch':
+    if x_type == 'torch' and x_sparse == False:
         import torch
 
         x = torch.tensor(x.detach().numpy())
