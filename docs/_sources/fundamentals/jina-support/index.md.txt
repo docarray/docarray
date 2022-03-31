@@ -1,6 +1,8 @@
 (jina-support)=
 # Jina
 
+DocArray is an upstream dependency of Jina. Without DocArray, Jina can not run.
+
 DocArray focuses on the local & monolith developer experience. [Jina](https://github.com/jina-ai/jina) scales DocArray to the Cloud. DocArray is also the default transit format in Jina, Executors talk to each other via serialized DocArray. The picture below shows their relations.
 
 ```{figure} position-jina-docarray.svg
@@ -49,10 +51,14 @@ from docarray import Document, DocumentArray
 
 da = DocumentArray.from_files('**/*.png')
 
+
 def preproc(d: Document):
-    return (d.load_uri_to_image_tensor()  # load
-             .set_image_tensor_normalization()  # normalize color 
-             .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
+    return (
+        d.load_uri_to_image_tensor()  # load
+        .set_image_tensor_normalization()  # normalize color
+        .set_image_tensor_channel_axis(-1, 0)
+    )  # switch color axis for the PyTorch model later
+
 
 da.apply(preproc).plot_image_sprites(channel_axis=0)
 ```
@@ -71,14 +77,16 @@ from docarray import Document, DocumentArray
 
 from jina import Executor, requests
 
+
 class MyExecutor(Executor):
-    
     @staticmethod
     def preproc(d: Document):
-        return (d.load_uri_to_image_tensor()  # load
-                 .set_image_tensor_normalization()  # normalize color 
-                 .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
-    
+        return (
+            d.load_uri_to_image_tensor()  # load
+            .set_image_tensor_normalization()  # normalize color
+            .set_image_tensor_channel_axis(-1, 0)
+        )  # switch color axis for the PyTorch model later
+
     @requests
     def foo(self, docs: DocumentArray, **kwargs):
         docs.apply(self.preproc)
@@ -128,7 +136,7 @@ from jina import Flow, DocumentArray
 f = Flow(port=12345).add(uses=MyExecutor)
 
 with f:
-    f.block() 
+    f.block()
 ```
 ````
 ````{tab} Client
@@ -152,7 +160,7 @@ from jina import Flow
 f = Flow(port=12345).add(uses=MyExecutor, replicas=3)
 
 with f:
-    f.block() 
+    f.block()
 ```
 
 This will start three parallels can improve the overall throughput. [More details can be found here.](https://docs.jina.ai/fundamentals/flow/create-flow/#replicate-executors)
@@ -176,7 +184,7 @@ This will upload your Executor logic to Jina Hub and allows you and other people
 Say if you want to use it as a Sandbox, you can change your Flow to:
 
 ```python
-from jina import Flow, DocumentArray           
+from jina import Flow, DocumentArray
 
 f = Flow().add(uses='jinahub+sandbox://mp0pe477')
 
