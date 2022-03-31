@@ -31,3 +31,28 @@ class ColorBoxEmbedding:
         self, console: "Console", options: ConsoleOptions
     ) -> Measurement:
         return Measurement(1, options.max_width)
+
+
+def pixels_to_ascii(image):
+    ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", "?", ":", "."]
+    characters = "".join([ASCII_CHARS[pixel // 25] for pixel in image])
+    return characters
+
+
+class ASCIIEmbedding:
+    def __init__(self, array):
+        self._array = array
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ) -> RenderResult:
+
+        for idx, y in enumerate(pixels_to_ascii(self._array)):
+            yield Segment(y)
+            if idx != 0 and idx % options.max_width == 0:
+                yield Segment.line()
+
+    def __rich_measure__(
+        self, console: "Console", options: ConsoleOptions
+    ) -> Measurement:
+        return Measurement(1, options.max_width)

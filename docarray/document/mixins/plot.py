@@ -1,4 +1,12 @@
 from ...helper import deprecate_by
+import numpy as np
+
+
+def resize_image(image, new_width):
+    width, height = image.size
+    ratio = height / width
+    new_height = int(new_width * ratio)
+    return image.resize((new_width, new_height))
 
 
 class PlotMixin:
@@ -18,8 +26,23 @@ class PlotMixin:
         for f in self.non_empty_fields:
             if f in ('embedding', 'tensor'):
                 from .rich_embedding import ColorBoxEmbedding
+                from ...math.ndarray import to_numpy_array
 
-                my_table.add_row(f, ColorBoxEmbedding(getattr(self, f)))
+                embedding_or_tensor = to_numpy_array(getattr(self, f))
+                if embedding_or_tensor.ndim == 1:
+                    my_table.add_row(f, ColorBoxEmbedding(embedding_or_tensor))
+                else:
+                    from .rich_embedding import ASCIIEmbedding
+                    from PIL import Image, ImageOps
+
+                    image = Image.fromarray(embedding_or_tensor)
+                    image = ImageOps.grayscale(image)
+                    image = resize_image(image, new_width=60)
+                    embedding_or_tensor = np.array(image)
+                    my_table.add_row(f, ASCIIEmbedding(embedding_or_tensor[0]))
+                    for row in embedding_or_tensor[1:]:
+                        my_table.add_row('', ASCIIEmbedding(row))
+
             elif f not in ('id', 'chunks', 'matches'):
                 my_table.add_row(f, str(getattr(self, f)))
         if my_table.rows:
@@ -38,6 +61,7 @@ class PlotMixin:
             tree = Tree(self)
         else:
             tree = tree.add(self)
+
         for a in ('matches', 'chunks'):
             if getattr(self, a):
                 if a == 'chunks':
@@ -45,12 +69,15 @@ class PlotMixin:
                 else:
                     _icon = ':large_orange_diamond:'
                 _match_tree = tree.add(f'{_icon} [b]{a.capitalize()}[/b]')
+
                 for d in getattr(self, a):
                     d._plot_recursion(_match_tree)
+
         return tree
 
     def display(self):
         """Plot image data from :attr:`.tensor` or :attr:`.uri`."""
+
         from IPython.display import Image, display
 
         if self.uri:
