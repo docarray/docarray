@@ -67,6 +67,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1633,4 +1634,26 @@
  - [[```3e547dbf```](https://github.com/jina-ai/docarray/commit/3e547dbf7f192a38769cf1141eb20ff2f3db8006)] __-__ update readme (*Han Xiao*)
  - [[```d3eb591b```](https://github.com/jina-ai/docarray/commit/d3eb591be75a6d9490aca1cb17fc9e8a5c34badc)] __-__ __docs__: add remark for cpu-gpu map (*Han Xiao*)
  - [[```f7defbcd```](https://github.com/jina-ai/docarray/commit/f7defbcd501a1a303c098676220211a9751cc7e0)] __-__ __version__: the next version will be 0.10.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-11-1></a>
+## Release Note (`0.11.1`)
+
+> Release time: 2022-03-31 14:15:10
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```1762acc7```](https://github.com/jina-ai/docarray/commit/1762acc7536ecda896fc5c9547d64120bbd25893)] __-__ __document__: fix embedding display with rich (#245) (*Han Xiao*)
+ - [[```0cae644f```](https://github.com/jina-ai/docarray/commit/0cae644fc937452d36e3fbf584dd0f2657dbcd89)] __-__ remove flakyness from elastic tests (#243) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```ee3ac166```](https://github.com/jina-ai/docarray/commit/ee3ac1666771ff9572b1715a4e0a4c4240b96ca4)] __-__ fix docs (*Han Xiao*)
+ - [[```8bb70c2e```](https://github.com/jina-ai/docarray/commit/8bb70c2e72d33bf28875ef832cd5bcb92d398655)] __-__ fix readme (*Han Xiao*)
+ - [[```4722268e```](https://github.com/jina-ai/docarray/commit/4722268ebf1d0db8924bd3657fdd089ce3c8172a)] __-__ __version__: the next version will be 0.11.1 (*Jina Dev Bot*)
 
