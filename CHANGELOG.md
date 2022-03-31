@@ -66,6 +66,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1605,4 +1606,31 @@
  - [[```0f03fed2```](https://github.com/jina-ai/docarray/commit/0f03fed21818f7ca03ee0499f7743ad62025f4f6)] __-__ fix readme (*Han Xiao*)
  - [[```e98ae020```](https://github.com/jina-ai/docarray/commit/e98ae020e59f39c79a6d1d5f6f0fc2cdfeee9e61)] __-__ update readme (*Han Xiao*)
  - [[```c21a14db```](https://github.com/jina-ai/docarray/commit/c21a14dbd6d12fa4a6d661952f90572e227b527a)] __-__ __version__: the next version will be 0.10.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-11-0></a>
+## Release Note (`0.11.0`)
+
+> Release time: 2022-03-31 10:19:15
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```b4659369```](https://github.com/jina-ai/docarray/commit/b4659369921e819b4482c0ad57fbecf1d39a15e5)] __-__ __array__: allow external pool in map/apply (#242) (*Han Xiao*)
+
+### 🧼 Code Refactoring
+
+ - [[```c552fdf0```](https://github.com/jina-ai/docarray/commit/c552fdf040e1c2a3d4648ec7c7d23197018b9e95)] __-__ __array__: use list for DocumentArrayInMemory (#239) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```38f4afaf```](https://github.com/jina-ai/docarray/commit/38f4afafabe01690a93e82d3f321bc0d8db36c49)] __-__ update changelog (*Han Xiao*)
+ - [[```168c3055```](https://github.com/jina-ai/docarray/commit/168c3055d19867903e81d21684676fb0c2d0db44)] __-__ bump version (*Han Xiao*)
+ - [[```3e547dbf```](https://github.com/jina-ai/docarray/commit/3e547dbf7f192a38769cf1141eb20ff2f3db8006)] __-__ update readme (*Han Xiao*)
+ - [[```d3eb591b```](https://github.com/jina-ai/docarray/commit/d3eb591be75a6d9490aca1cb17fc9e8a5c34badc)] __-__ __docs__: add remark for cpu-gpu map (*Han Xiao*)
+ - [[```f7defbcd```](https://github.com/jina-ai/docarray/commit/f7defbcd501a1a303c098676220211a9751cc7e0)] __-__ __version__: the next version will be 0.10.6 (*Jina Dev Bot*)
 
