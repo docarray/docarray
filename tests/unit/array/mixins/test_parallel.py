@@ -1,3 +1,6 @@
+from multiprocessing import Pool
+from multiprocessing.pool import ThreadPool
+
 import pytest
 
 from docarray import DocumentArray, Document
@@ -23,6 +26,14 @@ def foo_batch(da: DocumentArray):
     for d in da:
         foo(d)
     return da
+
+
+@pytest.mark.parametrize('pool', [None, Pool(), ThreadPool()])
+def test_parallel_map_apply_external_pool(pytestconfig, pool):
+    da = DocumentArray.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')
+    assert da.tensors is None
+    da.apply(foo, pool=pool)
+    assert da.tensors is not None
 
 
 @pytest.mark.parametrize(
