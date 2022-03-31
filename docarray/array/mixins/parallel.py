@@ -1,12 +1,22 @@
 import sys
-from functools import lru_cache
+from contextlib import nullcontext
 from math import ceil
 from types import LambdaType
-from typing import Callable, TYPE_CHECKING, Generator, Optional, overload, TypeVar
+from typing import (
+    Callable,
+    TYPE_CHECKING,
+    Generator,
+    Optional,
+    overload,
+    TypeVar,
+    Union,
+)
 
 if TYPE_CHECKING:
     from ...types import T
     from ... import Document, DocumentArray
+    from multiprocessing.pool import ThreadPool, Pool
+
 
 T_DA = TypeVar('T_DA')
 
@@ -21,6 +31,7 @@ class ParallelMixin:
         backend: str = 'thread',
         num_worker: Optional[int] = None,
         show_progress: bool = False,
+        pool: Optional[Union['Pool', 'ThreadPool']] = None,
     ) -> 'T':
         """Apply each element in itself with ``func``, return itself after modified.
 
@@ -36,6 +47,7 @@ class ParallelMixin:
                 and the original object do **not** share the same memory.
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.
         :param show_progress: show a progress bar
 
         """
@@ -61,6 +73,7 @@ class ParallelMixin:
         backend: str = 'thread',
         num_worker: Optional[int] = None,
         show_progress: bool = False,
+        pool: Optional[Union['Pool', 'ThreadPool']] = None,
     ) -> Generator['T', None, None]:
         """Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.
 
@@ -82,6 +95,7 @@ class ParallelMixin:
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
         :param show_progress: show a progress bar
+        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.
 
         :yield: anything return from ``func``
         """
@@ -90,7 +104,14 @@ class ParallelMixin:
 
         from rich.progress import track
 
-        with _get_pool(backend, num_worker) as p:
+        if pool:
+            p = pool
+            ctx_p = nullcontext()
+        else:
+            p = _get_pool(backend, num_worker)
+            ctx_p = p
+
+        with ctx_p:
             for x in track(
                 p.imap(func, self), total=len(self), disable=not show_progress
             ):
@@ -105,6 +126,7 @@ class ParallelMixin:
         num_worker: Optional[int] = None,
         shuffle: bool = False,
         show_progress: bool = False,
+        pool: Optional[Union['Pool', 'ThreadPool']] = None,
     ) -> 'T':
         """Apply each element in itself with ``func``, return itself after modified.
 
@@ -123,6 +145,7 @@ class ParallelMixin:
         :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: show a progress bar
+        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.
 
         """
         ...
@@ -151,6 +174,7 @@ class ParallelMixin:
         num_worker: Optional[int] = None,
         shuffle: bool = False,
         show_progress: bool = False,
+        pool: Optional[Union['Pool', 'ThreadPool']] = None,
     ) -> Generator['T', None, None]:
         """Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.
         Each element in the returned iterator is :class:`DocumentArray`.
@@ -175,6 +199,7 @@ class ParallelMixin:
 
         :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
         :param show_progress: show a progress bar
+        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.
 
         :yield: anything return from ``func``
         """
@@ -184,7 +209,14 @@ class ParallelMixin:
 
         from rich.progress import track
 
-        with _get_pool(backend, num_worker) as p:
+        if pool:
+            p = pool
+            ctx_p = nullcontext()
+        else:
+            p = _get_pool(backend, num_worker)
+            ctx_p = p
+
+        with ctx_p:
             for x in track(
                 p.imap(func, self.batch(batch_size=batch_size, shuffle=shuffle)),
                 total=ceil(len(self) / batch_size),
@@ -193,7 +225,6 @@ class ParallelMixin:
                 yield x
 
 
-@lru_cache()
 def _get_pool(backend, num_worker):
     if backend == 'thread':
         from multiprocessing.pool import ThreadPool as Pool
