@@ -7,10 +7,10 @@ from docarray import Document
 
 d = (
     Document(uri='apple.png')
-        .load_uri_to_image_tensor()
-        .set_image_tensor_shape((64, 64))
-        .set_image_tensor_normalization()
-        .save_image_tensor_to_file('apple1.png')
+    .load_uri_to_image_tensor()
+    .set_image_tensor_shape((64, 64))
+    .set_image_tensor_normalization()
+    .save_image_tensor_to_file('apple1.png')
 )
 ```
 
@@ -34,10 +34,12 @@ from docarray import Document
 
 d = Document(uri='apple.png')
 
-(d.load_uri_to_image_tensor()
-  .set_image_tensor_shape((64, 64))
-  .set_image_tensor_normalization()
-  .save_image_tensor_to_file('apple1.png'))
+(
+    d.load_uri_to_image_tensor()
+    .set_image_tensor_shape((64, 64))
+    .set_image_tensor_normalization()
+    .save_image_tensor_to_file('apple1.png')
+)
 ```
 
 
@@ -116,6 +118,11 @@ Provide helper functions for feature hashing.
 ### Pydantic
 Provide helper functions to convert to/from a Pydantic model
 - {meth}`~docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model`
+
+
+### Strawberry
+Provide helper functions to convert to/from a Strawberry model
+- {meth}`~docarray.document.mixins.strawberry.StrawberryMixin.from_strawberry_type`
 
 
 ### AudioData

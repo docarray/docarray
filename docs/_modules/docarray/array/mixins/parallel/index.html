@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>docarray.array.mixins.parallel - DocArray 0.10.6 documentation</title>
+        <title>docarray.array.mixins.parallel - DocArray 0.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -136,7 +136,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.10.6 documentation</div>
+                <div class="brand">DocArray 0.11.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -207,13 +207,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/serialization/">Serialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/access-elements/">Access Documents</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/access-attributes/">Access Attributes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/find/">Query by Conditions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/matching/">Match Nearest Neighbours</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/parallelization/">Parallelization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/matching/">Match Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../datatypes/">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -488,13 +488,24 @@
                 </div>
                 <h1>Source code for docarray.array.mixins.parallel</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">nullcontext</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">LambdaType</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">overload</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
+    <span class="n">Generator</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">overload</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">...types</span> <span class="kn">import</span> <span class="n">T</span>
     <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+    <span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span><span class="p">,</span> <span class="n">Pool</span>
+
 
 <span class="n">T_DA</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'T_DA'</span><span class="p">)</span>
 
@@ -509,6 +520,7 @@
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">'Pool'</span><span class="p">,</span> <span class="s1">'ThreadPool'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Apply each element in itself with ``func``, return itself after modified.</span>
 
@@ -524,6 +536,7 @@
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
 
 <span class="sd">        """</span>
@@ -549,6 +562,7 @@
         <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'thread'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">'Pool'</span><span class="p">,</span> <span class="s1">'ThreadPool'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'T'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">"""Return an iterator that applies function to every **element** of iterable in parallel, yielding the results.</span>
 
@@ -570,6 +584,7 @@
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
+<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 
 <span class="sd">        :yield: anything return from ``func``</span>
 <span class="sd">        """</span>
@@ -578,7 +593,14 @@
 
         <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
-        <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">pool</span>
+            <span class="n">ctx_p</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span>
+            <span class="n">ctx_p</span> <span class="o">=</span> <span class="n">p</span>
+
+        <span class="k">with</span> <span class="n">ctx_p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span>
             <span class="p">):</span>
@@ -593,6 +615,7 @@
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">'Pool'</span><span class="p">,</span> <span class="s1">'ThreadPool'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
         <span class="sd">"""Apply each element in itself with ``func``, return itself after modified.</span>
 
@@ -611,6 +634,7 @@
 <span class="sd">        :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)</span>
 <span class="sd">        :param shuffle: If set, shuffle the Documents before dividing into minibatches.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
+<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 
 <span class="sd">        """</span>
         <span class="o">...</span>
@@ -639,6 +663,7 @@
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">'Pool'</span><span class="p">,</span> <span class="s1">'ThreadPool'</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'T'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="sd">"""Return an iterator that applies function to every **minibatch** of iterable in parallel, yielding the results.</span>
 <span class="sd">        Each element in the returned iterator is :class:`DocumentArray`.</span>
@@ -663,6 +688,7 @@
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
+<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 
 <span class="sd">        :yield: anything return from ``func``</span>
 <span class="sd">        """</span>
@@ -672,7 +698,14 @@
 
         <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
 
-        <span class="k">with</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pool</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">pool</span>
+            <span class="n">ctx_p</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">_get_pool</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">num_worker</span><span class="p">)</span>
+            <span class="n">ctx_p</span> <span class="o">=</span> <span class="n">p</span>
+
+        <span class="k">with</span> <span class="n">ctx_p</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">track</span><span class="p">(</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="n">shuffle</span><span class="p">)),</span>
                 <span class="n">total</span><span class="o">=</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">),</span>
@@ -727,7 +760,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 30, 2022.
+                            Last updated on Mar 31, 2022.
                         </div>
                     </div>
                     <div class="right-details">
