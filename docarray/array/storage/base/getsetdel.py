@@ -265,7 +265,7 @@ class BaseGetSetDelMixin(ABC):
 
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
-            setattr(d, attr, detach_tensor(value))
+            setattr(d, attr, value)
             self._set_doc(_id, d)
 
     def _find_root_doc_and_modify(self, d: Document) -> 'Document':
