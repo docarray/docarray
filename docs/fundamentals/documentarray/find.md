@@ -11,11 +11,40 @@ Let's see some examples in action. First, let's prepare a DocumentArray we will 
 ```python
 from jina import Document, DocumentArray
 
-da = DocumentArray([Document(text='journal', weight=25, tags={'h': 14, 'w': 21, 'uom': 'cm'}, modality='A'),
-                    Document(text='notebook', weight=50, tags={'h': 8.5, 'w': 11, 'uom': 'in'}, modality='A'),
-                    Document(text='paper', weight=100, tags={'h': 8.5, 'w': 11, 'uom': 'in'}, modality='D'),
-                    Document(text='planner', weight=75, tags={'h': 22.85, 'w': 30, 'uom': 'cm'}, modality='D'),
-                    Document(text='postcard', weight=45, tags={'h': 10, 'w': 15.25, 'uom': 'cm'}, modality='A')])
+da = DocumentArray(
+    [
+        Document(
+            text='journal',
+            weight=25,
+            tags={'h': 14, 'w': 21, 'uom': 'cm'},
+            modality='A',
+        ),
+        Document(
+            text='notebook',
+            weight=50,
+            tags={'h': 8.5, 'w': 11, 'uom': 'in'},
+            modality='A',
+        ),
+        Document(
+            text='paper',
+            weight=100,
+            tags={'h': 8.5, 'w': 11, 'uom': 'in'},
+            modality='D',
+        ),
+        Document(
+            text='planner',
+            weight=75,
+            tags={'h': 22.85, 'w': 30, 'uom': 'cm'},
+            modality='D',
+        ),
+        Document(
+            text='postcard',
+            weight=45,
+            tags={'h': 10, 'w': 15.25, 'uom': 'cm'},
+            modality='A',
+        ),
+    ]
+)
 
 da.summary()
 ```
@@ -75,17 +104,17 @@ r = da.find({'modality': {'$eq': 'D'}})
 pprint(r.to_dict(exclude_none=True))  # just for pretty print
 ```
 
-```text
-[{'id': '92aee5d665d0c4dd34db10d83642aded',
-  'modality': 'D',
-  'tags': {'h': 8.5, 'uom': 'in', 'w': 11.0},
-  'text': 'paper',
-  'weight': 100.0},
- {'id': '1a9d2139b02bc1c7842ecda94b347889',
-  'modality': 'D',
-  'tags': {'h': 22.85, 'uom': 'cm', 'w': 30.0},
-  'text': 'planner',
-  'weight': 75.0}]
+```json
+[{"id": "92aee5d665d0c4dd34db10d83642aded",
+  "modality": "D",
+  "tags": {"h": 8.5, "uom": "in", "w": 11.0},
+  "text": "paper",
+  "weight": 100.0},
+ {"id": "1a9d2139b02bc1c7842ecda94b347889",
+  "modality": "D",
+  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
+  "text": "planner",
+  "weight": 75.0}]
 ```
 
 To select all Documents whose `.tags['h']>10`,
@@ -94,17 +123,17 @@ To select all Documents whose `.tags['h']>10`,
 r = da.find({'tags__h': {'$gt': 10}})
 ```
 
-```text
-[{'id': '4045a9659875fd1299e482d710753de3',
-  'modality': 'A',
-  'tags': {'h': 14.0, 'uom': 'cm', 'w': 21.0},
-  'text': 'journal',
-  'weight': 25.0},
- {'id': 'cf7691c445220b94b88ff116911bad24',
-  'modality': 'D',
-  'tags': {'h': 22.85, 'uom': 'cm', 'w': 30.0},
-  'text': 'planner',
-  'weight': 75.0}]
+```json
+[{"id": "4045a9659875fd1299e482d710753de3",
+  "modality": "A",
+  "tags": {"h": 14.0, "uom": "cm", "w": 21.0},
+  "text": "journal",
+  "weight": 25.0},
+ {"id": "cf7691c445220b94b88ff116911bad24",
+  "modality": "D",
+  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
+  "text": "planner",
+  "weight": 75.0}]
 ```
 
 Beside using a predefined value, one can also use a substitution with `{field}`, notice the curly brackets there. For example,
@@ -113,12 +142,12 @@ Beside using a predefined value, one can also use a substitution with `{field}`,
 r = da.find({'tags__h': {'$gt': '{tags__w}'}})
 ```
 
-```text
-[{'id': '44c6a4b18eaa005c6dbe15a28a32ebce',
-  'modality': 'A',
-  'tags': {'h': 14.0, 'uom': 'cm', 'w': 10.0},
-  'text': 'journal',
-  'weight': 25.0}]
+```json
+[{"id": "44c6a4b18eaa005c6dbe15a28a32ebce",
+  "modality": "A",
+  "tags": {"h": 14.0, "uom": "cm", "w": 10.0},
+  "text": "journal",
+  "weight": 25.0}]
 ```
 
 
@@ -140,20 +169,20 @@ You can combine multiple conditions using the following operators
 r = da.find({'$or': [{'weight': {'$eq': 45}}, {'modality': {'$eq': 'D'}}]})
 ```
 
-```text
-[{'id': '22985b71b6d483c31cbe507ed4d02bd1',
-  'modality': 'D',
-  'tags': {'h': 8.5, 'uom': 'in', 'w': 11.0},
-  'text': 'paper',
-  'weight': 100.0},
- {'id': 'a071faf19feac5809642e3afcd3a5878',
-  'modality': 'D',
-  'tags': {'h': 22.85, 'uom': 'cm', 'w': 30.0},
-  'text': 'planner',
-  'weight': 75.0},
- {'id': '411ecc70a71a3f00fc3259bf08c239d1',
-  'modality': 'A',
-  'tags': {'h': 10.0, 'uom': 'cm', 'w': 15.25},
-  'text': 'postcard',
-  'weight': 45.0}]
+```json
+[{"id": "22985b71b6d483c31cbe507ed4d02bd1",
+  "modality": "D",
+  "tags": {"h": 8.5, "uom": "in", "w": 11.0},
+  "text": "paper",
+  "weight": 100.0},
+ {"id": "a071faf19feac5809642e3afcd3a5878",
+  "modality": "D",
+  "tags": {"h": 22.85, "uom": "cm", "w": 30.0},
+  "text": "planner",
+  "weight": 75.0},
+ {"id": "411ecc70a71a3f00fc3259bf08c239d1",
+  "modality": "A",
+  "tags": {"h": 10.0, "uom": "cm", "w": 15.25},
+  "text": "postcard",
+  "weight": 45.0}]
 ```
