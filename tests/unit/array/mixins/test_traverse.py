@@ -736,3 +736,27 @@ def test_traverse_flat_offset():
     assert len(flat_docs) == 2
     assert flat_docs[0].id == 'r2c1'
     assert flat_docs[1].id == 'r2c2'
+
+
+def test_traverse_flat_conflicting_ids():
+    da = DocumentArray(
+        [
+            Document(
+                id=f'r{i}',
+                chunks=[Document(id=f'rc{j}') for j in range(3)],
+                matches=[Document(id=f'rm{j}') for j in range(3)],
+            )
+            for i in range(3)
+        ]
+    )
+
+    for traversal_path in ['rc', 'rm']:
+
+        flattened = da.traverse_flat(traversal_path)
+        assert len(flattened) == 9
+        child_ids = set()
+
+        for child in flattened:
+            child_ids.add(id(child))
+
+        assert len(child_ids) == 9

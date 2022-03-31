@@ -21,6 +21,7 @@ def test_feature_hashing(n_dim, sparse, metric):
     assert da.embeddings.shape == (6, n_dim)
     da.embeddings = to_numpy_array(da.embeddings)
     da.match(da, metric=metric, use_scipy=True)
-    for doc in da:
-        assert doc.matches[0].scores[metric].value == pytest.approx(0.0)
-        assert doc.matches[1].scores[metric].value > 0.0
+    result = da['@m', ('id', f'scores__{metric}__value')]
+    assert len(result) == 2
+    assert result[1][0] == 0.0
+    assert result[1][1] > 0.0
