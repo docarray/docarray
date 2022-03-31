@@ -4,6 +4,9 @@ DocArray follows semantic versioning. However, before the project reach 1.0.0, a
 
 This chapter only tracks the most important breaking changes and explain the rationale behind them.
 
+## 0.11.0: change DocumentArrayInMemory's container to list
+
+Previously, DA's backend in Dict. The change affects at very low-level. It is breaking.
 
 ## 0.10.0: add high-level dataclass API to Document
 
