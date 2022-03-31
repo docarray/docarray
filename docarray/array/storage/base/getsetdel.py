@@ -235,6 +235,10 @@ class BaseGetSetDelMixin(ABC):
         :param attr: the attribute of document to update
         :param value: the value doc's attr will be updated to
         """
+        if attr == 'id' and value is None:
+            raise ValueError(
+                'setting the ID of a Document stored in a DocumentArray to None is not allowed'
+            )
         _id = self._offset2ids.get_id(offset)
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
