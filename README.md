@@ -5,9 +5,9 @@
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/docarray/"><img src="https://github.com/jina-ai/jina/blob/master/.github/badges/python-badge.svg?raw=true" alt="Python 3.7 3.8 3.9 3.10" title="DocArray supports Python 3.7 and above"></a>
-<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?color=%23099cec&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
-<a href="https://codecov.io/gh/jina-ai/docarray"><img src="https://codecov.io/gh/jina-ai/docarray/branch/main/graph/badge.svg?token=9WGcGyyqtI"/></a>
+<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
+<a href="https://codecov.io/gh/jina-ai/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
+<a href="https://pypi.org/project/docarray/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 </p>
 
 <!-- start elevator-pitch -->
@@ -34,32 +34,32 @@ DocArray is a library for nested, unstructured data in transit, including text, 
   <tr>
     <td width="160" align="center">
       <a href="https://docs.jina.ai"><img
-        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/jina.svg"
-        width="80%"
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/jina.svg?raw=true"
+        height="50px"
       /></a>
     </td>
     <td width="160" align="center">
       <a href="https://clip-as-service.jina.ai"><img
-        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/cas.svg"
-        width="80%"
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/cas.svg?raw=true"
+        height="50px"
       /></a>
     </td>
     <td width="160" align="center">
       <a href="https://finetuner.jina.ai"> <img
-        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/finetuner.svg"
-        width="80%"
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/finetuner.svg?raw=true"
+        height="50px"
       /></a>
     </td>
     <td width="160" align="center">
       <a href="https://weaviate.io/developers/weaviate/current/client-libraries/python.html#neural-search-frameworks"><img
-        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/weaviate.svg"
-        width="80%"
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/weaviate.svg?raw=true"
+        height="50px"
       /></a>
     </td>
     <td width="160" align="center">
       <a href="https://qdrant.tech/documentation/install/#docarray"><img
-        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/qdrant.svg"
-        width="80%"
+        src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/qdrant.svg?raw=true"
+        height="50px"
       /></a>
     </td>
   </tr>
@@ -68,6 +68,8 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). Are you also using it? [Tell us here](https://github.com/jina-ai/docarray/issues/237).
 <!-- end elevator-pitch -->
 
+
+## [Documentation](https://docarray.jina.ai)
 
 ## Install 
 
@@ -81,7 +83,6 @@ conda install -c conda-forge docarray
 ```
 [Commonly used features](https://docarray.jina.ai/#install) can be enabled via `pip install "docarray[common]"`.
 
-## [Documentation](https://docarray.jina.ai)
 
 ## Get Started
 

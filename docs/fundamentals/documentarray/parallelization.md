@@ -20,7 +20,7 @@ da = DocumentArray(...)
 da.apply(func)
 ```
 
-This is often more popular than `map()` in practice.
+This is often more popular than `map()` in practice. However, `map()` has its own charm as we shall see in the next section.
 
 
 Let's see an example, where we want to preprocess ~6000 image Documents. First we fill the URI to each Document.
@@ -35,9 +35,11 @@ To load and preprocess `docs`, we have:
 
 ```python
 def foo(d):
-    return (d.load_uri_to_image_tensor()
-             .set_image_tensor_normalization()
-             .set_image_tensor_channel_axis(-1, 0))
+    return (
+        d.load_uri_to_image_tensor()
+        .set_image_tensor_normalization()
+        .set_image_tensor_channel_axis(-1, 0)
+    )
 ```
 
 This load the image from file into `.tensor` do some normalization and set the channel axis. Now, let's compare the time difference when we do things sequentially and use `.apply()`:
@@ -74,3 +76,78 @@ It depends on how your `func` in `.apply(func)` look like, here are some tips:
 - Second, follow what people often suggests: IO-bound `func` uses `thread`, CPU-bound `func` uses `process`.
 - Last, ignore the second rule and what people told you. Test it by yourself and use whatever faster. 
 ```
+
+## Use `map()` to overlap CPU & GPU computation
+
+As I said, {meth}`~docarray.array.mixins.parallel.ParallelMixin.map` / {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` has its own charm: it returns an iterator (of batch) where the partial result is immediately available, *regardless* if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.
+
+Let's see an example, say we have a DocumentArray with 1024 Documents, assuming we can run a CPU job for a 16-Document batch in 1 second/core; and we can run a GPU job for a 16-Document batch in 2 second/core. Say we have 4 CPU core and 1 GPU core as the total resources. 
+
+Question: **how long will it take to process 1024 Documents?**
+
+
+```{python}
+import time
+
+from docarray import DocumentArray
+
+da = DocumentArray.empty(1024)
+
+
+def cpu_job(da):
+    print(f'cpu on {len(da)} docs')
+    time.sleep(1)
+    return da
+
+
+def gpu_job(da):
+    print(f'GPU on {len(da)} docs')
+    time.sleep(2)
+```
+
+
+Before jump to the code, lets first whiteboard it, do a simple math:
+
+```text
+CPU time: 1024/16/4 * 1s = 16s
+GPU time: 1024/16 * 2s   = 128s
+Total time: 16s + 128s   = 144s   
+```
+
+So 144s, right? Yes, if we implement with `apply()`, it is around 144s.
+
+However, we can do better. What if we overlap the computation of CPU and GPU? The whole procedure is anyway GPU bounded. If we can make sure GPU works on every batch **right away** when it is ready from CPU, rather than waits until all batches are ready from CPU, then we can save a lot of time. To be precise, we could do it in _129s_.
+
+```{admonition} Why 129s? Why not 128s
+:class: tip
+
+Btw, if you immedidately know the answer you should [send your CV to us](https://jobs.jina.ai/).
+
+Because the very first batch must be done by the CPU first, this is inevitible, which makes the 1 second non-overlapping. The rest of the time will be overlapped and dominated by GPU's 128s. Hence, 1s + 128s = 129s.
+```
+
+Okay, let's program these two ways and validate our guess:
+
+````{tab} apply in 144s
+```python
+da.apply_batch(cpu_job, batch_size=16, num_worker=4)
+for b in da.batch(batch_size=16):
+    gpu_job(b)
+```
+````
+
+````{tab} map in 129s
+```python
+for b in da.map_batch(cpu_job, batch_size=16, num_worker=4):
+    gpu_job(b)
+```
+````
+
+Which gives you,
+
+```text
+apply: 144.476s
+map: 129.326s
+```
+
+Hope this sheds the light on solving the data-draining/blocking problem when you use DocArray in a CPU-GPU pipeline. 
