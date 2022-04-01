@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/extend/" />
   
-<meta property="og:site_name" content="DocArray 0.11.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.11.2 Documentation" />
   
-<meta property="og:description" content="DocumentArray can be easily extended to support different Document Store backend. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of onboarding a new Document Store backend is often: having persistence that better fits to the use case;, pul..." />
+<meta property="og:description" content="DocumentArray can be easily extended to support different Document Store backends. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of on-boarding a new Document Store backend is often: having persistence that better fits to the use case;, p..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.11.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.11.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,7 +38,7 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="prev" title="Changelog" href="../../../changelog/" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>Add New Document Store - DocArray 0.11.1 documentation</title>
+        <title>Add New Document Store - DocArray 0.11.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -169,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.11.1 documentation</div>
+                <div class="brand">DocArray 0.11.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -521,14 +521,14 @@
                 </div>
                 <section class="tex2jax_ignore mathjax_ignore" id="add-new-document-store">
 <h1>Add New Document Store<a class="headerlink" href="#add-new-document-store" title="Permalink to this headline">#</a></h1>
-<p>DocumentArray can be easily extended to support different Document Store backend. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of onboarding a new Document Store backend is often:</p>
+<p>DocumentArray can be easily extended to support different Document Store backends. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of on-boarding a new Document Store backend is often:</p>
 <ul class="simple">
 <li><p>having persistence that better fits to the use case;</p></li>
 <li><p>pulling from an existing data source;</p></li>
 <li><p>supporting advanced query languages, e.g. nearest-neighbor retrieval.</p></li>
 </ul>
 <p>After the extension, users can enjoy convenient and powerful DocumentArray API on top of your document store. To end users, it promises the same user experience just like using a regular DocumentArray, no extra learning is required.</p>
-<p>This chapter gives you a walk through on how to add a new DocumentArray. To be specific, in this chapter we are extending DocumentArray to support a new backend <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code>. The final result would be enabling the following usage:</p>
+<p>This chapter gives you a walk-through on how to add a new DocumentArray. To be specific, in this chapter we are extending DocumentArray to support a new backend <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code>. The final result would be enabling the following usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">'mydocstore'</span><span class="p">)</span>
@@ -553,7 +553,8 @@
 </span><span class="hll">                            <span class="o">|---</span> <span class="n">backend</span><span class="o">.</span><span class="n">py</span>
 </span></pre></div>
 </div>
-<p>These four files consist of necessary interface for making the extension work on DocumentArray.</p>
+<p>These four files consist of necessary interface for making the extension work on DocumentArray. Additionally, if your
+storage backend supports approximate nearest-neighbor search, you can include another file ‘find.py’.</p>
 </section>
 <section id="step-2-implement-getsetdel-py">
 <h2>Step 2: implement <code class="docutils literal notranslate"><span class="pre">getsetdel.py</span></code><a class="headerlink" href="#step-2-implement-getsetdel-py" title="Permalink to this headline">#</a></h2>
@@ -561,8 +562,8 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.array.storage.base.getsetdel</span> <span class="kn">import</span> <span class="n">BaseGetSetDelMixin</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
+
 <span class="k">class</span> <span class="nc">GetSetDelMixin</span><span class="p">(</span><span class="n">BaseGetSetDelMixin</span><span class="p">):</span>
-        
     <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Document'</span><span class="p">:</span>
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
@@ -578,20 +579,23 @@
     <span class="k">def</span> <span class="nf">_load_offset2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
-    
+
     <span class="k">def</span> <span class="nf">_save_offset2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
 </pre></div>
 </div>
 <p>You will need to implement the above five functions, which correspond to the logics of get/set/delete items via a string <code class="docutils literal notranslate"><span class="pre">.id</span></code>. They are essential to ensure DocumentArray works.</p>
-<p>Note that DocumentArray maintains an offset2ids mapping to allow a list-like behaviour. This mapping is added by
+<p>Note that DocumentArray maintains an <code class="docutils literal notranslate"><span class="pre">offset2ids</span></code> mapping to allow a list-like behaviour. This mapping is
 inherited from the <code class="docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code>. Therefore, you need to implement methods to persist this mapping, in case you
-want to have also persist the ordering of Documents inside the storage.</p>
+want to also persist the ordering of Documents inside the storage.</p>
+<p>Keep in mind that <code class="docutils literal notranslate"><span class="pre">_del_doc_by_id</span></code> and <code class="docutils literal notranslate"><span class="pre">_set_doc_by_id</span></code> <strong>must not</strong> update <code class="docutils literal notranslate"><span class="pre">offset2ids</span></code>, we handle that for you in an
+upper level. Also, make sure that <code class="docutils literal notranslate"><span class="pre">_set_doc_by_id</span></code> performs an <strong>upsert operation</strong> and removes the old ID (<code class="docutils literal notranslate"><span class="pre">_id</span></code>) in case
+<code class="docutils literal notranslate"><span class="pre">value.id</span></code> is different from <code class="docutils literal notranslate"><span class="pre">_id</span></code>.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Let’s call the above five functions as <strong>three essentials</strong>.</p>
-<p>If you aim for high performance, it is recommeneded to implement other methods <em>without</em> leveraging your three essentials. They are: <code class="docutils literal notranslate"><span class="pre">_get_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_del_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_clear_storage</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs_nested</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_docs_by_ids</span></code>. One can get their full signatures from <a class="reference internal" href="../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin" title="docarray.array.storage.base.getsetdel.BaseGetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code></a>. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray.</p>
+<p>Let’s call the above five functions as <strong>the essentials</strong>.</p>
+<p>If you aim for high performance, it is recommeneded to implement other methods <em>without</em> leveraging your essentials. They are: <code class="docutils literal notranslate"><span class="pre">_get_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_del_docs_by_ids</span></code>, <code class="docutils literal notranslate"><span class="pre">_clear_storage</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_doc_value_pairs_nested</span></code>, <code class="docutils literal notranslate"><span class="pre">_set_docs_by_ids</span></code>. One can get their full signatures from <a class="reference internal" href="../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin" title="docarray.array.storage.base.getsetdel.BaseGetSetDelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGetSetDelMixin</span></code></a>. These functions define more fine-grained get/set/delete logics that are frequently used in DocumentArray.</p>
 <p>Implementing them is fully optional, and you can only implement some of them not all of them. If you are not implementing them, those methods will use a generic-but-slow version that is based on your five essentials.</p>
 </div>
 <div class="admonition seealso">
@@ -606,33 +610,32 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">docarray.array.storage.base.seqlike</span> <span class="kn">import</span> <span class="n">BaseSequenceLikeMixin</span>
 
-<span class="k">class</span> <span class="nc">SequenceLikeMixin</span><span class="p">(</span><span class="n">BaseSequenceLikeMixin</span><span class="p">):</span>
 
+<span class="k">class</span> <span class="nc">SequenceLikeMixin</span><span class="p">(</span><span class="n">BaseSequenceLikeMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'Document'</span><span class="p">]):</span>
         <span class="o">...</span>
-    
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span>
-    
+
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]]):</span>
         <span class="o">...</span>
-    
+
     <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
         <span class="c1"># Optional. By default, this will add a new item and update offset2id</span>
-        <span class="c1"># if you want to customize this, makee sure to handle offset2id</span>
+        <span class="c1"># if you want to customize this, make sure to handle offset2id</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
-        <span class="c1"># Optional. If you have better implementation than `insert`</span>
+        <span class="c1"># Optional. Override this if you have a better implementation than inserting at the last position</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Optional. If you have better implementation than `insert` one by one</span>
+        <span class="c1"># Optional. Override this if you have better implementation than appending one by one</span>
         <span class="o">...</span>
-
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Optional. By default, this will rely on offset2id to get the length</span>
@@ -652,12 +655,7 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <section id="step-4-implement-backend-py">
 <h2>Step 4: implement <code class="docutils literal notranslate"><span class="pre">backend.py</span></code><a class="headerlink" href="#step-4-implement-backend-py" title="Permalink to this headline">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">backend.py</span></code> should look like the following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">TYPE_CHECKING</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-    <span class="n">Dict</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">from</span> <span class="nn">docarray.array.storage.base.backend</span> <span class="kn">import</span> <span class="n">BaseBackendMixin</span>
@@ -666,7 +664,8 @@ want to have also persist the ordering of Documents inside the storage.</p>
     <span class="kn">from</span> <span class="nn">docarray.types</span> <span class="kn">import</span> <span class="p">(</span>
         <span class="n">DocumentArraySourceType</span><span class="p">,</span>
     <span class="p">)</span>
-    
+
+
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MyDocStoreConfig</span><span class="p">:</span>
     <span class="n">config1</span><span class="p">:</span> <span class="nb">str</span>
@@ -674,13 +673,13 @@ want to have also persist the ordering of Documents inside the storage.</p>
     <span class="n">config3</span><span class="p">:</span> <span class="n">Dict</span>
     <span class="o">...</span>
 
+
 <span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
-    
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> 
-            <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArraySourceType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
-            <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MyDocStoreConfig</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArraySourceType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MyDocStoreConfig</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_init_storage</span><span class="p">(</span><span class="n">_docs</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="o">...</span>
@@ -693,8 +692,40 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <p>As a reference, you can check out how we implement for SQLite, check out <a class="reference internal" href="../../../api/docarray.array.storage.sqlite.backend/#docarray.array.storage.sqlite.backend.BackendMixin" title="docarray.array.storage.sqlite.backend.BackendMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackendMixin</span></code></a>.</p>
 </div>
 </section>
-<section id="step-4-summarize-everything-in-init-py">
-<h2>Step 4: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.<a class="headerlink" href="#step-4-summarize-everything-in-init-py" title="Permalink to this headline">#</a></h2>
+<section id="step-5-optional-implement-find-py">
+<h2>Step 5 (Optional): implement <code class="docutils literal notranslate"><span class="pre">find.py</span></code><a class="headerlink" href="#step-5-optional-implement-find-py" title="Permalink to this headline">#</a></h2>
+<p>If your storage backend supports approximate nearest neighbor search, you can allow users to use this feature within
+docarray. To do so, add a <code class="docutils literal notranslate"><span class="pre">find.py</span></code> file that looks like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+    <span class="c1"># Define the expected input type that your ANN search supports</span>
+    <span class="n">MyDocumentStoreArrayType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'MyDocumentStoreArrayType'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">FindMixin</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_find_similar_vectors</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">'MyDocumentStoreArrayType'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArray'</span><span class="p">:</span>
+        <span class="sd">"""Expects a MyDocumentStoreArrayType vector query and should return a DocumentArray of results retrieved from</span>
+<span class="sd">        the storage backend"""</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">_find</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">'ElasticArrayType'</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'DocumentArray'</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">'DocumentArray'</span><span class="p">]]:</span>
+        <span class="sd">"""Returns `limit` approximate nearest neighbors given a batch of input queries.</span>
+<span class="sd">        If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing</span>
+<span class="sd">        the closest Documents for each query.</span>
+<span class="sd">        """</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="step-6-summarize-everything-in-init-py">
+<h2>Step 6: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.<a class="headerlink" href="#step-6-summarize-everything-in-init-py" title="Permalink to this headline">#</a></h2>
 <p>Your <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code> should look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 
@@ -707,13 +738,17 @@ want to have also persist the ordering of Documents inside the storage.</p>
 
 <span class="k">class</span> <span class="nc">StorageMixins</span><span class="p">(</span><span class="n">BackendMixin</span><span class="p">,</span> <span class="n">GetSetDelMixin</span><span class="p">,</span> <span class="n">SequenceLikeMixin</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="o">...</span>
-
 </pre></div>
 </div>
 <p>Just copy-paste it will do the work.</p>
+<p>If you have implemented a <code class="docutils literal notranslate"><span class="pre">find.py</span></code> module, make sure to also inherit the <code class="docutils literal notranslate"><span class="pre">FindMixin</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StorageMixins</span><span class="p">(</span><span class="n">FindMixin</span><span class="p">,</span> <span class="n">BackendMixin</span><span class="p">,</span> <span class="n">GetSetDelMixin</span><span class="p">,</span> <span class="n">SequenceLikeMixin</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 </section>
-<section id="step-5-subclass-from-documentarray">
-<h2>Step 5: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-5-subclass-from-documentarray" title="Permalink to this headline">#</a></h2>
+<section id="step-7-subclass-from-documentarray">
+<h2>Step 7: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-7-subclass-from-documentarray" title="Permalink to this headline">#</a></h2>
 <p>Create a file <code class="docutils literal notranslate"><span class="pre">mydocstore.py</span></code> under <code class="docutils literal notranslate"><span class="pre">docarray/array/</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">README</span><span class="o">.</span><span class="n">md</span>
 <span class="n">docarray</span>
@@ -742,12 +777,11 @@ want to have also persist the ordering of Documents inside the storage.</p>
 <span class="k">class</span> <span class="nc">DocumentArrayMyDocStore</span><span class="p">(</span><span class="n">StorageMixins</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-
 </pre></div>
 </div>
 </section>
-<section id="step-6-add-entrypoint-to-documentarray">
-<h2>Step 6: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-6-add-entrypoint-to-documentarray" title="Permalink to this headline">#</a></h2>
+<section id="step-8-add-entrypoint-to-documentarray">
+<h2>Step 8: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code><a class="headerlink" href="#step-8-add-entrypoint-to-documentarray" title="Permalink to this headline">#</a></h2>
 <p>We are almost there! Now we need to add the entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> constructor to allow user to use the <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code> backend as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -781,10 +815,9 @@ tests/unit/array/test_construct.py
 </pre></div>
 </div>
 <p>Please also add <code class="docutils literal notranslate"><span class="pre">@overload</span></code> type hint to <code class="docutils literal notranslate"><span class="pre">docarray/array/document.py</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="k">class</span> <span class="nc">DocumentArray</span><span class="p">(</span><span class="n">AllMixins</span><span class="p">,</span> <span class="n">BaseDocumentArray</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DocumentArray</span><span class="p">(</span><span class="n">AllMixins</span><span class="p">,</span> <span class="n">BaseDocumentArray</span><span class="p">):</span>
     <span class="o">...</span>
-    
+
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
@@ -827,7 +860,7 @@ tests/unit/array/test_construct.py
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Mar 31, 2022.
+                            Last updated on Apr 01, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -866,9 +899,10 @@ tests/unit/array/test_construct.py
 <li><a class="reference internal" href="#step-2-implement-getsetdel-py">Step 2: implement <code class="docutils literal notranslate"><span class="pre">getsetdel.py</span></code></a></li>
 <li><a class="reference internal" href="#step-3-implement-seqlike-py">Step 3: implement <code class="docutils literal notranslate"><span class="pre">seqlike.py</span></code></a></li>
 <li><a class="reference internal" href="#step-4-implement-backend-py">Step 4: implement <code class="docutils literal notranslate"><span class="pre">backend.py</span></code></a></li>
-<li><a class="reference internal" href="#step-4-summarize-everything-in-init-py">Step 4: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.</a></li>
-<li><a class="reference internal" href="#step-5-subclass-from-documentarray">Step 5: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></li>
-<li><a class="reference internal" href="#step-6-add-entrypoint-to-documentarray">Step 6: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></li>
+<li><a class="reference internal" href="#step-5-optional-implement-find-py">Step 5 (Optional): implement <code class="docutils literal notranslate"><span class="pre">find.py</span></code></a></li>
+<li><a class="reference internal" href="#step-6-summarize-everything-in-init-py">Step 6: summarize everything in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>.</a></li>
+<li><a class="reference internal" href="#step-7-subclass-from-documentarray">Step 7: subclass from <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></li>
+<li><a class="reference internal" href="#step-8-add-entrypoint-to-documentarray">Step 8: add entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code></a></li>
 <li><a class="reference internal" href="#contribute-add-tests-and-type-hint">Contribute: add tests and type-hint</a></li>
 </ul>
 </li>
