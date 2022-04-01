@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List
+from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List, Any
 
 import numpy as np
 
@@ -265,7 +265,11 @@ def check_arraylike_equality(x: 'ArrayType', y: 'ArrayType'):
         return same_array
 
 
-def detach_tensor_if_present(x):
+def detach_tensor_if_present(x: Any) -> Any:
+    """Check if input is a dense torch array and detaches the tensor from the current graph.
+    :param array: input array
+    :return: (num_rows, ndim)
+    """
     x_type, x_sparse = get_array_type(x, raise_error_if_not_array=False)
     if x_type == 'torch' and x_sparse == False:
         import torch

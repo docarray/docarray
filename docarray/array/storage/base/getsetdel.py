@@ -1,7 +1,6 @@
 import itertools
 from abc import abstractmethod, ABC
 from typing import (
-    TYPE_CHECKING,
     Sequence,
     Any,
     Iterable,
@@ -10,7 +9,6 @@ from typing import (
 
 from .helper import Offset2ID
 from .... import Document
-from ....math.ndarray import detach_tensor_if_present
 
 
 class BaseGetSetDelMixin(ABC):
@@ -262,7 +260,7 @@ class BaseGetSetDelMixin(ABC):
 
         d = self._get_doc_by_id(_id)
         if hasattr(d, attr):
-            setattr(d, attr, detach_tensor_if_present(value))
+            setattr(d, attr, value)
             self._set_doc(_id, d)
 
     def _find_root_doc_and_modify(self, d: Document) -> 'Document':
