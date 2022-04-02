@@ -27,6 +27,7 @@ from .setitem import SetItemMixin
 from .strawberry import StrawberryMixin
 from .text import TextToolsMixin
 from .traverse import TraverseMixin
+from .dataloader import DataLoaderMixin
 
 
 class AllMixins(
@@ -57,6 +58,7 @@ class AllMixins(
     ReduceMixin,
     ParallelMixin,
     DataframeIOMixin,
+    DataLoaderMixin,
     ABC,
 ):
     """All plugins that can be used in :class:`DocumentArray`."""
