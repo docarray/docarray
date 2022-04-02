@@ -235,7 +235,7 @@ da = DocumentArray().empty(3)
 for d in da:
     d.chunks = DocumentArray.empty(2)
     d.matches = DocumentArray.empty(2)
-    
+
 da[...].summary()
 ```
 
@@ -266,6 +266,11 @@ Documents in `da[...]` are in the chunks-and-depth-first order, i.e depth-first 
 ## Other Handy Helpers
 
 ### Batching
+
+
+```{tip}
+To batch and process DocumentArray in parallel in a non-blocking way, please use {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` and refer to {ref}`map-batch`.
+```
 
 One can batch a large DocumentArray into small ones via {meth}`~docarray.array.mixins.group.GroupMixin.batch`. This is useful when a DocumentArray is too big to process at once.
 
@@ -317,11 +322,15 @@ It returns a Python `dict` where Documents with the same `tag` value are grouped
 ```python
 from docarray import Document, DocumentArray
 
-da = DocumentArray([Document(tags={'category': 'c'}),
-                    Document(tags={'category': 'c'}),
-                    Document(tags={'category': 'b'}),
-                    Document(tags={'category': 'a'}),
-                    Document(tags={'category': 'a'})])
+da = DocumentArray(
+    [
+        Document(tags={'category': 'c'}),
+        Document(tags={'category': 'c'}),
+        Document(tags={'category': 'b'}),
+        Document(tags={'category': 'a'}),
+        Document(tags={'category': 'a'}),
+    ]
+)
 
 rv = da.split_by_tag(tag='category')
 ```

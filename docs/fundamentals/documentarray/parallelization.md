@@ -77,6 +77,7 @@ It depends on how your `func` in `.apply(func)` look like, here are some tips:
 - Last, ignore the second rule and what people told you. Test it by yourself and use whatever faster. 
 ```
 
+(map-batch)=
 ## Use `map()` to overlap CPU & GPU computation
 
 As I said, {meth}`~docarray.array.mixins.parallel.ParallelMixin.map` / {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` has its own charm: it returns an iterator (of batch) where the partial result is immediately available, *regardless* if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.
