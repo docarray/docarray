@@ -24,7 +24,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=2)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
@@ -57,7 +57,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=2)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
     ],
 )
