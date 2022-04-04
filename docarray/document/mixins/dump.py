@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class UriFileMixin:
-    """Provide helper functions for :class:`Document` to dump content to a file. """
+    """Provide helper functions for :class:`Document` to dump content to a file."""
 
     def save_uri_to_file(self: 'T', file: Union[str, BinaryIO]) -> 'T':
         """Save :attr:`.uri` into a file

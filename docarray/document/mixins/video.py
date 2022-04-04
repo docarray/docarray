@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class VideoDataMixin:
-    """Provide helper functions for :class:`Document` to support video data. """
+    """Provide helper functions for :class:`Document` to support video data."""
 
     def load_uri_to_video_tensor(self: 'T', only_keyframes: bool = False) -> 'T':
         """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.

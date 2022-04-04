@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class ImageDataMixin:
-    """Provide helper functions for :class:`Document` to support image data. """
+    """Provide helper functions for :class:`Document` to support image data."""
 
     def set_image_tensor_channel_axis(
         self: 'T', original_channel_axis: int, new_channel_axis: int

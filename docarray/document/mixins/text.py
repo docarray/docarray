@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class TextDataMixin:
-    """Provide helper functions for :class:`Document` to support text data. """
+    """Provide helper functions for :class:`Document` to support text data."""
 
     def load_uri_to_text(self: 'T', charset: str = 'utf-8') -> 'T':
         """Convert :attr:`.uri` to :attr`.text` inplace.

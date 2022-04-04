@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 
 class CommonIOMixin:
-    """The common IO helper function for arrays. """
+    """The common IO helper function for arrays."""
 
     def save(
         self,

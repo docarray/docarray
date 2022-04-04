@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class BlobDataMixin:
-    """Provide helper functions for :class:`Document` to handle binary data. """
+    """Provide helper functions for :class:`Document` to handle binary data."""
 
     def load_uri_to_blob(self: 'T') -> 'T':
         """Convert :attr:`.uri` to :attr:`.blob` inplace.

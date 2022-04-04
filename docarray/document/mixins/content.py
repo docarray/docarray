@@ -5,7 +5,7 @@ if TYPE_CHECKING:
 
 
 class ContentPropertyMixin:
-    """Provide helper functions for :class:`Document` to allow universal content property access. """
+    """Provide helper functions for :class:`Document` to allow universal content property access."""
 
     @property
     def content_hash(self) -> int:

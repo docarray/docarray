@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class AudioDataMixin:
-    """Provide helper functions for :class:`Document` to support audio data. """
+    """Provide helper functions for :class:`Document` to support audio data."""
 
     def save_audio_tensor_to_file(
         self: 'T',
