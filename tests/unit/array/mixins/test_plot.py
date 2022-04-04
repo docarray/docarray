@@ -32,9 +32,8 @@ def test_sprite_fail_tensor_success_uri(
     pytestconfig, tmpdir, da_cls, config, start_storage
 ):
     files = [
-        f'{pytestconfig.rootdir}/**/*.png',
-        f'{pytestconfig.rootdir}/**/*.jpg',
-        f'{pytestconfig.rootdir}/**/*.jpeg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.png',
     ]
     if config:
         da = da_cls.from_files(files, config=config)
@@ -65,9 +64,8 @@ def test_sprite_image_generator(
     pytestconfig, tmpdir, image_source, da_cls, config_gen, start_storage
 ):
     files = [
-        f'{pytestconfig.rootdir}/**/*.png',
-        f'{pytestconfig.rootdir}/**/*.jpg',
-        f'{pytestconfig.rootdir}/**/*.jpeg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.png',
     ]
     if config_gen:
         da = da_cls.from_files(files, config=config_gen())
