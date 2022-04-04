@@ -127,7 +127,7 @@ _TYPES_REGISTRY = {
 
 def dataclass(
     cls: 'T' = None,
-    type_var_map: Dict[TypeVar, Callable[..., 'Field']] = _TYPES_REGISTRY,
+    type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
 ) -> 'T':
     """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
     Returns the same class as was passed in, with dunder methods and from_document method.
@@ -139,6 +139,9 @@ def dataclass(
     __hash__() method function is added. If frozen is true, fields may
     not be assigned to after instance creation.
     """
+
+    if not type_var_map:
+        type_var_map = _TYPES_REGISTRY
 
     def wrap(cls):
         decorated_cls = _dataclass(
