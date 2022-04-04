@@ -9,6 +9,7 @@ import pytest
 
 from docarray import Document, DocumentArray
 from docarray.dataclasses import Text, Image, Audio, JSON, dataclass, field
+from docarray.dataclasses.getter import image_getter
 from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -513,10 +514,10 @@ def test_custom_field_type():
     @dataclass
     class MMDocument:
         base64_encoded_ndarray: str = field(
-            serializer=ndarray_serializer, deserializer=ndarray_deserializer
+            setter=ndarray_serializer, getter=ndarray_deserializer
         )
         pickled_image: PILImage = field(
-            serializer=pil_image_serializer, deserializer=pil_image_deserializer
+            setter=pil_image_serializer, getter=pil_image_deserializer
         )
 
     obj = MMDocument(
@@ -568,3 +569,30 @@ def test_not_data_class():
     with pytest.raises(Exception) as exc_info:
         Document(obj)
         assert 'Failed to initialize' in str(exc_info.value)
+
+
+def test_data_class_customized_typevar_map():
+    def sette2(doc: 'Document', field_name: str, value):
+        doc.uri = value
+        doc._metadata['image_type'] = 'uri'
+        doc._metadata['image_uri'] = value
+        doc.load_uri_to_blob()
+        doc.modality = 'image'
+
+    type_var_m = {
+        Image: lambda x: field(
+            setter=sette2,
+            getter=image_getter,
+            _source_field=x,
+        )
+    }
+
+    @dataclass(type_var_map=type_var_m)
+    class MMDocument:
+        image: Image
+        t: Text
+
+    d = Document(MMDocument(image=IMAGE_URI, t='hello world'))
+    assert len(d.chunks) == 2
+    assert d.chunks[0].blob
+    assert not d.chunks[0].tensor

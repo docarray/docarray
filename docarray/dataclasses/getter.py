@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from docarray import Document
 
 
-def image_deserializer(attribute_name, doc: 'Document'):
+def image_getter(doc: 'Document', field_name: str):
     if 'image_type' in doc._metadata:
         if doc._metadata['image_type'] == 'uri':
             return doc._metadata['image_uri']
@@ -19,18 +19,18 @@ def image_deserializer(attribute_name, doc: 'Document'):
         raise ValueError('Invalid image Document')
 
 
-def text_deserializer(attribute_name, doc: 'Document'):
+def text_getter(doc: 'Document', field_name: str):
     return doc.text
 
 
-def audio_deserializer(attribute_name, doc: 'Document'):
+def audio_getter(doc: 'Document', field_name: str):
     from PIL import Image
 
     return Image.fromarray(doc.tensor)
 
 
-def json_deserializer(attribute_name, doc: 'Document'):
+def json_getter(doc: 'Document', field_name: str):
     if doc._metadata['json_type'] == 'str':
-        return json.dumps(doc.tags[attribute_name])
+        return json.dumps(doc.tags[field_name])
     else:
-        return doc.tags[attribute_name]
+        return doc.tags[field_name]

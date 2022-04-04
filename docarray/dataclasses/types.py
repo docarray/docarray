@@ -1,4 +1,5 @@
 import base64
+import copy
 import typing
 from dataclasses import (
     dataclass as _dataclass,
@@ -19,17 +20,17 @@ from typing import (
     Dict,
 )
 
-from .deserializers import (
-    image_deserializer,
-    text_deserializer,
-    audio_deserializer,
-    json_deserializer,
+from .setter import (
+    image_setter,
+    text_setter,
+    audio_setter,
+    json_setter,
 )
-from .serializers import (
-    image_serializer,
-    text_serializer,
-    audio_serializer,
-    json_serializer,
+from .getter import (
+    image_getter,
+    text_getter,
+    audio_getter,
+    json_getter,
 )
 
 if TYPE_CHECKING:
@@ -55,26 +56,32 @@ class Field(_Field):
     def __init__(
         self,
         *,
-        serializer: Callable,
-        deserializer: Callable,
+        setter: Callable,
+        getter: Callable,
         _source_field: Optional[_Field] = None,
         **kwargs,
     ):
         self.copy_from(_source_field if _source_field else _field(**kwargs))
-        self.serializer = serializer
-        self.deserializer = deserializer
+        self.setter = setter
+        self.getter = getter
 
     def copy_from(self, f: '_Field'):
         for s in f.__slots__:
             setattr(self, s, getattr(f, s))
+
+    def get_field(self, doc: 'Document'):
+        return self.getter(doc, self.name)
+
+    def set_field(self, val) -> 'Document':
+        return self.setter(self.name, val)
 
 
 @overload
 def field(
     *,
     _source_field: Optional[_Field] = None,  # Privately used
-    serializer: Callable,
-    deserializer: Callable,
+    setter: Callable,
+    getter: Callable,
     default=MISSING,
     default_factory=MISSING,
     init=True,
@@ -110,18 +117,10 @@ Audio = TypeVar(
 JSON = TypeVar('JSON', str, dict)
 
 _TYPES_REGISTRY = {
-    Image: lambda x: field(
-        serializer=image_serializer, deserializer=image_deserializer, _source_field=x
-    ),
-    Text: lambda x: field(
-        serializer=text_serializer, deserializer=text_deserializer, _source_field=x
-    ),
-    Audio: lambda x: field(
-        serializer=audio_serializer, deserializer=audio_deserializer, _source_field=x
-    ),
-    JSON: lambda x: field(
-        serializer=json_serializer, deserializer=json_deserializer, _source_field=x
-    ),
+    Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
+    Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
+    Audio: lambda x: field(setter=audio_setter, getter=audio_getter, _source_field=x),
+    JSON: lambda x: field(setter=json_setter, getter=json_getter, _source_field=x),
 }
 
 
@@ -142,6 +141,10 @@ def dataclass(
 
     if not type_var_map:
         type_var_map = _TYPES_REGISTRY
+    else:
+        r = copy.deepcopy(_TYPES_REGISTRY)
+        r.update(type_var_map)
+        type_var_map = r
 
     def wrap(cls):
         decorated_cls = _dataclass(
@@ -231,7 +234,7 @@ def from_document(cls: 'T', doc: 'Document'):
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
     if isinstance(field, Field):
-        return field.deserializer(field.name, attribute_doc)
+        return field.get_field(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 
