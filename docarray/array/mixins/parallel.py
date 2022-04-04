@@ -13,7 +13,7 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
     from ... import Document, DocumentArray
     from multiprocessing.pool import ThreadPool, Pool
 

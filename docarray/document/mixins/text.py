@@ -6,7 +6,7 @@ import numpy as np
 from .helper import _uri_to_blob, _to_datauri
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class TextDataMixin:

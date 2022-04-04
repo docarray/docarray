@@ -7,7 +7,7 @@ from ...math import ndarray
 from ...score import NamedScore
 
 if TYPE_CHECKING:
-    from ...types import T, ArrayType
+    from ...typing import T, ArrayType
 
     from ... import Document, DocumentArray
 

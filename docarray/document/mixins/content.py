@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class ContentPropertyMixin:

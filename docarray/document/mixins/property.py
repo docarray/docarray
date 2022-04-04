@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional
 from ._property import _PropertyMixin
 
 if TYPE_CHECKING:
-    from ...types import DocumentContentType, ArrayType
+    from ...typing import DocumentContentType, ArrayType
     from ... import DocumentArray
 
 _all_mime_types = set(mimetypes.types_map.values())

@@ -14,7 +14,7 @@ from ... import Document
 from ...helper import typename
 
 if TYPE_CHECKING:
-    from ...types import (
+    from ...typing import (
         DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,

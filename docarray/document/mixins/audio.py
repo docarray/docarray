@@ -4,7 +4,7 @@ from typing import Union, BinaryIO, TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class AudioDataMixin:

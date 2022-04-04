@@ -5,7 +5,7 @@ from .mixins import AllMixins
 from ..base import BaseDCType
 
 if TYPE_CHECKING:
-    from ..types import ArrayType, StructValueType, DocumentContentType
+    from ..typing import ArrayType, StructValueType, DocumentContentType
 
 
 class Document(AllMixins, BaseDCType):

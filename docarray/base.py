@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional, Tuple, Dict
 from .helper import typename
 
 if TYPE_CHECKING:
-    from .types import T
+    from .typing import T
 
 
 @lru_cache()

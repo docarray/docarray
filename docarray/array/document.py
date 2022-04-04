@@ -4,7 +4,7 @@ from .base import BaseDocumentArray
 from .mixins import AllMixins
 
 if TYPE_CHECKING:
-    from ..types import DocumentArraySourceType
+    from ..typing import DocumentArraySourceType
     from .memory import DocumentArrayInMemory
     from .sqlite import DocumentArraySqlite
     from .annlite import DocumentArrayAnnlite

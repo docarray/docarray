@@ -3,7 +3,7 @@ from dataclasses import is_dataclass, asdict
 from typing import Dict, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ....types import DocumentArraySourceType, ArrayType
+    from ....typing import DocumentArraySourceType, ArrayType
 
 
 class BaseBackendMixin(ABC):

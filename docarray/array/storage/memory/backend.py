@@ -11,7 +11,7 @@ from ..base.backend import BaseBackendMixin
 from .... import Document
 
 if TYPE_CHECKING:
-    from ....types import (
+    from ....typing import (
         DocumentArraySourceType,
     )
 

@@ -9,7 +9,7 @@ import numpy as np
 from .helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class ImageDataMixin:

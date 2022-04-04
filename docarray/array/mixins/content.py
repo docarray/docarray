@@ -3,7 +3,7 @@ from typing import List, Sequence, TYPE_CHECKING, Optional, Union
 from ...math.ndarray import ravel, unravel
 
 if TYPE_CHECKING:
-    from ...types import ArrayType, DocumentContentType
+    from ...typing import ArrayType, DocumentContentType
 
 
 class ContentPropertyMixin:

@@ -2,7 +2,7 @@ import warnings
 from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping
 
 if TYPE_CHECKING:
-    from ...types import T, AnyDNN
+    from ...typing import T, AnyDNN
     from ... import DocumentArray
 
     CollateFnType = Callable[

@@ -194,4 +194,7 @@ def dataclass(cls=None):
 
         return decorated_cls
 
+    if cls is None:
+        return wrap
+
     return wrap(cls)

@@ -11,7 +11,7 @@ from typing import (
 
 if TYPE_CHECKING:
     from ... import DocumentArray, Document
-    from ...types import T
+    from ...typing import T
 
 ATTRIBUTES_SEPARATOR = ','
 PATHS_SEPARATOR = ','

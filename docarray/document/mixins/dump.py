@@ -3,7 +3,7 @@ from typing import Union, BinaryIO, TYPE_CHECKING
 from .helper import _uri_to_blob, _get_file_context
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class UriFileMixin:
