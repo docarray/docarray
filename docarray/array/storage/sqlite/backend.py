@@ -15,9 +15,7 @@ from ..base.backend import BaseBackendMixin
 from ....helper import random_identity, dataclass_from_dict
 
 if TYPE_CHECKING:
-    from ....types import (
-        DocumentArraySourceType,
-    )
+    from ....typing import DocumentArraySourceType
 
 
 def _sanitize_table_name(table_name: str) -> str:

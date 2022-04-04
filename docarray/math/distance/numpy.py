@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from ...types import ArrayType
+    from ...typing import ArrayType
 
 
 def cosine(x_mat: 'np.ndarray', y_mat: 'np.ndarray', eps: float = 1e-7) -> 'np.ndarray':
@@ -31,8 +31,8 @@ def sqeuclidean(x_mat: 'np.ndarray', y_mat: 'np.ndarray') -> 'np.ndarray':
     :return: np.ndarray with ndim=2
     """
     return (
-        np.sum(y_mat ** 2, axis=1)
-        + np.sum(x_mat ** 2, axis=1)[:, np.newaxis]
+        np.sum(y_mat**2, axis=1)
+        + np.sum(x_mat**2, axis=1)[:, np.newaxis]
         - 2 * np.dot(x_mat, y_mat.T)
     )
 

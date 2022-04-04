@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Type, List
 if TYPE_CHECKING:
     from ...document.pydantic_model import PydanticDocumentArray
 
-    from ...types import T
+    from ...typing import T
     from pydantic import BaseModel
 
 

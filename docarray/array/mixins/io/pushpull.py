@@ -8,7 +8,7 @@ from urllib.request import Request, urlopen
 from ....helper import get_request_header
 
 if TYPE_CHECKING:
-    from ....types import T
+    from ....typing import T
 
 
 @lru_cache()

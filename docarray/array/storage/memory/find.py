@@ -6,7 +6,7 @@ from ....math import ndarray
 from ....math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 
 if TYPE_CHECKING:
-    from ....types import T, ArrayType
+    from ....typing import T, ArrayType
 
     from .... import DocumentArray
 

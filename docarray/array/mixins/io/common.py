@@ -1,11 +1,11 @@
 from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
-    from ....types import T
+    from ....typing import T
 
 
 class CommonIOMixin:
-    """The common IO helper function for arrays. """
+    """The common IO helper function for arrays."""
 
     def save(
         self,

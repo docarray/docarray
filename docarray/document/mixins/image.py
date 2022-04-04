@@ -9,11 +9,11 @@ import numpy as np
 from .helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class ImageDataMixin:
-    """Provide helper functions for :class:`Document` to support image data. """
+    """Provide helper functions for :class:`Document` to support image data."""
 
     def set_image_tensor_channel_axis(
         self: 'T', original_channel_axis: int, new_channel_axis: int

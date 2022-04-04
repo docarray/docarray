@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Type, Optional
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
     from ...proto.docarray_pb2 import DocumentProto
 
 

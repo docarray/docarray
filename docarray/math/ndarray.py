@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List
 import numpy as np
 
 if TYPE_CHECKING:
-    from ..types import ArrayType
+    from ..typing import ArrayType
     from .. import Document, DocumentArray
 
 

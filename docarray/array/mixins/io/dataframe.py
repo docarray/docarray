@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from pandas import DataFrame
-    from ....types import T
+    from ....typing import T
 
 
 class DataframeIOMixin:

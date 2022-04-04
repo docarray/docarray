@@ -3,7 +3,7 @@ from typing import Type, TYPE_CHECKING
 from ... import Document
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class EmptyMixin:

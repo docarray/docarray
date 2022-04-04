@@ -6,7 +6,7 @@ import numpy as np
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
-    from ...types import T
+    from ...typing import T
     from ..pydantic_model import PydanticDocument
 
 

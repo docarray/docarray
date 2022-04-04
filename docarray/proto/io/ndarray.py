@@ -5,7 +5,7 @@ import numpy as np
 from ...math.ndarray import get_array_type, to_numpy_array
 
 if TYPE_CHECKING:
-    from ...types import ArrayType
+    from ...typing import ArrayType
     from ..docarray_pb2 import NdArrayProto
 
 

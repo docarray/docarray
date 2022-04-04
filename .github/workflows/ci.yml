@@ -81,21 +81,8 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
 
-  prep-testbed:
-    runs-on: ubuntu-latest
-    needs: [commit-lint, lint-flake-8, check-black]
-    steps:
-      - uses: actions/checkout@v2
-      - id: set-matrix
-        run: |
-          sudo apt-get install jq
-          echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-
   import-test:
     runs-on: ubuntu-latest
-    needs: [commit-lint, lint-flake-8, check-black]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -109,6 +96,20 @@ jobs:
           pip install --no-cache-dir .
       - name: Test basic import
         run: python -c 'from docarray import DocumentArray, Document'
+
+
+  prep-testbed:
+    runs-on: ubuntu-latest
+    needs: [commit-lint, lint-flake-8, check-black, import-test]
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          sudo apt-get install jq
+          echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
 
   core-test:
     needs: prep-testbed

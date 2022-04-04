@@ -4,12 +4,12 @@ import os
 import pickle
 from typing import List
 
-from docarray import Document, DocumentArray
-from docarray.document.mixins.multimodal import AttributeType
-from docarray.types.multimodal import Text, Image, Audio, Field, JSON
-from docarray.types.multimodal import dataclass
-import pytest
 import numpy as np
+import pytest
+
+from docarray import Document, DocumentArray
+from docarray.dataclasses import Text, Image, Audio, Field, JSON, dataclass
+from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -35,12 +35,12 @@ def test_simple():
         version: int
 
     obj = MMDocument(title='hello world', image=np.random.rand(10, 10, 3), version=20)
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.chunks[0].text == 'hello world'
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
     assert doc.tags['version'] == 20
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('title', AttributeType.DOCUMENT, 'Text', 0),
@@ -64,7 +64,7 @@ def test_simple_default():
     assert obj.title == 'hello world'
     assert obj.image == IMAGE_URI
     assert obj.version == 1
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.chunks[0].text == 'hello world'
     assert doc.chunks[1].tensor.shape == (85, 152, 3)
     assert doc.tags['version'] == 1
@@ -94,7 +94,7 @@ def test_nested():
         value='abc',
     )
 
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.tags['value'] == 'abc'
 
     assert doc.chunks[0].tags['date'] == '10.03.2022'
@@ -103,7 +103,7 @@ def test_nested():
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('sub_doc', AttributeType.NESTED, 'SubDocument', 0),
@@ -127,14 +127,14 @@ def test_with_tags():
 
     obj = MMDocument(attr1='123', attr2=10, attr3=1.1, attr4=True, attr5=b'ab1234')
 
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.tags['attr1'] == '123'
     assert doc.tags['attr2'] == 10
     assert doc.tags['attr3'] == 1.1
     assert doc.tags['attr4'] == True
     assert doc.tags['attr5'] == base64.b64encode(b'ab1234').decode()
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('attr1', AttributeType.PRIMITIVE, 'str', None),
@@ -162,14 +162,14 @@ def test_iterable_doc():
         images=[np.random.rand(10, 10, 3) for _ in range(3)],
     )
 
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.tags['comments'] == ['hello world', 'goodbye world']
     assert doc.tags['ratings'] == [1, 5, 4, 2]
     assert len(doc.chunks[0].chunks) == 3
     for image_doc in doc.chunks[0].chunks:
         assert image_doc.tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
@@ -201,7 +201,7 @@ def test_iterable_nested():
         ],
     )
 
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
 
     assert len(doc.chunks) == 2
     assert len(doc.chunks[0].chunks) == 3
@@ -212,7 +212,7 @@ def test_iterable_nested():
     for i, subtitle_doc in enumerate(doc.chunks[1].chunks):
         assert subtitle_doc.chunks[0].text == f'subtitle {i}'
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[Image]', 0),
@@ -449,7 +449,7 @@ def test_proto_serialization():
         version: int
 
     obj = MMDocument(title='hello world', image=np.random.rand(10, 10, 3), version=20)
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
 
     proto = doc.to_protobuf()
     assert proto._metadata is not None
@@ -481,14 +481,14 @@ def test_json_type():
 
     inp = {'a': 123, 'b': 'abc', 'c': 1.1}
     obj = MMDocument(attr=inp)
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
 
     assert doc.chunks[0].tags['attr'] == inp
     translated_obj = MMDocument.from_document(doc)
     assert translated_obj == obj
 
     obj = MMDocument(attr=json.dumps(inp))
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
     assert doc.chunks[0].tags['attr'] == inp
     translated_obj = MMDocument.from_document(doc)
     assert translated_obj == obj
@@ -524,7 +524,7 @@ def test_custom_field_type():
         pickled_image=PIL_open(IMAGE_URI),
     )
 
-    doc = Document.from_dataclass(obj)
+    doc = Document(obj)
 
     assert doc.chunks[0].blob is not None
     assert doc.chunks[1].blob is not None
@@ -549,7 +549,7 @@ def test_invalid_type_annotations():
     inp = ['something']
     obj = MMDocument(attr=inp)
     with pytest.raises(Exception) as exc_info:
-        doc = Document.from_dataclass(obj)
+        Document(obj)
     assert exc_info.value.args[0] == 'Unsupported type annotation'
     assert str(exc_info.value) == 'Unsupported type annotation'
 
@@ -561,6 +561,10 @@ def test_not_data_class():
     obj = MMDocument()
 
     with pytest.raises(Exception) as exc_info:
-        doc = Document.from_dataclass(obj)
-    assert exc_info.value.args[0] == 'Object MMDocument is not a dataclass instance'
-    assert str(exc_info.value) == 'Object MMDocument is not a dataclass instance'
+        Document.from_dataclass(obj)
+    assert 'not a `docarray.dataclasses.dataclass` instance' in exc_info.value.args[0]
+    assert 'not a `docarray.dataclasses.dataclass`' in str(exc_info.value)
+
+    with pytest.raises(Exception) as exc_info:
+        Document(obj)
+        assert 'Failed to initialize' in str(exc_info.value)

@@ -1,21 +1,22 @@
 import base64
 import typing
 from dataclasses import (
-    dataclass as std_dataclass,
-    is_dataclass as std_is_dataclass,
-    Field as StdField,
+    dataclass as _dataclass,
+    Field as _Field,
+    is_dataclass as _is_dataclass,
     field,
 )
+from enum import Enum
 from pathlib import Path
 from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING
 
-from docarray.types.deserializers import (
+from .deserializers import (
     image_deserializer,
     text_deserializer,
     audio_deserializer,
     json_deserializer,
 )
-from docarray.types.serializers import (
+from .serializers import (
     image_serializer,
     text_serializer,
     audio_serializer,
@@ -27,21 +28,26 @@ if TYPE_CHECKING:
     import tensorflow
     import torch
     import numpy as np
-    from . import T
-    from .. import Document
+    from ..typing import T
+    from docarray import Document
     from PIL.Image import Image as PILImage
 
 
-def is_dataclass(cls):
-    return std_is_dataclass(cls) and hasattr(cls, 'from_document')
+class AttributeType(str, Enum):
+    DOCUMENT = 'document'
+    PRIMITIVE = 'primitive'
+    ITERABLE_PRIMITIVE = 'iterable_primitive'
+    ITERABLE_DOCUMENT = 'iterable_document'
+    NESTED = 'nested'
+    ITERABLE_NESTED = 'iterable_nested'
 
 
-class Field(StdField):
+class Field(_Field):
     def __init__(
         self,
         serializer: Callable,
         deserializer: Callable,
-        source_field: Optional[StdField] = None,
+        source_field: Optional[_Field] = None,
     ):
         if not source_field:
             source_field = field()
@@ -88,25 +94,69 @@ TYPES_REGISTRY = {
 }
 
 
-def _get_doc_attribute(attribute_doc: 'Document', field):
-    if isinstance(field, Field):
-        return field.deserializer(field.name, attribute_doc)
-    else:
-        raise ValueError('Invalid attribute type')
+def dataclass(cls: 'T' = None) -> 'T':
+    """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
+    Returns the same class as was passed in, with dunder methods and from_document method.
 
 
-def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls):
-    if not is_dataclass(nested_cls):
-        raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
-    return nested_cls.from_document(attribute_doc)
+    If init is true, an __init__() method is added to the class. If
+    repr is true, a __repr__() method is added. If order is true, rich
+    comparison dunder methods are added. If unsafe_hash is true, a
+    __hash__() method function is added. If frozen is true, fields may
+    not be assigned to after instance creation.
+    """
+
+    def wrap(cls):
+        decorated_cls = _dataclass(
+            cls,
+            init=True,
+            repr=True,
+            eq=True,
+            order=False,
+            unsafe_hash=False,
+            frozen=False,
+        )
+        setattr(decorated_cls, from_document.__func__.__name__, from_document)
+        for key, f in decorated_cls.__dataclass_fields__.items():
+            if isinstance(f, Field):
+                continue
+
+            if f.type in TYPES_REGISTRY:
+                serializer, deserializer = TYPES_REGISTRY[f.type]
+                decorated_cls.__dataclass_fields__[key] = Field(
+                    serializer, deserializer, f
+                )
+
+            elif isinstance(f.type, typing._GenericAlias) and f.type._name in [
+                'List',
+                'Iterable',
+            ]:
+                sub_type = f.type.__args__[0]
+                if sub_type in TYPES_REGISTRY:
+                    serializer, deserializer = TYPES_REGISTRY[sub_type]
+                    decorated_cls.__dataclass_fields__[key] = Field(
+                        serializer, deserializer, f
+                    )
+
+        return decorated_cls
+
+    if cls is None:
+        return wrap
+
+    return wrap(cls)
+
+
+def is_dataclass(obj) -> bool:
+    """Returns True if obj is an instance of :meth:`.dataclass`."""
+    return _is_dataclass(obj) and hasattr(obj, 'from_document')
 
 
 @classmethod
 def from_document(cls: 'T', doc: 'Document'):
-    from ..document.mixins.multimodal import AttributeType
-
-    if 'multi_modal_schema' not in doc._metadata:
-        raise ValueError('the Document does not correspond to a Multi Modal Document')
+    if not doc.is_multimodal:
+        raise ValueError(
+            f'{doc} is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.'
+        )
 
     attributes = {}
     for key, attribute_info in doc._metadata['multi_modal_schema'].items():
@@ -143,55 +193,19 @@ def from_document(cls: 'T', doc: 'Document'):
                 attribute_list.append(_get_doc_nested_attribute(chunk_doc, nested_cls))
             attributes[key] = attribute_list
         else:
-            raise ValueError(f'Invalid attribute {key}')
+            raise AttributeError(f'Invalid attribute at `{key}`')
 
     return cls(**attributes)
 
 
-def dataclass(cls=None):
-    """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
-    Returns the same class as was passed in, with dunder methods and from_document method.
+def _get_doc_attribute(attribute_doc: 'Document', field):
+    if isinstance(field, Field):
+        return field.deserializer(field.name, attribute_doc)
+    else:
+        raise ValueError('Invalid attribute type')
 
 
-    If init is true, an __init__() method is added to the class. If
-    repr is true, a __repr__() method is added. If order is true, rich
-    comparison dunder methods are added. If unsafe_hash is true, a
-    __hash__() method function is added. If frozen is true, fields may
-    not be assigned to after instance creation.
-    """
-
-    def wrap(cls):
-        decorated_cls = std_dataclass(
-            cls,
-            init=True,
-            repr=True,
-            eq=True,
-            order=False,
-            unsafe_hash=False,
-            frozen=False,
-        )
-        setattr(decorated_cls, from_document.__func__.__name__, from_document)
-        for key, field in decorated_cls.__dataclass_fields__.items():
-            if isinstance(field, Field):
-                continue
-
-            if field.type in TYPES_REGISTRY:
-                serializer, deserializer = TYPES_REGISTRY[field.type]
-                decorated_cls.__dataclass_fields__[key] = Field(
-                    serializer, deserializer, field
-                )
-
-            elif isinstance(field.type, typing._GenericAlias) and field.type._name in [
-                'List',
-                'Iterable',
-            ]:
-                sub_type = field.type.__args__[0]
-                if sub_type in TYPES_REGISTRY:
-                    serializer, deserializer = TYPES_REGISTRY[sub_type]
-                    decorated_cls.__dataclass_fields__[key] = Field(
-                        serializer, deserializer, field
-                    )
-
-        return decorated_cls
-
-    return wrap(cls)
+def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls):
+    if not is_dataclass(nested_cls):
+        raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
+    return nested_cls.from_document(attribute_doc)

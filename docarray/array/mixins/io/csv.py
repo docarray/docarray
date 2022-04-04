@@ -5,7 +5,7 @@ from typing import Union, TextIO, Optional, Dict, TYPE_CHECKING, Type, Sequence
 import numpy as np
 
 if TYPE_CHECKING:
-    from ....types import T
+    from ....typing import T
 
 
 class CsvIOMixin:

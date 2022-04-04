@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from ..ndarray import get_array_type
 
 if TYPE_CHECKING:
-    from ...types import ArrayType
+    from ...typing import ArrayType
     import numpy as np
 
 

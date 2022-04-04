@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class ContentPropertyMixin:
-    """Provide helper functions for :class:`Document` to allow universal content property access. """
+    """Provide helper functions for :class:`Document` to allow universal content property access."""
 
     @property
     def content_hash(self) -> int:

@@ -159,7 +159,7 @@ from dataclasses import dataclass
 from docarray.array.storage.base.backend import BaseBackendMixin
 
 if TYPE_CHECKING:
-    from docarray.types import (
+    from docarray.typing import (
         DocumentArraySourceType,
     )
 
