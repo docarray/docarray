@@ -4,6 +4,7 @@ import os
 
 from .document import Document
 from .array import DocumentArray
+from .dataclasses import dataclass, Image, Text, Audio, JSON, Field
 
 
 if 'DA_NO_RICH_HANDLER' not in os.environ:
