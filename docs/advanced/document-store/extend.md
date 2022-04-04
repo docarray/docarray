@@ -1,9 +1,15 @@
 # Add New Document Store
 
-DocumentArray can be easily extended to support different Document Store backends. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of on-boarding a new Document Store backend is often:
+DocumentArray can be easily extended to support different Document Store backends. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. 
+
+For DocArray, the motivation of on-boarding a new backend is often:
 - having persistence that better fits to the use case;
 - pulling from an existing data source;
 - supporting advanced query languages, e.g. nearest-neighbor retrieval.
+
+For the database vendor, the motivation is often:
+- having a powerful, well-designed and well-maintained Python client for your database;
+- plugging your database into Jina AI ecosystems (e.g. Jina, Hub, CLIP-as-service, Finetuner, etc.)
 
 After the extension, users can enjoy convenient and powerful DocumentArray API on top of your document store. To end users, it promises the same user experience just like using a regular DocumentArray, no extra learning is required.
 
@@ -12,7 +18,7 @@ This chapter gives you a walk-through on how to add a new DocumentArray. To be s
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='mydocstore')
+da = DocumentArray(storage='mydocstore', config={...})
 ```
 
 Let's get started!
@@ -191,7 +197,7 @@ class BackendMixin(BaseBackendMixin):
 As a reference, you can check out how we implement for SQLite, check out {class}`~docarray.array.storage.sqlite.backend.BackendMixin`.
 ```
 
-## Step 5 (Optional): implement `find.py`
+## Step 5: implement `find.py`
 If your storage backend supports approximate nearest neighbor search, you can allow users to use this feature within 
 docarray. To do so, add a `find.py` file that looks like the following:
 
@@ -323,7 +329,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
 Done! Now you should be able to use it like `DocumentArrayMyDocStore`!
 
-## Contribute: add tests and type-hint
+## On pull request: add tests and type-hint
 
 Welcome to contribute your extension back to DocArray. You will need to include `DocumentArrayMyDocStore` in at least the following tests:
 
