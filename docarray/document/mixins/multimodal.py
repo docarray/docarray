@@ -1,7 +1,7 @@
 import base64
 import typing
 
-from ...dataclasses import Field, is_dataclass
+from ...dataclasses.types import Field, is_dataclass
 from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -134,8 +134,7 @@ class MultiModalMixin:
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
-            doc = Document()
-            field.serializer(obj, field.name, doc)
+            doc = field.set_field(obj)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type

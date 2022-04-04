@@ -1,26 +1,36 @@
 import base64
+import copy
 import typing
 from dataclasses import (
     dataclass as _dataclass,
     Field as _Field,
     is_dataclass as _is_dataclass,
-    field,
+    field as _field,
+    MISSING,
 )
 from enum import Enum
 from pathlib import Path
-from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING
-
-from .deserializers import (
-    image_deserializer,
-    text_deserializer,
-    audio_deserializer,
-    json_deserializer,
+from typing import (
+    TypeVar,
+    ForwardRef,
+    Callable,
+    Optional,
+    TYPE_CHECKING,
+    overload,
+    Dict,
 )
-from .serializers import (
-    image_serializer,
-    text_serializer,
-    audio_serializer,
-    json_serializer,
+
+from .setter import (
+    image_setter,
+    text_setter,
+    audio_setter,
+    json_setter,
+)
+from .getter import (
+    image_getter,
+    text_getter,
+    audio_getter,
+    json_getter,
 )
 
 if TYPE_CHECKING:
@@ -45,26 +55,46 @@ class AttributeType(str, Enum):
 class Field(_Field):
     def __init__(
         self,
-        serializer: Callable,
-        deserializer: Callable,
-        source_field: Optional[_Field] = None,
+        *,
+        setter: Callable,
+        getter: Callable,
+        _source_field: Optional[_Field] = None,
+        **kwargs,
     ):
-        if not source_field:
-            source_field = field()
+        self.copy_from(_source_field if _source_field else _field(**kwargs))
+        self.setter = setter
+        self.getter = getter
 
-        self.name = source_field.name
-        self.type = source_field.type
-        self.default = source_field.default
-        self.default_factory = source_field.default_factory
-        self.init = source_field.init
-        self.repr = source_field.repr
-        self.hash = source_field.hash
-        self.compare = source_field.compare
-        self.metadata = source_field.metadata
-        self._field_type = source_field._field_type
+    def copy_from(self, f: '_Field'):
+        for s in f.__slots__:
+            setattr(self, s, getattr(f, s))
 
-        self.serializer = serializer
-        self.deserializer = deserializer
+    def get_field(self, doc: 'Document'):
+        return self.getter(doc, self.name)
+
+    def set_field(self, val) -> 'Document':
+        return self.setter(self.name, val)
+
+
+@overload
+def field(
+    *,
+    _source_field: Optional[_Field] = None,  # Privately used
+    setter: Callable,
+    getter: Callable,
+    default=MISSING,
+    default_factory=MISSING,
+    init=True,
+    repr=True,
+    hash=None,
+    compare=True,
+    metadata=None,
+) -> _Field:
+    ...
+
+
+def field(**kwargs) -> Field:
+    return Field(**kwargs)
 
 
 Image = TypeVar(
@@ -87,14 +117,17 @@ Audio = TypeVar(
 JSON = TypeVar('JSON', str, dict)
 
 _TYPES_REGISTRY = {
-    Image: lambda x: Field(image_serializer, image_deserializer, x),
-    Text: lambda x: Field(text_serializer, text_deserializer, x),
-    Audio: lambda x: Field(audio_serializer, audio_deserializer, x),
-    JSON: lambda x: Field(json_serializer, json_deserializer, x),
+    Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
+    Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
+    Audio: lambda x: field(setter=audio_setter, getter=audio_getter, _source_field=x),
+    JSON: lambda x: field(setter=json_setter, getter=json_getter, _source_field=x),
 }
 
 
-def dataclass(cls: 'T' = None) -> 'T':
+def dataclass(
+    cls: 'T' = None,
+    type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
+) -> 'T':
     """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
     Returns the same class as was passed in, with dunder methods and from_document method.
 
@@ -105,6 +138,13 @@ def dataclass(cls: 'T' = None) -> 'T':
     __hash__() method function is added. If frozen is true, fields may
     not be assigned to after instance creation.
     """
+
+    if not type_var_map:
+        type_var_map = _TYPES_REGISTRY
+    else:
+        r = copy.deepcopy(_TYPES_REGISTRY)
+        r.update(type_var_map)
+        type_var_map = r
 
     def wrap(cls):
         decorated_cls = _dataclass(
@@ -121,18 +161,16 @@ def dataclass(cls: 'T' = None) -> 'T':
             if isinstance(f, Field):
                 continue
 
-            if f.type in _TYPES_REGISTRY:
-                decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[f.type](f)
+            if f.type in type_var_map:
+                decorated_cls.__dataclass_fields__[key] = type_var_map[f.type](f)
 
             elif isinstance(f.type, typing._GenericAlias) and f.type._name in [
                 'List',
                 'Iterable',
             ]:
                 sub_type = f.type.__args__[0]
-                if sub_type in _TYPES_REGISTRY:
-                    decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[sub_type](
-                        f
-                    )
+                if sub_type in type_var_map:
+                    decorated_cls.__dataclass_fields__[key] = type_var_map[sub_type](f)
 
         return decorated_cls
 
@@ -196,7 +234,7 @@ def from_document(cls: 'T', doc: 'Document'):
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
     if isinstance(field, Field):
-        return field.deserializer(field.name, attribute_doc)
+        return field.get_field(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 
