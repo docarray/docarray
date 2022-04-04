@@ -25,7 +25,7 @@ class AudioDataMixin:
         :return: Document itself after processed
         """
         # Convert to (little-endian) 16 bit integers.
-        max_int16 = 2 ** 15
+        max_int16 = 2**15
         tensor = (self.tensor * max_int16).astype('<h')
         n_channels = 2 if self.tensor.ndim > 1 else 1
 
@@ -54,7 +54,7 @@ class AudioDataMixin:
         audio_as_np_float32 = audio_as_np_int16.astype(np.float32)
 
         # Normalise float32 array so that values are between -1.0 and +1.0
-        max_int16 = 2 ** 15
+        max_int16 = 2**15
         audio_normalised = audio_as_np_float32 / max_int16
 
         channels = ifile.getnchannels()
