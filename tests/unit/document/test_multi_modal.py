@@ -4,12 +4,12 @@ import os
 import pickle
 from typing import List
 
-from docarray import Document, DocumentArray
-from docarray.document.mixins.multimodal import AttributeType
-from docarray.types.multimodal import Text, Image, Audio, Field, JSON
-from docarray.types.multimodal import dataclass
-import pytest
 import numpy as np
+import pytest
+
+from docarray import Document, DocumentArray
+from docarray.dataclasses import Text, Image, Audio, Field, JSON, dataclass
+from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -40,7 +40,7 @@ def test_simple():
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
     assert doc.tags['version'] == 20
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('title', AttributeType.DOCUMENT, 'Text', 0),
@@ -103,7 +103,7 @@ def test_nested():
 
     assert doc.chunks[1].tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('sub_doc', AttributeType.NESTED, 'SubDocument', 0),
@@ -134,7 +134,7 @@ def test_with_tags():
     assert doc.tags['attr4'] == True
     assert doc.tags['attr5'] == base64.b64encode(b'ab1234').decode()
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('attr1', AttributeType.PRIMITIVE, 'str', None),
@@ -169,7 +169,7 @@ def test_iterable_doc():
     for image_doc in doc.chunks[0].chunks:
         assert image_doc.tensor.shape == (10, 10, 3)
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('comments', AttributeType.ITERABLE_PRIMITIVE, 'List[str]', None),
@@ -212,7 +212,7 @@ def test_iterable_nested():
     for i, subtitle_doc in enumerate(doc.chunks[1].chunks):
         assert subtitle_doc.chunks[0].text == f'subtitle {i}'
 
-    assert 'multi_modal_schema' in doc._metadata
+    assert doc.is_multimodal
 
     expected_schema = [
         ('frames', AttributeType.ITERABLE_DOCUMENT, 'List[Image]', 0),

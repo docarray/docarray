@@ -1,27 +1,28 @@
 import base64
 import typing
-from enum import Enum
 
-from docarray.types.multimodal import Field, is_dataclass
+from ...dataclasses import Field, is_dataclass
+from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray
 
 
-class AttributeType(str, Enum):
-    DOCUMENT = 'document'
-    PRIMITIVE = 'primitive'
-    ITERABLE_PRIMITIVE = 'iterable_primitive'
-    ITERABLE_DOCUMENT = 'iterable_document'
-    NESTED = 'nested'
-    ITERABLE_NESTED = 'iterable_nested'
-
-
 class MultiModalMixin:
+    @property
+    def is_multimodal(self) -> bool:
+        """
+        Return true if this Document can be represented by a class wrapped
+        by :meth:`docarray.dataclasses.types.dataclass`.
+        """
+        return 'multi_modal_schema' in self._metadata
+
     @classmethod
-    def from_dataclass(cls, obj):
+    def from_dataclass(cls, obj) -> 'Document':
         if not is_dataclass(obj):
-            raise ValueError(f'Object {type(obj).__name__} is not a dataclass instance')
+            raise TypeError(
+                f'Object {type(obj).__name__} is not a `docarray.dataclasses.dataclass` instance'
+            )
 
         from docarray import Document
 
@@ -64,7 +65,7 @@ class MultiModalMixin:
                             elif attribute_type == AttributeType.NESTED:
                                 attribute_type = AttributeType.ITERABLE_NESTED
                             else:
-                                raise ValueError(
+                                raise TypeError(
                                     f'Unsupported type annotation inside Iterable: {sub_type}'
                                 )
                             chunk.chunks.append(doc)
@@ -75,7 +76,9 @@ class MultiModalMixin:
                         }
                         root.chunks.append(chunk)
                 else:
-                    raise ValueError(f'Unsupported type annotation {field.type._name}')
+                    raise TypeError(
+                        f'Unsupported type annotation on field `{field.type._name}`'
+                    )
             else:
                 doc, attribute_type = cls._from_obj(attribute, field.type, field)
                 multi_modal_schema[key] = {
@@ -94,7 +97,7 @@ class MultiModalMixin:
     def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
         from docarray import DocumentArray
 
-        if 'multi_modal_schema' not in self._metadata:
+        if not self.is_multimodal:
             raise ValueError(
                 'the Document does not correspond to a Multi Modal Document'
             )
