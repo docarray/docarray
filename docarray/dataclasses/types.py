@@ -86,11 +86,11 @@ Audio = TypeVar(
 
 JSON = TypeVar('JSON', str, dict)
 
-TYPES_REGISTRY = {
-    Image: (image_serializer, image_deserializer),
-    Text: (text_serializer, text_deserializer),
-    Audio: (audio_serializer, audio_deserializer),
-    JSON: (json_serializer, json_deserializer),
+_TYPES_REGISTRY = {
+    Image: lambda x: Field(image_serializer, image_deserializer, x),
+    Text: lambda x: Field(text_serializer, text_deserializer, x),
+    Audio: lambda x: Field(audio_serializer, audio_deserializer, x),
+    JSON: lambda x: Field(json_serializer, json_deserializer, x),
 }
 
 
@@ -121,21 +121,17 @@ def dataclass(cls: 'T' = None) -> 'T':
             if isinstance(f, Field):
                 continue
 
-            if f.type in TYPES_REGISTRY:
-                serializer, deserializer = TYPES_REGISTRY[f.type]
-                decorated_cls.__dataclass_fields__[key] = Field(
-                    serializer, deserializer, f
-                )
+            if f.type in _TYPES_REGISTRY:
+                decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[f.type](f)
 
             elif isinstance(f.type, typing._GenericAlias) and f.type._name in [
                 'List',
                 'Iterable',
             ]:
                 sub_type = f.type.__args__[0]
-                if sub_type in TYPES_REGISTRY:
-                    serializer, deserializer = TYPES_REGISTRY[sub_type]
-                    decorated_cls.__dataclass_fields__[key] = Field(
-                        serializer, deserializer, f
+                if sub_type in _TYPES_REGISTRY:
+                    decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[sub_type](
+                        f
                     )
 
         return decorated_cls
