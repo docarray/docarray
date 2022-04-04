@@ -561,6 +561,10 @@ def test_not_data_class():
     obj = MMDocument()
 
     with pytest.raises(Exception) as exc_info:
-        Document(obj)
+        Document.from_dataclass(obj)
     assert 'not a `docarray.dataclasses.dataclass` instance' in exc_info.value.args[0]
     assert 'not a `docarray.dataclasses.dataclass`' in str(exc_info.value)
+
+    with pytest.raises(Exception) as exc_info:
+        Document(obj)
+        assert 'Failed to initialize' in str(exc_info.value)
