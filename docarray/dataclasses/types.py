@@ -146,8 +146,9 @@ def dataclass(cls: 'T' = None) -> 'T':
     return wrap(cls)
 
 
-def is_dataclass(cls) -> bool:
-    return _is_dataclass(cls) and hasattr(cls, 'from_document')
+def is_dataclass(obj) -> bool:
+    """Returns True if obj is an instance of :meth:`.dataclass`."""
+    return _is_dataclass(obj) and hasattr(obj, 'from_document')
 
 
 @classmethod
