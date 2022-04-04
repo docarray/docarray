@@ -28,11 +28,14 @@ def image_setter(field_name: str, value) -> 'Document':
 
 
 def text_setter(field_name: str, value) -> 'Document':
+    from docarray import Document
+
     return Document(text=value, modality='text')
 
 
 def audio_setter(field_name: str, value) -> 'Document':
     import librosa
+    from docarray import Document
 
     audio, sr = librosa.load(value)
     return Document(
@@ -43,6 +46,8 @@ def audio_setter(field_name: str, value) -> 'Document':
 
 
 def json_setter(field_name: str, value) -> 'Document':
+    from docarray import Document
+
     doc = Document()
     if isinstance(value, str):
         value = json.loads(value)

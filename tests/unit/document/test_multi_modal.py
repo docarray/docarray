@@ -499,16 +499,16 @@ def test_custom_field_type():
     from PIL.Image import Image as PILImage
     from PIL.Image import open as PIL_open
 
-    def ndarray_serializer(inp, attribute_name, doc: 'Document'):
-        doc.blob = base64.b64encode(inp)
+    def ndarray_serializer(field_name: str, value):
+        return Document(blob=base64.b64encode(value))
 
-    def ndarray_deserializer(attribute_name, doc: 'Document'):
+    def ndarray_deserializer(doc: 'Document', field_name: str):
         return np.frombuffer(base64.decodebytes(doc.blob), dtype=np.float64)
 
-    def pil_image_serializer(inp, attribute_name, doc: 'Document'):
-        doc.blob = pickle.dumps(inp)
+    def pil_image_serializer(field_name, val):
+        return Document(blob=pickle.dumps(val))
 
-    def pil_image_deserializer(attribute_name, doc: 'Document'):
+    def pil_image_deserializer(doc: 'Document', field_name):
         return pickle.loads(doc.blob)
 
     @dataclass
@@ -572,12 +572,13 @@ def test_not_data_class():
 
 
 def test_data_class_customized_typevar_map():
-    def sette2(doc: 'Document', field_name: str, value):
-        doc.uri = value
+    def sette2(field_name: str, value):
+        doc = Document(uri=value)
         doc._metadata['image_type'] = 'uri'
         doc._metadata['image_uri'] = value
         doc.load_uri_to_blob()
         doc.modality = 'image'
+        return doc
 
     type_var_m = {
         Image: lambda x: field(
