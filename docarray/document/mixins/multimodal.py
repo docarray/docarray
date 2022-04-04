@@ -1,7 +1,7 @@
 import base64
 import typing
 
-from ...dataclasses import Field, is_dataclass
+from ...dataclasses.types import Field, is_dataclass
 from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:

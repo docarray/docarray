@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
-from docarray.dataclasses import Text, Image, Audio, Field, JSON, dataclass
+from docarray.dataclasses import Text, Image, Audio, JSON, dataclass, field
 from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -512,10 +512,10 @@ def test_custom_field_type():
 
     @dataclass
     class MMDocument:
-        base64_encoded_ndarray: str = Field(
+        base64_encoded_ndarray: str = field(
             serializer=ndarray_serializer, deserializer=ndarray_deserializer
         )
-        pickled_image: PILImage = Field(
+        pickled_image: PILImage = field(
             serializer=pil_image_serializer, deserializer=pil_image_deserializer
         )
 

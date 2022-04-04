@@ -4,11 +4,12 @@ from dataclasses import (
     dataclass as _dataclass,
     Field as _Field,
     is_dataclass as _is_dataclass,
-    field,
+    field as _field,
+    MISSING,
 )
 from enum import Enum
 from pathlib import Path
-from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING
+from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING, overload
 
 from .deserializers import (
     image_deserializer,
@@ -24,13 +25,8 @@ from .serializers import (
 )
 
 if TYPE_CHECKING:
-    import scipy.sparse
-    import tensorflow
-    import torch
-    import numpy as np
     from ..typing import T
     from docarray import Document
-    from PIL.Image import Image as PILImage
 
 
 class AttributeType(str, Enum):
@@ -45,26 +41,40 @@ class AttributeType(str, Enum):
 class Field(_Field):
     def __init__(
         self,
+        *,
         serializer: Callable,
         deserializer: Callable,
-        source_field: Optional[_Field] = None,
+        _source_field: Optional[_Field] = None,
+        **kwargs,
     ):
-        if not source_field:
-            source_field = field()
-
-        self.name = source_field.name
-        self.type = source_field.type
-        self.default = source_field.default
-        self.default_factory = source_field.default_factory
-        self.init = source_field.init
-        self.repr = source_field.repr
-        self.hash = source_field.hash
-        self.compare = source_field.compare
-        self.metadata = source_field.metadata
-        self._field_type = source_field._field_type
-
+        self.copy_from(_source_field if _source_field else _field(**kwargs))
         self.serializer = serializer
         self.deserializer = deserializer
+
+    def copy_from(self, f: '_Field'):
+        for s in f.__slots__:
+            setattr(self, s, getattr(f, s))
+
+
+@overload
+def field(
+    *,
+    serializer: Callable,
+    deserializer: Callable,
+    _source_field: Optional[_Field] = None,  # Privately used
+    default=MISSING,
+    default_factory=MISSING,
+    init=True,
+    repr=True,
+    hash=None,
+    compare=True,
+    metadata=None,
+) -> _Field:
+    ...
+
+
+def field(**kwargs) -> Field:
+    return Field(**kwargs)
 
 
 Image = TypeVar(
@@ -87,10 +97,18 @@ Audio = TypeVar(
 JSON = TypeVar('JSON', str, dict)
 
 _TYPES_REGISTRY = {
-    Image: lambda x: Field(image_serializer, image_deserializer, x),
-    Text: lambda x: Field(text_serializer, text_deserializer, x),
-    Audio: lambda x: Field(audio_serializer, audio_deserializer, x),
-    JSON: lambda x: Field(json_serializer, json_deserializer, x),
+    Image: lambda x: field(
+        serializer=image_serializer, deserializer=image_deserializer, _source_field=x
+    ),
+    Text: lambda x: field(
+        serializer=text_serializer, deserializer=text_deserializer, _source_field=x
+    ),
+    Audio: lambda x: field(
+        serializer=audio_serializer, deserializer=audio_deserializer, _source_field=x
+    ),
+    JSON: lambda x: field(
+        serializer=json_serializer, deserializer=json_deserializer, _source_field=x
+    ),
 }
 
 
