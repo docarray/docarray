@@ -68,6 +68,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1656,4 +1657,28 @@
  - [[```ee3ac166```](https://github.com/jina-ai/docarray/commit/ee3ac1666771ff9572b1715a4e0a4c4240b96ca4)] __-__ fix docs (*Han Xiao*)
  - [[```8bb70c2e```](https://github.com/jina-ai/docarray/commit/8bb70c2e72d33bf28875ef832cd5bcb92d398655)] __-__ fix readme (*Han Xiao*)
  - [[```4722268e```](https://github.com/jina-ai/docarray/commit/4722268ebf1d0db8924bd3657fdd089ce3c8172a)] __-__ __version__: the next version will be 0.11.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-11-2></a>
+## Release Note (`0.11.2`)
+
+> Release time: 2022-04-02 15:42:25
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```64fbcf7a```](https://github.com/jina-ai/docarray/commit/64fbcf7a13eb57b2400954bfed26eb641a689a0c)] __-__ __array__: add data loader (#248) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```ce491111```](https://github.com/jina-ai/docarray/commit/ce4911113c0a10509f5201744a452f6dca7302f8)] __-__ update extend docs (#246) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```10fa6b83```](https://github.com/jina-ai/docarray/commit/10fa6b83b9b15152353508ae887c9cc217de55a9)] __-__ fix readme (*Han Xiao*)
+ - [[```527ffccc```](https://github.com/jina-ai/docarray/commit/527ffcccf2ae1dfc5782db27913f0ec8a083664f)] __-__ __version__: the next version will be 0.11.2 (*Jina Dev Bot*)
 
