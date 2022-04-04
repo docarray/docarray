@@ -9,7 +9,15 @@ from dataclasses import (
 )
 from enum import Enum
 from pathlib import Path
-from typing import TypeVar, ForwardRef, Callable, Optional, TYPE_CHECKING, overload
+from typing import (
+    TypeVar,
+    ForwardRef,
+    Callable,
+    Optional,
+    TYPE_CHECKING,
+    overload,
+    Dict,
+)
 
 from .deserializers import (
     image_deserializer,
@@ -64,9 +72,9 @@ class Field(_Field):
 @overload
 def field(
     *,
+    _source_field: Optional[_Field] = None,  # Privately used
     serializer: Callable,
     deserializer: Callable,
-    _source_field: Optional[_Field] = None,  # Privately used
     default=MISSING,
     default_factory=MISSING,
     init=True,
@@ -117,7 +125,10 @@ _TYPES_REGISTRY = {
 }
 
 
-def dataclass(cls: 'T' = None) -> 'T':
+def dataclass(
+    cls: 'T' = None,
+    type_var_map: Dict[TypeVar, Callable[..., 'Field']] = _TYPES_REGISTRY,
+) -> 'T':
     """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
     Returns the same class as was passed in, with dunder methods and from_document method.
 
@@ -144,18 +155,16 @@ def dataclass(cls: 'T' = None) -> 'T':
             if isinstance(f, Field):
                 continue
 
-            if f.type in _TYPES_REGISTRY:
-                decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[f.type](f)
+            if f.type in type_var_map:
+                decorated_cls.__dataclass_fields__[key] = type_var_map[f.type](f)
 
             elif isinstance(f.type, typing._GenericAlias) and f.type._name in [
                 'List',
                 'Iterable',
             ]:
                 sub_type = f.type.__args__[0]
-                if sub_type in _TYPES_REGISTRY:
-                    decorated_cls.__dataclass_fields__[key] = _TYPES_REGISTRY[sub_type](
-                        f
-                    )
+                if sub_type in type_var_map:
+                    decorated_cls.__dataclass_fields__[key] = type_var_map[sub_type](f)
 
         return decorated_cls
 
