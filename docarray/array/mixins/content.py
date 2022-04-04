@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 
 
 class ContentPropertyMixin:
-    """Helpers that provide faster getter & setter for :attr:`.content` by using protobuf directly. """
+    """Helpers that provide faster getter & setter for :attr:`.content` by using protobuf directly."""
 
     def _check_length(self, target_len: int):
         if target_len != len(self):
