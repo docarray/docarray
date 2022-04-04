@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 
 from docarray import Document
-from docarray.types.deserializers import (
+from docarray.dataclasses.deserializers import (
     audio_deserializer,
     image_deserializer,
     json_deserializer,

@@ -549,7 +549,7 @@ def test_invalid_type_annotations():
     inp = ['something']
     obj = MMDocument(attr=inp)
     with pytest.raises(Exception) as exc_info:
-        doc = Document.from_dataclass(obj)
+        Document.from_dataclass(obj)
     assert exc_info.value.args[0] == 'Unsupported type annotation'
     assert str(exc_info.value) == 'Unsupported type annotation'
 
@@ -561,6 +561,6 @@ def test_not_data_class():
     obj = MMDocument()
 
     with pytest.raises(Exception) as exc_info:
-        doc = Document.from_dataclass(obj)
-    assert exc_info.value.args[0] == 'Object MMDocument is not a dataclass instance'
-    assert str(exc_info.value) == 'Object MMDocument is not a dataclass instance'
+        Document.from_dataclass(obj)
+    assert 'not a `docarray.dataclasses.dataclass` instance' in exc_info.value.args[0]
+    assert 'not a `docarray.dataclasses.dataclass`' in str(exc_info.value)
