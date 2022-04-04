@@ -24,7 +24,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=2)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
@@ -32,9 +32,8 @@ def test_sprite_fail_tensor_success_uri(
     pytestconfig, tmpdir, da_cls, config, start_storage
 ):
     files = [
-        f'{pytestconfig.rootdir}/**/*.png',
-        f'{pytestconfig.rootdir}/**/*.jpg',
-        f'{pytestconfig.rootdir}/**/*.jpeg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.png',
     ]
     if config:
         da = da_cls.from_files(files, config=config)
@@ -57,7 +56,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, lambda: AnnliteConfig(n_dim=128)),
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
-        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=2)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
     ],
 )
@@ -65,9 +64,8 @@ def test_sprite_image_generator(
     pytestconfig, tmpdir, image_source, da_cls, config_gen, start_storage
 ):
     files = [
-        f'{pytestconfig.rootdir}/**/*.png',
-        f'{pytestconfig.rootdir}/**/*.jpg',
-        f'{pytestconfig.rootdir}/**/*.jpeg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
+        f'{pytestconfig.rootdir}/tests/image-data/*.png',
     ]
     if config_gen:
         da = da_cls.from_files(files, config=config_gen())
