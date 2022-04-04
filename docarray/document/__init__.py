@@ -1,4 +1,4 @@
-from typing import overload, Dict, Optional, List, TYPE_CHECKING, Sequence
+from typing import overload, Dict, Optional, List, TYPE_CHECKING, Sequence, Any
 
 from .data import DocumentData
 from .mixins import AllMixins
@@ -29,6 +29,11 @@ class Document(AllMixins, BaseDCType):
 
     @overload
     def __init__(self, _obj: Optional['Document'] = None, copy: bool = False):
+        ...
+
+    @overload
+    def __init__(self, _obj: Optional[Any] = None):
+        """Create a Document from a `docarray.dataclasses.dataclass` instance"""
         ...
 
     @overload

@@ -131,7 +131,7 @@ class MultiModalMixin:
         attribute_type = AttributeType.DOCUMENT
 
         if is_dataclass(obj_type):
-            doc = cls.from_dataclass(obj)
+            doc = cls(obj)
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
             doc = Document()
