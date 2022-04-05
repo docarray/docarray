@@ -18,7 +18,9 @@ class PlotMixin:
             'Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True
         )
         for f in self.non_empty_fields:
-            if f in ('embedding', 'tensor'):
+            if f.startswith('_'):
+                continue
+            elif f in ('embedding', 'tensor'):
                 from ...math.ndarray import to_numpy_array
 
                 v = to_numpy_array(getattr(self, f))
@@ -27,7 +29,7 @@ class PlotMixin:
 
                     v = ColorBoxEmbedding(v.squeeze())
                 else:
-                    v = str(getattr(self, f))
+                    v = f'{type(getattr(self, f))} in shape {v.shape}, dtype: {v.dtype}'
                 my_table.add_row(f, v)
             elif f not in ('id', 'chunks', 'matches'):
                 my_table.add_row(f, str(getattr(self, f)))
