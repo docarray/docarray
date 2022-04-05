@@ -50,8 +50,8 @@ They correspond to string-like data (e.g. for natural language), `ndarray`-like 
 | `doc.tensor` | A Python (nested) list/tuple of numbers, Numpy `ndarray`, SciPy sparse matrix (`spmatrix`), TensorFlow dense & sparse tensor, PyTorch dense & sparse tensor, PaddlePaddle dense tensor  | Contain image/video/audio        |
 | `doc.blob`   | Binary string                                                                                                                                                                           | Contain intermediate IO buffer   |
 
-
-Each Document can contain only one type of content. That means these three attributes are mutually exclusive. Let's see an example:
+(mutual-exclusive)=
+**Each Document can contain only one type of content.** That means these three attributes are mutually exclusive. Let's see an example:
 
 
 ```python
@@ -85,6 +85,7 @@ There is also a `.content` sugar getter/setter of the content fields. The conten
 
 ```python
 from docarray import Document
+
 d = Document(content='hello')
 print(d)
 ```
@@ -154,10 +155,12 @@ most other parts of the wor
 ```python
 from docarray import Document
 
-d1 = Document(uri='''data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+d1 = Document(
+    uri='''data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg==
-''').load_uri_to_image_tensor()
+'''
+).load_uri_to_image_tensor()
 
 print(d1.content_type, d1.content)
 ```

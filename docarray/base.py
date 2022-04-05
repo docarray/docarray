@@ -2,7 +2,7 @@ import copy as cp
 from dataclasses import fields
 from functools import lru_cache
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
-from .dataclasses import is_dataclass
+from .dataclasses import is_multimodal
 
 from .helper import typename
 
@@ -34,7 +34,7 @@ class BaseDCType:
                 self._data = _obj._data
         elif isinstance(_obj, dict):
             kwargs.update(_obj)
-        elif is_dataclass(_obj):
+        elif is_multimodal(_obj):
             self._data = type(self).from_dataclass(_obj)._data
 
         if kwargs:

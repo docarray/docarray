@@ -50,7 +50,7 @@ def test_simple():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -113,7 +113,7 @@ def test_nested():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -146,7 +146,7 @@ def test_with_tags():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -179,7 +179,7 @@ def test_iterable_doc():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = SocialPost.from_document(doc)
+    translated_obj = SocialPost(doc)
     assert translated_obj == obj
 
 
@@ -228,7 +228,7 @@ def test_iterable_nested():
     for subtitle in doc.chunks[1].chunks:
         _assert_doc_schema(subtitle, expected_nested_schema)
 
-    translated_obj = VideoDocument.from_document(doc)
+    translated_obj = VideoDocument(doc)
     assert translated_obj == obj
 
 
@@ -471,7 +471,7 @@ def test_proto_serialization():
     ]
     _assert_doc_schema(deserialized_doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -485,13 +485,13 @@ def test_json_type():
     doc = Document(obj)
 
     assert doc.chunks[0].tags['attr'] == inp
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
     obj = MMDocument(attr=json.dumps(inp))
     doc = Document(obj)
     assert doc.chunks[0].tags['attr'] == inp
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -530,7 +530,7 @@ def test_custom_field_type():
     assert doc.chunks[0].blob is not None
     assert doc.chunks[1].blob is not None
 
-    translated_obj: MMDocument = MMDocument.from_document(doc)
+    translated_obj: MMDocument = MMDocument(doc)
     assert isinstance(translated_obj.pickled_image, PILImage)
     assert isinstance(translated_obj.base64_encoded_ndarray, np.ndarray)
 
