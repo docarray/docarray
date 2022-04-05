@@ -129,8 +129,7 @@ class PushPullMixin:
         )
 
         if response.ok:
-            json_res = response.json()
-            return json_res.get('data')
+            return response.json()['data']
         else:
             response.raise_for_status()
 
