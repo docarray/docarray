@@ -13,9 +13,13 @@ class PushMockResponse:
     def __init__(self, status_code: int = 200):
         self.status_code = status_code
         self.headers = {'Content-length': 1}
+        self.ok = status_code == 200
 
     def json(self):
-        return {'code': self.status_code}
+        return {'code': self.status_code, 'data': []}
+
+    def raise_for_status(self):
+        raise Exception
 
 
 class PullMockResponse:
@@ -100,11 +104,9 @@ def test_push_fail(mocker, monkeypatch):
     _mock_post(mock, monkeypatch, status_code=requests.codes.forbidden)
 
     docs = random_docs(2)
-    with pytest.raises(RuntimeError) as exc_info:
+    with pytest.raises(Exception) as exc_info:
         docs.push('test_name')
 
-    assert exc_info.match('Failed to push DocumentArray to Jina Cloud')
-    assert exc_info.match('Status code: 403')
     assert mock.call_count == 1
 
 
