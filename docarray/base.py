@@ -35,7 +35,7 @@ class BaseDCType:
         elif isinstance(_obj, dict):
             kwargs.update(_obj)
         elif is_multimodal(_obj):
-            self._data = type(self).from_dataclass(_obj)._data
+            self._data = type(self)._from_dataclass(_obj)._data
 
         if kwargs:
             try:

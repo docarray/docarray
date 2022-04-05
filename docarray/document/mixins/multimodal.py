@@ -18,10 +18,10 @@ class MultiModalMixin:
         return 'multi_modal_schema' in self._metadata
 
     @classmethod
-    def from_dataclass(cls, obj) -> 'Document':
+    def _from_dataclass(cls, obj) -> 'Document':
         if not is_multimodal(obj):
             raise TypeError(
-                f'Object {type(obj).__name__} is not a `docarray.dataclasses.dataclass` instance'
+                f'Object {type(obj).__name__} is not a `docarray.dataclass` instance'
             )
 
         from docarray import Document

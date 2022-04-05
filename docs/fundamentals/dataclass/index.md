@@ -160,7 +160,7 @@ Second challenge is accessing the nested sub-Document. We want to provide users 
 
 Final challenge is how to play well with DocArray and Jina Ecosystem, allowing users to leverage existing API, algorithms and models to handle such multimodal documents. To be specific, user can use multimodal document as the I/O without changing their algorithms and models.   
 
-## Solution
+## What's next
 
-DocArray's dataclass is designed to tackle these challenges by providing an elegant solution based on Python dataclass. It shares the same idiom as Python dataclass, allowing user to define a multimodal document by adding type annotations. 
+DocArray's dataclass is designed to tackle these challenges by providing an elegant solution based on Python dataclass. It shares the same idiom as Python dataclass, allowing user to define a multimodal document by adding type annotations. In the next sections, we shall see how it works.
 
