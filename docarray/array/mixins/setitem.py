@@ -120,6 +120,7 @@ class SetItemMixin:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
 
     def _set_by_pair(self, idx1, idx2, value):
+
         if isinstance(idx1, str) and not idx1.startswith('@'):
             # second is an ID
             # allows da[id1, id2] = [d1, d2]
@@ -136,6 +137,7 @@ class SetItemMixin:
                 and all(isinstance(attr, str) for attr in idx2)
                 and all(hasattr(self[idx1], attr) for attr in idx2)
             ):
+
                 for attr, _v in zip(idx2, value):
                     self._set_doc_attr_by_id(idx1, attr, _v)
             else:
