@@ -3,10 +3,9 @@ import os
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING
+from typing import Dict, Type, TYPE_CHECKING, Optional
 from urllib.request import Request, urlopen
 
-from ....exceptions import ObjectNotFoundError
 from ....helper import get_request_header
 
 if TYPE_CHECKING:
@@ -16,7 +15,7 @@ JINA_CLOUD_CONFIG = 'config.json'
 
 
 @lru_cache()
-def _get_hub_config() -> Dict:
+def _get_hub_config() -> Optional[Dict]:
     hub_root = Path(os.environ.get('JINA_HUB_ROOT', Path.home().joinpath('.jina')))
 
     if not hub_root.exists():
@@ -26,8 +25,6 @@ def _get_hub_config() -> Dict:
     if config_file.exists():
         with open(config_file) as f:
             return json.load(f)
-
-    return {}
 
 
 @lru_cache()
@@ -90,8 +87,9 @@ class PushPullMixin:
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        auth_token = _get_hub_config().get('auth_token')
-        if auth_token:
+        _hub_config = _get_hub_config()
+        if _hub_config:
+            auth_token = _hub_config.get('auth_token')
             headers['Authorization'] = f'token {auth_token}'
 
         _head, _tail = data.split(delimiter)
@@ -103,42 +101,44 @@ class PushPullMixin:
         def gen():
             total_size = 0
 
-            with pbar:
-                pbar.start_task(t)
+            pbar.start_task(t)
 
-                for idx, d in enumerate(self):
-                    chunk = b''
-                    if idx == 0:
-                        chunk += _head
-                        chunk += self._stream_header
-                    if idx < len(self):
-                        chunk += d._to_stream_bytes(
-                            protocol='protobuf', compress='gzip'
-                        )
-                        total_size += len(chunk)
-                        if total_size > self._max_bytes:
-                            warnings.warn(
-                                f'DocumentArray is too big. Only first {idx} Documents are pushed'
-                            )
-                            break
-                        yield chunk
-                        pbar.update(
-                            t, advance=1, total_size=str(filesize.decimal(total_size))
-                        )
+            chunk = _head + self._stream_header
+
+            yield chunk
+
+            def _get_chunk(_batch):
+                return b''.join(
+                    d._to_stream_bytes(protocol='protobuf', compress='gzip')
+                    for d in _batch
+                ), len(_batch)
+
+            for chunk, num_doc_in_chunk in self.map_batch(_get_chunk, batch_size=32):
+                total_size += len(chunk)
+                if total_size > self._max_bytes:
+                    warnings.warn(
+                        f'DocumentArray is too big. The pushed DocumentArray might be chopped off.'
+                    )
+                    break
+                yield chunk
+                pbar.update(
+                    t,
+                    advance=num_doc_in_chunk,
+                    total_size=str(filesize.decimal(total_size)),
+                )
             yield _tail
 
-        res = requests.post(
-            f'{_get_cloud_api()}/v2/rpc/artifact.upload', data=gen(), headers=headers
-        )
-        json_res = res.json()
-
-        if res.status_code != 200:
-            raise RuntimeError(
-                json_res.get('message', 'Failed to push DocumentArray to Jina Cloud'),
-                f'Status code: {res.status_code}',
+        with pbar:
+            response = requests.post(
+                f'{_get_cloud_api()}/v2/rpc/artifact.upload',
+                data=gen(),
+                headers=headers,
             )
 
-        return json_res.get('data')
+        if response.ok:
+            return response.json()['data']
+        else:
+            response.raise_for_status()
 
     @classmethod
     def pull(
@@ -161,8 +161,9 @@ class PushPullMixin:
 
         headers = {}
 
-        auth_token = _get_hub_config().get('auth_token')
-        if auth_token:
+        _hub_config = _get_hub_config()
+        if _hub_config:
+            auth_token = _hub_config.get('auth_token')
             headers['Authorization'] = f'token {auth_token}'
 
         url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'
@@ -171,13 +172,7 @@ class PushPullMixin:
         if response.ok:
             url = response.json()['data']['download']
         else:
-            json_res = response.json()
-            raise ObjectNotFoundError(
-                json_res.get(
-                    'message', 'Failed to pull DocumentArray from Jina Cloud.'
-                ),
-                f'Status code: {response.status_code}',
-            )
+            response.raise_for_status()
 
         with requests.get(
             url,
