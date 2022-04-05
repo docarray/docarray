@@ -14,7 +14,7 @@ from ....helper import (
 )
 
 if TYPE_CHECKING:
-    from ....types import T
+    from ....typing import T
     from ....proto.docarray_pb2 import DocumentArrayProto
     from .... import Document, DocumentArray
 

@@ -3,7 +3,7 @@ from typing import MutableSequence, TYPE_CHECKING, Union, Iterable
 from .. import Document
 
 if TYPE_CHECKING:
-    from ..types import T
+    from ..typing import T
 
 
 class BaseDocumentArray(MutableSequence[Document]):

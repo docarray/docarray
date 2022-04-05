@@ -2,7 +2,7 @@ from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy as np
-    from ...types import ArrayType
+    from ...typing import ArrayType
     from ... import DocumentArray
 
 

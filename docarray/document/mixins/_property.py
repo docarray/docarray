@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ...array.match import MatchArray
     from ...array.chunk import ChunkArray
     from ... import DocumentArray
-    from ...types import ArrayType, StructValueType, DocumentContentType
+    from ...typing import ArrayType, StructValueType, DocumentContentType
 
 
 class _PropertyMixin:

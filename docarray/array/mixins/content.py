@@ -3,11 +3,11 @@ from typing import List, Sequence, TYPE_CHECKING, Optional, Union
 from ...math.ndarray import ravel, unravel
 
 if TYPE_CHECKING:
-    from ...types import ArrayType, DocumentContentType
+    from ...typing import ArrayType, DocumentContentType
 
 
 class ContentPropertyMixin:
-    """Helpers that provide faster getter & setter for :attr:`.content` by using protobuf directly. """
+    """Helpers that provide faster getter & setter for :attr:`.content` by using protobuf directly."""
 
     def _check_length(self, target_len: int):
         if target_len != len(self):

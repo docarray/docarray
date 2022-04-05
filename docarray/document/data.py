@@ -9,7 +9,7 @@ from ..math.ndarray import check_arraylike_equality
 if TYPE_CHECKING:
     from ..score import NamedScore
     from .. import DocumentArray, Document
-    from ..types import ArrayType, StructValueType, DocumentContentType
+    from ..typing import ArrayType, StructValueType, DocumentContentType
 
 default_values = dict(
     granularity=0,

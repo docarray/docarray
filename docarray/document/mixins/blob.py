@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING, Union, BinaryIO
 from .helper import _uri_to_blob, _to_datauri, _get_file_context
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class BlobDataMixin:
-    """Provide helper functions for :class:`Document` to handle binary data. """
+    """Provide helper functions for :class:`Document` to handle binary data."""
 
     def load_uri_to_blob(self: 'T') -> 'T':
         """Convert :attr:`.uri` to :attr:`.blob` inplace.

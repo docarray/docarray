@@ -5,11 +5,11 @@ import numpy as np
 from PIL import Image
 
 from docarray import Document
-from docarray.types.deserializers import (
-    audio_deserializer,
-    image_deserializer,
-    json_deserializer,
-    text_deserializer,
+from docarray.dataclasses.getter import (
+    audio_getter,
+    image_getter,
+    json_getter,
+    text_getter,
 )
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,36 +23,42 @@ def test_image_deserializer():
     doc._metadata['image_type'] = 'uri'
     doc._metadata['image_uri'] = 'image_uri'
 
-    assert image_deserializer('attribute_name', doc) == 'image_uri'
+    assert image_getter(doc, 'attribute_name') == 'image_uri'
 
     doc._metadata['image_type'] = 'ndarray'
     im = Image.open(IMAGE_URI)
     doc.tensor = np.asarray(im)
 
-    assert np.all(image_deserializer('attribute_name', doc) == np.asarray(im))
+    assert np.all(image_getter(doc, 'attribute_name') == np.asarray(im))
 
     doc._metadata['image_type'] = 'PIL'
 
     assert np.all(
-        image_deserializer('attribute_name', doc) == Image.fromarray(np.asarray(im))
+        image_getter(doc, 'attribute_name') == Image.fromarray(np.asarray(im))
     )
 
 
 def test_text_deserializer():
     doc = Document(text='text')
 
-    assert text_deserializer('attriute_name', doc) == 'text'
+    assert (
+        text_getter(
+            doc,
+            'attriute_name',
+        )
+        == 'text'
+    )
 
 
 def test_json_deserializer():
     doc = Document()
     doc._metadata['json_type'] = ''
     doc.tags['attribute_name'] = 'attribute'
-    assert json_deserializer('attribute_name', doc) == 'attribute'
+    assert json_getter(doc, 'attribute_name') == 'attribute'
 
     doc._metadata['json_type'] = 'str'
 
-    assert json_deserializer('attribute_name', doc) == json.dumps('attribute')
+    assert json_getter(doc, 'attribute_name') == json.dumps('attribute')
 
 
 def test_audio_deserializer():
@@ -61,5 +67,5 @@ def test_audio_deserializer():
     doc.tensor = np.asarray(ad)
 
     assert np.all(
-        audio_deserializer('attribute_name', doc) == Image.fromarray(np.asarray(ad))
+        audio_getter(doc, 'attribute_name') == Image.fromarray(np.asarray(ad))
     )

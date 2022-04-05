@@ -1,18 +1,24 @@
 # Add New Document Store
 
-DocumentArray can be easily extended to support different Document Store backends. A Document Store can be a SQL/NoSQL/vector database, or even an in-memory data structure. The motivation of on-boarding a new Document Store backend is often:
+DocumentArray can be easily extended to support new Document Store. As we have seen in the previous chapters, a document store can be a SQL/NoSQL/vector database, or even an in-memory data structure. 
+
+For DocArray, the motivation of on-boarding a new store is often:
 - having persistence that better fits to the use case;
 - pulling from an existing data source;
 - supporting advanced query languages, e.g. nearest-neighbor retrieval.
 
-After the extension, users can enjoy convenient and powerful DocumentArray API on top of your document store. To end users, it promises the same user experience just like using a regular DocumentArray, no extra learning is required.
+For the database vendor, the motivation is often:
+- having a powerful, well-designed and well-maintained Python client for your document store;
+- plugging your document store into Jina AI ecosystems (e.g. Jina, Hub, CLIP-as-service, Finetuner, etc.) and making synergy with Jina AI.
 
-This chapter gives you a walk-through on how to add a new DocumentArray. To be specific, in this chapter we are extending DocumentArray to support a new backend `mydocstore`. The final result would be enabling the following usage:
+After the extension, users can enjoy convenient and powerful DocumentArray API on top of your document store. It promises the same user experience just like using a regular DocumentArray, no extra learning is required.
+
+This chapter gives you a walk-through on how to add a new document store. To be specific, in this chapter we are extending DocumentArray to support a new document store called `mydocstore`. The final usage would look like the following:
 
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='mydocstore')
+da = DocumentArray(storage='mydocstore', config={...})
 ```
 
 Let's get started!
@@ -102,9 +108,11 @@ As a reference, you can check out how we implement for SQLite, check out {class}
 Your `seqlike.py` should look like the following:
 
 ```python
-from typing import MutableSequence, Iterable, Iterator, Union
-from docarray import Document
+from typing import Iterable, Iterator, Union, TYPE_CHECKING
 from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+
+if TYPE_CHECKING:
+    from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -159,7 +167,7 @@ from dataclasses import dataclass
 from docarray.array.storage.base.backend import BaseBackendMixin
 
 if TYPE_CHECKING:
-    from docarray.types import (
+    from docarray.typing import (
         DocumentArraySourceType,
     )
 
@@ -191,7 +199,7 @@ class BackendMixin(BaseBackendMixin):
 As a reference, you can check out how we implement for SQLite, check out {class}`~docarray.array.storage.sqlite.backend.BackendMixin`.
 ```
 
-## Step 5 (Optional): implement `find.py`
+## Step 5: implement `find.py`
 If your storage backend supports approximate nearest neighbor search, you can allow users to use this feature within 
 docarray. To do so, add a `find.py` file that looks like the following:
 
@@ -323,7 +331,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
 Done! Now you should be able to use it like `DocumentArrayMyDocStore`!
 
-## Contribute: add tests and type-hint
+## On pull request: add tests and type-hint
 
 Welcome to contribute your extension back to DocArray. You will need to include `DocumentArrayMyDocStore` in at least the following tests:
 

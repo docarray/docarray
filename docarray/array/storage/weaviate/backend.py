@@ -19,7 +19,7 @@ from .... import Document
 from ....helper import dataclass_from_dict
 
 if TYPE_CHECKING:
-    from ....types import DocumentArraySourceType, ArrayType
+    from ....typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass

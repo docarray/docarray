@@ -25,7 +25,7 @@ from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
 
 if TYPE_CHECKING:
-    from docarray.types import DocumentArraySourceType, ArrayType
+    from ....typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass

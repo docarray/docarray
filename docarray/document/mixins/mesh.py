@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class MeshDataMixin:
-    """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud. """
+    """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
     def load_uri_to_point_cloud_tensor(
         self: 'T', samples: int, as_chunks: bool = False

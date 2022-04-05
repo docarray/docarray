@@ -6,11 +6,11 @@ import numpy as np
 from .helper import _uri_to_blob, _to_datauri
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
 
 
 class TextDataMixin:
-    """Provide helper functions for :class:`Document` to support text data. """
+    """Provide helper functions for :class:`Document` to support text data."""
 
     def load_uri_to_text(self: 'T', charset: str = 'utf-8') -> 'T':
         """Convert :attr:`.uri` to :attr`.text` inplace.

@@ -14,7 +14,9 @@ class PlotMixin:
         from rich.table import Table
         from rich import box
 
-        my_table = Table('Attribute', 'Value', width=80, box=box.ROUNDED)
+        my_table = Table(
+            'Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True
+        )
         for f in self.non_empty_fields:
             if f in ('embedding', 'tensor'):
                 from ...math.ndarray import to_numpy_array

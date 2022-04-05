@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Type, List
 
 if TYPE_CHECKING:
-    from ...types import T
+    from ...typing import T
     from ..strawberry_type import StrawberryDocument
 
 
