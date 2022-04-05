@@ -3,6 +3,7 @@ from typing import overload, Dict, Optional, List, TYPE_CHECKING, Sequence, Any
 from .data import DocumentData
 from .mixins import AllMixins
 from ..base import BaseDCType
+from ..math.ndarray import detach_tensor_if_present
 
 if TYPE_CHECKING:
     from ..typing import ArrayType, StructValueType, DocumentContentType
@@ -93,3 +94,16 @@ class Document(AllMixins, BaseDCType):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+
+        for attribute in ['embedding', 'tensor']:
+            if hasattr(self, attribute):
+                setattr(
+                    state['_data'],
+                    attribute,
+                    detach_tensor_if_present(getattr(state['_data'], attribute)),
+                )
+
+        return state
