@@ -87,7 +87,7 @@ Let's see an example, say we have a DocumentArray with 1024 Documents, assuming 
 Question: **how long will it take to process 1024 Documents?**
 
 
-```{python}
+```python
 import time
 
 from docarray import DocumentArray

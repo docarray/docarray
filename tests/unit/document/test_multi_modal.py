@@ -50,7 +50,7 @@ def test_simple():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -113,7 +113,7 @@ def test_nested():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -146,7 +146,7 @@ def test_with_tags():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -179,7 +179,7 @@ def test_iterable_doc():
     ]
     _assert_doc_schema(doc, expected_schema)
 
-    translated_obj = SocialPost.from_document(doc)
+    translated_obj = SocialPost(doc)
     assert translated_obj == obj
 
 
@@ -228,7 +228,7 @@ def test_iterable_nested():
     for subtitle in doc.chunks[1].chunks:
         _assert_doc_schema(subtitle, expected_nested_schema)
 
-    translated_obj = VideoDocument.from_document(doc)
+    translated_obj = VideoDocument(doc)
     assert translated_obj == obj
 
 
@@ -247,7 +247,7 @@ def test_get_multi_modal_attribute():
         primitive=1,
     )
 
-    doc = Document.from_dataclass(mm_doc)
+    doc = Document(mm_doc)
     images = doc.get_multi_modal_attribute('image')
     texts = doc.get_multi_modal_attribute('texts')
     audios = doc.get_multi_modal_attribute('audio')
@@ -291,7 +291,7 @@ def test_traverse_simple(text_selector, audio_selector):
 
     mm_docs = DocumentArray(
         [
-            Document.from_dataclass(
+            Document(
                 MMDocument(text=f'text {i}', audio=AUDIO_URI, image=PIL_open(IMAGE_URI))
             )
             for i in range(5)
@@ -320,7 +320,7 @@ def test_traverse_attributes():
 
     mm_docs = DocumentArray(
         [
-            Document.from_dataclass(
+            Document(
                 MMDocument(
                     attr1='text',
                     attr2=AUDIO_URI,
@@ -347,7 +347,7 @@ def test_traverse_slice(selector):
 
     mm_docs = DocumentArray(
         [
-            Document.from_dataclass(
+            Document(
                 MMDocument(
                     attr=f'text {i}',
                 )
@@ -369,12 +369,10 @@ def test_traverse_iterable():
 
     mm_da = DocumentArray(
         [
-            Document.from_dataclass(
+            Document(
                 MMDocument(attr1=['text 1', 'text 2', 'text 3'], attr2=[AUDIO_URI] * 2)
             ),
-            Document.from_dataclass(
-                MMDocument(attr1=['text 3', 'text 4'], attr2=[AUDIO_URI] * 3)
-            ),
+            Document(MMDocument(attr1=['text 3', 'text 4'], attr2=[AUDIO_URI] * 3)),
         ]
     )
 
@@ -398,9 +396,7 @@ def test_traverse_chunks_attribute():
 
     da = DocumentArray.empty(5)
     for i, d in enumerate(da):
-        d.chunks.extend(
-            [Document.from_dataclass(MMDocument(attr=f'text {i}{j}')) for j in range(5)]
-        )
+        d.chunks.extend([Document(MMDocument(attr=f'text {i}{j}')) for j in range(5)])
 
     assert len(da['@r:3c:2.[attr]']) == 6
     for i, doc in enumerate(da['@r:3c:2.[attr]']):
@@ -418,9 +414,7 @@ def test_paths_separator():
 
     da = DocumentArray(
         [
-            Document.from_dataclass(
-                MMDocument(**{f'attr{i}': f'text {i}' for i in range(5)})
-            )
+            Document(MMDocument(**{f'attr{i}': f'text {i}' for i in range(5)}))
             for _ in range(3)
         ]
     )
@@ -471,7 +465,7 @@ def test_proto_serialization():
     ]
     _assert_doc_schema(deserialized_doc, expected_schema)
 
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -485,13 +479,13 @@ def test_json_type():
     doc = Document(obj)
 
     assert doc.chunks[0].tags['attr'] == inp
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
     obj = MMDocument(attr=json.dumps(inp))
     doc = Document(obj)
     assert doc.chunks[0].tags['attr'] == inp
-    translated_obj = MMDocument.from_document(doc)
+    translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
 
@@ -530,7 +524,7 @@ def test_custom_field_type():
     assert doc.chunks[0].blob is not None
     assert doc.chunks[1].blob is not None
 
-    translated_obj: MMDocument = MMDocument.from_document(doc)
+    translated_obj: MMDocument = MMDocument(doc)
     assert isinstance(translated_obj.pickled_image, PILImage)
     assert isinstance(translated_obj.base64_encoded_ndarray, np.ndarray)
 
@@ -562,9 +556,9 @@ def test_not_data_class():
     obj = MMDocument()
 
     with pytest.raises(Exception) as exc_info:
-        Document.from_dataclass(obj)
-    assert 'not a `docarray.dataclasses.dataclass` instance' in exc_info.value.args[0]
-    assert 'not a `docarray.dataclasses.dataclass`' in str(exc_info.value)
+        Document._from_dataclass(obj)
+    assert 'not a `docarray.dataclass` instance' in exc_info.value.args[0]
+    assert 'not a `docarray.dataclass`' in str(exc_info.value)
 
     with pytest.raises(Exception) as exc_info:
         Document(obj)

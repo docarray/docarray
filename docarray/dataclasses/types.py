@@ -1,5 +1,6 @@
 import base64
 import copy
+import functools
 import typing
 from dataclasses import (
     dataclass as _dataclass,
@@ -18,6 +19,7 @@ from typing import (
     TYPE_CHECKING,
     overload,
     Dict,
+    Type,
 )
 
 from .setter import (
@@ -124,19 +126,50 @@ _TYPES_REGISTRY = {
 }
 
 
+@overload
 def dataclass(
-    cls: 'T' = None,
+    cls: Optional['T'] = None,
+    *,
+    init: bool = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
     type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
 ) -> 'T':
-    """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
-    Returns the same class as was passed in, with dunder methods and from_document method.
+    ...
 
 
-    If init is true, an __init__() method is added to the class. If
-    repr is true, a __repr__() method is added. If order is true, rich
-    comparison dunder methods are added. If unsafe_hash is true, a
-    __hash__() method function is added. If frozen is true, fields may
-    not be assigned to after instance creation.
+def dataclass(
+    cls: Optional['T'] = None,
+    *,
+    type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
+    **kwargs,
+) -> 'T':
+    """Annotates a class as a DocArray dataclass type.
+
+    Example usage:
+
+    >>> from docarray import dataclass, Image, Text
+    >>>
+    >>> @dataclass:
+    >>> class X:
+    >>>     banner: Image = 'apple.png'
+    >>>     description: Text = 'This is a big red apple.'
+
+    :param type_var_map: a mapping from TypeVar to a callable that gives Field.
+
+        .. highlight:: python
+        .. code-block:: python
+
+            _TYPES_REGISTRY = {
+                Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
+                Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
+            }
+
+        The default mapping will be overrided by this new mapping if they collide on the keys.
+
     """
 
     if not type_var_map:
@@ -146,17 +179,35 @@ def dataclass(
         r.update(type_var_map)
         type_var_map = r
 
+    from docarray import Document
+
+    def deco(f):
+        """
+        Set Decorator function.
+
+        :param f: function the decorator is used for
+        :return: wrapper
+        """
+
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            if not kwargs and len(args) == 2 and isinstance(args[1], Document):
+                return f(args[0], **from_document(type(args[0]), args[1]))
+            else:
+                return f(*args, **kwargs)
+
+        return wrapper
+
     def wrap(cls):
-        decorated_cls = _dataclass(
-            cls,
-            init=True,
-            repr=True,
-            eq=True,
-            order=False,
-            unsafe_hash=False,
-            frozen=False,
-        )
-        setattr(decorated_cls, from_document.__func__.__name__, from_document)
+        decorated_cls = _dataclass(cls, **kwargs)
+
+        # inject flag for recognizing this is a multimodal dataclass
+        setattr(decorated_cls, '__is_multimodal__', True)
+
+        # wrap init so `MMDoc(document)` is possible
+        if getattr(decorated_cls, '__init__'):
+            decorated_cls.__init__ = deco(decorated_cls.__init__)
+
         for key, f in decorated_cls.__dataclass_fields__.items():
             if isinstance(f, Field):
                 continue
@@ -180,13 +231,12 @@ def dataclass(
     return wrap(cls)
 
 
-def is_dataclass(obj) -> bool:
+def is_multimodal(obj) -> bool:
     """Returns True if obj is an instance of :meth:`.dataclass`."""
-    return _is_dataclass(obj) and hasattr(obj, 'from_document')
+    return _is_dataclass(obj) and hasattr(obj, '__is_multimodal__')
 
 
-@classmethod
-def from_document(cls: 'T', doc: 'Document'):
+def from_document(cls: Type['T'], doc: 'Document') -> 'T':
     if not doc.is_multimodal:
         raise ValueError(
             f'{doc} is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.'
@@ -229,7 +279,7 @@ def from_document(cls: 'T', doc: 'Document'):
         else:
             raise AttributeError(f'Invalid attribute at `{key}`')
 
-    return cls(**attributes)
+    return attributes
 
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
@@ -239,7 +289,7 @@ def _get_doc_attribute(attribute_doc: 'Document', field):
         raise ValueError('Invalid attribute type')
 
 
-def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls):
-    if not is_dataclass(nested_cls):
+def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls: Type['T']) -> 'T':
+    if not is_multimodal(nested_cls):
         raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
-    return nested_cls.from_document(attribute_doc)
+    return nested_cls(**from_document(nested_cls, attribute_doc))

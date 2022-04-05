@@ -1,7 +1,7 @@
 import base64
 import typing
 
-from ...dataclasses.types import Field, is_dataclass
+from ...dataclasses.types import Field, is_multimodal
 from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -18,10 +18,10 @@ class MultiModalMixin:
         return 'multi_modal_schema' in self._metadata
 
     @classmethod
-    def from_dataclass(cls, obj) -> 'Document':
-        if not is_dataclass(obj):
+    def _from_dataclass(cls, obj) -> 'Document':
+        if not is_multimodal(obj):
             raise TypeError(
-                f'Object {type(obj).__name__} is not a `docarray.dataclasses.dataclass` instance'
+                f'Object {type(obj).__name__} is not a `docarray.dataclass` instance'
             )
 
         from docarray import Document
@@ -130,7 +130,7 @@ class MultiModalMixin:
 
         attribute_type = AttributeType.DOCUMENT
 
-        if is_dataclass(obj_type):
+        if is_multimodal(obj_type):
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
