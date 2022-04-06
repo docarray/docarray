@@ -338,13 +338,13 @@ If you want to transfer a DocumentArray from one machine to another or share it 
 
 
 ```python
-left_da.push(token='my_shared_da')
+left_da.push('my_shared_da')
 ```
 
 Now anyone who knows the token `my_shared_da` can pull and work on it.
 
 ```python
-left_da = DocumentArray.pull(token='my_shared_da')
+left_da = DocumentArray.pull('my_shared_da')
 ```
 
 Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).

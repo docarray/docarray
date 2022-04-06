@@ -178,7 +178,9 @@ from docarray import DocumentArray, Document
 da = DocumentArray([Document(text='hello'), Document(text='world')])
 
 da.save_binary('my_docarray.bin', protocol='protobuf', compress='lz4')
-da_rec = DocumentArray.load_binary('my_docarray.bin', protocol='protobuf', compress='lz4')
+da_rec = DocumentArray.load_binary(
+    'my_docarray.bin', protocol='protobuf', compress='lz4'
+)
 da_rec.summary()
 ```
 
@@ -230,9 +232,11 @@ In particular, if a serialization uses `protocol='pickle'` or `protocol='protobu
 ```python
 from docarray import DocumentArray, Document
 
-da_generator = DocumentArray.load_binary('xxxl.bin', protocol='pickle', compress='gzip', streaming=True)
+da_generator = DocumentArray.load_binary(
+    'xxxl.bin', protocol='pickle', compress='gzip', streaming=True
+)
 
-for d in da_generator: 
+for d in da_generator:
     d: Document
     # go nuts with `d`
 ```
@@ -248,6 +252,7 @@ Serialize into base64 can be useful when binary string is not allowed, e.g. in R
 
 ```python
 from docarray import DocumentArray
+
 da = DocumentArray.empty(10)
 
 d_str = da.to_base64(protocol='protobuf', compress='lz4')
@@ -263,7 +268,7 @@ To deserialize, remember to set the correct `protocol` and `compress`:
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray.from_base64(d_str, protocol='protobuf', compress='lz4') 
+da = DocumentArray.from_base64(d_str, protocol='protobuf', compress='lz4')
 da.summary()
 ```
 
@@ -368,7 +373,7 @@ Considering you are working on a GPU machine via Google Colab/Jupyter. After pre
 from docarray import DocumentArray
 
 da = DocumentArray(...)  # heavylifting, processing, GPU task, ...
-da.push(token='myda123', show_progress=True)
+da.push('myda123', show_progress=True)
 ```
 
 ```{figure} images/da-push.png
@@ -379,7 +384,7 @@ Then on your local laptop, simply pull it:
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray.pull(token='myda123', show_progress=True)
+da = DocumentArray.pull('myda123', show_progress=True)
 ```
 
 Now you can continue the work at local, analyzing `da` or visualizing it. Your friends & colleagues who know the token `myda123` can also pull that DocumentArray. It's useful when you want to quickly share the results with your colleagues & friends.
