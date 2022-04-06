@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 import pickle
 from typing import List
@@ -10,12 +9,16 @@ import pytest
 from docarray import Document, DocumentArray
 from docarray.dataclasses import Text, Image, Audio, JSON, dataclass, field
 from docarray.dataclasses.getter import image_getter
+from docarray.dataclasses.types import Video, Mesh, Blob, Tabular
 from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 AUDIO_URI = os.path.join(cur_dir, 'toydata/hello.wav')
 IMAGE_URI = os.path.join(cur_dir, 'toydata/test.png')
+VIDEO_URI = os.path.join(cur_dir, 'toydata/mov_bbb.mp4')
+MESH_URI = os.path.join(cur_dir, 'toydata/test.glb')
+TABULAR_URI = os.path.join(cur_dir, 'toydata/docs.csv')
 
 
 def _assert_doc_schema(doc, schema):
@@ -26,6 +29,32 @@ def _assert_doc_schema(doc, schema):
             assert doc._metadata['multi_modal_schema'][field]['position'] == position
         else:
             assert 'position' not in doc._metadata['multi_modal_schema'][field]
+
+
+def test_type_annotation():
+    @dataclass
+    class MMDoc:
+        f1: Video
+        f2: Mesh
+        f3: Blob
+        f4: Tabular = None
+
+    m1 = MMDoc(f1=VIDEO_URI, f2=MESH_URI, f3=b'hello', f4=TABULAR_URI)
+
+    m_r = MMDoc(Document(m1))
+
+    assert m_r == m1
+
+    # test direct tensor assignment
+    m2 = MMDoc(
+        f1=np.random.random([10, 10]),
+        f2=np.random.random([10, 10]),
+        f3=MESH_URI,  # intentional, to test file path as binary
+    )
+
+    m_r = MMDoc(Document(m2))
+
+    assert m_r == m2
 
 
 def test_simple():
