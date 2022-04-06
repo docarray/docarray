@@ -1,7 +1,7 @@
 import base64
 import typing
 
-from ...dataclasses.types import Field, is_multimodal
+from ...dataclasses.types import Field, is_multimodal, _is_field
 from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -34,14 +34,14 @@ class MultiModalMixin:
             if attribute is None:
                 continue
 
-            if field.type in [str, int, float, bool] and not isinstance(field, Field):
+            if field.type in [str, int, float, bool] and not _is_field(field):
                 tags[key] = attribute
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
                     'type': field.type.__name__,
                 }
 
-            elif field.type == bytes and not isinstance(field, Field):
+            elif field.type == bytes and not _is_field(field):
                 tags[key] = base64.b64encode(attribute).decode()
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
@@ -134,7 +134,7 @@ class MultiModalMixin:
         if is_multimodal(obj_type):
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
-        elif isinstance(field, Field):
+        elif _is_field(field):
             doc = field.setter(obj)
         else:
             raise ValueError(f'Unsupported type annotation')

@@ -614,3 +614,13 @@ def test_data_class_customized_typevar_map():
     assert len(d.chunks) == 2
     assert d.chunks[0].blob
     assert not d.chunks[0].tensor
+
+
+def test_field_fn():
+    @dataclass
+    class MMDoc:
+        banner: List[Image] = field(default_factory=lambda: [IMAGE_URI, IMAGE_URI])
+
+    m1 = MMDoc()
+    m2 = MMDoc(Document(m1))
+    assert m1 == m2

@@ -45,8 +45,8 @@ class Field(_Field):
     def __init__(
         self,
         *,
-        setter: Callable,
-        getter: Callable,
+        setter: Optional[Callable] = None,
+        getter: Optional[Callable] = None,
         _source_field: Optional[_Field] = None,
         **kwargs,
     ):
@@ -63,8 +63,8 @@ class Field(_Field):
 def field(
     *,
     _source_field: Optional[_Field] = None,  # Privately used
-    setter: Callable,
-    getter: Callable,
+    setter: Optional[Callable] = None,
+    getter: Optional[Callable] = None,
     default=MISSING,
     default_factory=MISSING,
     init=True,
@@ -78,6 +78,10 @@ def field(
 
 def field(**kwargs) -> Field:
     return Field(**kwargs)
+
+
+def _is_field(f) -> bool:
+    return isinstance(f, Field) and getattr(f, 'setter') and getattr(f, 'getter')
 
 
 _TYPES_REGISTRY = {
@@ -177,7 +181,7 @@ def dataclass(
             decorated_cls.__init__ = deco(decorated_cls.__init__)
 
         for key, f in decorated_cls.__dataclass_fields__.items():
-            if isinstance(f, Field):
+            if _is_field(f):
                 continue
 
             if f.type in type_var_map:
@@ -256,7 +260,7 @@ def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
 
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
-    if isinstance(field, Field):
+    if _is_field(field):
         return field.getter(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')

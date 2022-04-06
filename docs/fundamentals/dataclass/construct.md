@@ -299,7 +299,7 @@ This section explains the behavior of field annotations in details.
     ```
     
     ````
-
+(type-list)=
 - The annotation type determines how the sub-Document is constructed. For example, annotating a field as `Image` will instruct the construction to fill in `doc.tensor` by reading the image URI. Annotating a field as `JSON` will instruct the construction to fill in `doc.tags`. The complete behavior table can be found below:
     
     | Type annotation | Accepted value types   | Behavior                                                                                                       |
@@ -466,6 +466,27 @@ m_r = MMDoc(d)  # from Document object
 
 assert m == m_r
 ```
+
+## Use `field()` for advanced configs
+
+For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. To satisfy this need for additional information, you can replace the default field value with a call to the provided {meth}`~docarray.dataclasses.types.field` function.
+
+For example, mutable object is not allowed as the default value of any dataclass field. One can solve it via:
+
+```python
+from typing import List
+
+from docarray import dataclass, field
+from docarray.typing import Image
+
+
+@dataclass
+class MMDoc:
+    banner: List[Image] = field(default_factory=lambda: ['test-1.jpeg', 'test-2.jpeg'])
+```
+
+Other parameters from the standard the Python field such as `init`, `compare`, `hash`, `repr` are also supported. More details can be [found here](https://docs.python.org/3/library/dataclasses.html#dataclasses.field).
+
 
 ## What's next?
 
