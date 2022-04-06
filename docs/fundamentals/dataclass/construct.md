@@ -299,7 +299,7 @@ This section explains the behavior of field annotations in details.
     ```
     
     ````
-
+(type-list)=
 - The annotation type determines how the sub-Document is constructed. For example, annotating a field as `Image` will instruct the construction to fill in `doc.tensor` by reading the image URI. Annotating a field as `JSON` will instruct the construction to fill in `doc.tags`. The complete behavior table can be found below:
     
     | Type annotation | Accepted value types   | Behavior                                                                                                       |
@@ -485,7 +485,7 @@ class MMDoc:
     banner: List[Image] = field(default_factory=lambda: ['test-1.jpeg', 'test-2.jpeg'])
 ```
 
-Other arguments in standard Python fields such as `init`, `compare`, `hash`, `repr` are also accepted.
+Other parameters from the standard the Python field such as `init`, `compare`, `hash`, `repr` are also supported. More details can be [found here](https://docs.python.org/3/library/dataclasses.html#dataclasses.field).
 
 
 ## What's next?
