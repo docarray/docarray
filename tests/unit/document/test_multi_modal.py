@@ -7,9 +7,9 @@ import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
-from docarray.dataclasses import Text, Image, Audio, JSON, dataclass, field
+from docarray.dataclasses import dataclass, field
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
-from docarray.dataclasses.types import Video, Mesh, Blob, Tabular
 from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))

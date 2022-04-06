@@ -1,18 +1,19 @@
 # Construct
 
-Just like Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way.
+Just like Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations in {mod}`docarray.typing` such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way:
 
 ```python
-from docarray import dataclass, Image, Text
+from docarray import dataclass
+from docarray.typing import Image, Text
 
 
 @dataclass
-class MyMutilModalDoc:
+class MyMultiModalDoc:
     avatar: Image
     description: Text
 
 
-m = MyMutilModalDoc(avatar='test-1.jpeg', description='hello, world')
+m = MyMultiModalDoc(avatar='test-1.jpeg', description='hello, world')
 ```
 
 To convert it into a `Document` object, simply:
@@ -51,11 +52,12 @@ One can see that this creates a Document object with two chunks nested.
         ╰──────────────────────┴───────────────────────────────────────────────────────╯
 ```
 
-To convert a Document object back to a `MyMutilModalDoc` object,
+To convert a Document object back to a `MyMultiModalDoc` object,
 
 ```python
-m = MyMutilModalDoc(d)
+m = MyMultiModalDoc(d)
 ```
+
 
 
 ## Dataclass decorator
@@ -97,20 +99,21 @@ That means, [arguments accepted by standard `dataclass`](https://docs.python.org
 To tell if a class or object is DocArray's dataclass, you can use {meth}`~docarray.dataclasses.types.is_multimodal`:
 
 ```python
+from docarray.typing import Image
 import dataclasses
 
 import docarray
-from docarray.dataclasses.types import is_multimodal
+from docarray.dataclasses import is_multimodal
 
 
 @docarray.dataclass
 class MMDoc1:
-    banner: docarray.Image = 'test-1.jpeg'
+    banner: Image = 'test-1.jpeg'
 
 
 @dataclasses.dataclass
 class MMDoc2:
-    banner: docarray.Image = 'test-1.jpeg'
+    banner: Image = 'test-1.jpeg'
 
 
 print(is_multimodal(MMDoc1))
@@ -123,12 +126,16 @@ False
 ```
 
 
+In the sequel, unless otherwise specified `dataclass` always refers to `docarray.dataclass`, not the Python built-in `dataclass`.
+
+
 ## Annotate class fields
 
-One can annotate a class field as `Image`, `Text`, `JSON`, `Audio`, or as primitive Python types, or as other `docarray.dataclass`. For example,
+DocArray provides {mod}`docarray.typing` that allows one to annotate a class field as `Image`, `Text`, `JSON`, `Audio`, `Video`, `Mesh`, `Tabular`, `Blob`; or as primitive Python types; or as other `docarray.dataclass`. 
 
 ```python
-from docarray import dataclass, Image, Text, Audio
+from docarray import dataclass
+from docarray.typing import Image, Text, Audio
 
 
 @dataclass
@@ -183,17 +190,253 @@ One can look at the structure of `d` via `d.summary()`:
         ╰──────────────┴───────────────────────────────────────────────────────────────╯
 ```
 
-### Understand the consequence of field annotation
+## Behavior of field annotation
 
-One DocArray `dataclass` corresponds to one `Document` object, let's call it `root`.
+This section explains the behavior of field annotations in details.
 
-- Everytime a class field is annotated as a DocArray type, a nested sub-Document under `root.chunks`.
+- A `dataclass` corresponds to a `Document` object, let's call it `root`.
+- Unannotated fields are ignored.
+    
+    ````{tab} Field without type annotation
+    
+    ```python
+    from docarray import dataclass, Document
+
+
+    @dataclass
+    class Doc:
+        a = 1
+        b = 'hello'
+
+
+    Document(Doc()).summary()
+    ```
+    ````
+    
+    ````{tab} Document structure
+    
+    ```text
+    📄 Document: 17c77b443471f9d752cbcc360174b65f
+    ```
+    
+    ````
+- A class field annotated as a Python primitive data type will be put into `root.tags`.
+    
+    ````{tab} Fields in primitive type
+    
+    ```python
+    from docarray import dataclass, Document
+
+
+    @dataclass
+    class MMDoc:
+        some_field: str = 'hello'
+        other_field: int = 1
+
+
+    Document(MMDoc()).summary()
+    ``` 
+    ````
+    
+    ````{tab} Document structure
+    ```text
+    📄 Document: 15725d705b6c8d7e99908d380d614fa5
+    ╭────────────────┬─────────────────────────────────────────────────────────────╮
+    │ Attribute      │ Value                                                       │
+    ├────────────────┼─────────────────────────────────────────────────────────────┤
+    │ tags           │ {'some_field': 'hello', 'other_field': 1}                   │
+    ╰────────────────┴─────────────────────────────────────────────────────────────╯
+    ```
+    
+    ````
+
+- A class field annotated as a DocArray type will create a sub-Document nested under `root.chunks`.
+    
+    ````{tab} Field in DocArray type
+    
+    ```python
+    from docarray import dataclass, Document
+    from docarray.typing import Image
+
+
+    @dataclass
+    class MMDoc:
+        some_field: str = 'hello'
+        banner: Image = 'test-1.jpeg'
+
+
+    Document(MMDoc()).summary()
+    ```
+    
+    ````
+    
+    ````{tab} Document structure
+    
+    ```text
+    📄 Document: 48a84621d51d94383b86db89e64022a3
+    ╭────────────────────────┬─────────────────────────────────────────────────────╮
+    │ Attribute              │ Value                                               │
+    ├────────────────────────┼─────────────────────────────────────────────────────┤
+    │ tags                   │ {'some_field': 'hello'}                             │
+    ╰────────────────────────┴─────────────────────────────────────────────────────╯
+    └── 💠 Chunks
+        └── 📄 Document: 1cb5cc74f1f986876a0c4c87201b9a28
+            ╭──────────────┬───────────────────────────────────────────────────────────────╮
+            │ Attribute    │ Value                                                         │
+            ├──────────────┼───────────────────────────────────────────────────────────────┤
+            │ parent_id    │ 48a84621d51d94383b86db89e64022a3                              │
+            │ granularity  │ 1                                                             │
+            │ tensor       │ <class 'numpy.ndarray'> in shape (504, 504, 3), dtype: uint8  │
+            │ mime_type    │ image/jpeg                                                    │
+            │ uri          │ test-1.jpeg                                                   │
+            │ modality     │ image                                                         │
+            ╰──────────────┴───────────────────────────────────────────────────────────────╯
+    ```
+    
+    ````
+
 - The annotation type determines how the sub-Document is constructed. For example, annotating a field as `Image` will instruct the construction to fill in `doc.tensor` by reading the image URI. Annotating a field as `JSON` will instruct the construction to fill in `doc.tags`. The complete behavior table can be found below:
+    
+    | Type annotation | Accepted value types   | Behavior                                                                                                       |
+    |-----------------|------------------------|----------------------------------------------------------------------------------------------------------------|
+    | `Image`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the image and set `.modality='image'`                   |
+    | `Text`          | `str`                  | Create a sub-Document, fill in `doc.text` by the given value and set `.modality='text'`                        |
+    | `Audio`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the audio and set `.modality='audio'`                   |
+    | `JSON`          | `Dict`                 | Create a sub-Document, fill in `doc.tags` by the given value and set `.modality='json'`                        |
+    | `Video`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the video and set `.modality='video'`                   |
+    | `Mesh`          | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by sub-sampling the mesh as point-cloud and set `.modality='mesh'` |
+    | `Blob`          | `str`, `bytes`         | Create a sub-Document, fill in `doc.blob` by the given value or reading from the path                          |
 
-| Type annotation | Accepted value types                   | Behavior                                                                                     |
-|-----------------|----------------------------------------|----------------------------------------------------------------------------------------------|
-| `Image`         | `str`, `PIL.image`, tensor-like object | Create a sub-Document, fill in `doc.tensor` by reading the image and set `.modality='image'` |
-| `Text`          | `str`                                  | Create a sub-Document, fill in `doc.text` by the value and set `.modality='text'`            |
-| `Audio`         | `str`                                  | Create a sub-Document, fill in `doc.tensor` and `.modality='text'`                           |
-| `JSON`          | `str`, `Dict`                          | Create a sub-Document, fill in `doc.tags`                                                    |
+- A class field labeled with `List[Type]` will create sub-Documents under `root.chunks[0].chunks`. For example,
+    
+    ````{tab} Field in List[Image] 
+  
+    ```python
+    from typing import List
 
+    from docarray import dataclass, Document
+    from docarray.typing import Image
+
+
+    @dataclass
+    class MMDoc2:
+        banners: List[Image]
+
+
+    Document(MMDoc2(['test-1.jpeg', 'test-2.jpeg'])).summary()
+    ```
+    ````
+    
+    ````{tab} Document structure
+  
+    ```text
+    📄 Document: 52d9dcca4bc30cd0ef3b82917459cd32
+    └── 💠 Chunks
+        └── 📄 Document: 04edacf582c5aa7b0bcfcf3d3e0a57bf
+            ╭──────────────────────┬───────────────────────────────────────────────────────╮
+            │ Attribute            │ Value                                                 │
+            ├──────────────────────┼───────────────────────────────────────────────────────┤
+            │ parent_id            │ 52d9dcca4bc30cd0ef3b82917459cd32                      │
+            │ granularity          │ 1                                                     │
+            ╰──────────────────────┴───────────────────────────────────────────────────────╯
+            └── 💠 Chunks
+                ├── 📄 Document: f5e9f105162e26d1d42ef7e2d363095a
+                │   ╭──────────────┬───────────────────────────────────────────────────────────────╮
+                │   │ Attribute    │ Value                                                         │
+                │   ├──────────────┼───────────────────────────────────────────────────────────────┤
+                │   │ parent_id    │ 04edacf582c5aa7b0bcfcf3d3e0a57bf                              │
+                │   │ granularity  │ 1                                                             │
+                │   │ tensor       │ <class 'numpy.ndarray'> in shape (504, 504, 3), dtype: uint8  │
+                │   │ mime_type    │ image/jpeg                                                    │
+                │   │ uri          │ test-1.jpeg                                                   │
+                │   │ modality     │ image                                                         │
+                │   ╰──────────────┴───────────────────────────────────────────────────────────────╯
+                └── 📄 Document: d7d0b506f690890113e6a601ef80f8c6
+                    ╭──────────────┬───────────────────────────────────────────────────────────────╮
+                    │ Attribute    │ Value                                                         │
+                    ├──────────────┼───────────────────────────────────────────────────────────────┤
+                    │ parent_id    │ 04edacf582c5aa7b0bcfcf3d3e0a57bf                              │
+                    │ granularity  │ 1                                                             │
+                    │ tensor       │ <class 'numpy.ndarray'> in shape (504, 504, 3), dtype: uint8  │
+                    │ mime_type    │ image/jpeg                                                    │
+                    │ uri          │ test-2.jpeg                                                   │
+                    │ modality     │ image                                                         │
+                    ╰──────────────┴───────────────────────────────────────────────────────────────╯
+    ```
+    ````
+- A field annotated with another `dataclass` will create the full nested structure under the corresponding chunk.
+    
+    ````{tab} Field in another dataclass
+    
+    ```python
+    from docarray import dataclass, Document
+    from docarray.typing import Image, Text
+
+
+    @dataclass
+    class BannerDoc:
+        description: Text = 'this is a test empty image'
+        banner: Image = 'test-1.jpeg'
+
+
+    @dataclass
+    class ColumnArticle:
+        feature_image: BannerDoc
+        description: Text = 'this is a column article'
+        website: str = 'https://jina.ai'
+
+
+    Document(ColumnArticle(feature_image=BannerDoc())).summary()
+    ```
+    
+    ````
+    ````{tab} Document structure
+    ```text
+    📄 Document: 75a3df4c26498d338589d2b2c20e156e
+    ╭────────────────────┬─────────────────────────────────────────────────────────╮
+    │ Attribute          │ Value                                                   │
+    ├────────────────────┼─────────────────────────────────────────────────────────┤
+    │ tags               │ {'website': 'https://jina.ai'}                          │
+    ╰────────────────────┴─────────────────────────────────────────────────────────╯
+    └── 💠 Chunks
+        ├── 📄 Document: cb1df29a384a6d39aa81e5af93316c4d
+        │   ╭──────────────────────┬───────────────────────────────────────────────────────╮
+        │   │ Attribute            │ Value                                                 │
+        │   ├──────────────────────┼───────────────────────────────────────────────────────┤
+        │   │ parent_id            │ 75a3df4c26498d338589d2b2c20e156e                      │
+        │   │ granularity          │ 1                                                     │
+        │   ╰──────────────────────┴───────────────────────────────────────────────────────╯
+        │   └── 💠 Chunks
+        │       ├── 📄 Document: 65cce8eb564f9ce136ff693b8ecb8f53
+        │       │   ╭──────────────────────┬───────────────────────────────────────────────────────╮
+        │       │   │ Attribute            │ Value                                                 │
+        │       │   ├──────────────────────┼───────────────────────────────────────────────────────┤
+        │       │   │ parent_id            │ cb1df29a384a6d39aa81e5af93316c4d                      │
+        │       │   │ granularity          │ 1                                                     │
+        │       │   │ text                 │ this is a test empty image                            │
+        │       │   │ modality             │ text                                                  │
+        │       │   ╰──────────────────────┴───────────────────────────────────────────────────────╯
+        │       └── 📄 Document: 4dc4497d608b4f96094711e90cfb8078
+        │           ╭──────────────┬───────────────────────────────────────────────────────────────╮
+        │           │ Attribute    │ Value                                                         │
+        │           ├──────────────┼───────────────────────────────────────────────────────────────┤
+        │           │ parent_id    │ cb1df29a384a6d39aa81e5af93316c4d                              │
+        │           │ granularity  │ 1                                                             │
+        │           │ tensor       │ <class 'numpy.ndarray'> in shape (504, 504, 3), dtype: uint8  │
+        │           │ mime_type    │ image/jpeg                                                    │
+        │           │ uri          │ test-1.jpeg                                                   │
+        │           │ modality     │ image                                                         │
+        │           ╰──────────────┴───────────────────────────────────────────────────────────────╯
+        └── 📄 Document: f7b3aaefeab73af18f8372a594405b46
+            ╭──────────────────────┬───────────────────────────────────────────────────────╮
+            │ Attribute            │ Value                                                 │
+            ├──────────────────────┼───────────────────────────────────────────────────────┤
+            │ parent_id            │ 75a3df4c26498d338589d2b2c20e156e                      │
+            │ granularity          │ 1                                                     │
+            │ text                 │ this is a column article                              │
+            │ modality             │ text                                                  │
+            ╰──────────────────────┴───────────────────────────────────────────────────────╯
+    
+    ```
+      
+    ````

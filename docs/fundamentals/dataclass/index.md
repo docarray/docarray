@@ -30,7 +30,8 @@ In a nutshell, the left multimodal document can be represented with the right co
 :padding: 0
 
 ```python
-from docarray import dataclass, Image, Text, JSON, Document
+from docarray import dataclass, Document
+from docarray.typing import Image, Text, JSON
 
 
 @dataclass

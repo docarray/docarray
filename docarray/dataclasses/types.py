@@ -12,7 +12,6 @@ from dataclasses import (
 from enum import Enum
 from typing import (
     TypeVar,
-    ForwardRef,
     Callable,
     Optional,
     overload,
@@ -27,6 +26,10 @@ if TYPE_CHECKING:
     import numpy as np
     from ..typing import T
     from docarray import Document
+
+from ..typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
+
+__all__ = ['field', 'dataclass', 'is_multimodal']
 
 
 class AttributeType(str, Enum):
@@ -77,27 +80,6 @@ def field(**kwargs) -> Field:
     return Field(**kwargs)
 
 
-Image = TypeVar(
-    'Image',
-    str,
-    ForwardRef('np.ndarray'),
-    ForwardRef('PILImage'),
-)
-
-Text = TypeVar('Text', bound=str)
-
-Audio = TypeVar('Audio', str, ForwardRef('np.ndarray'))
-
-Video = TypeVar('Video', str, ForwardRef('np.ndarray'))
-
-Mesh = TypeVar('Mesh', str, ForwardRef('np.ndarray'))
-
-Tabular = TypeVar('Tabular', bound=str)
-
-Blob = TypeVar('Blob', str, bytes)
-
-JSON = TypeVar('JSON', str, dict)
-
 _TYPES_REGISTRY = {
     Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
     Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
@@ -137,8 +119,8 @@ def dataclass(
 
     Example usage:
 
-    >>> from docarray import dataclass, Image, Text
-    >>>
+    >>> from docarray.typing import Image, Text
+    >>> from docarray import dataclass
     >>> @dataclass:
     >>> class X:
     >>>     banner: Image = 'apple.png'
