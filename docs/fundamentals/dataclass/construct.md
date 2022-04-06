@@ -1,5 +1,10 @@
 # Construct
 
+```{tip}
+In DocArray, a Document object can contain sub-Document in `.chunks`. If you are still unaware of this design, make sure to read {ref}`this chapter<recursive-nested-document>` before continue.
+```
+
+
 Just like Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations in {mod}`docarray.typing` such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way:
 
 ```python
@@ -440,3 +445,32 @@ This section explains the behavior of field annotations in details.
     ```
       
     ````
+
+## Construct from/to Document
+
+It is easy to convert a `dataclass` object from/to a `Document` object:
+
+```python
+from docarray import dataclass, Document
+from docarray.typing import Image
+
+
+@dataclass
+class MMDoc:
+    banner: Image
+
+
+m = MMDoc(banner='test-0.jpeg')
+d = Document(m)  # to Document object
+m_r = MMDoc(d)  # from Document object
+
+assert m == m_r
+```
+
+## What's next?
+
+In this chapter, we have learned to use `@dataclass` decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python builtin dataclass.   
+
+Leveraging {ref}`the nested Document structure<recursive-nested-document>`, DocArray's dataclass offers great expressiveness for data scientists and machine learning engineers who work with multimodal data, allowing them to represent image, text, video, mesh, tabular data in a very intuitive way. Converting a multimodal dataclass object from/to a Document is very straightforward. 
+
+In the next chapter, we shall see how to select modality (aka sub-document) via the selector syntax.
