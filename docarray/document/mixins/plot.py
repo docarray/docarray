@@ -24,7 +24,7 @@ class PlotMixin:
                 from ...math.ndarray import to_numpy_array
 
                 v = to_numpy_array(getattr(self, f))
-                if v.squeeze().ndim == 1:
+                if v.squeeze().ndim == 1 and len(v) < 1000:
                     from .rich_embedding import ColorBoxEmbedding
 
                     v = ColorBoxEmbedding(v.squeeze())

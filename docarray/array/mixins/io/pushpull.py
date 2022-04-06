@@ -93,6 +93,7 @@ class PushPullMixin:
             headers['Authorization'] = f'token {auth_token}'
 
         _head, _tail = data.split(delimiter)
+        _head += self._stream_header
         from rich import filesize
         from .pbar import get_progressbar
 
@@ -103,9 +104,7 @@ class PushPullMixin:
 
             pbar.start_task(t)
 
-            chunk = _head + self._stream_header
-
-            yield chunk
+            yield _head
 
             def _get_chunk(_batch):
                 return b''.join(

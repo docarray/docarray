@@ -1,5 +1,4 @@
 import base64
-import json
 import os
 import pickle
 from typing import List
@@ -8,7 +7,8 @@ import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
-from docarray.dataclasses import Text, Image, Audio, JSON, dataclass, field
+from docarray.dataclasses import dataclass, field
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
 from docarray.document.mixins.multimodal import AttributeType
 
@@ -16,6 +16,9 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 AUDIO_URI = os.path.join(cur_dir, 'toydata/hello.wav')
 IMAGE_URI = os.path.join(cur_dir, 'toydata/test.png')
+VIDEO_URI = os.path.join(cur_dir, 'toydata/mov_bbb.mp4')
+MESH_URI = os.path.join(cur_dir, 'toydata/test.glb')
+TABULAR_URI = os.path.join(cur_dir, 'toydata/docs.csv')
 
 
 def _assert_doc_schema(doc, schema):
@@ -26,6 +29,32 @@ def _assert_doc_schema(doc, schema):
             assert doc._metadata['multi_modal_schema'][field]['position'] == position
         else:
             assert 'position' not in doc._metadata['multi_modal_schema'][field]
+
+
+def test_type_annotation():
+    @dataclass
+    class MMDoc:
+        f1: Video
+        f2: Mesh
+        f3: Blob
+        f4: Tabular = None
+
+    m1 = MMDoc(f1=VIDEO_URI, f2=MESH_URI, f3=b'hello', f4=TABULAR_URI)
+
+    m_r = MMDoc(Document(m1))
+
+    assert m_r == m1
+
+    # test direct tensor assignment
+    m2 = MMDoc(
+        f1=np.random.random([10, 10]),
+        f2=np.random.random([10, 10]),
+        f3=MESH_URI,  # intentional, to test file path as binary
+    )
+
+    m_r = MMDoc(Document(m2))
+
+    assert m_r == m2
 
 
 def test_simple():
@@ -258,7 +287,7 @@ def test_get_multi_modal_attribute():
 
     assert images[0].tensor.shape == (10, 10, 3)
     assert texts[0].text == 'text 1'
-    assert audios[0].tensor.shape == (15417,)
+    assert audios[0].tensor.shape == (30833,)
 
     with pytest.raises(ValueError):
         doc.get_multi_modal_attribute('primitive')
@@ -304,7 +333,7 @@ def test_traverse_simple(text_selector, audio_selector):
 
     assert len(mm_docs[audio_selector]) == 5
     for i, doc in enumerate(mm_docs[audio_selector]):
-        assert doc.tensor.shape == (15417,)
+        assert doc.tensor.shape == (30833,)
 
     assert len(mm_docs['@r.[image]']) == 5
     for i, doc in enumerate(mm_docs['@r.[image]']):
@@ -386,7 +415,7 @@ def test_traverse_iterable():
         assert text_doc.text == f'text {i}'
 
     for i, blob_doc in enumerate(mm_da['@.[attr2]-2:'], start=1):
-        assert blob_doc.tensor.shape == (15417,)
+        assert blob_doc.tensor.shape == (30833,)
 
 
 def test_traverse_chunks_attribute():
@@ -478,13 +507,7 @@ def test_json_type():
     obj = MMDocument(attr=inp)
     doc = Document(obj)
 
-    assert doc.chunks[0].tags['attr'] == inp
-    translated_obj = MMDocument(doc)
-    assert translated_obj == obj
-
-    obj = MMDocument(attr=json.dumps(inp))
-    doc = Document(obj)
-    assert doc.chunks[0].tags['attr'] == inp
+    assert doc.chunks[0].tags == inp
     translated_obj = MMDocument(doc)
     assert translated_obj == obj
 
@@ -493,16 +516,16 @@ def test_custom_field_type():
     from PIL.Image import Image as PILImage
     from PIL.Image import open as PIL_open
 
-    def ndarray_serializer(field_name: str, value):
+    def ndarray_serializer(value):
         return Document(blob=base64.b64encode(value))
 
-    def ndarray_deserializer(doc: 'Document', field_name: str):
+    def ndarray_deserializer(doc: 'Document'):
         return np.frombuffer(base64.decodebytes(doc.blob), dtype=np.float64)
 
-    def pil_image_serializer(field_name, val):
+    def pil_image_serializer(val):
         return Document(blob=pickle.dumps(val))
 
-    def pil_image_deserializer(doc: 'Document', field_name):
+    def pil_image_deserializer(doc: 'Document'):
         return pickle.loads(doc.blob)
 
     @dataclass
@@ -566,7 +589,7 @@ def test_not_data_class():
 
 
 def test_data_class_customized_typevar_map():
-    def sette2(field_name: str, value):
+    def sette2(value):
         doc = Document(uri=value)
         doc._metadata['image_type'] = 'uri'
         doc._metadata['image_uri'] = value

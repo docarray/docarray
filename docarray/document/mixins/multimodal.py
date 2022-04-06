@@ -31,6 +31,9 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
+            if attribute is None:
+                continue
+
             if field.type in [str, int, float, bool] and not isinstance(field, Field):
                 tags[key] = attribute
                 multi_modal_schema[key] = {
@@ -126,15 +129,13 @@ class MultiModalMixin:
 
     @classmethod
     def _from_obj(cls, obj, obj_type, field) -> typing.Tuple['Document', AttributeType]:
-        from docarray import Document
-
         attribute_type = AttributeType.DOCUMENT
 
         if is_multimodal(obj_type):
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
-            doc = field.set_field(obj)
+            doc = field.setter(obj)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type

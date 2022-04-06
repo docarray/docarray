@@ -30,7 +30,8 @@ In a nutshell, the left multimodal document can be represented with the right co
 :padding: 0
 
 ```python
-from docarray import dataclass, Image, Text, JSON, Document
+from docarray import dataclass, Document
+from docarray.typing import Image, Text, JSON
 
 
 @dataclass
@@ -48,8 +49,6 @@ a = WPArticle(
         'column': 'By the Way - A Post Travel Destination',
     },
 )
-
-d = Document(a)
 ```
 
 
@@ -57,6 +56,43 @@ d = Document(a)
 
 ::::
 
+
+Converting a dataclass to Document is as simple as `Document(a)`. Via {meth}`~docarray.array.mixins.plot.PlotMixin.summary`, we can see it is represented as a Document object with the following nested structure:
+
+```text
+📄 Document: cb25ccea837e8e2b33ef1e050bae1de2
+└── 💠 Chunks
+    ├── 📄 Document: df56a39e24f441108742b533c8710705
+    │   ╭──────────────┬───────────────────────────────────────────────────────────────╮
+    │   │ Attribute    │ Value                                                         │
+    │   ├──────────────┼───────────────────────────────────────────────────────────────┤
+    │   │ parent_id    │ cb25ccea837e8e2b33ef1e050bae1de2                              │
+    │   │ granularity  │ 1                                                             │
+    │   │ tensor       │ <class 'numpy.ndarray'> in shape (198, 254, 3), dtype: uint8  │
+    │   │ mime_type    │ image/png                                                     │
+    │   │ uri          │ dog-cat-flight.png                                            │
+    │   │ modality     │ image                                                         │
+    │   ╰──────────────┴───────────────────────────────────────────────────────────────╯
+    ├── 📄 Document: 828f9c346a9f5862a55ea75188b1ae19
+    │   ╭─────────────┬────────────────────────────────────────────────────────────────╮
+    │   │ Attribute   │ Value                                                          │
+    │   ├─────────────┼────────────────────────────────────────────────────────────────┤
+    │   │ parent_id   │ cb25ccea837e8e2b33ef1e050bae1de2                               │
+    │   │ granularity │ 1                                                              │
+    │   │ text        │ Everything to know about flying with pets, from picking your   │
+    │   │             │ seats to keeping your animal calm                              │
+    │   │ modality    │ text                                                           │
+    │   ╰─────────────┴────────────────────────────────────────────────────────────────╯
+    └── 📄 Document: a76803e1bcddd0960e1a01d47132c064
+        ╭─────────────┬────────────────────────────────────────────────────────────────╮
+        │ Attribute   │ Value                                                          │
+        ├─────────────┼────────────────────────────────────────────────────────────────┤
+        │ parent_id   │ cb25ccea837e8e2b33ef1e050bae1de2                               │
+        │ granularity │ 1                                                              │
+        │ tags        │ {'meta': {'author': 'Nathan Diller', 'column': 'By the Way - A │
+        │             │ Post Travel Destination'}}                                     │
+        ╰─────────────┴────────────────────────────────────────────────────────────────╯
+```
 
 
 ## What is multimodal?
@@ -89,7 +125,7 @@ A multimodal document is a document that consists of a mixture of data modalitie
 ::::
 
 
-Each card can be seen as a multimodal document: it consists of a sentence, an image, an audio clip and some tags (i.e. author, column section).
+The left card can be seen as a multimodal document: it consists of a sentence, an image, and some tags (i.e. author, column section). The right one can be seen as a collection of multimodal documents, each of which consists of an audio clip and a sentence description.
 
 
 In practice, we want to express such multimodal documents via Document and DocumentArray, so that we can process each modality and leverage all DocArray's API, e.g. to embed, search, store and transfer them. That's the purpose of DocArray dataclass. 

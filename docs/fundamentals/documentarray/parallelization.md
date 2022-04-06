@@ -78,7 +78,7 @@ It depends on how your `func` in `.apply(func)` look like, here are some tips:
 ```
 
 (map-batch)=
-## Use `map()` to overlap CPU & GPU computation
+## Use `map_batch()` to overlap CPU & GPU computation
 
 As I said, {meth}`~docarray.array.mixins.parallel.ParallelMixin.map` / {meth}`~docarray.array.mixins.parallel.ParallelMixin.map_batch` has its own charm: it returns an iterator (of batch) where the partial result is immediately available, *regardless* if your function is still running. One can leverage this feature to speedup computation, especially when working with a CPU-GPU pipeline.
 
@@ -152,3 +152,36 @@ map: 129.326s
 ```
 
 Hope this sheds the light on solving the data-draining/blocking problem when you use DocArray in a CPU-GPU pipeline. 
+
+## Use `map_batch()` to overlap CPU and network time
+
+Such technique and mindset can be extended to other pipeline that has potential data-blocking issue. For example, in the implementation of {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push`, you will find code similar to below:
+
+```{code-block} python
+---
+emphasize-lines: 12
+---
+
+def gen():
+    
+    yield _head
+    
+    def _get_chunk(_batch):
+        return b''.join(
+            d._to_stream_bytes(protocol='protobuf', compress='gzip')
+            for d in _batch
+        ), len(_batch)
+
+    for chunk, num_doc_in_chunk in self.map_batch(_get_chunk, batch_size=32):
+        yield chunk
+    yield _tail
+
+
+response = requests.post(
+    f'{_get_cloud_api()}/v2/rpc/artifact.upload',
+    data=gen(),
+    headers=headers,
+)
+```
+
+This overlaps the time of sending network request (IO-bounded) with the time of serializing DocumentArray (CPU-bounded) and hence improve the performance a lot. 
