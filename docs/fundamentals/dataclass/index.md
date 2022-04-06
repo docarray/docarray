@@ -49,8 +49,6 @@ a = WPArticle(
         'column': 'By the Way - A Post Travel Destination',
     },
 )
-
-d = Document(a)
 ```
 
 
@@ -59,7 +57,7 @@ d = Document(a)
 ::::
 
 
-With `d.summary()`, we can see `d` corresponds to a Document object with the following nested structure:
+Converting a dataclass to Document is as simple as `Document(a)`. With {meth}`~docarray.array.mixins.plot.PlotMixin.summary`, we can see it is represented as a Document object with the following nested structure:
 
 ```text
 📄 Document: cb25ccea837e8e2b33ef1e050bae1de2
