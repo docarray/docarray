@@ -134,7 +134,7 @@ class MultiModalMixin:
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
         elif isinstance(field, Field):
-            doc = field.set_field(obj)
+            doc = field.setter(obj)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type

@@ -10,39 +10,23 @@ from dataclasses import (
     MISSING,
 )
 from enum import Enum
-from pathlib import Path
 from typing import (
     TypeVar,
     ForwardRef,
     Callable,
     Optional,
-    TYPE_CHECKING,
     overload,
     Dict,
     Type,
 )
 
-from .setter import (
-    image_setter,
-    text_setter,
-    audio_setter,
-    json_setter,
-)
-from .getter import (
-    image_getter,
-    text_getter,
-    audio_getter,
-    json_getter,
-)
+from .getter import *
+from .setter import *
 
 if TYPE_CHECKING:
-    import scipy.sparse
-    import tensorflow
-    import torch
     import numpy as np
     from ..typing import T
     from docarray import Document
-    from PIL.Image import Image as PILImage
 
 
 class AttributeType(str, Enum):
@@ -71,12 +55,6 @@ class Field(_Field):
         for s in f.__slots__:
             setattr(self, s, getattr(f, s))
 
-    def get_field(self, doc: 'Document'):
-        return self.getter(doc, self.name)
-
-    def set_field(self, val) -> 'Document':
-        return self.setter(self.name, val)
-
 
 @overload
 def field(
@@ -91,7 +69,7 @@ def field(
     hash=None,
     compare=True,
     metadata=None,
-) -> _Field:
+) -> Field:
     ...
 
 
@@ -101,20 +79,22 @@ def field(**kwargs) -> Field:
 
 Image = TypeVar(
     'Image',
-    ForwardRef('np.ndarray'),
-    ForwardRef('tensorflow.Tensor'),
-    ForwardRef('torch.Tensor'),
     str,
+    ForwardRef('np.ndarray'),
     ForwardRef('PILImage'),
 )
 
 Text = TypeVar('Text', bound=str)
 
-Audio = TypeVar(
-    'Audio',
-    str,
-    Path,
-)
+Audio = TypeVar('Audio', str, ForwardRef('np.ndarray'))
+
+Video = TypeVar('Video', str, ForwardRef('np.ndarray'))
+
+Mesh = TypeVar('Mesh', str, ForwardRef('np.ndarray'))
+
+Tabular = TypeVar('Tabular', bound=str)
+
+Blob = TypeVar('Blob', str, bytes)
 
 JSON = TypeVar('JSON', str, dict)
 
@@ -123,6 +103,12 @@ _TYPES_REGISTRY = {
     Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
     Audio: lambda x: field(setter=audio_setter, getter=audio_getter, _source_field=x),
     JSON: lambda x: field(setter=json_setter, getter=json_getter, _source_field=x),
+    Video: lambda x: field(setter=video_setter, getter=video_getter, _source_field=x),
+    Tabular: lambda x: field(
+        setter=tabular_setter, getter=tabular_getter, _source_field=x
+    ),
+    Blob: lambda x: field(setter=blob_setter, getter=blob_getter, _source_field=x),
+    Mesh: lambda x: field(setter=mesh_setter, getter=mesh_getter, _source_field=x),
 }
 
 
@@ -192,7 +178,7 @@ def dataclass(
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             if not kwargs and len(args) == 2 and isinstance(args[1], Document):
-                return f(args[0], **from_document(type(args[0]), args[1]))
+                return f(args[0], **_from_document(type(args[0]), args[1]))
             else:
                 return f(*args, **kwargs)
 
@@ -233,10 +219,15 @@ def dataclass(
 
 def is_multimodal(obj) -> bool:
     """Returns True if obj is an instance of :meth:`.dataclass`."""
-    return _is_dataclass(obj) and hasattr(obj, '__is_multimodal__')
+    from docarray import Document
+
+    if isinstance(obj, Document):
+        return obj.is_multimodal
+    else:
+        return _is_dataclass(obj) and hasattr(obj, '__is_multimodal__')
 
 
-def from_document(cls: Type['T'], doc: 'Document') -> 'T':
+def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
     if not doc.is_multimodal:
         raise ValueError(
             f'{doc} is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.'
@@ -284,7 +275,7 @@ def from_document(cls: Type['T'], doc: 'Document') -> 'T':
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
     if isinstance(field, Field):
-        return field.get_field(attribute_doc)
+        return field.getter(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 
@@ -292,4 +283,4 @@ def _get_doc_attribute(attribute_doc: 'Document', field):
 def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls: Type['T']) -> 'T':
     if not is_multimodal(nested_cls):
         raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
-    return nested_cls(**from_document(nested_cls, attribute_doc))
+    return nested_cls(**_from_document(nested_cls, attribute_doc))

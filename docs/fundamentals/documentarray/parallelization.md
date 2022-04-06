@@ -159,7 +159,7 @@ Such technique and mindset can be extended to other pipeline that has potential 
 
 ```{code-block} python
 ---
-emphasize-lines: 13,14
+emphasize-lines: 12
 ---
 
 def gen():
