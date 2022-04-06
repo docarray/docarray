@@ -467,6 +467,27 @@ m_r = MMDoc(d)  # from Document object
 assert m == m_r
 ```
 
+## Use `field()` for advanced configs
+
+For common and simple use cases, no other functionality is required. There are, however, some dataclass features that require additional per-field information. To satisfy this need for additional information, you can replace the default field value with a call to the provided {meth}`~docarray.dataclasses.types.field` function.
+
+For example, mutable object is not allowed as the default value of any dataclass field. One can solve it via:
+
+```python
+from typing import List
+
+from docarray import dataclass, field
+from docarray.typing import Image
+
+
+@dataclass
+class MMDoc:
+    banner: List[Image] = field(default_factory=lambda: ['test-1.jpeg', 'test-2.jpeg'])
+```
+
+Other arguments in standard Python fields such as `init`, `compare`, `hash`, `repr` are also accepted.
+
+
 ## What's next?
 
 In this chapter, we have learned to use `@dataclass` decorator and type annotation to build multimodal documents. The look and feel is exactly the same as Python builtin dataclass.   

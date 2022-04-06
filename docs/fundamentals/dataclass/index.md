@@ -5,7 +5,7 @@
 
 construct
 access
-field
+new-type
 example
 ```
 

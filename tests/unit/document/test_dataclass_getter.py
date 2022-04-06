@@ -1,4 +1,3 @@
-import json
 import os
 
 import numpy as np
@@ -13,7 +12,6 @@ from docarray.dataclasses.getter import (
 )
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
-
 
 IMAGE_URI = os.path.join(cur_dir, 'toydata/test.png')
 

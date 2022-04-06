@@ -45,8 +45,8 @@ class Field(_Field):
     def __init__(
         self,
         *,
-        setter: Callable,
-        getter: Callable,
+        setter: Optional[Callable] = None,
+        getter: Optional[Callable] = None,
         _source_field: Optional[_Field] = None,
         **kwargs,
     ):
@@ -63,8 +63,8 @@ class Field(_Field):
 def field(
     *,
     _source_field: Optional[_Field] = None,  # Privately used
-    setter: Callable,
-    getter: Callable,
+    setter: Callable = None,
+    getter: Callable = None,
     default=MISSING,
     default_factory=MISSING,
     init=True,
@@ -177,7 +177,7 @@ def dataclass(
             decorated_cls.__init__ = deco(decorated_cls.__init__)
 
         for key, f in decorated_cls.__dataclass_fields__.items():
-            if isinstance(f, Field):
+            if isinstance(f, Field) and getattr(f, 'setter') and getattr(f, 'getter'):
                 continue
 
             if f.type in type_var_map:
