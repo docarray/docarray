@@ -1,10 +1,10 @@
 # Access Modality
 
 ```{tip}
-It is strongly recommended to go through {ref}`access-elements` first before continue.
+It is strongly recommended to go through the {ref}`access-elements` section first before continuing.
 ```
 
-Access modality means access the sub-Documents corresponded to a dataclass field. 
+Accessing modality means accessing the sub-Documents corresponding to a dataclass field. 
 
 In the last chapter, we learned how to represent a multimodal document via `@dataclass` and type annotation from `docarray.typing`. We also learned that a multimodal dataclass can be converted into a `Document` object easily. That means if we have a list of multimodal dataclass objects, we can build a DocumentArray out of them:
 
@@ -53,13 +53,13 @@ da.summary()
 ╰────────────────────────────────────────────────────────────────────╯
 ```
 
-A natural question would be, how do we select those Documents correspond to `MMDoc.banner`? 
+A natural question would be, how do we select those Documents that correspond to `MMDoc.banner`? 
 
-This chapter describes how to select the sub-documents that correspond to a modality from a DocumentArray. So let me reiterate the logic here: when calling `Document()` to build Document object from a dataclass object, each field in a that dataclass will generate a sub-document nested under `.chunks` or even `.chunks.chunks.chunks` at arbitrary level. To process a dataclass field via existing DocArray API/Jina/Hub Executor, we need a way to accurately select those sub-documents from the nested structure, which is the purpose of this chapter. 
+This chapter describes how to select the sub-documents that correspond to a modality from a DocumentArray. So let me reiterate the logic here: when calling `Document()` to build Document object from a dataclass object, each field in that dataclass will generate a sub-document nested under `.chunks` or even `.chunks.chunks.chunks` at arbitrary level (except primitive types, which are stored in the `tags` of the root Document). To process a dataclass field via existing DocArray API/Jina/Hub Executor, we need a way to accurately select those sub-documents from the nested structure, which is the purpose of this chapter. 
 
 ## Selector Syntax
 
-Follow the syntax convention described in {ref}`access-elements`, a modality selector also starts with `@`, it uses `.` to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.
+Following the syntax convention described in {ref}`access-elements`, a modality selector also starts with `@`, it uses `.` to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.
 
 ```text
 @.[field1, field2, ...]
@@ -76,7 +76,7 @@ Follow the syntax convention described in {ref}`access-elements`, a modality sel
 
 Use the above DocumentArray as an example,
 
-````{tab} Select Documents correspond to .banner 
+````{tab} Select Documents corresponding to .banner 
 
 ```python
 da['@.[banner]']
@@ -110,7 +110,7 @@ da['@.[banner]']
 
 ````
 
-````{tab} Select Documents correspond to .description 
+````{tab} Select Documents corresponding to .description 
 
 ```python
 da['@.[description]']
@@ -144,7 +144,7 @@ da['@.[description]']
 
 ### Select multiple fields
 
-The square bracket is required when you want to select multiple fields, they need to be separated by comma `,`.
+You can select multiple fields by including them in the square brackets, separated by a comma `,`.
 
 ````{tab} Select Documents correspond to two fields
 
@@ -272,7 +272,7 @@ da = DocumentArray(
     ]
 )
 
-for d in da['@.[banner]:1']:
+for d in da['@.[banner][:1]']:
     print(d.uri)
 ```
 
@@ -282,7 +282,7 @@ test-1.jpeg
 test-1.jpeg
 ```
 
-In summary, slicing can be put in front of field selector  to restrict the number of dataclass object; or can be put after the field selector to restrict the number of sub-Documents.
+To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.
 
 ### Select nested fields
 
