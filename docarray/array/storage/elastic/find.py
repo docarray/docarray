@@ -3,6 +3,7 @@ from typing import (
     TypeVar,
     Sequence,
     List,
+    Union,
 )
 
 import numpy as np
@@ -36,10 +37,10 @@ class FindMixin:
         resp = self._client.knn_search(
             index=self._config.index_name,
             knn={
-                "field": "embedding",
-                "query_vector": query,
-                "k": limit,
-                "num_candidates": 10000,
+                'field': 'embedding',
+                'query_vector': query,
+                'k': limit,
+                'num_candidates': 10000,
             },
         )
         list_of_hits = resp['hits']['hits']
@@ -53,10 +54,41 @@ class FindMixin:
 
         return da
 
+    def _find_similar_documents_from_text(self, query: str, limit=10):
+        """
+        Return key-word matches for the input query
+
+        :param query: text used for key-word search
+        :param limit: number of retrieved items
+
+        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
+           the closest Document objects for each of the queries in `query`.
+        """
+
+        resp = self._client.search(
+            index=self._config.index_name,
+            query={'match': {'text': query}},
+            source=['id', 'blob', 'text'],
+        )
+        list_of_hits = resp['hits']['hits']
+
+        da = DocumentArray()
+        for result in list_of_hits[:limit]:
+            doc = Document.from_base64(result['_source']['blob'])
+            doc.scores['score'] = NamedScore(value=result['_score'])
+            da.append(doc)
+
+        return da
+
     def _find(
-        self, query: 'ElasticArrayType', limit: int = 10, **kwargs
+        self,
+        query: Union['ElasticArrayType', str, List[str]],
+        limit: int = 10,
+        **kwargs
     ) -> List['DocumentArray']:
-        """Returns approximate nearest neighbors given a batch of input queries.
+        """Returns approximate nearest neighbors given a batch of input queries if the input is an 'ElasticArrayType'.
+           Returns exact key-word search if the input is `str` or `List[str]` if the input.
+
         :param query: input supported to be stored in Elastic. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
 
@@ -64,14 +96,18 @@ class FindMixin:
            the closest Document objects for each of the queries in `query`.
 
         """
-
-        num_rows, _ = ndarray.get_array_rows(query)
+        if isinstance(query[0], str):
+            search_method = self._find_similar_vectors_from_text
+            num_rows = len(query) if isinstance(query, list) else 1
+        else:
+            search_method = self._find_similar_vectors
+            num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query[0], limit=limit)]
+            return [search_method(query[0], limit=limit)]
         else:
             closest_docs = []
             for q in query:
-                da = self._find_similar_vectors(q, limit=limit)
+                da = search_method(q, limit=limit)
                 closest_docs.append(da)
             return closest_docs

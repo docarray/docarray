@@ -33,6 +33,7 @@ class ElasticConfig:
     hosts: str = 'http://localhost:9200'
     index_name: Optional[str] = None
     es_config: Dict[str, Any] = field(default_factory=dict)
+    index_text: bool = False
 
 
 class BackendMixin(BaseBackendMixin):
@@ -81,15 +82,16 @@ class BackendMixin(BaseBackendMixin):
 
     def _build_schema_from_elastic_config(self, elastic_config):
         da_schema = {
-            "mappings": {
-                "dynamic": "true",
-                "_source": {"enabled": "true"},
-                "properties": {
-                    "embedding": {
-                        "type": "dense_vector",
-                        "dims": elastic_config.n_dim,
-                        "index": "true",
-                        "similarity": elastic_config.distance,
+            'mappings': {
+                'dynamic': 'true',
+                '_source': {'enabled': 'true'},
+                'text': {'type': 'text', 'index': elastic_config.index_text},
+                'properties': {
+                    'embedding': {
+                        'type': 'dense_vector',
+                        'dims': elastic_config.n_dim,
+                        'index': 'true',
+                        'similarity': elastic_config.distance,
                     },
                 },
             }
