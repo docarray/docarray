@@ -1,5 +1,8 @@
 # Dataclass
 
+```{figure} img/dataclass-banner.png
+:scale: 0 %
+```
 ```{figure} dataclass-banner.png
 :scale: 0 %
 ```
