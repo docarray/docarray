@@ -53,11 +53,11 @@ DocArray consists of two simple concepts:
 
 - **Document**: a data structure for easily representing nested, unstructured data.
 - **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
-- ***Dataclass**: a high-level API for intuitively representing multimodal data.
+- **Dataclass**: a high-level API for intuitively representing multimodal data.
 
-Let's see DocArray in action with three examples.
+Let's see DocArray in action with some examples.
 
-### A 10-liners text matching
+### Example 1: a 10-liners text matching
 
 Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
 
@@ -88,7 +88,7 @@ print(q.matches[:5, ('text', 'scores__jaccard__value')])
 
 Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
 
-### External storage backends for out-of-memory data
+### Example 2: external storage for out-of-memory data
 
 When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
 
@@ -104,7 +104,50 @@ The code snippet can still run **as-is**. All APIs remain the same, the code aft
 Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
 
 
-### A complete workflow of visual search 
+### Example 3: represent multimodal data in dataclass
+
+The following news article banner can be easily represented by `docarray.dataclass`:
+
+
+<table>
+<tr>
+<td> 
+
+<img src="https://github.com/jina-ai/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="50%">
+     
+</td>
+<td>
+
+```python
+from docarray import dataclass, Document
+from docarray.typing import Image, Text, JSON
+
+
+@dataclass
+class WPArticle:
+    banner: Image
+    headline: Text
+    meta: JSON
+
+
+a = WPArticle(
+    banner='cat-dog-flight.png',
+    headline='Everything to know about flying with pets, from picking your seats to keeping your animal calm',
+    meta={
+        'author': 'Nathan Diller',
+        'Column': 'By the Way - A Post Travel Destination',
+    },
+)
+
+d = Document(a)
+```
+
+</td>
+</tr>
+</table>
+
+
+### Example 4: a complete workflow of visual search 
 
 Let's use DocArray and the [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build a simple meme image search. The dataset contains 6,016 image-pairs stored in `/left` and `/right`. Images that share the same filename are perceptually similar. For example:
 
