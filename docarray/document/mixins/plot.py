@@ -1,3 +1,8 @@
+import copy
+from typing import Optional
+
+import numpy as np
+
 from ...helper import deprecate_by
 
 
@@ -96,6 +101,112 @@ class PlotMixin:
             self.summary()
 
     plot = deprecate_by(display, removed_at='0.5')
+
+    def plot_matching_sprites(
+        self,
+        output: Optional[str] = None,
+        canvas_size: int = 1920,
+        channel_axis: int = -1,
+        top_k: int = 5,
+        min_size: int = 100,
+        image_source: str = 'tensor',
+    ):
+        """Generate a sprite image for the query and its matching images in this Document object.
+
+        An image sprite is a collection of images put into a single image. Query image is on the left
+        followed by matching images. The Document object should contain matches.
+
+        :param output: Optional path to store the visualization. If not given, show in UI
+        :param canvas_size: the width of the canvas
+        :param min_size: the minimum size of the image
+        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
+        :param top_k: the number of top matching documents to show in the sprite.
+        """
+        if not self or not self.matches:
+            raise ValueError(f'{self!r} is empty or has no matches')
+
+        if not self.uri and self.tensor is None:
+            raise ValueError(
+                f'Document has neither `uri` nor `tensor`, can not be plotted'
+            )
+
+        if top_k <= 0:
+            raise ValueError(f'`limit` must be larger than 0, receiving {top_k}')
+
+        if image_source not in ('uri', 'tensor'):
+            raise ValueError(f'image_source can be only `uri` or `tensor`')
+
+        import matplotlib.pyplot as plt
+
+        img_per_row = top_k + 2
+        if top_k > len(self.matches):
+            img_per_row = len(self.matches) + 2
+
+        img_size = int((canvas_size - 50) / img_per_row)
+        if img_size < min_size:
+            # image is too small, recompute the image size and canvas size
+            img_size = min_size
+            canvas_size = img_per_row * img_size + 50
+
+        _d = copy.deepcopy(self)
+        if image_source == 'uri' or (
+            image_source == 'tensor' and _d.content_type != 'tensor'
+        ):
+            _d.load_uri_to_image_tensor()
+            channel_axis = -1
+
+        # Maintain the aspect ratio keeping the width fixed
+        h, w, _ = _d.tensor.shape
+        img_h, img_w = int(h * (img_size / float(w))), img_size
+
+        sprite_img = np.ones([img_h + 20, canvas_size, 3], dtype='uint8')
+
+        _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
+            shape=(img_h, img_w)
+        )
+
+        sprite_img[10 : img_h + 10, 10 : 10 + img_w] = _d.tensor
+        pos = canvas_size // img_per_row
+
+        for col_id, d in enumerate(self.matches, start=2):
+            _d = copy.deepcopy(d)
+            if image_source == 'uri' or (
+                image_source == 'tensor' and _d.content_type != 'tensor'
+            ):
+                _d.load_uri_to_image_tensor()
+                channel_axis = -1
+
+            _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
+                shape=(img_h, img_w)
+            )
+
+            # paste it on the main canvas
+            sprite_img[
+                10 : img_h + 10,
+                (col_id * pos) : ((col_id * pos) + img_w),
+            ] = _d.tensor
+
+            col_id += 1
+            if col_id >= img_per_row:
+                break
+
+        from PIL import Image
+
+        im = Image.fromarray(sprite_img)
+
+        if output:
+            with open(output, 'wb') as fp:
+                im.save(fp)
+        else:
+            plt.figure(figsize=(img_per_row, 2))
+            plt.gca().set_axis_off()
+            plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+            plt.margins(0, 0)
+            plt.gca().xaxis.set_major_locator(plt.NullLocator())
+            plt.gca().yaxis.set_major_locator(plt.NullLocator())
+            plt.imshow(im, interpolation="none")
+            plt.show()
 
 
 def _convert_display_uri(uri, mime_type):
