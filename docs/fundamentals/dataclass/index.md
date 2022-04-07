@@ -1,3 +1,4 @@
+(dataclass)=
 # Dataclass
 
 ```{figure} https://docarray.jina.ai/_images/dataclass-banner.png

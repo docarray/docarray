@@ -16,7 +16,7 @@ The table below summarizes all indexing routines that DocumentArray supports. Yo
 | by `id`s                                | `da['a04633546e6211ec8ad31e008a366d49', 'af7923406e6211ecbc811e008a366d49']` | DocumentArray |
 | by boolean mask                         | `da[True, False, True, False] `                                              | DocumentArray |
 | by Ellipsis                             | `da[...]`                                                                    | DocumentArray |
-| by nested structure                     | `da['@cm,m,c']`, `da['@c1:3m']`                                              | DocumentArray |
+| by nested structure                     | `da['@cm,m,c']`, `da['@c1:3m']`, `da['@r[1]m[2]']`                           | DocumentArray |
 | [by multimodal field](../../dataclass/) | `da['@.[banner]']`, `da['@.[banner].[image, summary]']`                      | DocumentArray |
 
 Sounds exciting? Let's continue then.
@@ -137,6 +137,7 @@ da['@path1,path2,path3']
 - Multiple paths are separated by comma `,`.
 - A path represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select matches of the chunks, `r` to select the top-level Documents.
 - A path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
+- Optionally, you can specify a slice or offset at each level, for example, `r[-1]m[:3]` will select the first 3 matches of the last root document.
 
 Let's practice a bit. First construct a DocumentArray with nested Documents:
 
@@ -218,7 +219,7 @@ Last but not the least, you can use integer, or integer slice to restrict the se
 This can be useful when you want to get top matches of all matches from all Documents, e.g.:
 
 ```python
-da['@m:5']
+da['@m[:5]']
 ```
 
 You can add space in the path-string for a better readability.
