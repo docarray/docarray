@@ -21,6 +21,8 @@ class MyMultiModalDoc:
 m = MyMultiModalDoc(avatar='test-1.jpeg', description='hello, world')
 ```
 
+**Each field is a modality.** The above example contains two modalities: image and text. 
+
 To convert it into a `Document` object, simply:
 
 ```python

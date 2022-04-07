@@ -10,9 +10,9 @@ example
 ```
 
 
-DocArray's dataclass is a high-level API for representing a multimodal document using {ref}`nested Document structure<recursive-nested-document>`. It follows the design and idiom of the standard [Python dataclass](https://docs.python.org/3/library/dataclasses.html), allowing users to intuitively represent complicated multimodal document for neural search applications. 
+DocArray's dataclass is a high-level API for representing a multimodal document using {ref}`nested Document structure<recursive-nested-document>`. It follows the design and idiom of the standard [Python dataclass](https://docs.python.org/3/library/dataclasses.html), allowing users to represent a complicated multimodal document intuitively and process it easily via DocArray Document/DocumentArray API. 
 
-In a nutshell, the left multimodal document can be represented with the right code snippet:
+In a nutshell, DocArray provides a decorator `@dataclass` and a set of multimodal types in `docarray.typing`, which allows the left multimodal document to be represented as the right code snippet:
 
 ::::{grid} 2
 :gutter: 1
@@ -93,6 +93,8 @@ Converting a dataclass to Document is as simple as `Document(a)`. Via {meth}`~do
         │             │ Post Travel Destination'}}                                     │
         ╰─────────────┴────────────────────────────────────────────────────────────────╯
 ```
+
+Before continue, let's first spend some time to understand the problem and the rationale behind this feature.
 
 
 ## What is multimodal?
