@@ -120,7 +120,7 @@ class PlotMixin:
         :param canvas_size: the width of the canvas
         :param min_size: the minimum size of the image
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
+        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. Empty tensor will fallback to uri
         :param top_k: the number of top matching documents to show in the sprite.
         """
         if not self or not self.matches:
@@ -128,7 +128,7 @@ class PlotMixin:
 
         if not self.uri and self.tensor is None:
             raise ValueError(
-                f'Document has neither `uri` nor `tensor`, can not be plotted'
+                f'Document has neither `uri` nor `tensor`, cannot be plotted'
             )
 
         if top_k <= 0:
@@ -150,9 +150,7 @@ class PlotMixin:
             canvas_size = img_per_row * img_size + 50
 
         _d = copy.deepcopy(self)
-        if image_source == 'uri' or (
-            image_source == 'tensor' and _d.content_type != 'tensor'
-        ):
+        if image_source == 'uri':
             _d.load_uri_to_image_tensor()
             channel_axis = -1
 
