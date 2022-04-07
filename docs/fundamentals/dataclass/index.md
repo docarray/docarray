@@ -1,3 +1,4 @@
+(dataclass)=
 # Dataclass
 
 ```{figure} img/dataclass-banner.png

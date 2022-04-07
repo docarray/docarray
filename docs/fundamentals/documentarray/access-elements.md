@@ -261,6 +261,9 @@ da['@r.[image, text]']
 da['@r[1].[text]']
 ```
 
+```{seealso}
+To learn more about multi-modal Documents support in DocArray, checkout the {ref}`dataclass` section.
+```
 
 ## Index by flatten
 
