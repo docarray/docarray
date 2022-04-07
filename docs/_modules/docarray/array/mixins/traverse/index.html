@@ -524,7 +524,7 @@
 <span class="n">SLICE</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'(</span><span class="si">{</span><span class="n">SLICE_BASE</span><span class="si">}</span><span class="s1">|</span><span class="si">{</span><span class="n">WRAPPED_SLICE_BASE</span><span class="si">}</span><span class="s1">)?'</span>
 <span class="n">SLICE_TAGGED</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">'(?P&lt;slice&gt;</span><span class="si">{</span><span class="n">SLICE</span><span class="si">}</span><span class="s1">)'</span>
 
-<span class="n">ATTRIBUTE_NAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'[a-zA-Z][a-zA-Z0-9]*'</span>
+<span class="n">ATTRIBUTE_NAME</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'[a-zA-Z_][a-zA-Z0-9_]*'</span>
 
 <span class="c1"># accepts both syntaxes: '.[att]' or '.att'</span>
 <span class="c1"># However, this makes the grammar ambiguous. E.g:</span>
