@@ -37,6 +37,8 @@ class PlotMixin:
         console = Console()
 
         all_attrs = self._get_attributes('non_empty_fields')
+        # remove underscore attribute
+        all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
         attr_counter = Counter(all_attrs)
 
         table = Table(box=box.SIMPLE, highlight=True)
@@ -71,6 +73,9 @@ class PlotMixin:
                 else:
                     _text = f'{_doc_text} attributes'
                 table.add_row(_text, str(_a))
+
+        is_multimodal = all(d.is_multimodal for d in self)
+        table.add_row('Multimodal dataclass', str(is_multimodal))
 
         tables.append(Panel(table, title='Documents Summary', expand=False))
 
@@ -339,7 +344,7 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
 
-        max_num_img = img_per_row ** 2
+        max_num_img = img_per_row**2
         sprite_img = np.zeros(
             [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
         )

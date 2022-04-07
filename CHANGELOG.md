@@ -69,6 +69,8 @@
 
 
 
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1681,4 +1683,73 @@
 
  - [[```10fa6b83```](https://github.com/jina-ai/docarray/commit/10fa6b83b9b15152353508ae887c9cc217de55a9)] __-__ fix readme (*Han Xiao*)
  - [[```527ffccc```](https://github.com/jina-ai/docarray/commit/527ffcccf2ae1dfc5782db27913f0ec8a083664f)] __-__ __version__: the next version will be 0.11.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-11-3></a>
+## Release Note (`0.11.3`)
+
+> Release time: 2022-04-05 20:04:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Delgermurun,  David Buchaca Prats,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```ab7aebd2```](https://github.com/jina-ai/docarray/commit/ab7aebd2a03c53267b4ff27aca46160367cd4426)] __-__ __hubble__: push/pull user authentication (#238) (*Delgermurun*)
+
+### 🐞 Bug fixes
+
+ - [[```57213910```](https://github.com/jina-ai/docarray/commit/57213910019cf77dfa59e23a817e177bed5a770c)] __-__ torch store embedding (#247) (*David Buchaca Prats*)
+
+### 🧼 Code Refactoring
+
+ - [[```3025a421```](https://github.com/jina-ai/docarray/commit/3025a4214b7bf1a6b69bcbc4d95e4701ffca84f4)] __-__ __array__: remove customize error (#254) (*Han Xiao*)
+ - [[```50c14b14```](https://github.com/jina-ai/docarray/commit/50c14b1424d14ed6d61371ad0f2f1bb70a9e4e15)] __-__ __dataclass__: fix types registry to lambda (#252) (*Han Xiao*)
+ - [[```7d4b022a```](https://github.com/jina-ai/docarray/commit/7d4b022a52adcf32a0221f20d2c014000f6a7465)] __-__ __dataclass__: fix types registry to lambda (#251) (*Han Xiao*)
+ - [[```c78d6acd```](https://github.com/jina-ai/docarray/commit/c78d6acd31aa04e161c543cac8eb563147b330e7)] __-__ __document__: styling and minor refactor on dataclass (#249) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```d1ed4290```](https://github.com/jina-ai/docarray/commit/d1ed4290d7a1984fe5e78be9471bbecd49086a94)] __-__ qdrant broken pipe error (#250) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```225fafe4```](https://github.com/jina-ai/docarray/commit/225fafe40763bf00e0fe904a6d8d8ceb0650816f)] __-__ __docs__: fix docs (*Han Xiao*)
+ - [[```83881e24```](https://github.com/jina-ai/docarray/commit/83881e24a9c0c910a11d9ad0ff8cf82c5c494068)] __-__ __version__: the next version will be 0.11.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-0></a>
+## Release Note (`0.12.0`)
+
+> Release time: 2022-04-07 11:36:13
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6e4f6985```](https://github.com/jina-ai/docarray/commit/6e4f6985fb8f6119beb3e7183ffc8ca990546d12)] __-__ __documnet__: hide underscore attr in plot (#255) (*Han Xiao*)
+
+### 🧼 Code Refactoring
+
+ - [[```941c8a0d```](https://github.com/jina-ai/docarray/commit/941c8a0d0249a73ff7e477c90250fa9ed4b6c338)] __-__ only allow selection of attributes with bracket (#260) (*AlaeddineAbdessalem*)
+ - [[```c84b9dea```](https://github.com/jina-ai/docarray/commit/c84b9dea844a51648c909811eebb8a61f19bbeaa)] __-__ __dataclass__: remove field_name simplify getter/setter (#258) (*Han Xiao*)
+ - [[```749ff2c2```](https://github.com/jina-ai/docarray/commit/749ff2c2c393da4c34c7c64b2dec85d8005fab3e)] __-__ __dataclass__: remove field_name simplify getter/setter (#257) (*Han Xiao*)
+ - [[```d532588c```](https://github.com/jina-ai/docarray/commit/d532588c4ad4c148dba0807824449d79003e5c36)] __-__ __dataclass__: allow dataclass takes obj directly (#253) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```134bb1e9```](https://github.com/jina-ai/docarray/commit/134bb1e917821fde6585a1538cb46a43f1e64b7e)] __-__ __dataclass__: add clip example (#264) (*Han Xiao*)
+ - [[```a8c6fa61```](https://github.com/jina-ai/docarray/commit/a8c6fa61cac3c8128181687970799a2000486f29)] __-__ __dataclass__: add access modality chapter (#261) (*Han Xiao*)
+ - [[```08e0a127```](https://github.com/jina-ai/docarray/commit/08e0a12709306e14de0a82d3f560add856934b8b)] __-__ fix push/pull (#256) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```6b72917f```](https://github.com/jina-ai/docarray/commit/6b72917f3c3c3c9ea0db02f0aa1b77a1f3a77841)] __-__ fix readme (*Han Xiao*)
+ - [[```30617426```](https://github.com/jina-ai/docarray/commit/30617426f39866a5f7e789e2b367c5a8920b89a6)] __-__ update readme (*Han Xiao*)
+ - [[```08d5dde7```](https://github.com/jina-ai/docarray/commit/08d5dde75b48ca67c894da746be779d06e1396e9)] __-__ __version__: the next version will be 0.11.4 (*Jina Dev Bot*)
 

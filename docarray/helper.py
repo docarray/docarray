@@ -60,16 +60,19 @@ def deprecate_by(new_fn, removed_at: str):
 
 def dunder_get(_dict: Any, key: str) -> Any:
     """Returns value for a specified dunderkey
+
     A "dunderkey" is just a fieldname that may or may not contain
     double underscores (dunderscores!) for referencing nested keys in
     a dict. eg::
-         >>> data = {'a': {'b': 1}}
-         >>> dunder_get(data, 'a__b')
-         1
+     >>> data = {'a': {'b': 1}}
+     >>> dunder_get(data, 'a__b')
+
     key 'b' can be referrenced as 'a__b'
-    :param _dict : (dict, list, struct or object) which we want to index into
-    :param key   : (str) that represents a first level or nested key in the dict
+
+    :param _dict: (dict, list, struct or object) which we want to index into
+    :param key: (str) that represents a first level or nested key in the dict
     :return: (mixed) value corresponding to the key
+
     """
 
     if not _dict:

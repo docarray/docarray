@@ -1,5 +1,6 @@
 import base64
 import copy
+import functools
 import typing
 from dataclasses import (
     dataclass as _dataclass,
@@ -9,38 +10,26 @@ from dataclasses import (
     MISSING,
 )
 from enum import Enum
-from pathlib import Path
 from typing import (
     TypeVar,
-    ForwardRef,
     Callable,
     Optional,
-    TYPE_CHECKING,
     overload,
     Dict,
+    Type,
 )
 
-from .setter import (
-    image_setter,
-    text_setter,
-    audio_setter,
-    json_setter,
-)
-from .getter import (
-    image_getter,
-    text_getter,
-    audio_getter,
-    json_getter,
-)
+from .getter import *
+from .setter import *
 
 if TYPE_CHECKING:
-    import scipy.sparse
-    import tensorflow
-    import torch
     import numpy as np
     from ..typing import T
     from docarray import Document
-    from PIL.Image import Image as PILImage
+
+from ..typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
+
+__all__ = ['field', 'dataclass', 'is_multimodal']
 
 
 class AttributeType(str, Enum):
@@ -56,8 +45,8 @@ class Field(_Field):
     def __init__(
         self,
         *,
-        setter: Callable,
-        getter: Callable,
+        setter: Optional[Callable] = None,
+        getter: Optional[Callable] = None,
         _source_field: Optional[_Field] = None,
         **kwargs,
     ):
@@ -69,19 +58,13 @@ class Field(_Field):
         for s in f.__slots__:
             setattr(self, s, getattr(f, s))
 
-    def get_field(self, doc: 'Document'):
-        return self.getter(doc, self.name)
-
-    def set_field(self, val) -> 'Document':
-        return self.setter(self.name, val)
-
 
 @overload
 def field(
     *,
     _source_field: Optional[_Field] = None,  # Privately used
-    setter: Callable,
-    getter: Callable,
+    setter: Optional[Callable] = None,
+    getter: Optional[Callable] = None,
     default=MISSING,
     default_factory=MISSING,
     init=True,
@@ -89,7 +72,7 @@ def field(
     hash=None,
     compare=True,
     metadata=None,
-) -> _Field:
+) -> Field:
     ...
 
 
@@ -97,46 +80,68 @@ def field(**kwargs) -> Field:
     return Field(**kwargs)
 
 
-Image = TypeVar(
-    'Image',
-    ForwardRef('np.ndarray'),
-    ForwardRef('tensorflow.Tensor'),
-    ForwardRef('torch.Tensor'),
-    str,
-    ForwardRef('PILImage'),
-)
+def _is_field(f) -> bool:
+    return isinstance(f, Field) and getattr(f, 'setter') and getattr(f, 'getter')
 
-Text = TypeVar('Text', bound=str)
-
-Audio = TypeVar(
-    'Audio',
-    str,
-    Path,
-)
-
-JSON = TypeVar('JSON', str, dict)
 
 _TYPES_REGISTRY = {
     Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
     Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
     Audio: lambda x: field(setter=audio_setter, getter=audio_getter, _source_field=x),
     JSON: lambda x: field(setter=json_setter, getter=json_getter, _source_field=x),
+    Video: lambda x: field(setter=video_setter, getter=video_getter, _source_field=x),
+    Tabular: lambda x: field(
+        setter=tabular_setter, getter=tabular_getter, _source_field=x
+    ),
+    Blob: lambda x: field(setter=blob_setter, getter=blob_getter, _source_field=x),
+    Mesh: lambda x: field(setter=mesh_setter, getter=mesh_getter, _source_field=x),
 }
 
 
+@overload
 def dataclass(
-    cls: 'T' = None,
+    cls: Optional['T'] = None,
+    *,
+    init: bool = True,
+    repr: bool = True,
+    eq: bool = True,
+    order: bool = False,
+    unsafe_hash: bool = False,
+    frozen: bool = False,
     type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
 ) -> 'T':
-    """Extends python standard dataclass decorator to add functionalities to enable multi modality support to Document.
-    Returns the same class as was passed in, with dunder methods and from_document method.
+    ...
 
 
-    If init is true, an __init__() method is added to the class. If
-    repr is true, a __repr__() method is added. If order is true, rich
-    comparison dunder methods are added. If unsafe_hash is true, a
-    __hash__() method function is added. If frozen is true, fields may
-    not be assigned to after instance creation.
+def dataclass(
+    cls: Optional['T'] = None,
+    *,
+    type_var_map: Optional[Dict[TypeVar, Callable[['_Field'], 'Field']]] = None,
+    **kwargs,
+) -> 'T':
+    """Annotates a class as a DocArray dataclass type.
+
+    Example usage:
+
+    >>> from docarray.typing import Image, Text
+    >>> from docarray import dataclass
+    >>> @dataclass:
+    >>> class X:
+    >>>     banner: Image = 'apple.png'
+    >>>     description: Text = 'This is a big red apple.'
+
+    :param type_var_map: a mapping from TypeVar to a callable that gives Field.
+
+        .. highlight:: python
+        .. code-block:: python
+
+            _TYPES_REGISTRY = {
+                Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
+                Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
+            }
+
+        The default mapping will be overrided by this new mapping if they collide on the keys.
+
     """
 
     if not type_var_map:
@@ -146,19 +151,37 @@ def dataclass(
         r.update(type_var_map)
         type_var_map = r
 
+    from docarray import Document
+
+    def deco(f):
+        """
+        Set Decorator function.
+
+        :param f: function the decorator is used for
+        :return: wrapper
+        """
+
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            if not kwargs and len(args) == 2 and isinstance(args[1], Document):
+                return f(args[0], **_from_document(type(args[0]), args[1]))
+            else:
+                return f(*args, **kwargs)
+
+        return wrapper
+
     def wrap(cls):
-        decorated_cls = _dataclass(
-            cls,
-            init=True,
-            repr=True,
-            eq=True,
-            order=False,
-            unsafe_hash=False,
-            frozen=False,
-        )
-        setattr(decorated_cls, from_document.__func__.__name__, from_document)
+        decorated_cls = _dataclass(cls, **kwargs)
+
+        # inject flag for recognizing this is a multimodal dataclass
+        setattr(decorated_cls, '__is_multimodal__', True)
+
+        # wrap init so `MMDoc(document)` is possible
+        if getattr(decorated_cls, '__init__'):
+            decorated_cls.__init__ = deco(decorated_cls.__init__)
+
         for key, f in decorated_cls.__dataclass_fields__.items():
-            if isinstance(f, Field):
+            if _is_field(f):
                 continue
 
             if f.type in type_var_map:
@@ -180,13 +203,17 @@ def dataclass(
     return wrap(cls)
 
 
-def is_dataclass(obj) -> bool:
+def is_multimodal(obj) -> bool:
     """Returns True if obj is an instance of :meth:`.dataclass`."""
-    return _is_dataclass(obj) and hasattr(obj, 'from_document')
+    from docarray import Document
+
+    if isinstance(obj, Document):
+        return obj.is_multimodal
+    else:
+        return _is_dataclass(obj) and hasattr(obj, '__is_multimodal__')
 
 
-@classmethod
-def from_document(cls: 'T', doc: 'Document'):
+def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
     if not doc.is_multimodal:
         raise ValueError(
             f'{doc} is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.'
@@ -229,17 +256,17 @@ def from_document(cls: 'T', doc: 'Document'):
         else:
             raise AttributeError(f'Invalid attribute at `{key}`')
 
-    return cls(**attributes)
+    return attributes
 
 
 def _get_doc_attribute(attribute_doc: 'Document', field):
-    if isinstance(field, Field):
-        return field.get_field(attribute_doc)
+    if _is_field(field):
+        return field.getter(attribute_doc)
     else:
         raise ValueError('Invalid attribute type')
 
 
-def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls):
-    if not is_dataclass(nested_cls):
+def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls: Type['T']) -> 'T':
+    if not is_multimodal(nested_cls):
         raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
-    return nested_cls.from_document(attribute_doc)
+    return nested_cls(**_from_document(nested_cls, attribute_doc))

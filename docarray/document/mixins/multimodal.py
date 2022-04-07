@@ -1,7 +1,7 @@
 import base64
 import typing
 
-from ...dataclasses.types import Field, is_dataclass
+from ...dataclasses.types import Field, is_multimodal, _is_field
 from ...dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -18,10 +18,10 @@ class MultiModalMixin:
         return 'multi_modal_schema' in self._metadata
 
     @classmethod
-    def from_dataclass(cls, obj) -> 'Document':
-        if not is_dataclass(obj):
+    def _from_dataclass(cls, obj) -> 'Document':
+        if not is_multimodal(obj):
             raise TypeError(
-                f'Object {type(obj).__name__} is not a `docarray.dataclasses.dataclass` instance'
+                f'Object {type(obj).__name__} is not a `docarray.dataclass` instance'
             )
 
         from docarray import Document
@@ -31,14 +31,17 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
-            if field.type in [str, int, float, bool] and not isinstance(field, Field):
+            if attribute is None:
+                continue
+
+            if field.type in [str, int, float, bool] and not _is_field(field):
                 tags[key] = attribute
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
                     'type': field.type.__name__,
                 }
 
-            elif field.type == bytes and not isinstance(field, Field):
+            elif field.type == bytes and not _is_field(field):
                 tags[key] = base64.b64encode(attribute).decode()
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
@@ -126,15 +129,13 @@ class MultiModalMixin:
 
     @classmethod
     def _from_obj(cls, obj, obj_type, field) -> typing.Tuple['Document', AttributeType]:
-        from docarray import Document
-
         attribute_type = AttributeType.DOCUMENT
 
-        if is_dataclass(obj_type):
+        if is_multimodal(obj_type):
             doc = cls(obj)
             attribute_type = AttributeType.NESTED
-        elif isinstance(field, Field):
-            doc = field.set_field(obj)
+        elif _is_field(field):
+            doc = field.setter(obj)
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
