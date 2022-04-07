@@ -144,7 +144,7 @@ da['@.[description]']
 
 ### Select multiple fields
 
-The square bracket is required when you want to select multiple fields, they need to be separated by comma `,`.
+You can select multiple fields by including them in the square brackets, separated by a comma `,`.
 
 ````{tab} Select Documents correspond to two fields
 
@@ -272,7 +272,7 @@ da = DocumentArray(
     ]
 )
 
-for d in da['@.[banner]:1']:
+for d in da['@.[banner][:1]']:
     print(d.uri)
 ```
 
@@ -282,7 +282,7 @@ test-1.jpeg
 test-1.jpeg
 ```
 
-In summary, slicing can be put in front of field selector  to restrict the number of dataclass object; or can be put after the field selector to restrict the number of sub-Documents.
+To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.
 
 ### Select nested fields
 
