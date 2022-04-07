@@ -255,10 +255,10 @@ for text_doc in da['@r.[text]']:
     print(text_doc.text)
 
 # select both attributes
-da['@r.[image, text]']
+da['@r.[image, text]'].summary()
 
 # select attributes of the Documents at a given postion
-da['@r[1].[text]']
+da['@r[1].[text]'].summary()
 ```
 
 ```{seealso}
