@@ -106,14 +106,14 @@ Besides saving memory, one can leverage storage backends for persistence, faster
 
 ### Example 3: represent multimodal data in dataclass
 
-The following news article banner can be easily represented by `docarray.dataclass`:
+The following news article banner can be easily represented via `docarray.dataclass` and type annotation:
 
 
 <table>
 <tr>
 <td> 
 
-<img src="https://github.com/jina-ai/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="50%">
+<img src="https://github.com/jina-ai/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="100%">
      
 </td>
 <td>
@@ -131,8 +131,8 @@ class WPArticle:
 
 
 a = WPArticle(
-    banner='cat-dog-flight.png',
-    headline='Everything to know about flying with pets, from picking your seats to keeping your animal calm',
+    banner='https://.../cat-dog-flight.png',
+    headline='Everything to know about flying with pets, ...',
     meta={
         'author': 'Nathan Diller',
         'Column': 'By the Way - A Post Travel Destination',
