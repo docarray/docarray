@@ -16,7 +16,7 @@ The table below summarizes all indexing routines that DocumentArray supports. Yo
 | by `id`s                  | `da['a04633546e6211ec8ad31e008a366d49', 'af7923406e6211ecbc811e008a366d49']` | DocumentArray |
 | by boolean mask           | `da[True, False, True, False] `                                              | DocumentArray |
 | by Ellipsis               | `da[...]`                                                                    | DocumentArray |
-| by nested structure       | `da['@cm,m,c']`, `da['@c1:3m']`                                              | DocumentArray |
+| by nested structure       | `da['@cm,m,c']`, `da['@c[1:3]m']`                                            | DocumentArray |
 | by multi modal attributes | `da['@r.[attribute]']`, `da['@r.[attr1, attr2, attr3]']`                     | DocumentArray |
 
 Sounds exciting? Let's continue then.
@@ -218,7 +218,7 @@ Last but not the least, you can use integer, or integer slice to restrict the se
 This can be useful when you want to get top matches of all matches from all Documents, e.g.:
 
 ```python
-da['@m:5']
+da['@m[:5]']
 ```
 
 You can add space in the path-string for a better readability.
@@ -255,6 +255,9 @@ for text_doc in da['@r.[text]']:
 
 # select both attributes
 da['@r.[image, text]']
+
+# select attributes of the Documents at a given postion
+da['@r[1].[text]']
 ```
 
 
