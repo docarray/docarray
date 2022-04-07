@@ -1,11 +1,14 @@
 # Dataclass
 
+```{figure} https://docarray.jina.ai/_images/dataclass-banner.png
+:width: 0 %
+:scale: 0 %
+```
+
 ```{figure} img/dataclass-banner.png
 :scale: 0 %
 ```
-```{figure} dataclass-banner.png
-:scale: 0 %
-```
+
 
 ```{toctree}
 :hidden:
