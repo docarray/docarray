@@ -22,7 +22,7 @@ WRAPPED_SLICE_BASE = r'\[[-\d:]+\]'
 SLICE = rf'({SLICE_BASE}|{WRAPPED_SLICE_BASE})?'
 SLICE_TAGGED = rf'(?P<slice>{SLICE})'
 
-ATTRIBUTE_NAME = r'[a-zA-Z][a-zA-Z0-9]*'
+ATTRIBUTE_NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
 # accepts both syntaxes: '.[att]' or '.att'
 # However, this makes the grammar ambiguous. E.g:
