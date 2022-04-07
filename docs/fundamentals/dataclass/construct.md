@@ -21,6 +21,8 @@ class MyMultiModalDoc:
 m = MyMultiModalDoc(avatar='test-1.jpeg', description='hello, world')
 ```
 
+**Each field is a modality.** The above example contains two modalities: image and text. 
+
 To convert it into a `Document` object, simply:
 
 ```python
@@ -445,6 +447,7 @@ This section explains the behavior of field annotations in details.
     ```
       
     ````
+- A dataclass that has only one field annotated with `docarray.typing` will still create a nested structure under `root.chunks`. In this case, `len(root.chunks)=1` and your multimodal Document has basically a single modality, which may encourage you to think if this is really necessary to use a `dataclass`. After all, each Document represents single modality, and you can just use `Document`.  
 
 ## Construct from/to Document
 
