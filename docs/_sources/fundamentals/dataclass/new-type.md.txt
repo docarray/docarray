@@ -1,8 +1,8 @@
 # Support New Modality
 
-Each type in `docarray.typing` corresponds to one modality. Supporting a new modality means adding a new type, and specifying its construct behaviors from/to Document.
+Each type in `docarray.typing` corresponds to one modality. Supporting a new modality means adding a new type, and specifying how it is translated from/to Document.
 
-Whether it is about adding a new type, or changing the behavior of an existing type, you can leverage {meth}`~docarray.dataclasses.types.field` function.
+Whether it is about adding a new type, or changing the behavior of an existing type, you can leverage the {meth}`~docarray.dataclasses.types.field` function.
 
 ## Create new types
 

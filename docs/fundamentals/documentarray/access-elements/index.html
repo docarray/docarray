@@ -36,15 +36,16 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../access-attributes/" /><link rel="prev" title="Serialization" href="../serialization/" />
+        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-elements.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Access Documents - DocArray 0.12.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
@@ -79,9 +80,6 @@
   }
 </style></head>
   <body>
-    <script>
-      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
-    </script>
     
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
@@ -583,7 +581,7 @@
 </tr>
 <tr>
 <td>by nested structure</td>
-<td><code>da['@cm,m,c']</code>, <code>da['@c1:3m']</code></td>
+<td><code>da['@cm,m,c']</code>, <code>da['@c1:3m']</code>, <code>da['@r[1]m[2]']</code></td>
 <td>DocumentArray</td>
 </tr>
 <tr>
@@ -692,6 +690,7 @@ False
 <li><p>Multiple paths are separated by comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p></li>
 <li><p>A path represents the route from the top-level Documents to the destination. You can use <code class="docutils literal notranslate"><span class="pre">c</span></code> to select chunks, <code class="docutils literal notranslate"><span class="pre">cc</span></code> to select chunks of the chunks, <code class="docutils literal notranslate"><span class="pre">m</span></code> to select matches, <code class="docutils literal notranslate"><span class="pre">mc</span></code> to select matches of the chunks, <code class="docutils literal notranslate"><span class="pre">r</span></code> to select the top-level Documents.</p></li>
 <li><p>A path can only go deep, not go back. You can use comma <code class="docutils literal notranslate"><span class="pre">,</span></code> to start a new path from the very top-level.</p></li>
+<li><p>Optionally, you can specify a slice or offset at each level, for example, <code class="docutils literal notranslate"><span class="pre">r[-1]m[:3]</span></code> will select the first 3 matches of the last root document.</p></li>
 </ul>
 <p>Let’s practice a bit. First construct a DocumentArray with nested Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -757,7 +756,7 @@ False
 <a class="reference internal image-reference" href="../../../_images/docarray-index-example-full3.svg"><img alt="../../../_images/docarray-index-example-full3.svg" src="../../../_images/docarray-index-example-full3.svg" width="60%"/></a>
 </figure>
 <p>This can be useful when you want to get top matches of all matches from all Documents, e.g.:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@m:5'</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@m[:5]'</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>You can add space in the path-string for a better readability.</p>

@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="DocArray 0.12.1 Documentation" />
   
-<meta property="og:description" content="Just like Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities: im..." />
+<meta property="og:description" content="Just like the Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
@@ -36,15 +36,16 @@
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Modality" href="../access/" /><link rel="prev" title="Dataclass" href="../" />
+        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/construct.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
         <title>Construct - DocArray 0.12.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.59c74d8c95b765a7fd995ac71d459ebe.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
     
@@ -79,9 +80,6 @@
   }
 </style></head>
   <body>
-    <script>
-      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
-    </script>
     
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
@@ -536,9 +534,9 @@
 <h1>Construct<a class="headerlink" href="#construct" title="Permalink to this headline">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>In DocArray, a Document object can contain sub-Document in <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. If you are still unaware of this design, make sure to read <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">this chapter</span></a> before continue.</p>
+<p>In DocArray, a Document object can contain sub-Document in <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. If you are still unaware of this design, make sure to read <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">this chapter</span></a> before continuing.</p>
 </div>
-<p>Just like Python dataclasses module, DocArray provides a decorator <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.dataclass" title="docarray.dataclasses.types.dataclass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataclass()</span></code></a> and a set of type annotations in <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> such as <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, that allow you to construct multimodal Document in the following way:</p>
+<p>Just like the Python dataclasses module, DocArray provides a decorator <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.dataclass" title="docarray.dataclasses.types.dataclass"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataclass()</span></code></a> and a set of type annotations in <a class="reference internal" href="../../../api/docarray.typing/#module-docarray.typing" title="docarray.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">docarray.typing</span></code></a> such as <code class="docutils literal notranslate"><span class="pre">Image</span></code>, <code class="docutils literal notranslate"><span class="pre">Text</span></code>, <code class="docutils literal notranslate"><span class="pre">Audio</span></code>, that allow you to construct multimodal Document in the following way:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -614,7 +612,7 @@
 True
 </pre></div>
 </div>
-<p>That means, <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">arguments accepted by standard <code class="docutils literal notranslate"><span class="pre">dataclass</span></code></a> are also accepted here. Methods that can be applied to Python <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> can be also applied to DocArray <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
+<p>That means, <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass">arguments accepted by standard <code class="docutils literal notranslate"><span class="pre">dataclass</span></code></a> are also accepted here. Methods that can be applied to Python <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> can be also be applied to DocArray <code class="docutils literal notranslate"><span class="pre">dataclass</span></code>.</p>
 <p>To tell if a class or object is DocArray’s dataclass, you can use <a class="reference internal" href="../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.is_multimodal" title="docarray.dataclasses.types.is_multimodal"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multimodal()</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
