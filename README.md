@@ -53,6 +53,7 @@ DocArray consists of two simple concepts:
 
 - **Document**: a data structure for easily representing nested, unstructured data.
 - **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
+- ***Dataclass**: a high-level API for intuitively representing multimodal data.
 
 Let's see DocArray in action with three examples.
 
