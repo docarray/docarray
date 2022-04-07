@@ -1,5 +1,9 @@
 # Dataclass
 
+```{figure} img/dataclass-banner.png
+:scale: 0 %
+```
+
 ```{toctree}
 :hidden:
 
