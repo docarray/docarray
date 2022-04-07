@@ -117,8 +117,8 @@ get-started/what-is
 
 fundamentals/document/index
 fundamentals/documentarray/index
+fundamentals/dataclass/index
 datatypes/index
-
 ```
 
 ```{toctree}

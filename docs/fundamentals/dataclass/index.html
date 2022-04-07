@@ -4,17 +4,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="<no title>" />
+<meta property="og:title" content="Dataclass" />
   
 <meta property="og:type" content="website" />
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/index/" />
   
-<meta property="og:site_name" content="DocArray 0.11.3 Documentation" />
+<meta property="og:site_name" content="DocArray 0.12.0 Documentation" />
   
-<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
+<meta property="og:description" content="DocArray’s dataclass is a high-level API for representing a multimodal document using nested Document structure. It follows the design and idiom of the standard Python dataclass, allowing users to represent a complicated multimodal document intuitively and process it easily via DocArray Document/..." />
   
-<meta property="og:image:alt" content="DocArray 0.11.3 Documentation" />
+<meta property="og:image" content="https://docarray.jina.ai/fundamentals/_images/dataclass-banner.png" />
+  
+<meta property="og:image:alt" content="DocArray 0.12.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -33,10 +35,10 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Construct" href="construct/" /><link rel="prev" title="Evaluate Matches" href="../documentarray/evaluation/" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.03.04"/>
-        <title>&lt;no title&gt; - DocArray 0.11.3 documentation</title>
+        <title>Dataclass - DocArray 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=935aa2abcc5c1da4283d1dc201fb1f0add16d23a" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -167,7 +169,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.11.3 documentation</div>
+                <div class="brand">DocArray 0.12.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -185,7 +187,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -222,7 +224,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../document/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../document/serialization/">Serialization</a></li>
@@ -247,7 +249,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../datatypes/">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Dataclass</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="access/">Access Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new-type/">Support New Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example/">Process Modality</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../datatypes/">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../datatypes/text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../datatypes/image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../datatypes/video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
@@ -264,7 +273,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fastapi-support/">FastAPI/Pydantic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/graphql-support/">GraphQL</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/sqlite/">SQLite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/qdrant/">Qdrant</a></li>
@@ -276,14 +285,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer References</span></p>
 <ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/docarray/">docarray package</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.array/">docarray.array package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.mixins/">docarray.array.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.mixins.dataloader/">docarray.array.mixins.dataloader package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../api/docarray/">docarray package</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.array/">docarray.array package</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.mixins/">docarray.array.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.mixins.dataloader/">docarray.array.mixins.dataloader package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.mixins.dataloader.helper/">docarray.array.mixins.dataloader.helper module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.mixins.io/">docarray.array.mixins.io package</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.mixins.io/">docarray.array.mixins.io package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.mixins.io.binary/">docarray.array.mixins.io.binary module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a></li>
@@ -316,13 +325,13 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.array.mixins.traverse/">docarray.array.mixins.traverse module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.queryset/">docarray.array.queryset package</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.queryset/">docarray.array.queryset package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.array.queryset.lookup/">docarray.array.queryset.lookup module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.array.queryset.parser/">docarray.array.queryset.parser module</a></li>
 </ul>
 </li>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.storage/">docarray.array.storage package</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.annlite/">docarray.array.storage.annlite package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.array.storage/">docarray.array.storage package</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.annlite/">docarray.array.storage.annlite package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.annlite.backend/">docarray.array.storage.annlite.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.annlite.find/">docarray.array.storage.annlite.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.annlite.getsetdel/">docarray.array.storage.annlite.getsetdel module</a></li>
@@ -330,28 +339,28 @@
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.annlite.seqlike/">docarray.array.storage.annlite.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.base/">docarray.array.storage.base package</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.base/">docarray.array.storage.base package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.backend/">docarray.array.storage.base.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.getsetdel/">docarray.array.storage.base.getsetdel module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.helper/">docarray.array.storage.base.helper module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.base.seqlike/">docarray.array.storage.base.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.elastic/">docarray.array.storage.elastic package</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.elastic/">docarray.array.storage.elastic package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.elastic.backend/">docarray.array.storage.elastic.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.elastic.find/">docarray.array.storage.elastic.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.elastic.getsetdel/">docarray.array.storage.elastic.getsetdel module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.elastic.seqlike/">docarray.array.storage.elastic.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.memory/">docarray.array.storage.memory package</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.memory/">docarray.array.storage.memory package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.memory.backend/">docarray.array.storage.memory.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.memory.find/">docarray.array.storage.memory.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.memory.getsetdel/">docarray.array.storage.memory.getsetdel module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.memory.seqlike/">docarray.array.storage.memory.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.qdrant/">docarray.array.storage.qdrant package</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.qdrant/">docarray.array.storage.qdrant package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.qdrant.backend/">docarray.array.storage.qdrant.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.qdrant.find/">docarray.array.storage.qdrant.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.qdrant.getsetdel/">docarray.array.storage.qdrant.getsetdel module</a></li>
@@ -359,14 +368,14 @@
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.qdrant.seqlike/">docarray.array.storage.qdrant.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.sqlite/">docarray.array.storage.sqlite package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.sqlite.backend/">docarray.array.storage.sqlite.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.sqlite.getsetdel/">docarray.array.storage.sqlite.getsetdel module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.sqlite.helper/">docarray.array.storage.sqlite.helper module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.sqlite.seqlike/">docarray.array.storage.sqlite.seqlike module</a></li>
 </ul>
 </li>
-<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.weaviate/">docarray.array.storage.weaviate package</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/docarray.array.storage.weaviate/">docarray.array.storage.weaviate package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.weaviate.backend/">docarray.array.storage.weaviate.backend module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.weaviate.find/">docarray.array.storage.weaviate.find module</a></li>
 <li class="toctree-l5"><a class="reference internal" href="../../api/docarray.array.storage.weaviate.getsetdel/">docarray.array.storage.weaviate.getsetdel module</a></li>
@@ -388,14 +397,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.array.weaviate/">docarray.array.weaviate module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.dataclasses/">docarray.dataclasses package</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.dataclasses/">docarray.dataclasses package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.dataclasses.getter/">docarray.dataclasses.getter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.dataclasses.setter/">docarray.dataclasses.setter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.dataclasses.types/">docarray.dataclasses.types module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.document/">docarray.document package</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.document.mixins/">docarray.document.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.document.mixins.attribute/">docarray.document.mixins.attribute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.document.mixins.audio/">docarray.document.mixins.audio module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.document.mixins.blob/">docarray.document.mixins.blob module</a></li>
@@ -425,8 +434,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.document.strawberry_type/">docarray.document.strawberry_type module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.math/">docarray.math package</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.math.distance/">docarray.math.distance package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.math.distance.numpy/">docarray.math.distance.numpy module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.math.distance.paddle/">docarray.math.distance.paddle module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.math.distance.tensorflow/">docarray.math.distance.tensorflow module</a></li>
@@ -438,16 +447,16 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.math.ndarray/">docarray.math.ndarray module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.proto/">docarray.proto package</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.proto.io/">docarray.proto.io package</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/docarray.proto.docarray_pb2/">docarray.proto.docarray_pb2 module</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/docarray.score/">docarray.score package</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/docarray.score.mixins/">docarray.score.mixins package</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.score.mixins.property/">docarray.score.mixins.property module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/docarray.score.mixins.representer/">docarray.score.mixins.representer module</a></li>
 </ul>
@@ -523,13 +532,229 @@
                         </i>
                     </label>
                 </div>
-                
+                <section class="tex2jax_ignore mathjax_ignore" id="dataclass">
+<h1>Dataclass<a class="headerlink" href="#dataclass" title="Permalink to this headline">#</a></h1>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/dataclass-banner.png"><img alt="../../_images/dataclass-banner.png" src="../../_images/dataclass-banner.png" style="width: 0.0px; height: 0.0px;"/></a>
+</figure>
+<div class="toctree-wrapper compound">
+</div>
+<p>DocArray’s dataclass is a high-level API for representing a multimodal document using <a class="reference internal" href="../document/nested/#recursive-nested-document"><span class="std std-ref">nested Document structure</span></a>. It follows the design and idiom of the standard <a class="reference external" href="https://docs.python.org/3/library/dataclasses.html">Python dataclass</a>, allowing users to represent a complicated multimodal document intuitively and process it easily via DocArray Document/DocumentArray API.</p>
+<p>In a nutshell, DocArray provides a decorator <code class="docutils literal notranslate"><span class="pre">@dataclass</span></code> and a set of multimodal types in <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code>, which allows the left multimodal document to be represented as the right code snippet:</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 sd-p-0 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-1 sd-g-xs-1 sd-g-sm-1 sd-g-md-1 sd-g-lg-1 docutils">
+<div class="sd-col sd-d-flex-row sd-p-0 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/image-mmdoc-example.png"><img alt="../../_images/image-mmdoc-example.png" src="../../_images/image-mmdoc-example.png" style="width: 100%;"/></a>
+</figure>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row sd-p-0 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">JSON</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">WPArticle</span><span class="p">:</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span>
+    <span class="n">headline</span><span class="p">:</span> <span class="n">Text</span>
+    <span class="n">meta</span><span class="p">:</span> <span class="n">JSON</span>
+
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">WPArticle</span><span class="p">(</span>
+    <span class="n">banner</span><span class="o">=</span><span class="s1">'dog-cat-flight.png'</span><span class="p">,</span>
+    <span class="n">headline</span><span class="o">=</span><span class="s1">'Everything to know about flying with pets, from picking your seats to keeping your animal calm'</span><span class="p">,</span>
+    <span class="n">meta</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">'author'</span><span class="p">:</span> <span class="s1">'Nathan Diller'</span><span class="p">,</span>
+        <span class="s1">'column'</span><span class="p">:</span> <span class="s1">'By the Way - A Post Travel Destination'</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Converting a dataclass to Document is as simple as <code class="docutils literal notranslate"><span class="pre">Document(a)</span></code>. Via <a class="reference internal" href="../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary" title="docarray.array.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>, we can see it is represented as a Document object with the following nested structure:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📄 Document: cb25ccea837e8e2b33ef1e050bae1de2
+└── 💠 Chunks
+    ├── 📄 Document: df56a39e24f441108742b533c8710705
+    │   ╭──────────────┬───────────────────────────────────────────────────────────────╮
+    │   │ Attribute    │ Value                                                         │
+    │   ├──────────────┼───────────────────────────────────────────────────────────────┤
+    │   │ parent_id    │ cb25ccea837e8e2b33ef1e050bae1de2                              │
+    │   │ granularity  │ 1                                                             │
+    │   │ tensor       │ &lt;class 'numpy.ndarray'&gt; in shape (198, 254, 3), dtype: uint8  │
+    │   │ mime_type    │ image/png                                                     │
+    │   │ uri          │ dog-cat-flight.png                                            │
+    │   │ modality     │ image                                                         │
+    │   ╰──────────────┴───────────────────────────────────────────────────────────────╯
+    ├── 📄 Document: 828f9c346a9f5862a55ea75188b1ae19
+    │   ╭─────────────┬────────────────────────────────────────────────────────────────╮
+    │   │ Attribute   │ Value                                                          │
+    │   ├─────────────┼────────────────────────────────────────────────────────────────┤
+    │   │ parent_id   │ cb25ccea837e8e2b33ef1e050bae1de2                               │
+    │   │ granularity │ 1                                                              │
+    │   │ text        │ Everything to know about flying with pets, from picking your   │
+    │   │             │ seats to keeping your animal calm                              │
+    │   │ modality    │ text                                                           │
+    │   ╰─────────────┴────────────────────────────────────────────────────────────────╯
+    └── 📄 Document: a76803e1bcddd0960e1a01d47132c064
+        ╭─────────────┬────────────────────────────────────────────────────────────────╮
+        │ Attribute   │ Value                                                          │
+        ├─────────────┼────────────────────────────────────────────────────────────────┤
+        │ parent_id   │ cb25ccea837e8e2b33ef1e050bae1de2                               │
+        │ granularity │ 1                                                              │
+        │ tags        │ {'meta': {'author': 'Nathan Diller', 'column': 'By the Way - A │
+        │             │ Post Travel Destination'}}                                     │
+        ╰─────────────┴────────────────────────────────────────────────────────────────╯
+</pre></div>
+</div>
+<p>Before continue, let’s first spend some time to understand the problem and the rationale behind this feature.</p>
+<section id="what-is-multimodal">
+<h2>What is multimodal?<a class="headerlink" href="#what-is-multimodal" title="Permalink to this headline">#</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It is highly recommended that you first read through the last two chapters on Document and DocumentArray before moving on, as they help you understand the problem we are solving here.</p>
+</div>
+<p>A multimodal document is a document that consists of a mixture of data modalities, such as image, text, audio, etc. Let’s see some examples in real-world. Considering an article card (left) from The Washington Post and a sound effect card (right) from BBC:</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/image-mmdoc-example.png"><img alt="../../_images/image-mmdoc-example.png" src="../../_images/image-mmdoc-example.png" style="width: 100%;"/></a>
+</figure>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/sound-mmdoc-example.png"><img alt="../../_images/sound-mmdoc-example.png" src="../../_images/sound-mmdoc-example.png" style="width: 100%;"/></a>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The left card can be seen as a multimodal document: it consists of a sentence, an image, and some tags (i.e. author, column section). The right one can be seen as a collection of multimodal documents, each of which consists of an audio clip and a sentence description.</p>
+<p>In practice, we want to express such multimodal documents via Document and DocumentArray, so that we can process each modality and leverage all DocArray’s API, e.g. to embed, search, store and transfer them. That’s the purpose of DocArray dataclass.</p>
+</section>
+<section id="understanding-the-problem">
+<h2>Understanding the problem<a class="headerlink" href="#understanding-the-problem" title="Permalink to this headline">#</a></h2>
+<p>Given a multimodal document, we want to represent it via our <a class="reference internal" href="../document/"><span class="doc std std-doc">Document</span></a> object. What we have learned so far:</p>
+<ul class="simple">
+<li><p>A Document object is the basic IO unit for almost all <a class="reference internal" href="../document/fluent-interface/"><span class="doc std std-doc">DocArray API</span></a>.</p></li>
+<li><p>Each Document <a class="reference internal" href="../document/attribute/#mutual-exclusive"><span class="std std-ref">can only contain one type of</span></a> data modality.</p></li>
+<li><p>A Document can be <a class="reference internal" href="../document/nested/#recursive-nested-document"><span class="std std-ref">nested</span></a> under <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> or <code class="docutils literal notranslate"><span class="pre">.matches</span></code>.</p></li>
+</ul>
+<p>Having those in mind, to represent a multimodal document it seems that we need to put each modality as a separated Document and then nested them under a parent Document. For example, the article card from The Washington Post would be represented as follows:</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/image-mmdoc-example.png"><img alt="../../_images/image-mmdoc-example.png" src="../../_images/image-mmdoc-example.png" style="width: 100%;"/></a>
+</figure>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/mmdoc-example.svg"><img alt="../../_images/mmdoc-example.svg" src="../../_images/mmdoc-example.svg" width="100%"/></a>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Doc1</span></code> the image Document, containing <code class="docutils literal notranslate"><span class="pre">.uri</span></code> of the image and <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> representation of that banner image.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Doc2</span></code> the text Document, containing <code class="docutils literal notranslate"><span class="pre">.text</span></code> field of the card</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Doc0</span></code> the container Document of <code class="docutils literal notranslate"><span class="pre">Doc1</span></code> and <code class="docutils literal notranslate"><span class="pre">Doc2</span></code>, also contains some meta information such as author name, column name in <code class="docutils literal notranslate"><span class="pre">.tags</span></code>.</p></li>
+</ul>
+<p>Having this representation has many benefits, to name a few:</p>
+<ul class="simple">
+<li><p>One can process and apply deep learning methods on each Document (aka modality) separately.</p></li>
+<li><p>Or <em>jointly</em>, by leveraging the nested relationship at the parent level.</p></li>
+<li><p>One can enjoy all DocArray API, <a class="reference external" href="https://github.com/jina-ai/jina">Jina API</a>, <a class="reference external" href="https://hub.jina.ai">Hub Executors</a>, <a class="reference external" href="https://clip-as-service.jina.ai/">CLIP-as-service</a> and <a class="reference external" href="https://github.com/jina-ai/finetuner">Finetuner</a> out of the box, without redesigning the data structure.</p></li>
+</ul>
+</section>
+<section id="understanding-the-challenges">
+<h2>Understanding the challenges<a class="headerlink" href="#understanding-the-challenges" title="Permalink to this headline">#</a></h2>
+<p>But why do we need a dataclass module, what are the challenges here?</p>
+<p>The first challenge is that such mapping is <strong>arbitrary and implicit</strong>. Given a real-world multimodal document, it is not straightforward to construct such nested structure for new users of DocArray. The example above is simple, so the answer seems trivial. But what if I want to represent the following newspaper article as one Document?</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/complicate-example.png"><img alt="../../_images/complicate-example.png" src="../../_images/complicate-example.png" style="width: 100%;"/></a>
+</figure>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="../../_images/mmdoc-complicated.svg"><img alt="../../_images/mmdoc-complicated.svg" src="../../_images/mmdoc-complicated.svg" width="100%"/></a>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Second challenge is accessing the nested sub-Document. We want to provide users an easy way to access the nested sub-Document. It should be as easy and consistent as how they construct such Document in the first place.</p>
+<p>Final challenge is how to play well with DocArray and Jina Ecosystem, allowing users to leverage existing API, algorithms and models to handle such multimodal documents. To be specific, user can use multimodal document as the I/O without changing their algorithms and models.</p>
+</section>
+<section id="what-s-next">
+<h2>What’s next<a class="headerlink" href="#what-s-next" title="Permalink to this headline">#</a></h2>
+<p>DocArray’s dataclass is designed to tackle these challenges by providing an elegant solution based on Python dataclass. It shares the same idiom as Python dataclass, allowing user to define a multimodal document by adding type annotations. In the next sections, we shall see how it works.</p>
+</section>
+</section>
+
             </article>
             <footer>
                 
                 <div class="related-pages">
-                    
-                    
+                    <a class="next-page" href="construct/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">Construct</div>
+                        </div>
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../documentarray/evaluation/">
+                        <svg>
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Evaluate Matches</div>
+                            
+                        </div>
+                    </a>
                 </div>
 
                 <div class="bottom-of-page">
@@ -539,7 +764,7 @@
                             <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
                         </div>
                         <div class="last-updated">
-                            Last updated on Apr 05, 2022.
+                            Last updated on Apr 07, 2022.
                         </div>
                     </div>
                     <div class="right-details">
@@ -564,6 +789,26 @@
             
 
             <div class="toc-sticky toc-scroll">
+                
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Dataclass</a><ul>
+<li><a class="reference internal" href="#what-is-multimodal">What is multimodal?</a></li>
+<li><a class="reference internal" href="#understanding-the-problem">Understanding the problem</a></li>
+<li><a class="reference internal" href="#understanding-the-challenges">Understanding the challenges</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
                 
             </div>
 
