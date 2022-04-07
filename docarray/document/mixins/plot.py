@@ -1,5 +1,5 @@
 import copy
-from typing import Optional
+from typing import Optional, Literal
 
 import numpy as np
 
@@ -107,9 +107,9 @@ class PlotMixin:
         output: Optional[str] = None,
         canvas_size: int = 1920,
         channel_axis: int = -1,
-        top_k: int = 5,
+        top_k: int = 10,
         min_size: int = 100,
-        image_source: str = 'tensor',
+        image_source: Literal['tensor', 'uri'] = 'tensor',
     ):
         """Generate a sprite image for the query and its matching images in this Document object.
 
@@ -134,9 +134,6 @@ class PlotMixin:
         if top_k <= 0:
             raise ValueError(f'`limit` must be larger than 0, receiving {top_k}')
 
-        if image_source not in ('uri', 'tensor'):
-            raise ValueError(f'image_source can be only `uri` or `tensor`')
-
         import matplotlib.pyplot as plt
 
         img_per_row = top_k + 2
@@ -151,8 +148,7 @@ class PlotMixin:
 
         _d = copy.deepcopy(self)
         if image_source == 'uri':
-            _d.load_uri_to_image_tensor()
-            channel_axis = -1
+            _d.load_uri_to_image_tensor(channel_axis=channel_axis)
 
         # Maintain the aspect ratio keeping the width fixed
         h, w, _ = _d.tensor.shape
@@ -169,11 +165,8 @@ class PlotMixin:
 
         for col_id, d in enumerate(self.matches, start=2):
             _d = copy.deepcopy(d)
-            if image_source == 'uri' or (
-                image_source == 'tensor' and _d.content_type != 'tensor'
-            ):
-                _d.load_uri_to_image_tensor()
-                channel_axis = -1
+            if image_source == 'uri':
+                _d.load_uri_to_image_tensor(channel_axis=channel_axis)
 
             _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
                 shape=(img_h, img_w)
