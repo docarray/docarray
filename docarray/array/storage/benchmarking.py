@@ -7,7 +7,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index = 10_000
+n_index = 1_000_000
 # n_index = [10_000, 100_000, 500_000, 1_000_000]
 n_query = 1
 # n_query = [1, 8, 64]
