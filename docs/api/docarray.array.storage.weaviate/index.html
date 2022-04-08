@@ -81,6 +81,11 @@
 </style></head>
   <body>
     
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -154,7 +159,7 @@
 
 
 <div class="page">
-    <header class="mobile-header" id="mobile-header">
+    <header class="mobile-header">
         <div class="header-left">
             <label class="nav-overlay-icon" for="__navigation">
                 <div class="visually-hidden">Toggle site navigation sidebar</div>
@@ -195,7 +200,7 @@
             </label>
         </div>
     </header>
-    <aside class="sidebar-drawer" id="sidebar-drawer">
+    <aside class="sidebar-drawer">
         <div class="sidebar-container">
             
             <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
@@ -504,9 +509,14 @@
     </aside>
     <div class="main">
         <div class="content">
-            <article role="main">
-                <div class="content-icon-container">
-                    <div class="theme-toggle-container theme-toggle-content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
                         <button class="theme-toggle">
                             <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
                             <svg class="theme-icon-when-auto">
@@ -530,7 +540,8 @@
                         </i>
                     </label>
                 </div>
-                <section id="docarray-array-storage-weaviate-package">
+                <article role="main">
+                    <section id="docarray-array-storage-weaviate-package">
 <h1>docarray.array.storage.weaviate package<a class="headerlink" href="#docarray-array-storage-weaviate-package" title="Permalink to this headline">#</a></h1>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">#</a></h2>
@@ -548,7 +559,8 @@
 </section>
 </section>
 
-            </article>
+                </article>
+            </div>
             <footer>
                 
                 <div class="related-pages">
@@ -577,16 +589,12 @@
                         </div>
                     </a>
                 </div>
-
                 <div class="bottom-of-page">
-
                     <div class="left-details">
                         <div class="copyright">
-                            <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                        </div>
-                        <div class="last-updated">
-                            Last updated on Apr 07, 2022.
-                        </div>
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Apr 08, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -606,11 +614,10 @@
                 
             </footer>
         </div>
-        <aside class="toc-drawer" id="toc-drawer">
+        <aside class="toc-drawer">
             
-
+            
             <div class="toc-sticky toc-scroll">
-                
                 <div class="toc-title-container">
           <span class="toc-title">
             Contents
@@ -628,12 +635,10 @@
 
                     </div>
                 </div>
-                
             </div>
-
+            
             
         </aside>
-
     </div>
     <qa-bot
             title="DocArray Bot"
@@ -647,7 +652,8 @@
         </dl>
     </qa-bot>
 </div>
-<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<img referrerpolicy="no-referrer-when-downgrade"
+     src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>

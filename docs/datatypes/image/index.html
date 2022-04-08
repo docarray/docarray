@@ -81,6 +81,11 @@
 </style></head>
   <body>
     
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
   <symbol id="svg-toc" viewBox="0 0 24 24">
     <title>Contents</title>
@@ -154,7 +159,7 @@
 
 
 <div class="page">
-    <header class="mobile-header" id="mobile-header">
+    <header class="mobile-header">
         <div class="header-left">
             <label class="nav-overlay-icon" for="__navigation">
                 <div class="visually-hidden">Toggle site navigation sidebar</div>
@@ -195,7 +200,7 @@
             </label>
         </div>
     </header>
-    <aside class="sidebar-drawer" id="sidebar-drawer">
+    <aside class="sidebar-drawer">
         <div class="sidebar-container">
             
             <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
@@ -504,9 +509,14 @@
     </aside>
     <div class="main">
         <div class="content">
-            <article role="main">
-                <div class="content-icon-container">
-                    <div class="theme-toggle-container theme-toggle-content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
                         <button class="theme-toggle">
                             <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
                             <svg class="theme-icon-when-auto">
@@ -530,7 +540,8 @@
                         </i>
                     </label>
                 </div>
-                <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image">
+                <article role="main">
+                    <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image">
 <span id="image-type"></span><h1><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image" title="Permalink to this headline">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -659,7 +670,8 @@
 </section>
 </section>
 
-            </article>
+                </article>
+            </div>
             <footer>
                 
                 <div class="related-pages">
@@ -688,16 +700,12 @@
                         </div>
                     </a>
                 </div>
-
                 <div class="bottom-of-page">
-
                     <div class="left-details">
                         <div class="copyright">
-                            <a href="https://jina.ai">Copyright &#169; Jina AI Limited. All rights reserved.</a>
-                        </div>
-                        <div class="last-updated">
-                            Last updated on Apr 07, 2022.
-                        </div>
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Apr 08, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -717,11 +725,10 @@
                 
             </footer>
         </div>
-        <aside class="toc-drawer" id="toc-drawer">
+        <aside class="toc-drawer">
             
-
+            
             <div class="toc-sticky toc-scroll">
-                
                 <div class="toc-title-container">
           <span class="toc-title">
             Contents
@@ -741,12 +748,10 @@
 
                     </div>
                 </div>
-                
             </div>
-
+            
             
         </aside>
-
     </div>
     <qa-bot
             title="DocArray Bot"
@@ -760,7 +765,8 @@
         </dl>
     </qa-bot>
 </div>
-<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262" /><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+<img referrerpolicy="no-referrer-when-downgrade"
+     src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
