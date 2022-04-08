@@ -71,6 +71,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1752,4 +1753,31 @@
  - [[```6b72917f```](https://github.com/jina-ai/docarray/commit/6b72917f3c3c3c9ea0db02f0aa1b77a1f3a77841)] __-__ fix readme (*Han Xiao*)
  - [[```30617426```](https://github.com/jina-ai/docarray/commit/30617426f39866a5f7e789e2b367c5a8920b89a6)] __-__ update readme (*Han Xiao*)
  - [[```08d5dde7```](https://github.com/jina-ai/docarray/commit/08d5dde75b48ca67c894da746be779d06e1396e9)] __-__ __version__: the next version will be 0.11.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-1></a>
+## Release Note (`0.12.1`)
+
+> Release time: 2022-04-08 12:46:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```9c9ef7f2```](https://github.com/jina-ai/docarray/commit/9c9ef7f2c6527bb2c53373a425175a6cf0f0de3e)] __-__ improve error message on none embedding (#269) (*Han Xiao*)
+ - [[```8c7846ea```](https://github.com/jina-ai/docarray/commit/8c7846eae7076213d06eb98420249ea5fee0a416)] __-__ support underscore in attribute name (#259) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```fafce1a8```](https://github.com/jina-ai/docarray/commit/fafce1a8f20cad53b2e3bf77305edc57b334d047)] __-__ update access elements (#262) (*AlaeddineAbdessalem*)
+ - [[```d0173cf0```](https://github.com/jina-ai/docarray/commit/d0173cf0592f39ab6b65b1c879393d057032a515)] __-__ improve dataclass docs (#266) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```2265a024```](https://github.com/jina-ai/docarray/commit/2265a0245ed70f06dd84da73bff9af3929381a84)] __-__ fix docs page (*Han Xiao*)
+ - [[```4d94f1c6```](https://github.com/jina-ai/docarray/commit/4d94f1c6b3952c0b9dacb6b6ccefc29ae1731b2c)] __-__ fix banner image (*Han Xiao*)
+ - [[```eaf43e27```](https://github.com/jina-ai/docarray/commit/eaf43e276cfea83c7782162619a52b7110f3e5a7)] __-__ __version__: the next version will be 0.12.1 (*Jina Dev Bot*)
 
