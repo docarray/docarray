@@ -21,6 +21,7 @@ from ....array.mixins.find import FindMixin as BaseFindMixin
 if TYPE_CHECKING:
     import tensorflow
     import torch
+    from ....typing import T, ArrayType
 
     ElasticArrayType = TypeVar(
         'ElasticArrayType',
