@@ -103,15 +103,16 @@ class FindMixin(BaseFindMixin):
         if isinstance(query[0], str):
             search_method = self._find_similar_documents_from_text
             num_rows = len(query) if isinstance(query, list) else 1
-            if isinstance(query, list) and num_rows == 1:
-                query = query[0]
         else:
             search_method = self._find_similar_vectors
-            num_rows, _ = ndarray.get_array_rows(query)
+            query = np.array(query)
+            num_rows, n_dim = ndarray.get_array_rows(query)
+            if n_dim != 2:
+                query = query.reshape((num_rows, -1))
 
         if num_rows == 1:
             # if it is a list do query[0]
-            return [search_method(query, limit=limit)]
+            return [search_method(query[0], limit=limit)]
         else:
             closest_docs = []
             for q in query:
@@ -165,6 +166,7 @@ class FindMixin(BaseFindMixin):
                 limit = int(limit)
 
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
+        metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
 
         kwargs.update(
             {
