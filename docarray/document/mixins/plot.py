@@ -116,11 +116,11 @@ class PlotMixin:
         An image sprite is a collection of images put into a single image. Query image is on the left
         followed by matching images. The Document object should contain matches.
 
+        :param top_k: the number of top matching documents to show in the sprite.
         :param output: Optional path to store the visualization. If not given, show in UI
         :param canvas_size: the width of the canvas
-        :param min_size: the minimum size of the image
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-        :param top_k: the number of top matching documents to show in the sprite.
+        :param min_size: the minimum size of the image
         :param skip_empty: skip matches which has no .uri or .tensor.
         """
         if not self or not self.matches:
