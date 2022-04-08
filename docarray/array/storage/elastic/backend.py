@@ -85,7 +85,6 @@ class BackendMixin(BaseBackendMixin):
             'mappings': {
                 'dynamic': 'true',
                 '_source': {'enabled': 'true'},
-                'text': {'type': 'text', 'index': elastic_config.index_text},
                 'properties': {
                     'embedding': {
                         'type': 'dense_vector',
@@ -93,6 +92,7 @@ class BackendMixin(BaseBackendMixin):
                         'index': 'true',
                         'similarity': elastic_config.distance,
                     },
+                    'text': {'type': 'text', 'index': elastic_config.index_text},
                 },
             }
         }

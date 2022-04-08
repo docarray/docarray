@@ -40,15 +40,20 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if _id != value.id:
             self._del_doc_by_id(_id)
 
-        request = [
-            {
-                "_op_type": "index",
-                '_id': value.id,
-                '_index': self._config.index_name,
-                'embedding': self._map_embedding(value.embedding),
-                'blob': value.to_base64(),
-            }
-        ]
+        basic_dict_request = {
+            "_op_type": "index",
+            '_id': value.id,
+            '_index': self._config.index_name,
+            'embedding': self._map_embedding(value.embedding),
+            'blob': value.to_base64(),
+        }
+
+        if value.text:
+            basic_dict_request['text'] = value.text
+            print('adding text=', value.text)
+
+        request = [basic_dict_request]
+
         self._send_requests(request)
         self._refresh(self._config.index_name)
 
@@ -72,7 +77,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._refresh(self._config.index_name)
 
     def _clear_storage(self):
-        """ Concrete implementation of base class' ``_clear_storage``"""
+        """Concrete implementation of base class' ``_clear_storage``"""
         self._client.indices.delete(index=self._config.index_name)
 
     def _load_offset2ids(self):

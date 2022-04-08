@@ -56,26 +56,3 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: string representation of this object
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
-
-    def extend(self, values: Iterable['Document']) -> None:
-        """Extends the array with the given values
-
-        :param values: Documents to be added
-        """
-
-        request = []
-        for value in values:
-            request.append(
-                {
-                    "_op_type": "index",
-                    '_id': value.id,
-                    '_index': self._config.index_name,
-                    'embedding': self._map_embedding(value.embedding),
-                    'blob': value.to_base64(),
-                }
-            )
-            self._offset2ids.append(value.id)
-
-        if len(request) > 0:
-            self._send_requests(request)
-            self._refresh(self._config.index_name)
