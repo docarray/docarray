@@ -102,11 +102,14 @@ class FindMixin(BaseFindMixin):
         if isinstance(query[0], str):
             search_method = self._find_similar_documents_from_text
             num_rows = len(query) if isinstance(query, list) else 1
+            if isinstance(query, list) and num_rows == 1:
+                query = query[0]
         else:
             search_method = self._find_similar_vectors
             num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
+            # if it is a list do query[0]
             return [search_method(query, limit=limit)]
         else:
             closest_docs = []
