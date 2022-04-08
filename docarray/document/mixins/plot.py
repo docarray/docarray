@@ -1,5 +1,5 @@
 import copy
-from typing import Optional, Literal
+from typing import Optional
 
 import numpy as np
 
