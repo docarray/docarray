@@ -97,11 +97,14 @@ def test_matches_sprite_image_generator(
     start_storage,
 ):
     da, das = embed_docs
+    if image_source == 'tensor':
+        da.apply(lambda d: d.load_uri_to_image_tensor())
+        das.apply(lambda d: d.load_uri_to_image_tensor())
+
     if config_gen:
         das = da_cls(das, config=config_gen())
     else:
         das = da_cls(das)
-    da.match(das, limit=10)
-    da.apply(lambda d: d.load_uri_to_image_tensor())
+    da.match(das)
     da[0].plot_matches_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
     assert os.path.exists(tmpdir / 'sprint_da.png')

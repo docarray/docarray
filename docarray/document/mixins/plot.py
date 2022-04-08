@@ -109,6 +109,7 @@ class PlotMixin:
         channel_axis: int = -1,
         top_k: int = 10,
         min_size: int = 100,
+        skip_empty: bool = False,
         image_source: str = 'tensor',
     ):
         """Generate a sprite image for the query and its matching images in this Document object.
@@ -122,6 +123,7 @@ class PlotMixin:
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. Empty tensor will fallback to uri
         :param top_k: the number of top matching documents to show in the sprite.
+        :param skip_empty: skip matches which has no .uri or .tensor.
         """
         if not self or not self.matches:
             raise ValueError(f'{self!r} is empty or has no matches')
@@ -167,6 +169,13 @@ class PlotMixin:
         pos = canvas_size // img_per_row
 
         for col_id, d in enumerate(self.matches, start=2):
+            if not d.uri and d.tensor is None:
+                if skip_empty:
+                    continue
+                else:
+                    raise ValueError(
+                        f'Document match has neither `uri` nor `tensor`, cannot be plotted'
+                    )
             _d = copy.deepcopy(d)
             if image_source == 'uri':
                 _d.load_uri_to_image_tensor(channel_axis=channel_axis)
