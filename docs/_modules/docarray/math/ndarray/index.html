@@ -529,8 +529,14 @@
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="n">framework</span><span class="p">,</span> <span class="n">is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">_first</span><span class="p">)</span>
-    <span class="n">all_fields</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
     <span class="n">cls_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">_first</span><span class="p">)</span>
+
+    <span class="n">all_fields</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+    <span class="n">none_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">none_idx</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">'Document</span><span class="si">{</span><span class="n">none_idx</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> is None. Can not stack into `</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">s`.'</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">cls_type</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
@@ -635,7 +641,14 @@
         <span class="k">return</span> <span class="s1">'scipy'</span><span class="p">,</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">raise_error_if_not_array</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'can not determine the array type: </span><span class="si">{</span><span class="n">module_tags</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'can not determine the array type: </span><span class="si">{</span><span class="n">module_tags</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">'</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">'Empty ndarray. Did you forget to set .embedding/.tensor value and now you are operating on it?'</span>
+            <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">'python'</span><span class="p">,</span> <span class="kc">False</span></div>
 
@@ -782,7 +795,7 @@
 <span class="sd">    :return: (num_rows, ndim)</span>
 <span class="sd">    """</span>
     <span class="n">x_type</span><span class="p">,</span> <span class="n">x_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">raise_error_if_not_array</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'torch'</span> <span class="ow">and</span> <span class="n">x_sparse</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'torch'</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x_sparse</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">torch</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
