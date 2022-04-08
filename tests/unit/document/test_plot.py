@@ -44,9 +44,6 @@ def test_empty_doc(embed_docs):
     with pytest.raises(ValueError):
         daq[0].plot_matches_sprites(top_k=0)
 
-    with pytest.raises(ValueError):
-        daq[0].plot_matches_sprites(image_source='blob')
-
 
 @pytest.mark.parametrize('top_k', [1, 10, 20])
 @pytest.mark.parametrize(
@@ -69,9 +66,7 @@ def test_matches_sprites(
     else:
         das = da_cls(das)
     da.match(das)
-    da[0].plot_matches_sprites(
-        tmpdir / 'sprint_da.png', image_source='uri', top_k=top_k
-    )
+    da[0].plot_matches_sprites(top_k, output=tmpdir / 'sprint_da.png')
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
@@ -106,5 +101,5 @@ def test_matches_sprite_image_generator(
     else:
         das = da_cls(das)
     da.match(das)
-    da[0].plot_matches_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
+    da[0].plot_matches_sprites(output=tmpdir / 'sprint_da.png')
     assert os.path.exists(tmpdir / 'sprint_da.png')
