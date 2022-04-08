@@ -102,14 +102,14 @@ class PlotMixin:
 
     plot = deprecate_by(display, removed_at='0.5')
 
-    def plot_matching_sprites(
+    def plot_matches_sprites(
         self,
         output: Optional[str] = None,
         canvas_size: int = 1920,
         channel_axis: int = -1,
         top_k: int = 10,
         min_size: int = 100,
-        image_source: Literal['tensor', 'uri'] = 'tensor',
+        image_source: str = 'tensor',
     ):
         """Generate a sprite image for the query and its matching images in this Document object.
 
@@ -130,6 +130,9 @@ class PlotMixin:
             raise ValueError(
                 f'Document has neither `uri` nor `tensor`, cannot be plotted'
             )
+
+        if image_source not in ('uri', 'tensor'):
+            raise ValueError(f'image_source can be only `uri` or `tensor`')
 
         if top_k <= 0:
             raise ValueError(f'`limit` must be larger than 0, receiving {top_k}')

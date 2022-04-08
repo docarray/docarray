@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.qdrant import DocumentArrayQdrant
@@ -31,6 +31,23 @@ def embed_docs(pytestconfig):
     return daq, dai
 
 
+def test_empty_doc(embed_docs):
+    da = DocumentArray([Document(embedding=np.random.random(128))])
+    with pytest.raises(ValueError):
+        da[0].plot_matches_sprites()
+
+    daq, dai = embed_docs
+
+    with pytest.raises(ValueError):
+        daq[0].plot_matches_sprites()
+
+    with pytest.raises(ValueError):
+        daq[0].plot_matches_sprites(top_k=0)
+
+    with pytest.raises(ValueError):
+        daq[0].plot_matches_sprites(image_source='blob')
+
+
 @pytest.mark.parametrize('top_k', [1, 10, 20])
 @pytest.mark.parametrize(
     'da_cls,config',
@@ -43,7 +60,7 @@ def embed_docs(pytestconfig):
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
-def test_matching_sprites(
+def test_matches_sprites(
     pytestconfig, tmpdir, da_cls, config, embed_docs, start_storage, top_k
 ):
     da, das = embed_docs
@@ -51,8 +68,8 @@ def test_matching_sprites(
         das = da_cls(das, config=config)
     else:
         das = da_cls(das)
-    da.match(das, limit=10)
-    da[0].plot_matching_sprites(
+    da.match(das)
+    da[0].plot_matches_sprites(
         tmpdir / 'sprint_da.png', image_source='uri', top_k=top_k
     )
     assert os.path.exists(tmpdir / 'sprint_da.png')
@@ -70,7 +87,7 @@ def test_matching_sprites(
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
     ],
 )
-def test_matching_sprite_image_generator(
+def test_matches_sprite_image_generator(
     pytestconfig,
     tmpdir,
     image_source,
@@ -86,5 +103,5 @@ def test_matching_sprite_image_generator(
         das = da_cls(das)
     da.match(das, limit=10)
     da.apply(lambda d: d.load_uri_to_image_tensor())
-    da[0].plot_matching_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
+    da[0].plot_matches_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
     assert os.path.exists(tmpdir / 'sprint_da.png')
