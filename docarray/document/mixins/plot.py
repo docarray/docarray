@@ -105,11 +105,12 @@ class PlotMixin:
     def plot_matches_sprites(
         self,
         top_k: int = 10,
-        output: Optional[str] = None,
-        canvas_size: int = 1920,
         channel_axis: int = -1,
-        min_size: int = 100,
+        inv_normalize: bool = False,
         skip_empty: bool = False,
+        canvas_size: int = 1920,
+        min_size: int = 100,
+        output: Optional[str] = None,
     ):
         """Generate a sprite image for the query and its matching images in this Document object.
 
@@ -117,11 +118,13 @@ class PlotMixin:
         followed by matching images. The Document object should contain matches.
 
         :param top_k: the number of top matching documents to show in the sprite.
-        :param output: Optional path to store the visualization. If not given, show in UI
-        :param canvas_size: the width of the canvas
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-        :param min_size: the minimum size of the image
+        :param inv_normalize: If set to True, inverse the normalization of a float32 image :attr:`.tensor` into a uint8
+            image :attr:`.tensor` inplace.
         :param skip_empty: skip matches which has no .uri or .tensor.
+        :param canvas_size: the width of the canvas
+        :param min_size: the minimum size of the image
+        :param output: Optional path to store the visualization. If not given, show in UI
         """
         if not self or not self.matches:
             raise ValueError(f'{self!r} is empty or has no matches')
@@ -146,49 +149,58 @@ class PlotMixin:
             img_size = min_size
             canvas_size = img_per_row * img_size + 50
 
-        _d = copy.deepcopy(self)
-        if _d.content_type != 'tensor':
-            _d.load_uri_to_image_tensor(channel_axis=channel_axis)
-
-        # Maintain the aspect ratio keeping the width fixed
-        h, w, _ = _d.tensor.shape
-        img_h, img_w = int(h * (img_size / float(w))), img_size
-
-        sprite_img = np.ones([img_h + 20, canvas_size, 3], dtype='uint8')
-
-        _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
-            shape=(img_h, img_w)
-        )
-
-        sprite_img[10 : img_h + 10, 10 : 10 + img_w] = _d.tensor
-        pos = canvas_size // img_per_row
-
-        for col_id, d in enumerate(self.matches, start=2):
-            if not d.uri and d.tensor is None:
-                if skip_empty:
-                    continue
-                else:
-                    raise ValueError(
-                        f'Document match has neither `uri` nor `tensor`, cannot be plotted'
-                    )
-            _d = copy.deepcopy(d)
+        try:
+            _d = copy.deepcopy(self)
             if _d.content_type != 'tensor':
-                _d.load_uri_to_image_tensor(channel_axis=channel_axis)
+                _d.load_uri_to_image_tensor()  # the channel axis is -1
 
-            _d.set_image_tensor_channel_axis(channel_axis, -1).set_image_tensor_shape(
-                shape=(img_h, img_w)
-            )
+            if inv_normalize:
+                # inverse normalise to uint8 and set the channel axis to -1
+                _d.set_image_tensor_inv_normalization(channel_axis)
 
-            # paste it on the main canvas
-            sprite_img[
-                10 : img_h + 10,
-                (col_id * pos) : ((col_id * pos) + img_w),
-            ] = _d.tensor
+            _d.set_image_tensor_channel_axis(channel_axis, -1)
 
-            col_id += 1
-            if col_id >= img_per_row:
-                break
+            # Maintain the aspect ratio keeping the width fixed
+            h, w, _ = _d.tensor.shape
+            img_h, img_w = int(h * (img_size / float(w))), img_size
 
+            sprite_img = np.ones([img_h + 20, canvas_size, 3], dtype='uint8')
+
+            _d.set_image_tensor_shape(shape=(img_h, img_w))
+
+            sprite_img[10 : img_h + 10, 10 : 10 + img_w] = _d.tensor
+            pos = canvas_size // img_per_row
+
+            for col_id, d in enumerate(self.matches, start=2):
+                if not d.uri and d.tensor is None:
+                    if skip_empty:
+                        continue
+                    else:
+                        raise ValueError(
+                            f'Document match has neither `uri` nor `tensor`, cannot be plotted'
+                        )
+                _d = copy.deepcopy(d)
+                if _d.content_type != 'tensor':
+                    _d.load_uri_to_image_tensor()
+
+                if inv_normalize:
+                    _d.set_image_tensor_inv_normalization(channel_axis=channel_axis)
+
+                _d.set_image_tensor_channel_axis(
+                    channel_axis, -1
+                ).set_image_tensor_shape(shape=(img_h, img_w))
+
+                # paste it on the main canvas
+                sprite_img[
+                    10 : img_h + 10,
+                    (col_id * pos) : ((col_id * pos) + img_w),
+                ] = _d.tensor
+
+                col_id += 1
+                if col_id >= img_per_row:
+                    break
+        except Exception as ex:
+            raise ValueError('Bad image tensor. Try different `channel_axis`') from ex
         from PIL import Image
 
         im = Image.fromarray(sprite_img)
