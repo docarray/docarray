@@ -201,3 +201,25 @@ da[0, 'text'] = 'hello'
 Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.
  
 Slowness can affect all functions of DocumentArray. On the bright side, they may not be that severe as you would expect. Modern database are highly optimized. Moreover, some database provides faster method for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features. 
+
+
+## Benchmarking
+The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores in 6 different operations:
+* Create (indexing Documents)
+* Read
+* Update
+* Delete
+* Find Document by vector (Nearest Neighbor Search)
+* Find Document by condition (apply filter)
+
+The results were conducted on a 2 GHz Quad-Core Intel Core i5 processor with Python 3.8 and using the official docker 
+images of the storage backends.
+The indexing and query performance on 128-dim embeddings is the following (unit is second):
+
+| Backend  | Create    | Read    | Update  | Delete  | Find by vector | Find by condition |
+|----------|-----------|---------|---------|---------|----------------|-------------------|
+| Memory   | 0.05921   | 0.00007 | 0.00003 | 0.00003 | 0.67842        | 0.57762           |
+| Sqlite   | 101.98550 | 0.00025 | 0.00053 | 0.00325 | 5.08118        | 5.76056           |
+| Annlite  | 17.30254  | 0.00018 | 0.00378 | 0.00150 | 0.05791        | 4.05516           |
+| Qdrant   | 118.33041 | 0.01542 | 0.00427 | 0.00421 | 0.01705        | 214.03984         |
+| Weaviate | 125.03668 | 0.00455 | 0.00982 | 0.00873 | 0.00770        | 332.40888         |
