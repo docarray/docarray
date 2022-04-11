@@ -216,10 +216,11 @@ The results were conducted on a 4.5 Ghz Quad-Core i7700k processor with Python 3
 images of the storage backends. The docker images were allocated 40 GB of RAM.
 The indexing and query performance on 128-dim embeddings is the following (unit is second):
 
-| Backend  | Create    | Read    | Update  | Delete  | Find by vector | Find by condition |
-|----------|-----------|---------|---------|---------|----------------|-------------------|
-| Memory   | 0.05921   | 0.00007 | 0.00003 | 0.00003 | 0.67842        | 0.57762           |
-| Sqlite   | 101.98550 | 0.00025 | 0.00053 | 0.00325 | 5.08118        | 5.76056           |
-| Annlite  | 17.30254  | 0.00018 | 0.00378 | 0.00150 | 0.05791        | 4.05516           |
-| Qdrant   | 118.33041 | 0.01542 | 0.00427 | 0.00421 | 0.01705        | 214.03984         |
-| Weaviate | 125.03668 | 0.00455 | 0.00982 | 0.00873 | 0.00770        | 332.40888         |
+| Backend       | Create     | Read    | Update  | Delete  | Find by vector | Find by condition |
+|---------------|------------|---------|---------|---------|----------------|-------------------|
+| Memory        | 0.05921    | 0.00007 | 0.00003 | 0.00003 | 0.67842        | 0.57762           |
+| Sqlite        | 101.98550  | 0.00025 | 0.00053 | 0.00325 | 5.08118        | 5.76056           |
+| Annlite       | 17.30254   | 0.00018 | 0.00378 | 0.00150 | 0.05791        | 4.05516           |
+| Qdrant        | 118.33041  | 0.01542 | 0.00427 | 0.00421 | 0.01705        | 214.03984         |
+| Weaviate      | 125.03668  | 0.00455 | 0.00982 | 0.00873 | 0.00770        | 332.40888         |
+| ElasticSearch | 1192.01452 | 0.01047 | 0.01695 | 0.02485 | 0.14932        | 233.41248         |
