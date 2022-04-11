@@ -82,15 +82,15 @@ def test_find_by_text(storage, config):
 
     results = da.find('token1')
     assert len(results) == 2
-    assert set([doc.id for doc in results]) == {'1', '2'}
+    assert set(results[:, 'id']) == {'1', '2'}
 
     results = da.find('token2 token3')
     assert len(results) == 3
-    assert set([doc.id for doc in results]) == {'1', '2', '3'}
+    assert set(results[:, 'id']) == {'1', '2', '3'}
 
     results = da.find('token3 token4')
     assert len(results) == 2
-    assert set([doc.id for doc in results]) == {'1', '3'}
+    assert set(results[:, 'id']) == {'1', '3'}
 
     results = da.find(['token4', 'token'])
     assert isinstance(results, list)
@@ -99,3 +99,70 @@ def test_find_by_text(storage, config):
     assert len(results[0]) == 1
     assert results[0][0].id == '3'
     assert len(results[1]) == 0
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
+    ],
+)
+def test_find_by_tag(storage, config):
+    da = DocumentArray(storage=storage, config=config)
+    da.extend(
+        [
+            Document(
+                id='1',
+                tags={
+                    'attr1': 'token1 token2 token3',
+                    'attr2': 'token2 token3 token4',
+                    'attr3': 'token4 token5 token6',
+                },
+            ),
+            Document(
+                id='2',
+                tags={
+                    'attr1': 'token1',
+                    'attr2': 'token2',
+                    'attr3': 'token6',
+                },
+            ),
+            Document(
+                id='3',
+                tags={
+                    'attr1': 'token4',
+                    'attr2': 'token3',
+                    'attr3': 'token1 token5',
+                },
+            ),
+            Document(id='4'),
+        ]
+    )
+
+    results = da.find('token1 token2', index='attr1')
+    assert len(results) == 2
+    assert results[0].id == '1'
+    assert results[1].id == '2'
+
+    results = da.find('token2 token4', index='attr1')
+    assert len(results) == 2
+    assert set(results[:, 'id']) == {'1', '3'}
+
+    results = da.find('token4', index='attr2')
+    assert len(results) == 1
+    assert results[0].id == '1'
+
+    results = da.find('token6', index='attr3')
+    assert len(results) == 2
+    assert results[0].id == '2'
+    assert results[1].id == '1'
+
+    results = da.find('token5', index='attr3')
+    assert len(results) == 2
+    assert set(results[:, 'id']) == {'1', '3'}
+    assert all(['token5' in r.tags['attr3'] for r in results]) == True
+
+    results = da.find('token1', index='attr3')
+    assert len(results) == 1
+    assert results[0].id == '3'
+    assert all(['token1' in r.tags['attr3'] for r in results]) == True
