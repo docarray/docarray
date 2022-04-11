@@ -2,7 +2,6 @@ import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
-from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.math import ndarray
 
 
@@ -63,3 +62,40 @@ def test_find(storage, config, limit, query, start_storage):
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('elasticsearch', {'n_dim': 32, 'index_text': True}),
+    ],
+)
+def test_find_by_text(storage, config):
+    da = DocumentArray(storage=storage, config=config)
+    da.extend(
+        [
+            Document(id='1', text='token1 token2 token3'),
+            Document(id='2', text='token1 token2'),
+            Document(id='3', text='token2 token3 token4'),
+        ]
+    )
+
+    results = da.find('token1')
+    assert len(results) == 2
+    assert set([doc.id for doc in results]) == {'1', '2'}
+
+    results = da.find('token2 token3')
+    assert len(results) == 3
+    assert set([doc.id for doc in results]) == {'1', '2', '3'}
+
+    results = da.find('token3 token4')
+    assert len(results) == 2
+    assert set([doc.id for doc in results]) == {'1', '3'}
+
+    results = da.find(['token4', 'token'])
+    assert isinstance(results, list)
+    assert len(results) == 2
+
+    assert len(results[0]) == 1
+    assert results[0][0].id == '3'
+    assert len(results[1]) == 0
