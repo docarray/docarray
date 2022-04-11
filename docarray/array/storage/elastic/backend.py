@@ -33,6 +33,7 @@ class ElasticConfig:
     hosts: str = 'http://localhost:9200'
     index_name: Optional[str] = None
     es_config: Dict[str, Any] = field(default_factory=dict)
+    batch_size: int = 64
 
 
 class BackendMixin(BaseBackendMixin):
