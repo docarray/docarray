@@ -99,7 +99,7 @@ class BackendMixin(BaseBackendMixin):
         }
         if elastic_config.tag_indices:
             for index in elastic_config.tag_indices:
-                da_schema['mappings']['properties']['index'] = {
+                da_schema['mappings']['properties'][index] = {
                     'type': 'text',
                     'index': True,
                 }

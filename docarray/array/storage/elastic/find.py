@@ -188,7 +188,8 @@ class FindMixin(BaseFindMixin):
 
         _result = self._find(
             _query,
-            index=index**kwargs,
+            index=index,
+            **kwargs,
         )
 
         if isinstance(_result, list) and isinstance(_result[0], DocumentArray):

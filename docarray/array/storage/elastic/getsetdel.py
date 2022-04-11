@@ -50,7 +50,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         if self._config.tag_indices:
             for index in self._config.tag_indices:
-                basic_dict_request[index] = value.tags['index']
+                basic_dict_request[index] = value.tags.get(index)
 
         if value.text:
             basic_dict_request['text'] = value.text
