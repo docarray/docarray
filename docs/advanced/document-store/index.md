@@ -212,8 +212,8 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 * Find Document by vector (Nearest Neighbor Search)
 * Find Document by condition (apply filter)
 
-The results were conducted on a 2 GHz Quad-Core Intel Core i5 processor with Python 3.8 and using the official docker 
-images of the storage backends.
+The results were conducted on a 4.5 Ghz Quad-Core i7700k processor with Python 3.8.5 and using the official docker 
+images of the storage backends. The docker images were allocated 40 GB of RAM.
 The indexing and query performance on 128-dim embeddings is the following (unit is second):
 
 | Backend  | Create    | Read    | Update  | Delete  | Find by vector | Find by condition |
