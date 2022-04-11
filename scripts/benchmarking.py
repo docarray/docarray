@@ -67,8 +67,8 @@ def get_docs(n, n_dim, tensor_shape, n_query):
     ]
 
 
-def fmt(value):
-    return "%.5f s" % value
+def fmt(value, unit):
+    return "{:.3f} {}".format(value, unit)
 
 
 storage_backends = [
@@ -127,12 +127,12 @@ for backend, config in storage_backends:
 
         table.add_row(
             backend.title(),
-            fmt(create_time),
-            fmt(read_time),
-            fmt(update_time),
-            fmt(delete_time),
-            fmt(find_by_vector_time),
-            fmt(find_by_condition_time),
+            fmt(create_time, 's'),
+            fmt(read_time * 1000, 'ms'),
+            fmt(update_time * 1000, 'ms'),
+            fmt(delete_time * 1000, 'ms'),
+            fmt(find_by_vector_time, 's'),
+            fmt(find_by_condition_time, 's'),
         )
     except Exception as e:
         console.print(f'Storage Backend {backend} failed: {e}')
