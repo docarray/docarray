@@ -104,11 +104,17 @@ class FindMixin(BaseFindMixin):
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
-        if isinstance(query[0], str):
+        if isinstance(query, str):
             search_method = functools.partial(
                 self._find_similar_documents_from_text, index=index
             )
-            num_rows = len(query) if isinstance(query, list) else 1
+            num_rows = 1
+            query = [query]
+        elif isinstance(query, list) and isinstance(query[0], str):
+            search_method = functools.partial(
+                self._find_similar_documents_from_text, index=index
+            )
+            num_rows = len(query)
         else:
             search_method = self._find_similar_vectors
             query = np.array(query)
