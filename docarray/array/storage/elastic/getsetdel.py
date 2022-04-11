@@ -48,9 +48,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             'blob': value.to_base64(),
         }
 
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                basic_dict_request[index] = value.tags['index']
+
         if value.text:
             basic_dict_request['text'] = value.text
-            print('adding text=', value.text)
 
         request = [basic_dict_request]
 

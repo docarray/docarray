@@ -1,3 +1,4 @@
+import functools
 from typing import (
     TYPE_CHECKING,
     TypeVar,
@@ -59,7 +60,9 @@ class FindMixin(BaseFindMixin):
 
         return da
 
-    def _find_similar_documents_from_text(self, query: str, limit=10):
+    def _find_similar_documents_from_text(
+        self, query: str, limit: int = 10, index: str = 'text'
+    ):
         """
         Return key-word matches for the input query
 
@@ -72,7 +75,7 @@ class FindMixin(BaseFindMixin):
 
         resp = self._client.search(
             index=self._config.index_name,
-            query={'match': {'text': query}},
+            query={'match': {index: query}},
             source=['id', 'blob', 'text'],
         )
         list_of_hits = resp['hits']['hits']
@@ -89,6 +92,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: Union['ElasticArrayType', str, List[str]],
         limit: int = 10,
+        index: str = 'text',
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries if the input is an 'ElasticArrayType'.
@@ -101,7 +105,9 @@ class FindMixin(BaseFindMixin):
            the closest Document objects for each of the queries in `query`.
         """
         if isinstance(query[0], str):
-            search_method = self._find_similar_documents_from_text
+            search_method = functools.partial(
+                self._find_similar_documents_from_text, index=index
+            )
             num_rows = len(query) if isinstance(query, list) else 1
         else:
             search_method = self._find_similar_vectors
@@ -130,6 +136,7 @@ class FindMixin(BaseFindMixin):
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
         only_id: bool = False,
+        index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given an input query.
@@ -141,6 +148,8 @@ class FindMixin(BaseFindMixin):
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
         :param only_id: if set, then returning matches will only contain ``id``
+        :param index: if the query is a string, text search will be performed on `index`, otherwise, ignored. By
+                        default, the `text` field will be searched.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
@@ -179,7 +188,7 @@ class FindMixin(BaseFindMixin):
 
         _result = self._find(
             _query,
-            **kwargs,
+            index=index**kwargs,
         )
 
         if isinstance(_result, list) and isinstance(_result[0], DocumentArray):

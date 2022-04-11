@@ -34,6 +34,7 @@ class ElasticConfig:
     index_name: Optional[str] = None
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
+    tag_indices: List[str] = field(default_factory=list)
 
 
 class BackendMixin(BaseBackendMixin):
@@ -96,6 +97,12 @@ class BackendMixin(BaseBackendMixin):
                 },
             }
         }
+        if elastic_config.tag_indices:
+            for index in elastic_config.tag_indices:
+                da_schema['mappings']['properties']['index'] = {
+                    'type': 'text',
+                    'index': True,
+                }
         return da_schema
 
     def _build_client(self):
