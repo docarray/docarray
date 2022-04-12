@@ -85,11 +85,14 @@ def recall(predicted, relevant, eval_at):
 
 storage_backends = [
     ('memory', None),
-    ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
+    ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
     ('sqlite', None),
-    ('annlite', {'n_dim': D}),
-    ('weaviate', {'n_dim': D}),
-    ('elasticsearch', {'n_dim': D}),
+    (
+        'annlite',
+        {'n_dim': D, 'ef_construction': 100, 'ef_search': 100, 'max_connection': 16},
+    ),
+    ('weaviate', {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_onnections': 16}),
+    ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
 ]
 table = Table(
     title=f"DocArray Benchmarking n_index={n_index} n_query={n_query} D={D} K={K}"
