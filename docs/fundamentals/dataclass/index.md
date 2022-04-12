@@ -1,3 +1,4 @@
+(dataclass)=
 # Dataclass
 
 ```{figure} https://docarray.jina.ai/_images/dataclass-banner.png
@@ -104,7 +105,7 @@ Converting a dataclass to Document is as simple as `Document(a)`. Via {meth}`~do
         ╰─────────────┴────────────────────────────────────────────────────────────────╯
 ```
 
-Before continue, let's first spend some time to understand the problem and the rationale behind this feature.
+Before we continue, let's first spend some time to understand the problem and the rationale behind this feature.
 
 
 ## What is multimodal?
@@ -144,9 +145,9 @@ In practice, we want to express such multimodal documents via Document and Docum
 
 ## Understanding the problem
 
-Given a multimodal document, we want to represent it via our [Document](../document/index.md) object. What we have learned so far:
+Given a multimodal document, we want to represent it via our [Document](../document/index.md) object. What we have learned so far is:
 - A Document object is the basic IO unit for almost all [DocArray API](../document/fluent-interface.md).
-- Each Document {ref}`can only contain one type of <mutual-exclusive>` data modality.
+- Each Document {ref}`can only contain one type <mutual-exclusive>` of data modality.
 - A Document can be {ref}`nested<recursive-nested-document>` under `.chunks` or `.matches`.
 
 Having those in mind, to represent a multimodal document it seems that we need to put each modality as a separated Document and then nested them under a parent Document. For example, the article card from The Washington Post would be represented as follows:
@@ -204,11 +205,11 @@ The first challenge is that such mapping is **arbitrary and implicit**. Given a 
 
 ::::
 
-Second challenge is accessing the nested sub-Document. We want to provide users an easy way to access the nested sub-Document. It should be as easy and consistent as how they construct such Document in the first place.
+The second challenge is accessing the nested sub-Document. We want to provide users an easy way to access the nested sub-Document. It should be as easy and consistent as how they construct such Document in the first place.
 
-Final challenge is how to play well with DocArray and Jina Ecosystem, allowing users to leverage existing API, algorithms and models to handle such multimodal documents. To be specific, user can use multimodal document as the I/O without changing their algorithms and models.   
+The final challenge is how to play well with DocArray and Jina Ecosystem, allowing users to leverage existing API, algorithms and models to handle such multimodal documents. To be specific, the user can use multimodal document as the I/O without changing their algorithms and models.   
 
 ## What's next
 
-DocArray's dataclass is designed to tackle these challenges by providing an elegant solution based on Python dataclass. It shares the same idiom as Python dataclass, allowing user to define a multimodal document by adding type annotations. In the next sections, we shall see how it works.
+DocArray's dataclass is designed to tackle these challenges by providing an elegant solution based on Python dataclass. It shares the same idiom as Python dataclass, allowing the user to define a multimodal document by adding type annotations. In the next sections, we shall see how it works.
 
