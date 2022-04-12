@@ -434,3 +434,12 @@ def add_protocol_and_compress_to_file_path(
         file_path_extended += '.' + compress
 
     return file_path_extended
+
+
+def filter_dict(d: Dict) -> Dict:
+    """Removes `None` values from dict `d`.
+
+    :param d: input dict
+    :return: filtered dict
+    """
+    return dict(filter(lambda item: item[1], d.items()))

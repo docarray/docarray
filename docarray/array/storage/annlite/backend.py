@@ -10,7 +10,7 @@ from typing import (
 import numpy as np
 
 from ..base.backend import BaseBackendMixin
-from ....helper import dataclass_from_dict
+from ....helper import dataclass_from_dict, filter_dict
 
 if TYPE_CHECKING:
     from ....typing import DocumentArraySourceType, ArrayType
@@ -22,6 +22,9 @@ class AnnliteConfig:
     metric: str = 'cosine'
     serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
+    ef_construction: Optional[int] = None
+    ef_search: Optional[int] = None
+    max_connection: Optional[int] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -64,7 +67,7 @@ class BackendMixin(BaseBackendMixin):
 
         from annlite import AnnLite
 
-        self._annlite = AnnLite(self.n_dim, lock=False, **config)
+        self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
         from .... import Document
 
         super()._init_storage()
