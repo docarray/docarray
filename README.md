@@ -57,54 +57,7 @@ DocArray consists of two simple concepts:
 
 Let's see DocArray in action with some examples.
 
-### Example 1: a 10-liners text matching
-
-Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
-
-```python
-from docarray import Document, DocumentArray
-
-d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
-da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
-da.apply(Document.embed_feature_hashing, backend='process')
-
-q = (
-    Document(text='she smiled too much')
-    .embed_feature_hashing()
-    .match(da, metric='jaccard', use_scipy=True)
-)
-
-print(q.matches[:5, ('text', 'scores__jaccard__value')])
-```
-
-```text
-[['but she smiled too much.', 
-  '_little_, she might have fancied too _much_.', 
-  'She perfectly remembered everything that had passed in', 
-  'tolerably detached tone. While she spoke, an involuntary glance', 
-  'much as she chooses.”'], 
-  [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
-```
-
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
-
-### Example 2: external storage for out-of-memory data
-
-When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
-
-```python
-da = DocumentArray(
-    (Document(text=s.strip()) for s in d.text.split('\n') if s.strip()),
-    storage='sqlite',
-)
-```
-
-The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
-
-Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
-
-
-### Example 3: represent multimodal data in dataclass
+### Example 1: represent multimodal data in dataclass
 
 The following news article card can be easily represented via `docarray.dataclass` and type annotation:
 
@@ -145,6 +98,54 @@ d = Document(a)
 </td>
 </tr>
 </table>
+
+
+### Example 2: a 10-liners text matching
+
+Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
+
+```python
+from docarray import Document, DocumentArray
+
+d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
+da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
+da.apply(Document.embed_feature_hashing, backend='process')
+
+q = (
+    Document(text='she smiled too much')
+    .embed_feature_hashing()
+    .match(da, metric='jaccard', use_scipy=True)
+)
+
+print(q.matches[:5, ('text', 'scores__jaccard__value')])
+```
+
+```text
+[['but she smiled too much.', 
+  '_little_, she might have fancied too _much_.', 
+  'She perfectly remembered everything that had passed in', 
+  'tolerably detached tone. While she spoke, an involuntary glance', 
+  'much as she chooses.”'], 
+  [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
+```
+
+Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
+
+### Example 3: external storage for out-of-memory data
+
+When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
+
+```python
+da = DocumentArray(
+    (Document(text=s.strip()) for s in d.text.split('\n') if s.strip()),
+    storage='sqlite',
+)
+```
+
+The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
+
+Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
+
 
 
 ### Example 4: a complete workflow of visual search 
