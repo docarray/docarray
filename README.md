@@ -49,7 +49,7 @@ conda install -c conda-forge docarray
 
 ## Get Started
 
-DocArray consists of two simple concepts:
+DocArray consists of three simple concepts:
 
 - **Document**: a data structure for easily representing nested, unstructured data.
 - **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
