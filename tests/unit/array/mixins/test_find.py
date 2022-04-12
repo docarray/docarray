@@ -70,7 +70,7 @@ def test_find(storage, config, limit, query, start_storage):
         ('elasticsearch', {'n_dim': 32, 'index_text': True}),
     ],
 )
-def test_find_by_text(storage, config):
+def test_find_by_text(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
     da.extend(
         [
@@ -81,24 +81,28 @@ def test_find_by_text(storage, config):
     )
 
     results = da.find('token1')
+    assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '2'}
 
     results = da.find('token2 token3')
+    assert isinstance(results, DocumentArray)
     assert len(results) == 3
     assert set(results[:, 'id']) == {'1', '2', '3'}
 
     results = da.find('token3 token4')
+    assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '3'}
 
     results = da.find(['token4', 'token'])
     assert isinstance(results, list)
-    assert len(results) == 2
+    assert isinstance(results, list)
 
-    assert len(results[0]) == 1
-    assert results[0][0].id == '3'
-    assert len(results[1]) == 0
+    assert len(results) == 2  # len(input) = len(output)
+    assert len(results[0]) == 1  # 'token4' only appears in one doc
+    assert results[0][0].id == '3'  # 'token4' only appears in doc3
+    assert len(results[1]) == 0  # 'token' is not present in da vocabulary
 
 
 @pytest.mark.parametrize(
