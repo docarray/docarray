@@ -1,3 +1,4 @@
+import mmap
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
@@ -23,11 +24,13 @@ class DocumentArrayLoader(ParallelMixin, GroupMixin):
         )
 
         with open(path, 'rb') as f:
-            version_numdocs_lendoc0 = f.read(9)
+            mm = mmap.mmap(f.fileno(), 9, prot=mmap.PROT_READ)
+            version_numdocs_lendoc0 = mm.read()
             # 8 bytes (uint64)
             self._len = int.from_bytes(
                 version_numdocs_lendoc0[1:9], 'big', signed=False
             )
+            mm.close()
         self._iter = iter(self)
 
     def __iter__(self):
@@ -37,7 +40,8 @@ class DocumentArrayLoader(ParallelMixin, GroupMixin):
         from rich import filesize
 
         with open(self._filename, 'rb') as f:
-            f.read(9)
+            mm = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+            mm.read(9)
 
             pbar, t = get_progressbar(
                 'Deserializing', disable=not self._show_progress, total=self._len
@@ -49,17 +53,19 @@ class DocumentArrayLoader(ParallelMixin, GroupMixin):
                 for _ in range(self._len):
                     # 4 bytes (uint32)
                     len_current_doc_in_bytes = int.from_bytes(
-                        f.read(4), 'big', signed=False
+                        mm.read(4), 'big', signed=False
                     )
                     _total_size += len_current_doc_in_bytes
                     yield Document.from_bytes(
-                        f.read(len_current_doc_in_bytes),
+                        mm.read(len_current_doc_in_bytes),
                         protocol=self._protocol,
                         compress=self._compress,
                     )
                     pbar.update(
                         t, advance=1, total_size=str(filesize.decimal(_total_size))
                     )
+
+            mm.close()
 
     def __len__(self):
         return self._len
