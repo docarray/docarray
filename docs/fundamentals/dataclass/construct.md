@@ -1,11 +1,11 @@
 # Construct
 
 ```{tip}
-In DocArray, a Document object can contain sub-Document in `.chunks`. If you are still unaware of this design, make sure to read {ref}`this chapter<recursive-nested-document>` before continue.
+In DocArray, a Document object can contain sub-Document in `.chunks`. If you are still unaware of this design, make sure to read {ref}`this chapter<recursive-nested-document>` before continuing.
 ```
 
 
-Just like Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations in {mod}`docarray.typing` such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way:
+Just like the Python dataclasses module, DocArray provides a decorator {meth}`~docarray.dataclasses.types.dataclass` and a set of type annotations in {mod}`docarray.typing` such as `Image`, `Text`, `Audio`, that allow you to construct multimodal Document in the following way:
 
 ```python
 from docarray import dataclass
@@ -101,7 +101,7 @@ True
 True
 ```
 
-That means, [arguments accepted by standard `dataclass`](https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass) are also accepted here. Methods that can be applied to Python `dataclass` can be also applied to DocArray `dataclass`.
+That means, [arguments accepted by standard `dataclass`](https://docs.python.org/3/library/dataclasses.html#dataclasses.dataclass) are also accepted here. Methods that can be applied to Python `dataclass` can be also be applied to DocArray `dataclass`.
 
 To tell if a class or object is DocArray's dataclass, you can use {meth}`~docarray.dataclasses.types.is_multimodal`:
 

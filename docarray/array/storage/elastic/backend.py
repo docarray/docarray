@@ -35,6 +35,7 @@ class ElasticConfig:
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
     tag_indices: List[str] = field(default_factory=list)
+    batch_size: int = 64
 
 
 class BackendMixin(BaseBackendMixin):

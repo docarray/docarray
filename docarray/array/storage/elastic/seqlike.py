@@ -1,4 +1,4 @@
-from typing import Union, Iterable
+from typing import Union, Iterable, Dict
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
@@ -56,3 +56,29 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: string representation of this object
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
+
+    def _document_to_elastic(self, doc: 'Document') -> Dict:
+        return {
+            "_op_type": "index",
+            '_id': doc.id,
+            '_index': self._config.index_name,
+            'embedding': self._map_embedding(doc.embedding),
+            'blob': doc.to_base64(),
+        }
+
+    def _upload_batch(self, docs: Iterable['Document']):
+        batch = []
+        for doc in docs:
+            batch.append(self._document_to_elastic(doc))
+            if len(batch) > self._config.batch_size:
+                self._send_requests(batch)
+                self._refresh(self._config.index_name)
+                batch = []
+        if len(batch) > 0:
+            self._send_requests(batch)
+            self._refresh(self._config.index_name)
+
+    def extend(self, docs: Iterable['Document']):
+        docs = list(docs)
+        self._upload_batch(docs)
+        self._offset2ids.extend([doc.id for doc in docs])
