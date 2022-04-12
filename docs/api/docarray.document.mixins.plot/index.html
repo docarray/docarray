@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins.plot/" />
   
-<meta property="og:site_name" content="DocArray 0.12.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.12.2 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.12.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.12.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -37,7 +37,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.mixins.plot.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.mixins.plot module - DocArray 0.12.1 documentation</title>
+        <title>docarray.document.mixins.plot module - DocArray 0.12.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.12.1 documentation</div>
+                <div class="brand">DocArray 0.12.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -565,6 +565,27 @@
 <dt class="sig sig-object py" id="docarray.document.mixins.plot.PlotMixin.plot">
 <span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.document.mixins.plot.PlotMixin.plot" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.plot.PlotMixin.plot_matches_sprites">
+<span class="sig-name descname"><span class="pre">plot_matches_sprites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1920</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/mixins/plot/#PlotMixin.plot_matches_sprites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.mixins.plot.PlotMixin.plot_matches_sprites" title="Permalink to this definition">#</a></dt>
+<dd><p>Generate a sprite image for the query and its matching images in this Document object.</p>
+<p>An image sprite is a collection of images put into a single image. Query image is on the left
+followed by matching images. The Document object should contain matches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of top matching documents to show in the sprite.</p></li>
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p></li>
+<li><p><strong>inv_normalize</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If set to True, inverse the normalization of a float32 image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into a uint8
+image <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> inplace.</p></li>
+<li><p><strong>skip_empty</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – skip matches which has no .uri or .tensor.</p></li>
+<li><p><strong>canvas_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the width of the canvas</p></li>
+<li><p><strong>min_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the minimum size of the image</p></li>
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional path to store the visualization. If not given, show in UI</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 </section>
 
@@ -603,7 +624,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Apr 08, 2022</div>
+                            Last updated on Apr 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
