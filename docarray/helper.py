@@ -60,16 +60,19 @@ def deprecate_by(new_fn, removed_at: str):
 
 def dunder_get(_dict: Any, key: str) -> Any:
     """Returns value for a specified dunderkey
+
     A "dunderkey" is just a fieldname that may or may not contain
     double underscores (dunderscores!) for referencing nested keys in
     a dict. eg::
-         >>> data = {'a': {'b': 1}}
-         >>> dunder_get(data, 'a__b')
-         1
+     >>> data = {'a': {'b': 1}}
+     >>> dunder_get(data, 'a__b')
+
     key 'b' can be referrenced as 'a__b'
-    :param _dict : (dict, list, struct or object) which we want to index into
-    :param key   : (str) that represents a first level or nested key in the dict
+
+    :param _dict: (dict, list, struct or object) which we want to index into
+    :param key: (str) that represents a first level or nested key in the dict
     :return: (mixed) value corresponding to the key
+
     """
 
     if not _dict:
@@ -431,3 +434,12 @@ def add_protocol_and_compress_to_file_path(
         file_path_extended += '.' + compress
 
     return file_path_extended
+
+
+def filter_dict(d: Dict) -> Dict:
+    """Removes `None` values from dict `d`.
+
+    :param d: input dict
+    :return: filtered dict
+    """
+    return dict(filter(lambda item: item[1], d.items()))

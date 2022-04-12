@@ -9,6 +9,7 @@ from typing import (
     Generator,
     Iterable,
     Tuple,
+    ForwardRef,
 )
 
 if TYPE_CHECKING:
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
     import tensorflow
     import torch
     import numpy as np
+    from PIL.Image import Image as PILImage
 
     from .. import Document
 
@@ -61,3 +63,18 @@ if TYPE_CHECKING:
         DocumentArraySingleAttributeType,
         DocumentArrayMultipleAttributeType,
     ]
+
+
+Image = TypeVar(
+    'Image',
+    str,
+    ForwardRef('np.ndarray'),
+    ForwardRef('PILImage'),
+)
+Text = TypeVar('Text', bound=str)
+Audio = TypeVar('Audio', str, ForwardRef('np.ndarray'))
+Video = TypeVar('Video', str, ForwardRef('np.ndarray'))
+Mesh = TypeVar('Mesh', str, ForwardRef('np.ndarray'))
+Tabular = TypeVar('Tabular', bound=str)
+Blob = TypeVar('Blob', str, bytes)
+JSON = TypeVar('JSON', str, dict)

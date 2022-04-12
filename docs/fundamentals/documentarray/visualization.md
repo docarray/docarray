@@ -32,11 +32,30 @@ If a DocumentArray contains all image Documents, you can plot all images in one 
 
 ```python
 from docarray import DocumentArray
+
 docs = DocumentArray.from_files('*.jpg')
 docs.plot_image_sprites()
 ```
 
 ```{figure} images/sprite-image.png
+:width: 60%
+```
+(plot-matches)=
+### Plot Matches
+
+If an image Document contains the matching images in its `.matches` attribute, you can visualise the matching results using {meth}`~docarray.document.mixins.plot.PlotMixin.plot_matches_sprites`.
+
+```python
+import numpy as np
+from docarray import DocumentArray
+
+da = DocumentArray.from_files('*.jpg')
+da.embeddings = np.random.random([len(da), 10])
+da.match(da)
+da[0].plot_matches_sprites(top_k=5, channel_axis=-1, inv_normalize=False)
+```
+
+```{figure} images/sprite-match.png
 :width: 60%
 ```
 

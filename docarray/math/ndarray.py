@@ -18,8 +18,14 @@ def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:
             return None
 
     framework, is_sparse = get_array_type(_first)
-    all_fields = [getattr(d, field) for d in docs]
     cls_type = type(_first)
+
+    all_fields = [getattr(d, field) for d in docs]
+    none_idx = [idx for idx, v in enumerate(all_fields) if v is None]
+    if none_idx:
+        raise ValueError(
+            f'Document{none_idx}.{field} is None. Can not stack into `{field}s`.'
+        )
 
     if framework == 'python':
         return cls_type(all_fields)
@@ -124,7 +130,14 @@ def get_array_type(
         return 'scipy', True
 
     if raise_error_if_not_array:
-        raise TypeError(f'can not determine the array type: {module_tags}.{class_name}')
+        if array is not None:
+            raise TypeError(
+                f'can not determine the array type: {module_tags}.{class_name}'
+            )
+        else:
+            raise ValueError(
+                f'Empty ndarray. Did you forget to set .embedding/.tensor value and now you are operating on it?'
+            )
     else:
         return 'python', False
 
@@ -271,7 +284,7 @@ def detach_tensor_if_present(x: Any) -> Any:
     :return: (num_rows, ndim)
     """
     x_type, x_sparse = get_array_type(x, raise_error_if_not_array=False)
-    if x_type == 'torch' and x_sparse == False:
+    if x_type == 'torch' and not x_sparse:
         import torch
 
         x = torch.tensor(x.detach().numpy())
