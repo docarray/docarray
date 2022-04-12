@@ -140,19 +140,23 @@ for backend, config in storage_backends:
         console.print(
             f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
         )
-        recall_at_k_values = []
-        find_by_vector_times = []
-        for i, query in enumerate(vector_queries):
-            find_by_vector_time, results = find_by_vector(da, query)
-            find_by_vector_times.append(find_by_vector_time)
-            if backend == 'memory':
-                ground_truth.append(results)
-                recall_at_k_values.append(1)
-            else:
-                recall_at_k_values.append(recall(results, ground_truth[i], K))
+        if backend == 'sqlite':
+            find_by_vector_time, _ = find_by_vector(da, query)
+            recall_at_k = 1
+        else:
+            recall_at_k_values = []
+            find_by_vector_times = []
+            for i, query in enumerate(vector_queries):
+                find_by_vector_time, results = find_by_vector(da, query)
+                find_by_vector_times.append(find_by_vector_time)
+                if backend == 'memory':
+                    ground_truth.append(results)
+                    recall_at_k_values.append(1)
+                else:
+                    recall_at_k_values.append(recall(results, ground_truth[i], K))
 
-        recall_at_k = sum(recall_at_k_values) / len(recall_at_k_values)
-        find_by_vector_time = sum(find_by_vector_times) / len(find_by_vector_times)
+            recall_at_k = sum(recall_at_k_values) / len(recall_at_k_values)
+            find_by_vector_time = sum(find_by_vector_times) / len(find_by_vector_times)
 
         console.print(f'finding {n_query} docs by condition ...')
         find_by_condition_time, _ = find_by_condition(da, {'tags__i': {'$eq': 0}})
