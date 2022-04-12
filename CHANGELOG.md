@@ -72,6 +72,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1780,4 +1781,24 @@
  - [[```2265a024```](https://github.com/jina-ai/docarray/commit/2265a0245ed70f06dd84da73bff9af3929381a84)] __-__ fix docs page (*Han Xiao*)
  - [[```4d94f1c6```](https://github.com/jina-ai/docarray/commit/4d94f1c6b3952c0b9dacb6b6ccefc29ae1731b2c)] __-__ fix banner image (*Han Xiao*)
  - [[```eaf43e27```](https://github.com/jina-ai/docarray/commit/eaf43e276cfea83c7782162619a52b7110f3e5a7)] __-__ __version__: the next version will be 0.12.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-2></a>
+## Release Note (`0.12.2`)
+
+> Release time: 2022-04-12 07:30:57
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Mohammad Kalim Akram,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```f30893db```](https://github.com/jina-ai/docarray/commit/f30893dbb9f028600cf514baee5f8be9ed6d2565)] __-__ upload in batches for elastic (#271) (*AlaeddineAbdessalem*)
+ - [[```acc76ca3```](https://github.com/jina-ai/docarray/commit/acc76ca31e3344cc5dd7e42e6627951b91845ba3)] __-__ plot matching sprite func (#265) (*Mohammad Kalim Akram*)
+
+### 🍹 Other Improvements
+
+ - [[```b9099b12```](https://github.com/jina-ai/docarray/commit/b9099b125ae9934318f9e126eff5b26744d2a455)] __-__ __version__: the next version will be 0.12.2 (*Jina Dev Bot*)
 
