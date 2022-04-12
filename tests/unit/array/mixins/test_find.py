@@ -85,6 +85,11 @@ def test_find_by_text(storage, config, start_storage):
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '2'}
 
+    results = da.find(['token1'])
+    assert isinstance(results, list)
+    assert len(results) == 1
+    assert set(results[0][:, 'id']) == {'1', '2'}
+
     results = da.find('token2 token3')
     assert isinstance(results, DocumentArray)
     assert len(results) == 3
@@ -97,8 +102,6 @@ def test_find_by_text(storage, config, start_storage):
 
     results = da.find(['token4', 'token'])
     assert isinstance(results, list)
-    assert isinstance(results, list)
-
     assert len(results) == 2  # len(input) = len(output)
     assert len(results[0]) == 1  # 'token4' only appears in one doc
     assert results[0][0].id == '3'  # 'token4' only appears in doc3
