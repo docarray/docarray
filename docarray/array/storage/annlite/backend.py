@@ -97,4 +97,4 @@ class BackendMixin(BaseBackendMixin):
 
         from annlite import AnnLite
 
-        self._annlite = AnnLite(n_dim, lock=False, **config)
+        self._annlite = AnnLite(n_dim, lock=False, **filter_dict(config))
