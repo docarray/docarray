@@ -98,7 +98,13 @@ class FindMixin:
         index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
-        """Returns approximate nearest neighbors given an input query.
+        """Matching Documents given an input query.
+        If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search
+        will be performed depending on whether the storage backend supports ANN.
+        If the query is a `dict` object, Documents will be filtered according to DocArray's query language and all
+        matching Documents that match the filter will be returned.
+        If the query is a string or list of strings, a search by text will be performed if the backend supports
+        indexing and searching text fields. If not, a `NotImplementedError` will be raised.
 
         :param query: the input query to search by
         :param limit: the maximum number of matches, when not given defaults to 20.
@@ -107,8 +113,10 @@ class FindMixin:
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
         :param only_id: if set, then returning matches will only contain ``id``
-        :param index:  if the query is a string, text search will be performed on `index`, otherwise, ignored. By
-                      default, the `text` field will be searched. Only used if storage backend supports text search.
+        :param index: if the query is a string, text search will be performed on the `index` field, otherwise, this
+                      parameter is ignored. By default, the Document `text` attribute will be used for search,
+                      otherwise the tag field specified by `index` will be used. You can only use this parameter if the
+                      storage backend supports searching by text.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
