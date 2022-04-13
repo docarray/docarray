@@ -11,7 +11,7 @@ from typing import (
 
 import numpy as np
 from qdrant_client import QdrantClient
-from qdrant_openapi_client.models.models import (
+from qdrant_client.http.models.models import (
     Distance,
     CreateCollection,
     PointsList,

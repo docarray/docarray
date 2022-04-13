@@ -1,4 +1,4 @@
-from qdrant_openapi_client.models.models import Distance
+from qdrant_client.http.models.models import Distance
 
 DISTANCES = {
     'cosine': Distance.COSINE,
