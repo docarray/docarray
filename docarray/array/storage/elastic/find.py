@@ -1,13 +1,9 @@
-import functools
 from typing import (
     TYPE_CHECKING,
     TypeVar,
     Sequence,
     List,
     Union,
-    Dict,
-    Callable,
-    Optional,
 )
 
 import numpy as np
@@ -22,7 +18,6 @@ from ....array.mixins.find import FindMixin as BaseFindMixin
 if TYPE_CHECKING:
     import tensorflow
     import torch
-    from ....typing import T, ArrayType
 
     ElasticArrayType = TypeVar(
         'ElasticArrayType',
@@ -61,7 +56,7 @@ class FindMixin(BaseFindMixin):
         return da
 
     def _find_similar_documents_from_text(
-        self, query: str, limit: int = 10, index: str = 'text'
+        self, query: str, index: str = 'text', limit: int = 10
     ):
         """
         Return key-word matches for the input query
@@ -77,6 +72,7 @@ class FindMixin(BaseFindMixin):
             index=self._config.index_name,
             query={'match': {index: query}},
             source=['id', 'blob', 'text'],
+            size=limit,
         )
         list_of_hits = resp['hits']['hits']
 
@@ -88,11 +84,21 @@ class FindMixin(BaseFindMixin):
 
         return da
 
+    def _find_by_text(
+        self, query: Union[str, List[str]], index: str = 'text', limit: int = 10
+    ):
+        if isinstance(query, str):
+            query = [query]
+
+        return [
+            self._find_similar_documents_from_text(q, index=index, limit=limit)
+            for q in query
+        ]
+
     def _find(
         self,
-        query: Union['ElasticArrayType', str, List[str]],
+        query: 'ElasticArrayType',
         limit: int = 10,
-        index: str = 'text',
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries if the input is an 'ElasticArrayType'.
@@ -104,30 +110,9 @@ class FindMixin(BaseFindMixin):
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
-        if isinstance(query, str):
-            search_method = functools.partial(
-                self._find_similar_documents_from_text, index=index
-            )
-            num_rows = 1
-            query = [query]
-        elif isinstance(query, list) and isinstance(query[0], str):
-            search_method = functools.partial(
-                self._find_similar_documents_from_text, index=index
-            )
-            num_rows = len(query)
-        else:
-            search_method = self._find_similar_vectors
-            query = np.array(query)
-            num_rows, n_dim = ndarray.get_array_rows(query)
-            if n_dim != 2:
-                query = query.reshape((num_rows, -1))
+        query = np.array(query)
+        num_rows, n_dim = ndarray.get_array_rows(query)
+        if n_dim != 2:
+            query = query.reshape((num_rows, -1))
 
-        if num_rows == 1:
-            # if it is a list do query[0]
-            return [search_method(query[0], limit=limit)]
-        else:
-            closest_docs = []
-            for q in query:
-                da = search_method(q, limit=limit)
-                closest_docs.append(da)
-            return closest_docs
+        return [self._find_similar_vectors(q, limit=limit) for q in query]

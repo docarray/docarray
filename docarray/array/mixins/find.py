@@ -118,12 +118,21 @@ class FindMixin:
 
         if isinstance(query, dict):
             return self._filter(query)
-        if isinstance(query, (DocumentArray, Document)):
+        elif isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
             _query = query.embeddings
+        elif isinstance(query, str) or (
+            isinstance(query, list) and isinstance(query[0], str)
+        ):
+            result = self._find_by_text(query, index=index, **kwargs)
+
+            if len(result) == 1:
+                return result[0]
+            else:
+                return result
         else:
             _query = query
 
@@ -135,13 +144,10 @@ class FindMixin:
 
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
-        # If the query is not str or List[str] we assume it's ndarray like and reshape it.
-        if len(query) > 0 and not isinstance(query[0], str):
-            n_rows, n_dim = ndarray.get_array_rows(_query)
-
-            # Ensure query embedding to have the correct shape
-            if n_dim != 2:
-                _query = _query.reshape((n_rows, -1))
+        n_rows, n_dim = ndarray.get_array_rows(_query)
+        # Ensure query embedding to have the correct shape
+        if n_dim != 2:
+            _query = _query.reshape((n_rows, -1))
 
         metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
 
@@ -156,7 +162,6 @@ class FindMixin:
 
         _result = self._find(
             _query,
-            index=index,
             **kwargs,
         )
 
@@ -233,3 +238,6 @@ class FindMixin:
             return DocumentArray(d for d in self if parser.evaluate(d))
         else:
             return self
+
+    def _find_by_text(self, query: Union[str, List[str]], index: str = 'text'):
+        raise NotImplementedError('Search by text is not supported')
