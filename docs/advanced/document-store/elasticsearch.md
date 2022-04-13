@@ -118,17 +118,94 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
+
+### Search with `text`  
+
+Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`. To do this text needs to be indexed using the boolean flag `'index_text'` which it set when the `DocumentArray` is created
+with `config={'index_text': True, ...}`.  The following example builds a `DocumentArray` with several documents with text and searches for those that have `pizza` in their text description.
+
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray(storage= 'elasticsearch', config={'n_dim': 2, 'index_text': True})
+da.extend(
+    [
+        Document(id='1', text='Person eating'),
+        Document(id='2', text='Person eating pizza'),
+        Document(id='3', text='Pizza restaurant'),
+    ]
+)
+
+pizza_docs = da.find('pizza')
+pizza_docs[:,'text']
+```
+will print
+```text
+['Pizza restaurant', 'Person eating pizza']
+```
+
+### Search with `tags`
+
+Text can be indexed when it is part of `tags`.
+This can be specially useful in applications where text data can be split into groups.
+
+For example
+```python
+from docarray import DocumentArray, Document
+
+da = DocumentArray(storage= 'elasticsearch', 
+                   config={'n_dim': 32,'tag_indices':['food_type', 'price']})
+da.extend(
+    [
+        Document(
+            id='1',
+            tags={
+                'food_type': 'Italian and Spanish food',
+                'price': 'cheap but not that cheap',
+            },
+        ),
+        Document(
+            id='2',
+            tags={
+                'food_type': 'French and Italian food',
+                'price': 'on the expensive side',
+            },
+        ),
+        Document(
+            id='3',
+            tags={
+                'food_type': 'chinesse noddles',
+                'price': 'quite cheap!',
+            },
+        ),
+    ]
+)
+
+results = da.find('cheap', index='price')
+print(results[:,'tags__price'])
+```
+
+will print
+
+```text
+['cheap but not that cheap', 'quite cheap!']
+```
+
 ## Config
 
 The following configs can be set:
 
-| Name         | Description                                                                                      | Default     |
-|--------------|--------------------------------------------------------------------------------------------------|-------------|
-| `hosts`      | Hostname of the Elasticsearch server                                                             | `http://localhost:9200` |
-| `es_config`  | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key`| None |
-| `index_name` | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray | None        |
-| `n_dim`      | Dimensionality of the embeddings                                                                 | None        |
-| `distance`   | Similarity metric in Elasticsearch                                                               | `cosine`|
+| Name         | Description                                                                                           | Default                 |
+|--------------|-------------------------------------------------------------------------------------------------------|-------------------------|
+| `hosts`      | Hostname of the Elasticsearch server                                                                  | `http://localhost:9200` |
+| `es_config`  | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None                    |
+| `index_name` | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray      | None                    |
+| `n_dim`      | Dimensionality of the embeddings                                                                      | None                    |
+| `distance`   | Similarity metric in Elasticsearch                                                                    | `cosine`                |
+| `index_text` | Boolean flag indicating whether to index `.text` or not                                               | False                   |
+| `tag_indices`| List of tags to index                                                                                 | False                   |
+| `batch_size` | Batch size used to handle storage refreses/updates                                                    | 64                      |
+
 
 
 ```{tip}
