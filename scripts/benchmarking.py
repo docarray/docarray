@@ -1,3 +1,4 @@
+import argparse
 import functools
 import random
 from time import perf_counter
@@ -14,6 +15,9 @@ TENSOR_SHAPE = (512, 256)
 K = 10
 n_vector_queries = 1000
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--default-hnsw', help='Whether to use default HNSW configurations')
+args = parser.parse_args()
 
 times = {}
 
@@ -83,28 +87,50 @@ def recall(predicted, relevant, eval_at):
     return n_predicted_and_relevant / len(relevant)
 
 
-storage_backends = [
-    ('memory', None),
-    ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
-    ('sqlite', None),
-    (
-        'annlite',
-        {'n_dim': D, 'ef_construction': 100, 'ef_search': 100, 'max_connection': 16},
-    ),
-    ('weaviate', {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_onnections': 16}),
-    ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
-]
+if parser.default_hnsw:
+    storage_backends = [
+        ('memory', None),
+        ('qdrant', {'n_dim': D}),
+        ('sqlite', None),
+        (
+            'annlite',
+            {'n_dim': D},
+        ),
+        ('weaviate', {'n_dim': D}),
+        ('elasticsearch', {'n_dim': D}),
+    ]
+else:
+    storage_backends = [
+        ('memory', None),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
+        ('sqlite', None),
+        (
+            'annlite',
+            {
+                'n_dim': D,
+                'ef_construction': 100,
+                'ef_search': 100,
+                'max_connection': 16,
+            },
+        ),
+        (
+            'weaviate',
+            {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_onnections': 16},
+        ),
+        ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
+    ]
+
 table = Table(
-    title=f"DocArray Benchmarking n_index={n_index} n_query={n_query} D={D} K={K}"
+    title=f'DocArray Benchmarking n_index={n_index} n_query={n_query} D={D} K={K}'
 )
-table.add_column("Storage Backend")
-table.add_column("Indexing time (C)")
-table.add_column("Query (R)")
-table.add_column("Update (U)")
-table.add_column("Delete (D)")
-table.add_column("Find by vector")
-table.add_column(f"Recall at k={K} for vector search")
-table.add_column("Find by condition")
+table.add_column('Storage Backend')
+table.add_column('Indexing time (C)')
+table.add_column('Query (R)')
+table.add_column('Update (U)')
+table.add_column('Delete (D)')
+table.add_column('Find by vector')
+table.add_column(f'Recall at k={K} for vector search')
+table.add_column('Find by condition')
 
 console = Console()
 
