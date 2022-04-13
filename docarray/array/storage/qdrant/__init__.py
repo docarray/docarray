@@ -10,7 +10,7 @@ __all__ = ['StorageMixins', 'QdrantConfig']
 
 if TYPE_CHECKING:
     from qdrant_client import QdrantClient
-    from qdrant_openapi_client.models.models import Distance
+    from qdrant_client.http.models.models import Distance
 
 
 class StorageMixins(FindMixin, BackendMixin, GetSetDelMixin, SequenceLikeMixin):
