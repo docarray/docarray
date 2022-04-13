@@ -6,7 +6,7 @@ from typing import (
     List,
 )
 
-from qdrant_openapi_client.models.models import Distance
+from qdrant_client.http.models.models import Distance
 
 from .... import Document, DocumentArray
 from ....math import ndarray
@@ -64,7 +64,7 @@ class FindMixin:
 
         for hit in search_result:
             doc = Document.from_base64(
-                hit.payload['_serialized'].value[0], **self.serialize_config
+                hit.payload['_serialized'], **self.serialize_config
             )
             doc.scores[f'{self.distance.lower()}_similarity'] = NamedScore(
                 value=hit.score

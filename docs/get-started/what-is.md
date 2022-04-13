@@ -20,10 +20,18 @@ This is DocArray: a unique one, aiming to be *your data structure for unstructur
 DocArray consists of two simple concepts:
 - **Document**: a data structure for easily representing nested, unstructured data.
 - **DocumentArray**: a container for efficiently accessing, processing, and understanding multiple Documents.
+- **Dataclass**: a high-level API for intuitively representing multimodal data.
 
 DocArray is designed to be extremely intuitive for Python users, no new syntax to learn. If you know how to Python, you know how to DocArray.
 
 DocArray is designed to maximize the local experience, with the requirement of cloud readiness at anytime.
+
+DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of multi/cross-modal applications.
+
+```{figure} dataclass-example.svg
+:width: 80%
+```
+
 
 # Comparing to Alternatives
 

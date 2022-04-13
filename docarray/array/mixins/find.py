@@ -132,7 +132,6 @@ class FindMixin:
 
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
-        _, _ = ndarray.get_array_type(_query)
         n_rows, n_dim = ndarray.get_array_rows(_query)
 
         # Ensure query embedding to have the correct shape

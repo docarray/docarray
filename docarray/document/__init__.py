@@ -34,7 +34,7 @@ class Document(AllMixins, BaseDCType):
 
     @overload
     def __init__(self, _obj: Optional[Any] = None):
-        """Create a Document from a `docarray.dataclasses.dataclass` instance"""
+        """Create a Document from a `docarray.dataclass` instance"""
         ...
 
     @overload

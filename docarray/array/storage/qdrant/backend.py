@@ -16,6 +16,7 @@ from qdrant_openapi_client.models.models import (
     CreateCollection,
     PointsList,
     PointStruct,
+    HnswConfigDiff,
 )
 
 from docarray import Document
@@ -37,6 +38,9 @@ class QdrantConfig:
     port: Optional[int] = field(default=6333)
     serialize_config: Dict = field(default_factory=dict)
     scroll_batch_size: int = 64
+    ef_construct: Optional[int] = None
+    full_scan_threshold: Optional[int] = None
+    m: Optional[int] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -107,9 +111,18 @@ class BackendMixin(BaseBackendMixin):
 
     def _initialize_qdrant_schema(self):
         if not self._collection_exists(self.collection_name):
+            hnsw_config = HnswConfigDiff(
+                ef_construct=self._config.ef_construct,
+                full_scan_threshold=self._config.full_scan_threshold,
+                m=self._config.m,
+            )
             self.client.http.collections_api.create_collection(
                 self.collection_name,
-                CreateCollection(vector_size=self.n_dim, distance=self.distance),
+                CreateCollection(
+                    vector_size=self.n_dim,
+                    distance=self.distance,
+                    hnsw_config=hnsw_config,
+                ),
             )
 
     def _collection_exists(self, collection_name):
@@ -140,11 +153,9 @@ class BackendMixin(BaseBackendMixin):
     def _get_offset2ids_meta(self) -> List[str]:
         if not self._collection_exists(self.collection_name_meta):
             return []
-        return (
-            self.client.http.points_api.get_point(self.collection_name_meta, id=1)
-            .result.payload['offset2id']
-            .value
-        )
+        return self.client.http.points_api.get_point(
+            self.collection_name_meta, id=1
+        ).result.payload['offset2id']
 
     def _update_offset2ids_meta(self):
         if not self._collection_exists(self.collection_name_meta):

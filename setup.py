@@ -64,12 +64,12 @@ setup(
             'uvicorn',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
-            'qdrant-client~=0.6.0',
+            'qdrant-client~=0.7.0',
             'strawberry-graphql',
             'elasticsearch>=8.0.1',
         ],
         'qdrant': [
-            'qdrant-client~=0.6.0',
+            'qdrant-client~=0.7.0',
         ],
         'test': [
             'pytest',
@@ -93,7 +93,6 @@ setup(
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
             'jina',
-            'librosa==0.9.1',
         ],
     },
     classifiers=[
