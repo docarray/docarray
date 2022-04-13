@@ -107,8 +107,8 @@ class FindMixin:
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
         :param only_id: if set, then returning matches will only contain ``id``
-        :param index: if the query is a string, text search will be performed on `index`, otherwise, ignored. By
-                        default, the `text` field will be searched.
+        :param index:  if the query is a string, text search will be performed on `index`, otherwise, ignored. By
+                      default, the `text` field will be searched. Only used if storage backend supports text search.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.

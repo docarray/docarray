@@ -20,7 +20,7 @@ from docarray.math import ndarray
     'query',
     [np.random.random(32), np.random.random((1, 32)), np.random.random((2, 32))],
 )
-def test_find(storage, config, limit, query):
+def test_find(storage, config, limit, query, start_storage):
     embeddings = np.random.random((20, 32))
 
     if config:
