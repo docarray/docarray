@@ -36,6 +36,8 @@ class ElasticConfig:
     index_text: bool = False
     tag_indices: List[str] = field(default_factory=list)
     batch_size: int = 64
+    ef_construction: Optional[int] = None
+    m: Optional[int] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -104,6 +106,16 @@ class BackendMixin(BaseBackendMixin):
                     'type': 'text',
                     'index': True,
                 }
+
+        if self._config.m or self._config.ef_construction:
+            index_options = {
+                'type': 'hnsw',
+                'm': self._config.m or 16,
+                'ef_construction': self._config.ef_construction or 100,
+            }
+            da_schema['mappings']['properties']['embedding'][
+                'index_options'
+            ] = index_options
         return da_schema
 
     def _build_client(self):

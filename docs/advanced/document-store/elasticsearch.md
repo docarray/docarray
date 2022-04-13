@@ -127,7 +127,7 @@ with `config={'index_text': True, ...}`.  The following example builds a `Docume
 ```python
 from docarray import DocumentArray, Document
 
-da = DocumentArray(storage= 'elasticsearch', config={'n_dim': 2, 'index_text': True})
+da = DocumentArray(storage='elasticsearch', config={'n_dim': 2, 'index_text': True})
 da.extend(
     [
         Document(id='1', text='Person eating'),
@@ -137,7 +137,7 @@ da.extend(
 )
 
 pizza_docs = da.find('pizza')
-pizza_docs[:,'text']
+pizza_docs[:, 'text']
 ```
 will print
 ```text
@@ -153,8 +153,9 @@ For example
 ```python
 from docarray import DocumentArray, Document
 
-da = DocumentArray(storage= 'elasticsearch', 
-                   config={'n_dim': 32,'tag_indices':['food_type', 'price']})
+da = DocumentArray(
+    storage='elasticsearch', config={'n_dim': 32, 'tag_indices': ['food_type', 'price']}
+)
 da.extend(
     [
         Document(
@@ -182,7 +183,7 @@ da.extend(
 )
 
 results = da.find('cheap', index='price')
-print(results[:,'tags__price'])
+print(results[:, 'tags__price'])
 ```
 
 will print
@@ -195,18 +196,20 @@ will print
 
 The following configs can be set:
 
-| Name         | Description                                                                                           | Default                 |
-|--------------|-------------------------------------------------------------------------------------------------------|-------------------------|
-| `hosts`      | Hostname of the Elasticsearch server                                                                  | `http://localhost:9200` |
-| `es_config`  | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None                    |
-| `index_name` | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray      | None                    |
-| `n_dim`      | Dimensionality of the embeddings                                                                      | None                    |
-| `distance`   | Similarity metric in Elasticsearch                                                                    | `cosine`                |
-| `index_text` | Boolean flag indicating whether to index `.text` or not                                               | False                   |
-| `tag_indices`| List of tags to index                                                                                 | False                   |
-| `batch_size` | Batch size used to handle storage refreses/updates                                                    | 64                      |
+| Name              | Description                                                                                           | Default                                                 |
+|-------------------|-------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `hosts`           | Hostname of the Elasticsearch server                                                                  | `http://localhost:9200`                                 |
+| `es_config`       | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None                                                    |
+| `index_name`      | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray      | None                                                    |
+| `n_dim`           | Dimensionality of the embeddings                                                                      | None                                                    |
+| `distance`        | Similarity metric in Elasticsearch                                                                    | `cosine`                                                |
+| `ef_construction` | The size of the dynamic list for the nearest neighbors.                                               | `None`, defaults to the default value in ElasticSearch* |
+| `m`               | Similarity metric in Elasticsearch                                                                    | `None`, defaults to the default value in ElasticSearch* |
+| `index_text`      | Boolean flag indicating whether to index `.text` or not                                               | False                                                   |
+| `tag_indices`     | List of tags to index                                                                                 | False                                                   |
+| `batch_size`      | Batch size used to handle storage refreshes/updates                                                   | 64                                                      |
 
-
+*You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
 
 ```{tip}
 Note that it is plural `hosts` not `host`, to comply with Elasticsearch client's interface.
