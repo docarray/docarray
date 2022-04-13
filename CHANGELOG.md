@@ -73,6 +73,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1801,4 +1802,29 @@
 ### 🍹 Other Improvements
 
  - [[```b9099b12```](https://github.com/jina-ai/docarray/commit/b9099b125ae9934318f9e126eff5b26744d2a455)] __-__ __version__: the next version will be 0.12.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-3></a>
+## Release Note (`0.12.3`)
+
+> Release time: 2022-04-13 18:12:59
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Andrey Vasnetsov,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```5069dc99```](https://github.com/jina-ai/docarray/commit/5069dc99c538910c50e93ce7328e4ff89c2d16f0)] __-__ add hnsw params to storage backends (#272) (*AlaeddineAbdessalem*)
+
+### 🧼 Code Refactoring
+
+ - [[```f62689b4```](https://github.com/jina-ai/docarray/commit/f62689b4bb4e437b4dac4216287daaa6a976674f)] __-__ adapt to qdrant client 0.7 (#275) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```8c518b3f```](https://github.com/jina-ai/docarray/commit/8c518b3f5cb11a0a48129fa40934d698e058e56d)] __-__ update qdrant to v0.7.0 (#273) (*Andrey Vasnetsov*)
+ - [[```679bf845```](https://github.com/jina-ai/docarray/commit/679bf845ae06091231b44ec5e55ed87fecbb706e)] __-__ update readme (*Han Xiao*)
+ - [[```83fb1378```](https://github.com/jina-ai/docarray/commit/83fb1378caf31d202fba51d2727ee857af27e147)] __-__ __version__: the next version will be 0.12.3 (*Jina Dev Bot*)
 
