@@ -141,7 +141,7 @@ for backend, config in storage_backends:
             f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
         )
         if backend == 'sqlite':
-            find_by_vector_time, _ = find_by_vector(da, query)
+            find_by_vector_time, _ = find_by_vector(da, vector_queries[0])
             recall_at_k = 1
         else:
             recall_at_k_values = []
