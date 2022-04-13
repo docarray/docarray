@@ -136,7 +136,6 @@ class FindMixin:
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
         # If the query is not str or List[str] we assume it's ndarray like and reshape it.
-        import pdb; pdb.set_trace()
         if query and not isinstance(query[0], str):
             n_rows, n_dim = ndarray.get_array_rows(_query)
 
