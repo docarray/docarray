@@ -16,7 +16,11 @@ K = 10
 n_vector_queries = 1000
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--default-hnsw', help='Whether to use default HNSW configurations')
+parser.add_argument(
+    '--default-hnsw',
+    help='Whether to use default HNSW configurations',
+    action='store_true',
+)
 args = parser.parse_args()
 
 times = {}
@@ -87,7 +91,7 @@ def recall(predicted, relevant, eval_at):
     return n_predicted_and_relevant / len(relevant)
 
 
-if parser.default_hnsw:
+if args.default_hnsw:
     storage_backends = [
         ('memory', None),
         ('qdrant', {'n_dim': D}),
