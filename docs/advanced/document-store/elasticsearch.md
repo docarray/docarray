@@ -122,14 +122,17 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name         | Description                                                                                      | Default     |
-|--------------|--------------------------------------------------------------------------------------------------|-------------|
-| `hosts`      | Hostname of the Elasticsearch server                                                             | `http://localhost:9200` |
-| `es_config`  | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key`| None |
-| `index_name` | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray | None        |
-| `n_dim`      | Dimensionality of the embeddings                                                                 | None        |
-| `distance`   | Similarity metric in Elasticsearch                                                               | `cosine`|
+| Name              | Description                                                                                           | Default                                                 |
+|-------------------|-------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `hosts`           | Hostname of the Elasticsearch server                                                                  | `http://localhost:9200`                                 |
+| `es_config`       | Other ES configs in a Dict and pass to `Elasticsearch` client constructor, e.g. `cloud_id`, `api_key` | None                                                    |
+| `index_name`      | Elasticsearch index name; the class name of Elasticsearch index object to set this DocumentArray      | None                                                    |
+| `n_dim`           | Dimensionality of the embeddings                                                                      | None                                                    |
+| `distance`        | Similarity metric in Elasticsearch                                                                    | `cosine`                                                |
+| `ef_construction` | The size of the dynamic list for the nearest neighbors.                                               | `None`, defaults to the default value in ElasticSearch* |
+| `m`               | Similarity metric in Elasticsearch                                                                    | `None`, defaults to the default value in ElasticSearch* |
 
+*You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
 
 ```{tip}
 Note that it is plural `hosts` not `host`, to comply with Elasticsearch client's interface.

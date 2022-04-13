@@ -69,7 +69,9 @@ Note, that the `name` parameter in `config` needs to be capitalized.
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='weaviate', config={'name': 'Persisted', 'host': 'localhost', 'port': 1234})
+da = DocumentArray(
+    storage='weaviate', config={'name': 'Persisted', 'host': 'localhost', 'port': 1234}
+)
 
 da.summary()
 ```
@@ -80,13 +82,18 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name               | Description                                                                            | Default                     |
-|--------------------|----------------------------------------------------------------------------------------|-----------------------------|
-| `host`             | Hostname of the Weaviate server                                                        | 'localhost'                 |
-| `port`             | port of the Weaviate server                                                            | 8080                        |
-| `protocol`         | protocol to be used. Can be 'http' or 'https'                                          | 'http'                      |
-| `name`             | Weaviate class name; the class name of Weaviate object to presesent this DocumentArray | None                        |
-| `serialize_config` | [Serialization config of each Document](../../fundamentals/document/serialization.md)  | None                        |
+| Name               | Description                                                                                                                                                    | Default                                            |
+|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|
+| `host`             | Hostname of the Weaviate server                                                                                                                                | 'localhost'                                        |
+| `port`             | port of the Weaviate server                                                                                                                                    | 8080                                               |
+| `protocol`         | protocol to be used. Can be 'http' or 'https'                                                                                                                  | 'http'                                             |
+| `name`             | Weaviate class name; the class name of Weaviate object to presesent this DocumentArray                                                                         | None                                               |
+| `serialize_config` | [Serialization config of each Document](../../fundamentals/document/serialization.md)                                                                          | None                                               |
+| `ef`               | The size of the dynamic list for the nearest neighbors (used during the search). The higher ef is chosen, the more accurate, but also slower a search becomes. | `None`, defaults to the default value in Weaviate* |
+| `ef_construction`  | The size of the dynamic list for the nearest neighbors (used during the construction). Controls index search speed/build speed tradeoff.                       | `None`, defaults to the default value in Weaviate* |
+| `max_onnections`   | The maximum number of connections per element in all layers.                                                                                                   | `None`, defaults to the default value in Weaviate* |
+
+*You can read more about the HNSW parameters and their default values [here](https://weaviate.io/developers/weaviate/current/vector-index-plugins/hnsw.html#how-to-use-hnsw-and-parameters)
 
 ## Minimum Example
 
@@ -99,11 +106,7 @@ First, let's run the create the `DocumentArray` instance (make sure a Weaviate s
 from docarray import DocumentArray
 
 da = DocumentArray(
-    storage="weaviate",
-    config={
-        "name": "Persisted",
-        "host": "localhost",
-        "port": 8080}
+    storage="weaviate", config={"name": "Persisted", "host": "localhost", "port": 8080}
 )
 ```
 
@@ -112,11 +115,13 @@ Then, we can index some Documents:
 ```python
 from docarray import Document
 
-da.extend([
-    Document(text='Persist Documents with Weaviate.'),
-    Document(text='And enjoy fast nearest neighbor search.'),
-    Document(text='All while using DocArray API.'),
-])
+da.extend(
+    [
+        Document(text='Persist Documents with Weaviate.'),
+        Document(text='And enjoy fast nearest neighbor search.'),
+        Document(text='All while using DocArray API.'),
+    ]
+)
 ```
 
 Now, we can generate embeddings inside the database using BERT model:
@@ -127,13 +132,10 @@ from transformers import AutoModel, AutoTokenizer
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 model = AutoModel.from_pretrained('bert-base-uncased')
 
+
 def collate_fn(da):
-    return tokenizer(
-        da.texts,
-        return_tensors='pt',
-        truncation=True,
-        padding=True
-    )
+    return tokenizer(da.texts, return_tensors='pt', truncation=True, padding=True)
+
 
 da.embed(model, collate_fn=collate_fn)
 ```
@@ -143,8 +145,10 @@ Finally, we can query the database and print the results:
 
 ```python
 results = da.find(
-    DocumentArray([Document(text='How to persist Documents')]).embed(model, collate_fn=collate_fn),
-    limit=1
+    DocumentArray([Document(text='How to persist Documents')]).embed(
+        model, collate_fn=collate_fn
+    ),
+    limit=1,
 )
 
 print(results[0].text)

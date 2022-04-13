@@ -16,7 +16,7 @@ import weaviate
 from ..base.backend import BaseBackendMixin
 from ..registry import _REGISTRY
 from .... import Document
-from ....helper import dataclass_from_dict
+from ....helper import dataclass_from_dict, filter_dict
 
 if TYPE_CHECKING:
     from ....typing import DocumentArraySourceType, ArrayType
@@ -33,6 +33,9 @@ class WeaviateConfig:
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
+    ef: Optional[int] = None
+    ef_construction: Optional[int] = None
+    max_onnections: Optional[int] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -111,6 +114,12 @@ class BackendMixin(BaseBackendMixin):
         """
         # TODO: ideally we should only use one schema. this will allow us to deal with
         # consistency better
+        hnsw_config = {
+            'ef': self._config.ef,
+            'efConstruction': self._config.ef_construction,
+            'maxConnections': self._config.max_onnections,
+        }
+
         return {
             'classes': [
                 {
@@ -128,7 +137,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name + 'Meta',
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': True},
+                    'vectorIndexConfig': {'skip': True, **filter_dict(hnsw_config)},
                     'properties': [
                         {
                             'dataType': ['string[]'],
