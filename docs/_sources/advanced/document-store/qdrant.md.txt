@@ -18,7 +18,7 @@ server. Create `docker-compose.yml` as follows:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.6.0
+    image: qdrant/qdrant:v0.7.0
     ports:
       - "6333:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
@@ -53,7 +53,15 @@ To access a DocumentArray formerly persisted, one can specify the `collection_na
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='qdrant', config={'collection_name': 'persisted', 'host': 'localhost', 'port': '6333', 'n_dim': 10})
+da = DocumentArray(
+    storage='qdrant',
+    config={
+        'collection_name': 'persisted',
+        'host': 'localhost',
+        'port': '6333',
+        'n_dim': 10,
+    },
+)
 
 da.summary()
 ```
@@ -66,14 +74,19 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name                 | Description                                                                     | Default                              |
-|----------------------|---------------------------------------------------------------------------------|--------------------------------------|
-| `n_dim`              | Number of dimensions of embeddings to be stored and retrieved                   | **This is always required**          |
-| `collection_name`    | Qdrant collection name client                                                   | **Random collection name generated** |
-| `host`               | Hostname of the Qdrant server                                                   | 'localhost'                          |
-| `port`               | [port of the Qdrant server                                                      | 6333                                 |
-| `distance`           | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean' | 'cosine'                             |
-| `scroll_batch_size`  | batch size used when scrolling over the storage                                 | 64                                   |
+| Name                  | Description                                                                                                                                  | Default                                          |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| `n_dim`               | Number of dimensions of embeddings to be stored and retrieved                                                                                | **This is always required**                      |
+| `collection_name`     | Qdrant collection name client                                                                                                                | **Random collection name generated**             |
+| `host`                | Hostname of the Qdrant server                                                                                                                | 'localhost'                                      |
+| `port`                | [port of the Qdrant server                                                                                                                   | 6333                                             |
+| `distance`            | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean'                                                              | 'cosine'                                         |
+| `scroll_batch_size`   | batch size used when scrolling over the storage                                                                                              | 64                                               |
+| `ef_construct`        | Number of neighbours to consider during the index building.  Larger the value - more accurate the search, more time required to build index. | `None`, defaults to the default value in Qdrant* |
+| `full_scan_threshold` | Minimal amount of points for additional payload-based indexing.                                                                              | `None`, defaults to the default value in Qdrant*                                               |
+| `m`                   | Number of edges per node in the index graph. Larger the value - more accurate the search, more space required.                               | `None`, defaults to the default value in Qdrant*                                               |
+
+*You can read more about the HNSW parameters and their default values [here](https://qdrant.tech/documentation/indexing/#vector-index)
 
 ## Minimum example
 
@@ -84,7 +97,7 @@ Create `docker-compose.yml`:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.6.0
+    image: qdrant/qdrant:v0.7.0
     ports:
       - "6333:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
