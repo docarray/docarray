@@ -140,11 +140,9 @@ class BackendMixin(BaseBackendMixin):
     def _get_offset2ids_meta(self) -> List[str]:
         if not self._collection_exists(self.collection_name_meta):
             return []
-        return (
-            self.client.http.points_api.get_point(self.collection_name_meta, id=1)
-            .result.payload['offset2id']
-            .value
-        )
+        return self.client.http.points_api.get_point(
+            self.collection_name_meta, id=1
+        ).result.payload['offset2id']
 
     def _update_offset2ids_meta(self):
         if not self._collection_exists(self.collection_name_meta):
