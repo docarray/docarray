@@ -87,7 +87,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Dict],
+        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str, List[str]],
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -95,6 +95,7 @@ class FindMixin:
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
         only_id: bool = False,
+        index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns approximate nearest neighbors given an input query.
@@ -106,6 +107,8 @@ class FindMixin:
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
         :param only_id: if set, then returning matches will only contain ``id``
+        :param index: if the query is a string, text search will be performed on `index`, otherwise, ignored. By
+                        default, the `text` field will be searched.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
@@ -132,11 +135,13 @@ class FindMixin:
 
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
-        n_rows, n_dim = ndarray.get_array_rows(_query)
+        # If the query is not str or List[str] we assume it's an ndarraylike and reshape it.
+        if not isinstance(query[0], str):
+            n_rows, n_dim = ndarray.get_array_rows(_query)
 
-        # Ensure query embedding to have the correct shape
-        if n_dim != 2:
-            _query = _query.reshape((n_rows, -1))
+            # Ensure query embedding to have the correct shape
+            if n_dim != 2:
+                _query = _query.reshape((n_rows, -1))
 
         metric_name = metric_name or (metric.__name__ if callable(metric) else metric)
 
@@ -151,6 +156,7 @@ class FindMixin:
 
         _result = self._find(
             _query,
+            index=index,
             **kwargs,
         )
 
