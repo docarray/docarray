@@ -106,7 +106,14 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 
 ## Conclusion
 To conclude, you can look at those benchmarks and select the backend that suits better your case.
+
 If you're playing around on a small dataset, you can use `memory` as storage.
+
 If you don't care much about the Nearest Neighbor Search speed and you're experiment with larger data, you can use`
 sqlite` as storage.
 
+AnnLite does not implement a client-server pattern and therefore, does not present network overhead and allows fast 
+indexing. It also supports Approximate Nearest Neighbor Search.
+
+Weaviate offers fast Approximate Nearest Neighbor Search and ElasticSearch offers a good compromise between speed and 
+quality
