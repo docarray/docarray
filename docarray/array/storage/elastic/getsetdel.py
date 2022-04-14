@@ -9,6 +9,23 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
     and ``__delitem__`` for ``DocumentArrayElastic``"""
 
+    def _document_to_elastic(self, doc: 'Document') -> Dict:
+        request = {
+            '_op_type': 'index',
+            '_id': doc.id,
+            '_index': self._config.index_name,
+            'embedding': self._map_embedding(doc.embedding),
+            'blob': doc.to_base64(),
+        }
+
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                request[index] = doc.tags.get(index)
+
+        if doc.text:
+            request['text'] = doc.text
+        return request
+
     def _getitem(self, doc_id: str) -> 'Document':
         """Helper method for getting item with elastic as storage
 
@@ -40,15 +57,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if _id != value.id:
             self._del_doc_by_id(_id)
 
-        request = [
-            {
-                "_op_type": "index",
-                '_id': value.id,
-                '_index': self._config.index_name,
-                'embedding': self._map_embedding(value.embedding),
-                'blob': value.to_base64(),
-            }
-        ]
+        request = [self._document_to_elastic(value)]
+
         self._send_requests(request)
         self._refresh(self._config.index_name)
 
@@ -72,7 +82,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._refresh(self._config.index_name)
 
     def _clear_storage(self):
-        """ Concrete implementation of base class' ``_clear_storage``"""
+        """Concrete implementation of base class' ``_clear_storage``"""
         self._client.indices.delete(index=self._config.index_name)
 
     def _load_offset2ids(self):

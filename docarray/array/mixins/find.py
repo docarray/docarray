@@ -87,7 +87,7 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Dict],
+        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str, List[str]],
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
@@ -95,9 +95,16 @@ class FindMixin:
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
         only_id: bool = False,
+        index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
-        """Returns approximate nearest neighbors given an input query.
+        """Returns matching Documents given an input query.
+        If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search
+        will be performed depending on whether the storage backend supports ANN.
+        If the query is a `dict` object, Documents will be filtered according to DocArray's query language and all
+        matching Documents that match the filter will be returned.
+        If the query is a string or list of strings, a search by text will be performed if the backend supports
+        indexing and searching text fields. If not, a `NotImplementedError` will be raised.
 
         :param query: the input query to search by
         :param limit: the maximum number of matches, when not given defaults to 20.
@@ -106,6 +113,10 @@ class FindMixin:
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
         :param only_id: if set, then returning matches will only contain ``id``
+        :param index: if the query is a string, text search will be performed on the `index` field, otherwise, this
+                      parameter is ignored. By default, the Document `text` attribute will be used for search,
+                      otherwise the tag field specified by `index` will be used. You can only use this parameter if the
+                      storage backend supports searching by text.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
@@ -115,12 +126,21 @@ class FindMixin:
 
         if isinstance(query, dict):
             return self._filter(query)
-        if isinstance(query, (DocumentArray, Document)):
+        elif isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
             _query = query.embeddings
+        elif isinstance(query, str) or (
+            isinstance(query, list) and isinstance(query[0], str)
+        ):
+            result = self._find_by_text(query, index=index, **kwargs)
+
+            if len(result) == 1:
+                return result[0]
+            else:
+                return result
         else:
             _query = query
 
@@ -133,7 +153,6 @@ class FindMixin:
         _limit = len(self) if limit is None else (limit + (1 if exclude_self else 0))
 
         n_rows, n_dim = ndarray.get_array_rows(_query)
-
         # Ensure query embedding to have the correct shape
         if n_dim != 2:
             _query = _query.reshape((n_rows, -1))
@@ -227,3 +246,6 @@ class FindMixin:
             return DocumentArray(d for d in self if parser.evaluate(d))
         else:
             return self
+
+    def _find_by_text(self, query: Union[str, List[str]], index: str = 'text'):
+        raise NotImplementedError('Search by text is not supported')
