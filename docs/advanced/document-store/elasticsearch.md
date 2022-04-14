@@ -121,7 +121,7 @@ Other functions behave the same as in-memory DocumentArray.
 
 ### Search with `text`  
 
-Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`. To do this text needs to be indexed using the boolean flag `'index_text'` which it set when the `DocumentArray` is created
+Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`. To do this text needs to be indexed using the boolean flag `'index_text'` which is set when the `DocumentArray` is created
 with `config={'index_text': True, ...}`.  The following example builds a `DocumentArray` with several documents with text and searches for those that have `pizza` in their text description.
 
 ```python
@@ -147,9 +147,9 @@ will print
 ### Search with `tags`
 
 Text can be indexed when it is part of `tags`.
-This can be specially useful in applications where text data can be split into groups.
+This is mostly useful in applications where text data can be split into groups.
 
-For example
+For example:
 ```python
 from docarray import DocumentArray, Document
 
@@ -191,6 +191,15 @@ will print
 ```text
 ['cheap but not that cheap', 'quite cheap!']
 ```
+
+````{admonition} Note
+:class: note
+By default, if you don't specify the parameter `index` in the `find` method, the Document attribute `text` will be used 
+for search. If you want to use a specific tags field, make sure to specify it with parameter `index`:
+```python
+results = da.find('cheap', index='price')
+```
+````
 
 ## Config
 
