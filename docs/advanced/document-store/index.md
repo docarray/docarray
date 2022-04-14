@@ -215,7 +215,7 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 Since most of these Document Stores use their implementation of the HNSW Approximate Nearest Neighbor Search algorithm, 
 with various default HNSW parameters, we conducted 2 benchmarking experiments for the `Find By Vector` operation:
 * Set up the Document Stores with the same HNSW parameters
-* Set up the Document Stores with their default HNSW parameters at the time the benchmarking experiment was conducted
+* Set up the Document Stores with their default HNSW parameters at the time the benchmarking experiment was conducted.
 
 Furthermore, we provide the `Recall At K` value, considering the exhaustive search as the ground truth. This allows 
 you to also take into consideration the quality, not just the speed.
@@ -228,6 +228,7 @@ neighbors.
 
 The results were conducted on a 4.5 Ghz Quad-Core i7700k processor with Python 3.8.5 and using the official docker 
 images of the storage backends. The docker images were allocated 40 GB of RAM.
+
 The benchmarking experiments used the following parameters:
 * Number of indexed Documents: 1M
 * Number of query Documents: 1
