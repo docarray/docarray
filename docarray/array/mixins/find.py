@@ -135,7 +135,7 @@ class FindMixin:
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
-            result = self._find_by_text(query, index=index, **kwargs)
+            result = self._find_by_text(query, index=index, limit=limit, **kwargs)
 
             if len(result) == 1:
                 return result[0]
