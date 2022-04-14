@@ -8,7 +8,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index = 1000_000
+n_index = 1000
 n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
@@ -94,7 +94,7 @@ def recall(predicted, relevant, eval_at):
 if args.default_hnsw:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 4}),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
         ('sqlite', None),
         (
             'annlite',
@@ -106,7 +106,7 @@ if args.default_hnsw:
 else:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 4, 'ef_construct': 100, 'm': 16}),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
         ('sqlite', None),
         (
             'annlite',
