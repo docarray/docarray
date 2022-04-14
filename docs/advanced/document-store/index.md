@@ -212,9 +212,34 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 * Find Document by vector (Nearest Neighbor Search)
 * Find Document by condition (apply filter)
 
+Since most of these Document Stores use their implementation of the HNSW Approximate Nearest Neighbor Search algorithm, 
+with various default HNSW parameters, we conducted 2 benchmarking experiments for the `Find By Vector` operation:
+* Set up the Document Stores with the same HNSW parameters
+* Set up the Document Stores with their default HNSW parameters at the time the benchmarking experiment was conducted
+
+Furthermore, we provide the `Recall At K` value, considering the exhaustive search as the ground truth. This allows 
+you to also take into consideration the quality, not just the speed.
+
+```{important}
+The Sqlite and the in-memory Document Stores ** do not implement ** approximate nearest neighbor search and offer 
+exhaustive search instead. That's why, they give the maximum quality but are the slowest when it comes to search nearest 
+neighbors.
+```
+
 The results were conducted on a 4.5 Ghz Quad-Core i7700k processor with Python 3.8.5 and using the official docker 
 images of the storage backends. The docker images were allocated 40 GB of RAM.
-The indexing and query performance on 128-dim embeddings is the following (unit is second):
+The benchmarking experiments used the following parameters:
+* Number of indexed Documents: 1M
+* Number of query Documents: 1
+* Embedding dimensions: 128
+* Number of Documents (K) to be retrieved for `Find Document by vector`: 10
+
+For the first experiment, we fixed the following HNSW parameters for the Document Stores that support ANN:
+* `ef` (construction): 100
+* `ef` (search): 100
+* `m` (max connections): 16
+
+````{tab} #1: Same HNSW parameters
 
 | Backend       | Create     | Read    | Update  | Delete  | Find by vector | Find by condition |
 |---------------|------------|---------|---------|---------|----------------|-------------------|
@@ -224,3 +249,18 @@ The indexing and query performance on 128-dim embeddings is the following (unit 
 | Qdrant        | 118.33041  | 0.01542 | 0.00427 | 0.00421 | 0.01705        | 214.03984         |
 | Weaviate      | 125.03668  | 0.00455 | 0.00982 | 0.00873 | 0.00770        | 332.40888         |
 | ElasticSearch | 1192.01452 | 0.01047 | 0.01695 | 0.02485 | 0.14932        | 233.41248         |
+
+````
+
+````{tab} #2: Default HNSW parameters
+
+| Backend       | Create     | Read    | Update  | Delete  | Find by vector | Find by condition |
+|---------------|------------|---------|---------|---------|----------------|-------------------|
+| Memory        | 0.05921    | 0.00007 | 0.00003 | 0.00003 | 0.67842        | 0.57762           |
+| Sqlite        | 101.98550  | 0.00025 | 0.00053 | 0.00325 | 5.08118        | 5.76056           |
+| Annlite       | 17.30254   | 0.00018 | 0.00378 | 0.00150 | 0.05791        | 4.05516           |
+| Qdrant        | 118.33041  | 0.01542 | 0.00427 | 0.00421 | 0.01705        | 214.03984         |
+| Weaviate      | 125.03668  | 0.00455 | 0.00982 | 0.00873 | 0.00770        | 332.40888         |
+| ElasticSearch | 1192.01452 | 0.01047 | 0.01695 | 0.02485 | 0.14932        | 233.41248         |
+
+````
