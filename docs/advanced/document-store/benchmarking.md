@@ -117,5 +117,8 @@ sqlite` as storage.
 AnnLite does not implement a client-server pattern and therefore, does not present network overhead and allows fast 
 indexing. It also supports Approximate Nearest Neighbor Search.
 
-Weaviate offers fast Approximate Nearest Neighbor Search and ElasticSearch offers a good compromise between speed and 
-quality
+Weaviate offers fast Approximate Nearest Neighbor Search while ElasticSearch and Qdrant offer good compromise between 
+speed and quality.
+
+Depending on your business needs, you can refer the benchmarking results to choose the backend that suits you case 
+better.
