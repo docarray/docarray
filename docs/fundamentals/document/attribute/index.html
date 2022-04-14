@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/attribute/" />
   
-<meta property="og:site_name" content="DocArray 0.12.3 Documentation" />
+<meta property="og:site_name" content="DocArray 0.12.4 Documentation" />
   
-<meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes, cont..." />
+<meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes,..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/doc-load-autocomplete.png" />
   
-<meta property="og:image:alt" content="DocArray 0.12.3 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.12.4 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/attribute.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Access Attributes - DocArray 0.12.3 documentation</title>
+        <title>Access Attributes - DocArray 0.12.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.12.3 documentation</div>
+                <div class="brand">DocArray 0.12.4 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -563,14 +563,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'text'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One can unset multiple attributes <code class="docutils literal notranslate"><span class="pre">.pop()</span></code>:</p>
+<p>One can unset multiple attributes with <code class="docutils literal notranslate"><span class="pre">.pop()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">,</span> <span class="s1">'mime_type'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can check which attributes are set by <code class="docutils literal notranslate"><span class="pre">.non_empty_fields</span></code>.</p>
 <section id="content-attributes">
 <h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this headline">#</a></h2>
-<p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code> are super important as they contain the actual content.</p>
+<p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, are super important. They contain the actual content.</p>
 <p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively.</p>
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
@@ -611,15 +611,15 @@
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'tensor', 'mime_type') at 7623808c6d6211ec9cf21e008a366d49&gt;
 </pre></div>
 </div>
-<p>As one can see <code class="docutils literal notranslate"><span class="pre">text</span></code> field is reset to empty.</p>
-<p>But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">nested Document</span></a>s by putting image into one sub-Document, and text into another sub-Document.</p>
+<p>As you can see, the <code class="docutils literal notranslate"><span class="pre">text</span></code> field is reset to empty.</p>
+<p>But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use <a class="reference internal" href="../nested/#recursive-nested-document"><span class="std std-ref">nested Document</span></a>s and store image in one sub-Document, and text in another sub-Document.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">tensor</span><span class="o">=...</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=...</span><span class="p">)])</span>
 </pre></div>
 </div>
-<p>The principle is each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.</p>
-<p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> sugar getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field based on the given type.</p>
+<p>The principle is: each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.</p>
+<p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field, based on the given type.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
@@ -640,8 +640,8 @@
 </section>
 <section id="load-content-from-uri">
 <span id="content-uri"></span><h2>Load content from URI<a class="headerlink" href="#load-content-from-uri" title="Permalink to this headline">#</a></h2>
-<p>A quite common pattern is loading content from a URI instead of assigning them directly in the code.</p>
-<p>This can be easily done with <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
+<p>A common pattern is loading content from a URI instead of assigning it directly in the code.</p>
+<p>This can easily be done with <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either a local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Local image URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -742,7 +742,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Apr 13, 2022</div>
+                            Last updated on Apr 14, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
