@@ -98,7 +98,7 @@ class FindMixin:
         index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
-        """Matching Documents given an input query.
+        """Returns matching Documents given an input query.
         If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search
         will be performed depending on whether the storage backend supports ANN.
         If the query is a `dict` object, Documents will be filtered according to DocArray's query language and all

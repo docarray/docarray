@@ -11,7 +11,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _document_to_elastic(self, doc: 'Document') -> Dict:
         request = {
-            "_op_type": "index",
+            '_op_type': 'index',
             '_id': doc.id,
             '_index': self._config.index_name,
             'embedding': self._map_embedding(doc.embedding),

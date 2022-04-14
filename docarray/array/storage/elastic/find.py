@@ -59,10 +59,10 @@ class FindMixin(BaseFindMixin):
         self, query: str, index: str = 'text', limit: int = 10
     ):
         """
-        Return key-word matches for the input query
+        Return keyword matches for the input query
 
-        :param query: text used for key-word search
-        :param limit: number of retrieved items
+        :param query: text used for keyword search
+        :param limit: number of items to be retrieved
 
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
@@ -101,8 +101,7 @@ class FindMixin(BaseFindMixin):
         limit: int = 10,
         **kwargs,
     ) -> List['DocumentArray']:
-        """Returns approximate nearest neighbors given a batch of input queries if the input is an 'ElasticArrayType'.
-           Returns exact key-word search if the input is `str` or `List[str]` if the input.
+        """Returns approximate nearest neighbors given a batch of input queries.
 
         :param query: input supported to be stored in Elastic. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
