@@ -119,7 +119,7 @@ da2.summary()
 Other functions behave the same as in-memory DocumentArray.
 
 
-### Search with `text`  
+### Search by `.text` field
 
 Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`.
 To do this text needs to be indexed using the boolean flag `'index_text'` which is set when
@@ -147,7 +147,7 @@ will print
 ['Pizza restaurant', 'Person eating pizza']
 ```
 
-### Search with `tags`
+### Search by `.tags` field
 
 Text can also be indexed when it is part of `tags`.
 This is mostly useful in applications where text data can be split into groups and applications might require 
