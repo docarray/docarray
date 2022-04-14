@@ -10,6 +10,7 @@ qdrant
 annlite
 elasticsearch
 extend
+benchmarking
 ```
 
 Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
@@ -201,65 +202,3 @@ da[0, 'text'] = 'hello'
 Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.
  
 Slowness can affect all functions of DocumentArray. On the bright side, they may not be that severe as you would expect. Modern database are highly optimized. Moreover, some database provides faster method for resolving certain queries, e.g. nearest-neighbour queries. We are actively and continuously improving DocArray to better leverage those features. 
-
-
-## Benchmarking
-The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores in 6 different operations:
-* Create (indexing Documents)
-* Read
-* Update
-* Delete
-* Find Document by vector (Nearest Neighbor Search or Approximate Nearest Neighbor Search depending on the `backend`)
-* Find Document by condition (apply filter)
-
-Since most of these Document Stores use their implementation of the HNSW Approximate Nearest Neighbor Search algorithm, 
-with various default HNSW parameters, we conducted 2 benchmarking experiments for the `Find By Vector` operation:
-* Set up the Document Stores with the same HNSW parameters
-* Set up the Document Stores with their default HNSW parameters at the time the benchmarking experiment was conducted.
-
-Furthermore, we provide the `Recall At K` value, considering the exhaustive search as the ground truth. This allows 
-you to also take into consideration the quality, not just the speed.
-
-```{important}
-The Sqlite and the in-memory Document Stores ** do not implement ** approximate nearest neighbor search and offer 
-exhaustive search instead. That's why, they give the maximum quality but are the slowest when it comes to search nearest 
-neighbors.
-```
-
-The results were conducted on a 4.5 Ghz Quad-Core i7700k processor with Python 3.8.5 and using the official docker 
-images of the storage backends. The docker images were allocated 40 GB of RAM.
-
-The benchmarking experiments used the following parameters:
-* Number of indexed Documents: 1M
-* Number of query Documents: 1
-* Embedding dimension: 128
-* Number of Documents (K) to be retrieved for `Find Document by vector`: 10
-
-For the first experiment, we fixed the following HNSW parameters for the Document Stores that support ANN:
-* `ef` (construction): 100
-* `ef` (search): 100
-* `m` (max connections): 16
-
-````{tab} #1: Same HNSW parameters
-
-| Backend       | Create (s) | Read (ms) | Update (ms) | Delete (ms) | Find by vector (s) | Recall at k=10 for | Find by condition (s) |
-|---------------|------------|-----------|-------------|-------------|--------------------|--------------------|-----------------------|
-| Memory        | 0.636      | 0.118     | 0.013       | 0.344       | 1.424              | 1.000              | 5.206                 |
-| Sqlite        | 4236.665   | 0.333     | 0.312       | 24.936      | 21.420             | 1.000              | 30.015                |
-| Annlite       | 72.121     | 0.246     | 8.723       | 3.552       | 0.432              | 0.188              | 29.914                |
-| Weaviate      | 1601.777   | 2.002     | 34.111      | 22.841      | 0.005              | 0.110              | 1169.032              |
-| ElasticSearch | 684.825    | 10.733    | 35.358      | 54.208      | 0.246              | 0.856              | 652.541               |
-
-````
-
-````{tab} #2: Default HNSW parameters
-
-| Backend       | Create (s) | Read (ms) | Update (ms) | Delete (ms) | Find by vector (s) | Recall at k=10 for | Find by condition (s) |
-|---------------|------------|-----------|-------------|-------------|--------------------|--------------------|-----------------------|
-| Memory        | 0.636      | 0.118     | 0.013       | 0.344       | 1.424              | 1.000              | 5.206                 |
-| Sqlite        | 4236.665   | 0.333     | 0.312       | 24.936      | 21.420             | 1.000              | 30.015                |
-| Annlite       | 72.121     | 0.246     | 8.723       | 3.552       | 0.432              | 0.188              | 29.914                |
-| Weaviate      | 1601.777   | 2.002     | 34.111      | 22.841      | 0.005              | 0.110              | 1169.032              |
-| ElasticSearch | 684.825    | 10.733    | 35.358      | 54.208      | 0.246              | 0.856              | 652.541               |
-
-````
