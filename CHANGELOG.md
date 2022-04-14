@@ -74,6 +74,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1827,4 +1828,31 @@
  - [[```8c518b3f```](https://github.com/jina-ai/docarray/commit/8c518b3f5cb11a0a48129fa40934d698e058e56d)] __-__ update qdrant to v0.7.0 (#273) (*Andrey Vasnetsov*)
  - [[```679bf845```](https://github.com/jina-ai/docarray/commit/679bf845ae06091231b44ec5e55ed87fecbb706e)] __-__ update readme (*Han Xiao*)
  - [[```83fb1378```](https://github.com/jina-ai/docarray/commit/83fb1378caf31d202fba51d2727ee857af27e147)] __-__ __version__: the next version will be 0.12.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-4></a>
+## Release Note (`0.12.4`)
+
+> Release time: 2022-04-14 16:38:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ cristian,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```d12710c3```](https://github.com/jina-ai/docarray/commit/d12710c370c8709725a7607c7db4f415737a786b)] __-__ schema for text index and search (#267) (*David Buchaca Prats*)
+
+### 🐞 Bug fixes
+
+ - [[```e8cc5a7b```](https://github.com/jina-ai/docarray/commit/e8cc5a7b7698bb2de832285ecdf5f30da968f6fd)] __-__ ensure limit works in elastic (#279) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```30e6ad6e```](https://github.com/jina-ai/docarray/commit/30e6ad6e1f7333b4854e0cf893813ff7e2e8e233)] __-__ cleanup attribute page (#280) (*cristian*)
+
+### 🍹 Other Improvements
+
+ - [[```9a2ed9ce```](https://github.com/jina-ai/docarray/commit/9a2ed9cec04924ac879c702a799484aeaeeb0379)] __-__ __version__: the next version will be 0.12.4 (*Jina Dev Bot*)
 
