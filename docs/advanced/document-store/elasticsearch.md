@@ -121,8 +121,11 @@ Other functions behave the same as in-memory DocumentArray.
 
 ### Search with `text`  
 
-Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`. To do this text needs to be indexed using the boolean flag `'index_text'` which is set when the `DocumentArray` is created
-with `config={'index_text': True, ...}`.  The following example builds a `DocumentArray` with several documents with text and searches for those that have `pizza` in their text description.
+Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`.
+To do this text needs to be indexed using the boolean flag `'index_text'` which is set when
+the `DocumentArray` is created  with `config={'index_text': True, ...}`.  
+The following example builds a `DocumentArray` with several documents containing text and searches
+for those that have `pizza` in their text description.
 
 ```python
 from docarray import DocumentArray, Document
@@ -146,8 +149,9 @@ will print
 
 ### Search with `tags`
 
-Text can be indexed when it is part of `tags`.
-This is mostly useful in applications where text data can be split into groups.
+Text can also be indexed when it is part of `tags`.
+This is mostly useful in applications where text data can be split into groups and applications might require 
+retrieving items based on a text search in an specific tag.
 
 For example:
 ```python
@@ -175,22 +179,32 @@ da.extend(
         Document(
             id='3',
             tags={
-                'food_type': 'chinesse noddles',
-                'price': 'quite cheap!',
+                'food_type': 'chinese noddles',
+                'price': 'quite cheap for what you get!',
             },
         ),
     ]
 )
 
-results = da.find('cheap', index='price')
-print(results[:, 'tags__price'])
+results_cheap = da.find('cheap', index='price')
+print('searching "cheap" in <price>:\n\t', results_cheap[:, 'tags__price'])
+
+results_italian = da.find('italian', index='food_type')
+print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_type'])
 ```
 
 will print
 
 ```text
-['cheap but not that cheap', 'quite cheap!']
+searching "cheap" in <price>:
+	 ['cheap but not that cheap', 'quite cheap for what you get!']
+searching "italian" in <food_type>:
+	 ['Italian and Spanish food', 'French and Italian food']
 ```
+
+
+
+
 
 ````{admonition} Note
 :class: note
