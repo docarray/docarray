@@ -94,6 +94,8 @@ def test_find_by_text(storage, config, start_storage):
     assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '3'}
+    results = da.find('token3 token4', limit=1)
+    assert len(results) == 1
 
     results = da.find(['token4', 'token'])
     assert isinstance(results, list)
@@ -109,7 +111,7 @@ def test_find_by_text(storage, config, start_storage):
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
     ],
 )
-def test_find_by_tag(storage, config):
+def test_find_by_tag(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
     da.extend(
         [
@@ -146,6 +148,9 @@ def test_find_by_tag(storage, config):
     assert results[0].id == '1'
     assert results[1].id == '2'
 
+    results = da.find('token1 token2', index='attr1', limit=1)
+    assert len(results) == 1
+
     results = da.find('token2 token4', index='attr1')
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '3'}
@@ -158,6 +163,9 @@ def test_find_by_tag(storage, config):
     assert len(results) == 2
     assert results[0].id == '2'
     assert results[1].id == '1'
+
+    results = da.find('token6', index='attr3', limit=1)
+    assert len(results) == 1
 
     results = da.find('token5', index='attr3')
     assert len(results) == 2
