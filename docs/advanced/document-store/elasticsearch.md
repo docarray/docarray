@@ -133,9 +133,9 @@ from docarray import DocumentArray, Document
 da = DocumentArray(storage='elasticsearch', config={'n_dim': 2, 'index_text': True})
 da.extend(
     [
-        Document(id='1', text='Person eating'),
-        Document(id='2', text='Person eating pizza'),
-        Document(id='3', text='Pizza restaurant'),
+        Document(text='Person eating'),
+        Document(text='Person eating pizza'),
+        Document(text='Pizza restaurant'),
     ]
 )
 
@@ -163,21 +163,18 @@ da = DocumentArray(
 da.extend(
     [
         Document(
-            id='1',
             tags={
                 'food_type': 'Italian and Spanish food',
                 'price': 'cheap but not that cheap',
             },
         ),
         Document(
-            id='2',
             tags={
                 'food_type': 'French and Italian food',
                 'price': 'on the expensive side',
             },
         ),
         Document(
-            id='3',
             tags={
                 'food_type': 'chinese noddles',
                 'price': 'quite cheap for what you get!',
