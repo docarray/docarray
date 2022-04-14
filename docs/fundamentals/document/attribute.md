@@ -27,8 +27,7 @@ or use {meth}`~docarray.base.BaseDCType.pop`:
 d.pop('text')
 ```
 
-
-One can unset multiple attributes `.pop()`:
+One can unset multiple attributes with `.pop()`:
 
 ```python
 d.pop('text', 'id', 'mime_type')
@@ -39,7 +38,7 @@ You can check which attributes are set by `.non_empty_fields`.
 
 ## Content attributes
 
-Among all attributes, content attributes, namely `.text`, `.tensor`, and `.blob` are super important as they contain the actual content.
+Among all attributes, content attributes, namely `.text`, `.tensor`, and `.blob`, are super important. They contain the actual content.
 
 They correspond to string-like data (e.g. for natural language), `ndarray`-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively. 
 
@@ -68,9 +67,9 @@ print(d)
 <Document ('id', 'tensor', 'mime_type') at 7623808c6d6211ec9cf21e008a366d49>
 ```
 
-As one can see `text` field is reset to empty.
+As you can see, the `text` field is reset to empty.
 
-But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use {ref}`nested Document<recursive-nested-document>`s by putting image into one sub-Document, and text into another sub-Document.
+But what if you want to represent more than one kind of information? Say, to fully represent a PDF page you need to store both image and text. In this case, you can use {ref}`nested Document<recursive-nested-document>`s and store image in one sub-Document, and text in another sub-Document.
 
 ```python
 from docarray import Document
@@ -78,10 +77,9 @@ from docarray import Document
 d = Document(chunks=[Document(tensor=...), Document(text=...)])
 ```
 
+The principle is: each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.
 
-The principle is each Document contains only one modality of information. In practice, this principle makes your full solution more clear and easier to maintain.
-
-There is also a `.content` sugar getter/setter of the content fields. The content will be automatically grabbed or assigned to either `text`, `blob`, or `tensor` field based on the given type.
+There is also a `.content` getter/setter of the content fields. The content will be automatically grabbed or assigned to either `text`, `blob`, or `tensor` field, based on the given type.
 
 ```python
 from docarray import Document
@@ -108,9 +106,9 @@ You can also check which content field is set by `.content_type`.
 (content-uri)=
 ## Load content from URI
 
-A quite common pattern is loading content from a URI instead of assigning them directly in the code.
+A common pattern is loading content from a URI instead of assigning it directly in the code.
 
-This can be easily done with `.uri` attribute. The value of `.uri` can point to either local URI, remote URI or [data URI](https://en.wikipedia.org/wiki/Data_URI_scheme).
+This can easily be done with `.uri` attribute. The value of `.uri` can point to either a local URI, remote URI or [data URI](https://en.wikipedia.org/wiki/Data_URI_scheme).
 
 ````{tab} Local image URI
 
