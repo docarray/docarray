@@ -94,7 +94,7 @@ def recall(predicted, relevant, eval_at):
 if args.default_hnsw:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D}),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 4}),
         ('sqlite', None),
         (
             'annlite',
@@ -106,7 +106,7 @@ if args.default_hnsw:
 else:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 4, 'ef_construct': 100, 'm': 16}),
         ('sqlite', None),
         (
             'annlite',
