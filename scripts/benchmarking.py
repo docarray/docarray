@@ -8,7 +8,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index = 1000
+n_index = 1000_000
 n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
