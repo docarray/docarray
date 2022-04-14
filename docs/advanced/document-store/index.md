@@ -209,7 +209,7 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 * Read
 * Update
 * Delete
-* Find Document by vector (Nearest Neighbor Search)
+* Find Document by vector (Nearest Neighbor Search or Approximate Nearest Neighbor Search depending on the `backend`)
 * Find Document by condition (apply filter)
 
 Since most of these Document Stores use their implementation of the HNSW Approximate Nearest Neighbor Search algorithm, 
@@ -232,7 +232,7 @@ images of the storage backends. The docker images were allocated 40 GB of RAM.
 The benchmarking experiments used the following parameters:
 * Number of indexed Documents: 1M
 * Number of query Documents: 1
-* Embedding dimensions: 128
+* Embedding dimension: 128
 * Number of Documents (K) to be retrieved for `Find Document by vector`: 10
 
 For the first experiment, we fixed the following HNSW parameters for the Document Stores that support ANN:
