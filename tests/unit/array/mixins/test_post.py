@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from docarray.helper import random_port
 
 
@@ -38,6 +38,8 @@ def test_post_to_a_flow(show_pbar, conn_config, batch_size):
 def test_post_with_jinahub(hub_uri):
     da = DocumentArray.empty(100)
     da.post(hub_uri)
+
+    assert isinstance(Document().post(hub_uri), Document)
 
 
 def test_post_bad_scheme():
