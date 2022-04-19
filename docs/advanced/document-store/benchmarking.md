@@ -22,6 +22,7 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 
 ````
 
+````{tab} #2: Default HNSW parameters
 
 | Backend       | Create (s) | Read (ms) | Update (ms) | Delete (ms) | Find by vector (s) | Recall at k=10 for | Find by condition (s) |
 |---------------|------------|-----------|-------------|-------------|--------------------|--------------------|-----------------------|
@@ -32,6 +33,7 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 | Weaviate      | 1609       | 2.14      | 32.28       | 26          | 0.005              | 0.1                | 1176                  |
 | ElasticSearch | 719        | 9.52      | 29.77       | 50          | 0.23               | 0.83               | 1183                  |
 
+````
 
 ## Experiment Settings
 
