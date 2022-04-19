@@ -68,12 +68,9 @@ class PostMixin:
                     parameters=parameters,
                 )
         elif _scheme in ('grpc', 'http', 'ws', 'websocket'):
-            if _port is None:
-                raise ValueError(f'can not determine port from {host}')
-
             from jina import Client
 
-            c = Client(host=r.hostname, port=_port, protocol=_scheme, https=_tls)
+            c = Client(host=r.hostname)
             return c.post(
                 _on,
                 inputs=self,
