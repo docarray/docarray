@@ -75,6 +75,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1855,4 +1856,24 @@
 ### 🍹 Other Improvements
 
  - [[```9a2ed9ce```](https://github.com/jina-ai/docarray/commit/9a2ed9cec04924ac879c702a799484aeaeeb0379)] __-__ __version__: the next version will be 0.12.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-5></a>
+## Release Note (`0.12.5`)
+
+> Release time: 2022-04-19 12:23:53
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```82899510```](https://github.com/jina-ai/docarray/commit/82899510378f76c46fb9632a5a28f2a742964689)] __-__ __array__: use core client api instead of parsing (#282) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```73f2aef9```](https://github.com/jina-ai/docarray/commit/73f2aef9d3145f4d29982681fc8632230c37fdf4)] __-__ add jcloud logo (*Han Xiao*)
+ - [[```34120e9b```](https://github.com/jina-ai/docarray/commit/34120e9bc8bc02ad9bf8e72c5ac73615160d06f3)] __-__ __version__: the next version will be 0.12.5 (*Jina Dev Bot*)
 
