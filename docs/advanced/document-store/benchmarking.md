@@ -1,5 +1,4 @@
-# Benchmarking
-## Results
+# Benchmark
 
 The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores in 6 different operations:
 * Create (indexing Documents)
@@ -35,14 +34,14 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 
 ````
 
-## Experiment Settings
+## Experimental setup
 
 Since most of these Document Stores use their implementation of the HNSW Approximate Nearest Neighbor Search algorithm, 
 with various default HNSW parameters, we conducted 2 benchmarking experiments for the `Find By Vector` operation:
 1. Set up the Document Stores with the same HNSW parameters 
 2. Set up the Document Stores with their default HNSW parameters at the time the benchmarking experiment was conducted.
 
-Furthermore, we provide the `Recall At K` value, considering the exhaustive search as the ground truth. This allows 
+Furthermore, we provide the `Recall@K` value, considering the exhaustive search as the ground truth. This allows 
 you to also take into consideration the quality, not just the speed.
 
 ```{important}
@@ -82,7 +81,7 @@ which allows having similar network overhead. We also allocate the same resource
 servers are run in a single node setup.
 * Benefit the user as much as possible: We offer the same conditions and resources to all backends, but our experiment 
 favours the backends that use the resources efficiently. Therefore, some backends might not use the network, or use 
-GRPC instead of HTTP, use batch operations,... And we're okay with that, as long as it benefits the DocArray and Jina 
+GRPC instead of HTTP, or use batch operations. And we're okay with that, as long as it benefits the DocArray and Jina 
 user.
 * Open to improvements: We are constantly improving the performance of storage backends from the DocArray side and 
 updating the benchmarks accordingly. If you believe we missed an optimization (perform an operation in batches, benefit 
