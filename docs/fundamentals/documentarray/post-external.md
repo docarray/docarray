@@ -2,7 +2,7 @@
 # Process via External Flow or Executor
 
 ```{tip}
-This feature requires `jina` dependency. Please install Jina via `pip install jina`.
+This feature requires `jina` dependency. Please install Jina via `pip install -U jina`.
 ```
 
 You can call an external Flow/Sandbox/Executor to "process" a DocumentArray via {meth}`~docarray.array.mixins.post.PostMixin.post`. The external Flow/Executor can be either local, remote, or inside Docker container.
@@ -43,6 +43,15 @@ r.summary()
   mime_type   ('str',)    1                False
   text        ('str',)    1                False
   uri         ('str',)    1                False
+```
+
+Single Document has a sugar syntax that leverages this feature. Hence the above example can be also written as follows:
+
+```python
+from docarray import Document
+
+d = Document(text='Hi Alex, are you with your laptop?')
+r = d.post('jinahub+sandbox://CoquiTTS7')
 ```
 
 ## Accept schemes
