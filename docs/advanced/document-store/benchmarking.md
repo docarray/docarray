@@ -2,12 +2,14 @@
 ## Results
 
 The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores in 6 different operations:
-* Create (indexing Documents)
-* Read
-* Update
-* Delete
-* Find Document by vector (Nearest Neighbor Search or Approximate Nearest Neighbor Search depending on the `backend`)
-* Find Document by condition (apply filter)
+* Create: Index Documents in the Document Store. This operation uses `DocumentArray.extend` which inserts new Documents in the storage.
+* Read: Retrieve Documents from the Document Store. 
+* Update: Update Documents within the Document Store by ID.
+* Delete: Delete Documents from the Document Store by ID.
+* Find Document by vector: Nearest Neighbor Search or Approximate Nearest Neighbor Search by vector depending on the backend.
+* Find Document by condition: Search Documents across the Document Store that satisfy a filter condition.
+
+The following tables show the time cost to achieve those operations on 1 million Documents for indexing and 1 Document for query:
 
 ````{tab} Same HNSW parameters
 
@@ -22,7 +24,7 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 
 ````
 
-````{tab} #2: Default HNSW parameters
+````{tab} Default HNSW parameters
 
 | Backend       | Create (s) | Read (ms) | Update (ms) | Delete (ms) | Find by vector (s) | Recall at k=10 for | Find by condition (s) |
 |---------------|-----------:|----------:|------------:|------------:|-------------------:|-------------------:|----------------------:|
