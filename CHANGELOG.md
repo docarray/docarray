@@ -76,6 +76,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1876,4 +1877,24 @@
 
  - [[```73f2aef9```](https://github.com/jina-ai/docarray/commit/73f2aef9d3145f4d29982681fc8632230c37fdf4)] __-__ add jcloud logo (*Han Xiao*)
  - [[```34120e9b```](https://github.com/jina-ai/docarray/commit/34120e9bc8bc02ad9bf8e72c5ac73615160d06f3)] __-__ __version__: the next version will be 0.12.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-6></a>
+## Release Note (`0.12.6`)
+
+> Release time: 2022-04-19 15:38:03
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```446507de```](https://github.com/jina-ai/docarray/commit/446507ded7c34bdf9c8bd5f84e807366777aed8f)] __-__ __document__: add document post as sugar (#283) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```a0a398b5```](https://github.com/jina-ai/docarray/commit/a0a398b5a47ab28a6c9fd9ebed0bf8a4abc32c95)] __-__ __docs__: explain doc post sugar syntax (*Han Xiao*)
+ - [[```d822fe85```](https://github.com/jina-ai/docarray/commit/d822fe854ea1ce09e1d04c24561f1bc11b7d7c2c)] __-__ __version__: the next version will be 0.12.6 (*Jina Dev Bot*)
 
