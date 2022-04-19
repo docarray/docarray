@@ -22,18 +22,16 @@ The script `scripts/benchmarking.py` benchmarks DocArray's supported Document St
 
 ````
 
-````{tab} #2: Default HNSW parameters
 
 | Backend       | Create (s) | Read (ms) | Update (ms) | Delete (ms) | Find by vector (s) | Recall at k=10 for | Find by condition (s) |
 |---------------|------------|-----------|-------------|-------------|--------------------|--------------------|-----------------------|
-| Memory        | 0.83       | 0.17      | 0.015       | 0.48        | 1.62               | 1                  | 5.73                  |
-| Qdrant        | 2363       | 2.33      | 2.49        | 78.57       | 0.01               | 0.51               | 640.2                 |
-| Sqlite        | 5249       | 0.34      | 0.34        | 24.9        | 22.72              | 1                  | 31.1                  |
-| Annlite       | 108        | 0.24      | 7.76        | 9.85        | 0.42               | 0.14               | 30.91                 |
-| Weaviate      | 1602       | 2         | 28.56       | 22.16       | 0.005              | 0.1                | 1176.2                |
-| ElasticSearch | 691        | 9.24      | 37.6        | 56          | 0.25               | 0.85               | 645.32                |
+| Memory        | 0.63       | 0.12      | 0.013       | 0.15        | 1.42               | 1                  | 5                     |
+| Qdrant        | 2192       | 2         | 1.7         | 10          | 0.008              | 0.51               | 608                   |
+| Sqlite        | 4422       | 0.32      | 0.36        | 1           | 24                 | 1                  | 31                    |
+| Annlite       | 111        | 0.24      | 8           | 31          | 0.41               | 0.14               | 30                    |
+| Weaviate      | 1609       | 2.14      | 32.28       | 26          | 0.005              | 0.1                | 1176                  |
+| ElasticSearch | 719        | 9.52      | 29.77       | 50          | 0.23               | 0.83               | 1183                  |
 
-````
 
 ## Experiment Settings
 
