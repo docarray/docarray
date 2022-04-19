@@ -70,7 +70,8 @@ class PostMixin:
         elif _scheme in ('grpc', 'http', 'ws', 'websocket'):
             from jina import Client
 
-            c = Client(host=r.hostname)
+            standardized_host = standardized_host + (f':{_port}' or '')
+            c = Client(host=standardized_host)
             return c.post(
                 _on,
                 inputs=self,

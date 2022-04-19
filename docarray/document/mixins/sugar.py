@@ -84,3 +84,9 @@ class SingletonSugarMixin:
         _tmp = DocumentArray(self)
         _tmp.embed(*args, **kwargs)
         return self
+
+    def post(self: 'T', *args, **kwargs) -> 'T':
+        from ... import DocumentArray
+
+        _tmp = DocumentArray(self)
+        return _tmp.post(*args, **kwargs)[0]
