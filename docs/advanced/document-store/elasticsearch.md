@@ -1,3 +1,4 @@
+(elasticsearch)=
 # Elasticsearch
 
 One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
