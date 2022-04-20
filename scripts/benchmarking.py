@@ -140,6 +140,8 @@ console = Console()
 
 console.print(f'generating {n_index} docs...')
 docs = get_docs(n_index, D, TENSOR_SHAPE, n_query)
+docs_to_delete = random.sample(docs, n_query)
+docs_to_update = random.sample(docs, n_query)
 
 vector_queries = [np.random.rand(n_query, D) for _ in range(n_vector_queries)]
 ground_truth = []
@@ -164,9 +166,8 @@ for backend, config in storage_backends:
         )
 
         console.print(f'updating {n_query} docs ...')
-        update_time, _ = update(da, random.sample(docs, n_query))
+        update_time, _ = update(da, docs_to_update)
 
-        docs_to_delete = random.sample(docs, n_query)
         console.print(f'deleting {n_query} docs ...')
         delete_time, _ = delete(da, [d.id for d in docs_to_delete])
 
@@ -174,8 +175,8 @@ for backend, config in storage_backends:
             f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
         )
         if backend == 'sqlite':
-            find_by_vector_time, _ = find_by_vector(da, vector_queries[0])
-            recall_at_k = 1
+            find_by_vector_time, result = find_by_vector(da, vector_queries[0])
+            recall_at_k = recall(result, ground_truth[0], K)
         else:
             recall_at_k_values = []
             find_by_vector_times = []
