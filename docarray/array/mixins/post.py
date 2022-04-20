@@ -71,7 +71,7 @@ class PostMixin:
             from jina import Client
 
             if _port:
-                standardized_host += _port
+                standardized_host += f':{_port}'
 
             c = Client(host=standardized_host)
             return c.post(
