@@ -77,6 +77,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1897,4 +1898,27 @@
 
  - [[```a0a398b5```](https://github.com/jina-ai/docarray/commit/a0a398b5a47ab28a6c9fd9ebed0bf8a4abc32c95)] __-__ __docs__: explain doc post sugar syntax (*Han Xiao*)
  - [[```d822fe85```](https://github.com/jina-ai/docarray/commit/d822fe854ea1ce09e1d04c24561f1bc11b7d7c2c)] __-__ __version__: the next version will be 0.12.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-7></a>
+## Release Note (`0.12.7`)
+
+> Release time: 2022-04-20 06:19:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Alessia Marcolini,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```68243a63```](https://github.com/jina-ai/docarray/commit/68243a637c46f271948fe191a3769e281f8d8ded)] __-__ __array__: fix array post port (#284) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```6ae22db0```](https://github.com/jina-ai/docarray/commit/6ae22db0c27941d25b958735dd716b60d0e3d97c)] __-__ __image__: add unit tests for _to_image_tensor (#281) (*Alessia Marcolini*)
+
+### 🍹 Other Improvements
+
+ - [[```49e810ec```](https://github.com/jina-ai/docarray/commit/49e810ecaf41b33e1bc818b3e17bbe6488881e9d)] __-__ __version__: the next version will be 0.12.7 (*Jina Dev Bot*)
 
