@@ -1,3 +1,4 @@
+from functools import partial
 from multiprocessing import Pool
 from multiprocessing.pool import ThreadPool
 
@@ -23,6 +24,12 @@ def foo(d: Document):
 
 
 def foo_batch(da: DocumentArray):
+    for d in da:
+        foo(d)
+    return da
+
+
+def foo_batch_with_args(da: DocumentArray, arg1, arg2):
     for d in da:
         foo(d)
     return da
@@ -188,6 +195,35 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
             assert d.tensor is None
 
         for d in da.map(lambda x: x.load_uri_to_image_tensor()):
+            assert d.tensor is not None
+
+
+@pytest.mark.parametrize(
+    'da_cls, config',
+    [
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=10)),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=10)),
+    ],
+)
+def test_apply_partial(pytestconfig, da_cls, config, start_storage):
+    if __name__ == '__main__':
+        if config:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg', config=config)[
+                :10
+            ]
+        else:
+            da = da_cls.from_files(f'{pytestconfig.rootdir}/**/*.jpeg')[:10]
+
+        for d in da:
+            assert d.tensor is None
+
+        da.apply_batch(partial(foo_batch_with_args, arg1=None, arg2=None), batch_size=4)
+
+        for d in da:
             assert d.tensor is not None
 
 
