@@ -37,6 +37,6 @@ def test_to_image_tensor_blob(rgb_image_path):
 @pytest.fixture
 def rgb_image_path(tmpdir):
     img_path = os.path.join(tmpdir, 'image.png')
-    RGB_COLOR_10X50_155_0_0 = Image.new('RGB', size=(10, 50), color=(0, 0, 0))
-    RGB_COLOR_10X50_155_0_0.save(img_path)
+    image = Image.new('RGB', size=(10, 50), color=(0, 0, 0))
+    image.save(img_path)
     return img_path
