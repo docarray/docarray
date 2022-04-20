@@ -241,8 +241,10 @@ def _get_pool(backend, num_worker):
 
 
 def _is_lambda_or_local_function(func):
-    return (isinstance(func, LambdaType) and func.__name__ == '<lambda>') or (
-        '<locals>' in func.__qualname__
+    return (
+        (isinstance(func, LambdaType) and func.__name__ == '<lambda>')
+        or not hasattr(func, '__qualname__')
+        or ('<locals>' in func.__qualname__)
     )
 
 
