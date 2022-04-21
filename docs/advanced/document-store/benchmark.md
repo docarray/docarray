@@ -1,5 +1,14 @@
 # One Million Scale Benchmark
 
+```{figure} https://docarray.jina.ai/_images/benchmark-banner.gif
+:width: 0 %
+:scale: 0 %
+```
+
+```{figure} benchmark-banner.gif
+:scale: 0 %
+```
+
 We created a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database:
 
 * {ref}`In-memory<documentarray>`
