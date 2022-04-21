@@ -25,10 +25,6 @@ import numpy as np
 da = DocumentArray.empty(3)
 da.embeddings = np.random.random([3, 15])
 
-db = DocumentArray.empty(4)
-db.embeddings = np.random.random([4, 15])
-
-da.match(db)
 da.summary()
 ```
 
@@ -36,17 +32,16 @@ da.summary()
                      Documents Summary                      
                                                             
   Length                    3                               
-  Homogenous Documents      True                            
-  Has nested Documents in   ('matches',)                    
-  Common Attributes         ('id', 'embedding', 'matches')  
+  Homogenous Documents      True               
+  Common Attributes         ('id', 'embedding')
+  Multimodal dataclass      False 
                                                             
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
   embedding   ('ndarray',)      3                False            
-  id          ('str',)          3                False            
-  matches     ('MatchArray',)   3                False            
+  id          ('str',)          3                False                 
                                                                   
           Storage Summary          
                                    
@@ -62,11 +57,13 @@ from typing import List
 from docarray.document.strawberry_type import StrawberryDocument
 import strawberry
 
+
 @strawberry.type
 class Query:
     docs: List[StrawberryDocument] = strawberry.field(
         resolver=lambda: da.to_strawberry_type()
     )
+
 
 schema = strawberry.Schema(query=Query)
 ``` 
