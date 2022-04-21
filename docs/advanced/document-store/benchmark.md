@@ -52,18 +52,22 @@ The following table summarizes the result:
 
 We now elaborate the setup of our benchmark. The benchmarking experiments used the following parameters:
 
-| Parameter                                        | Value |
-|--------------------------------------------------| --- |
-| Number of created Documents                      | 1,000,000 |
-| Number of Document on task 2,3,4,5,6             | 1 |
-| The dimension of `.embedding`                    |  128 |
-| Number of Documents for the task "Find by vector" | 10 |
+| Parameter                                         | Value     |
+|---------------------------------------------------|-----------|
+| Number of created Documents                       | 1,000,000 |
+| Number of Document on task 2,3,4,5,6              | 1         |
+| The dimension of `.embedding`                     | 128       |
+| Number of Documents for the task "Find by vector" | 10        |
 
 We use the `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
 
-The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and using the official docker images of the storage backends. The docker images were allocated 40 GB of RAM.
+The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.
 
+Besides, since Weaviate, Qdrant and ElasticSearch follow a Client/Server pattern, they are set up in their official 
+docker images (with 40 GB of RAM allocated) in a **single node** configuration. That is, only 1 replica and shard is 
+operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
+capabilities of a single instance of the backend.
 ### Set up on nearest neighbour search
 
 As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the "Find By Vector" task:
