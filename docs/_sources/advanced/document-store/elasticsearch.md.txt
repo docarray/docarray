@@ -1,3 +1,4 @@
+(elasticsearch)=
 # Elasticsearch
 
 One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
@@ -229,7 +230,9 @@ The following configs can be set:
 | `tag_indices`     | List of tags to index                                                                                 | False                                                   |
 | `batch_size`      | Batch size used to handle storage refreshes/updates                                                   | 64                                                      |
 
-*You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
+```{tip}
+You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
+```
 
 ```{tip}
 Note that it is plural `hosts` not `host`, to comply with Elasticsearch client's interface.

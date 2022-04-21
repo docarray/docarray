@@ -1,3 +1,4 @@
+(sqlite)=
 # SQLite
 
 One can use SQLite as the document store for DocumentArray. It is useful when you want to access a large number Document which can not fit into memory.
@@ -9,7 +10,9 @@ from docarray import DocumentArray
 
 da = DocumentArray(storage='sqlite')  # with default config
 
-da1 = DocumentArray(storage='sqlite', config={'connection': 'example.db'})  # with customize config
+da1 = DocumentArray(
+    storage='sqlite', config={'connection': 'example.db'}
+)  # with customize config
 ```
 
 To reconnect a formerly persisted database, one can need to specify *both* `connection` and `table_name` in `config`:
@@ -17,7 +20,9 @@ To reconnect a formerly persisted database, one can need to specify *both* `conn
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='sqlite', config={'connection': 'example.db', 'table_name': 'mine'})
+da = DocumentArray(
+    storage='sqlite', config={'connection': 'example.db', 'table_name': 'mine'}
+)
 
 da.summary()
 ```

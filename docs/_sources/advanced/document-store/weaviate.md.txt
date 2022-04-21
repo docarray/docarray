@@ -1,3 +1,4 @@
+(weaviate)=
 # Weaviate
 
 One can use [Weaviate](https://www.semi.technology) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.

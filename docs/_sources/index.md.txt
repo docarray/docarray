@@ -125,12 +125,12 @@ datatypes/index
 :caption: Integrations
 :hidden:
 
+advanced/document-store/index
 fundamentals/jina-support/index
 fundamentals/notebook-support/index
 advanced/torch-support/index
 fundamentals/fastapi-support/index
 advanced/graphql-support/index
-advanced/document-store/index
 ```
 
 
