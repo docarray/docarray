@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/benchmark/" />
   
-<meta property="og:site_name" content="DocArray 0.12.8 Documentation" />
+<meta property="og:site_name" content="DocArray 0.12.9 Documentation" />
   
-<meta property="og:description" content="We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API: In-memory: DocumentArray(), Sqlite: DocumentArray(storage='sqlite'), Weaviate: DocumentArray(storage='weaviate'), Q..." />
+<meta property="og:description" content="We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API: None: DocumentArray(), namely an in-memory “store”., Sqlite: DocumentArray(storage='sqlite'), Weaviate: DocumentArr..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
   
-<meta property="og:image:alt" content="DocArray 0.12.8 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.12.9 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/benchmark.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>One Million Scale Benchmark - DocArray 0.12.8 documentation</title>
+        <title>One Million Scale Benchmark - DocArray 0.12.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.12.8 documentation</div>
+                <div class="brand">DocArray 0.12.9 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -556,7 +556,7 @@
 </figure>
 <p>We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../fundamentals/documentarray/#documentarray"><span class="std std-ref">In-memory</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray()</span></code></p></li>
+<li><p><a class="reference internal" href="../../../fundamentals/documentarray/#documentarray"><span class="std std-ref">None</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray()</span></code>, namely an in-memory “store”.</p></li>
 <li><p><a class="reference internal" href="../sqlite/#sqlite"><span class="std std-ref">Sqlite</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='sqlite')</span></code></p></li>
 <li><p><a class="reference internal" href="../weaviate/#weaviate"><span class="std std-ref">Weaviate</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='weaviate')</span></code></p></li>
 <li><p><a class="reference internal" href="../qdrant/#qdrant"><span class="std std-ref">Qdrant</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='qdrant')</span></code></p></li>
@@ -573,8 +573,8 @@
 <li><p><strong>Find by vector</strong>: retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using  nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Match Nearest Neighbours</span></a>.</p></li>
 </ol>
 <p>We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and report the average number.</p>
-<section id="results">
-<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">#</a></h2>
+<section id="benchmark-results">
+<h2>Benchmark results<a class="headerlink" href="#benchmark-results" title="Permalink to this headline">#</a></h2>
 <p>The following table summarizes the result, values are smaller the better. The best performer of each task is highlighted with bold font:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters</label><div class="tab-content docutils">
@@ -593,7 +593,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Memory</td>
+<td>None</td>
 <td align="right"><strong> 0.6 </strong></td>
 <td align="right"><strong> 0.1 </strong></td>
 <td align="right"><strong> 0.01 </strong></td>
@@ -659,7 +659,7 @@
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
-<th>Backend</th>
+<th>Store</th>
 <th align="right">Create 1M (s)</th>
 <th align="right">Read (ms)</th>
 <th align="right">Update (ms)</th>
@@ -671,7 +671,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Memory</td>
+<td>None</td>
 <td align="right"><strong> 0.6 </strong></td>
 <td align="right"><strong> 0.1 </strong></td>
 <td align="right"><strong> 0.01 </strong></td>
@@ -734,9 +734,9 @@
 </table></div>
 </div>
 </div>
-<p>When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. , Values are higher the better. The best performer of each task is highlighted with the bold font:</p>
+<p>When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better. The best performer of each task is highlighted with the bold font:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters in QPS</label><div class="tab-content docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -752,7 +752,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Memory</td>
+<td>None</td>
 <td align="right"><strong> 1,610,305 </strong></td>
 <td align="right"><strong> 9,345 </strong></td>
 <td align="right"><strong> 71,428 </strong></td>
@@ -814,7 +814,7 @@
 </tbody>
 </table></div>
 </div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Default HNSW parameters</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Default HNSW parameters in QPS</label><div class="tab-content docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -830,7 +830,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Memory</td>
+<td>None</td>
 <td align="right"><strong> 1,618,122 </strong></td>
 <td align="right"><strong> 10,101 </strong></td>
 <td align="right"><strong> 71,428 </strong></td>
@@ -938,8 +938,8 @@
 docker images (with 40 GB of RAM allocated) in a <strong>single node</strong> configuration. That is, only 1 replica and shard is
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the
 capabilities of a single instance of the backend.</p>
-<section id="set-up-on-the-nearest-neighbour-search">
-<h3>Set up on the nearest neighbour search<a class="headerlink" href="#set-up-on-the-nearest-neighbour-search" title="Permalink to this headline">#</a></h3>
+<section id="settings-of-the-nearest-neighbour-search">
+<h3>Settings of the nearest neighbour search<a class="headerlink" href="#settings-of-the-nearest-neighbour-search" title="Permalink to this headline">#</a></h3>
 <p>As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the “Find By Vector” task:</p>
 <ol class="simple">
 <li><p>Set up HNSW with the same set of parameters;</p></li>
@@ -953,9 +953,8 @@ capabilities of a single instance of the backend.</p>
 </ul>
 <p>Finally, the full benchmark script is <span class="xref myst">available at here</span>.</p>
 </section>
-</section>
-<section id="rationale">
-<h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">#</a></h2>
+<section id="rationale-on-the-experiment-design">
+<h3>Rationale on the experiment design<a class="headerlink" href="#rationale-on-the-experiment-design" title="Permalink to this headline">#</a></h3>
 <p>Our experiments are designed to be fair and the same across all backends while favouring Document Stores that benefit
 DocArray users the most. Note that such benchmark was impossible to set up before DocArray, as each store has its own API and the definition of a task varies from one to another.</p>
 <p>Our benchmark is designed based on the following principles:</p>
@@ -980,7 +979,7 @@ from a recent feature in upstream, avoid unnecessary steps), feel free to raise 
 </ul>
 </section>
 <section id="incompleteness-on-the-stores">
-<h2>Incompleteness on the stores<a class="headerlink" href="#incompleteness-on-the-stores" title="Permalink to this headline">#</a></h2>
+<h3>Incompleteness on the stores<a class="headerlink" href="#incompleteness-on-the-stores" title="Permalink to this headline">#</a></h3>
 <p>We do not yet cover the following backends for reasons:</p>
 <ul class="simple">
 <li><p><strong>Milvus</strong>: currently DocArray does not integrate with Milvus. We’re open for contributions to DocArray’s repository to
@@ -990,11 +989,11 @@ support it.</p></li>
 Document stores. Actually we do not benchmark HNSW itself, but it is used by some backends internally.</p></li>
 </ul>
 </section>
+</section>
 <section id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">#</a></h2>
 <p>We hope our benchmark result can help user select the backend that suits better to its use case. Depending on the dataset size and the needed quality, some backends may be preferable  than others.</p>
-<p>If you’re playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is (i.e. <code class="docutils literal notranslate"><span class="pre">memory</span></code> as storage) to enjoy the best
-quality for nearest neighbor search with reasonable time latency (less than 20 ms).</p>
+<p>If you’re playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.</p>
 <p>If your dataset does not fit in memory, and you <strong>do not</strong> care much about the speed of nearest neighbor search, you can use
 <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> as storage.</p>
 <p>When it comes to finding by vectors, the following figure
@@ -1004,7 +1003,7 @@ shows the variation of the time latency w.r.t. different backend according to th
 </figure>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Sqlite backend is omitted from the first plot and the memory backend is omitted from the second plot; because one is too
+<p>Sqlite store is omitted from the first plot and the in-memory store is omitted from the second plot; because one is too
 slow for vector retrieval and the other is too fast for indexing.</p>
 </div>
 <p>AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding by vectors. As AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.</p>
@@ -1080,13 +1079,13 @@ slow for vector retrieval and the other is too fast for indexing.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">One Million Scale Benchmark</a><ul>
-<li><a class="reference internal" href="#results">Results</a></li>
+<li><a class="reference internal" href="#benchmark-results">Benchmark results</a></li>
 <li><a class="reference internal" href="#benchmark-setup">Benchmark setup</a><ul>
-<li><a class="reference internal" href="#set-up-on-the-nearest-neighbour-search">Set up on the nearest neighbour search</a></li>
+<li><a class="reference internal" href="#settings-of-the-nearest-neighbour-search">Settings of the nearest neighbour search</a></li>
+<li><a class="reference internal" href="#rationale-on-the-experiment-design">Rationale on the experiment design</a></li>
+<li><a class="reference internal" href="#incompleteness-on-the-stores">Incompleteness on the stores</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#rationale">Rationale</a></li>
-<li><a class="reference internal" href="#incompleteness-on-the-stores">Incompleteness on the stores</a></li>
 <li><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
