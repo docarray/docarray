@@ -98,19 +98,18 @@ def recall(predicted, relevant, eval_at):
 if args.default_hnsw:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
         ('sqlite', None),
         (
             'annlite',
             {'n_dim': D},
         ),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
         ('weaviate', {'n_dim': D}),
         ('elasticsearch', {'n_dim': D}),
     ]
 else:
     storage_backends = [
         ('memory', None),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
         ('sqlite', None),
         (
             'annlite',
@@ -121,6 +120,7 @@ else:
                 'max_connection': 16,
             },
         ),
+        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
         (
             'weaviate',
             {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_onnections': 16},
