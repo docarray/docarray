@@ -140,7 +140,7 @@ For the first experiment, the following HNSW parameters were fixed for all Docum
 
 Finally, the full benchmark script is [available at here](../../../scripts/benchmarking.py).
 
-## Rationale
+### Rationale on the experiment design
 
 Our experiments are designed to be fair and the same across all backends while favouring Document Stores that benefit 
 DocArray users the most. Note that such benchmark was impossible to set up before DocArray, as each store has its own API and the definition of a task varies from one to another. 
@@ -166,7 +166,7 @@ user.
 updating the benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit 
 from a recent feature in upstream, avoid unnecessary steps), feel free to raise a PR or issue, we're open to  your contributions!
 
-## Incompleteness on the stores
+### Incompleteness on the stores
 
 We do not yet cover the following backends for reasons:
 * **Milvus**: currently DocArray does not integrate with Milvus. We're open for contributions to DocArray's repository to 
