@@ -179,10 +179,12 @@ When it comes to finding by vectors, the following figure
 shows the variation of the time latency w.r.t. different backend according to the dataset size. The red dashed line represents a time threshold of 0.3s, i.e. 300 ms:
 
 ```{figure} benchmark.svg
+:scale: 125%
 ```
 
 ```{tip}
-Sqlite backend is omitted from the plot as it is too slow to fit into this figure
+Sqlite backend is omitted from the first plot and the memory backend is omitted from the second plot because one is too 
+slow for vector retrieval and the other is too fast for indexing.
 ```
 
 AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding by vectors. As AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.
