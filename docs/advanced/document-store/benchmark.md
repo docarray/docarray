@@ -1,7 +1,7 @@
 # One Million Scale Benchmark
 
 
-```{figure} https://ft-docs-benchmarking--jina-docs.netlify.app/_images/benchmark-banner.gif
+```{figure} https://docarray.jina.ai/_images/benchmark-banner.gif
 :width: 0 %
 :scale: 0 %
 ```
@@ -46,7 +46,7 @@ The following table summarizes the result:
 ````
 
 
-#````{tab} Same HNSW parameters (QPS)
+````{tab} Same HNSW parameters (QPS)
 
 | Store         |          Create |            Read |           Update |          Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|----------------:|-----------------:|----------------:|------------------:|---------------:|----------:|
@@ -98,6 +98,8 @@ We now elaborate the setup of our benchmark. The benchmarking experiments used t
 
 We use the `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
+We chose to index 1 million Documents in these benchmarks since it's the breaking point at which Approximate Nearest 
+Neighbor Search algorithms outperform naive approaches for production systems.
 
 The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.
 
