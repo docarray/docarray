@@ -30,7 +30,7 @@ We focus on the following tasks:
 
 We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and report the average number.
 
-## Results
+## Benchmark results
 
 The following table summarizes the result, values are smaller the better. The best performer of each task is highlighted with bold font:
 
