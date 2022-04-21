@@ -31,12 +31,16 @@ def test_find(storage, config, limit, query, start_storage):
     da.extend([Document(embedding=v) for v in embeddings])
 
     result = da.find(query, limit=limit)
-    n_rows_query, _ = ndarray.get_array_rows(query)
+    n_rows_query, n_dim = ndarray.get_array_rows(query)
 
-    # check for each row on the query a DocumentArray is returned
-    if n_rows_query == 1:
-        assert len(result) == limit
+    if n_rows_query == 1 and n_dim == 1:
+        assert len(result) == 1
+    elif n_rows_query == 1 and n_dim == 2:
+        # we expect a result to be a list with 1 DocumentArray
+        assert len(result) == 1
+        assert len(result[0]) == limit
     else:
+        # check for each row on the query a DocumentArray is returned
         assert len(result) == n_rows_query
 
     # check returned objects are sorted according to the storage backend metric
