@@ -126,7 +126,7 @@ operated during the benchmarking. We did not opt for a cluster setup because our
 capabilities of a single instance of the backend.
 
 
-### Set up on the nearest neighbour search
+### Settings of the nearest neighbour search
 
 As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the "Find By Vector" task:
 1. Set up HNSW with the same set of parameters; 
