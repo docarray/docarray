@@ -250,16 +250,19 @@ find_df = pd.DataFrame(find_by_vector_values)
 find_df.index = [backend for backend, _ in storage_backends]
 find_df = find_df.drop(['sqlite'])
 print(find_df)
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
 
 find_df.plot(
     kind="bar",
     ax=ax1,
+    fontsize=16,
     color=sns.color_palette('muted')[1:4],
-    title='Find by vector per backend and dataset size',
-    ylabel='seconds',
+    # title='Find by vector per backend and dataset size',
+    # ylabel='seconds',
     rot=0,
 )
+ax1.set_ylabel('seconds', fontsize=18)
+ax1.set_title('Find by vector per backend and dataset size', fontsize=18)
 
 threshold = 0.3
 ax1.hlines(y=threshold, xmin=-20, xmax=20, linewidth=2, color='r', linestyle='--')
@@ -269,9 +272,25 @@ create_df.index = [backend for backend, _ in storage_backends]
 
 create_df = create_df.drop(['memory'])
 print(create_df)
+create_df.plot(
+    kind="bar",
+    ax=ax2,
+    fontsize=16,
+    color=sns.color_palette('muted')[1:4],
+    # title='Indexing per backend and dataset size',
+    # ylabel='seconds',
+    rot=0,
+)
 
-console.print(table)
+ax2.set_ylabel('seconds', fontsize=18)
+ax2.set_title('Indexing per backend and dataset size', fontsize=18)
+
+plt.tight_layout()
+ax1.legend(fontsize=15)
+ax2.legend(fontsize=15)
+
 plt.savefig('benchmark.svg')
+console.print(table)
 
 benchmark_df.to_csv('benchmark-seconds.csv')
 
