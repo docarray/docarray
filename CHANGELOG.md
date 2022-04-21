@@ -78,6 +78,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1921,4 +1922,27 @@
 ### 🍹 Other Improvements
 
  - [[```49e810ec```](https://github.com/jina-ai/docarray/commit/49e810ecaf41b33e1bc818b3e17bbe6488881e9d)] __-__ __version__: the next version will be 0.12.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-8></a>
+## Release Note (`0.12.8`)
+
+> Release time: 2022-04-21 19:26:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```7d84ad55```](https://github.com/jina-ai/docarray/commit/7d84ad55aa83751c74eee6a3fb58c8b4fa3b58cb)] __-__ support partial functions in parallel methods (#285) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```64c1afa1```](https://github.com/jina-ai/docarray/commit/64c1afa1a511f234706e3ffad18a442706078d77)] __-__ add one million scale benchmark (#270) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```f7de9965```](https://github.com/jina-ai/docarray/commit/f7de99651799b19a19c71fd3c9292d7b71ab33c9)] __-__ __version__: the next version will be 0.12.8 (*Jina Dev Bot*)
 
