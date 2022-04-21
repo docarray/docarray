@@ -1,6 +1,6 @@
 # Benchmark
 
-The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores in 6 different operations:
+The script `scripts/benchmarking.py` benchmarks DocArray's supported Document Stores on 6 different operations:
 * Create: Index Documents in the Document Store. This operation uses `DocumentArray.extend` which inserts new Documents in the storage.
 * Read: Retrieve Documents from the Document Store by ID. 
 * Update: Update Documents within the Document Store by ID.
@@ -110,6 +110,14 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 ## Conclusion
 To conclude, one can look at those benchmarks and select the backend that suits better the use case.
 
+Depending on the dataset size and the needed quality, some backends may be better than others. The following figure 
+shows the variation of the `Find by vector` time latency per backend according to the dataset size, with a time 
+threshold of 300 ms:
+
+```{figure} benchmark.svg
+```
+**Note**: Sqlite backend was omitted from the plot.
+
 If you're playing around on a dataset with less than 10k Documents, you can use `memory` as storage to enjoy the best 
 quality for Nearest Neighbor Search with reasonable time latency (less than 20 ms).
 
@@ -120,7 +128,4 @@ AnnLite does not implement a client-server pattern and therefore, it does not pr
 indexing. It also supports Approximate Nearest Neighbor Search.
 
 Weaviate offers fast Approximate Nearest Neighbor Search while ElasticSearch and Qdrant offer good compromise between 
-speed and quality.
-
-Depending on your business needs, you can refer the benchmarking results to choose the backend that suits you case 
-better.
+speed and quality. On the other hand, ElasticSearch performs better in terms of quality.

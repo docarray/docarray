@@ -219,8 +219,8 @@ for idx, n_index in enumerate(n_index_values):
             console.print(f'Storage Backend {backend} failed: {e}')
 
 df = pd.DataFrame(find_by_vector_values)
-print(df)
 df.index = [backend for backend, _ in storage_backends]
+print(df)
 fig, ax = plt.subplots()
 
 df.plot(
@@ -228,7 +228,7 @@ df.plot(
     ax=ax,
     color=sns.color_palette('muted')[1:4],
     title='Find by vector per backend and dataset size',
-    ylabel='milliseconds',
+    ylabel='seconds',
     rot=0,
 )
 
