@@ -166,13 +166,11 @@ class FindMixin:
                 'metric_name': metric_name,
             }
         )
+
         _result = self._find(
             _query,
             **kwargs,
         )
-
-        if n_dim == 1:
-            _result = _result[0]
 
         result: List['DocumentArray']
 
@@ -208,7 +206,6 @@ class FindMixin:
                         break
                 result.append(matches)
 
-
         else:
             raise TypeError(
                 f'unsupported type `{type(_result)}` returned from `._find()`'
@@ -224,7 +221,7 @@ class FindMixin:
 
         # ensures query=np.array([1,2,3]) returns DocumentArray not list with 1 DocumentArray
         if n_dim == 1:
-           result = result[0]
+            result = result[0]
 
         return result
 

@@ -34,7 +34,8 @@ def test_find(storage, config, limit, query, start_storage):
     n_rows_query, n_dim = ndarray.get_array_rows(query)
 
     if n_rows_query == 1 and n_dim == 1:
-        assert len(result) == 1
+        # we expect a result to be DocumentArray
+        assert len(result) == limit
     elif n_rows_query == 1 and n_dim == 2:
         # we expect a result to be a list with 1 DocumentArray
         assert len(result) == 1
@@ -46,7 +47,7 @@ def test_find(storage, config, limit, query, start_storage):
     # check returned objects are sorted according to the storage backend metric
     # weaviate uses cosine similarity by default
     # annlite uses cosine distance by default
-    if n_rows_query == 1:
+    if n_dim == 1:
         if storage == 'weaviate':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
