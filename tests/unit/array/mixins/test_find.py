@@ -149,6 +149,7 @@ def test_find_by_tag(storage, config, start_storage):
     )
 
     results = da.find('token1 token2', index='attr1')
+    assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert results[0].id == '1'
     assert results[1].id == '2'
@@ -181,3 +182,13 @@ def test_find_by_tag(storage, config, start_storage):
     assert len(results) == 1
     assert results[0].id == '3'
     assert all(['token1' in r.tags['attr3'] for r in results]) == True
+
+    results = da.find(['token1 token2'], index='attr1')
+    assert isinstance(results, list)
+    assert len(results) == 1
+    assert isinstance(results[0], DocumentArray)
+
+    results = da.find(['token1 token2', 'token1'], index='attr1')
+    assert isinstance(results, list)
+    assert len(results) == 2
+    assert all([isinstance(result, DocumentArray) for result in results]) == True
