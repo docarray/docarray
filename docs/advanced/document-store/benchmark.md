@@ -113,10 +113,17 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 
 ## Conclusion
 
-To conclude, one can look at those benchmarks and select the backend that suits better the use case.
+We hope our benchmark result can help user select the backend that suits better to its use case. Depending on the dataset size and the needed quality, some backends may be preferable  than others. 
 
-Depending on the dataset size and the needed quality, some backends may be better than others. The following figure 
-shows the variation of the time latency on the task "Find by vector" w.r.t. different backend according to the dataset size, with a time threshold of 0.3s, i.e. 300 ms:
+If you're playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is (i.e. `memory` as storage) to enjoy the best 
+quality for nearest neighbor search with reasonable time latency (less than 20 ms).
+
+If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use
+`sqlite` as storage.
+
+
+When it comes to finding by vectors, the following figure 
+shows the variation of the time latency w.r.t. different backend according to the dataset size. The red dashed line represents a time threshold of 0.3s, i.e. 300 ms:
 
 ```{figure} benchmark.svg
 ```
@@ -124,12 +131,6 @@ shows the variation of the time latency on the task "Find by vector" w.r.t. diff
 ```{tip}
 Sqlite backend is omitted from the plot as it is too slow to fit into this figure
 ```
-
-If you're playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is (i.e. `memory` as storage) to enjoy the best 
-quality for nearest neighbor search with reasonable time latency (less than 20 ms).
-
-If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use
-`sqlite` as storage.
 
 AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding by vectors. As AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.
 
