@@ -12,7 +12,7 @@
 
 We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API:
 
-* {ref}`In-memory<documentarray>`: `DocumentArray()`  
+* {ref}`None<documentarray>`: `DocumentArray()`, namely an in-memory "store".  
 * {ref}`Sqlite<sqlite>`: `DocumentArray(storage='sqlite')`
 * {ref}`Weaviate<weaviate>`: `DocumentArray(storage='weaviate')`
 * {ref}`Qdrant<qdrant>`: `DocumentArray(storage='qdrant')`
@@ -38,7 +38,7 @@ The following table summarizes the result, values are smaller the better. The be
 
 | Store         | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
 |---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| Memory        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.39 ** |               ** 5 ** |               1.43 |      1.00 |
+| None        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.39 ** |               ** 5 ** |               1.43 |      1.00 |
 | Sqlite        |    4,366.8 |       0.3 |        0.35 |        2.62 |                    31 |              23.59 |      1.00 |
 | Annlite       |       72.4 |       0.3 |        6.57 |        4.62 |                    30 |               0.42 |      0.19 |
 | Qdrant        |    2,286.3 |       1.6 |        1.50 |        4.14 |                   605 |         ** 0.01 ** |      0.51 |
@@ -51,9 +51,9 @@ The following table summarizes the result, values are smaller the better. The be
 
 ````{tab} Default HNSW parameters
 
-| Backend       | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
+| Store       | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
 |---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| Memory        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.16 ** |               ** 5 ** |               1.43 |      1.00 |
+| None        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.16 ** |               ** 5 ** |               1.43 |      1.00 |
 | Sqlite        |    4,446.6 |       0.3 |        0.35 |       16.77 |                    30 |              24.38 |      1.00 |
 | Annlite       |      114.0 |       0.3 |        9.36 |       20.09 |                    30 |               0.43 |      0.14 |
 | Qdrant        |    2,227.4 |       1.6 |       42.16 |       20.59 |                   608 |         ** 0.01 ** |      0.51 |
@@ -62,14 +62,14 @@ The following table summarizes the result, values are smaller the better. The be
 
 ````
 
-When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. , Values are higher the better. The best performer of each task is highlighted with the bold font:
+When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better. The best performer of each task is highlighted with the bold font:
 
 
-````{tab} Same HNSW parameters
+````{tab} Same HNSW parameters in QPS
 
 | Store         |          Create 1M |        Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| Memory        | ** 1,610,305 ** | ** 9,345 ** | ** 71,428 ** | ** 2,570 ** |       ** 0.190 ** |           0.70 |      1.00 |
+| None        | ** 1,610,305 ** | ** 9,345 ** | ** 71,428 ** | ** 2,570 ** |       ** 0.190 ** |           0.70 |      1.00 |
 | Sqlite        |              22 |        3125 |        2,816 |         381 |             0.032 |           0.04 |      1.00 |
 | Annlite       |           1,380 |       4,000 |          152 |         216 |             0.033 |           2.34 |      0.19 |
 | Qdrant        |              43 |         604 |          664 |         241 |             0.002 |    ** 90.90 ** |      0.51 |
@@ -79,11 +79,11 @@ When we consider each query as a Document, we can convert the above metrics into
 ````
 
 
-````{tab} Default HNSW parameters
+````{tab} Default HNSW parameters in QPS
 
 | Store         |          Create 1M |         Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|-------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| Memory        | ** 1,618,122 ** | ** 10,101 ** | ** 71,428 ** | ** 6,211 ** |       ** 0.192 ** |           0.70 |      1.00 |
+| None        | ** 1,618,122 ** | ** 10,101 ** | ** 71,428 ** | ** 6,211 ** |       ** 0.192 ** |           0.70 |      1.00 |
 | Sqlite        |             224 |        3,125 |        2,824 |          59 |             0.033 |           0.04 |      1.00 |
 | Annlite       |           8,769 |        3,759 |          106 |          49 |             0.033 |           2.34 |      0.14 |
 | Qdrant        |             448 |          615 |           23 |          48 |             0.002 |    ** 111.1 ** |      0.51 |
@@ -180,8 +180,7 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 
 We hope our benchmark result can help user select the backend that suits better to its use case. Depending on the dataset size and the needed quality, some backends may be preferable  than others. 
 
-If you're playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is (i.e. `memory` as storage) to enjoy the best 
-quality for nearest neighbor search with reasonable time latency (less than 20 ms).
+If you're playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use
 `sqlite` as storage.
@@ -195,7 +194,7 @@ shows the variation of the time latency w.r.t. different backend according to th
 ```
 
 ```{tip}
-Sqlite backend is omitted from the first plot and the memory backend is omitted from the second plot; because one is too 
+Sqlite store is omitted from the first plot and the in-memory store is omitted from the second plot; because one is too 
 slow for vector retrieval and the other is too fast for indexing.
 ```
 
