@@ -1,6 +1,11 @@
 # One Million Scale Benchmark
 
 
+```{figure} https://ft-docs-benchmarking--jina-docs.netlify.app/_images/benchmark-banner.gif
+:width: 0 %
+:scale: 0 %
+```
+
 ```{figure} benchmark-banner.gif
 :scale: 0 %
 ```
