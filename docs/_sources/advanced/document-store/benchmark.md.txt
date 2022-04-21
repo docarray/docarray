@@ -10,9 +10,9 @@
 :scale: 0 %
 ```
 
-We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API:
+We create a DocumentArray with one million Documents, and benchmark all supported document stores. This includes classic database and vector database all under the same DocumentArray API:
 
-* {ref}`None<documentarray>`: `DocumentArray()`, namely an in-memory "store".  
+* {ref}`"None"<documentarray>`: `DocumentArray()`, namely an in-memory "store". In the sequel, in-memory/memory store refers to this.
 * {ref}`Sqlite<sqlite>`: `DocumentArray(storage='sqlite')`
 * {ref}`Weaviate<weaviate>`: `DocumentArray(storage='weaviate')`
 * {ref}`Qdrant<qdrant>`: `DocumentArray(storage='qdrant')`
@@ -28,11 +28,11 @@ We focus on the following tasks:
 5. **Find by condition**: search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters, as described in {ref}`find-documentarray`.
 6. **Find by vector**: retrieve existing Documents by `.embedding` via {meth}`~docarray.array.mixins.find`  using  nearest neighbor search or approximate nearest neighbor search, as described in {ref}`match-documentarray`.
 
-We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and report the average number.
+We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and the average number is reported.
 
-## Benchmark results
+## Benchmark result
 
-The following table summarizes the result, values are smaller the better. The best performer of each task is highlighted with bold font:
+The following table summarizes the result; values are smaller the better. The best performer of each task is highlighted with bold font:
 
 ````{tab} Same HNSW parameters
 
@@ -94,7 +94,7 @@ When we consider each query as a Document, we can convert the above metrics into
 
 ## Benchmark setup
 
-We now elaborate the setup of our benchmark. The benchmarking experiments used the following parameters:
+We now elaborate the setup of our benchmark. First the following parameters are used:
 
 | Parameter                                       | Value     |
 |-------------------------------------------------|-----------|
@@ -103,7 +103,7 @@ We now elaborate the setup of our benchmark. The benchmarking experiments used t
 | The dimension of `.embedding`                   | 128       |
 | Number of results for the task "Find by vector" | 10        |
 
-We chose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it as a performance-wise breaking point for production system.
+We choose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it as a performance-wise breaking point for production system.
 
 Each Document follows the structure below: 
 
@@ -116,12 +116,12 @@ Each Document follows the structure below:
 ```
 
 
-We use the `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
+We use `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
 The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.
 
-Besides, since Weaviate, Qdrant and ElasticSearch follow a Client/Server pattern, they are set up in their official 
-docker images (with 40 GB of RAM allocated) in a **single node** configuration. That is, only 1 replica and shard is 
+Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official 
+docker images in a **single node** configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard is 
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
 capabilities of a single instance of the backend.
 
@@ -178,9 +178,9 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 
 ## Conclusion
 
-We hope our benchmark result can help user select the backend that suits better to its use case. Depending on the dataset size and the needed quality, some backends may be preferable  than others. 
+We hope our benchmark result can help user select the store that suits better to its use case. Depending on the dataset size and the needed quality, some stores may be preferable than others. 
 
-If you're playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.
+If you're playing around on a dataset with less than 10,000 Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use
 `sqlite` as storage.
@@ -194,10 +194,10 @@ shows the variation of the time latency w.r.t. different backend according to th
 ```
 
 ```{tip}
-Sqlite store is omitted from the first plot and the in-memory store is omitted from the second plot; because one is too 
-slow for vector retrieval and the other is too fast for indexing.
+SQLite store is omitted from the left plot and the in-memory store is omitted from the right plot; because SQLite is too 
+slow and the in-memory is too fast to fit into the figure.
 ```
 
-AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding by vectors. As AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.
+AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, as AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.
 
 Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best on the quality of ANN as we observed with highest Recall@K.

@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="DocArray 0.12.9 Documentation" />
   
-<meta property="og:description" content="We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API: None: DocumentArray(), namely an in-memory “store”., Sqlite: DocumentArray(storage='sqlite'), Weaviate: DocumentArr..." />
+<meta property="og:description" content="We create a DocumentArray with one million Documents, and benchmark all supported document stores. This includes classic database and vector database all under the same DocumentArray API: “None”: DocumentArray(), namely an in-memory “store”. In the sequel, in-memory/memory store refers to this., ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
   
@@ -554,9 +554,9 @@
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../../_images/benchmark-banner.gif"><img alt="../../../_images/benchmark-banner.gif" src="../../../_images/benchmark-banner.gif" style="width: 0.0px; height: 0.0px;"/></a>
 </figure>
-<p>We creat a DocumentArray with one million Documents and benchmark all supported document stores, including classic database and vector database all under the same DocumentArray API:</p>
+<p>We create a DocumentArray with one million Documents, and benchmark all supported document stores. This includes classic database and vector database all under the same DocumentArray API:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../../fundamentals/documentarray/#documentarray"><span class="std std-ref">None</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray()</span></code>, namely an in-memory “store”.</p></li>
+<li><p><a class="reference internal" href="../../../fundamentals/documentarray/#documentarray"><span class="std std-ref">“None”</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray()</span></code>, namely an in-memory “store”. In the sequel, in-memory/memory store refers to this.</p></li>
 <li><p><a class="reference internal" href="../sqlite/#sqlite"><span class="std std-ref">Sqlite</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='sqlite')</span></code></p></li>
 <li><p><a class="reference internal" href="../weaviate/#weaviate"><span class="std std-ref">Weaviate</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='weaviate')</span></code></p></li>
 <li><p><a class="reference internal" href="../qdrant/#qdrant"><span class="std std-ref">Qdrant</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='qdrant')</span></code></p></li>
@@ -572,10 +572,10 @@
 <li><p><strong>Find by condition</strong>: search existing Documents by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> in the document store by boolean filters, as described in <a class="reference internal" href="../../../fundamentals/documentarray/find/#find-documentarray"><span class="std std-ref">Query by Conditions</span></a>.</p></li>
 <li><p><strong>Find by vector</strong>: retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using  nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Match Nearest Neighbours</span></a>.</p></li>
 </ol>
-<p>We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and report the average number.</p>
-<section id="benchmark-results">
-<h2>Benchmark results<a class="headerlink" href="#benchmark-results" title="Permalink to this headline">#</a></h2>
-<p>The following table summarizes the result, values are smaller the better. The best performer of each task is highlighted with bold font:</p>
+<p>We are interested in the single-query performance on the above tasks, which means the tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly, and the average number is reported.</p>
+<section id="benchmark-result">
+<h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this headline">#</a></h2>
+<p>The following table summarizes the result; values are smaller the better. The best performer of each task is highlighted with bold font:</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters</label><div class="tab-content docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
@@ -896,7 +896,7 @@
 </section>
 <section id="benchmark-setup">
 <h2>Benchmark setup<a class="headerlink" href="#benchmark-setup" title="Permalink to this headline">#</a></h2>
-<p>We now elaborate the setup of our benchmark. The benchmarking experiments used the following parameters:</p>
+<p>We now elaborate the setup of our benchmark. First the following parameters are used:</p>
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -923,7 +923,7 @@
 </tr>
 </tbody>
 </table></div>
-<p>We chose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it as a performance-wise breaking point for production system.</p>
+<p>We choose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it as a performance-wise breaking point for production system.</p>
 <p>Each Document follows the structure below:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
   "id": "94ee6627ee7f582e5e28124e78c3d2f9",
@@ -932,10 +932,10 @@
 }
 </pre></div>
 </div>
-<p>We use the <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> value as an indicator of the search quality. The in-memory and SQLite store <strong>do not implement</strong> approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> but are the slowest.</p>
+<p>We use <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> value as an indicator of the search quality. The in-memory and SQLite store <strong>do not implement</strong> approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> but are the slowest.</p>
 <p>The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.</p>
-<p>Besides, since Weaviate, Qdrant and ElasticSearch follow a Client/Server pattern, they are set up in their official
-docker images (with 40 GB of RAM allocated) in a <strong>single node</strong> configuration. That is, only 1 replica and shard is
+<p>Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official
+docker images in a <strong>single node</strong> configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard is
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the
 capabilities of a single instance of the backend.</p>
 <section id="settings-of-the-nearest-neighbour-search">
@@ -992,8 +992,8 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 </section>
 <section id="conclusion">
 <h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">#</a></h2>
-<p>We hope our benchmark result can help user select the backend that suits better to its use case. Depending on the dataset size and the needed quality, some backends may be preferable  than others.</p>
-<p>If you’re playing around on a dataset with less than 10k Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.</p>
+<p>We hope our benchmark result can help user select the store that suits better to its use case. Depending on the dataset size and the needed quality, some stores may be preferable than others.</p>
+<p>If you’re playing around on a dataset with less than 10,000 Documents, you can use default DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable time latency, say less than 20 ms/query.</p>
 <p>If your dataset does not fit in memory, and you <strong>do not</strong> care much about the speed of nearest neighbor search, you can use
 <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> as storage.</p>
 <p>When it comes to finding by vectors, the following figure
@@ -1003,10 +1003,10 @@ shows the variation of the time latency w.r.t. different backend according to th
 </figure>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Sqlite store is omitted from the first plot and the in-memory store is omitted from the second plot; because one is too
-slow for vector retrieval and the other is too fast for indexing.</p>
+<p>SQLite store is omitted from the left plot and the in-memory store is omitted from the right plot; because SQLite is too
+slow and the in-memory is too fast to fit into the figure.</p>
 </div>
-<p>AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding by vectors. As AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.</p>
+<p>AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, as AnnLite is a local monolith package that does not follow a client-server design, hence it avoids all network overhead.</p>
 <p>Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best on the quality of ANN as we observed with highest Recall@K.</p>
 </section>
 </section>
@@ -1079,7 +1079,7 @@ slow for vector retrieval and the other is too fast for indexing.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">One Million Scale Benchmark</a><ul>
-<li><a class="reference internal" href="#benchmark-results">Benchmark results</a></li>
+<li><a class="reference internal" href="#benchmark-result">Benchmark result</a></li>
 <li><a class="reference internal" href="#benchmark-setup">Benchmark setup</a><ul>
 <li><a class="reference internal" href="#settings-of-the-nearest-neighbour-search">Settings of the nearest neighbour search</a></li>
 <li><a class="reference internal" href="#rationale-on-the-experiment-design">Rationale on the experiment design</a></li>
