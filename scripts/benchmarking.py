@@ -131,18 +131,27 @@ else:
 table = Table(
     title=f'DocArray Benchmarking n_index={n_index_values[-1]} n_query={n_query} D={D} K={K}'
 )
-table.add_column('Storage Backend')
-table.add_column('Indexing time (C)')
-table.add_column('Query (R)')
-table.add_column('Update (U)')
-table.add_column('Delete (D)')
-table.add_column('Find by vector')
-table.add_column(f'Recall at k={K} for vector search')
-table.add_column('Find by condition')
+benchmark_df = pd.DataFrame(
+    {
+        'Storage Backend': [],
+        'Indexing time (C)': [],
+        'Query (R)': [],
+        'Update (U)': [],
+        'Delete (D)': [],
+        'Find by vector': [],
+        f'Recall at k={K} for vector search': [],
+        'Find by condition': [],
+    }
+)
+
+for col in benchmark_df.columns:
+    table.add_column(col)
 
 console = Console()
 find_by_vector_values = {str(n_index): [] for n_index in n_index_values}
 create_values = {str(n_index): [] for n_index in n_index_values}
+
+
 for idx, n_index in enumerate(n_index_values):
     console.print(f'generating {n_index} docs...')
     docs = get_docs(n_index, D, TENSOR_SHAPE, n_query)
@@ -214,6 +223,23 @@ for idx, n_index in enumerate(n_index_values):
                     '{:.3f}'.format(recall_at_k),
                     fmt(find_by_condition_time, 's'),
                 )
+                benchmark_df.append(
+                    pd.DataFrame(
+                        [
+                            [
+                                backend.title(),
+                                create_time,
+                                read_time,
+                                update_time,
+                                delete_time,
+                                find_by_vector_time,
+                                recall_at_k,
+                                find_by_condition_time,
+                            ]
+                        ],
+                        columns=benchmark_df.columns,
+                    )
+                )
 
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
             create_values[str(n_index)].append(create_time)
@@ -222,12 +248,13 @@ for idx, n_index in enumerate(n_index_values):
 
 find_df = pd.DataFrame(find_by_vector_values)
 find_df.index = [backend for backend, _ in storage_backends]
+find_df = find_df.drop(['sqlite'])
 print(find_df)
-fig, ax = plt.subplots()
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
 
 find_df.plot(
     kind="bar",
-    ax=ax,
+    ax=ax1,
     color=sns.color_palette('muted')[1:4],
     title='Find by vector per backend and dataset size',
     ylabel='seconds',
@@ -235,11 +262,15 @@ find_df.plot(
 )
 
 threshold = 0.3
-ax.hlines(y=threshold, xmin=-20, xmax=20, linewidth=2, color='r', linestyle='--')
-plt.savefig('benchmark.svg')
+ax1.hlines(y=threshold, xmin=-20, xmax=20, linewidth=2, color='r', linestyle='--')
 
 create_df = pd.DataFrame(create_values)
 create_df.index = [backend for backend, _ in storage_backends]
+
+create_df = create_df.drop(['memory'])
 print(create_df)
 
 console.print(table)
+plt.savefig('benchmark.svg')
+
+benchmark_df.to_csv('benchmark.csv')
