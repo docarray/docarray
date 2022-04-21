@@ -142,6 +142,7 @@ table.add_column('Find by condition')
 
 console = Console()
 find_by_vector_values = {str(n_index): [] for n_index in n_index_values}
+create_values = {str(n_index): [] for n_index in n_index_values}
 for idx, n_index in enumerate(n_index_values):
     console.print(f'generating {n_index} docs...')
     docs = get_docs(n_index, D, TENSOR_SHAPE, n_query)
@@ -215,15 +216,16 @@ for idx, n_index in enumerate(n_index_values):
                 )
 
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
+            create_values[str(n_index)].append(create_time)
         except Exception as e:
             console.print(f'Storage Backend {backend} failed: {e}')
 
-df = pd.DataFrame(find_by_vector_values)
-df.index = [backend for backend, _ in storage_backends]
-print(df)
+find_df = pd.DataFrame(find_by_vector_values)
+find_df.index = [backend for backend, _ in storage_backends]
+print(find_df)
 fig, ax = plt.subplots()
 
-df.plot(
+find_df.plot(
     kind="bar",
     ax=ax,
     color=sns.color_palette('muted')[1:4],
@@ -235,5 +237,9 @@ df.plot(
 threshold = 0.3
 ax.hlines(y=threshold, xmin=-20, xmax=20, linewidth=2, color='r', linestyle='--')
 plt.savefig('benchmark.svg')
+
+create_df = pd.DataFrame(create_values)
+create_df.index = [backend for backend, _ in storage_backends]
+print(create_df)
 
 console.print(table)
