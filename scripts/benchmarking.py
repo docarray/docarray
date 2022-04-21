@@ -273,4 +273,19 @@ print(create_df)
 console.print(table)
 plt.savefig('benchmark.svg')
 
-benchmark_df.to_csv('benchmark.csv')
+benchmark_df.to_csv('benchmark-seconds.csv')
+
+benchmark_df['Indexing time (C)'] = benchmark_df['Indexing time (C)'].apply(
+    lambda value: 1_000_000 / value
+)
+benchmark_df['Query (R)'] = benchmark_df['Query (R)'].apply(lambda value: 1 / value)
+benchmark_df['Update (U)'] = benchmark_df['Update (U)'].apply(lambda value: 1 / value)
+benchmark_df['Delete (D)'] = benchmark_df['Delete (D)'].apply(lambda value: 1 / value)
+benchmark_df['Find by vector'] = benchmark_df['Find by vector'].apply(
+    lambda value: 1 / value
+)
+benchmark_df['Find by condition'] = benchmark_df['Find by condition'].apply(
+    lambda value: 1 / value
+)
+
+benchmark_df.to_csv('benchmark-qps.csv')
