@@ -39,7 +39,6 @@ class WeaviateConfig:
     max_connections: Optional[int] = None
 
 
-
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
