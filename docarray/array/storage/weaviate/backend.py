@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from typing import (
     Iterable,
     Dict,
@@ -74,7 +74,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._client = weaviate.Client(
             f'{config.protocol}://{config.host}:{config.port}',
-            **filter_dict(asdict(config)),
+            timeout_config=config.timeout_config,
         )
         self._config = config
 
