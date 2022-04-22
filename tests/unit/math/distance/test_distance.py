@@ -8,8 +8,8 @@ from docarray.math.distance import cdist, pdist
 
 
 def test_pdist():
+    tensor = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
     np.testing.assert_almost_equal(
-        tensor = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
         pdist(tensor, 'cosine'),
         cdist(tensor, tensor, 'cosine'),
         decimal=3,
