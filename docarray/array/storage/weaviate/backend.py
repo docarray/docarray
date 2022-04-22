@@ -1,25 +1,17 @@
 import uuid
 from dataclasses import dataclass, field
-from typing import (
-    Iterable,
-    Dict,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    Tuple,
-    List,
-)
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 import weaviate
 
-from ..base.backend import BaseBackendMixin
-from ..registry import _REGISTRY
 from .... import Document
 from ....helper import dataclass_from_dict, filter_dict
+from ..base.backend import BaseBackendMixin
+from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from ....typing import ArrayType, DocumentArraySourceType
 
 
 @dataclass
@@ -72,15 +64,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._persist = bool(config.name)
 
-        if config.timeout_config:
-            self._client = weaviate.Client(
-                f'{config.protocol}://{config.host}:{config.port}',
-                timeout_config=config.timeout_config,
-            )
-        else:
-            self._client = weaviate.Client(
-                f'{config.protocol}://{config.host}:{config.port}',
-            )
+        self._client = weaviate.Client(
+            f'{config.protocol}://{config.host}:{config.port}', **filter_dict(config)
+        )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
