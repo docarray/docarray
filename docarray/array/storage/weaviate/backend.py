@@ -75,7 +75,7 @@ class BackendMixin(BaseBackendMixin):
         if config.timeout_config:
             self._client = weaviate.Client(
                 f'{config.protocol}://{config.host}:{config.port}',
-                timeout_config = config.timeout_config,
+                timeout_config=config.timeout_config,
             )
         else:
             self._client = weaviate.Client(
