@@ -32,7 +32,7 @@ We are interested in the single-query performance on the above tasks, which mean
 
 ## Benchmark result
 
-The following table summarizes the result; values are smaller the better. The best performer of each task is highlighted with bold font:
+The following table summarizes the result; values are smaller the better (except for `Recall@10`). The best performer of each task is highlighted with bold font:
 
 ````{tab} Same HNSW parameters
 
@@ -62,7 +62,7 @@ The following table summarizes the result; values are smaller the better. The be
 
 ````
 
-When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better. The best performer of each task is highlighted with the bold font:
+When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for `Recall@10`). The best performer of each task is highlighted with the bold font:
 
 
 ````{tab} Same HNSW parameters in QPS
@@ -138,7 +138,7 @@ For the first experiment, the following HNSW parameters were fixed for all Docum
 * **`m=16`**: max connections, the number of bi-directional links created for every new element during construction. Reasonable range for M is 2-100. Higher M work better on datasets with high intrinsic dimensionality and/or high recall, while low M work better for datasets with low intrinsic dimensionality and/or low recalls.
 
 
-Finally, the full benchmark script is [available at here](../../../scripts/benchmarking.py).
+Finally, the full benchmark script is [available here](https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking.py).
 
 ### Rationale on the experiment design
 
