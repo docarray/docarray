@@ -32,7 +32,7 @@ We are interested in the single query performance on the above tasks, which mean
 
 ## Benchmark result
 
-The following table summarizes the result. Values are smaller the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
+The following table summarizes the result. The smaller the values, the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
 
 ````{tab} Same HNSW parameters
 
@@ -123,7 +123,7 @@ The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core
 Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official 
 docker images in a **single node** configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are 
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
-capabilities of a single instance of the service.
+capabilities of a single instance of the server.
 
 
 ### Settings of the nearest neighbour search
@@ -192,6 +192,6 @@ SQLite store is omitted from the left plot and the in-memory store is omitted fr
 slow and the in-memory is too fast to fit into the figure.
 ```
 
-AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolith package that does not follow a client-server design, so it avoids all network overhead.
+AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolithic package that does not follow a client-server design, so it avoids all network overhead.
 
 Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best in terms of quality of ANN, as we observed with highest Recall@K.
