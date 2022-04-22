@@ -36,6 +36,7 @@ class WeaviateConfig:
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
     max_onnections: Optional[int] = None
+    timeout_config: Optional[Tuple[int, int]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -71,9 +72,15 @@ class BackendMixin(BaseBackendMixin):
 
         self._persist = bool(config.name)
 
-        self._client = weaviate.Client(
-            f'{config.protocol}://{config.host}:{config.port}'
-        )
+        if config.timeout_config:
+            self._client = weaviate.Client(
+                f'{config.protocol}://{config.host}:{config.port}',
+                timeout_config = config.timeout_config,
+            )
+        else:
+            self._client = weaviate.Client(
+                f'{config.protocol}://{config.host}:{config.port}',
+            )
         self._config = config
 
         self._schemas = self._load_or_create_weaviate_schema()
