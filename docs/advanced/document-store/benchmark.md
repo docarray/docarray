@@ -121,7 +121,7 @@ Each Document follows the structure:
 
 We use `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
-The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.
+The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and DocArray 0.12.8.
 
 Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official 
 docker images in a **single node** configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are 
