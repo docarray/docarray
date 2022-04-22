@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="DocArray 0.12.9 Documentation" />
   
-<meta property="og:description" content="We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API: “None”: DocumentArray(), namely an in-memory “store”, Sqlite: DocumentArray(storage='sqlite'), Weaviate: Docu..." />
+<meta property="og:description" content="We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API: We focus on the following tasks: Create: add one million Documents to the document store via extend()., Read:..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
   
@@ -555,14 +555,47 @@
 <a class="reference internal image-reference" href="../../../_images/benchmark-banner.gif"><img alt="../../../_images/benchmark-banner.gif" src="../../../_images/benchmark-banner.gif" style="width: 0.0px; height: 0.0px;"/></a>
 </figure>
 <p>We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="../../../fundamentals/documentarray/#documentarray"><span class="std std-ref">“None”</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray()</span></code>, namely an in-memory “store”</p></li>
-<li><p><a class="reference internal" href="../sqlite/#sqlite"><span class="std std-ref">Sqlite</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='sqlite')</span></code></p></li>
-<li><p><a class="reference internal" href="../weaviate/#weaviate"><span class="std std-ref">Weaviate</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='weaviate')</span></code></p></li>
-<li><p><a class="reference internal" href="../qdrant/#qdrant"><span class="std std-ref">Qdrant</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='qdrant')</span></code></p></li>
-<li><p><a class="reference internal" href="../annlite/#annlite"><span class="std std-ref">Annlite</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='anlite')</span></code></p></li>
-<li><p><a class="reference internal" href="../elasticsearch/#elasticsearch"><span class="std std-ref">ElasticSearch</span></a>: <code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='elasticsearch')</span></code></p></li>
-</ul>
+<div class="table-wrapper"><table border="1" class="docutils">
+<thead>
+<tr>
+<th>Name</th>
+<th>Usage</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../../../fundamentals/documentarray/#documentarray"><code>"None"</code></a>, namely an in-memory "store"</td>
+<td><code>DocumentArray()</code></td>
+<td>DocArray <code>0.12.8</code></td>
+</tr>
+<tr>
+<td><a href="../sqlite/#sqlite"><code>Sqlite</code></a></td>
+<td><code>DocumentArray(storage='sqlite')</code></td>
+<td><code>2.6.0</code></td>
+</tr>
+<tr>
+<td><a href="../weaviate/#weaviate"><code>Weaviate</code></a></td>
+<td><code>DocumentArray(storage='weaviate')</code></td>
+<td><code>1.11.0</code></td>
+</tr>
+<tr>
+<td><a href="../qdrant/#qdrant"><code>Qdrant</code></a></td>
+<td><code>DocumentArray(storage='qdrant')</code></td>
+<td><code>0.7.0</code></td>
+</tr>
+<tr>
+<td><a href="../annlite/#annlite"><code>Annlite</code></a></td>
+<td><code>DocumentArray(storage='anlite')</code></td>
+<td><code>0.3.1</code></td>
+</tr>
+<tr>
+<td><a href="../elasticsearch/#elasticsearch"><code>ElasticSearch</code></a></td>
+<td><code>DocumentArray(storage='elasticsearch')</code></td>
+<td><code>8.1.0</code></td>
+</tr>
+</tbody>
+</table></div>
 <p>We focus on the following tasks:</p>
 <ol class="simple">
 <li><p><strong>Create</strong>: add one million Documents to the document store via <a class="reference internal" href="../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend" title="docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extend()</span></code></a>.</p></li>
@@ -933,11 +966,13 @@
 </pre></div>
 </div>
 <p>We use <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> value as an indicator of the search quality. The in-memory and SQLite store <strong>do not implement</strong> approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> but are the slowest.</p>
-<p>The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.</p>
+<p>The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and DocArray 0.12.8.</p>
 <p>Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official
 docker images in a <strong>single node</strong> configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the
 capabilities of a single instance of the server.</p>
+<p>Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific
+backend provides a more efficient implementation.</p>
 <section id="settings-of-the-nearest-neighbour-search">
 <h3>Settings of the nearest neighbour search<a class="headerlink" href="#settings-of-the-nearest-neighbour-search" title="Permalink to this headline">#</a></h3>
 <p>As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the “Find By Vector” task:</p>
