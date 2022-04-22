@@ -12,12 +12,14 @@
 
 We create a DocumentArray with one million Documents, and benchmark all supported document stores. This includes classic database and vector database all under the same DocumentArray API:
 
-* {ref}`"None"<documentarray>`: `DocumentArray()`, namely an in-memory "store". In the sequel, in-memory/memory store refers to this.
-* {ref}`Sqlite<sqlite>`: `DocumentArray(storage='sqlite')`
-* {ref}`Weaviate<weaviate>`: `DocumentArray(storage='weaviate')`
-* {ref}`Qdrant<qdrant>`: `DocumentArray(storage='qdrant')`
-* {ref}`Annlite<annlite>`: `DocumentArray(storage='anlite')`
-* {ref}`ElasticSearch<elasticsearch>`: `DocumentArray(storage='elasticsearch')`
+| Name                                                      | Usage                                    | Version  |
+|-----------------------------------------------------------|------------------------------------------|----------|
+| {ref}`"None"<documentarray>`, namely an in-memory "store" | `DocumentArray()`                        | -        |
+| {ref}`Sqlite<sqlite>`                                     | `DocumentArray(storage='sqlite')`        | `2.6.0`  |
+| {ref}`Weaviate<weaviate>`                                 | `DocumentArray(storage='weaviate')`      | `1.11.0` |
+| {ref}`Qdrant<qdrant>`                                     | `DocumentArray(storage='qdrant')`        | `0.7.0`  |
+| {ref}`Annlite<annlite>`                                   | `DocumentArray(storage='anlite')`        | `0.3.1`  |
+| {ref}`ElasticSearch<elasticsearch>`                       | `DocumentArray(storage='elasticsearch')` | `8.1.0`  |
 
 We focus on the following tasks:
 
@@ -125,6 +127,8 @@ docker images in a **single node** configuration, with 40 GB of RAM allocated. T
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
 capabilities of a single instance of the backend.
 
+Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific 
+backend provides a more efficient implementation.
 
 ### Settings of the nearest neighbour search
 
