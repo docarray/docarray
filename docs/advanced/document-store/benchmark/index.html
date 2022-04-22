@@ -12,7 +12,7 @@
   
 <meta property="og:site_name" content="DocArray 0.12.9 Documentation" />
   
-<meta property="og:description" content="We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API: We focus on the following tasks: Create: add one million Documents to the document store via extend()., Read:..." />
+<meta property="og:description" content="We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API: We focus on the following tasks: Create: add one mi..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
   
@@ -554,7 +554,8 @@
 <figure class="align-default">
 <a class="reference internal image-reference" href="../../../_images/benchmark-banner.gif"><img alt="../../../_images/benchmark-banner.gif" src="../../../_images/benchmark-banner.gif" style="width: 0.0px; height: 0.0px;"/></a>
 </figure>
-<p>We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API:</p>
+<p>We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
+This includes classic database and vector database, all under the same DocumentArray API:</p>
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -606,11 +607,20 @@
 <li><p><strong>Find by vector</strong>: retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using  nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Match Nearest Neighbours</span></a>.</p></li>
 </ol>
 <p>We are interested in the single query performance on the above tasks, which means tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly. We report the average number.</p>
+<section id="some-important-notes">
+<h2>Some important notes<a class="headerlink" href="#some-important-notes" title="Permalink to this headline">#</a></h2>
+<p>We want to remark:</p>
+<ul class="simple">
+<li><p><strong>Benchmarks are conducted end-to-end</strong>: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.</p></li>
+<li><p><strong>We use similar underlying search algorithms but different implementations</strong>: In this benchmark we focus on setting only parameters <code class="docutils literal notranslate"><span class="pre">ef</span></code>, <code class="docutils literal notranslate"><span class="pre">ef_construct</span></code> and <code class="docutils literal notranslate"><span class="pre">max_connections</span></code> from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.</p></li>
+<li><p><strong>Benchmark for users, not research</strong>: This benchmark showcases what a user can expect to get without tuning hyper-parameters of a vector database. We strongly recommend tuning them to achieve high quality results.</p></li>
+</ul>
+</section>
 <section id="benchmark-result">
 <h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this headline">#</a></h2>
 <p>The following table summarizes the result. The smaller the values, the better (except for <code class="docutils literal notranslate"><span class="pre">Recall@10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters (ef, ef_construct, max_connections)</label><div class="tab-content docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -769,7 +779,7 @@
 </div>
 <p>When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for <code class="docutils literal notranslate"><span class="pre">Recall@10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters in QPS</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters (ef, ef_construct, max_connections) in QPS</label><div class="tab-content docutils">
 <div class="table-wrapper"><table border="1" class="docutils">
 <thead>
 <tr>
@@ -1111,6 +1121,7 @@ slow and the in-memory is too fast to fit into the figure.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">One Million Scale Benchmark</a><ul>
+<li><a class="reference internal" href="#some-important-notes">Some important notes</a></li>
 <li><a class="reference internal" href="#benchmark-result">Benchmark result</a></li>
 <li><a class="reference internal" href="#benchmark-setup">Benchmark setup</a><ul>
 <li><a class="reference internal" href="#settings-of-the-nearest-neighbour-search">Settings of the nearest neighbour search</a></li>
