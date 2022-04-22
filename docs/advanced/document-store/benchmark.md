@@ -10,7 +10,8 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API:
+We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
+This includes classic database and vector database, all under the same DocumentArray API:
 
 | Name                                                                                        | Usage                                    | Version           |
 |---------------------------------------------------------------------------------------------|------------------------------------------|-------------------|
@@ -33,11 +34,21 @@ We focus on the following tasks:
 
 We are interested in the single query performance on the above tasks, which means tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly. We report the average number.
 
+
+### Some important notes
+
+We want to remark:
+
+* **Benchmarks are conducted end-to-end**: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
+* **We use similar underlying search algorithms but different implementations**: In this benchmark we focus on setting only parameters `ef`, `ef_construct` and `max_connections` from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
+* **Benchmark for users, not research**: This benchmark showcases what a user can expect to get without tuning hyper-parameters of a vector database. We strongly recommend tuning them to achieve high quality results.
+
+
 ## Benchmark result
 
 The following table summarizes the result. The smaller the values, the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
 
-````{tab} Same HNSW parameters
+````{tab} Same HNSW parameters (ef, ef_construct, max_connections)
 
 | Store         | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
 |---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
@@ -68,7 +79,7 @@ The following table summarizes the result. The smaller the values, the better (e
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
 
 
-````{tab} Same HNSW parameters in QPS
+````{tab} Same HNSW parameters (ef, ef_construct, max_connections) in QPS
 
 | Store         |          Create 1M |        Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|------------:|-------------:|------------:|------------------:|---------------:|----------:|
