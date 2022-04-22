@@ -1,6 +1,14 @@
 import uuid
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, Union
+from typing import (
+    Iterable,
+    Dict,
+    Optional,
+    TYPE_CHECKING,
+    Union,
+    Tuple,
+    List,
+)
 
 import numpy as np
 import weaviate
