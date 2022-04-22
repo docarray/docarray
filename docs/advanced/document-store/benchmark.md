@@ -39,7 +39,7 @@ We are interested in the single query performance on the above tasks, which mean
 
 We want to remark:
 
-* **We measure vector DB interface and vector DB performance**: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
+* **Benchmarks are conducted end-to-end**: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
 * **We use similar underlying search algorithms but different implementations**: In this benchmark we focus on setting only parameters `ef`, `ef_construct` and `max_connections` from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
 * **Benchmark for users, not research**: This benchmark showcases what a user can expect to get without tuning hyper-parameters of a vector database. We strongly recommend tuning them to achieve high quality results.
 
