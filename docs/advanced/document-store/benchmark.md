@@ -12,12 +12,15 @@
 
 We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API:
 
-* {ref}`"None"<documentarray>`: `DocumentArray()`, namely an in-memory "store"
-* {ref}`Sqlite<sqlite>`: `DocumentArray(storage='sqlite')`
-* {ref}`Weaviate<weaviate>`: `DocumentArray(storage='weaviate')`
-* {ref}`Qdrant<qdrant>`: `DocumentArray(storage='qdrant')`
-* {ref}`Annlite<annlite>`: `DocumentArray(storage='anlite')`
-* {ref}`ElasticSearch<elasticsearch>`: `DocumentArray(storage='elasticsearch')`
+| Name                                                                                        | Usage                                    | Version           |
+|---------------------------------------------------------------------------------------------|------------------------------------------|-------------------|
+| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | DocArray `0.12.8` |
+| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
+| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | `1.11.0`          |
+| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | `0.7.0`           |
+| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | `0.3.1`           |
+| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | `8.1.0`           |
+
 
 We focus on the following tasks:
 
@@ -118,13 +121,15 @@ Each Document follows the structure:
 
 We use `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
-The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5.
+The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and DocArray 0.12.8.
 
 Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official 
 docker images in a **single node** configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are 
 operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
 capabilities of a single instance of the server.
 
+Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific 
+backend provides a more efficient implementation.
 
 ### Settings of the nearest neighbour search
 

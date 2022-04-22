@@ -18,6 +18,7 @@ D = 128
 TENSOR_SHAPE = (512, 256)
 K = 10
 n_vector_queries = 1000
+np.random.seed(123)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -174,17 +175,36 @@ for idx, n_index in enumerate(n_index_values):
             create_time, _ = create(da, docs)
 
             # for n_q in n_query:
-            console.print(f'reading {n_query} docs ...')
-            read_time, _ = read(
-                da,
-                random.sample([d.id for d in docs], n_query),
+            console.print(
+                f'reading {n_query} docs averaged {n_vector_queries} times ...'
             )
+            read_times = []
+            for _ in range(n_vector_queries):
+                read_time, _ = read(
+                    da,
+                    random.sample([d.id for d in docs], n_query),
+                )
+                read_times.append(read_time)
+            read_time = sum(read_times) / len(read_times)
 
-            console.print(f'updating {n_query} docs ...')
-            update_time, _ = update(da, docs_to_update)
+            console.print(
+                f'updating {n_query} docs averaged {n_vector_queries} times ...'
+            )
+            update_times = []
+            for _ in range(n_vector_queries):
+                update_time, _ = update(da, docs_to_update)
+                update_times.append(update_time)
+            update_time = sum(update_times) / len(update_times)
 
-            console.print(f'deleting {n_query} docs ...')
-            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
+            console.print(
+                f'deleting {n_query} docs averaged {n_vector_queries} times ...'
+            )
+            delete_times = []
+            for _ in range(n_vector_queries):
+                delete_time, _ = delete(da, [d.id for d in docs_to_delete])
+                delete_times.append(delete_time)
+                da.extend(docs_to_delete)
+            delete_time = sum(delete_times) / len(delete_times)
 
             console.print(
                 f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
