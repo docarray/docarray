@@ -9,12 +9,9 @@ from docarray.math.distance import cdist, pdist
 
 def test_pdist():
     np.testing.assert_almost_equal(
-        pdist(torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]), 'cosine'),
-        cdist(
-            torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
-            torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
-            'cosine',
-        ),
+        tensor = torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        pdist(tensor, 'cosine'),
+        cdist(tensor, tensor, 'cosine'),
         decimal=3,
     )
 
@@ -65,17 +62,17 @@ def test_seqeuclidean(x_mat, y_mat, result):
         (
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
-            np.array([[0, 5.19615242], [5.19615242, 0]]),
+            np.array([[0, 5.196], [5.196, 0]]),
         ),
         (
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            np.array([[0, 5.19615242], [5.19615242, 0]]),
+            np.array([[0, 5.196], [5.196, 0]]),
         ),
         (
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
-            np.array([[0, 5.19615242], [5.19615242, 0]]),
+            np.array([[0, 5.196], [5.196, 0]]),
         ),
     ),
 )
