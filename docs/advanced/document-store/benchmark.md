@@ -12,14 +12,14 @@
 
 We create a DocumentArray with one million Documents and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API:
 
-| Name                                                                                        | Usage                                    | Version  |
-|---------------------------------------------------------------------------------------------|------------------------------------------|----------|
-| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | -        |
-| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | `2.6.0`  |
-| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | `1.11.0` |
-| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | `0.7.0`  |
-| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | `0.3.1`  |
-| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | `8.1.0`  |
+| Name                                                                                        | Usage                                    | Version           |
+|---------------------------------------------------------------------------------------------|------------------------------------------|-------------------|
+| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | DocArray `0.12.8` |
+| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
+| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | `1.11.0`          |
+| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | `0.7.0`           |
+| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | `0.3.1`           |
+| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | `8.1.0`           |
 
 
 We focus on the following tasks:
