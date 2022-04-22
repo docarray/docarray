@@ -18,6 +18,7 @@ D = 128
 TENSOR_SHAPE = (512, 256)
 K = 10
 n_vector_queries = 1000
+np.random.seed(123)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
