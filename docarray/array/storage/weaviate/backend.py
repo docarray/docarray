@@ -35,7 +35,7 @@ class WeaviateConfig:
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
-    max_onnections: Optional[int] = None
+    max_connections: Optional[int] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -117,7 +117,7 @@ class BackendMixin(BaseBackendMixin):
         hnsw_config = {
             'ef': self._config.ef,
             'efConstruction': self._config.ef_construction,
-            'maxConnections': self._config.max_onnections,
+            'maxConnections': self._config.max_connections,
         }
 
         return {
