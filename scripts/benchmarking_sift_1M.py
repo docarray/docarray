@@ -22,10 +22,10 @@ n_vector_queries = 1000
 np.random.seed(123)
 DATASET_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/ANN_SIFT1M/sift-128-euclidean.hdf5')
 dataset = h5py.File(DATASET_PATH, 'r')
-n_index_values = [len(X_tr)]
 
-X_tr = dataset['train'][0:]
-X_te = dataset['test'][0:]
+X_tr = dataset['train'][0:1000]
+X_te = dataset['test'][0:10]
+n_index_values = [len(X_tr)]
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
