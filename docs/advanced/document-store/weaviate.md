@@ -92,6 +92,7 @@ The following configs can be set:
 | `serialize_config` | [Serialization config of each Document](../../fundamentals/document/serialization.md)                                                                          | None                                               |
 | `ef`               | The size of the dynamic list for the nearest neighbors (used during the search). The higher ef is chosen, the more accurate, but also slower a search becomes. | `None`, defaults to the default value in Weaviate* |
 | `ef_construction`  | The size of the dynamic list for the nearest neighbors (used during the construction). Controls index search speed/build speed tradeoff.                       | `None`, defaults to the default value in Weaviate* |
+| `timeout_config` |  Set the timeout configuration for all requests to the Weaviate server.                                                                                          | `None`, defaults to the default value in Weaviate* |
 | `max_connections`  | The maximum number of connections per element in all layers.                                                                                                   | `None`, defaults to the default value in Weaviate* |
 
 *You can read more about the HNSW parameters and their default values [here](https://weaviate.io/developers/weaviate/current/vector-index-plugins/hnsw.html#how-to-use-hnsw-and-parameters)
