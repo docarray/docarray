@@ -32,9 +32,6 @@ from docarray.math.distance.torch import cosine, euclidean, sqeuclidean
 )
 def test_cosine(x_mat, y_mat, result):
     np.testing.assert_almost_equal(cosine(x_mat, y_mat), result, decimal=3)
-    np.testing.assert_almost_equal(
-        cosine(x_mat, y_mat, device='cuda'), result, decimal=3
-    )
 
 
 @pytest.mark.parametrize(
@@ -64,9 +61,6 @@ def test_cosine(x_mat, y_mat, result):
 )
 def test_sqeuclidean(x_mat, y_mat, result):
     np.testing.assert_almost_equal(sqeuclidean(x_mat, y_mat), result, decimal=3)
-    np.testing.assert_almost_equal(
-        sqeuclidean(x_mat, y_mat, device='cuda'), result, decimal=3
-    )
 
 
 @pytest.mark.parametrize(
@@ -96,6 +90,3 @@ def test_sqeuclidean(x_mat, y_mat, result):
 )
 def test_euclidean(x_mat, y_mat, result):
     np.testing.assert_almost_equal(euclidean(x_mat, y_mat), result, decimal=3)
-    np.testing.assert_almost_equal(
-        euclidean(x_mat, y_mat, device='cuda'), result, decimal=3
-    )
