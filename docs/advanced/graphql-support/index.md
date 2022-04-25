@@ -62,11 +62,13 @@ from typing import List
 from docarray.document.strawberry_type import StrawberryDocument
 import strawberry
 
+
 @strawberry.type
 class Query:
     docs: List[StrawberryDocument] = strawberry.field(
         resolver=lambda: da.to_strawberry_type()
     )
+
 
 schema = strawberry.Schema(query=Query)
 ``` 
@@ -92,13 +94,17 @@ Now open `http://0.0.0.0:8000/graphql` in your browser. You should be able to se
 Try the following query
 ```gql
 {
-    docs {
-        id
+  docs {
+    id
+    matches {
+      id
     }
+  }
 }
 ```
 
 ```{figure} gql-ui.png
+:width: 90%
 ```
 
 Now we have one endpoint that allows user to selectively read fields from a DocumentArray. Additional endpoints can be added to `Query` class, to support advance filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users. 
