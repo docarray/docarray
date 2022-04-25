@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/graphql-support/index/" />
   
-<meta property="og:site_name" content="DocArray 0.12.9 Documentation" />
+<meta property="og:site_name" content="DocArray 0.12.10 Documentation" />
   
 <meta property="og:description" content="DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need:.embedding is too big and too verbose, then don’t query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server. When..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/advanced/_images/gql-ui.png" />
   
-<meta property="og:image:alt" content="DocArray 0.12.9 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.12.10 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/graphql-support/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>GraphQL - DocArray 0.12.9 documentation</title>
+        <title>GraphQL - DocArray 0.12.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.12.9 documentation</div>
+                <div class="brand">DocArray 0.12.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -600,11 +600,13 @@
 <span class="kn">from</span> <span class="nn">docarray.document.strawberry_type</span> <span class="kn">import</span> <span class="n">StrawberryDocument</span>
 <span class="kn">import</span> <span class="nn">strawberry</span>
 
+
 <span class="nd">@strawberry</span><span class="o">.</span><span class="n">type</span>
 <span class="k">class</span> <span class="nc">Query</span><span class="p">:</span>
     <span class="n">docs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">StrawberryDocument</span><span class="p">]</span> <span class="o">=</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">resolver</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">da</span><span class="o">.</span><span class="n">to_strawberry_type</span><span class="p">()</span>
     <span class="p">)</span>
+
 
 <span class="n">schema</span> <span class="o">=</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Query</span><span class="p">)</span>
 </pre></div>
@@ -622,14 +624,17 @@
 <p>Now open <code class="docutils literal notranslate"><span class="pre">http://0.0.0.0:8000/graphql</span></code> in your browser. You should be able to see a GraphiQL playground at this url.</p>
 <p>Try the following query</p>
 <div class="highlight-gql notranslate"><div class="highlight"><pre><span></span>{
-    docs {
-        id
+  docs {
+    id
+    matches {
+      id
     }
+  }
 }
 </pre></div>
 </div>
 <figure class="align-default">
-<img alt="../../_images/gql-ui.png" src="../../_images/gql-ui.png"/>
+<a class="reference internal image-reference" href="../../_images/gql-ui.png"><img alt="../../_images/gql-ui.png" src="../../_images/gql-ui.png" style="width: 90%;"/></a>
 </figure>
 <p>Now we have one endpoint that allows user to selectively read fields from a DocumentArray. Additional endpoints can be added to <code class="docutils literal notranslate"><span class="pre">Query</span></code> class, to support advance filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users.</p>
 </section>
