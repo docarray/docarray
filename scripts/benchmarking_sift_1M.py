@@ -18,14 +18,14 @@ n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
 K = 10
-n_vector_queries = 1000
 np.random.seed(123)
 DATASET_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/ANN_SIFT1M/sift-128-euclidean.hdf5')
 dataset = h5py.File(DATASET_PATH, 'r')
 
-X_tr = dataset['train'][0:1000]
-X_te = dataset['test'][0:10]
+X_tr = dataset['train']
+X_te = dataset['test']
 n_index_values = [len(X_tr)]
+n_vector_queries = len(X_te)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -169,26 +169,26 @@ ground_truth = []
 for idx, n_index in enumerate(n_index_values):
     for backend, config in storage_backends:
         try:
-            console.print('Backend:', backend.title())
+            console.print('\nBackend:', backend.title())
             # for n_i in n_index:
             if not config:
                 da = DocumentArray(storage=backend)
             else:
                 da = DocumentArray(storage=backend, config=config)
-            console.print(f'indexing {n_index} docs ...')
+            console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
             # for n_q in n_query:
-            console.print(f'reading {n_query} docs ...')
+            console.print(f'\treading {n_query} docs ...')
             read_time, _ = read(
                 da,
                 random.sample([d.id for d in docs], n_query),
             )
-            console.print(f'updating {n_query} docs ...')
+            console.print(f'\tupdating {n_query} docs ...')
             update_time, _ = update(da, docs_to_update)
-            console.print(f'deleting {n_query} docs ...')
+            console.print(f'\tdeleting {n_query} docs ...')
             delete_time, _ = delete(da, [d.id for d in docs_to_delete])
             console.print(
-                f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
+                f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
             if backend == 'sqlite':
                 find_by_vector_time, result = find_by_vector(da, vector_queries[0])
@@ -208,7 +208,7 @@ for idx, n_index in enumerate(n_index_values):
                 find_by_vector_time = sum(find_by_vector_times) / len(
                     find_by_vector_times
                 )
-            console.print(f'finding {n_query} docs by condition ...')
+            console.print(f'\tfinding {n_query} docs by condition ...')
             find_by_condition_time, _ = find_by_condition(da, {'tags__i': {'$eq': 0}})
             if idx == len(n_index_values) - 1:
                 table.add_row(
@@ -240,13 +240,13 @@ for idx, n_index in enumerate(n_index_values):
                 )
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
             create_values[str(n_index)].append(create_time)
+            console.print(table)
         except Exception as e:
             console.print(f'Storage Backend {backend} failed: {e}')
 
-
 find_df = pd.DataFrame(find_by_vector_values)
+storage_backends.remove(('sqlite', None))
 find_df.index = [backend for backend, _ in storage_backends]
-find_df = find_df.drop(['sqlite'])
 print(find_df)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
 
@@ -260,7 +260,7 @@ find_df.plot(
     rot=0,
 )
 ax1.set_ylabel('seconds', fontsize=18)
-ax1.set_title('Find by vector per backend and dataset size', fontsize=18)
+ax1.set_title('Find by vector per backend', fontsize=18)
 
 threshold = 0.3
 ax1.hlines(y=threshold, xmin=-20, xmax=20, linewidth=2, color='r', linestyle='--')
@@ -281,11 +281,11 @@ create_df.plot(
 )
 
 ax2.set_ylabel('seconds', fontsize=18)
-ax2.set_title('Indexing per backend and dataset size', fontsize=18)
+ax2.set_title('Indexing per backend', fontsize=18)
 
 plt.tight_layout()
-ax1.legend(fontsize=15)
-ax2.legend(fontsize=15)
+#ax1.legend(fontsize=15)
+#ax2.legend(fontsize=15)
 
 plt.savefig('benchmark.svg')
 console.print(table)
