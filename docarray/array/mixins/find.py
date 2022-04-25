@@ -136,8 +136,7 @@ class FindMixin:
             isinstance(query, list) and isinstance(query[0], str)
         ):
             result = self._find_by_text(query, index=index, limit=limit, **kwargs)
-
-            if len(result) == 1:
+            if isinstance(query, str):
                 return result[0]
             else:
                 return result
@@ -206,6 +205,7 @@ class FindMixin:
                     if len(matches) >= _limit:
                         break
                 result.append(matches)
+
         else:
             raise TypeError(
                 f'unsupported type `{type(_result)}` returned from `._find()`'
@@ -219,10 +219,11 @@ class FindMixin:
                 else:
                     result[i] = matches
 
-        if len(result) == 1:
-            return result[0]
-        else:
-            return result
+        # ensures query=np.array([1,2,3]) returns DocumentArray not list with 1 DocumentArray
+        if n_dim == 1:
+            result = result[0]
+
+        return result
 
     @abc.abstractmethod
     def _find(
