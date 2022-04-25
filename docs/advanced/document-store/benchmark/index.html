@@ -606,16 +606,16 @@ This includes classic database and vector database, all under the same DocumentA
 <li><p><strong>Find by condition</strong>: search existing Documents by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> in the document store by boolean filters, as described in <a class="reference internal" href="../../../fundamentals/documentarray/find/#find-documentarray"><span class="std std-ref">Query by Conditions</span></a>.</p></li>
 <li><p><strong>Find by vector</strong>: retrieve existing Documents by <code class="docutils literal notranslate"><span class="pre">.embedding</span></code> via <a class="reference internal" href="../../../api/docarray.array.mixins.find/#module-docarray.array.mixins.find" title="docarray.array.mixins.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a>  using  nearest neighbor search or approximate nearest neighbor search, as described in <a class="reference internal" href="../../../fundamentals/documentarray/matching/#match-documentarray"><span class="std std-ref">Match Nearest Neighbours</span></a>.</p></li>
 </ol>
+<p>The above tasks are often atomic operations in high-level DocArray API. Hence, understanding their performance gives user a good estimation of the experience when using DocumentArray with different backends.</p>
 <p>We are interested in the single query performance on the above tasks, which means tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly. We report the average number.</p>
-<section id="some-important-notes">
-<h2>Some important notes<a class="headerlink" href="#some-important-notes" title="Permalink to this headline">#</a></h2>
-<p>We want to remark:</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
 <ul class="simple">
-<li><p><strong>Benchmarks are conducted end-to-end</strong>: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.</p></li>
+<li><p><strong>Benchmarks are conducted end-to-end</strong>: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.</p></li>
 <li><p><strong>We use similar underlying search algorithms but different implementations</strong>: In this benchmark we focus on setting only parameters <code class="docutils literal notranslate"><span class="pre">ef</span></code>, <code class="docutils literal notranslate"><span class="pre">ef_construct</span></code> and <code class="docutils literal notranslate"><span class="pre">max_connections</span></code> from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.</p></li>
-<li><p><strong>Benchmark for users, not research</strong>: This benchmark showcases what a user can expect to get without tuning hyper-parameters of a vector database. We strongly recommend tuning them to achieve high quality results.</p></li>
+<li><p><strong>Benchmark is for DocArray users, not for research</strong>: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.</p></li>
 </ul>
-</section>
+</div>
 <section id="benchmark-result">
 <h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this headline">#</a></h2>
 <p>The following table summarizes the result. The smaller the values, the better (except for <code class="docutils literal notranslate"><span class="pre">Recall@10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
@@ -1088,7 +1088,7 @@ slow and the in-memory is too fast to fit into the figure.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Apr 22, 2022</div>
+                            Last updated on Apr 25, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1121,7 +1121,6 @@ slow and the in-memory is too fast to fit into the figure.</p>
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">One Million Scale Benchmark</a><ul>
-<li><a class="reference internal" href="#some-important-notes">Some important notes</a></li>
 <li><a class="reference internal" href="#benchmark-result">Benchmark result</a></li>
 <li><a class="reference internal" href="#benchmark-setup">Benchmark setup</a><ul>
 <li><a class="reference internal" href="#settings-of-the-nearest-neighbour-search">Settings of the nearest neighbour search</a></li>

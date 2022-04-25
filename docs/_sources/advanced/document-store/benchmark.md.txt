@@ -32,17 +32,17 @@ We focus on the following tasks:
 5. **Find by condition**: search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters, as described in {ref}`find-documentarray`.
 6. **Find by vector**: retrieve existing Documents by `.embedding` via {meth}`~docarray.array.mixins.find`  using  nearest neighbor search or approximate nearest neighbor search, as described in {ref}`match-documentarray`.
 
+The above tasks are often atomic operations in high-level DocArray API. Hence, understanding their performance gives user a good estimation of the experience when using DocumentArray with different backends.
+
 We are interested in the single query performance on the above tasks, which means tasks 2,3,4,5,6 are evaluated using one Document at a time, repeatedly. We report the average number.
 
 
-### Some important notes
+```{attention}
 
-We want to remark:
-
-* **Benchmarks are conducted end-to-end**: We benchmark function calls from docarray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
+* **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
 * **We use similar underlying search algorithms but different implementations**: In this benchmark we focus on setting only parameters `ef`, `ef_construct` and `max_connections` from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
-* **Benchmark for users, not research**: This benchmark showcases what a user can expect to get without tuning hyper-parameters of a vector database. We strongly recommend tuning them to achieve high quality results.
-
+* **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
+```
 
 ## Benchmark result
 
