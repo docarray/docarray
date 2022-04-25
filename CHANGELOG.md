@@ -79,6 +79,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1945,4 +1946,41 @@
 ### 🍹 Other Improvements
 
  - [[```f7de9965```](https://github.com/jina-ai/docarray/commit/f7de99651799b19a19c71fd3c9292d7b71ab33c9)] __-__ __version__: the next version will be 0.12.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-12-9></a>
+## Release Note (`0.12.9`)
+
+> Release time: 2022-04-25 06:50:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  Aziz Belaweid,  Han Xiao,  AlaeddineAbdessalem,  cristian,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```d6deafdc```](https://github.com/jina-ai/docarray/commit/d6deafdc6caec16036467552017f52c734d982fb)] __-__ __array__: add timeout parameter (#296) (*Aziz Belaweid*)
+
+### 🐞 Bug fixes
+
+ - [[```1f05c9ca```](https://github.com/jina-ai/docarray/commit/1f05c9cae13119a2a3b8ca01ba1928e7bc1f80fb)] __-__ __array__: consider singleton to return singleton (#286) (*David Buchaca Prats*)
+
+### 🧼 Code Refactoring
+
+ - [[```1b2703c0```](https://github.com/jina-ai/docarray/commit/1b2703c042b0fc7c3234c8abc34a076dc5e2a331)] __-__ rename variable correctly (#297) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```73cb1f9b```](https://github.com/jina-ai/docarray/commit/73cb1f9b4e2550acd2bcababdc3531d440994e37)] __-__ benchmark clarification (#299) (*David Buchaca Prats*)
+ - [[```94efe7a5```](https://github.com/jina-ai/docarray/commit/94efe7a5168b8b53791e37d55a7b69ca2a0285d5)] __-__ benchmark fixes (#294) (*AlaeddineAbdessalem*)
+ - [[```a32ba7bb```](https://github.com/jina-ai/docarray/commit/a32ba7bbdbb1805df4900dc05e7dac27b31d9526)] __-__ some fixes and typos for benchmark page (#292) (*cristian*)
+ - [[```e439a16c```](https://github.com/jina-ai/docarray/commit/e439a16c858c9e4b04f28d550c067ad478ec52fa)] __-__ fix link and clarify (#291) (*AlaeddineAbdessalem*)
+ - [[```7bd498a8```](https://github.com/jina-ai/docarray/commit/7bd498a875f6ac98bcacce93545c78d4e4419508)] __-__ revised benchmark section (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```afea29ba```](https://github.com/jina-ai/docarray/commit/afea29bae6d692ffec310b4f2ef9694fc0939760)] __-__ fix docs (*Han Xiao*)
+ - [[```22ed0306```](https://github.com/jina-ai/docarray/commit/22ed0306dde1281318c0f11c2b918f0abb0d5422)] __-__ fix type (*Han Xiao*)
+ - [[```be632405```](https://github.com/jina-ai/docarray/commit/be6324051dae00013c4933614c5d4941875d890c)] __-__ __version__: the next version will be 0.12.9 (*Jina Dev Bot*)
 
