@@ -1,4 +1,3 @@
-
 import argparse
 import functools
 import random
@@ -23,8 +22,8 @@ np.random.seed(123)
 DATASET_PATH = './sift-128-euclidean.hdf5'
 dataset = h5py.File(DATASET_PATH, 'r')
 
-X_tr = dataset['train']
-X_te = dataset['test']
+X_tr = dataset['train'][0:1000]
+X_te = dataset['test'][0:100]
 
 n_index_values = [len(X_tr)]
 n_vector_queries = len(X_te)
@@ -288,8 +287,8 @@ ax2.set_ylabel('seconds', fontsize=18)
 ax2.set_title('Indexing per backend', fontsize=18)
 
 plt.tight_layout()
-#ax1.legend(fontsize=15)
-#ax2.legend(fontsize=15)
+# ax1.legend(fontsize=15)
+# ax2.legend(fontsize=15)
 
 plt.savefig('benchmark.svg')
 console.print(table)
