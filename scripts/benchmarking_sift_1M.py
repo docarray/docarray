@@ -1,3 +1,4 @@
+
 import argparse
 import functools
 import random
@@ -19,11 +20,12 @@ D = 128
 TENSOR_SHAPE = (512, 256)
 K = 10
 np.random.seed(123)
-DATASET_PATH = os.path.join(os.path.expanduser('~'), 'Desktop/ANN_SIFT1M/sift-128-euclidean.hdf5')
+DATASET_PATH = './sift-128-euclidean.hdf5'
 dataset = h5py.File(DATASET_PATH, 'r')
 
 X_tr = dataset['train']
 X_te = dataset['test']
+
 n_index_values = [len(X_tr)]
 n_vector_queries = len(X_te)
 
@@ -247,9 +249,9 @@ for idx, n_index in enumerate(n_index_values):
             console.print(f'Storage Backend {backend} failed: {e}')
 
 find_df = pd.DataFrame(find_by_vector_values)
-storage_backends.remove(('sqlite', None))
 find_df.index = [backend for backend, _ in storage_backends]
 print(find_df)
+find_df = find_df.drop(['sqlite'])
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
 
 find_df.plot(
