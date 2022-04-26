@@ -37,7 +37,6 @@ def get_configuration_storage_backends(argparse):
     if args.default_hnsw:
         storage_backends = [
             ('memory', None),
-            ('sqlite', None),
             (
                 'annlite',
                 {'n_dim': D},
@@ -45,11 +44,11 @@ def get_configuration_storage_backends(argparse):
             ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
             ('weaviate', {'n_dim': D}),
             ('elasticsearch', {'n_dim': D}),
+            ('sqlite', None),
         ]
     else:
         storage_backends = [
             ('memory', None),
-            ('sqlite', None),
             (
                 'annlite',
                 {
@@ -68,12 +67,21 @@ def get_configuration_storage_backends(argparse):
                 {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
             ),
             ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
+            ('sqlite', None),
         ]
     return storage_backends
 
 
 def run_benchmark(
-    X_tr, X_te, dataset, n_index_values, n_vector_queries, n_query, storage_backends
+    X_tr,
+    X_te,
+    dataset,
+    n_index_values,
+    n_vector_queries,
+    n_query,
+    storage_backends,
+    K,
+    D,
 ):
     table = Table(
         title=f'DocArray Benchmarking n_index={n_index_values[-1]} n_query={n_query} D={D} K={K}'
@@ -130,11 +138,11 @@ def run_benchmark(
                     f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
                 )
                 if backend == 'memory':
-                    find_by_vector_time, _ = find_by_vector(
+                    find_by_vector_time, aux = find_by_vector(
                         da, vector_queries[0], limit=K
                     )
                     ground_truth = [
-                        x for x in dataset['neighbors'][0 : len(vector_queries)]
+                        x[0:K] for x in dataset['neighbors'][0 : len(vector_queries)]
                     ]
                     recall_at_k = 1
                 elif backend == 'sqlite':
@@ -152,7 +160,7 @@ def run_benchmark(
                         find_by_vector_times.append(find_by_vector_time)
                         recall_at_k_values.append(
                             recall_from_numpy(
-                                np.array(results[:, 'tags__i']), ground_truth[i], K
+                                np.array(results[:, 'tags__i']), ground_truth[i][0:K], K
                             )
                         )
 
@@ -224,7 +232,15 @@ if __name__ == "__main__":
     # Benchmark
     storage_backends = get_configuration_storage_backends(argparse)
     find_by_vector_values, create_values, benchmark_df = run_benchmark(
-        X_tr, X_te, dataset, n_index_values, n_vector_queries, n_query, storage_backends
+        X_tr,
+        X_te,
+        dataset,
+        n_index_values,
+        n_vector_queries,
+        n_query,
+        storage_backends,
+        K,
+        D,
     )
     plot_results(
         find_by_vector_values, storage_backends, create_values, plot_legend=False
