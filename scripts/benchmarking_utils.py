@@ -1,5 +1,7 @@
 import functools
 from time import perf_counter
+from typing import Iterable
+
 from docarray import Document
 import numpy as np
 import seaborn as sns
@@ -72,7 +74,19 @@ def recall(predicted, relevant, eval_at):
     return n_predicted_and_relevant / len(relevant)
 
 
-def recall_from_numpy(predicted: np.ndarray, relevant: np.ndarray, eval_at: int):
+def recall_from_numpy(predicted, relevant, eval_at: int):
+    """
+    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],5)
+    1.0
+    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],4)
+    0.8
+    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],3)
+    0.3
+    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],2)
+    0.4
+    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],1)
+    0.2
+    """
     if eval_at == 0:
         return 0.0
     predicted_at_k = predicted[:eval_at]
