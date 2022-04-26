@@ -80,6 +80,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1983,4 +1984,30 @@
  - [[```afea29ba```](https://github.com/jina-ai/docarray/commit/afea29bae6d692ffec310b4f2ef9694fc0939760)] __-__ fix docs (*Han Xiao*)
  - [[```22ed0306```](https://github.com/jina-ai/docarray/commit/22ed0306dde1281318c0f11c2b918f0abb0d5422)] __-__ fix type (*Han Xiao*)
  - [[```be632405```](https://github.com/jina-ai/docarray/commit/be6324051dae00013c4933614c5d4941875d890c)] __-__ __version__: the next version will be 0.12.9 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-0></a>
+## Release Note (`0.13.0`)
+
+> Release time: 2022-04-26 09:34:54
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```59f484de```](https://github.com/jina-ai/docarray/commit/59f484de67006a9e240025ca5853cb716a99e035)] __-__ __helper__: actively check version on start (*Han Xiao*)
+ - [[```6dadbdff```](https://github.com/jina-ai/docarray/commit/6dadbdff661f2b36c52465002179cf08d8846323)] __-__ __helper__: actively check version on start (#302) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```ea98df64```](https://github.com/jina-ai/docarray/commit/ea98df641fb04fae93117f25e1418e01c6074340)] __-__ test when device is cuda (#293) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```a2b58317```](https://github.com/jina-ai/docarray/commit/a2b58317b0c4b9a72d66f94b6b0ed1bdc380007a)] __-__ bump version (*Han Xiao*)
+ - [[```5cf54627```](https://github.com/jina-ai/docarray/commit/5cf546278b75cfd1ee57641e089dcbc7288d8555)] __-__ fix graphql docs (*Han Xiao*)
+ - [[```17145a10```](https://github.com/jina-ai/docarray/commit/17145a10ea2bf8914bd0362f70c256908e76f38c)] __-__ __version__: the next version will be 0.12.10 (*Jina Dev Bot*)
 
