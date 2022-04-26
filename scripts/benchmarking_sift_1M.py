@@ -241,6 +241,8 @@ for idx, n_index in enumerate(n_index_values):
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
             create_values[str(n_index)].append(create_time)
             console.print(table)
+            da.clear()
+            del da
         except Exception as e:
             console.print(f'Storage Backend {backend} failed: {e}')
 
