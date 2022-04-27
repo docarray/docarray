@@ -83,6 +83,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2052,4 +2053,27 @@
 ### 🍹 Other Improvements
 
  - [[```4c18b53c```](https://github.com/jina-ai/docarray/commit/4c18b53c4e04dbb6382743a5f20fca876b998681)] __-__ __version__: the next version will be 0.13.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-3></a>
+## Release Note (`0.13.3`)
+
+> Release time: 2022-04-27 20:48:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```3bbca36f```](https://github.com/jina-ai/docarray/commit/3bbca36fc21e8a6252f1532ecb94f141f1f52c8e)] __-__ weaviate tags were ovewritten (#307) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```da703b05```](https://github.com/jina-ai/docarray/commit/da703b0575722273ac5636c34492aad75f0ef88b)] __-__ fix link (#308) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```dca9f665```](https://github.com/jina-ai/docarray/commit/dca9f6652c6b6dcb803d344e7db03712ce7af7a4)] __-__ __version__: the next version will be 0.13.3 (*Jina Dev Bot*)
 
