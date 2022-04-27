@@ -81,6 +81,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2010,4 +2011,20 @@
  - [[```a2b58317```](https://github.com/jina-ai/docarray/commit/a2b58317b0c4b9a72d66f94b6b0ed1bdc380007a)] __-__ bump version (*Han Xiao*)
  - [[```5cf54627```](https://github.com/jina-ai/docarray/commit/5cf546278b75cfd1ee57641e089dcbc7288d8555)] __-__ fix graphql docs (*Han Xiao*)
  - [[```17145a10```](https://github.com/jina-ai/docarray/commit/17145a10ea2bf8914bd0362f70c256908e76f38c)] __-__ __version__: the next version will be 0.12.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-1></a>
+## Release Note (`0.13.1`)
+
+> Release time: 2022-04-27 11:34:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```b638546e```](https://github.com/jina-ai/docarray/commit/b638546e6e635769150a0c6a5931ccfb5860da94)] __-__ remove version check (*Han Xiao*)
+ - [[```5161d7f7```](https://github.com/jina-ai/docarray/commit/5161d7f7e3ce7551821ce19eb0d63ed3e7d37cb7)] __-__ __version__: the next version will be 0.13.1 (*Jina Dev Bot*)
 
