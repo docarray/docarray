@@ -2,6 +2,7 @@ import pytest
 
 from docarray import DocumentArray, Document
 from docarray.array.weaviate import DocumentArrayWeaviate
+import numpy as np
 
 
 @pytest.fixture()
@@ -81,3 +82,26 @@ def test_del_da_persist(da_cls, config, persist, docs, start_storage):
         assert len(da2) == len(docs)
     else:
         assert len(da2) == 0
+
+
+def test_del_da_attribute():
+
+    da = DocumentArray(
+        [
+            Document(embedding=np.array([1, 2, 3]), text='d1'),
+            Document(embedding=np.array([1, 2, 3]), text='d2'),
+        ]
+    )
+
+    q = DocumentArray(
+        [
+            Document(embedding=np.array([4, 5, 6]), text='q1'),
+            Document(embedding=np.array([2, 3, 4]), text='q1'),
+        ]
+    )
+
+    da.match(q)
+    del da[...][:, 'embedding']
+
+    for d in da:
+        assert d.embedding is None
