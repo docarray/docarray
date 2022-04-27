@@ -36,19 +36,22 @@ def get_configuration_storage_backends(argparse):
 
     if args.default_hnsw:
         storage_backends = [
-            ('memory', None),
+            ('weaviate', {'n_dim': D}),
             (
                 'annlite',
                 {'n_dim': D},
             ),
             ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
-            ('weaviate', {'n_dim': D}),
             ('elasticsearch', {'n_dim': D}),
             ('sqlite', None),
+            ('memory', None),
         ]
     else:
         storage_backends = [
-            ('memory', None),
+            (
+                'weaviate',
+                {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
+            ),
             (
                 'annlite',
                 {
@@ -62,12 +65,9 @@ def get_configuration_storage_backends(argparse):
                 'qdrant',
                 {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16},
             ),
-            (
-                'weaviate',
-                {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
-            ),
             ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
             ('sqlite', None),
+            ('memory', None),
         ]
     return storage_backends
 
@@ -111,7 +111,7 @@ def run_benchmark(
     docs_to_delete = random.sample(docs, n_query)
     docs_to_update = random.sample(docs, n_query)
     vector_queries = [x for x in X_te]
-    ground_truth = []
+    ground_truth = [x[0:K] for x in dataset['neighbors'][0 : len(vector_queries)]]
 
     for idx, n_index in enumerate(n_index_values):
         for backend, config in storage_backends:
@@ -141,9 +141,6 @@ def run_benchmark(
                     find_by_vector_time, aux = find_by_vector(
                         da, vector_queries[0], limit=K
                     )
-                    ground_truth = [
-                        x[0:K] for x in dataset['neighbors'][0 : len(vector_queries)]
-                    ]
                     recall_at_k = 1
                 elif backend == 'sqlite':
                     find_by_vector_time, result = find_by_vector(
@@ -160,7 +157,7 @@ def run_benchmark(
                         find_by_vector_times.append(find_by_vector_time)
                         recall_at_k_values.append(
                             recall_from_numpy(
-                                np.array(results[:, 'tags__i']), ground_truth[i][0:K], K
+                                np.array(results[:, 'tags__i']), ground_truth[i], K
                             )
                         )
 
