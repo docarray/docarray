@@ -21,7 +21,7 @@ def _uri_to_blob(uri: str) -> bytes:
         with open(uri, 'rb') as fp:
             return fp.read()
     else:
-        raise FileNotFoundError(f'{uri} is not a URL or a valid local path')
+        raise FileNotFoundError(f'`{uri}` is not a URL or a valid local path')
 
 
 def _get_file_context(file):
