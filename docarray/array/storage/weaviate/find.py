@@ -57,9 +57,8 @@ class FindMixin:
             else:
                 doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
 
-            doc.tags = {
-                'wid': result['_additional']['id'],
-            }
+            doc.tags['wid'] = result['_additional']['id']
+
             docs.append(doc)
 
         return DocumentArray(docs)
