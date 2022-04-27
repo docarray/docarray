@@ -82,6 +82,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2027,4 +2028,28 @@
 
  - [[```b638546e```](https://github.com/jina-ai/docarray/commit/b638546e6e635769150a0c6a5931ccfb5860da94)] __-__ remove version check (*Han Xiao*)
  - [[```5161d7f7```](https://github.com/jina-ai/docarray/commit/5161d7f7e3ce7551821ce19eb0d63ed3e7d37cb7)] __-__ __version__: the next version will be 0.13.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-2></a>
+## Release Note (`0.13.2`)
+
+> Release time: 2022-04-27 15:08:33
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ cristian,  David Buchaca Prats,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```363a2fd2```](https://github.com/jina-ai/docarray/commit/363a2fd272ea8aff206f07bcccf9482fecedc723)] __-__ del remove attribute (#304) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```6e527019```](https://github.com/jina-ai/docarray/commit/6e527019953cb00625af3f5a95a146ecedff8c1b)] __-__ add pr template (#306) (*cristian*)
+ - [[```923c2ce1```](https://github.com/jina-ai/docarray/commit/923c2ce19d4d66b24bd6877c18e91be7ec414596)] __-__ remove extra character (#305) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```4c18b53c```](https://github.com/jina-ai/docarray/commit/4c18b53c4e04dbb6382743a5f20fca876b998681)] __-__ __version__: the next version will be 0.13.2 (*Jina Dev Bot*)
 
