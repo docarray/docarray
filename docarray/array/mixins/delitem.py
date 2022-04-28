@@ -56,6 +56,8 @@ class DelItemMixin:
                     for _d in self[index[0]]:
                         for _aa in _attrs:
                             self._set_doc_attr_by_id(_d.id, _aa, None)
+                            _d.pop(_aa)
+
             elif isinstance(index[0], bool):
                 self._del_docs_by_mask(index)
             elif isinstance(index[0], int):

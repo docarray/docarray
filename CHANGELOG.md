@@ -80,6 +80,10 @@
 
 
 
+
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -1983,4 +1987,93 @@
  - [[```afea29ba```](https://github.com/jina-ai/docarray/commit/afea29bae6d692ffec310b4f2ef9694fc0939760)] __-__ fix docs (*Han Xiao*)
  - [[```22ed0306```](https://github.com/jina-ai/docarray/commit/22ed0306dde1281318c0f11c2b918f0abb0d5422)] __-__ fix type (*Han Xiao*)
  - [[```be632405```](https://github.com/jina-ai/docarray/commit/be6324051dae00013c4933614c5d4941875d890c)] __-__ __version__: the next version will be 0.12.9 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-0></a>
+## Release Note (`0.13.0`)
+
+> Release time: 2022-04-26 09:34:54
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```59f484de```](https://github.com/jina-ai/docarray/commit/59f484de67006a9e240025ca5853cb716a99e035)] __-__ __helper__: actively check version on start (*Han Xiao*)
+ - [[```6dadbdff```](https://github.com/jina-ai/docarray/commit/6dadbdff661f2b36c52465002179cf08d8846323)] __-__ __helper__: actively check version on start (#302) (*Han Xiao*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```ea98df64```](https://github.com/jina-ai/docarray/commit/ea98df641fb04fae93117f25e1418e01c6074340)] __-__ test when device is cuda (#293) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```a2b58317```](https://github.com/jina-ai/docarray/commit/a2b58317b0c4b9a72d66f94b6b0ed1bdc380007a)] __-__ bump version (*Han Xiao*)
+ - [[```5cf54627```](https://github.com/jina-ai/docarray/commit/5cf546278b75cfd1ee57641e089dcbc7288d8555)] __-__ fix graphql docs (*Han Xiao*)
+ - [[```17145a10```](https://github.com/jina-ai/docarray/commit/17145a10ea2bf8914bd0362f70c256908e76f38c)] __-__ __version__: the next version will be 0.12.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-1></a>
+## Release Note (`0.13.1`)
+
+> Release time: 2022-04-27 11:34:40
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```b638546e```](https://github.com/jina-ai/docarray/commit/b638546e6e635769150a0c6a5931ccfb5860da94)] __-__ remove version check (*Han Xiao*)
+ - [[```5161d7f7```](https://github.com/jina-ai/docarray/commit/5161d7f7e3ce7551821ce19eb0d63ed3e7d37cb7)] __-__ __version__: the next version will be 0.13.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-2></a>
+## Release Note (`0.13.2`)
+
+> Release time: 2022-04-27 15:08:33
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ cristian,  David Buchaca Prats,  Aziz Belaweid,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```363a2fd2```](https://github.com/jina-ai/docarray/commit/363a2fd272ea8aff206f07bcccf9482fecedc723)] __-__ del remove attribute (#304) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```6e527019```](https://github.com/jina-ai/docarray/commit/6e527019953cb00625af3f5a95a146ecedff8c1b)] __-__ add pr template (#306) (*cristian*)
+ - [[```923c2ce1```](https://github.com/jina-ai/docarray/commit/923c2ce19d4d66b24bd6877c18e91be7ec414596)] __-__ remove extra character (#305) (*Aziz Belaweid*)
+
+### 🍹 Other Improvements
+
+ - [[```4c18b53c```](https://github.com/jina-ai/docarray/commit/4c18b53c4e04dbb6382743a5f20fca876b998681)] __-__ __version__: the next version will be 0.13.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-3></a>
+## Release Note (`0.13.3`)
+
+> Release time: 2022-04-27 20:48:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```3bbca36f```](https://github.com/jina-ai/docarray/commit/3bbca36fc21e8a6252f1532ecb94f141f1f52c8e)] __-__ weaviate tags were ovewritten (#307) (*David Buchaca Prats*)
+
+### 📗 Documentation
+
+ - [[```da703b05```](https://github.com/jina-ai/docarray/commit/da703b0575722273ac5636c34492aad75f0ef88b)] __-__ fix link (#308) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```dca9f665```](https://github.com/jina-ai/docarray/commit/dca9f6652c6b6dcb803d344e7db03712ce7af7a4)] __-__ __version__: the next version will be 0.13.3 (*Jina Dev Bot*)
 
