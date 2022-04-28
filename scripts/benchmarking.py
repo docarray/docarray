@@ -157,7 +157,7 @@ if __name__ == "__main__":
     K = 10
     np.random.seed(123)
     docs, vector_queries = load_random_dataset(n_dim=D)
-    n_index_values = [1000]
+    n_index_values = [10_000, 100_000, 1000_000]
     # Benchmark
     storage_backends = get_configuration_storage_backends(D)
     find_by_vector_values, create_values, benchmark_df = run_benchmark(
