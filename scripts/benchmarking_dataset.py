@@ -77,7 +77,7 @@ def run_benchmark(
                     f'\tfinding {n_query} docs by vector averaged {len(vector_queries)} times ...'
                 )
                 if backend == 'memory':
-                    find_by_vector_time, _ = find_by_vector(
+                    find_by_vector_time, aux = find_by_vector(
                         da, vector_queries[0], limit=K
                     )
                     recall_at_k = 1
