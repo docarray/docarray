@@ -187,6 +187,9 @@ class BackendMixin(BaseBackendMixin):
         if embedding.ndim > 1:
             embedding = np.asarray(embedding).squeeze()
 
+        if embedding.ndim == 0:
+            embedding = np.array([embedding])
+
         if np.all(embedding == 0):
             embedding = embedding + EPSILON
         return embedding.tolist()
