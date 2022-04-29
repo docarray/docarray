@@ -154,13 +154,8 @@ class ParallelMixin:
         # noqa: DAR201
         :return: a new :class:`DocumentArray`
         """
-        from ... import DocumentArray
-
-        new_da = DocumentArray()
         for _b in self.map_batch(*args, **kwargs):
-            new_da.extend(_b)
-        self.clear()
-        self.extend(new_da)
+            self[[doc.id for doc in _b]] = _b
         return self
 
     def map_batch(
