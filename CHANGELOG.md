@@ -84,6 +84,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2076,4 +2077,28 @@
 ### 🍹 Other Improvements
 
  - [[```dca9f665```](https://github.com/jina-ai/docarray/commit/dca9f6652c6b6dcb803d344e7db03712ce7af7a4)] __-__ __version__: the next version will be 0.13.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-4></a>
+## Release Note (`0.13.4`)
+
+> Release time: 2022-04-30 06:19:38
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Mohammad Kalim Akram,  Jina Dev Bot,  🙇
+
+
+### ⚡ Performance Improvements
+
+ - [[```e2f478ac```](https://github.com/jina-ai/docarray/commit/e2f478ac5fe376c1163eaaed9ad020cf5e704d36)] __-__ __array__: use less memory for apply (#312) (*AlaeddineAbdessalem*)
+
+### 🐞 Bug fixes
+
+ - [[```9f620b0b```](https://github.com/jina-ai/docarray/commit/9f620b0b7e1827bc3124bfb762fe711ff85091a0)] __-__ fix find by vector of n_dim=1 (#315) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```3c9883e3```](https://github.com/jina-ai/docarray/commit/3c9883e395bd1689ae10d963aa84890e5f803a93)] __-__ add now branding (#313) (*Mohammad Kalim Akram*)
+ - [[```9e2f70e0```](https://github.com/jina-ai/docarray/commit/9e2f70e06053efacbb9c303bc532c11ce531aa23)] __-__ __version__: the next version will be 0.13.4 (*Jina Dev Bot*)
 
