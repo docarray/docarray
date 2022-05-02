@@ -1,7 +1,9 @@
+import cgi
 import json
 import os
 import pytest
 import requests
+from io import BytesIO
 
 from docarray import DocumentArray
 from docarray.array.mixins.io.pushpull import JINA_CLOUD_CONFIG
@@ -82,6 +84,27 @@ def test_push(mocker, monkeypatch):
     assert mock.call_count == 1
 
 
+@pytest.mark.parametrize('public', [True, False])
+def test_push_with_public(mocker, monkeypatch, public):
+    mock = mocker.Mock()
+    _mock_post(mock, monkeypatch)
+
+    docs = random_docs(2)
+    docs.push(name='test_name', public=public)
+
+    _, mock_kwargs = mock.call_args_list[0]
+
+    c_type, c_data = cgi.parse_header(mock_kwargs['headers']['Content-Type'])
+    assert c_type == 'multipart/form-data'
+
+    form_data = cgi.parse_multipart(
+        BytesIO(b''.join(mock_kwargs['data'])),
+        {'boundary': c_data['boundary'].encode()},
+    )
+
+    assert form_data['public'] == [str(public)]
+
+
 def test_pull(mocker, monkeypatch):
     mock = mocker.Mock()
     _mock_get(mock, monkeypatch)
@@ -104,7 +127,7 @@ def test_push_fail(mocker, monkeypatch):
     _mock_post(mock, monkeypatch, status_code=requests.codes.forbidden)
 
     docs = random_docs(2)
-    with pytest.raises(Exception) as exc_info:
+    with pytest.raises(Exception):
         docs.push('test_name')
 
     assert mock.call_count == 1
