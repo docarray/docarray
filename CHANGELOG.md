@@ -85,6 +85,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2101,4 +2102,20 @@
 
  - [[```3c9883e3```](https://github.com/jina-ai/docarray/commit/3c9883e395bd1689ae10d963aa84890e5f803a93)] __-__ add now branding (#313) (*Mohammad Kalim Akram*)
  - [[```9e2f70e0```](https://github.com/jina-ai/docarray/commit/9e2f70e06053efacbb9c303bc532c11ce531aa23)] __-__ __version__: the next version will be 0.13.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-5></a>
+## Release Note (`0.13.5`)
+
+> Release time: 2022-05-02 06:02:08
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```b4188583```](https://github.com/jina-ai/docarray/commit/b4188583a2fe89dd5e3b4bdfe0ed0102e2ce6cea)] __-__ Feat add show label (#316) (*Han Xiao*)
+ - [[```1e83c14a```](https://github.com/jina-ai/docarray/commit/1e83c14aba608fc87986424f16df7203680531bf)] __-__ __version__: the next version will be 0.13.5 (*Jina Dev Bot*)
 
