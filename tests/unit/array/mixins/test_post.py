@@ -47,6 +47,7 @@ def test_post_bad_scheme():
     da = DocumentArray.empty(100)
     with pytest.raises(ValueError):
         da.post('haha')
+'''
 
 
 def test_endpoint():
@@ -86,4 +87,3 @@ def test_endpoint():
     finally:
         e.set()
         t.join()
-'''
