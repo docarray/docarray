@@ -1,4 +1,4 @@
-function addUTMSourceToLinks(href) {
+function addUTMSourceToLink(href) {
     try {
         var url = new URL(href);
         url.searchParams.set("utm_source", "docarray");

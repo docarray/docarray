@@ -148,7 +148,7 @@ c.post('/', DocumentArray.from_files('**/*.png'), show_progressbar=True)
 ```
 ````
 
-You can also use `websockets`, `http`, GraphQL API to query it. More details can be found in [Jina Documentation](https://docs.jina.ai/?utm_source=docarray).
+You can also use `websockets`, `http`, GraphQL API to query it. More details can be found in [Jina Documentation](https://docs.jina.ai/).
 
 ### Scale it out
 
@@ -163,11 +163,11 @@ with f:
     f.block()
 ```
 
-This will start three parallels can improve the overall throughput. [More details can be found here.](https://docs.jina.ai/fundamentals/flow/create-flow/#replicate-executors?utm_source=docarray)
+This will start three parallels can improve the overall throughput. [More details can be found here.](https://docs.jina.ai/fundamentals/flow/create-flow/#replicate-executors)
 
 ### Share and reuse it
 
-One can share and reuse it via [Hub](https://hub.jina.ai?utm_source=docarray). Save your Executor in a folder say `foo` and then:
+One can share and reuse it via [Hub](https://hub.jina.ai). Save your Executor in a folder say `foo` and then:
 
 ```bash
 jina hub push foo
