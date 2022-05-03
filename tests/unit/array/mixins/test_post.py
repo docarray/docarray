@@ -7,7 +7,7 @@ from docarray import DocumentArray, Document
 from docarray.helper import random_port
 
 
-@pytest.mark.parametrize(
+'''@pytest.mark.parametrize(
     'conn_config',
     [
         (dict(protocol='grpc'), 'grpc://127.0.0.1:$port/'),
@@ -85,3 +85,4 @@ def test_endpoint():
     finally:
         e.set()
         t.join()
+'''
