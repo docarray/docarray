@@ -23,7 +23,7 @@ Though both `.find()` and `.match()` is about finding nearest neighbours of a gi
 
 ##### What is the return?
   - `.find()` returns a List of DocumentArray, each of which corresponds to one element/row in the query.
-  - `.match()` do not return anything. Match results are stored inside right-hand side's `.matches`.
+  - `.match()` do not return anything. Match results are stored inside left-hand side's `.matches`.
 
 In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
 

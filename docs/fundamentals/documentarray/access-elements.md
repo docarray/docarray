@@ -135,7 +135,7 @@ da['@path1,path2,path3']
 
 - The path-string must starts with `@`.
 - Multiple paths are separated by comma `,`.
-- A path represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select matches of the chunks, `r` to select the top-level Documents.
+- A path represents the route from the top-level Documents to the destination. You can use `c` to select chunks, `cc` to select chunks of the chunks, `m` to select matches, `mc` to select chunks of the matches, `r` to select the top-level Documents.
 - A path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
 - Optionally, you can specify a slice or offset at each level, for example, `r[-1]m[:3]` will select the first 3 matches of the last root document.
 
