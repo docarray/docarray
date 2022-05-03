@@ -7,7 +7,7 @@ from docarray import DocumentArray, Document
 from docarray.helper import random_port
 
 
-'''@pytest.mark.parametrize(
+@pytest.mark.parametrize(
     'conn_config',
     [
         (dict(protocol='grpc'), 'grpc://127.0.0.1:$port/'),
@@ -42,6 +42,7 @@ def test_post_with_jinahub(hub_uri):
     assert isinstance(Document().post(hub_uri), Document)
 
 
+'''
 def test_post_bad_scheme():
     da = DocumentArray.empty(100)
     with pytest.raises(ValueError):
