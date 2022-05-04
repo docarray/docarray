@@ -57,7 +57,7 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(self, name: str, show_progress: bool = False) -> Dict:
+    def push(self, name: str, show_progress: bool = False, public: bool = True) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -69,6 +69,7 @@ class PushPullMixin:
 
         :param name: a name that later can be used for retrieve this :class:`DocumentArray`.
         :param show_progress: if to show a progress bar on pulling
+        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.
         """
         import requests
 
@@ -82,6 +83,7 @@ class PushPullMixin:
                 ),
                 'name': name,
                 'type': 'documentArray',
+                'public': public,
             }
         )
 
