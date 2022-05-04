@@ -92,7 +92,7 @@ setup(
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
-            'jina<=3.3.17',
+            'jina<=3.3.11',
         ],
     },
     classifiers=[
