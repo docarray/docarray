@@ -86,6 +86,8 @@
 
 
 
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2118,4 +2120,43 @@
 
  - [[```b4188583```](https://github.com/jina-ai/docarray/commit/b4188583a2fe89dd5e3b4bdfe0ed0102e2ce6cea)] __-__ Feat add show label (#316) (*Han Xiao*)
  - [[```1e83c14a```](https://github.com/jina-ai/docarray/commit/1e83c14aba608fc87986424f16df7203680531bf)] __-__ __version__: the next version will be 0.13.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-6></a>
+## Release Note (`0.13.6`)
+
+> Release time: 2022-05-03 19:36:14
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Kevin Zehnder,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6f7532f7```](https://github.com/jina-ai/docarray/commit/6f7532f7d0022daec4bea58f7b861230982b2e76)] __-__ add kwargs to post (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```08d0072b```](https://github.com/jina-ai/docarray/commit/08d0072b4b4f6fd3ce4928183faa6d014ed62bae)] __-__ fix typo (#325) (*Kevin Zehnder*)
+
+### 🍹 Other Improvements
+
+ - [[```117fd67d```](https://github.com/jina-ai/docarray/commit/117fd67d0b5ea96bb631a666312a33ff000dcd8e)] __-__ __version__: the next version will be 0.13.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-7></a>
+## Release Note (`0.13.7`)
+
+> Release time: 2022-05-04 15:32:07
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```9cdc980e```](https://github.com/jina-ai/docarray/commit/9cdc980e9cf567940b8f495c697f45575a8c7562)] __-__ update qdrant version (#326) (*AlaeddineAbdessalem*)
+ - [[```adb739b5```](https://github.com/jina-ai/docarray/commit/adb739b5cea85b09550c4c3f7d0852666f700e17)] __-__ __version__: the next version will be 0.13.7 (*Jina Dev Bot*)
 
