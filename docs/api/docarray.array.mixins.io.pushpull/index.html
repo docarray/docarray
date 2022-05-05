@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.io.pushpull/" />
   
-<meta property="og:site_name" content="DocArray 0.13.7 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.8 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.7 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.8 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -37,7 +37,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.io.pushpull.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.io.pushpull module - DocArray 0.13.7 documentation</title>
+        <title>docarray.array.mixins.io.pushpull module - DocArray 0.13.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.7 documentation</div>
+                <div class="brand">DocArray 0.13.8 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -557,7 +557,7 @@
 <p>Transmitting <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> via Jina Cloud Service</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.io.pushpull.PushPullMixin.push">
-<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/pushpull/#PushPullMixin.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/io/pushpull/#PushPullMixin.push"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="Permalink to this definition">#</a></dt>
 <dd><p>Push this DocumentArray object to Jina Cloud which can be later retrieved via <a class="reference internal" href="#docarray.array.mixins.io.pushpull.PushPullMixin.push" title="docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -574,6 +574,7 @@ persistence. Only use this full temporary transmission/storage/clipboard.</p></l
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – a name that later can be used for retrieve this <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p></li>
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar on pulling</p></li>
+<li><p><strong>public</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the DocumentArray will be shared publicly. Otherwise, it will be private.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -639,7 +640,7 @@ persistence. Only use this full temporary transmission/storage/clipboard.</p></l
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 04, 2022</div>
+                            Last updated on May 05, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -694,5 +695,6 @@ persistence. Only use this full temporary transmission/storage/clipboard.</p></l
         </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    <script src="../../_static/source-in-links.js"></script>
     </body>
 </html>
