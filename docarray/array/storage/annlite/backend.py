@@ -98,3 +98,6 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(n_dim, lock=False, **filter_dict(config))
+
+    def __len__(self):
+        return self._annlite.index_size
