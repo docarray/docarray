@@ -63,6 +63,7 @@ setup(
             'fastapi',
             'uvicorn',
             'weaviate-client~=3.3.0',
+            'annlite>=0.3.0',
             'qdrant-client~=0.7.1',
             'strawberry-graphql',
             'elasticsearch>=8.0.1',
