@@ -88,6 +88,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2159,4 +2160,28 @@
 
  - [[```9cdc980e```](https://github.com/jina-ai/docarray/commit/9cdc980e9cf567940b8f495c697f45575a8c7562)] __-__ update qdrant version (#326) (*AlaeddineAbdessalem*)
  - [[```adb739b5```](https://github.com/jina-ai/docarray/commit/adb739b5cea85b09550c4c3f7d0852666f700e17)] __-__ __version__: the next version will be 0.13.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-8></a>
+## Release Note (`0.13.8`)
+
+> Release time: 2022-05-05 14:30:56
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  Roshan Jossy,  Delgermurun,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```c9a9b35f```](https://github.com/jina-ai/docarray/commit/c9a9b35f4c4ef68a7eb4ce359327d05e4067a0cb)] __-__ __hubble__: add public parameter to da.push (#318) (*Delgermurun*)
+
+### 🐞 Bug fixes
+
+ - [[```bbac194c```](https://github.com/jina-ai/docarray/commit/bbac194cd1e6b6efcea0528c11e6412fe92e8b7b)] __-__ use backend to determine annlite DocumentArray length (#327) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```47e0a7c7```](https://github.com/jina-ai/docarray/commit/47e0a7c77799698f942c9e9b888ab214c61ec419)] __-__ update refer links to other docs with utm_source (#317) (*Roshan Jossy*)
+ - [[```e9bc78c8```](https://github.com/jina-ai/docarray/commit/e9bc78c8df79221a8ce3c3c60fc894d9bdd079de)] __-__ __version__: the next version will be 0.13.8 (*Jina Dev Bot*)
 
