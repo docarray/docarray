@@ -42,12 +42,10 @@ def test_post_with_jinahub(hub_uri):
     assert isinstance(Document().post(hub_uri), Document)
 
 
-'''
 def test_post_bad_scheme():
     da = DocumentArray.empty(100)
     with pytest.raises(ValueError):
         da.post('haha')
-'''
 
 
 def test_endpoint():
