@@ -69,7 +69,7 @@ setup(
             'elasticsearch>=8.0.1',
         ],
         'qdrant': [
-            'qdrant-client~=0.7.0',
+            'qdrant-client~=0.7.1',
         ],
         'test': [
             'pytest',
@@ -92,7 +92,7 @@ setup(
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
-            'jina>=3.3.23',
+            'jina~=3.3.24',
         ],
     },
     classifiers=[
