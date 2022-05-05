@@ -4,17 +4,19 @@ function addUTMSourceToLink(href) {
         url.searchParams.set("utm_source", "docarray");
         return url.href
     }
-    catch{}
+    catch{
+        return href
+    }
 }
 
-function addSourceToAllLinks() {
+function addUTMSourceToLinks() {
     var anchors = document.getElementsByTagName("a");
 
     for (var i = 0; i < anchors.length; i++) {
-        anchors[i].href = addUTMSourceToLinks(anchors[i].href)
+        anchors[i].href = addUTMSourceToLink(anchors[i].href)
     }
 }
 
 window.onload = function () {
-    addSourceToAllLinks()
+    addUTMSourceToLinks()
 }
