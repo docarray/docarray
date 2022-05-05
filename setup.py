@@ -71,6 +71,9 @@ setup(
         'qdrant': [
             'qdrant-client~=0.7.0',
         ],
+        'annlite': [
+            'annlite>=0.3.0',
+        ],
         'test': [
             'pytest',
             'pytest-timeout',
