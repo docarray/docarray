@@ -82,6 +82,7 @@ class PostMixin:
                 show_progress=show_progress,
                 request_size=batch_size,
                 parameters=parameters,
+                **kwargs,
             )
         else:
             raise ValueError(f'unsupported scheme: {r.scheme}')
