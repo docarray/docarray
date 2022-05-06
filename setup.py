@@ -62,17 +62,23 @@ setup(
             'av',
             'fastapi',
             'uvicorn',
+            'strawberry-graphql',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
             'qdrant-client~=0.7.1',
-            'strawberry-graphql',
             'elasticsearch>=8.0.1',
         ],
         'qdrant': [
-            'qdrant-client~=0.7.0',
+            'qdrant-client~=0.7.1',
         ],
         'annlite': [
             'annlite>=0.3.0',
+        ],
+        'weaviate': [
+            'weaviate-client~=3.3.0',
+        ],
+        'elasticsearch': [
+            'elasticsearch>=8.0.1',
         ],
         'test': [
             'pytest',
@@ -95,6 +101,7 @@ setup(
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
+            'elasticsearch>=8.0.1',
             'jina',
         ],
     },

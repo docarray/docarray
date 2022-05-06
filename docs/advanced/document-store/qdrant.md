@@ -4,7 +4,7 @@
 One can use [Qdrant](https://qdrant.tech) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `qdrant-client`. You can install it via `pip install "docarray[full]".` 
+This feature requires `qdrant-client`. You can install it via `pip install "docarray[qdrant]".` 
 ````
 
 ## Usage
