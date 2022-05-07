@@ -313,6 +313,7 @@ This section explains the behavior of field annotations in details.
     | `Video`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the video and set `.modality='video'`                   |
     | `Mesh`          | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by sub-sampling the mesh as point-cloud and set `.modality='mesh'` |
     | `Blob`          | `str`, `bytes`         | Create a sub-Document, fill in `doc.blob` by the given value or reading from the path                          |
+    | `Tabular`       | `str`, `bytes`         | Create a sub-Document for each line, fill in `doc.tags` by considering the first row as the column names and mapping the following lines into the corresponding values.     |
 
 - A class field labeled with `List[Type]` will create sub-Documents under `root.chunks[0].chunks`. For example,
     
