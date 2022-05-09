@@ -2,7 +2,7 @@ from typing import (
     Union,
     Optional,
     TYPE_CHECKING,
-    List,
+    List, Dict,
 )
 
 if TYPE_CHECKING:
@@ -16,6 +16,7 @@ class FindMixin:
         query: 'np.ndarray',
         limit: Optional[Union[int, float]] = 20,
         only_id: bool = False,
+        filter: Dict = {},
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given an input query.
@@ -34,7 +35,7 @@ class FindMixin:
             query = query.reshape(1, -1)
 
         _, match_docs = self._annlite._search_documents(
-            query, limit=limit, include_metadata=not only_id
+            query, limit=limit, filter=filter, include_metadata=not only_id
         )
 
         return match_docs

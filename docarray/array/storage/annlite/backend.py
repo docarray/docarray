@@ -4,7 +4,7 @@ from typing import (
     Dict,
     Optional,
     TYPE_CHECKING,
-    Iterable,
+    Iterable, List, Tuple,
 )
 
 import numpy as np
@@ -25,6 +25,7 @@ class AnnliteConfig:
     ef_construction: Optional[int] = None
     ef_search: Optional[int] = None
     max_connection: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
