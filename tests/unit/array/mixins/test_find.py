@@ -195,15 +195,15 @@ def test_find_by_tag(storage, config, start_storage):
     assert all([isinstance(result, DocumentArray) for result in results]) == True
 
 
-
 numeric_operators = {
-        '$gte': operator.ge,
-        '$gt': operator.gt,
-        '$lte': operator.le,
-        '$lt': operator.lt,
-        '$eq': operator.eq,
-        '$neq': operator.ne,
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$neq': operator.ne,
 }
+
 
 @pytest.mark.parametrize('operator', list(numeric_operators.keys()))
 def test_search_annlite_filter(tmpdir, operator):
@@ -211,7 +211,10 @@ def test_search_annlite_filter(tmpdir, operator):
     Nq = 5
     D = 128
     columns = [('price', float), ('category', str)]
-    da = DocumentArray(storage='annlite', config={'n_dim': D, 'columns': columns, 'data_path': str(tmpdir)})
+    da = DocumentArray(
+        storage='annlite',
+        config={'n_dim': D, 'columns': columns, 'data_path': str(tmpdir)},
+    )
 
     X = np.random.random((Nq, D)).astype(np.float32)
     query_da = DocumentArray([Document(embedding=X[i]) for i in range(Nq)])

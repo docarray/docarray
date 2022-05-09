@@ -2,7 +2,8 @@ from typing import (
     Union,
     Optional,
     TYPE_CHECKING,
-    List, Dict,
+    List,
+    Dict,
 )
 
 if TYPE_CHECKING:

@@ -4,7 +4,9 @@ from typing import (
     Dict,
     Optional,
     TYPE_CHECKING,
-    Iterable, List, Tuple,
+    Iterable,
+    List,
+    Tuple,
 )
 
 import numpy as np
