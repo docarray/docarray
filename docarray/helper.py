@@ -449,7 +449,7 @@ def filter_dict(d: Dict) -> Dict:
     :param d: input dict
     :return: filtered dict
     """
-    return dict(filter(lambda item: item[1], d.items()))
+    return dict(filter(lambda item: item[1] is not None, d.items()))
 
 
 def _version_check(package: str = None, github_repo: str = None):

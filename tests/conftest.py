@@ -3,7 +3,6 @@ import os
 import time
 
 import pytest
-from elasticsearch import Elasticsearch
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 compose_yml = os.path.abspath(
@@ -23,6 +22,8 @@ def start_storage():
         f"docker-compose -f {compose_yml} --project-directory . up  --build -d "
         f"--remove-orphans"
     )
+    from elasticsearch import Elasticsearch
+
     es = Elasticsearch(hosts='http://localhost:9200/')
     while not es.ping():
         time.sleep(0.5)
