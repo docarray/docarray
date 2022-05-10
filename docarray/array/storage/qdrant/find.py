@@ -4,6 +4,8 @@ from typing import (
     TypeVar,
     Sequence,
     List,
+    Dict,
+    Optional,
 )
 
 from qdrant_client.http.models.models import Distance
@@ -74,7 +76,11 @@ class FindMixin:
         return DocumentArray(docs)
 
     def _find(
-        self, query: 'QdrantArrayType', limit: int = 10, **kwargs
+        self,
+        query: 'QdrantArrayType',
+        limit: int = 10,
+        filter: Optional[Dict] = None,
+        **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be used in Qdrant.

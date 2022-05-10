@@ -4,6 +4,8 @@ from typing import (
     Sequence,
     List,
     Union,
+    Optional,
+    Dict,
 )
 
 import numpy as np
@@ -99,6 +101,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'ElasticArrayType',
         limit: int = 10,
+        filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
@@ -109,6 +112,10 @@ class FindMixin(BaseFindMixin):
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
+        if filter is not None:
+            raise ValueError(
+                'Filtered vector search is not supported for ElasticSearch backend'
+            )
         query = np.array(query)
         num_rows, n_dim = ndarray.get_array_rows(query)
         if n_dim != 2:

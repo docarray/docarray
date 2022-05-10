@@ -3,6 +3,8 @@ from typing import (
     TypeVar,
     Sequence,
     List,
+    Dict,
+    Optional,
 )
 
 import numpy as np
@@ -64,7 +66,11 @@ class FindMixin:
         return DocumentArray(docs)
 
     def _find(
-        self, query: 'WeaviateArrayType', limit: int = 10, **kwargs
+        self,
+        query: 'WeaviateArrayType',
+        limit: int = 10,
+        filter: Optional[Dict] = None,
+        **kwargs
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'

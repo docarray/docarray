@@ -87,13 +87,16 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str, List[str]],
+        query: Union[
+            'DocumentArray', 'Document', 'ArrayType', Dict, str, List[str], None
+        ] = None,
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
         limit: Optional[Union[int, float]] = 20,
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
+        filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
         **kwargs,
@@ -124,14 +127,10 @@ class FindMixin:
 
         from ... import Document, DocumentArray
 
-        if isinstance(query, dict):
+        if isinstance(query, dict) and filter is None:
             return self._filter(query)
-        elif isinstance(query, (DocumentArray, Document)):
-
-            if isinstance(query, Document):
-                query = DocumentArray(query)
-
-            _query = query.embeddings
+        elif query is None and isinstance(filter, dict):
+            return self._filter(filter)
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
@@ -140,6 +139,12 @@ class FindMixin:
                 return result[0]
             else:
                 return result
+        elif isinstance(query, (DocumentArray, Document)):
+
+            if isinstance(query, Document):
+                query = DocumentArray(query)
+
+            _query = query.embeddings
         else:
             _query = query
 
@@ -169,6 +174,7 @@ class FindMixin:
 
         _result = self._find(
             _query,
+            filter=filter,
             **kwargs,
         )
 
@@ -227,7 +233,7 @@ class FindMixin:
 
     @abc.abstractmethod
     def _find(
-        self, query: 'ArrayType', limit: int, **kwargs
+        self, query: 'ArrayType', limit: int, filter: Optional[Dict] = None, **kwargs
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 

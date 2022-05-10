@@ -17,7 +17,7 @@ class FindMixin:
         query: 'np.ndarray',
         limit: Optional[Union[int, float]] = 20,
         only_id: bool = False,
-        filter: Dict = {},
+        filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given an input query.
@@ -36,7 +36,7 @@ class FindMixin:
             query = query.reshape(1, -1)
 
         _, match_docs = self._annlite._search_documents(
-            query, limit=limit, filter=filter, include_metadata=not only_id
+            query, limit=limit, filter=filter or {}, include_metadata=not only_id
         )
 
         return match_docs
