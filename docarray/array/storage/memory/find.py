@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, Callable, TYPE_CHECKING
+from typing import Optional, Union, Tuple, Callable, TYPE_CHECKING, Dict
 
 import numpy as np
 
