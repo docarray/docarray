@@ -127,7 +127,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name,
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': False},
+                    'vectorIndexConfig': {'skip': False, **filter_dict(hnsw_config)},
                     'properties': [
                         {
                             'dataType': ['blob'],
@@ -139,7 +139,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name + 'Meta',
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': True, **filter_dict(hnsw_config)},
+                    'vectorIndexConfig': {'skip': True},
                     'properties': [
                         {
                             'dataType': ['string[]'],
