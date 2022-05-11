@@ -226,6 +226,7 @@ def test_search_annlite_filter(tmpdir, operator):
             query_da, filter={'price': {operator: threshold}}, include_metadata=True
         )
         for query in query_da:
+            assert len(query.matches) > 0
             assert all(
                 [
                     numeric_operators[operator](m.tags['price'], threshold)

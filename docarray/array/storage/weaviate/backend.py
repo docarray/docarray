@@ -37,6 +37,7 @@ class WeaviateConfig:
     ef_construction: Optional[int] = None
     timeout_config: Optional[Tuple[int, int]] = None
     max_connections: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):

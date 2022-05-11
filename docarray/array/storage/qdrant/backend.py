@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Tuple,
 )
 
 import numpy as np
@@ -41,6 +42,7 @@ class QdrantConfig:
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
