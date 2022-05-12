@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/construct/" />
   
-<meta property="og:site_name" content="DocArray 0.13.10 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.11 Documentation" />
   
 <meta property="og:description" content="Just like the Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.10 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.11 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/construct.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Construct - DocArray 0.13.10 documentation</title>
+        <title>Construct - DocArray 0.13.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.10 documentation</div>
+                <div class="brand">DocArray 0.13.11 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -815,8 +815,9 @@ False
 </div>
 </li>
 </ul>
-<ul id="type-list">
-<li><p>The annotation type determines how the sub-Document is constructed. For example, annotating a field as <code class="docutils literal notranslate"><span class="pre">Image</span></code> will instruct the construction to fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the image URI. Annotating a field as <code class="docutils literal notranslate"><span class="pre">JSON</span></code> will instruct the construction to fill in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code>. The complete behavior table can be found below:</p>
+<ul class="simple" id="type-list">
+<li><p>The annotation type determines how the sub-Document is constructed. For example, annotating a field as <code class="docutils literal notranslate"><span class="pre">Image</span></code> will instruct the construction to fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the image URI. Annotating a field as <code class="docutils literal notranslate"><span class="pre">JSON</span></code> will instruct the construction to fill in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code>. The complete behavior table can be found below:</p></li>
+</ul>
 <div class="table-wrapper"><table class="colwidths-auto docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Type annotation</p></th>
@@ -827,35 +828,39 @@ False
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Image</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the image and set <code class="docutils literal notranslate"><span class="pre">.modality='image'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the image and sets <code class="docutils literal notranslate"><span class="pre">.modality='image'</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Text</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> by the given value and set <code class="docutils literal notranslate"><span class="pre">.modality='text'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='text'</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Audio</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the audio and set <code class="docutils literal notranslate"><span class="pre">.modality='audio'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the audio and sets <code class="docutils literal notranslate"><span class="pre">.modality='audio'</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JSON</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dict</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by the given value and set <code class="docutils literal notranslate"><span class="pre">.modality='json'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='json'</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Video</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the video and set <code class="docutils literal notranslate"><span class="pre">.modality='video'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the video and sets <code class="docutils literal notranslate"><span class="pre">.modality='video'</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Mesh</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by sub-sampling the mesh as point-cloud and set <code class="docutils literal notranslate"><span class="pre">.modality='mesh'</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by sub-sampling the mesh as point-cloud and sets <code class="docutils literal notranslate"><span class="pre">.modality='mesh'</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Blob</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">bytes</span></code></p></td>
-<td><p>Create a sub-Document, fill in <code class="docutils literal notranslate"><span class="pre">doc.blob</span></code> by the given value or reading from the path</p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.blob</span></code> by the given value or reading from the path</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Tabular</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code> (file name)</p></td>
+<td><p>Reads a CSV file, creates a sub-Document for each line and fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by considering the first row as the column names and mapping the following lines into the corresponding values.</p></td>
 </tr>
 </tbody>
 </table></div>
-</li>
+<ul>
 <li><p>A class field labeled with <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> will create sub-Documents under <code class="docutils literal notranslate"><span class="pre">root.chunks[0].chunks</span></code>. For example,</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--3-input--1" name="tab-set--3" type="radio"/><label class="tab-label" for="tab-set--3-input--1">Field in List[Image] </label><div class="tab-content docutils">
@@ -1069,7 +1074,7 @@ False
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 06, 2022</div>
+                            Last updated on May 12, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

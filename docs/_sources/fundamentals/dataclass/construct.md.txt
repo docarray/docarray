@@ -304,15 +304,16 @@ This section explains the behavior of field annotations in details.
 (type-list)=
 - The annotation type determines how the sub-Document is constructed. For example, annotating a field as `Image` will instruct the construction to fill in `doc.tensor` by reading the image URI. Annotating a field as `JSON` will instruct the construction to fill in `doc.tags`. The complete behavior table can be found below:
     
-    | Type annotation | Accepted value types   | Behavior                                                                                                       |
-    |-----------------|------------------------|----------------------------------------------------------------------------------------------------------------|
-    | `Image`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the image and set `.modality='image'`                   |
-    | `Text`          | `str`                  | Create a sub-Document, fill in `doc.text` by the given value and set `.modality='text'`                        |
-    | `Audio`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the audio and set `.modality='audio'`                   |
-    | `JSON`          | `Dict`                 | Create a sub-Document, fill in `doc.tags` by the given value and set `.modality='json'`                        |
-    | `Video`         | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by reading the video and set `.modality='video'`                   |
-    | `Mesh`          | `str`, `numpy.ndarray` | Create a sub-Document, fill in `doc.tensor` by sub-sampling the mesh as point-cloud and set `.modality='mesh'` |
-    | `Blob`          | `str`, `bytes`         | Create a sub-Document, fill in `doc.blob` by the given value or reading from the path                          |
+| Type annotation | Accepted value types   | Behavior                                                                                                                                                                                       |
+|-----------------|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Image`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the image and sets `.modality='image'`                                                                                                |
+| `Text`          | `str`                  | Creates a sub-Document, fills in `doc.text` by the given value and sets `.modality='text'`                                                                                                     |
+| `Audio`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the audio and sets `.modality='audio'`                                                                                                |
+| `JSON`          | `Dict`                 | Creates a sub-Document, fills in `doc.tags` by the given value and sets `.modality='json'`                                                                                                     |
+| `Video`         | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by reading the video and sets `.modality='video'`                                                                                                |
+| `Mesh`          | `str`, `numpy.ndarray` | Creates a sub-Document, fills in `doc.tensor` by sub-sampling the mesh as point-cloud and sets `.modality='mesh'`                                                                              |
+| `Blob`          | `str`, `bytes`         | Creates a sub-Document, fills in `doc.blob` by the given value or reading from the path                                                                                                        |
+| `Tabular`       | `str` (file name)      | Reads a CSV file, creates a sub-Document for each line and fills in `doc.tags` by considering the first row as the column names and mapping the following lines into the corresponding values. |
 
 - A class field labeled with `List[Type]` will create sub-Documents under `root.chunks[0].chunks`. For example,
     
