@@ -32,11 +32,18 @@ class WeaviateConfig:
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
-    n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
+    # vectorIndexConfig parameters
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
     timeout_config: Optional[Tuple[int, int]] = None
     max_connections: Optional[int] = None
+    dynamic_ef_min: Optional[int] = field(default=100)
+    dynamic_ef_max: Optional[int] = field(default=500)
+    dynamic_ef_factor: Optional[int] = field(default=8)
+    vector_cache_max_objects: Optional[Union[int, str]] = field(default="2M")
+    flat_search_cutoff: Optional[int] = field(default=40000)
+    cleanup_interval_seconds: Optional[int] = None
+    skip: Optional[bool] = False
 
 
 class BackendMixin(BaseBackendMixin):
@@ -120,6 +127,13 @@ class BackendMixin(BaseBackendMixin):
             'ef': self._config.ef,
             'efConstruction': self._config.ef_construction,
             'maxConnections': self._config.max_connections,
+            'dynamicEfMin': self._config.dynamic_ef_min,
+            'dynamicEfMax': self._config.dynamic_ef_max,
+            'dynamicEfFactor': self._config.dynamic_ef_factor,
+            'vectorCacheMaxObjects': self._config.vector_cache_max_objects,
+            'flatSearchCutoff': self._config.flat_search_cutoff,
+            'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
+            'skip': self._config.skip
         }
 
         return {
