@@ -134,7 +134,7 @@ class BackendMixin(BaseBackendMixin):
             'vectorCacheMaxObjects': self._config.vector_cache_max_objects,
             'flatSearchCutoff': self._config.flat_search_cutoff,
             'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
-            'skip': self._config.skip
+            'skip': self._config.skip,
         }
 
         return {
