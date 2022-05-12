@@ -37,13 +37,13 @@ class WeaviateConfig:
     ef_construction: Optional[int] = None
     timeout_config: Optional[Tuple[int, int]] = None
     max_connections: Optional[int] = None
-    dynamic_ef_min: Optional[int] = field(default=100)
-    dynamic_ef_max: Optional[int] = field(default=500)
-    dynamic_ef_factor: Optional[int] = field(default=8)
-    vector_cache_max_objects: Optional[Union[int, str]] = field(default="2M")
-    flat_search_cutoff: Optional[int] = field(default=40000)
+    dynamic_ef_min: Optional[int] = None
+    dynamic_ef_max: Optional[int] = None
+    dynamic_ef_factor: Optional[int] = None
+    vector_cache_max_objects: Optional[Union[int, str]] = None
+    flat_search_cutoff: Optional[int] = None
     cleanup_interval_seconds: Optional[int] = None
-    skip: Optional[bool] = False
+    skip: Optional[bool] = None
 
 
 class BackendMixin(BaseBackendMixin):
