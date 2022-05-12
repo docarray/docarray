@@ -7,8 +7,9 @@ def test_weaviate_hnsw(start_storage):
     da = DocumentArray(
         storage='weaviate',
         config={'n_dim': 100, 'ef': 100, 'ef_construction': 100, 'max_connections': 16,
-                'dynamic_ef_min': 50, 'dynamic_ef_max': 300, 'dynamic_ef_factor': 4, 'vector_cache_max_objects': '1M',
-                'flat_search_cutoff': 20000, 'cleanup_interval_seconds': 1000, 'skip': True},
+                'dynamic_ef_min': 50, 'dynamic_ef_max': 300, 'dynamic_ef_factor': 4,
+                'vector_cache_max_objects': 1000000, 'flat_search_cutoff': 20000,
+                'cleanup_interval_seconds': 1000, 'skip': True}
     )
 
     result = requests.get('http://localhost:8080/v1/schema').json()

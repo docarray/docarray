@@ -41,7 +41,7 @@ class WeaviateConfig:
     dynamic_ef_min: Optional[int] = None
     dynamic_ef_max: Optional[int] = None
     dynamic_ef_factor: Optional[int] = None
-    vector_cache_max_objects: Optional[Union[int, str]] = None
+    vector_cache_max_objects: Optional[int] = None
     flat_search_cutoff: Optional[int] = None
     cleanup_interval_seconds: Optional[int] = None
     skip: Optional[bool] = None
