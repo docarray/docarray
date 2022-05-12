@@ -32,6 +32,7 @@ class WeaviateConfig:
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
+    n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
     # vectorIndexConfig parameters
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
