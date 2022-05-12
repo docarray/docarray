@@ -1,7 +1,8 @@
-from typing import Union, Optional
+from typing import Union, Optional, Iterable
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
+from ...memory import DocumentArrayInMemory
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -67,8 +68,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             return False
 
     def __len__(self) -> int:
-        r = self._sql(f'SELECT COUNT(*) FROM {self._table_name}')
-        return r.fetchone()[0]
+        request = self._sql(f'SELECT COUNT(*) FROM {self._table_name}')
+        return request.fetchone()[0]
 
     def __repr__(self):
         return f'<DocumentArray[SQLite] (length={len(self)}) at {id(self)}>'
@@ -80,3 +81,16 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             and type(self._config) is type(other._config)
             and self._config == other._config
         )
+
+    def extend(self, docs: Iterable['Document']) -> None:
+        if len(docs) == 0:
+            return
+
+        initial_len = len(self)
+        triplets = [(doc.id, doc, initial_len + k) for k, doc in enumerate(docs)]
+        self._sql_many(
+            f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
+            triplets,
+        )
+        self._offset2ids.extend([doc.id for doc in docs])
+        self._commit()
