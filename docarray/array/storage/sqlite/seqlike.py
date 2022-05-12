@@ -83,14 +83,13 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         )
 
     def extend(self, docs: Iterable['Document']) -> None:
-        if len(docs) == 0:
-            return
 
-        initial_len = len(self)
-        triplets = [(doc.id, doc, initial_len + k) for k, doc in enumerate(docs)]
-        self._sql_many(
-            f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-            triplets,
-        )
-        self._offset2ids.extend([doc.id for doc in docs])
+        self_len = len(self)
+        for doc in docs:
+            self._sql(
+                f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
+                (doc.id, doc, self_len),
+            )
+            self._offset2ids.append(doc.id)
+            self_len += 1
         self._commit()

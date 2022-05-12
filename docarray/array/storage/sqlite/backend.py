@@ -43,9 +43,6 @@ class BackendMixin(BaseBackendMixin):
     def _sql(self, *args, **kwargs) -> 'sqlite3.Cursor':
         return self._cursor.execute(*args, **kwargs)
 
-    def _sql_many(self, request, values) -> 'sqlite3.Cursor':
-        return self._cursor.executemany(request, values)
-
     def _commit(self):
         self._connection.commit()
 
