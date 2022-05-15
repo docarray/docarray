@@ -14,7 +14,7 @@ Once `.embeddings` is set, one can use {meth}`~docarray.array.mixins.find.FindMi
 Though both `.find()` and `.match()` is about finding nearest neighbours of a given "query" and both accpet similar arguments, there are some differences between them:
 
 ##### Which side is the query at?
-- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neightbours you should write `one_million_docs.find(query)`;  
+- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neighbours you should write `one_million_docs.find(query)`;  
 - `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and save the results to A". So with `.match()` you should write `query.match(one_million_docs)`.
 
 ##### What is the type of the query?
