@@ -123,7 +123,7 @@ class BackendMixin(BaseBackendMixin):
             'maxConnections': self._config.max_connections,
         }
 
-        return {
+        base_classes = {
             'classes': [
                 {
                     'class': cls_name,
@@ -151,6 +151,22 @@ class BackendMixin(BaseBackendMixin):
                 },
             ]
         }
+        for col, coltype in self._config.columns:
+            new_class = {
+                'class': cls_name + col[0].upper() + col[1:],
+                "vectorizer": "none",
+                'vectorIndexConfig': {'skip': False},
+                'properties': [
+                    {
+                        'dataType': [coltype],
+                        'name': cls_name + col,
+                        'indexInverted': False,
+                    },
+                ],
+            }
+            base_classes['classes'].append(new_class)
+
+        return base_classes
 
     def _load_or_create_weaviate_schema(self):
         """Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object
