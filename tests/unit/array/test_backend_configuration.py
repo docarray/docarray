@@ -12,7 +12,6 @@ def test_weaviate_hnsw(start_storage):
     result = requests.get('http://localhost:8080/v1/schema').json()
 
     classes = result.get('classes', [])
-    assert len(classes) == 2
     main_class = list(
         filter(lambda class_element: class_element['class'] == da._config.name, classes)
     )
