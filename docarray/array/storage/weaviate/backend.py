@@ -43,6 +43,8 @@ class WeaviateConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
+    TYPE_MAP = {'str': 'string', 'float': 'number', 'int': 'int'}
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -155,10 +157,10 @@ class BackendMixin(BaseBackendMixin):
             new_class = {
                 'class': cls_name + col[0].upper() + col[1:],
                 "vectorizer": "none",
-                'vectorIndexConfig': {'skip': False},
+                'vectorIndexConfig': {'skip': True},
                 'properties': [
                     {
-                        'dataType': [coltype],
+                        'dataType': [self._map_type(coltype)],
                         'name': cls_name + col,
                         'indexInverted': False,
                     },
