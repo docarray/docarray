@@ -92,6 +92,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2249,4 +2250,20 @@
 
  - [[```952a0b5b```](https://github.com/jina-ai/docarray/commit/952a0b5bcb708b4fcbe531d016f0bb0309cd3043)] __-__ modify elasto hosts typehint (#333) (*AlaeddineAbdessalem*)
  - [[```d91d21ea```](https://github.com/jina-ai/docarray/commit/d91d21ea6aaab775142a8511ed931b635e1b7fb8)] __-__ __version__: the next version will be 0.13.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-12></a>
+## Release Note (`0.13.12`)
+
+> Release time: 2022-05-17 07:43:15
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```681a76cb```](https://github.com/jina-ai/docarray/commit/681a76cb49e92d4c63f48d960dac169a04356417)] __-__ perf[sqlite]: batch update on sqlite extend (#340) (*David Buchaca Prats*)
+ - [[```4bef4e79```](https://github.com/jina-ai/docarray/commit/4bef4e794696fae590237433a621744d5453b1b5)] __-__ __version__: the next version will be 0.13.12 (*Jina Dev Bot*)
 
