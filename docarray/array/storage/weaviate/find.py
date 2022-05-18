@@ -29,22 +29,36 @@ if TYPE_CHECKING:
 
 
 class FindMixin:
-    def _find_similar_vectors(self, query: 'WeaviateArrayType', limit=10):
+    def _find_similar_vectors(
+        self, query: 'WeaviateArrayType', limit=10, filter: Optional[Dict] = None
+    ):
         query = to_numpy_array(query)
         is_all_zero = np.all(query == 0)
         if is_all_zero:
             query = query + EPSILON
 
         query_dict = {'vector': query}
-        results = (
-            self._client.query.get(
-                self._class_name,
-                ['_serialized', '_additional {certainty}', '_additional {id}'],
+        if filter:
+            results = (
+                self._client.query.get(
+                    self._class_name,
+                    ['_serialized', '_additional {certainty}', '_additional {id}'],
+                )
+                .with_where(filter)
+                .with_limit(limit)
+                .with_near_vector(query_dict)
+                .do()
             )
-            .with_limit(limit)
-            .with_near_vector(query_dict)
-            .do()
-        )
+        else:
+            results = (
+                self._client.query.get(
+                    self._class_name,
+                    ['_serialized', '_additional {certainty}', '_additional {id}'],
+                )
+                .with_limit(limit)
+                .with_near_vector(query_dict)
+                .do()
+            )
         docs = []
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
@@ -86,10 +100,10 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query, limit=limit)]
+            return [self._find_similar_vectors(query, limit=limit, filter=filter)]
         else:
             closest_docs = []
             for q in query:
-                da = self._find_similar_vectors(q, limit=limit)
+                da = self._find_similar_vectors(q, limit=limit, filter=filter)
                 closest_docs.append(da)
             return closest_docs
