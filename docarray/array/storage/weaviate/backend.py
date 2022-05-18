@@ -81,6 +81,9 @@ class BackendMixin(BaseBackendMixin):
         )
         self._config = config
 
+        if self._config.columns is None:
+            self._config.columns = []
+
         self._schemas = self._load_or_create_weaviate_schema()
 
         _REGISTRY[self.__class__.__name__][self._class_name].append(self)
