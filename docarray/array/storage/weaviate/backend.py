@@ -175,7 +175,7 @@ class BackendMixin(BaseBackendMixin):
             new_property = {
                 'dataType': [self._map_type(coltype)],
                 'name': col,
-                'indexInverted': False,
+                'indexInverted': True,
             }
             base_classes['classes'][0]['properties'].append(new_property)
 
