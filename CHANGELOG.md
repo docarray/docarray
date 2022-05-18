@@ -91,6 +91,8 @@
 
 
 
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2221,4 +2223,47 @@
 
  - [[```022db38e```](https://github.com/jina-ai/docarray/commit/022db38e05b765591519251aa1dfe08a0433054b)] __-__ complete backends dependency tags (#328) (*AlaeddineAbdessalem*)
  - [[```6c4ee9dd```](https://github.com/jina-ai/docarray/commit/6c4ee9dd920f06397f4ac1b73c9ba3d7d3e03543)] __-__ __version__: the next version will be 0.13.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-11></a>
+## Release Note (`0.13.11`)
+
+> Release time: 2022-05-12 07:52:07
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Alaeddine Abdessalem,  Nan Wang,  felix-wang,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```f52e8e23```](https://github.com/jina-ai/docarray/commit/f52e8e23a7db63f0e64cef10af4c56dcce11f5c3)] __-__ apply hnsw parameters to the main class not the meta class (#337) (*AlaeddineAbdessalem*)
+ - [[```c556098f```](https://github.com/jina-ai/docarray/commit/c556098f5586c919acf5de89e5b8ab05d1d73fbc)] __-__ filter_dict works with zero and empty str (#332) (*felix-wang*)
+
+### 📗 Documentation
+
+ - [[```3507ab7a```](https://github.com/jina-ai/docarray/commit/3507ab7aca810679fb0534f53742ba3389f0c0b4)] __-__ update document attributes figure (#338) (*AlaeddineAbdessalem*)
+ - [[```8df37c3c```](https://github.com/jina-ai/docarray/commit/8df37c3c92a4deeac4f33c475157bcce919e3e47)] __-__ fix serialize config link (*Alaeddine Abdessalem*)
+ - [[```991bfddc```](https://github.com/jina-ai/docarray/commit/991bfddc33b0bacfb200544d1bcc492afe6f18b1)] __-__ add tabular modality into the table (#330) (*Nan Wang*)
+
+### 🍹 Other Improvements
+
+ - [[```952a0b5b```](https://github.com/jina-ai/docarray/commit/952a0b5bcb708b4fcbe531d016f0bb0309cd3043)] __-__ modify elasto hosts typehint (#333) (*AlaeddineAbdessalem*)
+ - [[```d91d21ea```](https://github.com/jina-ai/docarray/commit/d91d21ea6aaab775142a8511ed931b635e1b7fb8)] __-__ __version__: the next version will be 0.13.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-12></a>
+## Release Note (`0.13.12`)
+
+> Release time: 2022-05-17 07:43:15
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```681a76cb```](https://github.com/jina-ai/docarray/commit/681a76cb49e92d4c63f48d960dac169a04356417)] __-__ perf[sqlite]: batch update on sqlite extend (#340) (*David Buchaca Prats*)
+ - [[```4bef4e79```](https://github.com/jina-ai/docarray/commit/4bef4e794696fae590237433a621744d5453b1b5)] __-__ __version__: the next version will be 0.13.12 (*Jina Dev Bot*)
 

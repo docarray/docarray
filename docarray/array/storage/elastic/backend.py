@@ -10,6 +10,7 @@ from typing import (
     Iterable,
     Any,
     Tuple,
+    Mapping,
 )
 
 import numpy as np
@@ -31,7 +32,9 @@ if TYPE_CHECKING:
 class ElasticConfig:
     n_dim: int  # dims  in elastic
     distance: str = 'cosine'  # similarity in elastic
-    hosts: str = 'http://localhost:9200'
+    hosts: Union[
+        str, List[Union[str, Mapping[str, Union[str, int]]]], None
+    ] = 'http://localhost:9200'
     index_name: Optional[str] = None
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
