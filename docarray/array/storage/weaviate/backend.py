@@ -172,19 +172,12 @@ class BackendMixin(BaseBackendMixin):
             ]
         }
         for col, coltype in self._config.columns:
-            new_class = {
-                'class': cls_name + col[0].upper() + col[1:],
-                "vectorizer": "none",
-                'vectorIndexConfig': {'skip': True},
-                'properties': [
-                    {
-                        'dataType': [self._map_type(coltype)],
-                        'name': cls_name + col,
-                        'indexInverted': False,
-                    },
-                ],
+            new_property = {
+                'dataType': [self._map_type(coltype)],
+                'name': col,
+                'indexInverted': False,
             }
-            base_classes['classes'].append(new_class)
+            base_classes['classes'][0]['properties'].append(new_property)
 
         return base_classes
 
