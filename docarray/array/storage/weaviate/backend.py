@@ -315,8 +315,13 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
+        extra_columns = {col: value.tags.get(col) for col, _ in self._config.columns}
+
         return dict(
-            data_object={'_serialized': value.to_base64(**self._serialize_config)},
+            data_object={
+                '_serialized': value.to_base64(**self._serialize_config),
+                **extra_columns,
+            },
             class_name=self._class_name,
             uuid=self._map_id(value.id),
             vector=self._map_embedding(value.embedding),
