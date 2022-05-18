@@ -93,6 +93,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2266,4 +2267,27 @@
 
  - [[```681a76cb```](https://github.com/jina-ai/docarray/commit/681a76cb49e92d4c63f48d960dac169a04356417)] __-__ perf[sqlite]: batch update on sqlite extend (#340) (*David Buchaca Prats*)
  - [[```4bef4e79```](https://github.com/jina-ai/docarray/commit/4bef4e794696fae590237433a621744d5453b1b5)] __-__ __version__: the next version will be 0.13.12 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-13></a>
+## Release Note (`0.13.13`)
+
+> Release time: 2022-05-18 07:01:39
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joni Latvala,  Kevin Zehnder,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```72aa3b21```](https://github.com/jina-ai/docarray/commit/72aa3b210e449843fbd061d070c7512b71550a38)] __-__ added support for all Weaviate HNSW configuration parameters (#341) (*Joni Latvala*)
+
+### 📗 Documentation
+
+ - [[```02e87247```](https://github.com/jina-ai/docarray/commit/02e872478ca4f2526a1f3b5379cbaffca9437720)] __-__ fix typo (#342) (*Kevin Zehnder*)
+
+### 🍹 Other Improvements
+
+ - [[```07d941e3```](https://github.com/jina-ai/docarray/commit/07d941e3583260166e405c3489ac900a4ad9bd93)] __-__ __version__: the next version will be 0.13.13 (*Jina Dev Bot*)
 
