@@ -6,6 +6,7 @@ import pytest
 from docarray.helper import (
     protocol_and_compress_from_file_path,
     add_protocol_and_compress_to_file_path,
+    filter_dict,
     get_full_version,
 )
 
@@ -50,6 +51,11 @@ def test_add_protocol_and_compress_to_file_path(file_path, compress, protocol):
         assert compress in file_path_suffixes
     if protocol:
         assert protocol in file_path_suffixes
+
+
+def test_filter_dict():
+    conf_dict = {'x': 0, 'y': 1, 'z': None, 'k': ''}
+    assert list(filter_dict(conf_dict).keys()) == ['x', 'y', 'k']
 
 
 def test_ci_vendor():

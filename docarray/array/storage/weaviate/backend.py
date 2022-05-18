@@ -33,10 +33,18 @@ class WeaviateConfig:
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
+    # vectorIndexConfig parameters
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
     timeout_config: Optional[Tuple[int, int]] = None
     max_connections: Optional[int] = None
+    dynamic_ef_min: Optional[int] = None
+    dynamic_ef_max: Optional[int] = None
+    dynamic_ef_factor: Optional[int] = None
+    vector_cache_max_objects: Optional[int] = None
+    flat_search_cutoff: Optional[int] = None
+    cleanup_interval_seconds: Optional[int] = None
+    skip: Optional[bool] = None
     columns: Optional[List[Tuple[str, str]]] = None
 
 
@@ -126,6 +134,13 @@ class BackendMixin(BaseBackendMixin):
             'ef': self._config.ef,
             'efConstruction': self._config.ef_construction,
             'maxConnections': self._config.max_connections,
+            'dynamicEfMin': self._config.dynamic_ef_min,
+            'dynamicEfMax': self._config.dynamic_ef_max,
+            'dynamicEfFactor': self._config.dynamic_ef_factor,
+            'vectorCacheMaxObjects': self._config.vector_cache_max_objects,
+            'flatSearchCutoff': self._config.flat_search_cutoff,
+            'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
+            'skip': self._config.skip,
         }
 
         base_classes = {
@@ -133,7 +148,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name,
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': False},
+                    'vectorIndexConfig': {'skip': False, **filter_dict(hnsw_config)},
                     'properties': [
                         {
                             'dataType': ['blob'],
@@ -145,7 +160,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name + 'Meta',
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': True, **filter_dict(hnsw_config)},
+                    'vectorIndexConfig': {'skip': True},
                     'properties': [
                         {
                             'dataType': ['string[]'],
