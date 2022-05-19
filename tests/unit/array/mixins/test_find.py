@@ -1,3 +1,5 @@
+from itertools import product
+
 import numpy as np
 import pytest
 
@@ -204,36 +206,6 @@ numeric_operators_annlite = {
     '$neq': operator.ne,
 }
 
-
-@pytest.mark.parametrize('operator', list(numeric_operators_annlite.keys()))
-def test_search_annlite_pre_filtering(tmpdir, operator):
-
-    Nq = 5
-    D = 128
-    columns = [('price', float), ('category', str)]
-    da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': D, 'columns': columns, 'data_path': str(tmpdir)},
-    )
-
-    X = np.random.random((Nq, D)).astype(np.float32)
-    query_da = DocumentArray([Document(embedding=X[i]) for i in range(Nq)])
-
-    thresholds = [20, 50, 100, 400]
-
-    for threshold in thresholds:
-        da.find(
-            query_da, filter={'price': {operator: threshold}}, include_metadata=True
-        )
-        for query in query_da:
-            assert all(
-                [
-                    numeric_operators_annlite[operator](m.tags['price'], threshold)
-                    for m in query.matches
-                ]
-            )
-
-
 numeric_operators_weaviate = {
     'GreaterThanEqual': operator.ge,
     'GreaterThan': operator.gt,
@@ -244,36 +216,7 @@ numeric_operators_weaviate = {
 }
 
 
-@pytest.mark.parametrize('operator', list(numeric_operators_weaviate.keys()))
-def test_search_weaviate_pre_filtering(operator):
-
-    n_dim = 128
-    da = DocumentArray(
-        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
-
-    da.extend(
-        [
-            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
-            for i in range(50)
-        ]
-    )
-    thresholds = [10, 20, 30]
-
-    for threshold in thresholds:
-        results = da.find(
-            np.random.rand(n_dim),
-            filter={"path": ["price"], "operator": operator, "valueInt": threshold},
-        )
-        assert all(
-            [
-                numeric_operators_weaviate[operator](r.tags['price'], threshold)
-                for r in results
-            ]
-        )
-
-
-numeric_operators_qrant = {
+numeric_operators_qdrant = {
     'gte': operator.ge,
     'gt': operator.gt,
     'lte': operator.le,
@@ -283,12 +226,69 @@ numeric_operators_qrant = {
 }
 
 
-@pytest.mark.parametrize('operator', list(numeric_operators_qrant.keys()))
-def test_search_qdrant_pre_filtering(operator):
-
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueInt': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'range': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['gte', 'gt', 'lte', 'lt']
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'value': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['eq', 'neq']
+        ],
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
+    ],
+)
+def test_search_pre_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage
+):
     n_dim = 128
     da = DocumentArray(
-        storage='qdrant', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
     )
 
     da.extend(
@@ -301,16 +301,10 @@ def test_search_qdrant_pre_filtering(operator):
 
     for threshold in thresholds:
 
-        if operator in ('eq', 'neq'):
-            filter = {'key': 'price', 'value': {operator: threshold}}
-        else:
-            filter = {'key': 'price', 'range': {operator: threshold}}
+        filter = filter_gen(operator, threshold)
 
-        results = da.find(np.random.rand(n_dim), filter={'must': [filter]})
+        results = da.find(np.random.rand(n_dim), filter=filter)
 
         assert all(
-            [
-                numeric_operators_qrant[operator](r.tags['price'], threshold)
-                for r in results
-            ]
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
         )
