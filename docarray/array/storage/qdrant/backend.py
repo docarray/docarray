@@ -88,6 +88,9 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
         self._persist = bool(self._config.collection_name)
 
+        if self._config.columns is None:
+            self._config.columns = []
+
         self._config.collection_name = (
             self.__class__.__name__ + random_identity()
             if self._config.collection_name is None
