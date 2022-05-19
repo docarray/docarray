@@ -61,8 +61,17 @@ class FindMixin:
             )
         docs = []
 
+        found_results = (
+            results.get('data', {}).get('Get', {}).get(self._class_name, []) or []
+        )
+        if 'errors' in results:
+            errors = '\n'.join(map(lambda error: error['message'], results['errors']))
+            raise ValueError(
+                f'find failed, please check your filter query. Errors: \n{errors}'
+            )
+
         # The serialized document is stored in results['data']['Get'][self._class_name]
-        for result in results.get('data', {}).get('Get', {}).get(self._class_name, []):
+        for result in found_results:
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
             certainty = result['_additional']['certainty']
 
@@ -84,7 +93,7 @@ class FindMixin:
         query: 'WeaviateArrayType',
         limit: int = 10,
         filter: Optional[Dict] = None,
-        **kwargs
+        **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
