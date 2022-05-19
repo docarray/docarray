@@ -33,6 +33,8 @@ class AnnliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
+    TYPE_MAP = {'str': 'TEXT', 'float': 'float', 'int': 'integer'}
+
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
             embedding = np.zeros(self.n_dim, dtype=np.float32)
@@ -62,6 +64,13 @@ class BackendMixin(BaseBackendMixin):
             from tempfile import TemporaryDirectory
 
             config.data_path = TemporaryDirectory().name
+
+        if config.columns:
+            for i in range(len(config.columns)):
+                config.columns[i] = (
+                    config.columns[i][0],
+                    self._map_type(config.columns[i][1]),
+                )
 
         self._config = config
 
