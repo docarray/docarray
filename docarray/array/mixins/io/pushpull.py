@@ -33,7 +33,6 @@ def _get_cloud_api() -> str:
 
     :return: Cloud Api Url
     """
-    if 'JINA_HUBBLE_REGISTRY' in os.environ:
     return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
 
 
