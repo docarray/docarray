@@ -94,6 +94,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2290,4 +2291,27 @@
 ### 🍹 Other Improvements
 
  - [[```07d941e3```](https://github.com/jina-ai/docarray/commit/07d941e3583260166e405c3489ac900a4ad9bd93)] __-__ __version__: the next version will be 0.13.13 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-14></a>
+## Release Note (`0.13.14`)
+
+> Release time: 2022-05-19 10:12:39
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Zhaofeng Miao,  Sha Zhou,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```f30b7e99```](https://github.com/jina-ai/docarray/commit/f30b7e99cc516bfbf6188c8983d96259e46eab4e)] __-__ __hubble__: use fixed domain for hubble api (#349) (*Zhaofeng Miao*)
+
+### 🐞 Bug fixes
+
+ - [[```4f2abf8a```](https://github.com/jina-ai/docarray/commit/4f2abf8a286cf435eff7e5b3a970df796e3f9a6e)] __-__ __qabot__: hide the slot elements on the docs page (#347) (*Sha Zhou*)
+
+### 🍹 Other Improvements
+
+ - [[```d8cc3796```](https://github.com/jina-ai/docarray/commit/d8cc3796996c8bfc77926c28a2f300eea7b5aa23)] __-__ __version__: the next version will be 0.13.14 (*Jina Dev Bot*)
 
