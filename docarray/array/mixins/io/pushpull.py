@@ -34,9 +34,7 @@ def _get_cloud_api() -> str:
     :return: Cloud Api Url
     """
     if 'JINA_HUBBLE_REGISTRY' in os.environ:
-        return os.environ['JINA_HUBBLE_REGISTRY']
-
-    return 'https://api.hubble.jina.ai'
+    return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
 
 
 class PushPullMixin:
