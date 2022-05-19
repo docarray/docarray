@@ -195,7 +195,7 @@ def test_find_by_tag(storage, config, start_storage):
     assert all([isinstance(result, DocumentArray) for result in results]) == True
 
 
-numeric_operators = {
+numeric_operators_annlite = {
     '$gte': operator.ge,
     '$gt': operator.gt,
     '$lte': operator.le,
@@ -205,8 +205,8 @@ numeric_operators = {
 }
 
 
-@pytest.mark.parametrize('operator', list(numeric_operators.keys()))
-def test_search_annlite_filter(tmpdir, operator):
+@pytest.mark.parametrize('operator', list(numeric_operators_annlite.keys()))
+def test_search_annlite_pre_filtering(tmpdir, operator):
 
     Nq = 5
     D = 128
@@ -226,10 +226,91 @@ def test_search_annlite_filter(tmpdir, operator):
             query_da, filter={'price': {operator: threshold}}, include_metadata=True
         )
         for query in query_da:
-            assert len(query.matches) > 0
             assert all(
                 [
-                    numeric_operators[operator](m.tags['price'], threshold)
+                    numeric_operators_annlite[operator](m.tags['price'], threshold)
                     for m in query.matches
                 ]
             )
+
+
+numeric_operators_weaviate = {
+    'GreaterThanEqual': operator.ge,
+    'GreaterThan': operator.gt,
+    'LessThanEqual': operator.le,
+    'LessThan': operator.lt,
+    'Equal': operator.eq,
+    'NotEqual': operator.ne,
+}
+
+
+@pytest.mark.parametrize('operator', list(numeric_operators_weaviate.keys()))
+def test_search_weaviate_pre_filtering(operator):
+
+    n_dim = 128
+    da = DocumentArray(
+        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+        results = da.find(
+            np.random.rand(n_dim),
+            filter={"path": ["price"], "operator": operator, "valueInt": threshold},
+        )
+        assert all(
+            [
+                numeric_operators_weaviate[operator](r.tags['price'], threshold)
+                for r in results
+            ]
+        )
+
+
+numeric_operators_qrant = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'neq': operator.ne,
+}
+
+
+@pytest.mark.parametrize('operator', list(numeric_operators_qrant.keys()))
+def test_search_qdrant_pre_filtering(operator):
+
+    n_dim = 128
+    da = DocumentArray(
+        storage='qdrant', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        if operator in ('eq', 'neq'):
+            filter = {'key': 'price', 'value': {operator: threshold}}
+        else:
+            filter = {'key': 'price', 'range': {operator: threshold}}
+
+        results = da.find(np.random.rand(n_dim), filter={'must': [filter]})
+
+        assert all(
+            [
+                numeric_operators_qrant[operator](r.tags['price'], threshold)
+                for r in results
+            ]
+        )
