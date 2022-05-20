@@ -60,15 +60,15 @@ class FindMixin:
                 .do()
             )
         docs = []
-
-        found_results = (
-            results.get('data', {}).get('Get', {}).get(self._class_name, []) or []
-        )
         if 'errors' in results:
             errors = '\n'.join(map(lambda error: error['message'], results['errors']))
             raise ValueError(
                 f'find failed, please check your filter query. Errors: \n{errors}'
             )
+
+        found_results = (
+            results.get('data', {}).get('Get', {}).get(self._class_name, []) or []
+        )
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in found_results:
