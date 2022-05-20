@@ -118,7 +118,7 @@ class BackendMixin(BaseBackendMixin):
         :return: string representing the name of  weaviate class/schema name of
             this :class:`DocumentArrayWeaviate` object
         """
-        return ''.join([i for i in uuid.uuid1().hex if not i.isdigit()]).capitalize()
+        return f'Class{uuid.uuid4().hex}'
 
     def _get_schema_by_name(self, cls_name: str) -> Dict:
         """Return the schema dictionary object with the class name
