@@ -38,27 +38,19 @@ class FindMixin:
             query = query + EPSILON
 
         query_dict = {'vector': query}
+
+        query_builder = (
+            self._client.query.get(self._class_name, '_serialized')
+            .with_additional(['id', 'certainty'])
+            .with_limit(limit)
+            .with_near_vector(query_dict)
+        )
+
         if filter:
-            results = (
-                self._client.query.get(
-                    self._class_name,
-                    ['_serialized', '_additional {certainty}', '_additional {id}'],
-                )
-                .with_where(filter)
-                .with_limit(limit)
-                .with_near_vector(query_dict)
-                .do()
-            )
-        else:
-            results = (
-                self._client.query.get(
-                    self._class_name,
-                    ['_serialized', '_additional {certainty}', '_additional {id}'],
-                )
-                .with_limit(limit)
-                .with_near_vector(query_dict)
-                .do()
-            )
+            query_builder = query_builder.with_where(filter)
+
+        results = query_builder.do()
+
         docs = []
         if 'errors' in results:
             errors = '\n'.join(map(lambda error: error['message'], results['errors']))
