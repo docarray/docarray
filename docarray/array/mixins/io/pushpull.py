@@ -29,27 +29,11 @@ def _get_hub_config() -> Optional[Dict]:
 
 @lru_cache()
 def _get_cloud_api() -> str:
-    """Get Cloud Api for transmiting data to the cloud.
+    """Get Cloud Api for transmitting data to the cloud.
 
-    :raises RuntimeError: Encounter error when fetching the cloud Api Url.
     :return: Cloud Api Url
     """
-    if 'JINA_HUBBLE_REGISTRY' in os.environ:
-        u = os.environ['JINA_HUBBLE_REGISTRY']
-    else:
-        try:
-            req = Request(
-                'https://api.jina.ai/hub/hubble.json',
-                headers={'User-Agent': 'Mozilla/5.0'},
-            )
-            with urlopen(req) as resp:
-                u = json.load(resp)['url']
-        except Exception as ex:
-            raise RuntimeError(
-                f'Can not fetch Cloud API address from {req.full_url}'
-            ) from ex
-
-    return u
+    return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
 
 
 class PushPullMixin:
