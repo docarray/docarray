@@ -35,7 +35,6 @@ class SqliteConfig:
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'DELETE'
     synchronous: str = 'OFF'
-    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):

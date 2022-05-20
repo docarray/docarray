@@ -65,14 +65,16 @@ class BackendMixin(BaseBackendMixin):
 
             config.data_path = TemporaryDirectory().name
 
-        if config.columns:
-            for i in range(len(config.columns)):
-                config.columns[i] = (
-                    config.columns[i][0],
-                    self._map_type(config.columns[i][1]),
-                )
-
         self._config = config
+
+        if self._config.columns is None:
+            self._config.columns = []
+
+        for i in range(len(self._config.columns)):
+            self._config.columns[i] = (
+                self._config.columns[i][0],
+                self._map_type(self._config.columns[i][1]),
+            )
 
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
