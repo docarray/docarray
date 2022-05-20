@@ -45,6 +45,7 @@ class WeaviateConfig:
     flat_search_cutoff: Optional[int] = None
     cleanup_interval_seconds: Optional[int] = None
     skip: Optional[bool] = None
+    distance: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -135,6 +136,7 @@ class BackendMixin(BaseBackendMixin):
             'flatSearchCutoff': self._config.flat_search_cutoff,
             'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
             'skip': self._config.skip,
+            'distance': self._config.distance,
         }
 
         return {
