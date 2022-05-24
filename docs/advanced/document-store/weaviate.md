@@ -172,19 +172,8 @@ Persist Documents with Weaviate.
 
 ## Vector search with filter
 
-Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
-
-| Name              | Description            | Equivalent Python operator |
-|-------------------|------------------------|----------------------------|
-| `GreaterThanEqual`| Greater or equal to    | `>=`                       |
-| `GreaterThan`     | Greater than           | `>`                        |
-| `LessThanEqual`   | Less or equal to       | `<=`                       |
-| `LessThan`        | Less than )            | `<`                        |
-| `Equal`           | Equal to               | `==`                       |
-| `NotEqual`        | Not equal to           | `!=`                       |
-
-Filters can be constructed following the guidelines provided in  [the weaviate documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
-
+Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
+in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
 
 ### Example of `.find` with a filter
 
@@ -241,7 +230,7 @@ for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-This would print
+This would print:
 
 ```bash
 Embeddings Nearest Neighbours with "price" at most 7:
@@ -257,5 +246,3 @@ Embeddings Nearest Neighbours without restriction:
  [1. 1. 1.]
  [2. 2. 2.]]
  ```
-
-Note that currently Weaviate only supports the cosine distance.

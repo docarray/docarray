@@ -136,17 +136,8 @@ print(da.find(np.random.random(D), limit=10))
 
 ## Vector search with filter
 
-Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
-
-
-| Name        | Description            | Equivalent Python operator |
-|-------------|------------------------|----------------------------|
-| `gte`       | Greater or equal to    | `>=`                       |
-| `gt`        | Greater than           | `>`                        |
-| `lte`       | Less or equal to       | `<=`                       |
-| `lt`        | Less than )            | `<`                        |
-| `eq`        | Equal to               | `==`                       |
-| `neq`       | Not equal to           | `!=`                       |
+Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
+in [Qdrant's Documentation](https://qdrant.tech/documentation/filtering/)
 
 
 ### Example of `.find` with a filter
@@ -203,7 +194,7 @@ for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-This would print
+This would print:
 
 ```
 Query vector: 	[8. 8. 8.]
