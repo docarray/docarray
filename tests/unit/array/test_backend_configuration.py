@@ -18,6 +18,7 @@ def test_weaviate_hnsw(start_storage):
             'flat_search_cutoff': 20000,
             'cleanup_interval_seconds': 1000,
             'skip': True,
+            'distance': 'l2-squared',
         },
     )
 
@@ -43,3 +44,4 @@ def test_weaviate_hnsw(start_storage):
     assert main_class.get('vectorIndexConfig', {}).get('flatSearchCutoff') == 20000
     assert main_class.get('vectorIndexConfig', {}).get('cleanupIntervalSeconds') == 1000
     assert main_class.get('vectorIndexConfig', {}).get('skip') is True
+    assert main_class.get('vectorIndexConfig', {}).get('distance') == 'l2-squared'
