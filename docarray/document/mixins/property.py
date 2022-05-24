@@ -1,7 +1,9 @@
 import mimetypes
+import warnings
 from typing import TYPE_CHECKING, Optional
 
 from ._property import _PropertyMixin
+from ...math.ndarray import is_vector
 
 if TYPE_CHECKING:
     from ...typing import DocumentContentType, ArrayType
@@ -86,6 +88,16 @@ class PropertyMixin(_PropertyMixin):
             value = MatchArray(value, reference_doc=self._data._reference_doc)
 
         self._data.matches = value
+
+    @_PropertyMixin.embedding.setter
+    def embedding(self, value: 'ArrayType'):
+
+        if is_vector(value):
+            warnings.warn(
+                'Your embedding should be a vector, function like find or match will break otherwise '
+            )
+
+        self._data.embedding = value
 
     @property
     def content_type(self) -> Optional[str]:

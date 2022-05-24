@@ -289,3 +289,24 @@ def detach_tensor_if_present(x: Any) -> Any:
 
         x = torch.tensor(x.detach().numpy())
     return x
+
+
+def is_vector(array: 'ArrayType') -> bool:
+    framework, _ = get_array_type(array)
+    if framework in ['numpy', 'torch', 'scipy', 'paddle', 'tensorflow']:
+        if len(array.shape) == 1:  # shape : (100,)
+            return True
+
+        elif len(array.shape) == 2:
+            if array.shape[0] == 1 or array.shape[1] == 1:  # shape : (1,100) or (100,1)
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    elif framework == 'python':
+        return True
+
+    else:
+        return False

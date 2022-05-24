@@ -5,7 +5,7 @@ import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
-from docarray.math.ndarray import get_array_rows, check_arraylike_equality
+from docarray.math.ndarray import get_array_rows, check_arraylike_equality, is_vector
 from docarray.proto.docarray_pb2 import NdArrayProto
 from docarray.proto.io import flush_ndarray, read_ndarray
 
@@ -53,12 +53,9 @@ def test_get_array_rows(data, expected_result, arraytype, ndarray_type):
         assert isinstance(r_data_array, np.ndarray)
 
 
-def get_ndarrays():
-    a = np.random.random([10, 3])
-    a[a > 0.5] = 0
+def get_multiple_array_backend(a):
     return [
         a,
-        a.tolist(),
         torch.tensor(a),
         tf.constant(a),
         paddle.to_tensor(a),
@@ -70,7 +67,50 @@ def get_ndarrays():
     ]
 
 
+def get_ndarrays():
+    a = np.random.random([10, 3])
+    a[a > 0.5] = 0
+    return get_multiple_array_backend(a) + [a.tolist()]
+
+
 @pytest.mark.parametrize('ndarray_val', get_ndarrays())
 def test_check_arraylike_equality(ndarray_val):
     assert check_arraylike_equality(ndarray_val, ndarray_val) == True
     assert check_arraylike_equality(ndarray_val, ndarray_val + ndarray_val) == False
+
+
+@pytest.mark.parametrize('vector', get_multiple_array_backend(np.zeros(100)))
+def test_check_is_vector(vector):
+    assert is_vector(vector)
+
+
+@pytest.mark.parametrize('vector', get_multiple_array_backend(np.zeros((1, 100))))
+def test_check_is_vector_2(vector):
+    assert is_vector(vector)
+
+
+@pytest.mark.parametrize('vector', get_multiple_array_backend(np.zeros((1, 100))))
+def test_check_is_vector_3(vector):
+    assert is_vector(vector)
+
+
+@pytest.mark.parametrize('vector', get_multiple_array_backend(np.zeros((2, 100))))
+def test_check_is_not_vector_3(vector):
+    assert not is_vector(vector)
+
+
+def get_multiple_array_no_sparse(a):
+    return [
+        a,
+        torch.tensor(a),
+        tf.constant(a),
+        paddle.to_tensor(a),
+        torch.tensor(a).to_sparse(),
+    ]
+
+
+@pytest.mark.parametrize(
+    'vector', get_multiple_array_no_sparse(np.zeros((3, 100, 100)))
+)
+def test_check_is_not_vector_3(vector):
+    assert not is_vector(vector)
