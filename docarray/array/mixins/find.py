@@ -132,18 +132,30 @@ class FindMixin:
 
         from ... import Document, DocumentArray
 
-        if isinstance(query, dict) and filter is None:
-            return self._filter(query)
-        elif query is None and isinstance(filter, dict):
-            return self._filter(filter)
+        if isinstance(query, dict):
+            if filter is None:
+                return self._filter(query)
+            else:
+                raise ValueError(
+                    'filter and query cannot be both dict type, set only one for filtering'
+                )
+        elif query is None:
+            if isinstance(filter, dict):
+                return self._filter(filter)
+            else:
+                raise ValueError('filter must be dict when query is None')
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
+            if filter is not None:
+                raise ValueError('cannot use filter with text search')
             result = self._find_by_text(query, index=index, limit=limit, **kwargs)
             if isinstance(query, str):
                 return result[0]
             else:
                 return result
+
+        # for all the rest, vector search will be performed
         elif isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
