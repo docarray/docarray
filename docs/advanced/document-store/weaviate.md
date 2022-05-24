@@ -167,3 +167,93 @@ print(results[0].text)
 ```text
 Persist Documents with Weaviate.
 ```
+
+
+## Search with filter
+
+Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
+
+| Name              | Description            | Equivalent Python operator |
+|-------------------|------------------------|----------------------------|
+| `GreaterThanEqual`| Greater or equal to    | `>=`                       |
+| `GreaterThan`     | Greater than           | `>`                        |
+| `LessThanEqual`   | Less or equal to       | `<=`                       |
+| `LessThan`        | Less than )            | `<`                        |
+| `Equal`           | Equal to               | `==`                       |
+| `NotEqual`        | Not equal to           | `!=`                       |
+
+ 
+
+### Example of `.find` with a filter
+
+Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
+has as tag `price` with value `i`. We can create such example with the following code:
+
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='qdrant',
+    config={
+        'n_dim': n_dim,
+        'columns': [('price', 'float')],
+        #'distance':distance
+    },
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+print('\nIndexed Embeddings:\n')
+for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
+prices must follow a filter. As an example, let us consider that retrieved documents must have `price` value lower
+or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
+
+Then the search with the proposed filter can implemented and used with the following code:
+
+```python
+max_price = 7
+n_limit = 4
+
+np_query = np.ones(n_dim) * 8
+print(f'\nQuery vector: \t{np_query}')
+
+filter = {'path': ['price'], 'operator': 'LowerThanEqual', 'valueInt': max_price}
+results = da.find(np_query, filter=filter, limit=n_limit)
+
+print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+This would print
+
+```bash
+Embeddings Nearest Neighbours with "price" at most 7:
+
+	embedding=[3. 3. 3.],	 price=3
+	embedding=[6. 6. 6.],	 price=6
+	embedding=[9. 9. 9.],	 price=9
+	embedding=[1. 1. 1.],	 price=1
+
+Embeddings Nearest Neighbours without restriction:
+ [[3. 3. 3.]
+ [6. 6. 6.]
+ [1. 1. 1.]
+ [2. 2. 2.]]
+ ```
+
+Note that currently Weaviate only supports the cosine distance.

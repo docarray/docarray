@@ -132,3 +132,86 @@ print(da.find(np.random.random(D), limit=10))
 ```bash
 <DocumentArray (length=10) at 4917906896>
 ```
+
+
+## Search with filter
+
+Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
+
+
+| Name        | Description            | Equivalent Python operator |
+|-------------|------------------------|----------------------------|
+| `gte`       | Greater or equal to    | `>=`                       |
+| `gt`        | Greater than           | `>`                        |
+| `lte`       | Less or equal to       | `<=`                       |
+| `lt`        | Less than )            | `<`                        |
+| `eq`        | Equal to               | `==`                       |
+| `neq`       | Not equal to           | `!=`                       |
+
+
+### Example of `.find` with a filter
+
+
+Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
+has as tag `price` with value `i`. We can create such example with the following code:
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+distance = 'euclidean'
+
+da = DocumentArray(
+    storage='qdrant',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'distance': distance},
+)
+
+print(f'\nDocumentArray distance: {distance}')
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+print('\nIndexed Embeddings:\n')
+for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
+prices must follow a filter. As an example, let us consider that retrieved documents must have `price` value lower
+or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
+
+Then the search with the proposed filter can implemented and used with the following code:
+
+```python
+max_price = 7
+n_limit = 4
+
+np_query = np.ones(n_dim) * 8
+print(f'\nQuery vector: \t{np_query}')
+
+filter = {'must': [{'key': 'price', 'range': {'lte': max_price}}]}
+results = da.find(np_query, filter=filter, limit=n_limit)
+
+print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+This would print
+
+```
+Query vector: 	[8. 8. 8.]
+
+Embeddings Nearest Neighbours with "price" at most 7:
+
+	embedding=[7. 7. 7.],	 price=7
+	embedding=[6. 6. 6.],	 price=6
+	embedding=[5. 5. 5.],	 price=5
+	embedding=[4. 4. 4.],	 price=4
+```
