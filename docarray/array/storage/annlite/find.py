@@ -25,6 +25,7 @@ class FindMixin:
         :param query: the query documents to search.
         :param limit: the number of results to get for each query document in search.
         :param only_id: if set, then returning matches will only contain ``id``
+        :param filter: filter query used for pre-filtering
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.

@@ -87,6 +87,7 @@ class FindMixin:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be used in Qdrant.
         :param limit: number of retrieved items
+        :param filter: filter query used for pre-filtering
 
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.

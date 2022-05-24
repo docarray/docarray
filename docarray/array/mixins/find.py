@@ -103,9 +103,13 @@ class FindMixin:
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns matching Documents given an input query.
         If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search
-        will be performed depending on whether the storage backend supports ANN.
-        If the query is a `dict` object, Documents will be filtered according to DocArray's query language and all
-        matching Documents that match the filter will be returned.
+        will be performed depending on whether the storage backend supports ANN. Furthermore, if filter is not None,
+        pre-filtering will be applied along with vector search.
+        If the query is a `dict` object or, query is None and filter is not None, Documents will be filtered and all
+        matching Documents that match the filter will be returned. In this case, query (if it's dict) or filter will be
+        used for filtering. The object must follow the backend-specific filter format if the backend supports filtering
+        or DocArray's query language format. In the latter case, filtering will be applied in the client side not the
+        backend side.
         If the query is a string or list of strings, a search by text will be performed if the backend supports
         indexing and searching text fields. If not, a `NotImplementedError` will be raised.
 
@@ -115,6 +119,7 @@ class FindMixin:
         :param metric: the distance metric.
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
+        :param filter: filter query used for pre-filtering or filtering
         :param only_id: if set, then returning matches will only contain ``id``
         :param index: if the query is a string, text search will be performed on the `index` field, otherwise, this
                       parameter is ignored. By default, the Document `text` attribute will be used for search,

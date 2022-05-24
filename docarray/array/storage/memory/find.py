@@ -48,7 +48,7 @@ class FindMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-
+        :param filter: filter query used for pre-filtering
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
