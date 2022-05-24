@@ -50,7 +50,7 @@ The following configs can be set:
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 
 
-## Search with condition
+## Search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
 
@@ -64,7 +64,7 @@ Search with `.find` can be restricted by user-defined filters. Such filters that
 | `$eq`             | Equal to               | `==`                       |
 | `$neq`            | Not equal to           | `!=`                       |
 
-Such filters can be constructing following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).
+filters can be constructing following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).
 
 ### Example of `.find` with a filter
 
