@@ -204,7 +204,6 @@ for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
 
 This would print
 
-
 ```
 Query vector: 	[8. 8. 8.]
 
