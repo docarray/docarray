@@ -17,7 +17,6 @@ from rich.panel import Panel
 ALLOWED_PROTOCOLS = {'pickle', 'protobuf', 'protobuf-array', 'pickle-array'}
 ALLOWED_COMPRESSIONS = {'lz4', 'bz2', 'lzma', 'zlib', 'gzip'}
 
-__windows__ = sys.platform == 'win32'
 
 __resources_path__ = os.path.join(
     os.path.dirname(

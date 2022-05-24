@@ -1,11 +1,13 @@
 import os
+import sys
 
 import numpy as np
 import pytest
 
 from docarray import Document
 from docarray.document.generators import from_files
-from docarray.helper import __windows__
+
+__windows__ = sys.platform == 'win32'
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
