@@ -78,8 +78,7 @@ html_css_files = [
 ]
 html_js_files = [
     'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js',
-    'https://cdn.jsdelivr.net/npm/qabot@0.4',
-    'source-in-links.js'
+    'https://cdn.jsdelivr.net/npm/qabot@0.4'
     ]
 htmlhelp_basename = slug
 html_show_sourcelink = False

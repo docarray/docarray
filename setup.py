@@ -65,11 +65,11 @@ setup(
             'strawberry-graphql',
             'weaviate-client~=3.3.0',
             'annlite>=0.3.0',
-            'qdrant-client~=0.7.1',
+            'qdrant-client~=0.7.3',
             'elasticsearch>=8.0.1',
         ],
         'qdrant': [
-            'qdrant-client~=0.7.1',
+            'qdrant-client~=0.7.3',
         ],
         'annlite': [
             'annlite>=0.3.0',

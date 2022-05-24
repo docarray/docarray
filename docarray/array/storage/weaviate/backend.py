@@ -46,6 +46,7 @@ class WeaviateConfig:
     cleanup_interval_seconds: Optional[int] = None
     skip: Optional[bool] = None
     columns: Optional[List[Tuple[str, str]]] = None
+    distance: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -141,6 +142,7 @@ class BackendMixin(BaseBackendMixin):
             'flatSearchCutoff': self._config.flat_search_cutoff,
             'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
             'skip': self._config.skip,
+            'distance': self._config.distance,
         }
 
         base_classes = {
