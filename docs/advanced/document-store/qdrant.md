@@ -134,7 +134,7 @@ print(da.find(np.random.random(D), limit=10))
 ```
 
 
-## Search with filter
+## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
 
@@ -183,7 +183,7 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, let us consider that retrieved documents must have `price` value lower
+prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
 
 Then the search with the proposed filter can implemented and used with the following code:

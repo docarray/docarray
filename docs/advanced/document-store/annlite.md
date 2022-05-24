@@ -50,7 +50,7 @@ The following configs can be set:
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 
 
-## Search with filter
+## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
 
@@ -64,7 +64,7 @@ Search with `.find` can be restricted by user-defined filters. Such filters that
 | `$eq`             | Equal to               | `==`                       |
 | `$neq`            | Not equal to           | `!=`                       |
 
-filters can be constructing following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).
+Filters can be constructed following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).
 
 ### Example of `.find` with a filter
 
@@ -94,7 +94,7 @@ with da:
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, let us consider that retrieved documents must have `price` value lower
+prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
 
 Then the search with the proposed filter can implemented and used with the following code:

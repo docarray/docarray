@@ -170,7 +170,7 @@ Persist Documents with Weaviate.
 ```
 
 
-## Search with filter
+## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters that can be constructed using the following operators:
 
@@ -183,7 +183,7 @@ Search with `.find` can be restricted by user-defined filters. Such filters that
 | `Equal`           | Equal to               | `==`                       |
 | `NotEqual`        | Not equal to           | `!=`                       |
 
- filters can be constructing following the guidelines provided in [the weaviate documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
+Filters can be constructed following the guidelines provided in  [the weaviate documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
 
 
 ### Example of `.find` with a filter
@@ -221,8 +221,8 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, let us consider that retrieved documents must have `price` value lower
-or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
+prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
+or equal than `max_price`. We can encode this information in weaviate using `filter = {'path': ['price'], 'operator': 'LowerThanEqual', 'valueInt': max_price}`.
 
 Then the search with the proposed filter can implemented and used with the following code:
 
