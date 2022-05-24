@@ -28,6 +28,14 @@ def _get_hub_config() -> Optional[Dict]:
 
 
 @lru_cache()
+def _get_auth_token() -> Optional[str]:
+    _hub_config = _get_hub_config()
+    _config_auth_token = _hub_config.get('auth_token') if _hub_config else None
+    _env_auth_token = os.environ.get('JINA_AUTH_TOKEN')
+    return _env_auth_token or _config_auth_token
+
+
+@lru_cache()
 def _get_cloud_api() -> str:
     """Get Cloud Api for transmitting data to the cloud.
 
@@ -73,9 +81,8 @@ class PushPullMixin:
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        auth_token = _get_auth_token()
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
         _head, _tail = data.split(delimiter)
@@ -146,9 +153,8 @@ class PushPullMixin:
 
         headers = {}
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        auth_token = _get_auth_token()
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
         url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'
