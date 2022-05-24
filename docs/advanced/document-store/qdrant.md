@@ -169,12 +169,13 @@ da = DocumentArray(
 
 print(f'\nDocumentArray distance: {distance}')
 
-da.extend(
-    [
-        Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
-        for i in range(10)
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
 
 print('\nIndexed Embeddings:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):

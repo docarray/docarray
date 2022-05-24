@@ -84,12 +84,13 @@ da = DocumentArray(
     config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
 )
 
-da.extend(
-    [
-        Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
-        for i in range(10)
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
