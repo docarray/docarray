@@ -308,3 +308,20 @@ def test_search_pre_filtering(
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
         )
+
+
+def test_weaviate_filter_query(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+
+    with pytest.raises(ValueError):
+        da.find(np.random.rand(n_dim), filter={'wrong': 'filter'})
