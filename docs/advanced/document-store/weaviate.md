@@ -182,7 +182,8 @@ Search with `.find` can be restricted by user-defined filters. Such filters that
 | `Equal`           | Equal to               | `==`                       |
 | `NotEqual`        | Not equal to           | `!=`                       |
 
- 
+ filters can be constructing following the guidelines provided in [the weaviate documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
+
 
 ### Example of `.find` with a filter
 
