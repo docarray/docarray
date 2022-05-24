@@ -188,12 +188,8 @@ import numpy as np
 n_dim = 3
 
 da = DocumentArray(
-    storage='qdrant',
-    config={
-        'n_dim': n_dim,
-        'columns': [('price', 'float')],
-        #'distance':distance
-    },
+    storage='weaviate',
+    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2-squared'},
 )
 
 with da:
@@ -222,7 +218,7 @@ n_limit = 4
 np_query = np.ones(n_dim) * 8
 print(f'\nQuery vector: \t{np_query}')
 
-filter = {'path': ['price'], 'operator': 'LowerThanEqual', 'valueInt': max_price}
+filter = {'path': ['price'], 'operator': 'LessThanEqual', 'valueInt': max_price}
 results = da.find(np_query, filter=filter, limit=n_limit)
 
 print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
@@ -235,14 +231,8 @@ This would print:
 ```bash
 Embeddings Nearest Neighbours with "price" at most 7:
 
-	embedding=[3. 3. 3.],	 price=3
+	embedding=[7. 7. 7.],	 price=7
 	embedding=[6. 6. 6.],	 price=6
-	embedding=[9. 9. 9.],	 price=9
-	embedding=[1. 1. 1.],	 price=1
-
-Embeddings Nearest Neighbours without restriction:
- [[3. 3. 3.]
- [6. 6. 6.]
- [1. 1. 1.]
- [2. 2. 2.]]
+	embedding=[5. 5. 5.],	 price=5
+	embedding=[4. 4. 4.],	 price=4
  ```
