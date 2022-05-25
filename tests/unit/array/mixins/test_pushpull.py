@@ -194,14 +194,14 @@ def test_api_authorization_header(mocker, monkeypatch, tmpdir):
     assert pull_kwargs['headers'].get('Authorization') == f'token {token}'
 
 
-def test_api_authorization_header_from_env(mocker, monkeypatch):
+@pytest.mark.parametrize(
+    'set_env_vars', [{'JINA_AUTH_TOKEN': 'test-auth-token'}], indirect=True
+)
+def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
     from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
 
     _get_hub_config.cache_clear()
     _get_auth_token.cache_clear()
-
-    token = 'test-auth-token'
-    os.environ['JINA_AUTH_TOKEN'] = token
 
     mock = mocker.Mock()
     _mock_post(mock, monkeypatch)
@@ -211,8 +211,6 @@ def test_api_authorization_header_from_env(mocker, monkeypatch):
     docs.push(name='test_name')
     DocumentArray.pull(name='test_name')
 
-    del os.environ['JINA_AUTH_TOKEN']
-
     _get_hub_config.cache_clear()
     _get_auth_token.cache_clear()
 
@@ -221,5 +219,5 @@ def test_api_authorization_header_from_env(mocker, monkeypatch):
     _, push_kwargs = mock.call_args_list[0]
     _, pull_kwargs = mock.call_args_list[1]
 
-    assert push_kwargs['headers'].get('Authorization') == f'token {token}'
-    assert pull_kwargs['headers'].get('Authorization') == f'token {token}'
+    assert push_kwargs['headers'].get('Authorization') == f'token test-auth-token'
+    assert pull_kwargs['headers'].get('Authorization') == f'token test-auth-token'

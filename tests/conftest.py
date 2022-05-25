@@ -1,6 +1,7 @@
 import tempfile
 import os
 import time
+from typing import Dict
 
 import pytest
 
@@ -33,3 +34,12 @@ def start_storage():
         f"docker-compose -f {compose_yml} --project-directory . down "
         f"--remove-orphans"
     )
+
+
+@pytest.fixture(scope='session')
+def set_env_vars(request):
+    _old_environ = dict(os.environ)
+    os.environ.update(request.param)
+    yield
+    os.environ.clear()
+    os.environ.update(_old_environ)
