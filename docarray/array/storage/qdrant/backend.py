@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Tuple,
 )
 
 import numpy as np
@@ -41,6 +42,7 @@ class QdrantConfig:
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -85,6 +87,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
         self._persist = bool(self._config.collection_name)
+
+        if self._config.columns is None:
+            self._config.columns = []
 
         self._config.collection_name = (
             self.__class__.__name__ + random_identity()

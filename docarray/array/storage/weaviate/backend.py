@@ -45,11 +45,14 @@ class WeaviateConfig:
     flat_search_cutoff: Optional[int] = None
     cleanup_interval_seconds: Optional[int] = None
     skip: Optional[bool] = None
+    columns: Optional[List[Tuple[str, str]]] = None
     distance: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
+
+    TYPE_MAP = {'str': 'string', 'float': 'number', 'int': 'int'}
 
     def _init_storage(
         self,
@@ -86,6 +89,9 @@ class BackendMixin(BaseBackendMixin):
             timeout_config=config.timeout_config,
         )
         self._config = config
+
+        if self._config.columns is None:
+            self._config.columns = []
 
         self._schemas = self._load_or_create_weaviate_schema()
 
@@ -139,7 +145,7 @@ class BackendMixin(BaseBackendMixin):
             'distance': self._config.distance,
         }
 
-        return {
+        base_classes = {
             'classes': [
                 {
                     'class': cls_name,
@@ -167,6 +173,15 @@ class BackendMixin(BaseBackendMixin):
                 },
             ]
         }
+        for col, coltype in self._config.columns:
+            new_property = {
+                'dataType': [self._map_type(coltype)],
+                'name': col,
+                'indexInverted': True,
+            }
+            base_classes['classes'][0]['properties'].append(new_property)
+
+        return base_classes
 
     def _load_or_create_weaviate_schema(self):
         """Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object
@@ -295,8 +310,13 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
+        extra_columns = {col: value.tags.get(col) for col, _ in self._config.columns}
+
         return dict(
-            data_object={'_serialized': value.to_base64(**self._serialize_config)},
+            data_object={
+                '_serialized': value.to_base64(**self._serialize_config),
+                **extra_columns,
+            },
             class_name=self._class_name,
             uuid=self._map_id(value.id),
             vector=self._map_embedding(value.embedding),

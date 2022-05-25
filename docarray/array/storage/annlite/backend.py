@@ -5,6 +5,8 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Iterable,
+    List,
+    Tuple,
 )
 
 import numpy as np
@@ -25,10 +27,13 @@ class AnnliteConfig:
     ef_construction: Optional[int] = None
     ef_search: Optional[int] = None
     max_connection: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
+
+    TYPE_MAP = {'str': 'TEXT', 'float': 'float', 'int': 'integer'}
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
@@ -61,6 +66,15 @@ class BackendMixin(BaseBackendMixin):
             config.data_path = TemporaryDirectory().name
 
         self._config = config
+
+        if self._config.columns is None:
+            self._config.columns = []
+
+        for i in range(len(self._config.columns)):
+            self._config.columns[i] = (
+                self._config.columns[i][0],
+                self._map_type(self._config.columns[i][1]),
+            )
 
         config = asdict(config)
         self.n_dim = config.pop('n_dim')

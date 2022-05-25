@@ -87,22 +87,29 @@ class FindMixin:
 
     def find(
         self: 'T',
-        query: Union['DocumentArray', 'Document', 'ArrayType', Dict, str, List[str]],
+        query: Union[
+            'DocumentArray', 'Document', 'ArrayType', Dict, str, List[str], None
+        ] = None,
         metric: Union[
             str, Callable[['ArrayType', 'ArrayType'], 'np.ndarray']
         ] = 'cosine',
         limit: Optional[Union[int, float]] = 20,
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
+        filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns matching Documents given an input query.
         If the query is a `DocumentArray`, `Document` or `ArrayType`, exhaustive or approximate nearest neighbor search
-        will be performed depending on whether the storage backend supports ANN.
-        If the query is a `dict` object, Documents will be filtered according to DocArray's query language and all
-        matching Documents that match the filter will be returned.
+        will be performed depending on whether the storage backend supports ANN. Furthermore, if filter is not None,
+        pre-filtering will be applied along with vector search.
+        If the query is a `dict` object or, query is None and filter is not None, Documents will be filtered and all
+        matching Documents that match the filter will be returned. In this case, query (if it's dict) or filter will be
+        used for filtering. The object must follow the backend-specific filter format if the backend supports filtering
+        or DocArray's query language format. In the latter case, filtering will be applied in the client side not the
+        backend side.
         If the query is a string or list of strings, a search by text will be performed if the backend supports
         indexing and searching text fields. If not, a `NotImplementedError` will be raised.
 
@@ -112,6 +119,7 @@ class FindMixin:
         :param metric: the distance metric.
         :param exclude_self: if set, Documents in results with same ``id`` as the query values will not be
                         considered as matches. This is only applied when the input query is Document or DocumentArray.
+        :param filter: filter query used for pre-filtering or filtering
         :param only_id: if set, then returning matches will only contain ``id``
         :param index: if the query is a string, text search will be performed on the `index` field, otherwise, this
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
@@ -125,21 +133,35 @@ class FindMixin:
         from ... import Document, DocumentArray
 
         if isinstance(query, dict):
-            return self._filter(query)
+            if filter is None:
+                return self._filter(query)
+            else:
+                raise ValueError(
+                    'filter and query cannot be both dict type, set only one for filtering'
+                )
+        elif query is None:
+            if isinstance(filter, dict):
+                return self._filter(filter)
+            else:
+                raise ValueError('filter must be dict when query is None')
+        elif isinstance(query, str) or (
+            isinstance(query, list) and isinstance(query[0], str)
+        ):
+            if filter is not None:
+                raise ValueError('cannot use filter with text search')
+            result = self._find_by_text(query, index=index, limit=limit, **kwargs)
+            if isinstance(query, str):
+                return result[0]
+            else:
+                return result
+
+        # for all the rest, vector search will be performed
         elif isinstance(query, (DocumentArray, Document)):
 
             if isinstance(query, Document):
                 query = DocumentArray(query)
 
             _query = query.embeddings
-        elif isinstance(query, str) or (
-            isinstance(query, list) and isinstance(query[0], str)
-        ):
-            result = self._find_by_text(query, index=index, limit=limit, **kwargs)
-            if isinstance(query, str):
-                return result[0]
-            else:
-                return result
         else:
             _query = query
 
@@ -169,6 +191,7 @@ class FindMixin:
 
         _result = self._find(
             _query,
+            filter=filter,
             **kwargs,
         )
 
@@ -227,7 +250,7 @@ class FindMixin:
 
     @abc.abstractmethod
     def _find(
-        self, query: 'ArrayType', limit: int, **kwargs
+        self, query: 'ArrayType', limit: int, filter: Optional[Dict] = None, **kwargs
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 

@@ -1,8 +1,11 @@
+from itertools import product
+
 import numpy as np
 import pytest
 
 from docarray import DocumentArray, Document
 from docarray.math import ndarray
+import operator
 
 
 @pytest.mark.parametrize(
@@ -192,3 +195,152 @@ def test_find_by_tag(storage, config, start_storage):
     assert isinstance(results, list)
     assert len(results) == 2
     assert all([isinstance(result, DocumentArray) for result in results]) == True
+
+
+numeric_operators_annlite = {
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$neq': operator.ne,
+}
+
+numeric_operators_weaviate = {
+    'GreaterThanEqual': operator.ge,
+    'GreaterThan': operator.gt,
+    'LessThanEqual': operator.le,
+    'LessThan': operator.lt,
+    'Equal': operator.eq,
+    'NotEqual': operator.ne,
+}
+
+
+numeric_operators_qdrant = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'neq': operator.ne,
+}
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueInt': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'range': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['gte', 'gt', 'lte', 'lt']
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'value': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['eq', 'neq']
+        ],
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
+    ],
+)
+def test_search_pre_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage
+):
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        filter = filter_gen(operator, threshold)
+
+        results = da.find(np.random.rand(n_dim), filter=filter)
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
+def test_weaviate_filter_query(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+
+    with pytest.raises(ValueError):
+        da.find(np.random.rand(n_dim), filter={'wrong': 'filter'})
+
+
+@pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])
+def test_unsupported_pre_filtering(storage, start_storage):
+
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+
+    with pytest.raises(ValueError):
+        da.find(np.random.rand(n_dim), filter={'price': {'$gte': 2}})

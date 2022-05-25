@@ -16,7 +16,7 @@ def tmpfile(tmpdir):
     return tmpdir / tmpfile
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def start_storage():
     os.system(
         f"docker-compose -f {compose_yml} --project-directory . up  --build -d "

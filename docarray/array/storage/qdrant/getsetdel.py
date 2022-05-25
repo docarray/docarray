@@ -65,9 +65,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         )
 
     def _document_to_qdrant(self, doc: 'Document') -> 'PointStruct':
+        extra_columns = {col: doc.tags.get(col) for col, _ in self._config.columns}
+
         return PointStruct(
             id=self._map_id(doc.id),
-            payload=dict(_serialized=doc.to_base64(**self.serialization_config)),
+            payload=dict(
+                _serialized=doc.to_base64(**self.serialization_config), **extra_columns
+            ),
             vector=self._map_embedding(doc.embedding),
         )
 

@@ -22,29 +22,35 @@ def test_empty_filter(docs):
     assert len(result) == 5
 
 
-def test_simple_filter(docs):
-    result = docs.find({'text': {'$eq': 'hello'}})
+@pytest.mark.parametrize('filter_api', [True, False])
+def test_simple_filter(docs, filter_api):
+    if filter_api:
+        method = lambda query: docs.find(filter=query)
+    else:
+        method = lambda query: docs.find(query)
+
+    result = method({'text': {'$eq': 'hello'}})
     assert len(result) == 1
     assert result[0].text == 'hello'
 
-    result = docs.find({'tags__x': {'$gte': 0.5}})
+    result = method({'tags__x': {'$gte': 0.5}})
     assert len(result) == 1
     assert result[0].tags['x'] == 0.8
 
-    result = docs.find({'tags__name': {'$regex': '^h'}})
+    result = method({'tags__name': {'$regex': '^h'}})
     assert len(result) == 2
     assert result[1].id == docs[1].id
 
-    result = docs.find({'text': {'$regex': '^h'}})
+    result = method({'text': {'$regex': '^h'}})
     assert len(result) == 1
     assert result[0].id == docs[0].id
 
-    result = docs.find({'tags': {'$size': 2}})
+    result = method({'tags': {'$size': 2}})
     assert result[0].id == docs[2].id
 
-    result = docs.find({'text': {'$exists': True}})
+    result = method({'text': {'$exists': True}})
     assert len(result) == 2
-    result = docs.find({'tensor': {'$exists': True}})
+    result = method({'tensor': {'$exists': True}})
     assert len(result) == 0
 
 

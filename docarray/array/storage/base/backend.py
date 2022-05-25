@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 
 
 class BaseBackendMixin(ABC):
+    TYPE_MAP: Dict
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -27,3 +29,6 @@ class BaseBackendMixin(ABC):
         from ....math.ndarray import to_numpy_array
 
         return to_numpy_array(embedding)
+
+    def _map_type(self, col_type: str) -> str:
+        return self.TYPE_MAP[col_type]
