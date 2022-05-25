@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/memory/find.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.storage.memory.find - DocArray 0.13.14 documentation</title>
+        <title>docarray.array.storage.memory.find - DocArray 0.13.15 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.13.14 documentation</div>
+                <div class="brand">DocArray 0.13.15 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -518,7 +518,7 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.storage.memory.find</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -547,6 +547,7 @@
         <span class="n">use_scipy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">,</span>
         <span class="n">num_worker</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nb">filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'np.ndarray'</span><span class="p">,</span> <span class="s1">'np.ndarray'</span><span class="p">]:</span>
         <span class="sd">"""Returns approximate nearest neighbors given a batch of input queries.</span>
@@ -567,11 +568,15 @@
 
 <span class="sd">                .. note::</span>
 <span class="sd">                    This argument is only effective when ``batch_size`` is set.</span>
-
+<span class="sd">        :param filter: filter query used for pre-filtering</span>
 <span class="sd">        :param kwargs: other kwargs.</span>
 
 <span class="sd">        :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">'Filtered vector search is not supported for In-Memory backend'</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">batch_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -708,7 +713,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 19, 2022</div>
+                            Last updated on May 25, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -765,6 +770,5 @@
         </script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
-    <script src="../../../../../../_static/source-in-links.js"></script>
     </body>
 </html>
