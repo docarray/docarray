@@ -95,6 +95,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2314,4 +2315,34 @@
 ### 🍹 Other Improvements
 
  - [[```d8cc3796```](https://github.com/jina-ai/docarray/commit/d8cc3796996c8bfc77926c28a2f300eea7b5aa23)] __-__ __version__: the next version will be 0.13.14 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-15></a>
+## Release Note (`0.13.15`)
+
+> Release time: 2022-05-25 09:38:21
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ David Buchaca Prats,  AlaeddineAbdessalem,  Roshan Jossy,  Etienne Dilocker,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```1a3fb27e```](https://github.com/jina-ai/docarray/commit/1a3fb27ec9b3eacb02d5fa764d64778c5bb88236)] __-__ add pre-filtering support (#331) (*David Buchaca Prats*)
+ - [[```3674e929```](https://github.com/jina-ai/docarray/commit/3674e9299c1683851cf4f1dedf5dc793493d18c7)] __-__ make distance metric configurable in Weaviate backend (#359) (*Etienne Dilocker*)
+
+### 🐞 Bug fixes
+
+ - [[```4213553c```](https://github.com/jina-ai/docarray/commit/4213553c1c991f0b1daafa302b9ee8d064d758cc)] __-__ update qdrant to support python 3.7 (#367) (*AlaeddineAbdessalem*)
+ - [[```24301254```](https://github.com/jina-ai/docarray/commit/24301254d95fd755fb6e821df6bc2c6b977b138b)] __-__ cryptographic random generator for weaviate classnames (#357) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```e918f62c```](https://github.com/jina-ai/docarray/commit/e918f62c9c33b8348780b7e36a3d6604ed59bc23)] __-__ __tracking__: remove utm source tracking (#366) (*Roshan Jossy*)
+ - [[```c2e6ebd0```](https://github.com/jina-ai/docarray/commit/c2e6ebd0fbd8ec50c1e01217698f679ffed6fc79)] __-__ add CONTRIBUTING.md file (#363) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```51646bfa```](https://github.com/jina-ai/docarray/commit/51646bfa6bfd409099d0230d963f064e833d48f1)] __-__ __version__: the next version will be 0.13.15 (*Jina Dev Bot*)
 
