@@ -33,3 +33,37 @@ def test_ndarray_force_numpy(ndarray_val, attr, is_sparse):
     assert type(getattr(Document.from_protobuf(d.to_protobuf()), attr)) is type(
         ndarray_val
     )
+
+
+def get_wrong_embeddings():
+    a = np.zeros((5, 100))
+    return [
+        a,
+        # torch.tensor(a),
+        # tf.constant(a),
+        # paddle.to_tensor(a),
+        # torch.tensor(a).to_sparse(),
+        # csr_matrix(a),
+        # bsr_matrix(a),
+        # coo_matrix(a),
+        # csc_matrix(a),
+    ]
+
+
+@pytest.mark.parametrize('ndarray_val', get_wrong_embeddings())
+def test_wrong_embedding_shape_init(ndarray_val):
+
+    with pytest.warns(UserWarning, match='embedding should be a vector') as record:
+        Document(embedding=ndarray_val)
+
+    assert len(record) == 1
+
+
+@pytest.mark.parametrize('ndarray_val', get_wrong_embeddings())
+def test_wrong_embedding_shape_setter(ndarray_val):
+
+    d = Document()
+    with pytest.warns(UserWarning, match='embedding should be a vector') as record:
+        d.embedding = ndarray_val
+
+    assert len(record) == 1

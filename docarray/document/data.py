@@ -3,8 +3,9 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+import warnings
 
-from ..math.ndarray import check_arraylike_equality
+from ..math.ndarray import check_arraylike_equality, is_vector
 
 if TYPE_CHECKING:
     from ..score import NamedScore
@@ -56,6 +57,9 @@ class DocumentData:
     offset: Optional[float] = None
     location: Optional[List[float]] = None
     embedding: Optional['ArrayType'] = field(default=None, hash=False, compare=False)
+    _embedding: Optional['ArrayType'] = field(
+        init=False, repr=False, hash=False, compare=False
+    )
     modality: Optional[str] = None
     evaluations: Optional[Dict[str, Union['NamedScore', Dict]]] = None
     scores: Optional[Dict[str, Union['NamedScore', Dict]]] = None
@@ -156,3 +160,16 @@ class DocumentData:
                 if getattr(self, key) != getattr(other, key):
                     return False
         return True
+
+    @property
+    def embedding(self):
+        return self._embedding
+
+    @embedding.setter
+    def embedding(self, value: 'ArrayType'):
+        if not is_vector(value):
+            warnings.warn(
+                'Your embedding should be a vector, function like find or match will break otherwise '
+            )
+
+        self._embedding = value
