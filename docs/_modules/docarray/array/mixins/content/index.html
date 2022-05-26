@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/content.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.content - DocArray 0.13.15 documentation</title>
+        <title>docarray.array.mixins.content - DocArray 0.13.16 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.15 documentation</div>
+                <div class="brand">DocArray 0.13.16 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -660,10 +660,15 @@
     <span class="p">):</span>
         <span class="sd">"""Set the :attr:`.content` of all Documents.</span>
 
-<span class="sd">        :param value: a list of texts, blobs or :class:`ArrayType`</span>
+<span class="sd">        :param value: a list of texts, blobs or :class:`ArrayType`. If the value is a two-element tuple,</span>
+<span class="sd">            then the second element is used as the :attr:`.content_type`</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="n">content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content_type</span> <span class="ow">or</span> <span class="bp">self</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content_type</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">content_type</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">content_type</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content_type</span> <span class="ow">or</span> <span class="bp">self</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">content_type</span>
+
             <span class="k">if</span> <span class="n">content_type</span><span class="p">:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">content_type</span><span class="si">}</span><span class="s1">s'</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
@@ -684,7 +689,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 25, 2022</div>
+                            Last updated on May 26, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
