@@ -96,6 +96,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2345,4 +2346,24 @@
 ### 🍹 Other Improvements
 
  - [[```51646bfa```](https://github.com/jina-ai/docarray/commit/51646bfa6bfd409099d0230d963f064e833d48f1)] __-__ __version__: the next version will be 0.13.15 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-16></a>
+## Release Note (`0.13.16`)
+
+> Release time: 2022-05-26 07:57:38
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```793fa718```](https://github.com/jina-ai/docarray/commit/793fa7185967e054fdfeb34ae4ca2a921b279a49)] __-__ __windows__: fix windows newline issue (#364) (*Han Xiao*)
+ - [[```d85a597f```](https://github.com/jina-ai/docarray/commit/d85a597f8b7a7c7ccd7c35205917dd91ad8ceecf)] __-__ fix protobuf dependency (#370) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```b80d393a```](https://github.com/jina-ai/docarray/commit/b80d393a10a80c1d28582fc3953daafaea63ee22)] __-__ __version__: the next version will be 0.13.16 (*Jina Dev Bot*)
 
