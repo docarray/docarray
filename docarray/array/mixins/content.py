@@ -140,10 +140,15 @@ class ContentPropertyMixin:
     ):
         """Set the :attr:`.content` of all Documents.
 
-        :param value: a list of texts, blobs or :class:`ArrayType`
+        :param value: a list of texts, blobs or :class:`ArrayType`. If the value is a two-element tuple,
+            then the second element is used as the :attr:`.content_type`
         """
         if self:
-            content_type = self[0].content_type or self[-1].content_type
+            if isinstance(value, tuple) and len(value) == 2:
+                content_type = value[1]
+            else:
+                content_type = self[0].content_type or self[-1].content_type
+
             if content_type:
                 setattr(self, f'{content_type}s', value)
 

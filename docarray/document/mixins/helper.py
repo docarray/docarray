@@ -3,8 +3,6 @@ import urllib.parse
 import urllib.request
 from contextlib import nullcontext
 
-from ...helper import __windows__
-
 
 def _uri_to_blob(uri: str) -> bytes:
     """Convert uri to blob
@@ -28,10 +26,7 @@ def _get_file_context(file):
     if hasattr(file, 'write'):
         file_ctx = nullcontext(file)
     else:
-        if __windows__:
-            file_ctx = open(file, 'wb', newline='')
-        else:
-            file_ctx = open(file, 'wb')
+        file_ctx = open(file, 'wb')
 
     return file_ctx
 
