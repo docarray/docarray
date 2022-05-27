@@ -219,5 +219,5 @@ def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
     _, push_kwargs = mock.call_args_list[0]
     _, pull_kwargs = mock.call_args_list[1]
 
-    assert push_kwargs['headers'].get('Authorization') == f'token test-auth-token'
-    assert pull_kwargs['headers'].get('Authorization') == f'token test-auth-token'
+    assert push_kwargs['headers'].get('Authorization') == 'token test-auth-token'
+    assert pull_kwargs['headers'].get('Authorization') == 'token test-auth-token'

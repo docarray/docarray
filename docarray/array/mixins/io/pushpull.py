@@ -29,10 +29,10 @@ def _get_hub_config() -> Optional[Dict]:
 
 @lru_cache()
 def _get_auth_token() -> Optional[str]:
-    _hub_config = _get_hub_config()
-    _config_auth_token = _hub_config.get('auth_token') if _hub_config else None
-    _env_auth_token = os.environ.get('JINA_AUTH_TOKEN')
-    return _env_auth_token or _config_auth_token
+    hub_config = _get_hub_config()
+    config_auth_token = hub_config.get('auth_token') if hub_config else None
+    env_auth_token = os.environ.get('JINA_AUTH_TOKEN')
+    return env_auth_token or config_auth_token
 
 
 @lru_cache()
