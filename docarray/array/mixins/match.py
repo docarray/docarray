@@ -51,7 +51,7 @@ class MatchMixin:
             elements. When `darray` is big, this can significantly speedup the computation.
         :param exclude_self: if set, Documents in ``darray`` with same ``id`` as the left-hand values will not be
                         considered as matches.
-        :param filter: filter query used for pre-filtering or filtering
+        :param filter: filter query used for pre-filtering
         :param only_id: if set, then returning matches will only contain ``id``
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note, ``scipy`` does not support distance
             on sparse matrix.
