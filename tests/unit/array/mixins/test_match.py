@@ -665,7 +665,7 @@ numeric_operators_qdrant = {
         ],
     ],
 )
-def test_search_match_pre_filtering(
+def test_match_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage
 ):
     n_dim = 128
