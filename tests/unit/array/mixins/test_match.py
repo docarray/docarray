@@ -10,7 +10,7 @@ from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
 from scipy.spatial.distance import cdist as scipy_cdist
 
 from docarray import Document, DocumentArray
-from docarray.array.storage.weaviate import WeaviateConfig
+import operator
 
 
 @pytest.fixture()
@@ -577,3 +577,120 @@ def test_match_ensure_scores_unique():
         for m in query.matches:
             assert m.scores['euclidean'].value >= previous_score
             previous_score = m.scores['euclidean'].value
+
+
+numeric_operators_annlite = {
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$neq': operator.ne,
+}
+
+numeric_operators_weaviate = {
+    'GreaterThanEqual': operator.ge,
+    'GreaterThan': operator.gt,
+    'LessThanEqual': operator.le,
+    'LessThan': operator.lt,
+    'Equal': operator.eq,
+    'NotEqual': operator.ne,
+}
+
+
+numeric_operators_qdrant = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'neq': operator.ne,
+}
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueInt': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'range': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['gte', 'gt', 'lte', 'lt']
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'value': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['eq', 'neq']
+        ],
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
+    ],
+)
+def test_search_match_pre_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage
+):
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        filter = filter_gen(operator, threshold)
+
+        doc = Document(embedding=np.random.rand(n_dim))
+        doc.match(da, filter=filter)
+
+        assert all(
+            [
+                numeric_operators[operator](r.tags['price'], threshold)
+                for r in doc.matches
+            ]
+        )
