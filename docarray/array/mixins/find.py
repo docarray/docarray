@@ -132,9 +132,9 @@ class FindMixin:
 
         from ... import Document, DocumentArray
 
-        if isinstance(query, dict):
+        if isinstance(query, dict) or isinstance(query[0], dict):
             if filter is None:
-                return self._filter(query)
+                return self._filter(query, **kwargs)
             else:
                 raise ValueError(
                     'filter and query cannot be both dict type, set only one for filtering'
@@ -255,9 +255,8 @@ class FindMixin:
         raise NotImplementedError
 
     def _filter(
-        self,
-        query: Dict,
-    ) -> 'DocumentArray':
+        self, query: Union[Dict, List[Dict]], **kwargs
+    ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns a subset of documents by filtering by the given query.
 
         :return: a `DocumentArray` containing the `Document` objects for matching with the query.
