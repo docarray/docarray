@@ -155,6 +155,26 @@ Note that framework is auto-chosen based on the type of `.embeddings`. For examp
 
 By default `A.match(B)` will copy the top-K matched Documents from B to `A.matches`. When these matches are big, copying them can be time-consuming. In this case, one can leverage `.match(..., only_id=True)` to keep only {attr}`~docarray.Document.id`.
 
+### Pre filtering
+
+Both `match` and `find` support pre-filtering by passing the `filter` argument to the function.
+
+Pre-filtering is an advance approximate nearest neighbors feature  that allow to efficiently retrieve the nearest vector
+which respect the filtering condition. In contrast, post-filtering in the naive approach where you first retrieve the 
+nearest neighbors and then discard all the candidates that does not respect the filter condition.
+
+````{admonition} Pre-filtering is not available for in-memory backend
+:class: caution
+By default a DocumentArray will use the in-memory backend which does not support pre-filtering
+```
+````
+
+You can find example on how to use the pre-filtering here:
+
+- {ref}`ANNLite <annlite-filter>`
+- {ref}`Weaviate <weaviate-filter>`
+- {ref}`Qdrant <qdrant-filter>`
+
 
 ### GPU support
 
