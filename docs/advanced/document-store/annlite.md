@@ -49,7 +49,7 @@ The following configs can be set:
 
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 
-
+(annlite-filter)=
 ## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters.
