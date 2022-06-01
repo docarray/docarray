@@ -149,11 +149,6 @@ class FindMixin(BaseFindMixin):
 
         return da
 
-    def _filter(
-        self, query: Union[Dict, List[Dict]], limit: int = 10
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+    def _filter(self, query: Dict, limit: int = 10) -> 'DocumentArray':
 
-        if isinstance(query, dict):
-            query = [query]
-
-        return [self._find_with_filter(q, limit=limit) for q in query]
+        return self._find_with_filter(query, limit=limit)
