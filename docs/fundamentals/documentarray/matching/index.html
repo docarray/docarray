@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/matching/" />
   
-<meta property="og:site_name" content="DocArray 0.13.17 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
   
 <meta property="og:description" content="Once.embeddings is set, one can use find() or match() function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() is about finding nearest neighbours of a ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.17 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/matching.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Match Nearest Neighbours - DocArray 0.13.17 documentation</title>
+        <title>Match Nearest Neighbours - DocArray 0.13.18 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.17 documentation</div>
+                <div class="brand">DocArray 0.13.18 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -714,6 +714,27 @@ match emb =   (0, 0)	1.0
 </table></div>
 <p>Note that framework is auto-chosen based on the type of <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code>. For example, if <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, you can choose to use Numpy or Scipy (by specify <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">use_scipy=True)</span></code>) for computing.</p>
 <p>By default <code class="docutils literal notranslate"><span class="pre">A.match(B)</span></code> will copy the top-K matched Documents from B to <code class="docutils literal notranslate"><span class="pre">A.matches</span></code>. When these matches are big, copying them can be time-consuming. In this case, one can leverage <code class="docutils literal notranslate"><span class="pre">.match(...,</span> <span class="pre">only_id=True)</span></code> to keep only <code class="xref py py-attr docutils literal notranslate"><span class="pre">id</span></code>.</p>
+<section id="pre-filtering">
+<h3>Pre filtering<a class="headerlink" href="#pre-filtering" title="Permalink to this headline">#</a></h3>
+<p>Both <code class="docutils literal notranslate"><span class="pre">match</span></code> and <code class="docutils literal notranslate"><span class="pre">find</span></code> support pre-filtering by passing a <code class="docutils literal notranslate"><span class="pre">filter</span></code> argument to the method.</p>
+<p>Pre-filtering is an advanced approximate nearest neighbors feature that allows to efficiently retrieve the nearest vectors
+that respect the filtering condition.</p>
+<p>In contrast, post-filtering in the naive approach where you first retrieve the
+nearest neighbors and then discard all the candidates that do not respect the filter condition.</p>
+<div class="caution admonition">
+<p class="admonition-title">Pre-filtering is not available for in-memory backend</p>
+<p>By default a DocumentArray will use the in-memory backend which does not support pre-filtering</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<p>You can find example on how to use the pre-filtering here:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../../advanced/document-store/annlite/#annlite-filter"><span class="std std-ref">ANNLite</span></a></p></li>
+<li><p><a class="reference internal" href="../../../advanced/document-store/weaviate/#weaviate-filter"><span class="std std-ref">Weaviate</span></a></p></li>
+<li><p><a class="reference internal" href="../../../advanced/document-store/qdrant/#qdrant-filter"><span class="std std-ref">Qdrant</span></a></p></li>
+</ul>
+</section>
 <section id="gpu-support">
 <h3>GPU support<a class="headerlink" href="#gpu-support" title="Permalink to this headline">#</a></h3>
 <p>If <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> is a Tensorflow tensor, PyTorch tensor or Paddle tensor, <code class="docutils literal notranslate"><span class="pre">.match()</span></code> function can work directly on GPU. To do that, simply set <code class="docutils literal notranslate"><span class="pre">device=cuda</span></code>. For example,</p>
@@ -813,7 +834,7 @@ match emb =   (0, 0)	1.0
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on May 30, 2022</div>
+                            Last updated on Jun 01, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -853,6 +874,7 @@ match emb =   (0, 0)	1.0
 </ul>
 </li>
 <li><a class="reference internal" href="#example">Example</a><ul>
+<li><a class="reference internal" href="#pre-filtering">Pre filtering</a></li>
 <li><a class="reference internal" href="#gpu-support">GPU support</a></li>
 </ul>
 </li>

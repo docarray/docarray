@@ -169,7 +169,7 @@ print(results[0].text)
 Persist Documents with Weaviate.
 ```
 
-
+(weaviate-filter)=
 ## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
