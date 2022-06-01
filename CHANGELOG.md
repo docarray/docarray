@@ -97,6 +97,8 @@
 
 
 
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2366,4 +2368,42 @@
 ### 🍹 Other Improvements
 
  - [[```b80d393a```](https://github.com/jina-ai/docarray/commit/b80d393a10a80c1d28582fc3953daafaea63ee22)] __-__ __version__: the next version will be 0.13.16 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-17></a>
+## Release Note (`0.13.17`)
+
+> Release time: 2022-05-30 11:09:48
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ George Mastrapas,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```1b79312c```](https://github.com/jina-ai/docarray/commit/1b79312c8d0fa4ed5e2413c5b35357dba74df9a8)] __-__ load jina auth token from environment (#368) (*George Mastrapas*)
+
+### 🍹 Other Improvements
+
+ - [[```d5cdf257```](https://github.com/jina-ai/docarray/commit/d5cdf2577cc09f7a6e815c10cb00ea29406b45ec)] __-__ __version__: the next version will be 0.13.17 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-18></a>
+## Release Note (`0.13.18`)
+
+> Release time: 2022-06-01 07:55:24
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ samsja,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```464f24db```](https://github.com/jina-ai/docarray/commit/464f24db51bc228eb95da08e5cd8b560d9c1fd6b)] __-__ add filter to match method (#378) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```fef03f0a```](https://github.com/jina-ai/docarray/commit/fef03f0a82229e088f76951a83e888e019d027f9)] __-__ __version__: the next version will be 0.13.18 (*Jina Dev Bot*)
 

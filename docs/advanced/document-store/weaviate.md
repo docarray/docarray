@@ -169,8 +169,7 @@ print(results[0].text)
 Persist Documents with Weaviate.
 ```
 
-
-## Applying filters
+## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
 in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
