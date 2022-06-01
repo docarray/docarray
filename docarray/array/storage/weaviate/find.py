@@ -58,9 +58,7 @@ class FindMixin:
                 f'find failed, please check your filter query. Errors: \n{errors}'
             )
 
-        found_results = (
-            results.get('data', {}).get('Get', {}).get(self._class_name, []) or []
-        )
+        found_results = results.get('data', {}).get('Get', {}).get(self._class_name, [])
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in found_results:
