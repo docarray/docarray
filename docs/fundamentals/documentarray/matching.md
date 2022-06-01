@@ -157,11 +157,13 @@ By default `A.match(B)` will copy the top-K matched Documents from B to `A.match
 
 ### Pre filtering
 
-Both `match` and `find` support pre-filtering by passing the `filter` argument to the function.
+Both `match` and `find` support pre-filtering by passing a `filter` argument to the method.
 
-Pre-filtering is an advance approximate nearest neighbors feature  that allow to efficiently retrieve the nearest vector
-which respect the filtering condition. In contrast, post-filtering in the naive approach where you first retrieve the 
-nearest neighbors and then discard all the candidates that does not respect the filter condition.
+Pre-filtering is an advanced approximate nearest neighbors feature that allows to efficiently retrieve the nearest vectors
+that respect the filtering condition.
+
+In contrast, post-filtering in the naive approach where you first retrieve the 
+nearest neighbors and then discard all the candidates that do not respect the filter condition.
 
 ````{admonition} Pre-filtering is not available for in-memory backend
 :class: caution
