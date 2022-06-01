@@ -365,6 +365,11 @@ def test_weaviate_filter_query(start_storage):
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'wrong': 'filter'})
 
+    with pytest.raises(ValueError):
+        da._filter(filter={'wrong': 'filter'})
+
+    assert isinstance(da._filter(filter={}), type(da))
+
 
 @pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])
 def test_unsupported_pre_filtering(storage, start_storage):
