@@ -305,6 +305,8 @@ def test_search_pre_filtering(
 
         results = da.find(np.random.rand(n_dim), filter=filter)
 
+        assert len(results) > 0
+
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
         )
