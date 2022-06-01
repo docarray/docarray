@@ -84,9 +84,9 @@ class FindMixin:
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
 
+        :param filter: the input filter to apply in each stored document
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
-
         if not filter:
             return self
 
