@@ -174,9 +174,9 @@ Persist Documents with Weaviate.
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
 in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
 
-### Example of `.find` with only a  filter
+### Example of `.find` with a filter only
 
-Consider you store Documents with a certain tag `price` into weaviate and you want to retrievve all Documents
+Consider you store Documents with a certain tag `price` into weaviate and you want to retrieve all Documents
 with `price`  lower or equal to  some `max_price` value. 
 
 
@@ -199,8 +199,8 @@ for price in da[:,'tags__price']:
     print( f'\t price={price}')
 ```
 
-Then you can retrieve all documents whose price is lower or equal than `max_price` applying the following 
-filter
+Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
+filter:
 
 ```
 max_price = 3
@@ -217,7 +217,7 @@ for price in results[:,'tags__price']:
 This would print
 
 ```
- Returned examples that verify filter "price at most 3":
+ Returned examples that satisfy condition "price at most 3":
 
 	 price=0
 	 price=1
@@ -225,7 +225,7 @@ This would print
 	 price=3
 ```
 
-### Example of `.find` with  query vector and filter
+### Example of `.find` with query vector and filter
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
