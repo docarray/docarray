@@ -257,19 +257,26 @@ numeric_operators_qdrant = {
             )
             for operator in ['gte', 'gt', 'lte', 'lt']
         ],
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'value': {operator: threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    operator,
-                ]
-            )
-            for operator in ['eq', 'neq']
-        ],
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'eq',
+            ]
+        ),
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must_not': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'neq',
+            ]
+        ),
         *[
             tuple(
                 [
@@ -304,6 +311,8 @@ def test_search_pre_filtering(
         filter = filter_gen(operator, threshold)
 
         results = da.find(np.random.rand(n_dim), filter=filter)
+
+        assert len(results) > 0
 
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
