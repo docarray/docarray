@@ -181,28 +181,31 @@ with `price`  lower or equal to  some `max_price` value.
 
 
 You can index such Documents as follows:
-```
+```python
 from docarray import Document, DocumentArray
 import numpy as np
 
 n_dim = 3
 da = DocumentArray(
-    storage='weaviate', config={'n_dim': n_dim,
-                              'columns': [('price', 'float')],
-                              })
-                              
+    storage='weaviate',
+    config={
+        'n_dim': n_dim,
+        'columns': [('price', 'float')],
+    },
+)
+
 with da:
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
 
 print('\nIndexed Embeddings:\n')
-for price in da[:,'tags__price']:
-    print( f'\t price={price}')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
 ```
 
 Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
 filter:
 
-```
+```python
 max_price = 3
 n_limit = 4
 
@@ -210,8 +213,8 @@ filter = {'path': 'price', 'operator': 'LessThanEqual', 'valueNumber': max_price
 results = da.find(filter=filter)
 
 print('\n Returned examples that verify filter "price at most 7":\n')
-for price in results[:,'tags__price']:
-    print( f'\t price={price}')
+for price in results[:, 'tags__price']:
+    print(f'\t price={price}')
 ```
 
 This would print
