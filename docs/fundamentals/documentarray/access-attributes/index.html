@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/access-attributes/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocumentArray itself has no attribute. Accessing attributes in this context means access attributes of the contained Documents in bulk. In the last chapter, we get a taste of the powerful element selector of the DocumentArray. This chapter will continue talking about the attribute selector. Attri..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Query by Conditions" href="../find/" /><link rel="prev" title="Access Documents" href="../access-elements/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-attributes.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Access Attributes - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Access Attributes - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -561,7 +561,7 @@
 </div>
 <p>Here <code class="docutils literal notranslate"><span class="pre">element_selector</span></code> are the ones introduced <a class="reference internal" href="../access-elements/#access-elements"><span class="std std-ref">in the last chapter</span></a>. The attribute selector can be a string, or a list/tuple of string that represents the names of the attributes.</p>
 <p>As in element selector, one can use attribute selector to <strong>get/set/delete</strong> attributes in a DocumentArray.</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Example</th>
@@ -594,7 +594,7 @@
 <td>a NdArray-like object of the all top-level Documents tensors</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>Let’s see an example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
@@ -603,27 +603,27 @@
     <span class="n">d</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">d</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">'id'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>['8d41ce5c6f0d11eca2181e008a366d49', '8d41cfa66f0d11eca2181e008a366d49', '8d41cff66f0d11eca2181e008a366d49']
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;8d41ce5c6f0d11eca2181e008a366d49&#39;, &#39;8d41cfa66f0d11eca2181e008a366d49&#39;, &#39;8d41cff66f0d11eca2181e008a366d49&#39;]
 </pre></div>
 </div>
 <p>Of course you can use it with <a class="reference internal" href="../access-elements/#path-string"><span class="std std-ref">the path-string selector</span></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@c'</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>['db60ab8a6f0d11ec99511e008a366d49', 'db60abda6f0d11ec99511e008a366d49', 'db60c12e6f0d11ec99511e008a366d49', 'db60c1886f0d11ec99511e008a366d49', 'db60c4266f0d11ec99511e008a366d49', 'db60c46c6f0d11ec99511e008a366d49']
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;db60ab8a6f0d11ec99511e008a366d49&#39;, &#39;db60abda6f0d11ec99511e008a366d49&#39;, &#39;db60c12e6f0d11ec99511e008a366d49&#39;, &#39;db60c1886f0d11ec99511e008a366d49&#39;, &#39;db60c4266f0d11ec99511e008a366d49&#39;, &#39;db60c46c6f0d11ec99511e008a366d49&#39;]
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>['285db6586f0e11ec99401e008a366d49', '285db6b26f0e11ec99401e008a366d49', '285dbff46f0e11ec99401e008a366d49', '285dc0586f0e11ec99401e008a366d49', '285db3606f0e11ec99401e008a366d49', '285dcc746f0e11ec99401e008a366d49', '285dccce6f0e11ec99401e008a366d49', '285dce0e6f0e11ec99401e008a366d49', '285dce5e6f0e11ec99401e008a366d49', '285db4fa6f0e11ec99401e008a366d49', '285dcf946f0e11ec99401e008a366d49', '285dcfda6f0e11ec99401e008a366d49', '285dd1066f0e11ec99401e008a366d49', '285dd16a6f0e11ec99401e008a366d49', '285db55e6f0e11ec99401e008a366d49']
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;285db6586f0e11ec99401e008a366d49&#39;, &#39;285db6b26f0e11ec99401e008a366d49&#39;, &#39;285dbff46f0e11ec99401e008a366d49&#39;, &#39;285dc0586f0e11ec99401e008a366d49&#39;, &#39;285db3606f0e11ec99401e008a366d49&#39;, &#39;285dcc746f0e11ec99401e008a366d49&#39;, &#39;285dccce6f0e11ec99401e008a366d49&#39;, &#39;285dce0e6f0e11ec99401e008a366d49&#39;, &#39;285dce5e6f0e11ec99401e008a366d49&#39;, &#39;285db4fa6f0e11ec99401e008a366d49&#39;, &#39;285dcf946f0e11ec99401e008a366d49&#39;, &#39;285dcfda6f0e11ec99401e008a366d49&#39;, &#39;285dd1066f0e11ec99401e008a366d49&#39;, &#39;285dd16a6f0e11ec99401e008a366d49&#39;, &#39;285db55e6f0e11ec99401e008a366d49&#39;]
 </pre></div>
 </div>
 <p>Let’s set the field <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> for top-level Documents. We have three top-level Documents, so:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">'mime_type'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'image/jpg'</span><span class="p">,</span> <span class="s1">'image/png'</span><span class="p">,</span> <span class="s1">'image/jpg'</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image/jpg&#39;</span><span class="p">,</span> <span class="s1">&#39;image/png&#39;</span><span class="p">,</span> <span class="s1">&#39;image/jpg&#39;</span><span class="p">]</span>
 
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -632,33 +632,33 @@
                                                                       
   Length                    3                                         
   Homogenous Documents      True                                      
-  Has nested Documents in   ('chunks', 'matches')                     
-  Common Attributes         ('id', 'mime_type', 'chunks', 'matches')  
+  Has nested Documents in   (&#39;chunks&#39;, &#39;matches&#39;)                     
+  Common Attributes         (&#39;id&#39;, &#39;mime_type&#39;, &#39;chunks&#39;, &#39;matches&#39;)  
                                                                       
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
-  chunks      ('ChunkArray',)   3                False            
-  id          ('str',)          3                False            
-  matches     ('MatchArray',)   3                False            
-  mime_type   ('str',)          2                False            
+  chunks      (&#39;ChunkArray&#39;,)   3                False            
+  id          (&#39;str&#39;,)          3                False            
+  matches     (&#39;MatchArray&#39;,)   3                False            
+  mime_type   (&#39;str&#39;,)          2                False            
 </pre></div>
 </div>
 <p>We can see <code class="docutils literal notranslate"><span class="pre">mime_type</span></code> are set.</p>
 <p>If you want to set an attribute of all Documents to the same value without looping:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">'mime_type'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'hello'</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
 </pre></div>
 </div>
 <p>One can also select multiple attributes in one-shot:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">'mime_type'</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">]]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;mime_type&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[['image/jpg', 'image/png', 'image/jpg'], ['095cd76a6f0f11ec82211e008a366d49', '095cd8d26f0f11ec82211e008a366d49', '095cd92c6f0f11ec82211e008a366d49']]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[&#39;image/jpg&#39;, &#39;image/png&#39;, &#39;image/jpg&#39;], [&#39;095cd76a6f0f11ec82211e008a366d49&#39;, &#39;095cd8d26f0f11ec82211e008a366d49&#39;, &#39;095cd92c6f0f11ec82211e008a366d49&#39;]]
 </pre></div>
 </div>
 <p>Now let’s remove them.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">'mime_type'</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">]</span>
 
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
@@ -667,16 +667,16 @@
                                                          
   Length                    3                            
   Homogenous Documents      True                         
-  Has nested Documents in   ('chunks', 'matches')        
-  Common Attributes         ('id', 'chunks', 'matches')  
+  Has nested Documents in   (&#39;chunks&#39;, &#39;matches&#39;)        
+  Common Attributes         (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;)  
                                                          
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
-  chunks      ('ChunkArray',)   3                False            
-  id          ('str',)          3                False            
-  matches     ('MatchArray',)   3                False            
+  chunks      (&#39;ChunkArray&#39;,)   3                False            
+  id          (&#39;str&#39;,)          3                False            
+  matches     (&#39;MatchArray&#39;,)   3                False            
                                                                   
 </pre></div>
 </div>
@@ -696,17 +696,17 @@
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="n">da</span><span class="p">[:,</span> <span class="s1">'embedding'</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_embed</span>
+<span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sp_embed</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">'embedding'</span><span class="p">]),</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">'embedding'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]),</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class 'scipy.sparse.coo.coo_matrix'&gt; (3, 10)
-&lt;class 'scipy.sparse.coo.coo_matrix'&gt; (1, 10)
-&lt;class 'scipy.sparse.coo.coo_matrix'&gt; (1, 10)
-&lt;class 'scipy.sparse.coo.coo_matrix'&gt; (1, 10)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (3, 10)
+&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
+&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
+&lt;class &#39;scipy.sparse.coo.coo_matrix&#39;&gt; (1, 10)
 </pre></div>
 </div>
 <p>Auto unravel works in a similar way, we just assign a <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">10)</span></code> COO matrix as <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> and it auto breaks into three and assign them into the three Documents.</p>
@@ -726,10 +726,10 @@
 </pre></div>
 </div>
 <p>Now to print <code class="docutils literal notranslate"><span class="pre">id</span></code> and matched score, one can simply do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@m'</span><span class="p">,</span> <span class="p">(</span><span class="s1">'id'</span><span class="p">,</span> <span class="s1">'scores__cosine__value'</span><span class="p">)])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;scores__cosine__value&#39;</span><span class="p">)])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[['5164d792709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d792709a11ec9ae71e008a366d49', '5164d986709a11ec9ae71e008a366d49', '5164d792709a11ec9ae71e008a366d49', '5164d922709a11ec9ae71e008a366d49'], 
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[&#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d986709a11ec9ae71e008a366d49&#39;, &#39;5164d792709a11ec9ae71e008a366d49&#39;, &#39;5164d922709a11ec9ae71e008a366d49&#39;], 
 [0.0, 0.006942970007385196, 0.48303283924326845, 0.0, 0.3859268166910603, 0.48303283924326845, 2.220446049250313e-16, 0.006942970007385196, 0.3859268166910603]]
 </pre></div>
 </div>
@@ -740,12 +740,12 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'hello'</span><span class="p">,</span> <span class="s1">'world'</span><span class="p">]</span>
+<span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>['hello', 'world']
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;hello&#39;, &#39;world&#39;]
 </pre></div>
 </div>
 <p>This is same as <code class="docutils literal notranslate"><span class="pre">da[:,</span> <span class="pre">'text']</span> <span class="pre">=</span> <span class="pre">['hello',</span> <span class="pre">'world']</span></code> and then <code class="docutils literal notranslate"><span class="pre">print(da[:,</span> <span class="pre">'text'])</span></code> but more compact and probably more Pythonic.</p>
@@ -765,13 +765,13 @@
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="p">),</span> <span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class 'numpy.ndarray'&gt; (3, 10)
-&lt;class 'numpy.ndarray'&gt; (10,)
-&lt;class 'numpy.ndarray'&gt; (10,)
-&lt;class 'numpy.ndarray'&gt; (10,)
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;numpy.ndarray&#39;&gt; (3, 10)
+&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
+&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
+&lt;class &#39;numpy.ndarray&#39;&gt; (10,)
 </pre></div>
 </div>
-<hr class="footnotes docutils"/>
+<hr class="footnotes docutils" />
 <dl class="footnote brackets">
 <dt class="label" id="id3"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
 <dd><p>NdArray-like can be Numpy/TensorFlow/PyTorch/SciPy/PaddlePaddle sparse &amp; dense array.</p>
@@ -815,7 +815,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

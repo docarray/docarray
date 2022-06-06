@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/plot.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.plot - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.mixins.plot - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -533,19 +533,19 @@
 
 
 <div class="viewcode-block" id="PlotMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin">[docs]</a><span class="k">class</span> <span class="nc">PlotMixin</span><span class="p">:</span>
-    <span class="sd">"""Helper functions for plotting the arrays."""</span>
+    <span class="sd">&quot;&quot;&quot;Helper functions for plotting the arrays.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_ipython_display_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Displays the object in IPython as a side effect"""</span>
+        <span class="sd">&quot;&quot;&quot;Displays the object in IPython as a side effect&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PlotMixin.summary"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.summary">[docs]</a>    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Print the structure and attribute summary of this DocumentArray object.</span>
+        <span class="sd">&quot;&quot;&quot;Print the structure and attribute summary of this DocumentArray object.</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            Calling {meth}`.summary` on large DocumentArray can be slow.</span>
 
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
         <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
@@ -556,57 +556,57 @@
         <span class="n">tables</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
 
-        <span class="n">all_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attributes</span><span class="p">(</span><span class="s1">'non_empty_fields'</span><span class="p">)</span>
+        <span class="n">all_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attributes</span><span class="p">(</span><span class="s1">&#39;non_empty_fields&#39;</span><span class="p">)</span>
         <span class="c1"># remove underscore attribute</span>
-        <span class="n">all_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">vv</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">vv</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'_'</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_attrs</span><span class="p">]</span>
+        <span class="n">all_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">vv</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">vv</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_attrs</span><span class="p">]</span>
         <span class="n">attr_counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">all_attrs</span><span class="p">)</span>
 
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">show_header</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Length'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
         <span class="n">is_homo</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr_counter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Homogenous Documents'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_homo</span><span class="p">))</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Homogenous Documents&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_homo</span><span class="p">))</span>
 
         <span class="n">all_attrs_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_attrs</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">k</span><span class="p">)</span>
         <span class="n">_nested_in</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="s1">'chunks'</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
-            <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'chunks'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;chunks&#39;</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
+            <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;chunks&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">'matches'</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
-            <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'matches'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;matches&#39;</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
+            <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;matches&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">_nested_in</span><span class="p">:</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Has nested Documents in'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_nested_in</span><span class="p">)))</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Has nested Documents in&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_nested_in</span><span class="p">)))</span>
 
         <span class="k">if</span> <span class="n">is_homo</span><span class="p">:</span>
-            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Common Attributes'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">attr_counter</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Common Attributes&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">attr_counter</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_n</span> <span class="ow">in</span> <span class="n">attr_counter</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">_n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_n</span><span class="si">}</span><span class="s1"> Document has'</span>
+                    <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_n</span><span class="si">}</span><span class="s1"> Document has&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_n</span><span class="si">}</span><span class="s1"> Documents have'</span>
+                    <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_n</span><span class="si">}</span><span class="s1"> Documents have&#39;</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> one attribute'</span>
+                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> one attribute&#39;</span>
                 <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">_a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> no attribute'</span>
+                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> no attribute&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> attributes'</span>
+                    <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> attributes&#39;</span>
                 <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="n">_text</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">_a</span><span class="p">))</span>
 
         <span class="n">is_multimodal</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">is_multimodal</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">'Multimodal dataclass'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_multimodal</span><span class="p">))</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Multimodal dataclass&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_multimodal</span><span class="p">))</span>
 
-        <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Documents Summary'</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Documents Summary&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
         <span class="n">all_attrs_names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">all_attrs_names</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">all_attrs_names</span><span class="p">:</span>
 
             <span class="n">attr_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">'Attribute'</span><span class="p">)</span>
-            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">'Data type'</span><span class="p">)</span>
-            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">'#Unique values'</span><span class="p">)</span>
-            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">'Has empty value'</span><span class="p">)</span>
+            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Attribute&#39;</span><span class="p">)</span>
+            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Data type&#39;</span><span class="p">)</span>
+            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;#Unique values&#39;</span><span class="p">)</span>
+            <span class="n">attr_table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Has empty value&#39;</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">_a_name</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
 
@@ -623,7 +623,7 @@
                     <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_a</span><span class="p">)),</span>
                     <span class="nb">str</span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">_aa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">_aa</span> <span class="ow">in</span> <span class="n">_a</span><span class="p">)),</span>
                 <span class="p">)</span>
-            <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">attr_table</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Attributes Summary'</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">attr_table</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Attributes Summary&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 
         <span class="n">storage_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_infos</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">storage_infos</span><span class="p">:</span>
@@ -635,7 +635,7 @@
             <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">Panel</span><span class="p">(</span>
                     <span class="n">storage_table</span><span class="p">,</span>
-                    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">'[bold]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[/bold] Config'</span><span class="p">,</span>
+                    <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;[bold]</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[/bold] Config&#39;</span><span class="p">,</span>
                     <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
@@ -644,17 +644,17 @@
 
 <div class="viewcode-block" id="PlotMixin.plot_embeddings"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">plot_embeddings</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'MyDocumentArray'</span><span class="p">,</span>
+        <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;MyDocumentArray&#39;</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">image_sprites</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">min_image_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">start_server</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'127.0.0.1'</span><span class="p">,</span>
+        <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
         <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">image_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'tensor'</span><span class="p">,</span>
+        <span class="n">image_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">"""Interactively visualize :attr:`.embeddings` using the Embedding Projector.</span>
+        <span class="sd">&quot;&quot;&quot;Interactively visualize :attr:`.embeddings` using the Embedding Projector.</span>
 
 <span class="sd">        :param title: the title of this visualization. If you want to compare multiple embeddings at the same time,</span>
 <span class="sd">                make sure to give different names each time and set ``path`` to the same value.</span>
@@ -668,14 +668,14 @@
 <span class="sd">        :param start_server: if set, start a HTTP server and open the frontend directly. Otherwise, you need to rely on ``return`` path and serve by yourself.</span>
 <span class="sd">        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri</span>
 <span class="sd">        :return: the path to the embeddings visualization info.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">random_port</span><span class="p">,</span> <span class="n">__resources_path__</span>
 
         <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
-        <span class="n">emb_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.tsv'</span>
-        <span class="n">meta_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.metas.tsv'</span>
-        <span class="n">config_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'config.json'</span>
-        <span class="n">sprite_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.png'</span>
+        <span class="n">emb_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.tsv&#39;</span>
+        <span class="n">meta_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.metas.tsv&#39;</span>
+        <span class="n">config_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;config.json&#39;</span>
+        <span class="n">sprite_fn</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s1">.png&#39;</span>
 
         <span class="k">if</span> <span class="n">image_sprites</span><span class="p">:</span>
             <span class="n">img_per_row</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
@@ -685,14 +685,14 @@
             <span class="n">max_docs</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">canvas_size</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_docs</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'''</span>
+                    <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">                    </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> has more than </span><span class="si">{</span><span class="n">max_docs</span><span class="si">}</span><span class="s1"> elements, which is the maximum number of image sprites can support. </span>
 <span class="s1">                    The resulting visualization may not be correct. You can do the following:</span>
 <span class="s1">                    </span>
 <span class="s1">                    - use fewer images: `da[:10000].plot_embeddings()`</span>
 <span class="s1">                    - reduce the `min_image_size` to a smaller number, say 8 or 4 (but bear in mind you can hardly recognize anything with a 4x4 image)</span>
 <span class="s1">                    - turn off `image_sprites` via `da.plot_embeddings(image_sprites=False)`</span>
-<span class="s1">                    '''</span>
+<span class="s1">                    &#39;&#39;&#39;</span>
                 <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span>
@@ -703,9 +703,9 @@
                 <span class="n">image_source</span><span class="o">=</span><span class="n">image_source</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_embeddings_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">emb_fn</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_embeddings_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">emb_fn</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
 
-        <span class="n">_exclude_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'embedding'</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="s1">'scores'</span><span class="p">)</span>
+        <span class="n">_exclude_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">)</span>
         <span class="n">with_header</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">_exclude_fields</span><span class="p">)))</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">with_header</span> <span class="o">=</span> <span class="kc">False</span>
@@ -713,20 +713,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_csv</span><span class="p">(</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">meta_fn</span><span class="p">),</span>
             <span class="n">exclude_fields</span><span class="o">=</span><span class="n">_exclude_fields</span><span class="p">,</span>
-            <span class="n">dialect</span><span class="o">=</span><span class="s1">'excel-tab'</span><span class="p">,</span>
+            <span class="n">dialect</span><span class="o">=</span><span class="s1">&#39;excel-tab&#39;</span><span class="p">,</span>
             <span class="n">with_header</span><span class="o">=</span><span class="n">with_header</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">_epj_config</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'embeddings'</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s1">&#39;embeddings&#39;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="p">{</span>
-                    <span class="s1">'tensorName'</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
-                    <span class="s1">'tensorShape'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
-                    <span class="s1">'tensorPath'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'/static/</span><span class="si">{</span><span class="n">emb_fn</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-                    <span class="s1">'metadataPath'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'/static/</span><span class="si">{</span><span class="n">meta_fn</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-                    <span class="s1">'sprite'</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s1">'imagePath'</span><span class="p">:</span> <span class="sa">f</span><span class="s1">'/static/</span><span class="si">{</span><span class="n">sprite_fn</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span>
-                        <span class="s1">'singleImageDim'</span><span class="p">:</span> <span class="p">(</span><span class="n">img_size</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s1">&#39;tensorName&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+                    <span class="s1">&#39;tensorShape&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+                    <span class="s1">&#39;tensorPath&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;/static/</span><span class="si">{</span><span class="n">emb_fn</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;metadataPath&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;/static/</span><span class="si">{</span><span class="n">meta_fn</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;sprite&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;imagePath&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;/static/</span><span class="si">{</span><span class="n">sprite_fn</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;singleImageDim&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">img_size</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span>
                     <span class="p">}</span>
                     <span class="k">if</span> <span class="n">image_sprites</span>
                     <span class="k">else</span> <span class="p">{},</span>
@@ -737,16 +737,16 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">config_fn</span><span class="p">)):</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">config_fn</span><span class="p">))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="n">old_config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-                <span class="n">_epj_config</span><span class="p">[</span><span class="s1">'embeddings'</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">old_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'embeddings'</span><span class="p">,</span> <span class="p">[]))</span>
+                <span class="n">_epj_config</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">old_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;embeddings&#39;</span><span class="p">,</span> <span class="p">[]))</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">config_fn</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">config_fn</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">_epj_config</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
 
         <span class="kn">import</span> <span class="nn">gzip</span>
 
         <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__resources_path__</span><span class="p">,</span> <span class="s1">'embedding-projector/index.html.gz'</span><span class="p">),</span> <span class="s1">'rt'</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">fr</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'index.html'</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__resources_path__</span><span class="p">,</span> <span class="s1">&#39;embedding-projector/index.html.gz&#39;</span><span class="p">),</span> <span class="s1">&#39;rt&#39;</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">fr</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fr</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="n">start_server</span><span class="p">:</span>
@@ -759,12 +759,12 @@
                 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
                 <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
                     <span class="n">CORSMiddleware</span><span class="p">,</span>
-                    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s1">'*'</span><span class="p">],</span>
+                    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">],</span>
                     <span class="n">allow_credentials</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'*'</span><span class="p">],</span>
-                    <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s1">'*'</span><span class="p">],</span>
+                    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">],</span>
+                    <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">],</span>
                 <span class="p">)</span>
-                <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">'/static'</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">path</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">'static'</span><span class="p">)</span>
+                <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">&#39;/static&#39;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">path</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">app</span>
 
             <span class="kn">import</span> <span class="nn">uvicorn</span>
@@ -773,57 +773,57 @@
             <span class="n">port</span> <span class="o">=</span> <span class="n">port</span> <span class="ow">or</span> <span class="n">random_port</span><span class="p">()</span>
             <span class="n">t_m</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
                 <span class="n">target</span><span class="o">=</span><span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">,</span>
-                <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">'error'</span><span class="p">),</span>
+                <span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">),</span>
                 <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">url_html_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">'</span>
+            <span class="n">url_html_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="n">t_m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">_env</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">get_ipython</span><span class="p">())</span>  <span class="c1"># noqa</span>
-                <span class="k">if</span> <span class="s1">'ZMQInteractiveShell'</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
-                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">'jupyter'</span>
-                <span class="k">elif</span> <span class="s1">'google.colab'</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
-                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">'colab'</span>
+                <span class="k">if</span> <span class="s1">&#39;ZMQInteractiveShell&#39;</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
+                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">&#39;jupyter&#39;</span>
+                <span class="k">elif</span> <span class="s1">&#39;google.colab&#39;</span> <span class="ow">in</span> <span class="n">_env</span><span class="p">:</span>
+                    <span class="n">_env</span> <span class="o">=</span> <span class="s1">&#39;colab&#39;</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="n">_env</span> <span class="o">=</span> <span class="s1">'local'</span>
-            <span class="k">if</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'jupyter'</span><span class="p">:</span>
+                <span class="n">_env</span> <span class="o">=</span> <span class="s1">&#39;local&#39;</span>
+            <span class="k">if</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">&#39;jupyter&#39;</span><span class="p">:</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
                     <span class="mi">1</span>
                 <span class="p">)</span>  <span class="c1"># jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser</span>
                 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span><span class="p">,</span> <span class="n">display</span>  <span class="c1"># noqa</span>
 
-                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">"100%"</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
+                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> in a new tab for better experience. '</span>
-                    <span class="sa">f</span><span class="s1">'Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. '</span>
-                    <span class="sa">f</span><span class="s1">'Click "stop" button in the toolbar to move to the next cell.'</span>
+                    <span class="sa">f</span><span class="s1">&#39;Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> in a new tab for better experience. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Also, `localhost` may need to be changed to the IP address if your jupyter is running remotely. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Click &quot;stop&quot; button in the toolbar to move to the next cell.&#39;</span>
                 <span class="p">)</span>
-            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'colab'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">&#39;colab&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">google.colab.output</span> <span class="kn">import</span> <span class="n">eval_js</span>  <span class="c1"># noqa</span>
 
-                <span class="n">colab_url</span> <span class="o">=</span> <span class="n">eval_js</span><span class="p">(</span><span class="sa">f</span><span class="s1">'google.colab.kernel.proxyPort(</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">)'</span><span class="p">)</span>
-                <span class="n">colab_url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">'/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">'</span>
+                <span class="n">colab_url</span> <span class="o">=</span> <span class="n">eval_js</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;google.colab.kernel.proxyPort(</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="n">colab_url</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;/static/index.html?config=</span><span class="si">{</span><span class="n">config_fn</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">colab_url</span><span class="si">}</span><span class="s1"> in a new tab for better experience. '</span>
-                    <span class="sa">f</span><span class="s1">'Click "stop" button in the toolbar to move to the next cell.'</span>
+                    <span class="sa">f</span><span class="s1">&#39;Showing iframe in cell, you may want to open </span><span class="si">{</span><span class="n">colab_url</span><span class="si">}</span><span class="s1"> in a new tab for better experience. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;Click &quot;stop&quot; button in the toolbar to move to the next cell.&#39;</span>
                 <span class="p">)</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span>
                     <span class="mi">1</span>
                 <span class="p">)</span>  <span class="c1"># jitter is required otherwise encouter werid `strict-origin-when-cross-origin` error in browser</span>
                 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">IFrame</span><span class="p">,</span> <span class="n">display</span>
 
-                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">colab_url</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">"100%"</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">'local'</span><span class="p">:</span>
+                <span class="n">display</span><span class="p">(</span><span class="n">IFrame</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">colab_url</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">_env</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="kn">import</span> <span class="nn">webbrowser</span>
 
                     <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">url_html_path</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
-                    <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn't cross-platform</span>
+                    <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn&#39;t cross-platform</span>
                 <span class="k">finally</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">'You should see a webpage opened in your browser, '</span>
-                        <span class="sa">f</span><span class="s1">'if not, you may open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> manually'</span>
+                        <span class="sa">f</span><span class="s1">&#39;You should see a webpage opened in your browser, &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;if not, you may open </span><span class="si">{</span><span class="n">url_html_path</span><span class="si">}</span><span class="s1"> manually&#39;</span>
                     <span class="p">)</span>
             <span class="n">t_m</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">path</span></div>
@@ -834,13 +834,13 @@
         <span class="n">canvas_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
         <span class="n">min_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
         <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">image_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'tensor'</span><span class="p">,</span>
+        <span class="n">image_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span>
         <span class="n">skip_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">fig_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">"""Generate a sprite image for all image tensors in this DocumentArray-like object.</span>
+        <span class="sd">&quot;&quot;&quot;Generate a sprite image for all image tensors in this DocumentArray-like object.</span>
 
 <span class="sd">        An image sprite is a collection of images put into a single image. It is always square-sized.</span>
 <span class="sd">        Each sub-image is also square-sized and equally-sized.</span>
@@ -852,9 +852,9 @@
 <span class="sd">        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri</span>
 <span class="sd">        :param skip_empty: skip Document who has no .uri or .tensor.</span>
 <span class="sd">        :param show_progress: show a progresbar.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> is empty'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> is empty&#39;</span><span class="p">)</span>
 
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -868,7 +868,7 @@
 
         <span class="n">max_num_img</span> <span class="o">=</span> <span class="n">img_per_row</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">sprite_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">'uint8'</span>
+            <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span>
         <span class="p">)</span>
         <span class="n">img_id</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -877,7 +877,7 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">_idx</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="n">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'Plotting'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">)</span>
+                <span class="n">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Plotting&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">)</span>
             <span class="p">):</span>
 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">uri</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">tensor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -885,18 +885,18 @@
                         <span class="k">continue</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s1">'Document has neither `uri` nor `tensor`, can not be plotted'</span>
+                            <span class="sa">f</span><span class="s1">&#39;Document has neither `uri` nor `tensor`, can not be plotted&#39;</span>
                         <span class="p">)</span>
 
                 <span class="n">_d</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">image_source</span> <span class="o">==</span> <span class="s1">'uri'</span> <span class="ow">or</span> <span class="p">(</span>
-                    <span class="n">image_source</span> <span class="o">==</span> <span class="s1">'tensor'</span> <span class="ow">and</span> <span class="n">_d</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s1">'tensor'</span>
+                <span class="k">if</span> <span class="n">image_source</span> <span class="o">==</span> <span class="s1">&#39;uri&#39;</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">image_source</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span> <span class="ow">and</span> <span class="n">_d</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s1">&#39;tensor&#39;</span>
                 <span class="p">):</span>
                     <span class="n">_d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
                     <span class="n">channel_axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="k">elif</span> <span class="n">image_source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'uri'</span><span class="p">,</span> <span class="s1">'tensor'</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'image_source can be only `uri` or `tensor`'</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">image_source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">,</span> <span class="s1">&#39;tensor&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image_source can be only `uri` or `tensor`&#39;</span><span class="p">)</span>
 
                 <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span>
                     <span class="n">channel_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
@@ -921,13 +921,13 @@
                     <span class="k">break</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">'Bad image tensor. Try different `image_source` or `channel_axis`'</span>
+                <span class="s1">&#39;Bad image tensor. Try different `image_source` or `channel_axis`&#39;</span>
             <span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">sprite_img</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fig_size</span><span class="p">:</span>
@@ -953,7 +953,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

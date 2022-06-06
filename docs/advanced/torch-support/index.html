@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/torch-support/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocArray can be easily integrated into PyTorch, Tensorflow, PaddlePaddle frameworks. The.embedding and.tensor attributes in Document class can contain PyTorch sparse/dense tensor, Tensorflow sparse/dense tensor or PaddlePaddle dense tensor. It means that if you store the Document on disk in pickl..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" /><link rel="prev" title="Jupyter Notebook/Colab" href="../../fundamentals/notebook-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/torch-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>PyTorch/Deep Learning Frameworks - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>PyTorch/Deep Learning Frameworks - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -572,20 +572,20 @@
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">'test.protobuf.gz'</span><span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">save_binary</span><span class="p">(</span><span class="s1">&#39;test.protobuf.gz&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now let’s load them again and check the data type:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">'test.protobuf.gz'</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span><span class="s1">&#39;test.protobuf.gz&#39;</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">embedding</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class 'numpy.ndarray'&gt;
-&lt;class 'torch.Tensor'&gt;
-&lt;class 'torch.Tensor'&gt;
-&lt;class 'paddle.Tensor'&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;numpy.ndarray&#39;&gt;
+&lt;class &#39;torch.Tensor&#39;&gt;
+&lt;class &#39;torch.Tensor&#39;&gt;
+&lt;class &#39;paddle.Tensor&#39;&gt;
 </pre></div>
 </div>
 <section id="load-map-batch-in-one-shot">
@@ -599,7 +599,7 @@
 </ul>
 <p>DocArray provides a high-level function <a class="reference internal" href="../../api/docarray.array.mixins.dataloader/#docarray.array.mixins.dataloader.DataLoaderMixin.dataloader" title="docarray.array.mixins.dataloader.DataLoaderMixin.dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dataloader()</span></code></a> that allows you to do this in one-shot, avoiding all pitfalls. The following figure illustrates this function:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/dataloader.svg"><img alt="../../_images/dataloader.svg" src="../../_images/dataloader.svg" width="80%"/></a>
+<a class="reference internal image-reference" href="../../_images/dataloader.svg"><img alt="../../_images/dataloader.svg" src="../../_images/dataloader.svg" width="80%" /></a>
 </figure>
 <p>Say we have a one million 32 x 32 color images, which takes 3.14GB on the disk with <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code> and <code class="docutils literal notranslate"><span class="pre">compress='gz'</span></code>. To process it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -609,17 +609,17 @@
 
 <span class="k">def</span> <span class="nf">cpu_job</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'cpu job done'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;cpu job done&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">da</span>
 
 
 <span class="k">def</span> <span class="nf">gpu_job</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'gpu job done'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;gpu job done&#39;</span><span class="p">)</span>
 
 
 <span class="k">for</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">dataloader</span><span class="p">(</span>
-    <span class="s1">'da.protobuf.gz'</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">cpu_job</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="mi">4</span>
+    <span class="s1">&#39;da.protobuf.gz&#39;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="n">cpu_job</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="mi">4</span>
 <span class="p">):</span>
     <span class="n">gpu_job</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
 </pre></div>
@@ -678,7 +678,7 @@ cpu job donecpu job done
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

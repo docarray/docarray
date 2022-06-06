@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/extend/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocumentArray can be easily extended to support new Document Store. As we have seen in the previous chapters, a document store can be a SQL/NoSQL/vector database, or even an in-memory data structure. For DocArray, the motivation of on-boarding a new store is often: having persistence that better ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="One Million Scale Benchmark" href="../benchmark/" /><link rel="prev" title="Elasticsearch" href="../elasticsearch/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/extend.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Add New Document Store - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Add New Document Store - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -568,7 +568,7 @@
 <p>This chapter gives you a walk-through on how to add a new document store. To be specific, in this chapter we are extending DocumentArray to support a new document store called <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code>. The final usage would look like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">'mydocstore'</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;mydocstore&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="o">...</span><span class="p">})</span>
 </pre></div>
 </div>
 <p>Let’s get started!</p>
@@ -601,7 +601,7 @@ storage backend supports approximate nearest-neighbor search, you can include an
 
 
 <span class="k">class</span> <span class="nc">GetSetDelMixin</span><span class="p">(</span><span class="n">BaseGetSetDelMixin</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Document'</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
 
@@ -609,7 +609,7 @@ storage backend supports approximate nearest-neighbor search, you can include an
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">_set_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="c1"># to be implemented</span>
         <span class="o">...</span>
 
@@ -654,25 +654,25 @@ upper level. Also, make sure that <code class="docutils literal notranslate"><sp
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'Document'</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]]):</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="c1"># Optional. By default, this will add a new item and update offset2id</span>
         <span class="c1"># if you want to customize this, make sure to handle offset2id</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="c1"># Optional. Override this if you have a better implementation than inserting at the last position</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Optional. Override this if you have better implementation than appending one by one</span>
         <span class="o">...</span>
 
@@ -680,7 +680,7 @@ upper level. Also, make sure that <code class="docutils literal notranslate"><sp
         <span class="c1"># Optional. By default, this will rely on offset2id to get the length</span>
         <span class="o">...</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
         <span class="c1"># Optional. By default, this will rely on offset2id to iterate</span>
         <span class="o">...</span>
 </pre></div>
@@ -716,7 +716,7 @@ upper level. Also, make sure that <code class="docutils literal notranslate"><sp
 <span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArraySourceType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArraySourceType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">MyDocStoreConfig</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
@@ -741,24 +741,24 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
     <span class="c1"># Define the expected input type that your ANN search supports</span>
-    <span class="n">MyDocumentStoreArrayType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'MyDocumentStoreArrayType'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+    <span class="n">MyDocumentStoreArrayType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;MyDocumentStoreArrayType&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">FindMixin</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">_find_similar_vectors</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">'MyDocumentStoreArrayType'</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArray'</span><span class="p">:</span>
-        <span class="sd">"""Expects a MyDocumentStoreArrayType vector query and should return a DocumentArray of results retrieved from</span>
-<span class="sd">        the storage backend"""</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;MyDocumentStoreArrayType&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Expects a MyDocumentStoreArrayType vector query and should return a DocumentArray of results retrieved from</span>
+<span class="sd">        the storage backend&quot;&quot;&quot;</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_find</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">'ElasticArrayType'</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'DocumentArray'</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">'DocumentArray'</span><span class="p">]]:</span>
-        <span class="sd">"""Returns `limit` approximate nearest neighbors given a batch of input queries.</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="s1">&#39;ElasticArrayType&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Returns `limit` approximate nearest neighbors given a batch of input queries.</span>
 <span class="sd">        If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing</span>
 <span class="sd">        the closest Documents for each query.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="o">...</span>
 </pre></div>
 </div>
@@ -772,7 +772,7 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
 <span class="kn">from</span> <span class="nn">.getsetdel</span> <span class="kn">import</span> <span class="n">GetSetDelMixin</span>
 <span class="kn">from</span> <span class="nn">.seqlike</span> <span class="kn">import</span> <span class="n">SequenceLikeMixin</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'StorageMixins'</span><span class="p">,</span> <span class="s1">'MyDocStoreConfig'</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;StorageMixins&#39;</span><span class="p">,</span> <span class="s1">&#39;MyDocStoreConfig&#39;</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">StorageMixins</span><span class="p">(</span><span class="n">BackendMixin</span><span class="p">,</span> <span class="n">GetSetDelMixin</span><span class="p">,</span> <span class="n">SequenceLikeMixin</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
@@ -810,7 +810,7 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
 
 <span class="kn">from</span> <span class="nn">.storage.mydocstore</span> <span class="kn">import</span> <span class="n">StorageMixins</span><span class="p">,</span> <span class="n">MyDocStoreConfig</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'MyDocStoreConfig'</span><span class="p">,</span> <span class="s1">'DocumentArrayMyDocStore'</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MyDocStoreConfig&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentArrayMyDocStore&#39;</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">DocumentArrayMyDocStore</span><span class="p">(</span><span class="n">StorageMixins</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">):</span>
@@ -824,7 +824,7 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
 <p>We are almost there! Now we need to add the entrypoint to <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> constructor to allow user to use the <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code> backend as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">'mydocstore'</span><span class="p">)</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;mydocstore&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Go to <code class="docutils literal notranslate"><span class="pre">docarray/array/document.py</span></code> and add <code class="docutils literal notranslate"><span class="pre">mydocstore</span></code> there:</p>
@@ -832,13 +832,13 @@ docarray. To do so, add a <code class="docutils literal notranslate"><span class
     
     <span class="o">...</span>
     
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'memory'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArrayLike'</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;memory&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArrayLike&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="n">DocumentArray</span><span class="p">:</span>
-<span class="hll">            <span class="k">if</span> <span class="n">storage</span> <span class="o">==</span> <span class="s1">'mydocstore'</span><span class="p">:</span>
+<span class="hll">            <span class="k">if</span> <span class="n">storage</span> <span class="o">==</span> <span class="s1">&#39;mydocstore&#39;</span><span class="p">:</span>
 </span><span class="hll">                <span class="kn">from</span> <span class="nn">.mydocstore</span> <span class="kn">import</span> <span class="n">DocumentArrayMyDocStore</span>
 </span><span class="hll">
 </span><span class="hll">                <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">DocumentArrayMyDocStore</span><span class="p">)</span>
-</span>            <span class="k">elif</span> <span class="n">storage</span> <span class="o">==</span> <span class="s1">'memory'</span><span class="p">:</span>
+</span>            <span class="k">elif</span> <span class="n">storage</span> <span class="o">==</span> <span class="s1">&#39;memory&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">.memory</span> <span class="kn">import</span> <span class="n">DocumentArrayInMemory</span>
                 <span class="o">...</span>  
 </pre></div>
@@ -853,18 +853,18 @@ tests/unit/array/test_sequence.py
 tests/unit/array/test_construct.py
 </pre></div>
 </div>
-<p>Please also add <code class="docutils literal notranslate"><span class="pre">@overload</span></code> type hint to <code class="docutils literal notranslate"><span class="pre">docarray/array/document.py</span></code>.</p>
+<p>Please also add <code class="docutils literal notranslate"><span class="pre">&#64;overload</span></code> type hint to <code class="docutils literal notranslate"><span class="pre">docarray/array/document.py</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DocumentArray</span><span class="p">(</span><span class="n">AllMixins</span><span class="p">,</span> <span class="n">BaseDocumentArray</span><span class="p">):</span>
     <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'DocumentArraySourceType'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">storage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'mydocstore'</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">'MyDocStoreConfig'</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'DocumentArrayMyDocStore'</span><span class="p">:</span>
-        <span class="sd">"""Create a MyDocStore-powered DocumentArray object."""</span>
+        <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArraySourceType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">storage</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mydocstore&#39;</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;MyDocStoreConfig&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArrayMyDocStore&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create a MyDocStore-powered DocumentArray object.&quot;&quot;&quot;</span>
         <span class="o">...</span>
 </pre></div>
 </div>
@@ -907,7 +907,7 @@ tests/unit/array/test_construct.py
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

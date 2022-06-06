@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/setitem.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.setitem - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.mixins.setitem - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -544,44 +544,44 @@
 
 
 <div class="viewcode-block" id="SetItemMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin">[docs]</a><span class="k">class</span> <span class="nc">SetItemMixin</span><span class="p">:</span>
-    <span class="sd">"""Provides helper function to allow advanced indexing for `__setitem__`"""</span>
+    <span class="sd">&quot;&quot;&quot;Provides helper function to allow advanced indexing for `__setitem__`&quot;&quot;&quot;</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="s1">'DocumentArrayMultipleAttributeType'</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">'Any'</span><span class="p">]],</span>
+        <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;DocumentArrayMultipleAttributeType&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">&#39;Any&#39;</span><span class="p">]],</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="s1">'DocumentArraySingleAttributeType'</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">'Any'</span><span class="p">],</span>
+        <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;DocumentArraySingleAttributeType&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Any&#39;</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="s1">'DocumentArraySingletonIndexType'</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;DocumentArraySingletonIndexType&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="s1">'DocumentArrayMultipleIndexType'</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">],</span>
+        <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;DocumentArrayMultipleIndexType&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span>
     <span class="p">):</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">index</span><span class="p">:</span> <span class="s1">'DocumentArrayIndexType'</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]],</span>
+        <span class="n">index</span><span class="p">:</span> <span class="s1">&#39;DocumentArrayIndexType&#39;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]],</span>
     <span class="p">):</span>
 
         <span class="c1"># set by offset</span>
@@ -590,12 +590,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc_by_offset</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># set by traversal paths</span>
-            <span class="c1"># allows da['@m,c] = [m1, m2, ..., mn, c1, c2, ..., cp]</span>
-            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'@'</span><span class="p">):</span>
+            <span class="c1"># allows da[&#39;@m,c] = [m1, m2, ..., mn, c1, c2, ..., cp]</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc_value_pairs_nested</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">value</span><span class="p">)</span>
 
             <span class="c1"># set by ID</span>
-            <span class="c1"># allows da['id_123'] = Document()</span>
+            <span class="c1"># allows da[&#39;id_123&#39;] = Document()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="c1"># set by slice</span>
@@ -624,7 +624,7 @@
                     <span class="bp">self</span><span class="p">[</span><span class="n">si</span><span class="p">]</span> <span class="o">=</span> <span class="n">_val</span>  <span class="c1"># leverage existing setter</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1"> should be either a sequence of bool, int or str'</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1"> should be either a sequence of bool, int or str&#39;</span>
                 <span class="p">)</span>
 
         <span class="c1"># set by ndarray</span>
@@ -634,14 +634,14 @@
                 <span class="bp">self</span><span class="p">[</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>  <span class="c1"># leverage existing setter</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'When using np.ndarray as index, its `ndim` must =1. However, receiving ndim=</span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s1">'</span>
+                    <span class="sa">f</span><span class="s1">&#39;When using np.ndarray as index, its `ndim` must =1. However, receiving ndim=</span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Unsupported index type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported index type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_by_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">idx1</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'@'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">idx1</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
             <span class="c1"># second is an ID</span>
             <span class="c1"># allows da[id1, id2] = [d1, d2]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx2</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx2</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -661,7 +661,7 @@
                 <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">idx2</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc_attr_by_id</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_v</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'`</span><span class="si">{</span><span class="n">idx2</span><span class="si">}</span><span class="s1">` is neither a valid id nor attribute name'</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">idx2</span><span class="si">}</span><span class="s1">` is neither a valid id nor attribute name&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="c1"># second is an offset</span>
             <span class="c1"># allows da[offset1, offset2] = [d1, d2]</span>
@@ -681,17 +681,17 @@
                 <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">idx2</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc_attr_by_offset</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">_v</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'`</span><span class="si">{</span><span class="n">idx2</span><span class="si">}</span><span class="s1">` must be an attribute or list of attributes'</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">idx2</span><span class="si">}</span><span class="s1">` must be an attribute or list of attributes&#39;</span><span class="p">)</span>
 
         <span class="c1"># allows da[sequence/slice/ellipsis/traversal_path, attributes] = [v1, v2, ...]</span>
         <span class="k">elif</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="p">(</span><span class="nb">slice</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">))</span>
             <span class="ow">or</span> <span class="n">idx1</span> <span class="ow">is</span> <span class="bp">Ellipsis</span>
-            <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx1</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'@'</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">idx1</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">))</span>
         <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_docs_attributes</span><span class="p">(</span><span class="n">idx1</span><span class="p">,</span> <span class="n">idx2</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Unsupported first index type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">idx1</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported first index type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">idx1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_set_by_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">_selected</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
@@ -704,14 +704,14 @@
             <span class="n">attributes</span> <span class="o">=</span> <span class="p">(</span><span class="n">attributes</span><span class="p">,)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">index</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'@'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">index</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_docs_attributes_traversal_paths</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="ow">is</span> <span class="bp">Ellipsis</span><span class="p">:</span>
             <span class="n">_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'tensor'</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span><span class="p">:</span>
                     <span class="n">_docs</span><span class="o">.</span><span class="n">tensors</span> <span class="o">=</span> <span class="n">_v</span>
-                <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'embedding'</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
                     <span class="n">_docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">_v</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -727,10 +727,10 @@
                 <span class="k">return</span>
 
             <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">_a</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'tensor'</span><span class="p">,</span> <span class="s1">'embedding'</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'tensor'</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">_a</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span><span class="p">:</span>
                         <span class="n">_docs</span><span class="o">.</span><span class="n">tensors</span> <span class="o">=</span> <span class="n">_v</span>
-                    <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'embedding'</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
                         <span class="n">_docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">_v</span>
                     <span class="k">for</span> <span class="n">_d</span> <span class="ow">in</span> <span class="n">_docs</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc</span><span class="p">(</span><span class="n">_d</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_d</span><span class="p">)</span>
@@ -750,9 +750,9 @@
             <span class="k">return</span>
 
         <span class="k">for</span> <span class="n">_a</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'tensor'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span><span class="p">:</span>
                 <span class="n">_docs</span><span class="o">.</span><span class="n">tensors</span> <span class="o">=</span> <span class="n">_v</span>
-            <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">'embedding'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">_a</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
                 <span class="n">_docs</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">_v</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
@@ -776,7 +776,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/get-started/what-is/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="It is like JSON, but for intensive computation., It is like numpy.ndarray, but for unstructured data., It is like pandas.DataFrame, but for nested and mixed media data with embeddings., It is like Protobuf, but for data scientists and deep learning engineers.. If you are a data scientist who work..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/docarray-vs-banner.gif" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Document" href="../../fundamentals/document/" /><link rel="prev" title="Welcome to DocArray!" href="../../" />
         <link rel="canonical" href="https://docarray.jina.ai/get-started/what-is.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>What is DocArray? - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>What is DocArray? - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -553,7 +553,7 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="what-is-docarray">
 <h1>What is DocArray?<a class="headerlink" href="#what-is-docarray" title="Permalink to this headline">#</a></h1>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/docarray-vs-banner.gif"><img alt="../../_images/docarray-vs-banner.gif" src="../../_images/docarray-vs-banner.gif" style="width: 0.0px; height: 0.0px;"/></a>
+<a class="reference internal image-reference" href="../../_images/docarray-vs-banner.gif"><img alt="../../_images/docarray-vs-banner.gif" src="../../_images/docarray-vs-banner.gif" style="width: 0.0px; height: 0.0px;" /></a>
 </figure>
 <ul class="simple">
 <li><p>It is like JSON, but for intensive computation.</p></li>
@@ -576,14 +576,14 @@
 <p>DocArray is designed to maximize the local experience, with the requirement of cloud readiness at anytime.</p>
 <p>DocArray is designed to represent multimodal data intuitively to face the ever-increasing development of multi/cross-modal applications.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/dataclass-example.svg"><img alt="../../_images/dataclass-example.svg" src="../../_images/dataclass-example.svg" width="80%"/></a>
+<a class="reference internal image-reference" href="../../_images/dataclass-example.svg"><img alt="../../_images/dataclass-example.svg" src="../../_images/dataclass-example.svg" width="80%" /></a>
 </figure>
 </section>
 </section>
 <section class="tex2jax_ignore mathjax_ignore" id="comparing-to-alternatives">
 <h1>Comparing to Alternatives<a class="headerlink" href="#comparing-to-alternatives" title="Permalink to this headline">#</a></h1>
 <p>✅ Full support ✔ limited support ❌ no support</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th></th>
@@ -692,14 +692,14 @@
 <td>❌</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>There are three other packages that people often compare DocArray to, yet I haven’t used them extensively. It would be unfair to put them in the above list, so here is a dedicated section for them.</p>
 <section id="to-huggingface-datasets">
 <h2>To Huggingface Datasets<a class="headerlink" href="#to-huggingface-datasets" title="Permalink to this headline">#</a></h2>
 <p><a class="reference external" href="https://huggingface.co/docs/datasets/">Huggingface datasets</a> is a library for easily accessing and sharing datasets for NLP, computer vision, and audio tasks. One of the highlights is its efficient loading on large dataset, which is highly appreciated during training.</p>
 <p>In DocArray, there will also be a couple of feature release soon to allow big data loading with constant memory consumption. However, the biggest difference is that DocArray is focused on <strong>data in transit</strong>, whereas HF Datasets is about <strong>data at rest</strong>. DocArray is focused on active data that subject to frequent change; and allows efficient transfer between threads, processes and microservices. Data in transit often traverses a network or temporarily resides in memory to be read or updated. It is as opposed to Datasets, where training data is stored physically and statically that subject to very occasional changes. The figure below depicts the differences.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/compare-data-type.svg"><img alt="../../_images/compare-data-type.svg" src="../../_images/compare-data-type.svg" width="90%"/></a>
+<a class="reference internal image-reference" href="../../_images/compare-data-type.svg"><img alt="../../_images/compare-data-type.svg" src="../../_images/compare-data-type.svg" width="90%" /></a>
 </figure>
 </section>
 <section id="to-awkwardarray">
@@ -715,23 +715,23 @@
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)</span>
 <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">),</span> <span class="mi">64</span><span class="p">])</span>
 
-<span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">'hello </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">'</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">))]</span>
+<span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;hello </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">))]</span>
 
 <span class="n">ak_array</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">from_iter</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
 
-<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">'iter via DocArray'</span><span class="p">):</span>
+<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;iter via DocArray&#39;</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
         <span class="k">pass</span>
 
-<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">'iter via awkward'</span><span class="p">):</span>
+<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;iter via awkward&#39;</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ak_array</span><span class="p">:</span>
         <span class="k">pass</span>
 
-<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">'access text via DocArray'</span><span class="p">):</span>
+<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;access text via DocArray&#39;</span><span class="p">):</span>
     <span class="n">da</span><span class="o">.</span><span class="n">texts</span>
 
-<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">'access text via awkward'</span><span class="p">):</span>
-    <span class="n">ak_array</span><span class="p">[</span><span class="s1">'text'</span><span class="p">]</span>
+<span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;access text via awkward&#39;</span><span class="p">):</span>
+    <span class="n">ak_array</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>iter via DocArray ...	0.004s
@@ -753,7 +753,7 @@ access text via awkward ...	0.000s
 <p>Jina 2.0-2.6 <em>kind of</em> have their own “DocArray”, with very similar <code class="docutils literal notranslate"><span class="pre">Document</span></code> and <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> interface. However, it is an old design and codebase. Since then, many redesigns and improvements have been made to boost its efficiency, usability and portability. DocArray is now an independent package that other frameworks such as future Jina 3.x and Finetuner will rely on.</p>
 <p>The first good reason to use DocArray is its efficiency. Here is a side-by-side speed comparison of Jina 2.6 vs. DocArray on some common tasks.</p>
 <figure class="align-default">
-<img alt="../../_images/speedup-vs2.svg" src="../../_images/speedup-vs2.svg"/></figure>
+<img alt="../../_images/speedup-vs2.svg" src="../../_images/speedup-vs2.svg" /></figure>
 <p>The benchmark was conducted on 100K Documents/DocumentArray averaged over 5 repetitions with min &amp; max values removed.</p>
 <p>The speedup comes from the complete redesign of Document and DocumentArray.</p>
 <p>Beside code refactoring and optimization, many features have been improved, including:</p>
@@ -805,7 +805,7 @@ access text via awkward ...	0.000s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

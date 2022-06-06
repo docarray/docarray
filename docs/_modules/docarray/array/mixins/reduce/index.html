@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/reduce.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.reduce - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.mixins.reduce - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -524,39 +524,39 @@
     <span class="kn">from</span> <span class="nn">...typing</span> <span class="kn">import</span> <span class="n">T</span><span class="p">,</span> <span class="n">Document</span>
 
 
-<span class="k">def</span> <span class="nf">_reduce_doc_props</span><span class="p">(</span><span class="n">doc1</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">,</span> <span class="n">doc2</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_reduce_doc_props</span><span class="p">(</span><span class="n">doc1</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">doc2</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
     <span class="n">doc1_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc1</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">)</span>
     <span class="n">doc2_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">)</span>
 
     <span class="c1"># update only fields that are set in doc2 and not set in doc1</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="n">doc2_fields</span> <span class="o">-</span> <span class="n">doc1_fields</span>
 
-    <span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span> <span class="o">-</span> <span class="p">{</span><span class="s1">'matches'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">,</span> <span class="s1">'parent_id'</span><span class="p">}</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;parent_id&#39;</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">doc1</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">doc2</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="ReduceMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin">[docs]</a><span class="k">class</span> <span class="nc">ReduceMixin</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A mixin that provides reducing logic for :class:`DocumentArray`</span>
 <span class="sd">    Reducing 2 or more DocumentArrays consists in merging all Documents into the same DocumentArray.</span>
 <span class="sd">    If a Document belongs to 2 or more DocumentArrays, it is added once and data attributes are merged with priority to</span>
 <span class="sd">    the Document belonging to the left-most DocumentArray. Matches and chunks are also reduced in the same way.</span>
 <span class="sd">    Reduction is applied to all levels of DocumentArrays, that is, from root Documents to all their chunk and match</span>
 <span class="sd">    children.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ReduceMixin.reduce"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<div class="viewcode-block" id="ReduceMixin.reduce"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce">[docs]</a>    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces other and the current DocumentArray into one DocumentArray in-place. Changes are applied to the current</span>
 <span class="sd">        DocumentArray.</span>
 <span class="sd">        Reducing 2 DocumentArrays consists in adding Documents in the second DocumentArray to the first DocumentArray</span>
 <span class="sd">        if they do not exist. If a Document exists in both DocumentArrays, the data properties are merged with priority</span>
-<span class="sd">        to the first Document (that is, to the current DocumentArray's Document). The matches and chunks are also</span>
+<span class="sd">        to the first Document (that is, to the current DocumentArray&#39;s Document). The matches and chunks are also</span>
 <span class="sd">        reduced in the same way.</span>
 <span class="sd">        :param other: DocumentArray</span>
 <span class="sd">        :return: DocumentArray</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">other</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">doc</span><span class="p">)</span>
@@ -566,8 +566,8 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_reduce_doc</span><span class="p">(</span><span class="n">doc1</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">,</span> <span class="n">doc2</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
-        <span class="sd">"""</span>
+    <span class="k">def</span> <span class="nf">_reduce_doc</span><span class="p">(</span><span class="n">doc1</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">doc2</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces doc1 and doc2 into one Document in-place. Changes are applied to doc1.</span>
 <span class="sd">        Reducing 2 Documents consists in setting data properties of the second Document to the first Document if they</span>
 <span class="sd">        are empty (that is, priority to the left-most Document) and reducing the matches and the chunks of both</span>
@@ -576,7 +576,7 @@
 <span class="sd">        Reduction of matches and chunks relies on :class:`DocumentArray`.:method:`reduce`.</span>
 <span class="sd">        :param doc1: first Document</span>
 <span class="sd">        :param doc2: second Document</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_reduce_doc_props</span><span class="p">(</span><span class="n">doc1</span><span class="p">,</span> <span class="n">doc2</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">doc1</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span>
@@ -584,8 +584,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">chunks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">doc1</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">doc2</span><span class="o">.</span><span class="n">chunks</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ReduceMixin.reduce_all"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce_all">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_all</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">others</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">'T'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""</span>
+<div class="viewcode-block" id="ReduceMixin.reduce_all"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin.reduce_all">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_all</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">others</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduces a list of DocumentArrays and this DocumentArray into one DocumentArray. Changes are applied to this</span>
 <span class="sd">        DocumentArray in-place.</span>
 
@@ -605,7 +605,7 @@
 
 <span class="sd">        :param others: List of DocumentArrays to be reduced</span>
 <span class="sd">        :return: the resulting DocumentArray</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">da</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
@@ -623,7 +623,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

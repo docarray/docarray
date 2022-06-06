@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.queryset.lookup/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Originally from https://github.com/naiquevin/lookupy The library is provided as-is under the MIT License Copyright (c) 2013 Vineet Naik ( naikvin@gmail.com) Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Softw..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray.array.queryset.parser module" href="../docarray.array.queryset.parser/" /><link rel="prev" title="docarray.array.queryset package" href="../docarray.array.queryset/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.queryset.lookup.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.queryset.lookup module - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.queryset.lookup module - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -554,7 +554,7 @@
 <span id="docarray-array-queryset-lookup-module"></span><h1>docarray.array.queryset.lookup module<a class="headerlink" href="#module-docarray.array.queryset.lookup" title="Permalink to this headline">#</a></h1>
 <p>Originally from <a class="reference external" href="https://github.com/naiquevin/lookupy">https://github.com/naiquevin/lookupy</a></p>
 <p>The library is provided as-is under the MIT License</p>
-<p>Copyright (c) 2013 Vineet Naik (<a class="reference external" href="mailto:naikvin%40gmail.com">naikvin<span>@</span>gmail<span>.</span>com</a>)</p>
+<p>Copyright (c) 2013 Vineet Naik (<a class="reference external" href="mailto:naikvin&#37;&#52;&#48;gmail&#46;com">naikvin<span>&#64;</span>gmail<span>&#46;</span>com</a>)</p>
 <p>Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 “Software”), to deal in the Software without restriction, including
@@ -577,11 +577,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 <dd><p>Checks if key-val pair exists in doc using various lookup types</p>
 <p>The lookup types are derived from the <cite>key</cite> and then used to check
 if the lookup holds true for the document:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lookup</span><span class="p">(</span><span class="s1">'text__exact'</span><span class="p">,</span> <span class="s1">'hello'</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lookup</span><span class="p">(</span><span class="s1">&#39;text__exact&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The above will return True if doc.text == ‘hello’ else False. And</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lookup</span><span class="p">(</span><span class="s1">'text_exact'</span><span class="p">,</span> <span class="s1">'</span><span class="si">{tags__name}</span><span class="s1">'</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lookup</span><span class="p">(</span><span class="s1">&#39;text_exact&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{tags__name}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>will return True if doc.text == doc.tags[‘name’] else False</p>
@@ -594,6 +594,7 @@ if the lookup holds true for the document:</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupTreeElem">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupTreeElem</span></span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupTreeElem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupTreeElem" title="Permalink to this definition">#</a></dt>
@@ -603,21 +604,24 @@ if the lookup holds true for the document:</p>
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupTreeElem.evaluate">
 <span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupTreeElem.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupTreeElem.evaluate" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupNode">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'and'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupNode" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#docarray.array.queryset.lookup.LookupTreeElem" title="docarray.array.queryset.lookup.LookupTreeElem"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.queryset.lookup.LookupTreeElem</span></code></a></p>
 <p>A node (element having children) in the lookup expression tree</p>
 <p>Typically it’s any object composed of two <code class="docutils literal notranslate"><span class="pre">Q</span></code> objects eg:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">(</span><span class="n">language__neq</span><span class="o">=</span><span class="s1">'Ruby'</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">framework__startswith</span><span class="o">=</span><span class="s1">'S'</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">language__exact</span><span class="o">=</span><span class="s1">'PHP'</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Q</span><span class="p">(</span><span class="n">language__neq</span><span class="o">=</span><span class="s1">&#39;Ruby&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">framework__startswith</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="n">Q</span><span class="p">(</span><span class="n">language__exact</span><span class="o">=</span><span class="s1">&#39;PHP&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupNode.add_child">
 <span class="sig-name descname"><span class="pre">add_child</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">child</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupNode.add_child"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupNode.add_child" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupNode.evaluate">
 <span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupNode.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupNode.evaluate" title="Permalink to this definition">#</a></dt>
@@ -625,7 +629,9 @@ if the lookup holds true for the document:</p>
 <p>:param doc : the document to match
 :return: returns true if lookup passed</p>
 </dd></dl>
+
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupLeaf">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupLeaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupLeaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupLeaf" title="Permalink to this definition">#</a></dt>
@@ -638,29 +644,34 @@ if the lookup holds true for the document:</p>
 <p>:param doc : the document to match
 :return: returns true if lookup passed</p>
 </dd></dl>
+
 </dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.Q">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">Q</span></span><a class="headerlink" href="#docarray.array.queryset.lookup.Q" title="Permalink to this definition">#</a></dt>
 <dd><p>alias of <a class="reference internal" href="#docarray.array.queryset.lookup.LookupLeaf" title="docarray.array.queryset.lookup.LookupLeaf"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.array.queryset.lookup.LookupLeaf</span></code></a></p>
 </dd></dl>
+
 <dl class="py exception">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.LookupyError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">LookupyError</span></span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#LookupyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.LookupyError" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Base exception class for all exceptions raised by lookupy</p>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.dunder_partition">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">dunder_partition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#dunder_partition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.dunder_partition" title="Permalink to this definition">#</a></dt>
 <dd><p>Splits a dunderkey into 2 parts
 The first part is everything before the final double underscore
 The second part is after the final double underscore</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dunder_partition</span><span class="p">(</span><span class="s1">'a__b__c'</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="s1">'a__b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dunder_partition</span><span class="p">(</span><span class="s1">&#39;a__b__c&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="s1">&#39;a__b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.iff">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">iff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precond</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#iff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.iff" title="Permalink to this definition">#</a></dt>
@@ -671,6 +682,7 @@ to create partial functions for commonly required preconditions</p>
 :param val     : (mixed) value to which the functions are applied
 :param f       : (function) the actual function</p>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.iff_not_none">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">iff_not_none</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.queryset.lookup.iff_not_none" title="Permalink to this definition">#</a></dt>
@@ -681,26 +693,32 @@ to create partial functions for commonly required preconditions</p>
 :param val     : (mixed) value to which the functions are applied
 :param f       : (function) the actual function</p>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.guard_type">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">guard_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">classinfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#guard_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.guard_type" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.guard_str">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">guard_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.queryset.lookup.guard_str" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.guard_list">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">guard_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.queryset.lookup.guard_list" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.guard_Q">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">guard_Q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.queryset.lookup.guard_Q" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.array.queryset.lookup.guard_iter">
 <span class="sig-prename descclassname"><span class="pre">docarray.array.queryset.lookup.</span></span><span class="sig-name descname"><span class="pre">guard_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/queryset/lookup/#guard_iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.queryset.lookup.guard_iter" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 </section>
 
                 </article>
@@ -738,7 +756,7 @@ to create partial functions for commonly required preconditions</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

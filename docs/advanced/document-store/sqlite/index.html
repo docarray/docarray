@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/sqlite/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="One can use SQLite as the document store for DocumentArray. It is useful when you want to access a large number Document which can not fit into memory. Usage: To reconnect a formerly persisted database, one can need to specify both connection and table_name in config: Other functions behave the s..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Qdrant" href="../qdrant/" /><link rel="prev" title="Weaviate" href="../weaviate/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/sqlite.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>SQLite - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>SQLite - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -557,10 +557,10 @@
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">#</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">'sqlite'</span><span class="p">)</span>  <span class="c1"># with default config</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;sqlite&#39;</span><span class="p">)</span>  <span class="c1"># with default config</span>
 
 <span class="n">da1</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
-    <span class="n">storage</span><span class="o">=</span><span class="s1">'sqlite'</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">'connection'</span><span class="p">:</span> <span class="s1">'example.db'</span><span class="p">}</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;sqlite&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;connection&#39;</span><span class="p">:</span> <span class="s1">&#39;example.db&#39;</span><span class="p">}</span>
 <span class="p">)</span>  <span class="c1"># with customize config</span>
 </pre></div>
 </div>
@@ -568,7 +568,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
-    <span class="n">storage</span><span class="o">=</span><span class="s1">'sqlite'</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">'connection'</span><span class="p">:</span> <span class="s1">'example.db'</span><span class="p">,</span> <span class="s1">'table_name'</span><span class="p">:</span> <span class="s1">'mine'</span><span class="p">}</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;sqlite&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;connection&#39;</span><span class="p">:</span> <span class="s1">&#39;example.db&#39;</span><span class="p">,</span> <span class="s1">&#39;table_name&#39;</span><span class="p">:</span> <span class="s1">&#39;mine&#39;</span><span class="p">}</span>
 <span class="p">)</span>
 
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
@@ -579,7 +579,7 @@
 <section id="config">
 <h2>Config<a class="headerlink" href="#config" title="Permalink to this headline">#</a></h2>
 <p>The following configs can be set:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Name</th>
@@ -619,7 +619,7 @@
 <td><code>'OFF'</code></td>
 </tr>
 </tbody>
-</table></div></section>
+</table></section>
 </section>
 
                 </article>
@@ -657,7 +657,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

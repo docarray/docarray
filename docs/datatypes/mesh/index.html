@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/mesh/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="3D Mesh: A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D. Point cloud: Point cloud is a representation of a 3D mesh. It is made by repeat..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/datatypes/_images/3dmesh-man.gif" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Table" href="../tabular/" /><link rel="prev" title="Audio" href="../audio/" />
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/mesh/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>3D Mesh - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>3D Mesh - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -551,17 +551,17 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-package-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m8-878-392a1-75-1-75-0-00-1-756-0l-5-25-3-045a1-75-1-75-0-001-4-951v6-098c0-624-332-1-2-872-1-514l5-25-3-045a1-75-1-75-0-001-756-0l5-25-3-045c-54-313-872-89-872-1-514v4-951c0-624-332-1-2-872-1-514l8-878-392zm7-875-1-69a-25-25-0-01-25-0l4-63-2-685l8-7-133-3-245-4-375l4-63-2-685zm2-5-5-677v5-372c0-09-047-171-125-216l4-625-2-683v8-432l2-5-5-677zm6-25-8-271l4-625-2-683a-25-25-0-00-125-216v5-677l8-75-8-432v5-516z-path-svg-3d-mesh">
-<span id="mesh-type"></span><h1><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-package-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m8-878-392a1-75-1-75-0-00-1-756-0l-5-25-3-045a1-75-1-75-0-001-4-951v6-098c0-624-332-1-2-872-1-514l5-25-3-045a1-75-1-75-0-001-756-0l5-25-3-045c-54-313-872-89-872-1-514v4-951c0-624-332-1-2-872-1-514l8-878-392zm7-875-1-69a-25-25-0-01-25-0l4-63-2-685l8-7-133-3-245-4-375l4-63-2-685zm2-5-5-677v5-372c0-09-047-171-125-216l4-625-2-683v8-432l2-5-5-677zm6-25-8-271l4-625-2-683a-25-25-0-00-125-216v5-677l8-75-8-432v5-516z-path-svg-3d-mesh" title="Permalink to this headline">#</a></h1>
+<span id="mesh-type"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-package" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z"></path></svg> 3D Mesh<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-package-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m8-878-392a1-75-1-75-0-00-1-756-0l-5-25-3-045a1-75-1-75-0-001-4-951v6-098c0-624-332-1-2-872-1-514l5-25-3-045a1-75-1-75-0-001-756-0l5-25-3-045c-54-313-872-89-872-1-514v4-951c0-624-332-1-2-872-1-514l8-878-392zm7-875-1-69a-25-25-0-01-25-0l4-63-2-685l8-7-133-3-245-4-375l4-63-2-685zm2-5-5-677v5-372c0-09-047-171-125-216l4-625-2-683v8-432l2-5-5-677zm6-25-8-271l4-625-2-683a-25-25-0-00-125-216v5-677l8-75-8-432v5-516z-path-svg-3d-mesh" title="Permalink to this headline">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">trimesh</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]".</span></code></p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">trimesh</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;.</span></code></p>
 </div>
 <p>A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.</p>
 <section id="point-cloud">
 <h2>Point cloud<a class="headerlink" href="#point-cloud" title="Permalink to this headline">#</a></h2>
 <p>Point cloud is a representation of a 3D mesh. It is made by repeated and uniformly sampling points within the 3D body. Comparing to the mesh representation, point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a 3D mesh and convert it into a point cloud via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'viking.glb'</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_point_cloud_tensor</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;viking.glb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_point_cloud_tensor</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
@@ -571,10 +571,10 @@
 </div>
 <p>The following pictures depict a 3D mesh and a point cloud with 1000 samples from that 3D mesh.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/3dmesh-man.gif"><img alt="../../_images/3dmesh-man.gif" src="../../_images/3dmesh-man.gif" style="width: 50%;"/></a>
+<a class="reference internal image-reference" href="../../_images/3dmesh-man.gif"><img alt="../../_images/3dmesh-man.gif" src="../../_images/3dmesh-man.gif" style="width: 50%;" /></a>
 </figure>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/pointcloud-man.gif"><img alt="../../_images/pointcloud-man.gif" src="../../_images/pointcloud-man.gif" style="width: 50%;"/></a>
+<a class="reference internal image-reference" href="../../_images/pointcloud-man.gif"><img alt="../../_images/pointcloud-man.gif" src="../../_images/pointcloud-man.gif" style="width: 50%;" /></a>
 </figure>
 </section>
 </section>
@@ -614,7 +614,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

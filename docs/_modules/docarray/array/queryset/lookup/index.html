@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/queryset/lookup.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.queryset.lookup - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.queryset.lookup - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -518,7 +518,7 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.queryset.lookup</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">Originally from https://github.com/naiquevin/lookupy</span>
 
@@ -528,7 +528,7 @@
 
 <span class="sd">Permission is hereby granted, free of charge, to any person obtaining</span>
 <span class="sd">a copy of this software and associated documentation files (the</span>
-<span class="sd">"Software"), to deal in the Software without restriction, including</span>
+<span class="sd">&quot;Software&quot;), to deal in the Software without restriction, including</span>
 <span class="sd">without limitation the rights to use, copy, modify, merge, publish,</span>
 <span class="sd">distribute, sublicense, and/or sell copies of the Software, and to</span>
 <span class="sd">permit persons to whom the Software is furnished to do so, subject to</span>
@@ -537,7 +537,7 @@
 <span class="sd">The above copyright notice and this permission notice shall be</span>
 <span class="sd">included in all copies or substantial portions of the Software.</span>
 
-<span class="sd">THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,</span>
+<span class="sd">THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,</span>
 <span class="sd">EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF</span>
 <span class="sd">MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND</span>
 <span class="sd">NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE</span>
@@ -545,7 +545,7 @@
 <span class="sd">OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION</span>
 <span class="sd">WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span>
 
-<span class="sd">"""</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -553,85 +553,85 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 
-<span class="n">PLACEHOLDER_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'\{\s*([a-zA-Z0-9_]*)\s*}'</span><span class="p">)</span>
+<span class="n">PLACEHOLDER_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\{\s*([a-zA-Z0-9_]*)\s*}&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="lookup"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.lookup">[docs]</a><span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">"""Checks if key-val pair exists in doc using various lookup types</span>
+<div class="viewcode-block" id="lookup"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.lookup">[docs]</a><span class="k">def</span> <span class="nf">lookup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks if key-val pair exists in doc using various lookup types</span>
 
 <span class="sd">    The lookup types are derived from the `key` and then used to check</span>
 <span class="sd">    if the lookup holds true for the document::</span>
 
-<span class="sd">        &gt;&gt;&gt; lookup('text__exact', 'hello', doc)</span>
+<span class="sd">        &gt;&gt;&gt; lookup(&#39;text__exact&#39;, &#39;hello&#39;, doc)</span>
 
-<span class="sd">    The above will return True if doc.text == 'hello' else False. And</span>
+<span class="sd">    The above will return True if doc.text == &#39;hello&#39; else False. And</span>
 
-<span class="sd">        &gt;&gt;&gt; lookup('text_exact', '{tags__name}', doc)</span>
+<span class="sd">        &gt;&gt;&gt; lookup(&#39;text_exact&#39;, &#39;{tags__name}&#39;, doc)</span>
 
-<span class="sd">    will return True if doc.text == doc.tags['name'] else False</span>
+<span class="sd">    will return True if doc.text == doc.tags[&#39;name&#39;] else False</span>
 
 <span class="sd">    :param key  : the field name to find</span>
 <span class="sd">    :param val  : object to match the value in the document against</span>
 <span class="sd">    :param doc : the document to match</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">get_key</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'{'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;{&#39;</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">PLACEHOLDER_PATTERN</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">_get_attributes</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'The placeholder "</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">" is illegal'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The placeholder &quot;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&quot; is illegal&#39;</span><span class="p">)</span>
 
     <span class="n">value</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">_get_attributes</span><span class="p">(</span><span class="n">get_key</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'exact'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span> <span class="o">==</span> <span class="n">val</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'neq'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;neq&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">val</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'contains'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;contains&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'icontains'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;icontains&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'in'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_iter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">val</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'nin'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;nin&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_iter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">value</span> <span class="ow">in</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'startswith'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;startswith&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'istartswith'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;istartswith&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'endswith'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;endswith&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'iendswith'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;iendswith&#39;</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'gt'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;gt&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'gte'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;gte&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'lt'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;lt&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'lte'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;lte&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'regex'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;regex&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'size'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">'exists'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;exists&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">'$exists operator can only accept True/False as value for comparison'</span>
+                <span class="s1">&#39;$exists operator can only accept True/False as value for comparison&#39;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">'__'</span> <span class="ow">in</span> <span class="n">get_key</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;__&#39;</span> <span class="ow">in</span> <span class="n">get_key</span><span class="p">:</span>
             <span class="n">is_empty</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">is_empty</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">value</span>
@@ -645,7 +645,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># return value == val</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'The given compare operator "</span><span class="si">{</span><span class="n">last</span><span class="si">}</span><span class="s1">" (derived from "</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">") is not supported'</span>
+            <span class="sa">f</span><span class="s1">&#39;The given compare operator &quot;</span><span class="si">{</span><span class="n">last</span><span class="si">}</span><span class="s1">&quot; (derived from &quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot;) is not supported&#39;</span>
         <span class="p">)</span></div>
 
 
@@ -653,7 +653,7 @@
 
 
 <div class="viewcode-block" id="LookupTreeElem"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupTreeElem">[docs]</a><span class="k">class</span> <span class="nc">LookupTreeElem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">"""Base class for a child in the lookup expression tree"""</span>
+    <span class="sd">&quot;&quot;&quot;Base class for a child in the lookup expression tree&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="o">=</span> <span class="kc">False</span>
@@ -663,7 +663,7 @@
 
     <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">()</span>
-        <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="s1">'or'</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="s1">&#39;or&#39;</span>
         <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">node</span>
@@ -676,16 +676,16 @@
 
 
 <div class="viewcode-block" id="LookupNode"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode">[docs]</a><span class="k">class</span> <span class="nc">LookupNode</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
-    <span class="sd">"""A node (element having children) in the lookup expression tree</span>
+    <span class="sd">&quot;&quot;&quot;A node (element having children) in the lookup expression tree</span>
 
-<span class="sd">    Typically it's any object composed of two ``Q`` objects eg::</span>
+<span class="sd">    Typically it&#39;s any object composed of two ``Q`` objects eg::</span>
 
-<span class="sd">        &gt;&gt;&gt; Q(language__neq='Ruby') | Q(framework__startswith='S')</span>
-<span class="sd">        &gt;&gt;&gt; ~Q(language__exact='PHP')</span>
+<span class="sd">        &gt;&gt;&gt; Q(language__neq=&#39;Ruby&#39;) | Q(framework__startswith=&#39;S&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ~Q(language__exact=&#39;PHP&#39;)</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'and'</span><span class="p">,</span> <span class="n">negate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="n">negate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LookupNode</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">op</span>
@@ -694,14 +694,14 @@
 <div class="viewcode-block" id="LookupNode.add_child"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode.add_child">[docs]</a>    <span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LookupNode.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
-        <span class="sd">"""Evaluates the expression represented by the object for the document</span>
+<div class="viewcode-block" id="LookupNode.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupNode.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
 
 <span class="sd">        :param doc : the document to match</span>
 <span class="sd">        :return: returns true if lookup passed</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">doc</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s1">'or'</span> <span class="k">else</span> <span class="nb">all</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;or&#39;</span> <span class="k">else</span> <span class="nb">all</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="k">else</span> <span class="n">result</span></div>
 
     <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -712,22 +712,22 @@
         <span class="k">return</span> <span class="n">newnode</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="si">}</span><span class="s1">: [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="si">}</span><span class="s1">]'</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="si">}</span><span class="s1">: [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="si">}</span><span class="s1">]&#39;</span></div>
 
 
 <div class="viewcode-block" id="LookupLeaf"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupLeaf">[docs]</a><span class="k">class</span> <span class="nc">LookupLeaf</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
-    <span class="sd">"""Class for a leaf in the lookup expression tree"""</span>
+    <span class="sd">&quot;&quot;&quot;Class for a leaf in the lookup expression tree&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LookupLeaf</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lookups</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-<div class="viewcode-block" id="LookupLeaf.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupLeaf.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
-        <span class="sd">"""Evaluates the expression represented by the object for the document</span>
+<div class="viewcode-block" id="LookupLeaf.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupLeaf.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the document</span>
 
 <span class="sd">        :param doc : the document to match</span>
 <span class="sd">        :return: returns true if lookup passed</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">lookup</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookups</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="k">else</span> <span class="n">result</span></div>
 
@@ -737,7 +737,7 @@
         <span class="k">return</span> <span class="n">newleaf</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lookups</span><span class="si">}</span><span class="s1">'</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">lookups</span><span class="si">}</span><span class="s1">&#39;</span></div>
 
 
 <span class="c1"># alias LookupLeaf to Q</span>
@@ -748,7 +748,7 @@
 
 
 <div class="viewcode-block" id="LookupyError"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.LookupyError">[docs]</a><span class="k">class</span> <span class="nc">LookupyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">"""Base exception class for all exceptions raised by lookupy"""</span>
+    <span class="sd">&quot;&quot;&quot;Base exception class for all exceptions raised by lookupy&quot;&quot;&quot;</span>
 
     <span class="k">pass</span></div>
 
@@ -757,18 +757,18 @@
 
 
 <div class="viewcode-block" id="dunder_partition"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.dunder_partition">[docs]</a><span class="k">def</span> <span class="nf">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
-    <span class="sd">"""Splits a dunderkey into 2 parts</span>
+    <span class="sd">&quot;&quot;&quot;Splits a dunderkey into 2 parts</span>
 <span class="sd">    The first part is everything before the final double underscore</span>
 <span class="sd">    The second part is after the final double underscore</span>
-<span class="sd">        &gt;&gt;&gt; dunder_partition('a__b__c')</span>
-<span class="sd">        &gt;&gt;&gt; ('a__b', 'c')</span>
-<span class="sd">    """</span>
-    <span class="n">parts</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">'__'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="sd">        &gt;&gt;&gt; dunder_partition(&#39;a__b__c&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; (&#39;a__b&#39;, &#39;c&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="iff"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.iff">[docs]</a><span class="k">def</span> <span class="nf">iff</span><span class="p">(</span><span class="n">precond</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-    <span class="sd">"""If and only if the precond is True</span>
+    <span class="sd">&quot;&quot;&quot;If and only if the precond is True</span>
 
 <span class="sd">    Shortcut function for precond(val) and f(val). It is mainly used</span>
 <span class="sd">    to create partial functions for commonly required preconditions</span>
@@ -777,7 +777,7 @@
 <span class="sd">    :param val     : (mixed) value to which the functions are applied</span>
 <span class="sd">    :param f       : (function) the actual function</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">precond</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="n">f</span><span class="p">(</span><span class="n">val</span><span class="p">)</span></div>
 
 
@@ -786,7 +786,7 @@
 
 <div class="viewcode-block" id="guard_type"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.lookup/#docarray.array.queryset.lookup.guard_type">[docs]</a><span class="k">def</span> <span class="nf">guard_type</span><span class="p">(</span><span class="n">classinfo</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">classinfo</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">LookupyError</span><span class="p">(</span><span class="s1">'Value not a </span><span class="si">{classinfo}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">classinfo</span><span class="o">=</span><span class="n">classinfo</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">LookupyError</span><span class="p">(</span><span class="s1">&#39;Value not a </span><span class="si">{classinfo}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">classinfo</span><span class="o">=</span><span class="n">classinfo</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">val</span></div>
 
 
@@ -799,7 +799,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="nb">iter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">LookupyError</span><span class="p">(</span><span class="s1">'Value not an iterable'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">LookupyError</span><span class="p">(</span><span class="s1">&#39;Value not an iterable&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">val</span></div>
 </pre></div>
@@ -816,7 +816,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

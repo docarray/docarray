@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/math/ndarray.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.math.ndarray - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.math.ndarray - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -527,7 +527,7 @@
     <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 
-<div class="viewcode-block" id="unravel"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.unravel">[docs]</a><span class="k">def</span> <span class="nf">unravel</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">],</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'ArrayType'</span><span class="p">]:</span>
+<div class="viewcode-block" id="unravel"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.unravel">[docs]</a><span class="k">def</span> <span class="nf">unravel</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;ArrayType&#39;</span><span class="p">]:</span>
     <span class="n">_first</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">field</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">_first</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># failed to unravel, return as a list</span>
@@ -544,48 +544,48 @@
     <span class="n">none_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">none_idx</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'Document</span><span class="si">{</span><span class="n">none_idx</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> is None. Can not stack into `</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">s`.'</span>
+            <span class="sa">f</span><span class="s1">&#39;Document</span><span class="si">{</span><span class="n">none_idx</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1"> is None. Can not stack into `</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">s`.&#39;</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">cls_type</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
         <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">torch</span>
 
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;paddle&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">paddle</span>
 
         <span class="k">return</span> <span class="n">paddle</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">all_fields</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'scipy'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">scipy.sparse</span>
 
         <span class="k">return</span> <span class="n">cls_type</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">all_fields</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="ravel"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.ravel">[docs]</a><span class="k">def</span> <span class="nf">ravel</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">'DocumentArray'</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">"""Ravel :attr:`value` into ``doc.field`` of each documents</span>
+<div class="viewcode-block" id="ravel"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.ravel">[docs]</a><span class="k">def</span> <span class="nf">ravel</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Ravel :attr:`value` into ``doc.field`` of each documents</span>
 
 <span class="sd">    :param docs: the docs to set</span>
 <span class="sd">    :param field: the field of the doc to set</span>
 <span class="sd">    :param value: the value to be set on ``doc.field``</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">use_get_row</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">'getformat'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;getformat&#39;</span><span class="p">):</span>
         <span class="c1"># for scipy only</span>
         <span class="n">sp_format</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">getformat</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">sp_format</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'bsr'</span><span class="p">,</span> <span class="s1">'coo'</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">sp_format</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;bsr&#39;</span><span class="p">,</span> <span class="s1">&#39;coo&#39;</span><span class="p">}:</span>
             <span class="c1"># for BSR and COO, they dont implement [j, ...] in scipy</span>
             <span class="c1"># but they offer get_row() API which implicitly translate the</span>
             <span class="c1"># sparse row into CSR format, hence needs to convert back</span>
@@ -595,7 +595,7 @@
     <span class="k">if</span> <span class="n">use_get_row</span><span class="p">:</span>
         <span class="n">emb_shape0</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">emb_shape0</span><span class="p">)):</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="n">j</span><span class="p">),</span> <span class="sa">f</span><span class="s1">'to</span><span class="si">{</span><span class="n">sp_format</span><span class="si">}</span><span class="s1">'</span><span class="p">)()</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="n">j</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;to</span><span class="si">{</span><span class="n">sp_format</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)()</span>
             <span class="n">docs</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -608,81 +608,81 @@
 
 
 <div class="viewcode-block" id="get_array_type"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.get_array_type">[docs]</a><span class="k">def</span> <span class="nf">get_array_type</span><span class="p">(</span>
-    <span class="n">array</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">raise_error_if_not_array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">array</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">raise_error_if_not_array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-    <span class="sd">"""Get the type of ndarray without importing the framework</span>
+    <span class="sd">&quot;&quot;&quot;Get the type of ndarray without importing the framework</span>
 
 <span class="sd">    :param array: any array, scipy, numpy, tf, torch, etc.</span>
 <span class="sd">    :return: a tuple where the first element represents the framework, the second represents if it is sparse array</span>
-<span class="sd">    """</span>
-    <span class="n">module_tags</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">module_tags</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
     <span class="n">class_name</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="s1">'python'</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="s1">'numpy'</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'numpy'</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s1">&#39;numpy&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="s1">'docarray'</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'NdArray'</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">'docarray'</span><span class="p">,</span> <span class="kc">False</span>  <span class="c1"># sparse or not is irrelevant</span>
+    <span class="k">if</span> <span class="s1">&#39;docarray&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;docarray&#39;</span><span class="p">,</span> <span class="kc">False</span>  <span class="c1"># sparse or not is irrelevant</span>
 
-    <span class="k">if</span> <span class="s1">'docarray_pb2'</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'NdArrayProto'</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">'docarray_proto'</span><span class="p">,</span> <span class="kc">False</span>  <span class="c1"># sparse or not is irrelevant</span>
+    <span class="k">if</span> <span class="s1">&#39;docarray_pb2&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;NdArrayProto&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;docarray_proto&#39;</span><span class="p">,</span> <span class="kc">False</span>  <span class="c1"># sparse or not is irrelevant</span>
 
-    <span class="k">if</span> <span class="s1">'tensorflow'</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'SparseTensor'</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">'tensorflow'</span><span class="p">,</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'Tensor'</span> <span class="ow">or</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'EagerTensor'</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">'tensorflow'</span><span class="p">,</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s1">&#39;tensorflow&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;SparseTensor&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span> <span class="ow">or</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;EagerTensor&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="s1">'torch'</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'Tensor'</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'torch'</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">is_sparse</span>
+    <span class="k">if</span> <span class="s1">&#39;torch&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">.</span><span class="n">is_sparse</span>
 
-    <span class="k">if</span> <span class="s1">'paddle'</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">'Tensor'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">&#39;paddle&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="n">class_name</span> <span class="o">==</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">:</span>
         <span class="c1"># Paddle does not support sparse tensor on 11/8/2021</span>
         <span class="c1"># https://github.com/PaddlePaddle/Paddle/issues/36697</span>
-        <span class="k">return</span> <span class="s1">'paddle'</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="s1">&#39;paddle&#39;</span><span class="p">,</span> <span class="kc">False</span>
 
-    <span class="k">if</span> <span class="s1">'scipy'</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="s1">'sparse'</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'scipy'</span><span class="p">,</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="s1">&#39;scipy&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span> <span class="ow">and</span> <span class="s1">&#39;sparse&#39;</span> <span class="ow">in</span> <span class="n">module_tags</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">raise_error_if_not_array</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'can not determine the array type: </span><span class="si">{</span><span class="n">module_tags</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">'</span>
+                <span class="sa">f</span><span class="s1">&#39;can not determine the array type: </span><span class="si">{</span><span class="n">module_tags</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">class_name</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'Empty ndarray. Did you forget to set .embedding/.tensor value and now you are operating on it?'</span>
+                <span class="sa">f</span><span class="s1">&#39;Empty ndarray. Did you forget to set .embedding/.tensor value and now you are operating on it?&#39;</span>
             <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">'python'</span><span class="p">,</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="to_numpy_array"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.to_numpy_array">[docs]</a><span class="k">def</span> <span class="nf">to_numpy_array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'np.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Return the value always in :class:`numpy.ndarray` regardless the framework type.</span>
+<div class="viewcode-block" id="to_numpy_array"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.to_numpy_array">[docs]</a><span class="k">def</span> <span class="nf">to_numpy_array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the value always in :class:`numpy.ndarray` regardless the framework type.</span>
 
 <span class="sd">    :return: the value in :class:`numpy.ndarray`.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">value</span>
     <span class="n">framework</span><span class="p">,</span> <span class="n">is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_sparse</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'todense'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;todense&#39;</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'to_dense'</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;to_dense&#39;</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">):</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">to_dense</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">'numpy'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;numpy&#39;</span><span class="p">):</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">v</span></div>
 
@@ -694,11 +694,11 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1"> can not be converted into list'</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1"> can not be converted into list&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_array_rows"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.get_array_rows">[docs]</a><span class="k">def</span> <span class="nf">get_array_rows</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">"""Get the number of rows of the ndarray without importing all frameworks</span>
+<div class="viewcode-block" id="get_array_rows"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.get_array_rows">[docs]</a><span class="k">def</span> <span class="nf">get_array_rows</span><span class="p">(</span><span class="n">array</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get the number of rows of the ndarray without importing all frameworks</span>
 
 <span class="sd">    :param array: input array</span>
 <span class="sd">    :return: (num_rows, ndim)</span>
@@ -713,14 +713,14 @@
 <span class="sd">    3, 2</span>
 <span class="sd">    &gt;&gt;&gt; get_array_rows(np.array([[1,2,3], [4,5,6], [7,8,9]]))</span>
 <span class="sd">    3, 2</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">array_type</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">array_type</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">array_type</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
         <span class="n">first_element_list_like</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
         <span class="n">num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">if</span> <span class="n">first_element_list_like</span> <span class="k">else</span> <span class="mi">1</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">first_element_list_like</span> <span class="k">else</span> <span class="mi">1</span>
-    <span class="k">elif</span> <span class="n">array_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'numpy'</span><span class="p">,</span> <span class="s1">'tensorflow'</span><span class="p">,</span> <span class="s1">'torch'</span><span class="p">,</span> <span class="s1">'paddle'</span><span class="p">,</span> <span class="s1">'scipy'</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">array_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;paddle&#39;</span><span class="p">,</span> <span class="s1">&#39;scipy&#39;</span><span class="p">):</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">ndim</span>
         <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">num_rows</span> <span class="o">=</span> <span class="mi">1</span>
@@ -732,8 +732,8 @@
     <span class="k">return</span> <span class="n">num_rows</span><span class="p">,</span> <span class="n">ndim</span></div>
 
 
-<div class="viewcode-block" id="check_arraylike_equality"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.check_arraylike_equality">[docs]</a><span class="k">def</span> <span class="nf">check_arraylike_equality</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">):</span>
-    <span class="sd">"""Check if two array type objects are the same with the supported frameworks.</span>
+<div class="viewcode-block" id="check_arraylike_equality"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.check_arraylike_equality">[docs]</a><span class="k">def</span> <span class="nf">check_arraylike_equality</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if two array type objects are the same with the supported frameworks.</span>
 
 <span class="sd">    Examples</span>
 
@@ -751,22 +751,22 @@
 <span class="sd">        x = torch.tensor([1,2,3])</span>
 <span class="sd">        check_arraylike_equality(x,x)</span>
 <span class="sd">    True</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_type</span><span class="p">,</span> <span class="n">x_is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">y_type</span><span class="p">,</span> <span class="n">y_is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
     <span class="n">same_array</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="n">y_type</span> <span class="ow">and</span> <span class="n">x_is_sparse</span> <span class="o">==</span> <span class="n">y_is_sparse</span><span class="p">:</span>
 
-        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'python'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;python&#39;</span><span class="p">:</span>
             <span class="n">same_array</span> <span class="o">=</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
 
-        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="c1"># Numpy does not support sparse tensors</span>
             <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
             <span class="n">same_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">torch</span>
 
             <span class="k">if</span> <span class="n">x_is_sparse</span><span class="p">:</span>
@@ -774,21 +774,21 @@
                 <span class="n">same_array</span> <span class="o">=</span> <span class="nb">all</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">same_array</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'scipy'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span><span class="p">:</span>
             <span class="c1"># Not implemented in scipy this should work for all types</span>
-            <span class="c1"># Note: you can't simply look at nonzero values because they can be in</span>
+            <span class="c1"># Note: you can&#39;t simply look at nonzero values because they can be in</span>
             <span class="c1"># different positions.</span>
             <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                 <span class="n">same_array</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">same_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">nnz</span> <span class="o">==</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">x_is_sparse</span><span class="p">:</span>
                 <span class="n">same_array</span> <span class="o">=</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Does not have equal implemented, only elementwise, therefore reduce .all is needed</span>
                 <span class="n">same_array</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;paddle&#39;</span><span class="p">:</span>
             <span class="c1"># Paddle does not support sparse tensor on 11/8/2021</span>
             <span class="c1"># https://github.com/PaddlePaddle/Paddle/issues/36697</span>
             <span class="c1"># Does not have equal implemented, only elementwise, therefore reduce .all is needed</span>
@@ -799,12 +799,12 @@
 
 
 <div class="viewcode-block" id="detach_tensor_if_present"><a class="viewcode-back" href="../../../../api/docarray.math.ndarray/#docarray.math.ndarray.detach_tensor_if_present">[docs]</a><span class="k">def</span> <span class="nf">detach_tensor_if_present</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">"""Check if input is a dense torch array and detaches the tensor from the current graph.</span>
+    <span class="sd">&quot;&quot;&quot;Check if input is a dense torch array and detaches the tensor from the current graph.</span>
 <span class="sd">    :param array: input array</span>
 <span class="sd">    :return: (num_rows, ndim)</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_type</span><span class="p">,</span> <span class="n">x_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">raise_error_if_not_array</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">'torch'</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x_sparse</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x_sparse</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">torch</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
@@ -823,7 +823,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

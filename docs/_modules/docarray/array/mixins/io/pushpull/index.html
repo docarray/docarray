@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/io/pushpull.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.mixins.io.pushpull - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.mixins.io.pushpull - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -531,12 +531,12 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">....typing</span> <span class="kn">import</span> <span class="n">T</span>
 
-<span class="n">JINA_CLOUD_CONFIG</span> <span class="o">=</span> <span class="s1">'config.json'</span>
+<span class="n">JINA_CLOUD_CONFIG</span> <span class="o">=</span> <span class="s1">&#39;config.json&#39;</span>
 
 
 <span class="nd">@lru_cache</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">_get_hub_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-    <span class="n">hub_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_HUB_ROOT'</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">'.jina'</span><span class="p">)))</span>
+    <span class="n">hub_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_HUB_ROOT&#39;</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;.jina&#39;</span><span class="p">)))</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">hub_root</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">hub_root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -550,31 +550,31 @@
 <span class="nd">@lru_cache</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">_get_auth_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
     <span class="n">hub_config</span> <span class="o">=</span> <span class="n">_get_hub_config</span><span class="p">()</span>
-    <span class="n">config_auth_token</span> <span class="o">=</span> <span class="n">hub_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'auth_token'</span><span class="p">)</span> <span class="k">if</span> <span class="n">hub_config</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">env_auth_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_AUTH_TOKEN'</span><span class="p">)</span>
+    <span class="n">config_auth_token</span> <span class="o">=</span> <span class="n">hub_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auth_token&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">hub_config</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">env_auth_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_AUTH_TOKEN&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">env_auth_token</span> <span class="ow">or</span> <span class="n">config_auth_token</span>
 
 
 <span class="nd">@lru_cache</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">_get_cloud_api</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">"""Get Cloud Api for transmitting data to the cloud.</span>
+    <span class="sd">&quot;&quot;&quot;Get Cloud Api for transmitting data to the cloud.</span>
 
 <span class="sd">    :return: Cloud Api Url</span>
-<span class="sd">    """</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_HUBBLE_REGISTRY'</span><span class="p">,</span> <span class="s1">'https://api.hubble.jina.ai'</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_HUBBLE_REGISTRY&#39;</span><span class="p">,</span> <span class="s1">&#39;https://api.hubble.jina.ai&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PushPullMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin">[docs]</a><span class="k">class</span> <span class="nc">PushPullMixin</span><span class="p">:</span>
-    <span class="sd">"""Transmitting :class:`DocumentArray` via Jina Cloud Service"""</span>
+    <span class="sd">&quot;&quot;&quot;Transmitting :class:`DocumentArray` via Jina Cloud Service&quot;&quot;&quot;</span>
 
     <span class="n">_max_bytes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
 <div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">"""Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
+        <span class="sd">&quot;&quot;&quot;Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            - Push with the same ``name`` will override the existing content.</span>
-<span class="sd">            - Kinda like a public clipboard where everyone can override anyone's content.</span>
+<span class="sd">            - Kinda like a public clipboard where everyone can override anyone&#39;s content.</span>
 <span class="sd">              So to make your content survive longer, you may want to use longer &amp; more complicated name.</span>
 <span class="sd">            - The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for</span>
 <span class="sd">              persistence. Only use this full temporary transmission/storage/clipboard.</span>
@@ -582,35 +582,35 @@
 <span class="sd">        :param name: a name that later can be used for retrieve this :class:`DocumentArray`.</span>
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
 <span class="sd">        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">requests</span>
 
         <span class="n">delimiter</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
 
         <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ctype</span><span class="p">)</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">filepost</span><span class="o">.</span><span class="n">encode_multipart_formdata</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s1">'file'</span><span class="p">:</span> <span class="p">(</span>
-                    <span class="s1">'DocumentArray'</span><span class="p">,</span>
+                <span class="s1">&#39;file&#39;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span>
                     <span class="n">delimiter</span><span class="p">,</span>
                 <span class="p">),</span>
-                <span class="s1">'name'</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'documentArray'</span><span class="p">,</span>
-                <span class="s1">'public'</span><span class="p">:</span> <span class="n">public</span><span class="p">,</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;documentArray&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;public&#39;</span><span class="p">:</span> <span class="n">public</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Content-Type'</span><span class="p">:</span> <span class="n">ctype</span><span class="p">,</span> <span class="o">**</span><span class="n">get_request_header</span><span class="p">()}</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">ctype</span><span class="p">,</span> <span class="o">**</span><span class="n">get_request_header</span><span class="p">()}</span>
 
         <span class="n">auth_token</span> <span class="o">=</span> <span class="n">_get_auth_token</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
-            <span class="n">headers</span><span class="p">[</span><span class="s1">'Authorization'</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">'</span>
+            <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 
         <span class="n">_head</span><span class="p">,</span> <span class="n">_tail</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
         <span class="n">_head</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_header</span>
         <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="n">filesize</span>
         <span class="kn">from</span> <span class="nn">.pbar</span> <span class="kn">import</span> <span class="n">get_progressbar</span>
 
-        <span class="n">pbar</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">get_progressbar</span><span class="p">(</span><span class="s1">'Pushing'</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">pbar</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">get_progressbar</span><span class="p">(</span><span class="s1">&#39;Pushing&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
             <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
@@ -620,8 +620,8 @@
             <span class="k">yield</span> <span class="n">_head</span>
 
             <span class="k">def</span> <span class="nf">_get_chunk</span><span class="p">(</span><span class="n">_batch</span><span class="p">):</span>
-                <span class="k">return</span> <span class="sa">b</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="n">d</span><span class="o">.</span><span class="n">_to_stream_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">)</span>
+                <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">_to_stream_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_batch</span>
                 <span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_batch</span><span class="p">)</span>
 
@@ -629,7 +629,7 @@
                 <span class="n">total_size</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">total_size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_bytes</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">'DocumentArray is too big. The pushed DocumentArray might be chopped off.'</span>
+                        <span class="sa">f</span><span class="s1">&#39;DocumentArray is too big. The pushed DocumentArray might be chopped off.&#39;</span>
                     <span class="p">)</span>
                     <span class="k">break</span>
                 <span class="k">yield</span> <span class="n">chunk</span>
@@ -642,32 +642,32 @@
 
         <span class="k">with</span> <span class="n">pbar</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.upload'</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.upload&#39;</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">(),</span>
                 <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'data'</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="PushPullMixin.pull"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">local_cache</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Pulling a :class:`DocumentArray` from Jina Cloud Service to local.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Pulling a :class:`DocumentArray` from Jina Cloud Service to local.</span>
 
 <span class="sd">        :param name: the upload name set during :meth:`.push`</span>
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
 <span class="sd">        :param local_cache: store the downloaded DocumentArray to local folder</span>
 <span class="sd">        :return: a :class:`DocumentArray` object</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -675,13 +675,13 @@
 
         <span class="n">auth_token</span> <span class="o">=</span> <span class="n">_get_auth_token</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
-            <span class="n">headers</span><span class="p">[</span><span class="s1">'Authorization'</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">'</span>
+            <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.getDownloadUrl?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.getDownloadUrl?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
-            <span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'download'</span><span class="p">]</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;download&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 
@@ -692,28 +692,28 @@
         <span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
             <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
 
-            <span class="n">_da_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">'Content-length'</span><span class="p">])</span>
+            <span class="n">_da_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-length&#39;</span><span class="p">])</span>
 
             <span class="kn">from</span> <span class="nn">.binary</span> <span class="kn">import</span> <span class="n">LazyRequestReader</span>
 
             <span class="n">_source</span> <span class="o">=</span> <span class="n">LazyRequestReader</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">local_cache</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">):</span>
-                <span class="n">_cache_len</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">local_cache</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">):</span>
+                <span class="n">_cache_len</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">_cache_len</span> <span class="o">==</span> <span class="n">_da_len</span><span class="p">:</span>
-                    <span class="n">_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span>
+                    <span class="n">_source</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
 
             <span class="n">r</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">load_binary</span><span class="p">(</span>
                 <span class="n">_source</span><span class="p">,</span>
-                <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span>
-                <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">,</span>
+                <span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span>
+                <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">,</span>
                 <span class="n">_show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">,</span>
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_source</span><span class="p">,</span> <span class="n">LazyRequestReader</span><span class="p">)</span> <span class="ow">and</span> <span class="n">local_cache</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">'.cache'</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">'.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;.cache&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;.cache/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                     <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_source</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">r</span></div></div>
@@ -731,7 +731,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

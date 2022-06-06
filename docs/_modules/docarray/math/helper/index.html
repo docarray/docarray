@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/math/helper.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.math.helper - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.math.helper - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -524,12 +524,12 @@
 
 
 <div class="viewcode-block" id="minmax_normalize"><a class="viewcode-back" href="../../../../api/docarray.math.helper/#docarray.math.helper.minmax_normalize">[docs]</a><span class="k">def</span> <span class="nf">minmax_normalize</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
+    <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
     <span class="n">t_range</span><span class="p">:</span> <span class="n">Tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
     <span class="n">x_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">"""Normalize values in `x` into `t_range`.</span>
+    <span class="sd">&quot;&quot;&quot;Normalize values in `x` into `t_range`.</span>
 
 <span class="sd">    `x` can be a 1D array or a 2D array. When `x` is a 2D array, then normalization is row-based.</span>
 
@@ -542,7 +542,7 @@
 <span class="sd">    :param x_range: a tuple represents x range.</span>
 <span class="sd">    :param eps: a small jitter to avoid divde by zero</span>
 <span class="sd">    :return: normalized data in `t_range`</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">t_range</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -558,15 +558,15 @@
 
 
 <div class="viewcode-block" id="top_k"><a class="viewcode-back" href="../../../../api/docarray.math.helper/#docarray.math.helper.top_k">[docs]</a><span class="k">def</span> <span class="nf">top_k</span><span class="p">(</span>
-    <span class="n">values</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">'np.ndarray'</span><span class="p">,</span> <span class="s1">'np.ndarray'</span><span class="p">]:</span>
-    <span class="sd">"""Finds values and indices of the k largest entries for the last dimension.</span>
+    <span class="n">values</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">descending</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Finds values and indices of the k largest entries for the last dimension.</span>
 
 <span class="sd">    :param values: array of distances</span>
 <span class="sd">    :param k: number of values to retrieve</span>
 <span class="sd">    :param descending: find top k biggest values</span>
 <span class="sd">    :return: indices and distances</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">descending</span><span class="p">:</span>
         <span class="n">values</span> <span class="o">=</span> <span class="o">-</span><span class="n">values</span>
 
@@ -587,13 +587,13 @@
 
 
 <div class="viewcode-block" id="update_rows_x_mat_best"><a class="viewcode-back" href="../../../../api/docarray.math.helper/#docarray.math.helper.update_rows_x_mat_best">[docs]</a><span class="k">def</span> <span class="nf">update_rows_x_mat_best</span><span class="p">(</span>
-    <span class="n">x_mat_best</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
-    <span class="n">x_inds_best</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
-    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
-    <span class="n">x_inds</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
+    <span class="n">x_mat_best</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+    <span class="n">x_inds_best</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+    <span class="n">x_inds</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates `x_mat_best` and `x_inds_best` rows with the k best values and indices (per row)  from `x_mat` union `x_mat_best`.</span>
 
 <span class="sd">    :param x_mat: numpy array of the first matrix</span>
@@ -602,7 +602,7 @@
 <span class="sd">    :param x_inds_best: numpy array of the indices of the second matrix</span>
 <span class="sd">    :param k: number of values to retrieve</span>
 <span class="sd">    :return: indices and distances</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">x_mat_best</span><span class="p">))</span>
     <span class="n">all_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x_inds</span><span class="p">,</span> <span class="n">x_inds_best</span><span class="p">))</span>
     <span class="n">best_inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argpartition</span><span class="p">(</span><span class="n">all_dists</span><span class="p">,</span> <span class="n">kth</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -626,7 +626,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

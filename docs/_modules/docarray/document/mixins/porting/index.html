@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/porting.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.mixins.porting - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.document.mixins.porting - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -532,20 +532,20 @@
 <div class="viewcode-block" id="PortingMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin">[docs]</a><span class="k">class</span> <span class="nc">PortingMixin</span><span class="p">:</span>
 <div class="viewcode-block" id="PortingMixin.from_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert a dict object into a Document.</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert a dict object into a Document.</span>
 
 <span class="sd">        :param obj: a Python dict object</span>
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf parser.</span>
 <span class="sd">        :return: the parsed Document object</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span>
 
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">PydanticDocument</span><span class="o">.</span><span class="n">parse_obj</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
             <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
 
@@ -557,23 +557,23 @@
 
 <div class="viewcode-block" id="PortingMixin.from_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">],</span>
-        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert a JSON string into a Document.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert a JSON string into a Document.</span>
 
 <span class="sd">        :param obj: a valid JSON string</span>
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf parser.</span>
 <span class="sd">        :return: the parsed Document object</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span>
 
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">PydanticDocument</span><span class="o">.</span><span class="n">parse_raw</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
             <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
 
@@ -583,16 +583,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PortingMixin.to_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">"""Convert itself into a Python dict object.</span>
+<div class="viewcode-block" id="PortingMixin.to_dict"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Convert itself into a Python dict object.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
 <span class="sd">        :return: the dumped Document as a dict object</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToDict</span>
 
             <span class="k">return</span> <span class="n">MessageToDict</span><span class="p">(</span>
@@ -600,39 +600,39 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'protocol=`</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1">` is not supported'</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;protocol=`</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1">` is not supported&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_bytes"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes">[docs]</a>    <span class="k">def</span> <span class="nf">to_bytes</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'pickle'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;pickle&#39;</span><span class="p">:</span>
             <span class="n">bstr</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="n">bstr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span><span class="o">.</span><span class="n">SerializePartialToString</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf` or pickle protocols 0-5.'</span>
+                <span class="sa">f</span><span class="s1">&#39;protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf` or pickle protocols 0-5.&#39;</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">compress_bytes</span><span class="p">(</span><span class="n">bstr</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.from_bytes"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_bytes</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
-        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Build Document object from binary bytes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
 
 <span class="sd">        :param data: binary bytes</span>
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress method to use</span>
 <span class="sd">        :return: a Document object</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bstr</span> <span class="o">=</span> <span class="n">decompress_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'pickle'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;pickle&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">bstr</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">...proto.docarray_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
 
             <span class="n">pb_msg</span> <span class="o">=</span> <span class="n">DocumentProto</span><span class="p">()</span>
@@ -640,50 +640,50 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">pb_msg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf` or pickle protocols 0-5.'</span>
+                <span class="sa">f</span><span class="s1">&#39;protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported. Can be only `protobuf` or pickle protocols 0-5.&#39;</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="PortingMixin.to_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'jsonschema'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">"""Convert itself into a JSON string.</span>
+<div class="viewcode-block" id="PortingMixin.to_json"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert itself into a JSON string.</span>
 
 <span class="sd">        :param protocol: `jsonschema` or `protobuf`</span>
 <span class="sd">        :param kwargs: extra key-value args pass to pydantic and protobuf dumper.</span>
 <span class="sd">        :return: the dumped JSON string</span>
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'jsonschema'</span><span class="p">:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;jsonschema&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">'protobuf'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span>
 
             <span class="k">return</span> <span class="n">MessageToJson</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported.'</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;protocol=</span><span class="si">{</span><span class="n">protocol</span><span class="si">}</span><span class="s1"> is not supported.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.to_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64">[docs]</a>    <span class="k">def</span> <span class="nf">to_base64</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">"""Serialize a Document object into as base64 string</span>
+        <span class="sd">&quot;&quot;&quot;Serialize a Document object into as base64 string</span>
 
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress method to use</span>
 <span class="sd">        :return: a base64 encoded string</span>
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span></div>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PortingMixin.from_base64"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_base64</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
         <span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'pickle'</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Build Document object from binary bytes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Build Document object from binary bytes</span>
 
 <span class="sd">        :param data: a base64 encoded string</span>
 <span class="sd">        :param protocol: protocol to use</span>
 <span class="sd">        :param compress: compress method to use</span>
 <span class="sd">        :return: a Document object</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_to_stream_bytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
@@ -691,7 +691,7 @@
         <span class="n">doc_as_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="n">protocol</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="n">compress</span><span class="p">)</span>
 
         <span class="c1"># variable size bytes</span>
-        <span class="n">len_doc_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_as_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">len_doc_as_bytes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc_as_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">len_doc_as_bytes</span> <span class="o">+</span> <span class="n">doc_as_bytes</span></div>
 </pre></div>
@@ -708,7 +708,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

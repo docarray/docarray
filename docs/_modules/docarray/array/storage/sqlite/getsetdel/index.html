@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/sqlite/getsetdel.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.storage.sqlite.getsetdel - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.storage.sqlite.getsetdel - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -527,60 +527,60 @@
 
 
 <div class="viewcode-block" id="GetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.sqlite.getsetdel/#docarray.array.storage.sqlite.getsetdel.GetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">GetSetDelMixin</span><span class="p">(</span><span class="n">BaseGetSetDelMixin</span><span class="p">):</span>
-    <span class="sd">"""Implement required and derived functions that power `getitem`, `setitem`, `delitem`"""</span>
+    <span class="sd">&quot;&quot;&quot;Implement required and derived functions that power `getitem`, `setitem`, `delitem`&quot;&quot;&quot;</span>
 
     <span class="c1"># essential methods start</span>
 
     <span class="k">def</span> <span class="nf">_del_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">'DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> WHERE doc_id=?'</span><span class="p">,</span> <span class="p">(</span><span class="n">_id</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> WHERE doc_id=?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">_id</span><span class="p">,))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_set_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'UPDATE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> SET serialized_value=?, doc_id=? WHERE doc_id=?'</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;UPDATE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> SET serialized_value=?, doc_id=? WHERE doc_id=?&#39;</span><span class="p">,</span>
             <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">_id</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Document'</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_doc_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'SELECT serialized_value FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> WHERE doc_id = ?'</span><span class="p">,</span> <span class="p">(</span><span class="nb">id</span><span class="p">,)</span>
+            <span class="sa">f</span><span class="s1">&#39;SELECT serialized_value FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> WHERE doc_id = ?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">id</span><span class="p">,)</span>
         <span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Can not find Document with id=`</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">`'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Can not find Document with id=`</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># essentials end here</span>
 
     <span class="c1"># now start the optimized bulk methods</span>
-    <span class="k">def</span> <span class="nf">_get_docs_by_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_get_docs_by_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsets</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span> <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="n">offsets</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_docs_by_ids</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">'DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_del_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_del_docs_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> WHERE doc_id in (</span><span class="si">{</span><span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'?'</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;DELETE FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> WHERE doc_id in (</span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;?&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
             <span class="n">ids</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_load_offset2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"SELECT doc_id FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> ORDER BY item_order"</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;SELECT doc_id FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> ORDER BY item_order&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span> <span class="o">=</span> <span class="n">Offset2ID</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">r</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="nf">_save_offset2ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">offset</span><span class="p">,</span> <span class="n">doc_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"""</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                    UPDATE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2"> SET item_order = ? WHERE </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s2">.doc_id = ?</span>
-<span class="s2">                """</span><span class="p">,</span>
+<span class="s2">                &quot;&quot;&quot;</span><span class="p">,</span>
                 <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span></div>
@@ -598,7 +598,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

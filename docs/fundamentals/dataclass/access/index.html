@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/access/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Accessing modality means accessing the sub-Documents corresponding to a dataclass field. In the last chapter, we learned how to represent a multimodal document via@dataclass and type annotation from docarray.typing. We also learned that a multimodal dataclass can be converted into a Document obje..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Support New Modality" href="../new-type/" /><link rel="prev" title="Construct" href="../construct/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/access.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Access Modality - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Access Modality - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -557,7 +557,7 @@
 <p>It is strongly recommended to go through the <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a> section first before continuing.</p>
 </div>
 <p>Accessing modality means accessing the sub-Documents corresponding to a dataclass field.</p>
-<p>In the last chapter, we learned how to represent a multimodal document via <code class="docutils literal notranslate"><span class="pre">@dataclass</span></code> and type annotation from <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code>. We also learned that a multimodal dataclass can be converted into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object easily. That means if we have a list of multimodal dataclass objects, we can build a DocumentArray out of them:</p>
+<p>In the last chapter, we learned how to represent a multimodal document via <code class="docutils literal notranslate"><span class="pre">&#64;dataclass</span></code> and type annotation from <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code>. We also learned that a multimodal dataclass can be converted into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object easily. That means if we have a list of multimodal dataclass objects, we can build a DocumentArray out of them:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -571,10 +571,10 @@
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="p">[</span>
         <span class="n">Document</span><span class="p">(</span>
-            <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'test-1.jpeg'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'this is a test white-noise image'</span><span class="p">)</span>
+            <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;this is a test white-noise image&#39;</span><span class="p">)</span>
         <span class="p">),</span>
         <span class="n">Document</span><span class="p">(</span>
-            <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'test-2.jpeg'</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'another test image but in black'</span><span class="p">)</span>
+            <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;test-2.jpeg&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;another test image but in black&#39;</span><span class="p">)</span>
         <span class="p">),</span>
     <span class="p">]</span>
 <span class="p">)</span>
@@ -586,8 +586,8 @@
 │                                                │
 │   Length                    2                  │
 │   Homogenous Documents      True               │
-│   Has nested Documents in   ('chunks',)        │
-│   Common Attributes         ('id', 'chunks')   │
+│   Has nested Documents in   (&#39;chunks&#39;,)        │
+│   Common Attributes         (&#39;id&#39;, &#39;chunks&#39;)   │
 │   Multimodal dataclass      True               │
 │                                                │
 ╰────────────────────────────────────────────────╯
@@ -595,8 +595,8 @@
 │                                                                    │
 │   Attribute   Data type         #Unique values   Has empty value   │
 │  ────────────────────────────────────────────────────────────────  │
-│   chunks      ('ChunkArray',)   2                False             │
-│   id          ('str',)          2                False             │
+│   chunks      (&#39;ChunkArray&#39;,)   2                False             │
+│   id          (&#39;str&#39;,)          2                False             │
 │                                                                    │
 ╰────────────────────────────────────────────────────────────────────╯
 </pre></div>
@@ -605,7 +605,7 @@
 <p>This chapter describes how to select the sub-documents that correspond to a modality from a DocumentArray. So let me reiterate the logic here: when calling <code class="docutils literal notranslate"><span class="pre">Document()</span></code> to build Document object from a dataclass object, each field in that dataclass will generate a sub-document nested under <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> or even <code class="docutils literal notranslate"><span class="pre">.chunks.chunks.chunks</span></code> at arbitrary level (except primitive types, which are stored in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> of the root Document). To process a dataclass field via existing DocArray API/Jina/Hub Executor, we need a way to accurately select those sub-documents from the nested structure, which is the purpose of this chapter.</p>
 <section id="selector-syntax">
 <h2>Selector Syntax<a class="headerlink" href="#selector-syntax" title="Permalink to this headline">#</a></h2>
-<p>Following the syntax convention described in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>, a modality selector also starts with <code class="docutils literal notranslate"><span class="pre">@</span></code>, it uses <code class="docutils literal notranslate"><span class="pre">.</span></code> to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.</p>
+<p>Following the syntax convention described in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>, a modality selector also starts with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, it uses <code class="docutils literal notranslate"><span class="pre">.</span></code> to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...]
 ^^ ~~~~~~  ~~~~~~
 ||   |       |
@@ -620,16 +620,16 @@
 </div>
 <p>Use the above DocumentArray as an example,</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Select Documents corresponding to .banner </label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[banner]'</span><span class="p">]</span>
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Select Documents corresponding to .banner </label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 2                                                   │
 │   Homogenous Documents   True                                                │
-│   Common Attributes      ('id', 'parent_id', 'granularity', 'tensor',        │
-│                          'mime_type', 'uri', 'modality')                     │
+│   Common Attributes      (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;,        │
+│                          &#39;mime_type&#39;, &#39;uri&#39;, &#39;modality&#39;)                     │
 │   Multimodal dataclass   False                                               │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -637,28 +637,28 @@
 │                                                                   │
 │   Attribute     Data type      #Unique values   Has empty value   │
 │  ───────────────────────────────────────────────────────────────  │
-│   granularity   ('int',)       1                False             │
-│   id            ('str',)       2                False             │
-│   mime_type     ('str',)       1                False             │
-│   modality      ('str',)       1                False             │
-│   parent_id     ('str',)       2                False             │
-│   tensor        ('ndarray',)   2                False             │
-│   uri           ('str',)       2                False             │
+│   granularity   (&#39;int&#39;,)       1                False             │
+│   id            (&#39;str&#39;,)       2                False             │
+│   mime_type     (&#39;str&#39;,)       1                False             │
+│   modality      (&#39;str&#39;,)       1                False             │
+│   parent_id     (&#39;str&#39;,)       2                False             │
+│   tensor        (&#39;ndarray&#39;,)   2                False             │
+│   uri           (&#39;str&#39;,)       2                False             │
 │                                                                   │
 ╰───────────────────────────────────────────────────────────────────╯
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Select Documents corresponding to .description </label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[description]'</span><span class="p">]</span>
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Select Documents corresponding to .description </label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 2                                                   │
 │   Homogenous Documents   True                                                │
-│   Common Attributes      ('id', 'parent_id', 'granularity', 'text',          │
-│                          'modality')                                         │
+│   Common Attributes      (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;text&#39;,          │
+│                          &#39;modality&#39;)                                         │
 │   Multimodal dataclass   False                                               │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -666,11 +666,11 @@
 │                                                                │
 │   Attribute     Data type   #Unique values   Has empty value   │
 │  ────────────────────────────────────────────────────────────  │
-│   granularity   ('int',)    1                False             │
-│   id            ('str',)    2                False             │
-│   modality      ('str',)    1                False             │
-│   parent_id     ('str',)    2                False             │
-│   text          ('str',)    2                False             │
+│   granularity   (&#39;int&#39;,)    1                False             │
+│   id            (&#39;str&#39;,)    2                False             │
+│   modality      (&#39;str&#39;,)    1                False             │
+│   parent_id     (&#39;str&#39;,)    2                False             │
+│   text          (&#39;str&#39;,)    2                False             │
 │                                                                │
 ╰────────────────────────────────────────────────────────────────╯
 </pre></div>
@@ -681,20 +681,20 @@
 <h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this headline">#</a></h3>
 <p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Select Documents correspond to two fields</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[description, banner]'</span><span class="p">]</span>
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Select Documents correspond to two fields</label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description, banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Result</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Result</label><div class="tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                        4                                            │
 │   Homogenous Documents          False                                        │
-│   2 Documents have attributes   ('id', 'parent_id', 'granularity', 'text',   │
-│                                 'modality')                                  │
-│   2 Documents have attributes   ('id', 'parent_id', 'granularity',           │
-│                                 'tensor', 'mime_type', 'uri', 'modality')    │
+│   2 Documents have attributes   (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;text&#39;,   │
+│                                 &#39;modality&#39;)                                  │
+│   2 Documents have attributes   (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;,           │
+│                                 &#39;tensor&#39;, &#39;mime_type&#39;, &#39;uri&#39;, &#39;modality&#39;)    │
 │   Multimodal dataclass          False                                        │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -702,14 +702,14 @@
 │                                                                              │
 │   Attribute     Data type                 #Unique values   Has empty value   │
 │  ──────────────────────────────────────────────────────────────────────────  │
-│   granularity   ('int',)                  1                False             │
-│   id            ('str',)                  4                False             │
-│   mime_type     ('str',)                  2                False             │
-│   modality      ('str',)                  2                False             │
-│   parent_id     ('str',)                  2                False             │
-│   tensor        ('ndarray', 'NoneType')   4                True              │
-│   text          ('str',)                  3                False             │
-│   uri           ('str',)                  3                False             │
+│   granularity   (&#39;int&#39;,)                  1                False             │
+│   id            (&#39;str&#39;,)                  4                False             │
+│   mime_type     (&#39;str&#39;,)                  2                False             │
+│   modality      (&#39;str&#39;,)                  2                False             │
+│   parent_id     (&#39;str&#39;,)                  2                False             │
+│   tensor        (&#39;ndarray&#39;, &#39;NoneType&#39;)   4                True              │
+│   text          (&#39;str&#39;,)                  3                False             │
+│   uri           (&#39;str&#39;,)                  3                False             │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 </pre></div>
@@ -726,18 +726,18 @@
 <p>where <code class="docutils literal notranslate"><span class="pre">slice</span></code> can be any slice syntax accepted in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>.</p>
 <p>For example, to select the sub-Document <code class="docutils literal notranslate"><span class="pre">.banner</span></code> for only the first Document,</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--1">Select .banner of the first dataclass  </label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@r[:1].[banner]'</span><span class="p">]</span>
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">Select .banner of the first dataclass  </label><div class="tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@r[:1].[banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"/><label class="tab-label" for="tab-set--2-input--2">Result</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Result</label><div class="tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 1                                                   │
 │   Homogenous Documents   True                                                │
-│   Common Attributes      ('id', 'parent_id', 'granularity', 'tensor',        │
-│                          'mime_type', 'uri', 'modality')                     │
+│   Common Attributes      (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;,        │
+│                          &#39;mime_type&#39;, &#39;uri&#39;, &#39;modality&#39;)                     │
 │   Multimodal dataclass   False                                               │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
@@ -745,13 +745,13 @@
 │                                                                   │
 │   Attribute     Data type      #Unique values   Has empty value   │
 │  ───────────────────────────────────────────────────────────────  │
-│   granularity   ('int',)       1                False             │
-│   id            ('str',)       1                False             │
-│   mime_type     ('str',)       1                False             │
-│   modality      ('str',)       1                False             │
-│   parent_id     ('str',)       1                False             │
-│   tensor        ('ndarray',)   1                False             │
-│   uri           ('str',)       1                False             │
+│   granularity   (&#39;int&#39;,)       1                False             │
+│   id            (&#39;str&#39;,)       1                False             │
+│   mime_type     (&#39;str&#39;,)       1                False             │
+│   modality      (&#39;str&#39;,)       1                False             │
+│   parent_id     (&#39;str&#39;,)       1                False             │
+│   tensor        (&#39;ndarray&#39;,)   1                False             │
+│   uri           (&#39;str&#39;,)       1                False             │
 │                                                                   │
 ╰───────────────────────────────────────────────────────────────────╯
 </pre></div>
@@ -778,20 +778,20 @@
     <span class="p">[</span>
         <span class="n">Document</span><span class="p">(</span>
             <span class="n">MMDoc</span><span class="p">(</span>
-                <span class="n">banner</span><span class="o">=</span><span class="p">[</span><span class="s1">'test-1.jpeg'</span><span class="p">,</span> <span class="s1">'test-2.jpeg'</span><span class="p">],</span>
-                <span class="n">description</span><span class="o">=</span><span class="s1">'this is a test white image'</span><span class="p">,</span>
+                <span class="n">banner</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;test-2.jpeg&#39;</span><span class="p">],</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;this is a test white image&#39;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">),</span>
         <span class="n">Document</span><span class="p">(</span>
             <span class="n">MMDoc</span><span class="p">(</span>
-                <span class="n">banner</span><span class="o">=</span><span class="p">[</span><span class="s1">'test-1.jpeg'</span><span class="p">,</span> <span class="s1">'test-2.jpeg'</span><span class="p">],</span>
-                <span class="n">description</span><span class="o">=</span><span class="s1">'another test image but in black'</span><span class="p">,</span>
+                <span class="n">banner</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;test-2.jpeg&#39;</span><span class="p">],</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;another test image but in black&#39;</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">),</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="hll"><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[</span><span class="s1">'@.[banner][:1]'</span><span class="p">]:</span>
+<span class="hll"><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[banner][:1]&#39;</span><span class="p">]:</span>
 </span>    <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -814,23 +814,23 @@ test-1.jpeg
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">BannerDoc</span><span class="p">:</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Text</span> <span class="o">=</span> <span class="s1">'this is a test empty image'</span>
-    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="s1">'test-1.jpeg'</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Text</span> <span class="o">=</span> <span class="s1">&#39;this is a test empty image&#39;</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="s1">&#39;test-1.jpeg&#39;</span>
 
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">ColumnArticle</span><span class="p">:</span>
     <span class="n">featured</span><span class="p">:</span> <span class="n">BannerDoc</span>
-    <span class="n">description</span><span class="p">:</span> <span class="n">Text</span> <span class="o">=</span> <span class="s1">'this is a column article'</span>
-    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'https://jina.ai'</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Text</span> <span class="o">=</span> <span class="s1">&#39;this is a column article&#39;</span>
+    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;https://jina.ai&#39;</span>
 
 
-<span class="n">c1</span> <span class="o">=</span> <span class="n">ColumnArticle</span><span class="p">(</span><span class="n">featured</span><span class="o">=</span><span class="n">BannerDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'test-1.jpeg'</span><span class="p">))</span>
-<span class="n">c2</span> <span class="o">=</span> <span class="n">ColumnArticle</span><span class="p">(</span><span class="n">featured</span><span class="o">=</span><span class="n">BannerDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'test-2.jpeg'</span><span class="p">))</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">ColumnArticle</span><span class="p">(</span><span class="n">featured</span><span class="o">=</span><span class="n">BannerDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">))</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">ColumnArticle</span><span class="p">(</span><span class="n">featured</span><span class="o">=</span><span class="n">BannerDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;test-2.jpeg&#39;</span><span class="p">))</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">c1</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">c2</span><span class="p">)])</span>
 
-<span class="hll"><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[</span><span class="s1">'@.[featured].[banner]'</span><span class="p">]:</span>
+<span class="hll"><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[featured].[banner]&#39;</span><span class="p">]:</span>
 </span>    <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -877,7 +877,7 @@ test-2.jpeg
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

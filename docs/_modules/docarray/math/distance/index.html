@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/math/distance.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.math.distance - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.math.distance - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -528,22 +528,22 @@
 
 
 <div class="viewcode-block" id="pdist"><a class="viewcode-back" href="../../../../api/docarray.math.distance/#docarray.math.distance.pdist">[docs]</a><span class="k">def</span> <span class="nf">pdist</span><span class="p">(</span>
-    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span>
+    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span>
     <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'np.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Computes Pairwise distances between observations in n-dimensional space.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes Pairwise distances between observations in n-dimensional space.</span>
 
-<span class="sd">    :param x_mat: Union['np.ndarray','scipy.sparse.csr_matrix', 'scipy.sparse.coo_matrix'] of ndim 2</span>
+<span class="sd">    :param x_mat: Union[&#39;np.ndarray&#39;,&#39;scipy.sparse.csr_matrix&#39;, &#39;scipy.sparse.coo_matrix&#39;] of ndim 2</span>
 <span class="sd">    :param metric: string describing the metric type</span>
 <span class="sd">    :return: np.ndarray of ndim 2</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">cdist</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">x_mat</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cdist"><a class="viewcode-back" href="../../../../api/docarray.math.distance/#docarray.math.distance.cdist">[docs]</a><span class="k">def</span> <span class="nf">cdist</span><span class="p">(</span>
-    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">'ArrayType'</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'np.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Computes the pairwise distance between each row of X and each row on Y according to `metric`.</span>
+    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the pairwise distance between each row of X and each row on Y according to `metric`.</span>
 <span class="sd">    - Let `n_x = x_mat.shape[0]`</span>
 <span class="sd">    - Let `n_y = y_mat.shape[0]`</span>
 <span class="sd">    - Returns a matrix `dist` of shape `(n_x, n_y)` with `dist[i,j] = metric(x_mat[i], y_mat[j])`.</span>
@@ -552,91 +552,91 @@
 <span class="sd">    :param metric: string describing the metric type</span>
 <span class="sd">    :param device: the computational device, can be either `cpu` or `cuda`.</span>
 <span class="sd">    :return: np.ndarray of ndim 2</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">x_type</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x_mat</span><span class="p">)</span>
     <span class="n">y_type</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">y_mat</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">x_type</span> <span class="o">!=</span> <span class="n">y_type</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'The type of your left-hand side is </span><span class="si">{</span><span class="n">x_type</span><span class="si">}</span><span class="s1">, whereas your right-hand side is </span><span class="si">{</span><span class="n">y_type</span><span class="si">}</span><span class="s1">. '</span>
-            <span class="sa">f</span><span class="s1">'`.cdist()` requires left must be the same type as right.'</span>
+            <span class="sa">f</span><span class="s1">&#39;The type of your left-hand side is </span><span class="si">{</span><span class="n">x_type</span><span class="si">}</span><span class="s1">, whereas your right-hand side is </span><span class="si">{</span><span class="n">y_type</span><span class="si">}</span><span class="s1">. &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;`.cdist()` requires left must be the same type as right.&#39;</span>
         <span class="p">)</span>
 
     <span class="n">framework</span><span class="p">,</span> <span class="n">is_sparse</span> <span class="o">=</span> <span class="n">get_array_type</span><span class="p">(</span><span class="n">x_mat</span><span class="p">)</span>
 
     <span class="n">dists</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">'cosine'</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'scipy'</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;cosine&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">sparse_cosine</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sparse_cosine</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">cosine</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">cosine</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.tensorflow</span> <span class="kn">import</span> <span class="n">cosine</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">cosine</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.torch</span> <span class="kn">import</span> <span class="n">cosine</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">cosine</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;paddle&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.paddle</span> <span class="kn">import</span> <span class="n">cosine</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">cosine</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">'sqeuclidean'</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'scipy'</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;sqeuclidean&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">sparse_sqeuclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sparse_sqeuclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">sqeuclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sqeuclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.tensorflow</span> <span class="kn">import</span> <span class="n">sqeuclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sqeuclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.torch</span> <span class="kn">import</span> <span class="n">sqeuclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sqeuclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;paddle&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.paddle</span> <span class="kn">import</span> <span class="n">sqeuclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sqeuclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">'euclidean'</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'scipy'</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span> <span class="ow">and</span> <span class="n">is_sparse</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">sparse_euclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">sparse_euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'numpy'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.numpy</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'tensorflow'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.tensorflow</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'torch'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.torch</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">'paddle'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">framework</span> <span class="o">==</span> <span class="s1">&#39;paddle&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.paddle</span> <span class="kn">import</span> <span class="n">euclidean</span>
 
             <span class="n">dists</span> <span class="o">=</span> <span class="n">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Input metric=</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s1"> is not supported'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Input metric=</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s1"> is not supported&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">dists</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">framework</span><span class="si">}</span><span class="s1"> sparse=</span><span class="si">{</span><span class="n">is_sparse</span><span class="si">}</span><span class="s1"> array is not supported'</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">framework</span><span class="si">}</span><span class="s1"> sparse=</span><span class="si">{</span><span class="n">is_sparse</span><span class="si">}</span><span class="s1"> array is not supported&#39;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">dists</span></div>
 </pre></div>
@@ -653,7 +653,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

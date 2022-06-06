@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/benchmark/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores. This includes classic database and vector database, all under the same DocumentArray API: We focus on the following tasks: Create: add one mi..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/benchmark-banner.gif" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Jina" href="../../../fundamentals/jina-support/" /><link rel="prev" title="Add New Document Store" href="../extend/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/benchmark.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>One Million Scale Benchmark - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>One Million Scale Benchmark - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -553,14 +553,14 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="one-million-scale-benchmark">
 <h1>One Million Scale Benchmark<a class="headerlink" href="#one-million-scale-benchmark" title="Permalink to this headline">#</a></h1>
 <figure class="align-default">
-<a class="reference internal image-reference" href="https://docarray.jina.ai/_images/benchmark-banner.gif"><img alt="https://docarray.jina.ai/_images/benchmark-banner.gif" src="https://docarray.jina.ai/_images/benchmark-banner.gif" style="width: 0.0%;"/></a>
+<a class="reference internal image-reference" href="https://docarray.jina.ai/_images/benchmark-banner.gif"><img alt="https://docarray.jina.ai/_images/benchmark-banner.gif" src="https://docarray.jina.ai/_images/benchmark-banner.gif" style="width: 0.0%;" /></a>
 </figure>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../../_images/benchmark-banner.gif"><img alt="../../../_images/benchmark-banner.gif" src="../../../_images/benchmark-banner.gif" style="width: 0.0px; height: 0.0px;"/></a>
+<a class="reference internal image-reference" href="../../../_images/benchmark-banner.gif"><img alt="../../../_images/benchmark-banner.gif" src="../../../_images/benchmark-banner.gif" style="width: 0.0px; height: 0.0px;" /></a>
 </figure>
 <p>We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
 This includes classic database and vector database, all under the same DocumentArray API:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Name</th>
@@ -600,7 +600,7 @@ This includes classic database and vector database, all under the same DocumentA
 <td><code>8.1.0</code></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>We focus on the following tasks:</p>
 <ol class="simple">
 <li><p><strong>Create</strong>: add one million Documents to the document store via <a class="reference internal" href="../../../api/docarray.array.storage.base.seqlike/#docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend" title="docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend"><code class="xref py py-meth docutils literal notranslate"><span class="pre">extend()</span></code></a>.</p></li>
@@ -622,10 +622,10 @@ This includes classic database and vector database, all under the same DocumentA
 </div>
 <section id="benchmark-result">
 <h2>Benchmark result<a class="headerlink" href="#benchmark-result" title="Permalink to this headline">#</a></h2>
-<p>The following table summarizes the result. The smaller the values, the better (except for <code class="docutils literal notranslate"><span class="pre">Recall@10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
+<p>The following table summarizes the result. The smaller the values, the better (except for <code class="docutils literal notranslate"><span class="pre">Recall&#64;10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters (ef, ef_construct, max_connections)</label><div class="tab-content docutils">
-<div class="table-wrapper"><table border="1" class="docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Same HNSW parameters (ef, ef_construct, max_connections)</label><div class="tab-content docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Store</th>
@@ -700,10 +700,10 @@ This includes classic database and vector database, all under the same DocumentA
 <td align="right"><strong>0.85</strong></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Default HNSW parameters</label><div class="tab-content docutils">
-<div class="table-wrapper"><table border="1" class="docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Default HNSW parameters</label><div class="tab-content docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Store</th>
@@ -778,13 +778,13 @@ This includes classic database and vector database, all under the same DocumentA
 <td align="right"><strong>0.83</strong></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 </div>
 </div>
-<p>When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for <code class="docutils literal notranslate"><span class="pre">Recall@10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
+<p>When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for <code class="docutils literal notranslate"><span class="pre">Recall&#64;10</span></code>). The best performer of each task is highlighted in <strong>bold</strong>:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters (ef, ef_construct, max_connections) in QPS</label><div class="tab-content docutils">
-<div class="table-wrapper"><table border="1" class="docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Same HNSW parameters (ef, ef_construct, max_connections) in QPS</label><div class="tab-content docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Store</th>
@@ -859,10 +859,10 @@ This includes classic database and vector database, all under the same DocumentA
 <td align="right"><strong>0.85</strong></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 </div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">Default HNSW parameters in QPS</label><div class="tab-content docutils">
-<div class="table-wrapper"><table border="1" class="docutils">
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Default HNSW parameters in QPS</label><div class="tab-content docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Store</th>
@@ -937,14 +937,14 @@ This includes classic database and vector database, all under the same DocumentA
 <td align="right"><strong>0.83</strong></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 </div>
 </div>
 </section>
 <section id="benchmark-setup">
 <h2>Benchmark setup<a class="headerlink" href="#benchmark-setup" title="Permalink to this headline">#</a></h2>
 <p>We now elaborate the setup of our benchmark. First the following parameters are used:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Parameter</th>
@@ -969,17 +969,17 @@ This includes classic database and vector database, all under the same DocumentA
 <td>10</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>We choose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it is a performance-wise breaking point for a production system.</p>
 <p>Each Document follows the structure:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
-  "id": "94ee6627ee7f582e5e28124e78c3d2f9",
-  "tags": {"i": 10},
-  "embedding": [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
+  &quot;id&quot;: &quot;94ee6627ee7f582e5e28124e78c3d2f9&quot;,
+  &quot;tags&quot;: {&quot;i&quot;: 10},
+  &quot;embedding&quot;: [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
 }
 </pre></div>
 </div>
-<p>We use <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> value as an indicator of the search quality. The in-memory and SQLite store <strong>do not implement</strong> approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum <code class="docutils literal notranslate"><span class="pre">Recall@K</span></code> but are the slowest.</p>
+<p>We use <code class="docutils literal notranslate"><span class="pre">Recall&#64;K</span></code> value as an indicator of the search quality. The in-memory and SQLite store <strong>do not implement</strong> approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum <code class="docutils literal notranslate"><span class="pre">Recall&#64;K</span></code> but are the slowest.</p>
 <p>The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and DocArray 0.12.8.</p>
 <p>Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official
 docker images in a <strong>single node</strong> configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are
@@ -1010,7 +1010,7 @@ DocArray users the most. Note that such a benchmark was impossible to set up bef
 <ul class="simple">
 <li><p><strong>Cover the most important operations</strong>: We understand that some backends are better at some operations than others, and
 some offer better quality. Therefore, we try to benchmark on 6 operations (CRUD + Find by vector + Find by condition)
-and report quality measurement (<code class="docutils literal notranslate"><span class="pre">Recall@K</span></code>).</p></li>
+and report quality measurement (<code class="docutils literal notranslate"><span class="pre">Recall&#64;K</span></code>).</p></li>
 <li><p><strong>Not just speed, but also quality</strong>: Since some backends offer better performance and some offer better quality, we make sure to report the quality measurement for the approximate nearest neighbor search. This will allow users to
 choose the backend that best suits their cases.</p></li>
 <li><p><strong>Same experiment, same API</strong>: DocArray offers the same API across all backends and therefore we built on top of it the
@@ -1045,7 +1045,7 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 <p>If your dataset does not fit in memory, and you <strong>do not</strong> care much about the speed of nearest neighbor search, you can use <code class="docutils literal notranslate"><span class="pre">sqlite</span></code> as storage.</p>
 <p>When it comes to finding by vectors, the following figure shows the variation of latency w.r.t. different backend according to the dataset size. The red dashed line represents a time threshold of 0.3s, i.e. 300 ms:</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../../_images/benchmark.svg"><img alt="../../../_images/benchmark.svg" height="7200" src="../../../_images/benchmark.svg" width="24480"/></a>
+<a class="reference internal image-reference" href="../../../_images/benchmark.svg"><img alt="../../../_images/benchmark.svg" height="7200" src="../../../_images/benchmark.svg" width="24480" /></a>
 </figure>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -1053,7 +1053,7 @@ Document stores. Actually we do not benchmark HNSW itself, but it is used by som
 slow and the in-memory is too fast to fit into the figure.</p>
 </div>
 <p>AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolithic package that does not follow a client-server design, so it avoids all network overhead.</p>
-<p>Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best in terms of quality of ANN, as we observed with highest Recall@K.</p>
+<p>Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best in terms of quality of ANN, as we observed with highest Recall&#64;K.</p>
 </section>
 </section>
 
@@ -1092,7 +1092,7 @@ slow and the in-memory is too fast to fit into the figure.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

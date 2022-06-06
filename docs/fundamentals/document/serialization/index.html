@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/serialization/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocArray is designed to be “ready-to-wire”: it assumes you always want to send/receive Document over network across microservices. Hence, serialization of Document is important. This chapter introduces multiple serialization methods of a single Document. From/to JSON: You can serialize a Document..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../attribute/" /><link rel="prev" title="Construct" href="../construct/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/serialization.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Serialization - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Serialization - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -569,44 +569,44 @@
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Depending on which protocol you use, this feature requires <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>Depending on which protocol you use, this feature requires <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> or <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
 <p>You can serialize a Document as a JSON string via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_json" title="docarray.document.mixins.porting.PortingMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a>, and then read from it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_json" title="docarray.document.mixins.porting.PortingMixin.from_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_json()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">d_as_json</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="n">d_as_json</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">d_as_json</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d_as_json</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{"id": "641032d677b311ecb67a1e008a366d49", "parent_id": null, "granularity": null, "adjacency": null, "blob": null, "tensor": null, "mime_type": "text/plain", "text": "hello, world", "weight": null, "uri": null, "tags": null, "offset": null, "location": null, "embedding": [1, 2, 3], "modality": null, "evaluations": null, "scores": null, "chunks": null, "matches": null} 
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&quot;id&quot;: &quot;641032d677b311ecb67a1e008a366d49&quot;, &quot;parent_id&quot;: null, &quot;granularity&quot;: null, &quot;adjacency&quot;: null, &quot;blob&quot;: null, &quot;tensor&quot;: null, &quot;mime_type&quot;: &quot;text/plain&quot;, &quot;text&quot;: &quot;hello, world&quot;, &quot;weight&quot;: null, &quot;uri&quot;: null, &quot;tags&quot;: null, &quot;offset&quot;: null, &quot;location&quot;: null, &quot;embedding&quot;: [1, 2, 3], &quot;modality&quot;: null, &quot;evaluations&quot;: null, &quot;scores&quot;: null, &quot;chunks&quot;: null, &quot;matches&quot;: null} 
 
-&lt;Document ('id', 'mime_type', 'text', 'embedding') at 641032d677b311ecb67a1e008a366d49&gt;
+&lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 641032d677b311ecb67a1e008a366d49&gt;
 </pre></div>
 </div>
 <p>By default, it uses <a class="reference internal" href="../../fastapi-support/#schema-gen"><span class="std std-ref">JSON Schema and pydantic model</span></a> for serialization, i.e. <code class="docutils literal notranslate"><span class="pre">protocol='jsonschema'</span></code>. You can switch the method to <code class="docutils literal notranslate"><span class="pre">protocol='protobuf'</span></code>, which leverages Protobuf as the JSON serialization backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
-<span class="n">d</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="n">d</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"db66bc2e77b311eca5f51e008a366d49"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello, world"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"mimeType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text/plain"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"embedding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"dense"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"buffer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"shape"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db66bc2e77b311eca5f51e008a366d49&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hello, world&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;mimeType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;embedding&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;dense&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;buffer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AQAAAAAAAAACAAAAAAAAAAMAAAAAAAAA&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;shape&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <span class="w">        </span><span class="mi">3</span><span class="w"></span>
 <span class="w">      </span><span class="p">],</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"dtype"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;i8"</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;dtype&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;i8&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="p">},</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"clsName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"numpy"</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;clsName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numpy&quot;</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
@@ -615,11 +615,11 @@
 <p>Note that you can pass extra arguments to control the include/exclude fields, lower/uppercase of the resulted JSON. For example, we can remove those fields that are empty or <code class="docutils literal notranslate"><span class="pre">none</span></code> from JSON via:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">d</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cdbc4f7a77b411ec96ad1e008a366d49"</span><span class="p">,</span><span class="w"> </span><span class="nt">"mime_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text/plain"</span><span class="p">,</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hello, world"</span><span class="p">,</span><span class="w"> </span><span class="nt">"embedding"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cdbc4f7a77b411ec96ad1e008a366d49&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;mime_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;text/plain&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hello, world&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;embedding&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>It is easier to eyes. But when building REST API, you do not need to explicitly do this, pydantic model handle everything for you. More information can be found in <a class="reference internal" href="../../fastapi-support/#fastapi-support"><span class="std std-ref">FastAPI/Pydantic</span></a>.</p>
@@ -644,13 +644,13 @@
 <span id="doc-in-bytes"></span><h2>From/to bytes<a class="headerlink" href="#from-to-bytes" title="Permalink to this headline">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
 <p>Bytes or binary or buffer, how ever you want to call it, it probably the most common &amp; compact wire format. DocArray provides <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_bytes" title="docarray.document.mixins.porting.PortingMixin.to_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_bytes()</span></code></a> and <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_bytes" title="docarray.document.mixins.porting.PortingMixin.from_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_bytes()</span></code></a> to serialize Document object into bytes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
 <span class="n">d_bytes</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()</span>
 
 <span class="n">d_r</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d_bytes</span><span class="p">)</span>
@@ -658,14 +658,14 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">d_bytes</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>b'\x80\x03cdocarray.document\nDocument\nq\x00)\x81q\x01}q\x02X\x05\x00\x00\x00_dataq\x03cdocarray.document.data\nDocumentData\nq\x04)\x81q\x05}q\x06(X\x0e\x00\x00\x00_reference_docq\x07h\x01X\x02\x00\x00\x00idq\x08X \x00\x00\x005d29a9f26d5911ec88d51e008a366d49q\tX\t\x00\x00\x00parent_...
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>b&#39;\x80\x03cdocarray.document\nDocument\nq\x00)\x81q\x01}q\x02X\x05\x00\x00\x00_dataq\x03cdocarray.document.data\nDocumentData\nq\x04)\x81q\x05}q\x06(X\x0e\x00\x00\x00_reference_docq\x07h\x01X\x02\x00\x00\x00idq\x08X \x00\x00\x005d29a9f26d5911ec88d51e008a366d49q\tX\t\x00\x00\x00parent_...
 
-&lt;Document ('id', 'mime_type', 'text', 'embedding') at 3644c0fa6d5a11ecbb081e008a366d49&gt;
+&lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 3644c0fa6d5a11ecbb081e008a366d49&gt;
 </pre></div>
 </div>
 <p>Default serialization protocol is <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, you can change it to <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> by specifying <code class="docutils literal notranslate"><span class="pre">.to_bytes(protocol='protobuf')</span></code>. You can also add compression to it and make the result bytes smaller. For example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">)))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)))</span>
 </pre></div>
 </div>
 <p>gives:</p>
@@ -674,7 +674,7 @@
 </div>
 <p>whereas the default <code class="docutils literal notranslate"><span class="pre">.to_bytes()</span></code> gives <code class="docutils literal notranslate"><span class="pre">666</span></code> (spooky~).</p>
 <p>Note that when deserializing from a non-default binary serialization, you need to specify the correct <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments used at the serialization time:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d_bytes</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">d_bytes</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -686,11 +686,11 @@
 <h2>From/to base64<a class="headerlink" href="#from-to-base64" title="Permalink to this headline">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>Depending on your values of <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> arguments, this feature may require <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> and <code class="docutils literal notranslate"><span class="pre">lz4</span></code> dependencies. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
 <p>In some cases such as in REST API, you are allowed only to send/receive string not bytes. You can serialize Document into base64 string via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_base64" title="docarray.document.mixins.porting.PortingMixin.to_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_base64()</span></code></a> and load it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_base64" title="docarray.document.mixins.porting.PortingMixin.from_base64"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_base64()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">())</span>
 </pre></div>
@@ -700,10 +700,10 @@
 </div>
 <p>You can set <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">compress</span></code> to get a more compact string:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">()))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'lz4'</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">to_base64</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;lz4&#39;</span><span class="p">)))</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>664
@@ -716,22 +716,22 @@
 <span id="doc-dict"></span><h2>From/to dict<a class="headerlink" href="#from-to-dict" title="Permalink to this headline">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> or <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
 <p>You can serialize a Document as a Python <code class="docutils literal notranslate"><span class="pre">dict</span></code> via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.to_dict" title="docarray.document.mixins.porting.PortingMixin.to_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_dict()</span></code></a>, and then read from it via <a class="reference internal" href="../../../api/docarray.document.mixins.porting/#docarray.document.mixins.porting.PortingMixin.from_dict" title="docarray.document.mixins.porting.PortingMixin.from_dict"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_dict()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">d_as_dict</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello, world'</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="n">d_as_dict</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello, world&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d_as_dict</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d_as_dict</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{'id': '5596c84c77b711ecafed1e008a366d49', 'parent_id': None, 'granularity': None, 'adjacency': None, 'blob': None, 'tensor': None, 'mime_type': 'text/plain', 'text': 'hello, world', 'weight': None, 'uri': None, 'tags': None, 'offset': None, 'location': None, 'embedding': [1, 2, 3], 'modality': None, 'evaluations': None, 'scores': None, 'chunks': None, 'matches': None} 
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;id&#39;: &#39;5596c84c77b711ecafed1e008a366d49&#39;, &#39;parent_id&#39;: None, &#39;granularity&#39;: None, &#39;adjacency&#39;: None, &#39;blob&#39;: None, &#39;tensor&#39;: None, &#39;mime_type&#39;: &#39;text/plain&#39;, &#39;text&#39;: &#39;hello, world&#39;, &#39;weight&#39;: None, &#39;uri&#39;: None, &#39;tags&#39;: None, &#39;offset&#39;: None, &#39;location&#39;: None, &#39;embedding&#39;: [1, 2, 3], &#39;modality&#39;: None, &#39;evaluations&#39;: None, &#39;scores&#39;: None, &#39;chunks&#39;: None, &#39;matches&#39;: None} 
 
-&lt;Document ('id', 'mime_type', 'text', 'embedding') at 5596c84c77b711ecafed1e008a366d49&gt;
+&lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;, &#39;embedding&#39;) at 5596c84c77b711ecafed1e008a366d49&gt;
 </pre></div>
 </div>
 <p>As the intermediate step of <code class="docutils literal notranslate"><span class="pre">to_json()</span></code>/<code class="docutils literal notranslate"><span class="pre">from_json()</span></code> it is unlikely to use dict IO directly. Nonetheless, you can pass the same <code class="docutils literal notranslate"><span class="pre">protocol</span></code> and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as described in <a class="reference internal" href="#doc-json"><span class="std std-ref">From/to JSON</span></a> to control the serialization behavior.</p>
@@ -740,23 +740,23 @@
 <h2>From/to Protobuf<a class="headerlink" href="#from-to-protobuf" title="Permalink to this headline">#</a></h2>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to install it.</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">protobuf</span></code> dependency. You can do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to install it.</p>
 </div>
 <p>You can also serialize a Document object into a Protobuf Message object. This is less frequently used as it is often an intermediate step when serializing into bytes, as in <code class="docutils literal notranslate"><span class="pre">to_dict()</span></code>. However, if you work with Python Protobuf API, having a Python Protobuf Message object at hand can be useful.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d_proto</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.jpg'</span><span class="p">)</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span>
+<span class="n">d_proto</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;apple.jpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_protobuf</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">d_proto</span><span class="p">),</span> <span class="n">d_proto</span><span class="p">)</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_protobuf</span><span class="p">(</span><span class="n">d_proto</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class 'docarray_pb2.DocumentProto'&gt; 
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;class &#39;docarray_pb2.DocumentProto&#39;&gt; 
 
-id: "d66463b46d6a11ecbf891e008a366d49"
-uri: "apple.jpg"
-mime_type: "image/jpeg"
+id: &quot;d66463b46d6a11ecbf891e008a366d49&quot;
+uri: &quot;apple.jpg&quot;
+mime_type: &quot;image/jpeg&quot;
 
-&lt;Document ('id', 'mime_type', 'uri') at e4b215106d6a11ecb28b1e008a366d49&gt;
+&lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;uri&#39;) at e4b215106d6a11ecb28b1e008a366d49&gt;
 </pre></div>
 </div>
 <p>One can refer to the <a class="reference internal" href="../../../proto/"><span class="doc std std-doc">Protobuf specification of <code class="docutils literal notranslate"><span class="pre">Document</span></code></span></a> for details.</p>
@@ -803,7 +803,7 @@ mime_type: "image/jpeg"
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

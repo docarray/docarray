@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/access-elements/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal? If it is just a list and you can only access elements via[1],[-1],[1:3], then it is no big deal. However, DocumentArray offers much more ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Attributes" href="../access-attributes/" /><link rel="prev" title="Serialization" href="../serialization/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/access-elements.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Access Documents - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Access Documents - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -555,7 +555,7 @@
 <p>This is probably my favorite chapter so far. Readers come to this far may ask: okay you re-implement Python List coin it as DocumentArray, what’s the big deal?</p>
 <p>If it is just a <code class="docutils literal notranslate"><span class="pre">list</span></code> and you can only access elements via <code class="docutils literal notranslate"><span class="pre">[1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[-1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[1:3]</span></code>, then it is no big deal. However, DocumentArray offers much more than simple indexing. It allows you to fully exploit the rich &amp; nested data structure of Document in an easy and efficient way.</p>
 <p>The table below summarizes all indexing routines that DocumentArray supports. You can use them to <strong>get, set, and delete</strong> items in DocumentArray.</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Indexing routine</th>
@@ -610,7 +610,7 @@
 <td>DocumentArray</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>Sounds exciting? Let’s continue then.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -637,8 +637,8 @@
 <span class="n">da</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">100</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id',) at 834f14666e6511ec8e331e008a366d49&gt;
-&lt;Document ('id',) at 834f32846e6511ec8e331e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;,) at 834f14666e6511ec8e331e008a366d49&gt;
+&lt;Document (&#39;id&#39;,) at 834f32846e6511ec8e331e008a366d49&gt;
 &lt;DocumentArray (length=4) at 4883468432&gt;
 &lt;DocumentArray (length=10) at 4883468432&gt;
 </pre></div>
@@ -658,11 +658,11 @@
 7e27fb826e6611ec9a441e008a366d49
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'7e27fa246e6611ec9a441e008a366d49'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'7e27fa246e6611ec9a441e008a366d49'</span><span class="p">,</span> <span class="s1">'7e27fb826e6611ec9a441e008a366d49'</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;7e27fa246e6611ec9a441e008a366d49&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;7e27fa246e6611ec9a441e008a366d49&#39;</span><span class="p">,</span> <span class="s1">&#39;7e27fb826e6611ec9a441e008a366d49&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id',) at 99851c7a6e6611ecba351e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;,) at 99851c7a6e6611ecba351e008a366d49&gt;
 &lt;DocumentArray (length=2) at 4874066256&gt;
 </pre></div>
 </div>
@@ -702,11 +702,11 @@ False
 <section id="index-by-nested-structure">
 <span id="path-string"></span><h2>Index by nested structure<a class="headerlink" href="#index-by-nested-structure" title="Permalink to this headline">#</a></h2>
 <p>From early chapter, we already know <a class="reference internal" href="../../document/nested/#recursive-nested-document"><span class="std std-ref">Document can be nested</span></a>. DocumentArray provides very easy way to traverse over the nested structure and select Documents. All you need to do is following the syntax below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@path1,path2,path3'</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@path1,path2,path3&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>The path-string must starts with <code class="docutils literal notranslate"><span class="pre">@</span></code>.</p></li>
+<li><p>The path-string must starts with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.</p></li>
 <li><p>Multiple paths are separated by comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p></li>
 <li><p>A path represents the route from the top-level Documents to the destination. You can use <code class="docutils literal notranslate"><span class="pre">c</span></code> to select chunks, <code class="docutils literal notranslate"><span class="pre">cc</span></code> to select chunks of the chunks, <code class="docutils literal notranslate"><span class="pre">m</span></code> to select matches, <code class="docutils literal notranslate"><span class="pre">mc</span></code> to select chunks of the matches, <code class="docutils literal notranslate"><span class="pre">r</span></code> to select the top-level Documents.</p></li>
 <li><p>A path can only go deep, not go back. You can use comma <code class="docutils literal notranslate"><span class="pre">,</span></code> to start a new path from the very top-level.</p></li>
@@ -727,39 +727,39 @@ False
                                                          
   Length                    3                            
   Homogenous Documents      True                         
-  Has nested Documents in   ('chunks', 'matches')        
-  Common Attributes         ('id', 'chunks', 'matches')  
+  Has nested Documents in   (&#39;chunks&#39;, &#39;matches&#39;)        
+  Common Attributes         (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;)  
                                                          
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
-  chunks      ('ChunkArray',)   3                False            
-  id          ('str',)          3                False            
-  matches     ('MatchArray',)   3                False  
+  chunks      (&#39;ChunkArray&#39;,)   3                False            
+  id          (&#39;str&#39;,)          3                False            
+  matches     (&#39;MatchArray&#39;,)   3                False  
 </pre></div>
 </div>
 <p>This simple DocumentArray contains 3 Documents, each of which contains 2 matches and 2 chunks. Let’s plot one of them.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document ('id', 'chunks', 'matches') at 2f94c1426ee511ecbb491e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;) at 2f94c1426ee511ecbb491e008a366d49&gt;
     └─ matches
-          ├─ &lt;Document ('id', 'adjacency') at 2f94cd9a6ee511ecbb491e008a366d49&gt;
-          └─ &lt;Document ('id', 'adjacency') at 2f94cdfe6ee511ecbb491e008a366d49&gt;
+          ├─ &lt;Document (&#39;id&#39;, &#39;adjacency&#39;) at 2f94cd9a6ee511ecbb491e008a366d49&gt;
+          └─ &lt;Document (&#39;id&#39;, &#39;adjacency&#39;) at 2f94cdfe6ee511ecbb491e008a366d49&gt;
     └─ chunks
-          ├─ &lt;Document ('id', 'parent_id', 'granularity') at 2f94c4086ee511ecbb491e008a366d49&gt;
-          └─ &lt;Document ('id', 'parent_id', 'granularity') at 2f94c46c6ee511ecbb491e008a366d49&gt;
+          ├─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at 2f94c4086ee511ecbb491e008a366d49&gt;
+          └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at 2f94c46c6ee511ecbb491e008a366d49&gt;
 </pre></div>
 </div>
 <p>That’s still too much information, let’s minimize it.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../../_images/docarray-index-example.svg"><img alt="../../../_images/docarray-index-example.svg" src="../../../_images/docarray-index-example.svg" width="10%"/></a>
+<a class="reference internal image-reference" href="../../../_images/docarray-index-example.svg"><img alt="../../../_images/docarray-index-example.svg" src="../../../_images/docarray-index-example.svg" width="10%" /></a>
 </figure>
 <p>Now let’s use the red circle to depict our intended selection. Here is what you can with the path-syntax:</p>
 <figure class="align-default">
-<img alt="../../../_images/docarray-index-example-full1.svg" src="../../../_images/docarray-index-example-full1.svg"/></figure>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@m'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@c'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@c,m'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@c,m,r'</span><span class="p">])</span>
+<img alt="../../../_images/docarray-index-example-full1.svg" src="../../../_images/docarray-index-example-full1.svg" /></figure>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c,m&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c,m,r&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;DocumentArray (length=6) at 4912623312&gt;
@@ -770,13 +770,13 @@ False
 </div>
 <p>Let’s now consider a deeper nested structure and use the path syntax to select Documents.</p>
 <figure class="align-default">
-<img alt="../../../_images/docarray-index-example-full2.svg" src="../../../_images/docarray-index-example-full2.svg"/></figure>
+<img alt="../../../_images/docarray-index-example-full2.svg" src="../../../_images/docarray-index-example-full2.svg" /></figure>
 <p>Last but not the least, you can use integer, or integer slice to restrict the selection.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../../_images/docarray-index-example-full3.svg"><img alt="../../../_images/docarray-index-example-full3.svg" src="../../../_images/docarray-index-example-full3.svg" width="60%"/></a>
+<a class="reference internal image-reference" href="../../../_images/docarray-index-example-full3.svg"><img alt="../../../_images/docarray-index-example-full3.svg" src="../../../_images/docarray-index-example-full3.svg" width="60%" /></a>
 </figure>
 <p>This can be useful when you want to get top matches of all matches from all Documents, e.g.:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">'@m[:5]'</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@m[:5]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>You can add space in the path-string for a better readability.</p>
@@ -799,18 +799,18 @@ False
                                                                        
   Length                           15                                  
   Homogenous Documents             False                               
-  6 Documents have attributes      ('id', 'parent_id', 'granularity')  
-  6 Documents have attributes      ('id', 'adjacency')                 
-  3 Documents have one attribute   ('id',)                             
+  6 Documents have attributes      (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;)  
+  6 Documents have attributes      (&#39;id&#39;, &#39;adjacency&#39;)                 
+  3 Documents have one attribute   (&#39;id&#39;,)                             
                                                                        
                       Attributes Summary                      
                                                               
   Attribute     Data type   #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────── 
-  adjacency     ('int',)    2                False            
-  granularity   ('int',)    2                False            
-  id            ('str',)    15               False            
-  parent_id     ('str',)    4                False 
+  adjacency     (&#39;int&#39;,)    2                False            
+  granularity   (&#39;int&#39;,)    2                False            
+  id            (&#39;str&#39;,)    15               False            
+  parent_id     (&#39;str&#39;,)    4                False 
 </pre></div>
 </div>
 <p>Note that there is no <code class="docutils literal notranslate"><span class="pre">chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">matches</span></code> in any of the Document from <code class="docutils literal notranslate"><span class="pre">da[...]</span></code> anymore. They are all flattened.</p>
@@ -869,20 +869,20 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="p">[</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="s1">'c'</span><span class="p">}),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="s1">'c'</span><span class="p">}),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="s1">'b'</span><span class="p">}),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">}),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'category'</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">}),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">}),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">}),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">}),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">}),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">}),</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="n">rv</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">split_by_tag</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s1">'category'</span><span class="p">)</span>
+<span class="n">rv</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">split_by_tag</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{'c': &lt;DocumentArray (length=2) at 4869273936&gt;, 
- 'b': &lt;DocumentArray (length=1) at 4876081680&gt;, 
- 'a': &lt;DocumentArray (length=2) at 4876735056&gt;}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;c&#39;: &lt;DocumentArray (length=2) at 4869273936&gt;, 
+ &#39;b&#39;: &lt;DocumentArray (length=1) at 4876081680&gt;, 
+ &#39;a&#39;: &lt;DocumentArray (length=2) at 4876735056&gt;}
 </pre></div>
 </div>
 </section>
@@ -928,7 +928,7 @@ It returns a Python <code class="docutils literal notranslate"><span class="pre"
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

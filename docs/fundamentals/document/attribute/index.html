@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/attribute/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Use. expression to get/set the value of an attribute as you would with any Python object: To unset attribute, simply assign it to None: or use pop(): One can unset multiple attributes with.pop(): You can check which attributes are set by.non_empty_fields. Content attributes: Among all attributes,..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_images/doc-load-autocomplete.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Embedding" href="../embedding/" /><link rel="prev" title="Serialization" href="../serialization/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/attribute.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Access Attributes - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Access Attributes - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -556,7 +556,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span>
-<span class="n">d</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">'hello world'</span>
+<span class="n">d</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
@@ -569,11 +569,11 @@
 </pre></div>
 </div>
 <p>or use <a class="reference internal" href="../../../api/docarray.base/#docarray.base.BaseDCType.pop" title="docarray.base.BaseDCType.pop"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pop()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'text'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>One can unset multiple attributes with <code class="docutils literal notranslate"><span class="pre">.pop()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="s1">'id'</span><span class="p">,</span> <span class="s1">'mime_type'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;mime_type&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can check which attributes are set by <code class="docutils literal notranslate"><span class="pre">.non_empty_fields</span></code>.</p>
@@ -581,7 +581,7 @@
 <h2>Content attributes<a class="headerlink" href="#content-attributes" title="Permalink to this headline">#</a></h2>
 <p>Among all attributes, content attributes, namely <code class="docutils literal notranslate"><span class="pre">.text</span></code>, <code class="docutils literal notranslate"><span class="pre">.tensor</span></code>, and <code class="docutils literal notranslate"><span class="pre">.blob</span></code>, are super important. They contain the actual content.</p>
 <p>They correspond to string-like data (e.g. for natural language), <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively.</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Attribute</th>
@@ -606,18 +606,18 @@
 <td>Contain intermediate IO buffer</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p id="mutual-exclusive"><strong>Each Document can contain only one type of content.</strong> That means these three attributes are mutually exclusive. Let’s see an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'tensor', 'mime_type') at 7623808c6d6211ec9cf21e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;tensor&#39;, &#39;mime_type&#39;) at 7623808c6d6211ec9cf21e008a366d49&gt;
 </pre></div>
 </div>
 <p>As you can see, the <code class="docutils literal notranslate"><span class="pre">text</span></code> field is reset to empty.</p>
@@ -631,18 +631,18 @@
 <p>There is also a <code class="docutils literal notranslate"><span class="pre">.content</span></code> getter/setter of the content fields. The content will be automatically grabbed or assigned to either <code class="docutils literal notranslate"><span class="pre">text</span></code>, <code class="docutils literal notranslate"><span class="pre">blob</span></code>, or <code class="docutils literal notranslate"><span class="pre">tensor</span></code> field, based on the given type.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'mime_type', 'text') at b4d675466d6211ecae8d1e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;mime_type&#39;, &#39;text&#39;) at b4d675466d6211ecae8d1e008a366d49&gt;
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document ('id', 'tensor', 'mime_type') at 2808eeb86d6311ecaddb1e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;tensor&#39;, &#39;mime_type&#39;) at 2808eeb86d6311ecaddb1e008a366d49&gt;
 </pre></div>
 </div>
 <p>You can also check which content field is set by <code class="docutils literal notranslate"><span class="pre">.content_type</span></code>.</p>
@@ -652,10 +652,10 @@
 <p>A common pattern is loading content from a URI instead of assigning it directly in the code.</p>
 <p>This can easily be done with <code class="docutils literal notranslate"><span class="pre">.uri</span></code> attribute. The value of <code class="docutils literal notranslate"><span class="pre">.uri</span></code> can point to either a local URI, remote URI or <a class="reference external" href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI</a>.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Local image URI</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Local image URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.png'</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;apple.png&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -666,10 +666,10 @@
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Remote text URI</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Remote text URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'https://www.gutenberg.org/files/1342/1342-0.txt'</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_text</span><span class="p">()</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;https://www.gutenberg.org/files/1342/1342-0.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_text</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 </pre></div>
@@ -681,14 +681,14 @@
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--3">Inline data URI</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--3" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--3">Inline data URI</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
-    <span class="n">uri</span><span class="o">=</span><span class="s1">'''data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA</span>
+    <span class="n">uri</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA</span>
 <span class="s1">AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO</span>
 <span class="s1">9TXL0Y4OHwAAAABJRU5ErkJggg==</span>
-<span class="s1">'''</span>
+<span class="s1">&#39;&#39;&#39;</span>
 <span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d1</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span> <span class="n">d1</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
@@ -706,7 +706,7 @@
 </div>
 <p>There are more <code class="docutils literal notranslate"><span class="pre">.load_uri_to_*</span></code> functions that allow you to read <a class="reference internal" href="../../../datatypes/text/#text-type"><span class="std std-ref">text</span></a>, <a class="reference internal" href="../../../datatypes/image/#image-type"><span class="std std-ref">image</span></a>, <a class="reference internal" href="../../../datatypes/video/#video-type"><span class="std std-ref">video</span></a>, <a class="reference internal" href="../../../datatypes/mesh/#mesh-type"><span class="std std-ref">3D mesh</span></a>, <a class="reference internal" href="../../../datatypes/audio/#audio-type"><span class="std std-ref">audio</span></a> and <a class="reference internal" href="../../../datatypes/tabular/#table-type"><span class="std std-ref">tabular</span></a> data.</p>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../../_images/doc-load-autocomplete.png"><img alt="../../../_images/doc-load-autocomplete.png" src="../../../_images/doc-load-autocomplete.png" style="width: 60%;"/></a>
+<a class="reference internal image-reference" href="../../../_images/doc-load-autocomplete.png"><img alt="../../../_images/doc-load-autocomplete.png" src="../../../_images/doc-load-autocomplete.png" style="width: 60%;" /></a>
 </figure>
 <div class="tip admonition">
 <p class="admonition-title">Convert content to data URI</p>
@@ -751,7 +751,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

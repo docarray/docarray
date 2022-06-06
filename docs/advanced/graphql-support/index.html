@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/graphql-support/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need:.embedding is too big and too verbose, then don’t query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server. When..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/advanced/_images/gql-ui.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="docarray package" href="../../api/docarray/" /><link rel="prev" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/graphql-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>GraphQL - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>GraphQL - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -556,7 +556,7 @@
 <p>When integrating DocArray in a GraphQL app, you only need to implement the <em>query</em> (in GraphQL idiom, this is like the API endpoint that your server allows). The <em>schema</em> part is provided by DocArray and can be used out of the box.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This feature requires <code class="docutils literal notranslate"><span class="pre">strawberry</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"strawberry-graphql[debug-server]"</span></code>.</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">strawberry</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;strawberry-graphql[debug-server]&quot;</span></code>.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
@@ -582,16 +582,16 @@
                                                             
   Length                    3                               
   Homogenous Documents      True                            
-  Has nested Documents in   ('matches',)                    
-  Common Attributes         ('id', 'embedding', 'matches')  
+  Has nested Documents in   (&#39;matches&#39;,)                    
+  Common Attributes         (&#39;id&#39;, &#39;embedding&#39;, &#39;matches&#39;)  
                                                             
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
-  embedding   ('ndarray',)      3                False            
-  id          ('str',)          3                False            
-  matches     ('MatchArray',)   3                False            
+  embedding   (&#39;ndarray&#39;,)      3                False            
+  id          (&#39;str&#39;,)          3                False            
+  matches     (&#39;MatchArray&#39;,)   3                False            
                                                                   
           Storage Summary          
                                    
@@ -638,7 +638,7 @@
 </pre></div>
 </div>
 <figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/gql-ui.png"><img alt="../../_images/gql-ui.png" src="../../_images/gql-ui.png" style="width: 90%;"/></a>
+<a class="reference internal image-reference" href="../../_images/gql-ui.png"><img alt="../../_images/gql-ui.png" src="../../_images/gql-ui.png" style="width: 90%;" /></a>
 </figure>
 <p>Now we have one endpoint that allows user to selectively read fields from a DocumentArray. Additional endpoints can be added to <code class="docutils literal notranslate"><span class="pre">Query</span></code> class, to support advance filtering and selecting, but this is beyond the scope of this tutorial. It is also your responsibility as the app/service provider to decide what API you want to expose to users.</p>
 </section>
@@ -651,8 +651,8 @@
 <span class="n">graphql_app</span> <span class="o">=</span> <span class="n">GraphQL</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
-<span class="n">app</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">'/graphql'</span><span class="p">,</span> <span class="n">graphql_app</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">add_websocket_route</span><span class="p">(</span><span class="s1">'/graphql'</span><span class="p">,</span> <span class="n">graphql_app</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;/graphql&#39;</span><span class="p">,</span> <span class="n">graphql_app</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">add_websocket_route</span><span class="p">(</span><span class="s1">&#39;/graphql&#39;</span><span class="p">,</span> <span class="n">graphql_app</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can learn more about <a class="reference external" href="https://fastapi.tiangolo.com/advanced/graphql/">FastAPI GraphQL support from here</a>.</p>
@@ -694,7 +694,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

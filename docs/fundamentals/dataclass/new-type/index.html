@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/new-type/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Each type in docarray.typing corresponds to one modality. Supporting a new modality means adding a new type, and specifying how it is translated from/to Document. Whether it is about adding a new type, or changing the behavior of an existing type, you can leverage the field() function. Create new..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Process Modality" href="../example/" /><link rel="prev" title="Access Modality" href="../access/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/new-type.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Support New Modality - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Support New Modality - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -562,33 +562,33 @@
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
 
-<span class="n">MyImage</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">'MyImage'</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">MyImage</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;MyImage&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">my_setter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Document'</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">my_setter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">load_uri_to_blob</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">my_getter</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">my_getter</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="n">uri</span>
 </pre></div>
 </div>
 <p>Now you can use <code class="docutils literal notranslate"><span class="pre">MyImage</span></code> type in the dataclass:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Use MyImage as type </label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Use MyImage as type </label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">Document</span>
 
 
 <span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">MMDoc</span><span class="p">:</span>
-    <span class="n">banner</span><span class="p">:</span> <span class="n">MyImage</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">setter</span><span class="o">=</span><span class="n">my_setter</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">my_getter</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">'test-1.jpeg'</span><span class="p">)</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">MyImage</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">setter</span><span class="o">=</span><span class="n">my_setter</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">my_getter</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">)</span>
 
 
 <span class="n">Document</span><span class="p">(</span><span class="n">MMDoc</span><span class="p">())</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Document structure</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Document structure</label><div class="tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>📄 Document: bde1ab74306c2f63188069879e3945ac
 └── 💠 Chunks
     └── 📄 Document: cd594a6870a8921d7a9c6b0ec764251d
@@ -597,7 +597,7 @@
         ├─────────────┼────────────────────────────────────────────────────────────────┤
         │ parent_id   │ bde1ab74306c2f63188069879e3945ac                               │
         │ granularity │ 1                                                              │
-        │ blob        │ b'\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x0… │
+        │ blob        │ b&#39;\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x0… │
         │             │ (length: 56810)                                                │
         │ mime_type   │ image/jpeg                                                     │
         │ uri         │ test-1.jpeg                                                    │
@@ -616,13 +616,13 @@
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span>
 
 
-<span class="k">def</span> <span class="nf">my_setter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'Document'</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'im setting .uri only not loading it!'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_setter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;im setting .uri only not loading it!&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">my_getter</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">'im returning .uri!'</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_getter</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;im returning .uri!&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">doc</span><span class="o">.</span><span class="n">uri</span>
 
 
@@ -632,7 +632,7 @@
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="k">class</span> <span class="nc">MMDoc</span><span class="p">:</span>
-    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">setter</span><span class="o">=</span><span class="n">my_setter</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">my_getter</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">'test-1.jpeg'</span><span class="p">)</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">setter</span><span class="o">=</span><span class="n">my_setter</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">my_getter</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;test-1.jpeg&#39;</span><span class="p">)</span>
 
 
 <span class="n">m1</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">()</span>
@@ -683,7 +683,7 @@ im returning .uri!
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

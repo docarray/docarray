@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/video.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.mixins.video - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.document.mixins.video - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -527,20 +527,20 @@
 
 
 <div class="viewcode-block" id="VideoDataMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin">[docs]</a><span class="k">class</span> <span class="nc">VideoDataMixin</span><span class="p">:</span>
-    <span class="sd">"""Provide helper functions for :class:`Document` to support video data."""</span>
+    <span class="sd">&quot;&quot;&quot;Provide helper functions for :class:`Document` to support video data.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="VideoDataMixin.load_uri_to_video_tensor"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_video_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">only_keyframes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.</span>
+<div class="viewcode-block" id="VideoDataMixin.load_uri_to_video_tensor"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.load_uri_to_video_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">load_uri_to_video_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">only_keyframes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.</span>
 
 <span class="sd">        :param only_keyframes: only keep the keyframes in the video</span>
 <span class="sd">        :return: Document itself after processed</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">av</span>
 
         <span class="k">with</span> <span class="n">av</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span> <span class="k">as</span> <span class="n">container</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">only_keyframes</span><span class="p">:</span>
                 <span class="n">stream</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">streams</span><span class="o">.</span><span class="n">video</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">stream</span><span class="o">.</span><span class="n">codec_context</span><span class="o">.</span><span class="n">skip_frame</span> <span class="o">=</span> <span class="s1">'NONKEY'</span>
+                <span class="n">stream</span><span class="o">.</span><span class="n">codec_context</span><span class="o">.</span><span class="n">skip_frame</span> <span class="o">=</span> <span class="s1">&#39;NONKEY&#39;</span>
 
             <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -551,37 +551,37 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="VideoDataMixin.save_video_tensor_to_file"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.video/#docarray.document.mixins.video.VideoDataMixin.save_video_tensor_to_file">[docs]</a>    <span class="k">def</span> <span class="nf">save_video_tensor_to_file</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">],</span> <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">codec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'h264'</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Save :attr:`.tensor` as a video mp4/h264 file.</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BinaryIO</span><span class="p">],</span> <span class="n">frame_rate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">codec</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;h264&#39;</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Save :attr:`.tensor` as a video mp4/h264 file.</span>
 
 <span class="sd">        :param file: The file to open, which can be either a string or a file-like object.</span>
 <span class="sd">        :param frame_rate: frames per second</span>
 <span class="sd">        :param codec: the name of a decoder/encoder</span>
 <span class="sd">        :return: itself after processed</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">4</span>
             <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span>
             <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'expects `.tensor` with dtype=uint8 and ndim=4 and the last dimension is 3, '</span>
-                <span class="sa">f</span><span class="s1">'but receiving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">'</span>
+                <span class="sa">f</span><span class="s1">&#39;expects `.tensor` with dtype=uint8 and ndim=4 and the last dimension is 3, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;but receiving </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
 
         <span class="n">video_tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="kn">import</span> <span class="nn">av</span>
 
-        <span class="k">with</span> <span class="n">av</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">container</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">av</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">container</span><span class="p">:</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">add_stream</span><span class="p">(</span><span class="n">codec</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="n">frame_rate</span><span class="p">)</span>
             <span class="n">stream</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">stream</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="n">stream</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="s1">'yuv420p'</span>
+            <span class="n">stream</span><span class="o">.</span><span class="n">pix_fmt</span> <span class="o">=</span> <span class="s1">&#39;yuv420p&#39;</span>
 
             <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">video_tensor</span><span class="p">:</span>
-                <span class="n">frame</span> <span class="o">=</span> <span class="n">av</span><span class="o">.</span><span class="n">VideoFrame</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'rgb24'</span><span class="p">)</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">av</span><span class="o">.</span><span class="n">VideoFrame</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;rgb24&#39;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">packet</span> <span class="ow">in</span> <span class="n">stream</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
                     <span class="n">container</span><span class="o">.</span><span class="n">mux</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
 
@@ -602,7 +602,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

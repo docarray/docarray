@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/document/nested/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Document can be nested both horizontally and vertically via.matches and.chunks. The picture below illustrates the recursive Document structure. You can add chunks(sub-Document) and matches(neighbour-Document) to a Document: Add in constructor:, Add to existing Document:, Add to existing doc.chunk..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Visualization" href="../visualization/" /><link rel="prev" title="Embedding" href="../embedding/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/document/nested.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Nested Structure - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Nested Structure - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -554,8 +554,8 @@
 <span id="recursive-nested-document"></span><h1>Nested Structure<a class="headerlink" href="#nested-structure" title="Permalink to this headline">#</a></h1>
 <p>Document can be nested both horizontally and vertically via <code class="docutils literal notranslate"><span class="pre">.matches</span></code> and <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. The picture below illustrates the recursive Document structure.</p>
 <figure class="align-default">
-<img alt="../../../_images/nested-structure.svg" src="../../../_images/nested-structure.svg"/></figure>
-<div class="table-wrapper"><table border="1" class="docutils">
+<img alt="../../../_images/nested-structure.svg" src="../../../_images/nested-structure.svg" /></figure>
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Attribute</th>
@@ -580,7 +580,7 @@
 <td>The "width" of the nested match structure</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>You can add <strong>chunks</strong> (sub-Document) and <strong>matches</strong> (neighbour-Document) to a Document:</p>
 <ul>
 <li><p>Add in constructor:</p>
@@ -608,13 +608,13 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document ('id', 'chunks', 'matches') at 7f907d786d6c11ec840a1e008a366d49&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span> &lt;Document (&#39;id&#39;, &#39;chunks&#39;, &#39;matches&#39;) at 7f907d786d6c11ec840a1e008a366d49&gt;
     └─ matches
-          ├─ &lt;Document ('id', 'adjacency') at 7f907c606d6c11ec840a1e008a366d49&gt;
-          └─ &lt;Document ('id', 'adjacency') at 7f907cba6d6c11ec840a1e008a366d49&gt;
+          ├─ &lt;Document (&#39;id&#39;, &#39;adjacency&#39;) at 7f907c606d6c11ec840a1e008a366d49&gt;
+          └─ &lt;Document (&#39;id&#39;, &#39;adjacency&#39;) at 7f907cba6d6c11ec840a1e008a366d49&gt;
     └─ chunks
-          ├─ &lt;Document ('id', 'parent_id', 'granularity') at 7f907ab26d6c11ec840a1e008a366d49&gt;
-          └─ &lt;Document ('id', 'parent_id', 'granularity') at 7f907c106d6c11ec840a1e008a366d49&gt;
+          ├─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at 7f907ab26d6c11ec840a1e008a366d49&gt;
+          └─ &lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;) at 7f907c106d6c11ec840a1e008a366d49&gt;
 </pre></div>
 </div>
 <section id="what-s-next">
@@ -659,7 +659,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

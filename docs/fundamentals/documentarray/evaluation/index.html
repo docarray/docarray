@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/evaluation/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="After you get.matches from the last chapter, you can easily evaluate matches against the groundtruth via evaluate(). The results are stored in.evaluations field of each Document. DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the near..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Dataclass" href="../../dataclass/" /><link rel="prev" title="Match Nearest Neighbours" href="../matching/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/evaluation.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Evaluate Matches - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Evaluate Matches - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -553,12 +553,12 @@
                     <section class="tex2jax_ignore mathjax_ignore" id="evaluate-matches">
 <h1>Evaluate Matches<a class="headerlink" href="#evaluate-matches" title="Permalink to this headline">#</a></h1>
 <p>After you get <code class="docutils literal notranslate"><span class="pre">.matches</span></code> from the last chapter, you can easily evaluate matches against the groundtruth via <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_predict</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'...'</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_predict</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The results are stored in <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> field of each Document.</p>
 <p>DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. Different metric accepts different arguments as <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Metric</th>
@@ -603,7 +603,7 @@
 <td><code>method</code>, <code>k</code></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>For example, let’s create a DocumentArray with random embeddings and matching it to itself:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
@@ -619,16 +619,16 @@
                                                             
   Length                    10                              
   Homogenous Documents      True                            
-  Has nested Documents in   ('matches',)                    
-  Common Attributes         ('id', 'embedding', 'matches')  
+  Has nested Documents in   (&#39;matches&#39;,)                    
+  Common Attributes         (&#39;id&#39;, &#39;embedding&#39;, &#39;matches&#39;)  
                                                             
                         Attributes Summary                        
                                                                   
   Attribute   Data type         #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────── 
-  embedding   ('ndarray',)      10               False            
-  id          ('str',)          10               False            
-  matches     ('MatchArray',)   10               False                
+  embedding   (&#39;ndarray&#39;,)      10               False            
+  id          (&#39;str&#39;,)          10               False            
+  matches     (&#39;MatchArray&#39;,)   10               False                
 </pre></div>
 </div>
 <p>Now <code class="docutils literal notranslate"><span class="pre">da.matches</span></code> contains the nearest neighbours. Let’s use it as the groundtruth.</p>
@@ -639,28 +639,28 @@
     <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
     <span class="n">d</span><span class="o">.</span><span class="n">matches</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">shuffle</span><span class="p">()</span>
 
-<span class="n">da2</span><span class="p">[</span><span class="s1">'@m'</span><span class="p">]</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">da2</span><span class="p">[</span><span class="s1">&#39;@m&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                              Documents Summary                               
                                                                               
   Length                          190                                         
   Homogenous Documents            False                                       
-  100 Documents have attributes   ('id', 'adjacency')                         
-  90 Documents have attributes    ('id', 'adjacency', 'embedding', 'scores')  
+  100 Documents have attributes   (&#39;id&#39;, &#39;adjacency&#39;)                         
+  90 Documents have attributes    (&#39;id&#39;, &#39;adjacency&#39;, &#39;embedding&#39;, &#39;scores&#39;)  
                                                                               
                             Attributes Summary                            
                                                                           
   Attribute   Data type                 #Unique values   Has empty value  
  ──────────────────────────────────────────────────────────────────────── 
-  adjacency   ('int',)                  1                False            
-  embedding   ('ndarray', 'NoneType')   190              True             
-  id          ('str',)                  110              False            
-  scores      ('defaultdict',)          190              False            
+  adjacency   (&#39;int&#39;,)                  1                False            
+  embedding   (&#39;ndarray&#39;, &#39;NoneType&#39;)   190              True             
+  id          (&#39;str&#39;,)                  110              False            
+  scores      (&#39;defaultdict&#39;,)          190              False            
 </pre></div>
 </div>
-<p>Now <code class="docutils literal notranslate"><span class="pre">da2</span></code> is our prediction, and <code class="docutils literal notranslate"><span class="pre">da</span></code> is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">'precision_at_k'</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<p>Now <code class="docutils literal notranslate"><span class="pre">da2</span></code> is our prediction, and <code class="docutils literal notranslate"><span class="pre">da</span></code> is our groundtruth. If we evaluate the average Precision&#64;10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.48
@@ -668,7 +668,7 @@
 </div>
 <p>Note that this value is an average number over all Documents of <code class="docutils literal notranslate"><span class="pre">da2</span></code>. If you want to look at the individual evaluation, you can check <code class="xref py py-attr docutils literal notranslate"><span class="pre">evaluations</span></code> attribute, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da2</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="s1">'precision_at_k'</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.4
@@ -693,23 +693,23 @@
 <span class="n">p_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">p_da</span><span class="p">:</span>
-    <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'my predict'</span><span class="p">))</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;my predict&#39;</span><span class="p">))</span>
 
 <span class="n">g_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">g_da</span><span class="p">:</span>
-    <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">'my groundtruth'</span><span class="p">))</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;my groundtruth&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Now when you do evaluate, you will receive an error:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">'average_precision'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">&#39;average_precision&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ValueError: Document &lt;Document ('id', 'matches') at 42dc84b26fab11ecbc181e008a366d49&gt; from the left-hand side and &lt;Document ('id', 'matches') at 42dc98086fab11ecbc181e008a366d49&gt; from the right-hand are not hashed to the same value. This means your left and right DocumentArray may not be aligned; or it means your `hash_fn` is badly designed.
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ValueError: Document &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc84b26fab11ecbc181e008a366d49&gt; from the left-hand side and &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc98086fab11ecbc181e008a366d49&gt; from the right-hand are not hashed to the same value. This means your left and right DocumentArray may not be aligned; or it means your `hash_fn` is badly designed.
 </pre></div>
 </div>
 <p>This basically saying that based on <code class="docutils literal notranslate"><span class="pre">.id</span></code> (default identifier), the given two DocumentArrays are so different that they can’t be evaluated. It is a valid point because our two DocumentArrays have completely random <code class="docutils literal notranslate"><span class="pre">.id</span></code>.</p>
 <p>If we override the hash function as following the evaluation can be conducted:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">'average_precision'</span><span class="p">,</span> <span class="n">hash_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">hash_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1.0
@@ -754,7 +754,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

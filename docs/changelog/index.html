@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/changelog/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="DocArray follows semantic versioning. However, before the project reach 1.0.0, any breaking change will only bump the minor version. An automated release note is generated on every release. The release note includes features, bugs, refactorings etc. This chapter only tracks the most important bre..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../genindex/" /><link rel="search" title="Search" href="../search/" /><link rel="prev" title="Protocol Documentation" href="../proto/" />
         <link rel="canonical" href="https://docarray.jina.ai/changelog/index.html" />
 
-    <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Changelog - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Changelog - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -592,7 +592,7 @@
 <h2>0.2.0: change on the content field name<a class="headerlink" href="#change-on-the-content-field-name" title="Permalink to this headline">#</a></h2>
 <p><strong>This change is a breaking change and is not back-compatible.</strong></p>
 <p>The Document schema is changed as follows:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>0.1.x</th>
@@ -612,12 +612,12 @@
 <td>To represent the binary representation of a Document</td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>This changed is made based on the word “BLOB” is a well-acknowledged as “binary large object” in the database field. It is a more natural wording for representing binary and less natural for representing <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>. Previously, only Caffee used <code class="docutils literal notranslate"><span class="pre">blob</span></code> to represent <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>.</p>
 <p>Unifying the terminology also avoids confusion when integrate DocArray into some databases.</p>
 <p>All fluent interfaces of <code class="docutils literal notranslate"><span class="pre">Document</span></code> are also changed accordingly.</p>
 <p>Here is a short migration guide for 0.1.x users:</p>
-<div class="table-wrapper"><table border="1" class="docutils">
+<table border="1" class="docutils">
 <thead>
 <tr>
 <th>Old</th>
@@ -657,7 +657,7 @@
 <td>Apply to <a href="../fundamentals/document/fluent-interface.md">all functions in here</a></td>
 </tr>
 </tbody>
-</table></div>
+</table>
 <p>JSON Schema needs to be re-generated <a class="reference internal" href="../fundamentals/fastapi-support/#schema-gen"><span class="std std-ref">by following this</span></a>.</p>
 </section>
 </section>
@@ -687,7 +687,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

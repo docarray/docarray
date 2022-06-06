@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/image/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Image: Load image data: You can load image data by specifying the image URI and then convert it into.tensor using Document API Simple image processing: DocArray provides some functions to help you preprocess the image data. You can resize it (i.e. downsampling/upsampling) and normalize it; you ca..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/datatypes/_images/apple.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Video" href="../video/" /><link rel="prev" title="Text" href="../text/" />
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/image/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Image - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Image - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -551,20 +551,20 @@
                 </div>
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image">
-<span id="image-type"></span><h1><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image" title="Permalink to this headline">#</a></h1>
+<span id="image-type"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-image" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z"></path></svg> Image<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-image-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m1-75-2-5a-25-25-0-00-25-25v10-5c0-138-112-25-25-25h-94a-76-76-0-01-03-03l6-077-6-078a1-75-1-75-0-012-412-06l14-5-10-31v2-75a-25-25-0-00-25-25h1-75zm12-5-11h4-81l5-048-5-047a-25-25-0-01-344-009l4-298-3-889v-917a-25-25-0-01-25-25zm1-75-25v2-75a1-75-1-75-0-0014-25-1h1-75a1-75-1-75-0-000-2-75v10-5c0-14-216-784-15-1-75-15h12-5a1-75-1-75-0-0016-13-25zm5-5-6a-5-5-0-11-1-0-5-5-0-011-0zm7-6a2-2-0-11-4-0-2-2-0-014-0z-path-svg-image" title="Permalink to this headline">#</a></h1>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>This requires <code class="docutils literal notranslate"><span class="pre">Pillow</span></code> and <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> dependencies. You can install them via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code></p>
+<p>This requires <code class="docutils literal notranslate"><span class="pre">Pillow</span></code> and <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> dependencies. You can install them via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code></p>
 </div>
 <section id="load-image-data">
 <h2>Load image data<a class="headerlink" href="#load-image-data" title="Permalink to this headline">#</a></h2>
 <p>You can load image data by specifying the image URI and then convert it into <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> using Document API</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/apple.png"><img alt="../../_images/apple.png" src="../../_images/apple.png" style="width: 192.29999999999998px; height: 185.4px;"/></a>
+<a class="reference internal image-reference" href="../../_images/apple.png"><img alt="../../_images/apple.png" src="../../_images/apple.png" style="width: 192.29999999999998px; height: 185.4px;" /></a>
 </figure>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.png'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;apple.png&#39;</span><span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">tensor</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -585,7 +585,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="n">d</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'apple.png'</span><span class="p">)</span>
+    <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;apple.png&#39;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
     <span class="o">.</span><span class="n">set_image_tensor_shape</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
     <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>
@@ -606,12 +606,12 @@
 </pre></div>
 </div>
 <p>You can also dump <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> back to a PNG image so that you can see.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">save_image_tensor_to_file</span><span class="p">(</span><span class="s1">'apple-proc.png'</span><span class="p">,</span> <span class="n">channel_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">save_image_tensor_to_file</span><span class="p">(</span><span class="s1">&#39;apple-proc.png&#39;</span><span class="p">,</span> <span class="n">channel_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that the channel axis is now switched to 0 because the previous preprocessing steps we just conducted.</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/apple-proc.png"><img alt="../../_images/apple-proc.png" src="../../_images/apple-proc.png" style="width: 67.2px; height: 67.2px;"/></a>
+<a class="reference internal image-reference" href="../../_images/apple-proc.png"><img alt="../../_images/apple-proc.png" src="../../_images/apple-proc.png" style="width: 67.2px; height: 67.2px;" /></a>
 </figure>
 <p>Yep, this looks uneatable. That’s often what you give to the deep learning algorithms.</p>
 </section>
@@ -620,25 +620,25 @@
 <p>An image sprites is a collection of images put into a single image. When working with a DocumentArray of image Documents, you can directly view the image sprites via <code class="docutils literal notranslate"><span class="pre">plot_image_sprites</span></code>. This gives you a quick view of the dataset that you are working with:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'/Users/hanxiao/Downloads/left/*.jpg'</span><span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">'sprite-img.png'</span><span class="p">)</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;/Users/hanxiao/Downloads/left/*.jpg&#39;</span><span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">&#39;sprite-img.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Depending on the number of images, this could take a while. But after that, you get a very nice overview of your DocumentArray as follows:</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/sprite-img.png"><img alt="../../_images/sprite-img.png" src="../../_images/sprite-img.png" style="width: 70%;"/></a>
+<a class="reference internal image-reference" href="../../_images/sprite-img.png"><img alt="../../_images/sprite-img.png" src="../../_images/sprite-img.png" style="width: 70%;" /></a>
 </figure>
 </section>
 <section id="segment-large-complicated-image-into-small-ones">
 <h2>Segment large complicated image into small ones<a class="headerlink" href="#segment-large-complicated-image-into-small-ones" title="Permalink to this headline">#</a></h2>
 <p>A large complicated image is hard to search, as it may contain too many elements and interesting information and hence hard to define the search problem in the first place. Take the following image as an example,</p>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/complicated-image.jpeg"><img alt="../../_images/complicated-image.jpeg" src="../../_images/complicated-image.jpeg" style="width: 80%;"/></a>
+<a class="reference internal image-reference" href="../../_images/complicated-image.jpeg"><img alt="../../_images/complicated-image.jpeg" src="../../_images/complicated-image.jpeg" style="width: 80%;" /></a>
 </figure>
 <p>It contains rich information in details, and it is complicated as there is no single salience interest in the image. The user may want to hit this image by searching for “Krusty Burger” or “Yellow schoolbus”. User’s real intention is hard guess, which highly depends on the applications. But at least what we can do is using DocArray to breakdown this complicated image into simpler ones. One of the simplest approaches is to cut the image via sliding windows.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">'docs/datatype/image/complicated-image.jpeg'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s1">&#39;docs/datatype/image/complicated-image.jpeg&#39;</span><span class="p">)</span>
 <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
@@ -657,23 +657,23 @@
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ChunkArray has 180 items (showing first three):
-{'id': '7585b8aa-3826-11ec-bc1a-1e008a366d48', 'mime_type': 'image/jpeg', 'tensor': {'dense': {'buffer': 'H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0 ...
+{&#39;id&#39;: &#39;7585b8aa-3826-11ec-bc1a-1e008a366d48&#39;, &#39;mime_type&#39;: &#39;image/jpeg&#39;, &#39;tensor&#39;: {&#39;dense&#39;: {&#39;buffer&#39;: &#39;H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0H8T0 ...
 </pre></div>
 </div>
 <p>Let’s now use image sprite to see how these chunks look like:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">'simpsons-chunks.png'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">&#39;simpsons-chunks.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/simpsons-chunks.png"><img alt="../../_images/simpsons-chunks.png" src="../../_images/simpsons-chunks.png" style="width: 80%;"/></a>
+<a class="reference internal image-reference" href="../../_images/simpsons-chunks.png"><img alt="../../_images/simpsons-chunks.png" src="../../_images/simpsons-chunks.png" style="width: 80%;" /></a>
 </figure>
 <p>Hmm, doesn’t change so much. This is because we scan the whole image using sliding windows with no overlap (i.e. stride). Let’s do a bit oversampling:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">.</span><span class="n">convert_image_tensor_to_sliding_windows</span><span class="p">(</span><span class="n">window_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">as_chunks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">'simpsons-chunks-stride-10.png'</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="s1">&#39;simpsons-chunks-stride-10.png&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <figure class="align-center">
-<a class="reference internal image-reference" href="../../_images/simpsons-chunks-stride.png"><img alt="../../_images/simpsons-chunks-stride.png" src="../../_images/simpsons-chunks-stride.png" style="width: 80%;"/></a>
+<a class="reference internal image-reference" href="../../_images/simpsons-chunks-stride.png"><img alt="../../_images/simpsons-chunks-stride.png" src="../../_images/simpsons-chunks-stride.png" style="width: 80%;" /></a>
 </figure>
 <p>Yep, that definitely looks better.</p>
 </section>
@@ -714,7 +714,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

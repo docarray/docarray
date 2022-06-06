@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/example/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="So far we have learned how to construct and select multimodal Document, we are now ready to leverage DocArray API/Jina/Hub Executor to process the modalities. In a nutshell, you need to convert a multimodal dataclass to a Document object (or DocumentArray) before processing it. This is because Do..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Examples" href="../../../datatypes/" /><link rel="prev" title="Support New Modality" href="../new-type/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/example.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Process Modality - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Process Modality - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -555,7 +555,7 @@
 <p>So far we have learned how to construct and select multimodal Document, we are now ready to leverage DocArray API/Jina/Hub Executor to process the modalities.</p>
 <p>In a nutshell, you need to convert a multimodal dataclass to a Document object (or DocumentArray) before processing it. This is because DocArray API/Jina/Hub Executor always take Document/DocumentArray as the basic IO unit. The following figure illustrates the idea.</p>
 <figure class="align-default">
-<img alt="../../../_images/process-mmdoc.svg" src="../../../_images/process-mmdoc.svg"/></figure>
+<img alt="../../../_images/process-mmdoc.svg" src="../../../_images/process-mmdoc.svg" /></figure>
 <section id="embed-image-and-text-via-clip">
 <h2>Embed image and text via CLIP<a class="headerlink" href="#embed-image-and-text-via-clip" title="Permalink to this headline">#</a></h2>
 <p>Developed by OpenAI, CLIP (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs. It is also a perfect model to showcase multimodal dataclass processing.</p>
@@ -564,11 +564,11 @@
 <span class="kn">import</span> <span class="nn">clip</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span>
-<span class="n">model</span><span class="p">,</span> <span class="n">preprocess</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ViT-B/32"</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">preprocess</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;ViT-B/32&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
-<span class="n">image</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"CLIP.png"</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">text</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">tokenize</span><span class="p">([</span><span class="s2">"a diagram"</span><span class="p">,</span> <span class="s2">"a dog"</span><span class="p">,</span> <span class="s2">"a cat"</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;CLIP.png&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">tokenize</span><span class="p">([</span><span class="s2">&quot;a diagram&quot;</span><span class="p">,</span> <span class="s2">&quot;a dog&quot;</span><span class="p">,</span> <span class="s2">&quot;a cat&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">image_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -590,22 +590,22 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
 <span class="hll"><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 </span><span class="hll"><span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 </span>
-<span class="n">device</span> <span class="o">=</span> <span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span>
-<span class="n">model</span><span class="p">,</span> <span class="n">preprocess</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"ViT-B/32"</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">preprocess</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;ViT-B/32&quot;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
 
 <span class="hll"><span class="nd">@dataclass</span>
 </span><span class="hll"><span class="k">class</span> <span class="nc">MMDoc</span><span class="p">:</span>
 </span><span class="hll">    <span class="n">title</span><span class="p">:</span> <span class="n">Text</span>
 </span><span class="hll">    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span class="hll">
-</span><span class="hll"><span class="n">m1</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a diagram'</span><span class="p">)</span>
-</span><span class="hll"><span class="n">m2</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a dog'</span><span class="p">)</span>
-</span><span class="hll"><span class="n">m3</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a cat'</span><span class="p">)</span>
+</span><span class="hll"><span class="n">m1</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a diagram&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">m2</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a dog&#39;</span><span class="p">)</span>
+</span><span class="hll"><span class="n">m3</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a cat&#39;</span><span class="p">)</span>
 </span><span class="hll">
 </span><span class="hll"><span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">m1</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">m2</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">m3</span><span class="p">)])</span>
 </span><span class="hll">
-</span><span class="hll"><span class="n">image</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[banner]'</span><span class="p">]</span><span class="o">.</span><span class="n">tensors</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-</span><span class="hll"><span class="n">text</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[title]'</span><span class="p">]</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span class="hll"><span class="n">image</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[banner]&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tensors</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span class="hll"><span class="n">text</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[title]&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </span>
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">image_features</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -641,9 +641,9 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
 </div>
 </li>
 <li><p>Create multimodal dataclass objects:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a diagram'</span><span class="p">)</span>
-<span class="n">m2</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a dog'</span><span class="p">)</span>
-<span class="n">m3</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">'CLIP.png'</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'a cat'</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m1</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a diagram&#39;</span><span class="p">)</span>
+<span class="n">m2</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a dog&#39;</span><span class="p">)</span>
+<span class="n">m3</span> <span class="o">=</span> <span class="n">MMDoc</span><span class="p">(</span><span class="n">banner</span><span class="o">=</span><span class="s1">&#39;CLIP.png&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;a cat&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -655,9 +655,9 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
 <li><p>Select the modality via the selector syntax and send via client</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">clip_client</span> <span class="kn">import</span> <span class="n">Client</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">'grpc://demo-cas.jina.ai:51000'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[banner]'</span><span class="p">])</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">'@.[title]'</span><span class="p">])</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;grpc://demo-cas.jina.ai:51000&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[banner]&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[title]&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">embeddings</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -709,7 +709,7 @@ tensor([[ 0.0547, -0.0061,  0.0495,  ..., -0.6638, -0.1281, -0.4950],
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

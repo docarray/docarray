@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.helper/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,10 +36,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Protocol Documentation" href="../../proto/" /><link rel="prev" title="docarray.base module" href="../docarray.base/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.helper.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.helper module - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.helper module - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -563,6 +563,7 @@
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.deprecate_by">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">deprecate_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removed_at</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#deprecate_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.deprecate_by" title="Permalink to this definition">#</a></dt>
@@ -580,6 +581,7 @@
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.dunder_get">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">dunder_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#dunder_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.dunder_get" title="Permalink to this definition">#</a></dt>
@@ -587,8 +589,8 @@
 <p>A “dunderkey” is just a fieldname that may or may not contain
 double underscores (dunderscores!) for referencing nested keys in
 a dict. eg:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'a'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'b'</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dunder_get</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">'a__b'</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dunder_get</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;a__b&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>key ‘b’ can be referrenced as ‘a__b’</p>
@@ -607,6 +609,7 @@ a dict. eg:</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.random_identity">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">random_identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_uuid1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#random_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.random_identity" title="Permalink to this definition">#</a></dt>
@@ -630,6 +633,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.random_uuid">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">random_uuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_uuid1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#random_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.random_uuid" title="Permalink to this definition">#</a></dt>
@@ -646,6 +650,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.download_mermaid_url">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">download_mermaid_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mermaid_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#download_mermaid_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.download_mermaid_url" title="Permalink to this definition">#</a></dt>
@@ -662,6 +667,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.get_request_header">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">get_request_header</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#get_request_header"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.get_request_header" title="Permalink to this definition">#</a></dt>
@@ -675,6 +681,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.get_full_version">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">get_full_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#get_full_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.get_full_version" title="Permalink to this definition">#</a></dt>
@@ -688,6 +695,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.get_ci_vendor">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">get_ci_vendor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#get_ci_vendor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.get_ci_vendor" title="Permalink to this definition">#</a></dt>
@@ -697,10 +705,12 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.reset_ports">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">reset_ports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#reset_ports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.reset_ports" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.random_port">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">random_port</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#random_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.random_port" title="Permalink to this definition">#</a></dt>
@@ -714,6 +724,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.helper.cached_property">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">cached_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#cached_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.cached_property" title="Permalink to this definition">#</a></dt>
@@ -726,6 +737,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.compress_bytes">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">compress_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#compress_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.compress_bytes" title="Permalink to this definition">#</a></dt>
@@ -735,6 +747,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.decompress_bytes">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">decompress_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#decompress_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.decompress_bytes" title="Permalink to this definition">#</a></dt>
@@ -744,14 +757,17 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.get_compress_ctx">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">get_compress_ctx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#get_compress_ctx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.get_compress_ctx" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.dataclass_from_dict">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">dataclass_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">klass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dikt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#dataclass_from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.dataclass_from_dict" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.protocol_and_compress_from_file_path">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">protocol_and_compress_from_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#protocol_and_compress_from_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.protocol_and_compress_from_file_path" title="Permalink to this definition">#</a></dt>
@@ -766,15 +782,15 @@ explicitly stored.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">'./docarray_fashion_mnist.protobuf.gzip'</span><span class="p">)</span>
-<span class="go">('protobuf', 'gzip')</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">&#39;./docarray_fashion_mnist.protobuf.gzip&#39;</span><span class="p">)</span>
+<span class="go">(&#39;protobuf&#39;, &#39;gzip&#39;)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">'/Documents/docarray_fashion_mnist.protobuf'</span><span class="p">)</span>
-<span class="go">('protobuf', None)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">&#39;/Documents/docarray_fashion_mnist.protobuf&#39;</span><span class="p">)</span>
+<span class="go">(&#39;protobuf&#39;, None)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">'/Documents/docarray_fashion_mnist.gzip'</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">protocol_and_compress_from_file_path</span><span class="p">(</span><span class="s1">&#39;/Documents/docarray_fashion_mnist.gzip&#39;</span><span class="p">)</span>
 <span class="go">(None, gzip)</span>
 </pre></div>
 </div>
@@ -784,6 +800,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.add_protocol_and_compress_to_file_path">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">add_protocol_and_compress_to_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#add_protocol_and_compress_to_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.add_protocol_and_compress_to_file_path" title="Permalink to this definition">#</a></dt>
@@ -798,12 +815,12 @@ explicitly stored.</p>
 </dd>
 </dl>
 <p>Examples:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_protocol_and_compress_to_file_path</span><span class="p">(</span><span class="s1">'docarray_fashion_mnist.bin'</span><span class="p">)</span>
-<span class="go">'docarray_fashion_mnist.bin'</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_protocol_and_compress_to_file_path</span><span class="p">(</span><span class="s1">&#39;docarray_fashion_mnist.bin&#39;</span><span class="p">)</span>
+<span class="go">&#39;docarray_fashion_mnist.bin&#39;</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_protocol_and_compress_to_file_path</span><span class="p">(</span><span class="s1">'docarray_fashion_mnist'</span><span class="p">,</span> <span class="s1">'protobuf'</span><span class="p">,</span> <span class="s1">'gzip'</span><span class="p">)</span>
-<span class="go">'docarray_fashion_mnist.protobuf.gzip'</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_protocol_and_compress_to_file_path</span><span class="p">(</span><span class="s1">&#39;docarray_fashion_mnist&#39;</span><span class="p">,</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
+<span class="go">&#39;docarray_fashion_mnist.protobuf.gzip&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -812,6 +829,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="docarray.helper.filter_dict">
 <span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">filter_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#filter_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.filter_dict" title="Permalink to this definition">#</a></dt>
@@ -828,22 +846,7 @@ explicitly stored.</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="docarray.helper.is_latest_version">
-<span class="sig-prename descclassname"><span class="pre">docarray.helper.</span></span><span class="sig-name descname"><span class="pre">is_latest_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">github_repo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/helper/#is_latest_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.helper.is_latest_version" title="Permalink to this definition">#</a></dt>
-<dd><p>Check if there is a latest version from Pypi, set env <cite>NO_VERSION_CHECK</cite> to disable it.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>package</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – package name if none auto-detected</p></li>
-<li><p><strong>github_repo</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – repo name that contains CHANGELOG if none then the same as package name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+
 </section>
 
                 </article>
@@ -881,7 +884,7 @@ explicitly stored.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

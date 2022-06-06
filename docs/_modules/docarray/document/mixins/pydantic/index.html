@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/pydantic.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.mixins.pydantic - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.document.mixins.pydantic - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -531,41 +531,41 @@
 
 
 <div class="viewcode-block" id="PydanticMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin">[docs]</a><span class="k">class</span> <span class="nc">PydanticMixin</span><span class="p">:</span>
-    <span class="sd">"""Provide helper functions to convert to/from a Pydantic model"""</span>
+    <span class="sd">&quot;&quot;&quot;Provide helper functions to convert to/from a Pydantic model&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="PydanticMixin.get_json_schema"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.get_json_schema">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_json_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">"""Return a JSON Schema of Document class."""</span>
+        <span class="sd">&quot;&quot;&quot;Return a JSON Schema of Document class.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span> <span class="k">as</span> <span class="n">DP</span>
 
         <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">schema_json_of</span>
 
-        <span class="k">return</span> <span class="n">schema_json_of</span><span class="p">(</span><span class="n">DP</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">'Document Schema'</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">schema_json_of</span><span class="p">(</span><span class="n">DP</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Document Schema&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="PydanticMixin.to_pydantic_model"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.to_pydantic_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_pydantic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'PydanticDocument'</span><span class="p">:</span>
-        <span class="sd">"""Convert a Document object into a Pydantic model."""</span>
+<div class="viewcode-block" id="PydanticMixin.to_pydantic_model"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.to_pydantic_model">[docs]</a>    <span class="k">def</span> <span class="nf">to_pydantic_model</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PydanticDocument&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert a Document object into a Pydantic model.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span> <span class="k">as</span> <span class="n">DP</span>
 
         <span class="n">_p_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'matches'</span><span class="p">,</span> <span class="s1">'chunks'</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">):</span>
                 <span class="n">_p_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'scores'</span><span class="p">,</span> <span class="s1">'evaluations'</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;scores&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluations&#39;</span><span class="p">):</span>
                 <span class="n">_p_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">'blob'</span><span class="p">:</span>
-                <span class="n">_p_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf8'</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">&#39;blob&#39;</span><span class="p">:</span>
+                <span class="n">_p_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">_p_dict</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="n">DP</span><span class="p">(</span><span class="o">**</span><span class="n">_p_dict</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PydanticMixin.from_pydantic_model"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.pydantic/#docarray.document.mixins.pydantic.PydanticMixin.from_pydantic_model">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_pydantic_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="s1">'BaseModel'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Build a Document object from a Pydantic model</span>
+    <span class="k">def</span> <span class="nf">from_pydantic_model</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="s1">&#39;BaseModel&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Build a Document object from a Pydantic model</span>
 
 <span class="sd">        :param model: the pydantic data model object that represents a Document</span>
 <span class="sd">        :return: a Document object</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">Document</span>
 
         <span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -576,18 +576,18 @@
             <span class="n">_field_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span>
-            <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">'chunks'</span><span class="p">,</span> <span class="s1">'matches'</span><span class="p">}</span>
+            <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">}</span>
         <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">f_name</span> <span class="o">=</span> <span class="n">field</span>
-            <span class="k">if</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'scores'</span> <span class="ow">or</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'evaluations'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">&#39;scores&#39;</span> <span class="ow">or</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">&#39;evaluations&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">docarray.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">NamedScore</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'embedding'</span> <span class="ow">or</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'tensor'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span> <span class="ow">or</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">'blob'</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">f_name</span> <span class="o">==</span> <span class="s1">&#39;blob&#39;</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">fields</span><span class="p">[</span><span class="n">f_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -612,7 +612,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

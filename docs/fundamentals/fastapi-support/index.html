@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/fastapi-support/index/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Long story short, DocArray supports pydantic data model via PydanticDocument and PydanticDocumentArray. But this is probably too short to make any sense. So let’s take a step back and see what does this mean. When you want to send/receive Document or DocumentArray object via REST API, you can use..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GraphQL" href="../../advanced/graphql-support/" /><link rel="prev" title="PyTorch/Deep Learning Frameworks" href="../../advanced/torch-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/fastapi-support/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>FastAPI/Pydantic - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>FastAPI/Pydantic - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -561,49 +561,49 @@
 <p>This chapter will introduce how to leverage DocArray’s pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won’t repeat them here again.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Features introduced in this chapter require <code class="docutils literal notranslate"><span class="pre">fastapi</span></code> and <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> as dependency, please do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">"docarray[full]"</span></code> to enable it.</p>
+<p>Features introduced in this chapter require <code class="docutils literal notranslate"><span class="pre">fastapi</span></code> and <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> as dependency, please do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to enable it.</p>
 </div>
 <section id="json-schema">
 <span id="schema-gen"></span><h2>JSON Schema<a class="headerlink" href="#json-schema" title="Permalink to this headline">#</a></h2>
 <p>You can get <a class="reference external" href="https://json-schema.org/">JSON Schema</a> (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema" title="docarray.array.mixins.pydantic.PydanticMixin.get_json_schema"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_json_schema()</span></code></a>.</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">Document</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Document</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="n">Document</span><span class="o">.</span><span class="n">get_json_schema</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"$ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#/definitions/PydanticDocument"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"definitions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"PydanticDocument"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PydanticDocument"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Id"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/PydanticDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;PydanticDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PydanticDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Id&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="p">},</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">DocumentArray</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">DocumentArray</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 <span class="n">DocumentArray</span><span class="o">.</span><span class="n">get_json_schema</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DocumentArray Schema"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"array"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"$ref"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#/definitions/PydanticDocument"</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DocumentArray Schema&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;array&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$ref&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;#/definitions/PydanticDocument&quot;</span><span class="w"></span>
 <span class="w">  </span><span class="p">},</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"definitions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">"PydanticDocument"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PydanticDocument"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Id"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;definitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;PydanticDocument&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PydanticDocument&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;object&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="nt">&quot;properties&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Id&quot;</span><span class="p">,</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -618,11 +618,11 @@
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/single'</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_item</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">PydanticDocument</span><span class="p">):</span>
     <span class="o">...</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/multi'</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/multi&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_array</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">PydanticDocumentArray</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
@@ -631,14 +631,14 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">starlette.testclient</span> <span class="kn">import</span> <span class="n">TestClient</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">TestClient</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/single'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'hello'</span><span class="p">:</span> <span class="s1">'world'</span><span class="p">})</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="s1">&#39;world&#39;</span><span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/single'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'id'</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">]})</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">]})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Response [422]&gt; {"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}
-&lt;Response [422]&gt; {"detail":[{"loc":["body"],"msg":"value is not a valid dict","type":"type_error.dict"}]}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Response [422]&gt; {&quot;detail&quot;:[{&quot;loc&quot;:[&quot;body&quot;],&quot;msg&quot;:&quot;value is not a valid dict&quot;,&quot;type&quot;:&quot;type_error.dict&quot;}]}
+&lt;Response [422]&gt; {&quot;detail&quot;:[{&quot;loc&quot;:[&quot;body&quot;],&quot;msg&quot;:&quot;value is not a valid dict&quot;,&quot;type&quot;:&quot;type_error.dict&quot;}]}
 </pre></div>
 </div>
 <p>Both got rejected (422 error) as they are not valid.</p>
@@ -648,11 +648,11 @@
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> are mainly for data validation. When you want to implement real logics, you need to convert it into Document or DocumentArray. This can be easily achieved via <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_pydantic_model()</span></code></a>. When you are done with processing and want to send back, you can call <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pydantic_model()</span></code></a>.</p>
 <p>In a nutshell, the whole procedure looks like the following:</p>
 <figure class="align-default">
-<img alt="../../_images/lifetime-pydantic.svg" src="../../_images/lifetime-pydantic.svg"/></figure>
+<img alt="../../_images/lifetime-pydantic.svg" src="../../_images/lifetime-pydantic.svg" /></figure>
 <p>Let’s see an example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/single'</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_item</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">PydanticDocument</span><span class="p">):</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
     <span class="c1"># now `d` is a Document object</span>
@@ -660,7 +660,7 @@
     <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span>
     
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">'/multi'</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/multi&#39;</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">create_array</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">PydanticDocumentArray</span><span class="p">):</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_pydantic_model</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
     <span class="c1"># now `da` is a DocumentArray object</span>
@@ -680,14 +680,14 @@
 <span class="k">class</span> <span class="nc">IdOnly</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
 
-<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/single'</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">IdOnly</span><span class="p">)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">IdOnly</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_item_no_embedding</span><span class="p">():</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">d</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>And you get:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Response [200]&gt; {'id': '065a5548756211ecaa8d1e008a366d49'}
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Response [200]&gt; {&#39;id&#39;: &#39;065a5548756211ecaa8d1e008a366d49&#39;}
 </pre></div>
 </div>
 </section>
@@ -699,11 +699,11 @@
 
 <span class="k">class</span> <span class="nc">IdAndMatch</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">matches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">'IdAndMatch'</span><span class="p">]]</span>
+    <span class="n">matches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">&#39;IdAndMatch&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
 <p>Bind it to <code class="docutils literal notranslate"><span class="pre">response_model</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/get_match'</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">IdAndMatch</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/get_match&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">IdAndMatch</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_match_id_only</span><span class="p">():</span>
     <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">),</span> <span class="mi">3</span><span class="p">])</span>
@@ -712,35 +712,35 @@
 </pre></div>
 </div>
 <p>Then you get a very nice result of <code class="docutils literal notranslate"><span class="pre">id</span></code>s of matches (potentially unlimited depth).</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{'id': 'ef82e4f4756411ecb2c01e008a366d49',
-  'matches': [{'id': 'ef82e4f4756411ecb2c01e008a366d49', 'matches': None},
-              {'id': 'ef82e6d4756411ecb2c01e008a366d49', 'matches': None},
-              {'id': 'ef82e760756411ecb2c01e008a366d49', 'matches': None},
-              {'id': 'ef82e7ec756411ecb2c01e008a366d49', 'matches': None},
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{&#39;id&#39;: &#39;ef82e4f4756411ecb2c01e008a366d49&#39;,
+  &#39;matches&#39;: [{&#39;id&#39;: &#39;ef82e4f4756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
+              {&#39;id&#39;: &#39;ef82e6d4756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
+              {&#39;id&#39;: &#39;ef82e760756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
+              {&#39;id&#39;: &#39;ef82e7ec756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
               ...
 </pre></div>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">'matches':</span> <span class="pre">None</span></code> is annoying to you (they are here because you didn’t compute second-degree matches), you can further leverage FastAPI’s feature and do:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'/get_match'</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">IdMatch</span><span class="p">],</span> <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/get_match&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">IdMatch</span><span class="p">],</span> <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_match_id_only</span><span class="p">():</span>
     <span class="o">...</span>
 </pre></div>
 </div>
 <p>Finally, you get a very clean results with ids and matches only:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{'id': '3da6383e756511ecb7cb1e008a366d49',
-  'matches': [{'id': '3da6383e756511ecb7cb1e008a366d49'},
-              {'id': '3da63a14756511ecb7cb1e008a366d49'},
-              {'id': '3da6392e756511ecb7cb1e008a366d49'},
-              {'id': '3da63b72756511ecb7cb1e008a366d49'},
-              {'id': '3da639ce756511ecb7cb1e008a366d49'},
-              {'id': '3da63a5a756511ecb7cb1e008a366d49'},
-              {'id': '3da63ae6756511ecb7cb1e008a366d49'},
-              {'id': '3da63aa0756511ecb7cb1e008a366d49'},
-              {'id': '3da63b2c756511ecb7cb1e008a366d49'},
-              {'id': '3da63988756511ecb7cb1e008a366d49'}]},
- {'id': '3da6392e756511ecb7cb1e008a366d49',
-  'matches': [{'id': '3da6392e756511ecb7cb1e008a366d49'},
-              {'id': '3da639ce756511ecb7cb1e008a366d49'},
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{&#39;id&#39;: &#39;3da6383e756511ecb7cb1e008a366d49&#39;,
+  &#39;matches&#39;: [{&#39;id&#39;: &#39;3da6383e756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63a14756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da6392e756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63b72756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da639ce756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63a5a756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63ae6756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63aa0756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63b2c756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da63988756511ecb7cb1e008a366d49&#39;}]},
+ {&#39;id&#39;: &#39;3da6392e756511ecb7cb1e008a366d49&#39;,
+  &#39;matches&#39;: [{&#39;id&#39;: &#39;3da6392e756511ecb7cb1e008a366d49&#39;},
+              {&#39;id&#39;: &#39;3da639ce756511ecb7cb1e008a366d49&#39;},
               ...
 </pre></div>
 </div>
@@ -783,7 +783,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

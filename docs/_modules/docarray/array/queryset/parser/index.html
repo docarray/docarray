@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/queryset/parser.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.array.queryset.parser - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.array.queryset.parser - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -525,23 +525,23 @@
 
 <span class="kn">from</span> <span class="nn">.lookup</span> <span class="kn">import</span> <span class="n">Q</span><span class="p">,</span> <span class="n">LookupNode</span><span class="p">,</span> <span class="n">LookupLeaf</span>
 
-<span class="n">LOGICAL_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'$and'</span><span class="p">:</span> <span class="s1">'and'</span><span class="p">,</span> <span class="s1">'$or'</span><span class="p">:</span> <span class="s1">'or'</span><span class="p">,</span> <span class="s1">'$not'</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<span class="n">LOGICAL_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$and&#39;</span><span class="p">:</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;$or&#39;</span><span class="p">:</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;$not&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
 <span class="n">COMPARISON_OPERATORS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">'$lt'</span><span class="p">:</span> <span class="s1">'lt'</span><span class="p">,</span>
-    <span class="s1">'$gt'</span><span class="p">:</span> <span class="s1">'gt'</span><span class="p">,</span>
-    <span class="s1">'$lte'</span><span class="p">:</span> <span class="s1">'lte'</span><span class="p">,</span>
-    <span class="s1">'$gte'</span><span class="p">:</span> <span class="s1">'gte'</span><span class="p">,</span>
-    <span class="s1">'$eq'</span><span class="p">:</span> <span class="s1">'exact'</span><span class="p">,</span>
-    <span class="s1">'$neq'</span><span class="p">:</span> <span class="s1">'neq'</span><span class="p">,</span>
-    <span class="s1">'$exists'</span><span class="p">:</span> <span class="s1">'exists'</span><span class="p">,</span>
+    <span class="s1">&#39;$lt&#39;</span><span class="p">:</span> <span class="s1">&#39;lt&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$gt&#39;</span><span class="p">:</span> <span class="s1">&#39;gt&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$lte&#39;</span><span class="p">:</span> <span class="s1">&#39;lte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$gte&#39;</span><span class="p">:</span> <span class="s1">&#39;gte&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$eq&#39;</span><span class="p">:</span> <span class="s1">&#39;exact&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$neq&#39;</span><span class="p">:</span> <span class="s1">&#39;neq&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;$exists&#39;</span><span class="p">:</span> <span class="s1">&#39;exists&#39;</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">REGEX_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'$regex'</span><span class="p">:</span> <span class="s1">'regex'</span><span class="p">}</span>
+<span class="n">REGEX_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$regex&#39;</span><span class="p">:</span> <span class="s1">&#39;regex&#39;</span><span class="p">}</span>
 
-<span class="n">ARRAY_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'$size'</span><span class="p">:</span> <span class="s1">'size'</span><span class="p">}</span>
+<span class="n">ARRAY_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$size&#39;</span><span class="p">:</span> <span class="s1">&#39;size&#39;</span><span class="p">}</span>
 
-<span class="n">MEMBERSHIP_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'$in'</span><span class="p">:</span> <span class="s1">'in'</span><span class="p">,</span> <span class="s1">'$nin'</span><span class="p">:</span> <span class="s1">'nin'</span><span class="p">}</span>
+<span class="n">MEMBERSHIP_OPERATORS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;$in&#39;</span><span class="p">:</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;$nin&#39;</span><span class="p">:</span> <span class="s1">&#39;nin&#39;</span><span class="p">}</span>
 
 <span class="n">SUPPORTED_OPERATORS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="o">**</span><span class="n">COMPARISON_OPERATORS</span><span class="p">,</span>
@@ -560,38 +560,38 @@
                 <span class="n">root_node</span> <span class="o">=</span> <span class="n">root</span>
 
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">LOGICAL_OPERATORS</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">'$not'</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;$not&#39;</span><span class="p">:</span>
                     <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">(</span><span class="n">negate</span><span class="o">=</span><span class="n">LOGICAL_OPERATORS</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">LOGICAL_OPERATORS</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
                 <span class="n">node</span> <span class="o">=</span> <span class="n">_parse_lookups</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">root_node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'$'</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">'The operator </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not supported yet, please double check the given filters!'</span>
+                    <span class="sa">f</span><span class="s1">&#39;The operator </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1"> is not supported yet, please double check the given filters!&#39;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sd">'''Not a valid query. It should follow the format:</span>
+                        <span class="sd">&#39;&#39;&#39;Not a valid query. It should follow the format:</span>
 <span class="sd">                    { &lt;field1&gt;: { &lt;operator1&gt;: &lt;value1&gt; }, ... } </span>
-<span class="sd">                    '''</span>
+<span class="sd">                    &#39;&#39;&#39;</span>
                     <span class="p">)</span>
 
                 <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">op</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">LOGICAL_OPERATORS</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">'$not'</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;$not&#39;</span><span class="p">:</span>
                             <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">(</span><span class="n">negate</span><span class="o">=</span><span class="n">LOGICAL_OPERATORS</span><span class="p">[</span><span class="n">op</span><span class="p">])</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">LOGICAL_OPERATORS</span><span class="p">[</span><span class="n">op</span><span class="p">])</span>
                         <span class="n">node</span> <span class="o">=</span> <span class="n">_parse_lookups</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">root_node</span><span class="o">=</span><span class="n">node</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">SUPPORTED_OPERATORS</span><span class="p">:</span>
-                        <span class="n">node</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">__</span><span class="si">{</span><span class="n">SUPPORTED_OPERATORS</span><span class="p">[</span><span class="n">op</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
+                        <span class="n">node</span> <span class="o">=</span> <span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">__</span><span class="si">{</span><span class="n">SUPPORTED_OPERATORS</span><span class="p">[</span><span class="n">op</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="n">val</span><span class="p">})</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s1">'The operator </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1"> is not supported yet, please double check the given filters!'</span>
+                            <span class="sa">f</span><span class="s1">&#39;The operator </span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s1"> is not supported yet, please double check the given filters!&#39;</span>
                         <span class="p">)</span>
 
                 <span class="k">else</span><span class="p">:</span>
@@ -613,22 +613,22 @@
             <span class="k">elif</span> <span class="n">node</span><span class="p">:</span>
                 <span class="n">root_node</span> <span class="o">=</span> <span class="n">node</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'The query is illegal: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The query is illegal: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">root_node</span>
 
 
 <div class="viewcode-block" id="QueryParser"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.parser/#docarray.array.queryset.parser.QueryParser">[docs]</a><span class="k">class</span> <span class="nc">QueryParser</span><span class="p">:</span>
-    <span class="sd">"""A class to parse dict condition to lookup query."""</span>
+    <span class="sd">&quot;&quot;&quot;A class to parse dict condition to lookup query.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conditions</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conditions</span> <span class="o">=</span> <span class="n">conditions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lookup_groups</span> <span class="o">=</span> <span class="n">_parse_lookups</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conditions</span><span class="p">)</span>
 
-<div class="viewcode-block" id="QueryParser.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.parser/#docarray.array.queryset.parser.QueryParser.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+<div class="viewcode-block" id="QueryParser.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.queryset.parser/#docarray.array.queryset.parser.QueryParser.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup_groups</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup_groups</span> <span class="k">else</span> <span class="kc">True</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 </pre></div>
                 </article>
@@ -644,7 +644,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

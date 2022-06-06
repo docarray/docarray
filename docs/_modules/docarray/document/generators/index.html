@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/generators.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.generators - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.document.generators - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -544,21 +544,21 @@
 
 
 <div class="viewcode-block" id="from_ndarray"><a class="viewcode-back" href="../../../../api/docarray.document.generators/#docarray.document.generators.from_ndarray">[docs]</a><span class="k">def</span> <span class="nf">from_ndarray</span><span class="p">(</span>
-    <span class="n">array</span><span class="p">:</span> <span class="s1">'np.ndarray'</span><span class="p">,</span>
+    <span class="n">array</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">shuffle</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Create a generator for a given dimension of a numpy array.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Create a generator for a given dimension of a numpy array.</span>
 
 <span class="sd">    :param array: the numpy ndarray data source</span>
 <span class="sd">    :param axis: iterate over that axis</span>
 <span class="sd">    :param size: the maximum number of the sub arrays</span>
 <span class="sd">    :param shuffle: shuffle the numpy data source beforehand</span>
 <span class="sd">    :yield: documents</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -583,16 +583,16 @@
     <span class="n">exclude_regex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Creates an iterator over a list of file path or the content of the files.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Creates an iterator over a list of file path or the content of the files.</span>
 
-<span class="sd">    :param patterns: The pattern may contain simple shell-style wildcards, e.g. '\*.py', '[\*.zip, \*.gz]'</span>
-<span class="sd">    :param recursive: If recursive is true, the pattern '**' will match any files</span>
+<span class="sd">    :param patterns: The pattern may contain simple shell-style wildcards, e.g. &#39;\*.py&#39;, &#39;[\*.zip, \*.gz]&#39;</span>
+<span class="sd">    :param recursive: If recursive is true, the pattern &#39;**&#39; will match any files</span>
 <span class="sd">        and zero or more directories and subdirectories</span>
 <span class="sd">    :param size: the maximum number of the files</span>
 <span class="sd">    :param sampling_rate: the sampling rate between [0, 1]</span>
 <span class="sd">    :param read_mode: specifies the mode in which the file is opened.</span>
-<span class="sd">        'r' for reading in text mode, 'rb' for reading in binary mode.</span>
+<span class="sd">        &#39;r&#39; for reading in text mode, &#39;rb&#39; for reading in binary mode.</span>
 <span class="sd">        If `read_mode` is None, will iterate over filenames.</span>
 <span class="sd">    :param to_dataturi: if set, then the Document.uri will be filled with DataURI instead of the plan URI</span>
 <span class="sd">    :param exclude_regex: if set, then filenames that match to this pattern are not included.</span>
@@ -600,11 +600,11 @@
 
 <span class="sd">    .. note::</span>
 <span class="sd">        This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Document</span>
 
-    <span class="k">if</span> <span class="n">read_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'read_mode should be "r", "rb" or None, got </span><span class="si">{</span><span class="n">read_mode</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">read_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read_mode should be &quot;r&quot;, &quot;rb&quot; or None, got </span><span class="si">{</span><span class="n">read_mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_iter_file_exts</span><span class="p">(</span><span class="n">ps</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
@@ -620,7 +620,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">exclude_regex</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">re</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'`</span><span class="si">{</span><span class="n">exclude_regex</span><span class="si">}</span><span class="s1">` is not a valid regex.'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">exclude_regex</span><span class="si">}</span><span class="s1">` is not a valid regex.&#39;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">_iter_file_exts</span><span class="p">(</span><span class="n">patterns</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
@@ -633,7 +633,7 @@
                 <span class="k">if</span> <span class="n">to_dataturi</span><span class="p">:</span>
                     <span class="n">d</span><span class="o">.</span><span class="n">convert_uri_to_datauri</span><span class="p">()</span>
                 <span class="k">yield</span> <span class="n">d</span>
-            <span class="k">elif</span> <span class="n">read_mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'r'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">}:</span>
+            <span class="k">elif</span> <span class="n">read_mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">}:</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">read_mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                     <span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">uri</span><span class="o">=</span><span class="n">g</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">to_dataturi</span><span class="p">:</span>
@@ -649,12 +649,12 @@
     <span class="n">field_resolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">dialect</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">'csv.Dialect'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'excel'</span><span class="p">,</span>
-    <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'utf-8'</span><span class="p">,</span>
+    <span class="n">dialect</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;csv.Dialect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Generator function for CSV. Yields documents.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Generator function for CSV. Yields documents.</span>
 
 <span class="sd">    :param file: file paths or file handler</span>
 <span class="sd">    :param field_resolver: a map from field names defined in JSON, dict to the field</span>
@@ -663,35 +663,35 @@
 <span class="sd">    :param sampling_rate: the sampling rate between [0, 1]</span>
 <span class="sd">    :param dialect: define a set of parameters specific to a particular CSV dialect. could be a string that represents</span>
 <span class="sd">        predefined dialects in your system, or could be a :class:`csv.Dialect` class that groups specific formatting</span>
-<span class="sd">        parameters together. If you don't know the dialect and the default one does not work for you,</span>
+<span class="sd">        parameters together. If you don&#39;t know the dialect and the default one does not work for you,</span>
 <span class="sd">        you can try set it to ``auto``.</span>
 <span class="sd">    :param encoding: encoding used to read the CSV file. By default, ``utf-8`` is used.</span>
 
 <span class="sd">    :yield: documents</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Document</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'read'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;read&#39;</span><span class="p">):</span>
         <span class="n">file_ctx</span> <span class="o">=</span> <span class="n">nullcontext</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">file_ctx</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">file_ctx</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">file_ctx</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="c1"># when set to auto, then sniff</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dialect</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dialect</span> <span class="o">==</span> <span class="s1">'auto'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dialect</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dialect</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
                 <span class="n">dialect</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">Sniffer</span><span class="p">()</span><span class="o">.</span><span class="n">sniff</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">))</span>
                 <span class="n">fp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="n">dialect</span> <span class="o">=</span> <span class="s1">'excel'</span>  <span class="c1">#: can not sniff delimiter, use default dialect</span>
+            <span class="n">dialect</span> <span class="o">=</span> <span class="s1">&#39;excel&#39;</span>  <span class="c1">#: can not sniff delimiter, use default dialect</span>
 
         <span class="n">lines</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">dialect</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_subsample</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s1">'groundtruth'</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">'document'</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;groundtruth&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">&#39;document&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span>
-                    <span class="n">value</span><span class="p">[</span><span class="s1">'document'</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span>
-                <span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">'groundtruth'</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">)</span>
+                    <span class="n">value</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span>
+                <span class="p">),</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;groundtruth&#39;</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">)</span></div>
 
@@ -703,8 +703,8 @@
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">filter_fields</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">datasets_kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Generator function for Hugging Face Datasets. Yields documents.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Generator function for Hugging Face Datasets. Yields documents.</span>
 
 <span class="sd">    This function helps to load datasets from Hugging Face Datasets Hub</span>
 <span class="sd">    (https://huggingface.co/datasets) in Jina. Additional parameters can be</span>
@@ -723,7 +723,7 @@
 <span class="sd">            from Datasets library. More details at</span>
 <span class="sd">            https://huggingface.co/docs/datasets/package_reference/loading_methods.html#datasets.load_dataset</span>
 <span class="sd">    :yield: documents</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Document</span>
 
     <span class="kn">import</span> <span class="nn">datasets</span>
@@ -735,8 +735,8 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">DatasetDict</span><span class="p">,</span> <span class="n">datasets</span><span class="o">.</span><span class="n">IterableDatasetDict</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="p">(</span>
-                <span class="s1">'Please provide a split for dataset using "split" argument. '</span>
-                <span class="sa">f</span><span class="s1">'The following splits are available for this dataset: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">'</span>
+                <span class="s1">&#39;Please provide a split for dataset using &quot;split&quot; argument. &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;The following splits are available for this dataset: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -744,7 +744,7 @@
     <span class="k">if</span> <span class="n">filter_fields</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">field_resolver</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">'Filter fields option requires "field_resolver" to be provided.'</span>
+                <span class="s1">&#39;Filter fields option requires &quot;field_resolver&quot; to be provided.&#39;</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">set_format</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">field_resolver</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
@@ -761,8 +761,8 @@
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Generator function for line separated JSON. Yields documents.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Generator function for line separated JSON. Yields documents.</span>
 
 <span class="sd">    :param fp: file paths</span>
 <span class="sd">    :param field_resolver: a map from field names defined in ``document`` (JSON, dict) to the field</span>
@@ -772,14 +772,14 @@
 <span class="sd">    :param sampling_rate: the sampling rate between [0, 1]</span>
 <span class="sd">    :yield: documents</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Document</span>
 
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_subsample</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">):</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">'groundtruth'</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">'document'</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">'document'</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span>
-                <span class="n">value</span><span class="p">[</span><span class="s1">'groundtruth'</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span>
+        <span class="k">if</span> <span class="s1">&#39;groundtruth&#39;</span> <span class="ow">in</span> <span class="n">value</span> <span class="ow">and</span> <span class="s1">&#39;document&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;document&#39;</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">),</span> <span class="n">Document</span><span class="p">(</span>
+                <span class="n">value</span><span class="p">[</span><span class="s1">&#39;groundtruth&#39;</span><span class="p">],</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">field_resolver</span><span class="o">=</span><span class="n">field_resolver</span><span class="p">)</span></div>
@@ -788,18 +788,18 @@
 <div class="viewcode-block" id="from_lines"><a class="viewcode-back" href="../../../../api/docarray.document.generators/#docarray.document.generators.from_lines">[docs]</a><span class="k">def</span> <span class="nf">from_lines</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">filepath</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">read_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'r'</span><span class="p">,</span>
-    <span class="n">line_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'json'</span><span class="p">,</span>
+    <span class="n">read_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>
+    <span class="n">line_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
     <span class="n">field_resolver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">'Document'</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-    <span class="sd">"""Generator function for lines, json and csv. Yields documents or strings.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Generator function for lines, json and csv. Yields documents or strings.</span>
 
 <span class="sd">    :param lines: a list of strings, each is considered as a document</span>
 <span class="sd">    :param filepath: a text file that each line contains a document</span>
 <span class="sd">    :param read_mode: specifies the mode in which the file</span>
-<span class="sd">                is opened. 'r' for reading in text mode, 'rb' for reading in binary</span>
+<span class="sd">                is opened. &#39;r&#39; for reading in text mode, &#39;rb&#39; for reading in binary</span>
 <span class="sd">    :param line_format: the format of each line ``json`` or ``csv``</span>
 <span class="sd">    :param field_resolver: a map from field names defined in ``document`` (JSON, dict) to the field</span>
 <span class="sd">            names defined in Protobuf. This is only used when the given ``document`` is</span>
@@ -808,7 +808,7 @@
 <span class="sd">    :param sampling_rate: the sampling rate between [0, 1]</span>
 <span class="sd">    :yield: documents</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filepath</span><span class="p">:</span>
         <span class="n">file_type</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filepath</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">filepath</span><span class="p">),</span> <span class="n">read_mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -819,19 +819,19 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield from</span> <span class="n">_subsample</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">lines</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">line_format</span> <span class="o">==</span> <span class="s1">'json'</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line_format</span> <span class="o">==</span> <span class="s1">&#39;json&#39;</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">from_ndjson</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">field_resolver</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">line_format</span> <span class="o">==</span> <span class="s1">'csv'</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">line_format</span> <span class="o">==</span> <span class="s1">&#39;csv&#39;</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">from_csv</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">field_resolver</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">_subsample</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'"filepath" and "lines" can not be both empty'</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;filepath&quot; and &quot;lines&quot; can not be both empty&#39;</span><span class="p">)</span></div>
 
 
 <span class="c1"># https://github.com/ndjson/ndjson.github.io/issues/1#issuecomment-109935996</span>
-<span class="n">_jsonl_ext</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'.jsonlines'</span><span class="p">,</span> <span class="s1">'.ndjson'</span><span class="p">,</span> <span class="s1">'.jsonl'</span><span class="p">,</span> <span class="s1">'.jl'</span><span class="p">,</span> <span class="s1">'.ldjson'</span><span class="p">}</span>
-<span class="n">_csv_ext</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'.csv'</span><span class="p">,</span> <span class="s1">'.tcsv'</span><span class="p">}</span>
+<span class="n">_jsonl_ext</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.jsonlines&#39;</span><span class="p">,</span> <span class="s1">&#39;.ndjson&#39;</span><span class="p">,</span> <span class="s1">&#39;.jsonl&#39;</span><span class="p">,</span> <span class="s1">&#39;.jl&#39;</span><span class="p">,</span> <span class="s1">&#39;.ldjson&#39;</span><span class="p">}</span>
+<span class="n">_csv_ext</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.tcsv&#39;</span><span class="p">}</span>
 
 
 <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -858,7 +858,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

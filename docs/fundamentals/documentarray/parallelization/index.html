@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/parallelization/" />
   
-<meta property="og:site_name" content="DocArray 0.13.18 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.19 Documentation" />
   
 <meta property="og:description" content="Working with large DocumentArray in element-wise can be time-consuming. The naive way is to run a for-loop and enumerate all Document one by one. DocArray provides map() to speed up things quite a lot. It is like Python built-in map() function but mapping the function to every element of the Docu..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.18 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.19 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Visualization" href="../visualization/" /><link rel="prev" title="Query by Conditions" href="../find/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/parallelization.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>Parallelization - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>Parallelization - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -575,7 +575,7 @@ built-in <code class="docutils literal notranslate"><span class="pre">map()</spa
 <p>Let’s see an example, where we want to preprocess ~6000 image Documents. First we fill the URI to each Document.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
-<span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">'*.jpg'</span><span class="p">)</span>  <span class="c1"># 6016 image Documents with .uri set</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;*.jpg&#39;</span><span class="p">)</span>  <span class="c1"># 6016 image Documents with .uri set</span>
 </pre></div>
 </div>
 <p>To load and preprocess <code class="docutils literal notranslate"><span class="pre">docs</span></code>, we have:</p>
@@ -589,13 +589,13 @@ built-in <code class="docutils literal notranslate"><span class="pre">map()</spa
 </div>
 <p>This load the image from file into <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> do some normalization and set the channel axis. Now, let’s compare the time difference when we do things sequentially and use <code class="docutils literal notranslate"><span class="pre">.apply()</span></code>:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--1">For-loop</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">For-loop</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
     <span class="n">foo</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"/><label class="tab-label" for="tab-set--0-input--2">Apply in parallel</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Apply in parallel</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">docs</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -629,13 +629,13 @@ apply ...	apply takes 3.5 seconds
 
 
 <span class="k">def</span> <span class="nf">cpu_job</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'cpu on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;cpu on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs&#39;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">da</span>
 
 
 <span class="k">def</span> <span class="nf">gpu_job</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'GPU on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GPU on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">da</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs&#39;</span><span class="p">)</span>
     <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -654,14 +654,14 @@ Total time: 16s + 128s   = 144s
 </div>
 <p>Okay, let’s program these two ways and validate our guess:</p>
 <div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--1">apply in 144s</label><div class="tab-content docutils">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">apply in 144s</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="o">.</span><span class="n">apply_batch</span><span class="p">(</span><span class="n">cpu_job</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
     <span class="n">gpu_job</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"/><label class="tab-label" for="tab-set--1-input--2">map in 129s</label><div class="tab-content docutils">
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">map in 129s</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">map_batch</span><span class="p">(</span><span class="n">cpu_job</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">num_worker</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="n">gpu_job</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 </pre></div>
@@ -683,8 +683,8 @@ map: 129.326s
     <span class="k">yield</span> <span class="n">_head</span>
     
     <span class="k">def</span> <span class="nf">_get_chunk</span><span class="p">(</span><span class="n">_batch</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">b</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">_to_stream_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">'protobuf'</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">'gzip'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">_to_stream_bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">=</span><span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="n">compress</span><span class="o">=</span><span class="s1">&#39;gzip&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_batch</span>
         <span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_batch</span><span class="p">)</span>
 
@@ -694,7 +694,7 @@ map: 129.326s
 
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.upload'</span><span class="p">,</span>
+    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.upload&#39;</span><span class="p">,</span>
     <span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">(),</span>
     <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
 <span class="p">)</span>
@@ -739,7 +739,7 @@ map: 129.326s
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

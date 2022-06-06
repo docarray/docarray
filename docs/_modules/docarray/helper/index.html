@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/helper.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.helper - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.helper - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -523,60 +523,49 @@
 <span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">distutils.version</span> <span class="kn">import</span> <span class="n">LooseVersion</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">urlopen</span>
-
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
-<span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span>
-<span class="kn">from</span> <span class="nn">rich.panel</span> <span class="kn">import</span> <span class="n">Panel</span>
-
-<span class="n">ALLOWED_PROTOCOLS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'pickle'</span><span class="p">,</span> <span class="s1">'protobuf'</span><span class="p">,</span> <span class="s1">'protobuf-array'</span><span class="p">,</span> <span class="s1">'pickle-array'</span><span class="p">}</span>
-<span class="n">ALLOWED_COMPRESSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'lz4'</span><span class="p">,</span> <span class="s1">'bz2'</span><span class="p">,</span> <span class="s1">'lzma'</span><span class="p">,</span> <span class="s1">'zlib'</span><span class="p">,</span> <span class="s1">'gzip'</span><span class="p">}</span>
-
 
 <span class="n">__resources_path__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'docarray'</span><span class="p">)</span><span class="o">.</span><span class="vm">__file__</span> <span class="k">if</span> <span class="s1">'docarray'</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span> <span class="k">else</span> <span class="vm">__file__</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;docarray&#39;</span><span class="p">)</span><span class="o">.</span><span class="vm">__file__</span> <span class="k">if</span> <span class="s1">&#39;docarray&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span> <span class="k">else</span> <span class="vm">__file__</span>
     <span class="p">),</span>
-    <span class="s1">'resources'</span><span class="p">,</span>
+    <span class="s1">&#39;resources&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="typename"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.typename">[docs]</a><span class="k">def</span> <span class="nf">typename</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the typename of object.</span>
 
 <span class="sd">    :param obj: Target object.</span>
 <span class="sd">    :return: Typename of the obj.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="deprecate_by"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.deprecate_by">[docs]</a><span class="k">def</span> <span class="nf">deprecate_by</span><span class="p">(</span><span class="n">new_fn</span><span class="p">,</span> <span class="n">removed_at</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">"""A helper function to label deprecated function</span>
+    <span class="sd">&quot;&quot;&quot;A helper function to label deprecated function</span>
 
 <span class="sd">    Usage: old_fn_name = deprecate_by(new_fn)</span>
 
 <span class="sd">    :param new_fn: the new function</span>
 <span class="sd">    :param removed_at: removed at which version</span>
 <span class="sd">    :return: a wrapped function with old function name</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">inspect</span>
 
-        <span class="n">old_fn_name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"="</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">old_fn_name</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'`</span><span class="si">{</span><span class="n">old_fn_name</span><span class="si">}</span><span class="s1">` is renamed to `.</span><span class="si">{</span><span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">()` with the same usage, please use the latter instead. The old function will be removed in </span><span class="si">{</span><span class="n">removed_at</span><span class="si">}</span><span class="s1">.'</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">old_fn_name</span><span class="si">}</span><span class="s1">` is renamed to `.</span><span class="si">{</span><span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">()` with the same usage, please use the latter instead. The old function will be removed in </span><span class="si">{</span><span class="n">removed_at</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">,</span>
             <span class="ne">FutureWarning</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -585,29 +574,29 @@
 
 
 <div class="viewcode-block" id="dunder_get"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.dunder_get">[docs]</a><span class="k">def</span> <span class="nf">dunder_get</span><span class="p">(</span><span class="n">_dict</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-    <span class="sd">"""Returns value for a specified dunderkey</span>
+    <span class="sd">&quot;&quot;&quot;Returns value for a specified dunderkey</span>
 
-<span class="sd">    A "dunderkey" is just a fieldname that may or may not contain</span>
+<span class="sd">    A &quot;dunderkey&quot; is just a fieldname that may or may not contain</span>
 <span class="sd">    double underscores (dunderscores!) for referencing nested keys in</span>
 <span class="sd">    a dict. eg::</span>
-<span class="sd">     &gt;&gt;&gt; data = {'a': {'b': 1}}</span>
-<span class="sd">     &gt;&gt;&gt; dunder_get(data, 'a__b')</span>
+<span class="sd">     &gt;&gt;&gt; data = {&#39;a&#39;: {&#39;b&#39;: 1}}</span>
+<span class="sd">     &gt;&gt;&gt; dunder_get(data, &#39;a__b&#39;)</span>
 
-<span class="sd">    key 'b' can be referrenced as 'a__b'</span>
+<span class="sd">    key &#39;b&#39; can be referrenced as &#39;a__b&#39;</span>
 
 <span class="sd">    :param _dict: (dict, list, struct or object) which we want to index into</span>
 <span class="sd">    :param key: (str) that represents a first level or nested key in the dict</span>
 <span class="sd">    :return: (mixed) value corresponding to the key</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">part1</span><span class="p">,</span> <span class="n">part2</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'__'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">part1</span><span class="p">,</span> <span class="n">part2</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">part1</span><span class="p">,</span> <span class="n">part2</span> <span class="o">=</span> <span class="n">key</span><span class="p">,</span> <span class="s1">''</span>
+        <span class="n">part1</span><span class="p">,</span> <span class="n">part2</span> <span class="o">=</span> <span class="n">key</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">part1</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">part1</span><span class="p">)</span>  <span class="c1"># parse int parameter</span>
@@ -630,11 +619,11 @@
 
 
 <div class="viewcode-block" id="random_identity"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.random_identity">[docs]</a><span class="k">def</span> <span class="nf">random_identity</span><span class="p">(</span><span class="n">use_uuid1</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate random UUID.</span>
 
 <span class="sd">    ..note::</span>
-<span class="sd">        A MAC address or time-based ordering (UUID1) can afford increased database performance, since it's less work</span>
+<span class="sd">        A MAC address or time-based ordering (UUID1) can afford increased database performance, since it&#39;s less work</span>
 <span class="sd">        to sort numbers closer-together than those distributed randomly (UUID4) (see here).</span>
 
 <span class="sd">        A second related issue, is that using UUID1 can be useful in debugging, even if origin data is lost or not</span>
@@ -643,87 +632,87 @@
 <span class="sd">    :param use_uuid1: use UUID1 instead of UUID4. This is the default Document ID generator.</span>
 <span class="sd">    :return: A random UUID.</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">random_uuid</span><span class="p">(</span><span class="n">use_uuid1</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span></div>
 
 
 <div class="viewcode-block" id="random_uuid"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.random_uuid">[docs]</a><span class="k">def</span> <span class="nf">random_uuid</span><span class="p">(</span><span class="n">use_uuid1</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a random UUID.</span>
 
 <span class="sd">    :param use_uuid1: Use UUID1 if True, else use UUID4.</span>
 <span class="sd">    :return: A random UUID.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">()</span> <span class="k">if</span> <span class="n">use_uuid1</span> <span class="k">else</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="download_mermaid_url"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.download_mermaid_url">[docs]</a><span class="k">def</span> <span class="nf">download_mermaid_url</span><span class="p">(</span><span class="n">mermaid_url</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Download the jpg image from mermaid_url.</span>
 
 <span class="sd">    :param mermaid_url: The URL of the image.</span>
 <span class="sd">    :param output: A filename specifying the name of the image to be created, the suffix svg/jpg determines the file type of the output image.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">urlopen</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">mermaid_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">'User-Agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0'</span><span class="p">})</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">mermaid_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0&#39;</span><span class="p">})</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Invalid or too-complicated graph'</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid or too-complicated graph&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_request_header"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.get_request_header">[docs]</a><span class="k">def</span> <span class="nf">get_request_header</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">"""Return the header of request.</span>
+    <span class="sd">&quot;&quot;&quot;Return the header of request.</span>
 
 <span class="sd">    :return: request header</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">get_full_version</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
 
 <div class="viewcode-block" id="get_full_version"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.get_full_version">[docs]</a><span class="k">def</span> <span class="nf">get_full_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the version of libraries used in Jina and environment variables.</span>
 
 <span class="sd">    :return: Version information and environment variables</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">google.protobuf</span><span class="o">,</span> <span class="nn">platform</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">__version__</span>
     <span class="kn">from</span> <span class="nn">google.protobuf.internal</span> <span class="kn">import</span> <span class="n">api_implementation</span>
     <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">getnode</span>
 
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s1">'docarray'</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
-        <span class="s1">'protobuf'</span><span class="p">:</span> <span class="n">google</span><span class="o">.</span><span class="n">protobuf</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
-        <span class="s1">'proto-backend'</span><span class="p">:</span> <span class="n">api_implementation</span><span class="o">.</span><span class="n">_default_implementation_type</span><span class="p">,</span>
-        <span class="s1">'python'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
-        <span class="s1">'platform'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span>
-        <span class="s1">'platform-release'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">(),</span>
-        <span class="s1">'platform-version'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">(),</span>
-        <span class="s1">'architecture'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
-        <span class="s1">'processor'</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">(),</span>
-        <span class="s1">'uid'</span><span class="p">:</span> <span class="n">getnode</span><span class="p">(),</span>
-        <span class="s1">'session-id'</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">random_uuid</span><span class="p">(</span><span class="n">use_uuid1</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
-        <span class="s1">'ci-vendor'</span><span class="p">:</span> <span class="n">get_ci_vendor</span><span class="p">(),</span>
+        <span class="s1">&#39;docarray&#39;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
+        <span class="s1">&#39;protobuf&#39;</span><span class="p">:</span> <span class="n">google</span><span class="o">.</span><span class="n">protobuf</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span>
+        <span class="s1">&#39;proto-backend&#39;</span><span class="p">:</span> <span class="n">api_implementation</span><span class="o">.</span><span class="n">_default_implementation_type</span><span class="p">,</span>
+        <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">(),</span>
+        <span class="s1">&#39;platform&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">(),</span>
+        <span class="s1">&#39;platform-release&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">release</span><span class="p">(),</span>
+        <span class="s1">&#39;platform-version&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">version</span><span class="p">(),</span>
+        <span class="s1">&#39;architecture&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">machine</span><span class="p">(),</span>
+        <span class="s1">&#39;processor&#39;</span><span class="p">:</span> <span class="n">platform</span><span class="o">.</span><span class="n">processor</span><span class="p">(),</span>
+        <span class="s1">&#39;uid&#39;</span><span class="p">:</span> <span class="n">getnode</span><span class="p">(),</span>
+        <span class="s1">&#39;session-id&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">random_uuid</span><span class="p">(</span><span class="n">use_uuid1</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+        <span class="s1">&#39;ci-vendor&#39;</span><span class="p">:</span> <span class="n">get_ci_vendor</span><span class="p">(),</span>
     <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="get_ci_vendor"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.get_ci_vendor">[docs]</a><span class="k">def</span> <span class="nf">get_ci_vendor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__resources_path__</span><span class="p">,</span> <span class="s1">'ci-vendors.json'</span><span class="p">))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">__resources_path__</span><span class="p">,</span> <span class="s1">&#39;ci-vendors.json&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">all_cis</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">all_cis</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">]</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">'constant'</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;constant&#39;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">'constant'</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">'env'</span><span class="p">]:</span>
+                        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;constant&#39;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;env&#39;</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">'constant'</span><span class="p">]</span>
-        <span class="k">return</span> <span class="s1">'unset'</span></div>
+                        <span class="k">return</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;constant&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s1">&#39;unset&#39;</span></div>
 
 
 <span class="n">assigned_ports</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -736,12 +725,12 @@
     <span class="k">def</span> <span class="nf">_get_unassigned_ports</span><span class="p">():</span>
         <span class="c1"># if we are running out of ports, lower default minimum port</span>
         <span class="k">if</span> <span class="n">MAX_PORT</span> <span class="o">-</span> <span class="n">DEFAULT_MIN_PORT</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
-            <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MIN'</span><span class="p">,</span> <span class="s1">'16384'</span><span class="p">))</span>
+            <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_RANDOM_PORT_MIN&#39;</span><span class="p">,</span> <span class="s1">&#39;16384&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">min_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MIN'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">DEFAULT_MIN_PORT</span><span class="p">))</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_RANDOM_PORT_MIN&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">DEFAULT_MIN_PORT</span><span class="p">))</span>
             <span class="p">)</span>
-        <span class="n">max_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'JINA_RANDOM_PORT_MAX'</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MAX_PORT</span><span class="p">)))</span>
+        <span class="n">max_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_RANDOM_PORT_MAX&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">MAX_PORT</span><span class="p">)))</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">min_port</span><span class="p">,</span> <span class="n">max_port</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span>
 
     <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -751,11 +740,11 @@
 
 
 <div class="viewcode-block" id="random_port"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.random_port">[docs]</a><span class="k">def</span> <span class="nf">random_port</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-    <span class="sd">"""</span>
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a random available port number.</span>
 
 <span class="sd">    :return: A random port.</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_random_port</span><span class="p">():</span>
         <span class="kn">import</span> <span class="nn">socket</span>
@@ -763,7 +752,7 @@
         <span class="k">def</span> <span class="nf">_check_bind</span><span class="p">(</span><span class="n">port</span><span class="p">):</span>
             <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">()</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">''</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">port</span><span class="p">))</span>
                     <span class="n">s</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">port</span>
                 <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
@@ -777,7 +766,7 @@
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">'can not find an available port in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> unassigned ports, assigned already </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> ports'</span>
+                <span class="sa">f</span><span class="s1">&#39;can not find an available port in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unassigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> unassigned ports, assigned already </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">assigned_ports</span><span class="p">)</span><span class="si">}</span><span class="s1"> ports&#39;</span>
             <span class="p">)</span>
         <span class="n">int_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_port</span><span class="p">)</span>
         <span class="n">unassigned_ports</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
@@ -793,50 +782,50 @@
 
 
 <div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">:</span>
-    <span class="sd">"""The decorator to cache property of a class."""</span>
+    <span class="sd">&quot;&quot;&quot;The decorator to cache property of a class.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="sd">"""</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the :class:`cached_property`.</span>
 
 <span class="sd">        :param func: Cached function.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
-        <span class="n">cached_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">'CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">cached_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cached_value</span>
 
-        <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="sa">f</span><span class="s1">'CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="fm">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="n">cached_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">'CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">cached_value</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cached_value</span><span class="p">,</span> <span class="s1">'close'</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cached_value</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">):</span>
                 <span class="n">cached_value</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">del</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="sa">f</span><span class="s1">'CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">'</span><span class="p">]</span></div>
+            <span class="k">del</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;CACHED_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="compress_bytes"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.compress_bytes">[docs]</a><span class="k">def</span> <span class="nf">compress_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lz4'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lz4&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lz4.frame</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'bz2'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;bz2&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">bz2</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lzma'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lzma&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lzma</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">lzma</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'zlib'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;zlib&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">zlib</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'gzip'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">gzip</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -844,43 +833,43 @@
 
 
 <div class="viewcode-block" id="decompress_bytes"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.decompress_bytes">[docs]</a><span class="k">def</span> <span class="nf">decompress_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">algorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lz4'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lz4&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lz4.frame</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'bz2'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;bz2&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">bz2</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lzma'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lzma&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lzma</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">lzma</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'zlib'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;zlib&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">zlib</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'gzip'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">gzip</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
 
-<div class="viewcode-block" id="get_compress_ctx"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.get_compress_ctx">[docs]</a><span class="k">def</span> <span class="nf">get_compress_ctx</span><span class="p">(</span><span class="n">algorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'wb'</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lz4'</span><span class="p">:</span>
+<div class="viewcode-block" id="get_compress_ctx"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.get_compress_ctx">[docs]</a><span class="k">def</span> <span class="nf">get_compress_ctx</span><span class="p">(</span><span class="n">algorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;wb&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lz4&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lz4.frame</span>
 
         <span class="n">compress_ctx</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">LZ4FrameFile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'gzip'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;gzip&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">gzip</span>
 
         <span class="n">compress_ctx</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">(</span><span class="n">fileobj</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'bz2'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;bz2&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">bz2</span>
 
         <span class="n">compress_ctx</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">'lzma'</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;lzma&#39;</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">lzma</span>
 
         <span class="n">compress_ctx</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">lzma</span><span class="o">.</span><span class="n">LZMAFile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
@@ -904,7 +893,7 @@
     <span class="n">default_protocol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">"""Extract protocol and compression algorithm from a string, use defaults if not found.</span>
+    <span class="sd">&quot;&quot;&quot;Extract protocol and compression algorithm from a string, use defaults if not found.</span>
 
 <span class="sd">    :param file_path: path of a file.</span>
 <span class="sd">    :param default_protocol: default serialization protocol used in case not found.</span>
@@ -912,20 +901,23 @@
 
 <span class="sd">    Examples:</span>
 
-<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path('./docarray_fashion_mnist.protobuf.gzip')</span>
-<span class="sd">    ('protobuf', 'gzip')</span>
+<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path(&#39;./docarray_fashion_mnist.protobuf.gzip&#39;)</span>
+<span class="sd">    (&#39;protobuf&#39;, &#39;gzip&#39;)</span>
 
-<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.protobuf')</span>
-<span class="sd">    ('protobuf', None)</span>
+<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path(&#39;/Documents/docarray_fashion_mnist.protobuf&#39;)</span>
+<span class="sd">    (&#39;protobuf&#39;, None)</span>
 
-<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path('/Documents/docarray_fashion_mnist.gzip')</span>
+<span class="sd">    &gt;&gt;&gt; protocol_and_compress_from_file_path(&#39;/Documents/docarray_fashion_mnist.gzip&#39;)</span>
 <span class="sd">    (None, gzip)</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ALLOWED_PROTOCOLS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;protobuf&#39;</span><span class="p">,</span> <span class="s1">&#39;protobuf-array&#39;</span><span class="p">,</span> <span class="s1">&#39;pickle-array&#39;</span><span class="p">}</span>
+    <span class="n">ALLOWED_COMPRESSIONS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lz4&#39;</span><span class="p">,</span> <span class="s1">&#39;bz2&#39;</span><span class="p">,</span> <span class="s1">&#39;lzma&#39;</span><span class="p">,</span> <span class="s1">&#39;zlib&#39;</span><span class="p">,</span> <span class="s1">&#39;gzip&#39;</span><span class="p">}</span>
 
     <span class="n">protocol</span> <span class="o">=</span> <span class="n">default_protocol</span>
     <span class="n">compress</span> <span class="o">=</span> <span class="n">default_compress</span>
 
-    <span class="n">file_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffixes</span><span class="p">]</span>
+    <span class="n">file_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">suffixes</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">file_extensions</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">extension</span> <span class="ow">in</span> <span class="n">ALLOWED_PROTOCOLS</span><span class="p">:</span>
             <span class="n">protocol</span> <span class="o">=</span> <span class="n">extension</span>
@@ -938,7 +930,7 @@
 <div class="viewcode-block" id="add_protocol_and_compress_to_file_path"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.add_protocol_and_compress_to_file_path">[docs]</a><span class="k">def</span> <span class="nf">add_protocol_and_compress_to_file_path</span><span class="p">(</span>
     <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">compress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">"""Creates a new file path with the protocol and compression methods as extensions.</span>
+    <span class="sd">&quot;&quot;&quot;Creates a new file path with the protocol and compression methods as extensions.</span>
 
 <span class="sd">    :param file_path: path of a file.</span>
 <span class="sd">    :param protocol: chosen protocol.</span>
@@ -946,73 +938,29 @@
 
 <span class="sd">    Examples:</span>
 
-<span class="sd">    &gt;&gt;&gt; add_protocol_and_compress_to_file_path('docarray_fashion_mnist.bin')</span>
-<span class="sd">    'docarray_fashion_mnist.bin'</span>
+<span class="sd">    &gt;&gt;&gt; add_protocol_and_compress_to_file_path(&#39;docarray_fashion_mnist.bin&#39;)</span>
+<span class="sd">    &#39;docarray_fashion_mnist.bin&#39;</span>
 
-<span class="sd">    &gt;&gt;&gt; add_protocol_and_compress_to_file_path('docarray_fashion_mnist', 'protobuf', 'gzip')</span>
-<span class="sd">    'docarray_fashion_mnist.protobuf.gzip'</span>
-<span class="sd">    """</span>
+<span class="sd">    &gt;&gt;&gt; add_protocol_and_compress_to_file_path(&#39;docarray_fashion_mnist&#39;, &#39;protobuf&#39;, &#39;gzip&#39;)</span>
+<span class="sd">    &#39;docarray_fashion_mnist.protobuf.gzip&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">file_path_extended</span> <span class="o">=</span> <span class="n">file_path</span>
     <span class="k">if</span> <span class="n">protocol</span><span class="p">:</span>
-        <span class="n">file_path_extended</span> <span class="o">+=</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="n">protocol</span>
+        <span class="n">file_path_extended</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">protocol</span>
     <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
-        <span class="n">file_path_extended</span> <span class="o">+=</span> <span class="s1">'.'</span> <span class="o">+</span> <span class="n">compress</span>
+        <span class="n">file_path_extended</span> <span class="o">+=</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">compress</span>
 
     <span class="k">return</span> <span class="n">file_path_extended</span></div>
 
 
 <div class="viewcode-block" id="filter_dict"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.filter_dict">[docs]</a><span class="k">def</span> <span class="nf">filter_dict</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">"""Removes `None` values from dict `d`.</span>
+    <span class="sd">&quot;&quot;&quot;Removes `None` values from dict `d`.</span>
 
 <span class="sd">    :param d: input dict</span>
 <span class="sd">    :return: filtered dict</span>
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span></div>
-
-
-<span class="k">def</span> <span class="nf">_version_check</span><span class="p">(</span><span class="n">package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">package</span><span class="p">:</span>
-            <span class="n">package</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="vm">__name__</span><span class="p">])[</span><span class="s1">'__package__'</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">github_repo</span><span class="p">:</span>
-            <span class="n">github_repo</span> <span class="o">=</span> <span class="n">package</span>
-
-        <span class="n">cur_ver</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">get_distribution</span><span class="p">(</span><span class="n">package</span><span class="p">)</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
-        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'https://pypi.python.org/pypi/</span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s1">/json'</span><span class="p">,</span>
-            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">'User-Agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0'</span><span class="p">},</span>
-        <span class="p">)</span>
-        <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span>
-            <span class="n">req</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>  <span class="c1"># 'with' is important to close the resource after use</span>
-            <span class="n">j</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
-            <span class="n">releases</span> <span class="o">=</span> <span class="n">j</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'releases'</span><span class="p">,</span> <span class="p">{})</span>
-            <span class="n">latest_release_ver</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="nb">sorted</span><span class="p">(</span><span class="n">LooseVersion</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">releases</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s1">'.dev'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
-            <span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">cur_ver</span> <span class="o">&lt;</span> <span class="n">latest_release_ver</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="n">Panel</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">'You are using [b]</span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">cur_ver</span><span class="si">}</span><span class="s1">[/b], but [bold green]</span><span class="si">{</span><span class="n">latest_release_ver</span><span class="si">}</span><span class="s1">[/] is available. '</span>
-                        <span class="sa">f</span><span class="s1">'You may upgrade it via [b]pip install -U </span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s1">[/b]. [link=https://github.com/jina-ai/</span><span class="si">{</span><span class="n">github_repo</span><span class="si">}</span><span class="s1">/releases]Read Changelog here[/link].'</span><span class="p">,</span>
-                        <span class="n">title</span><span class="o">=</span><span class="s1">':new: New version available!'</span><span class="p">,</span>
-                        <span class="n">width</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="c1"># no network, too slow, PyPi is down</span>
-        <span class="k">pass</span>
-
-
-<div class="viewcode-block" id="is_latest_version"><a class="viewcode-back" href="../../../api/docarray.helper/#docarray.helper.is_latest_version">[docs]</a><span class="k">def</span> <span class="nf">is_latest_version</span><span class="p">(</span><span class="n">package</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">"""Check if there is a latest version from Pypi, set env `NO_VERSION_CHECK` to disable it.</span>
-
-<span class="sd">    :param package: package name if none auto-detected</span>
-<span class="sd">    :param github_repo: repo name that contains CHANGELOG if none then the same as package name</span>
-<span class="sd">    """</span>
-
-    <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">_version_check</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">package</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -1027,7 +975,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/math/distance/torch.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.math.distance.torch - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.math.distance.torch - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -528,17 +528,17 @@
 
 
 <div class="viewcode-block" id="cosine"><a class="viewcode-back" href="../../../../../api/docarray.math.distance.torch/#docarray.math.distance.torch.cosine">[docs]</a><span class="k">def</span> <span class="nf">cosine</span><span class="p">(</span>
-    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'numpy.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Cosine distance between each row in x_mat and each row in y_mat.</span>
+    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;numpy.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Cosine distance between each row in x_mat and each row in y_mat.</span>
 
 <span class="sd">    :param x_mat: torch with ndim=2</span>
 <span class="sd">    :param y_mat: torch with ndim=2</span>
 <span class="sd">    :param eps: a small jitter to avoid divde by zero</span>
 <span class="sd">    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.</span>
 <span class="sd">    :return: np.ndarray  with ndim=2</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
         <span class="n">x_mat</span> <span class="o">=</span> <span class="n">x_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
         <span class="n">y_mat</span> <span class="o">=</span> <span class="n">y_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
@@ -549,15 +549,15 @@
     <span class="k">return</span> <span class="n">sim_mt</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="euclidean"><a class="viewcode-back" href="../../../../../api/docarray.math.distance.torch/#docarray.math.distance.torch.euclidean">[docs]</a><span class="k">def</span> <span class="nf">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'numpy.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Euclidean distance between each row in x_mat and each row in y_mat.</span>
+<div class="viewcode-block" id="euclidean"><a class="viewcode-back" href="../../../../../api/docarray.math.distance.torch/#docarray.math.distance.torch.euclidean">[docs]</a><span class="k">def</span> <span class="nf">euclidean</span><span class="p">(</span><span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;numpy.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Euclidean distance between each row in x_mat and each row in y_mat.</span>
 
 <span class="sd">    :param x_mat:  torch array with ndim=2</span>
 <span class="sd">    :param y_mat:  torch array with ndim=2</span>
 <span class="sd">    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.</span>
 <span class="sd">    :return: np.ndarray  with ndim=2</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
         <span class="n">x_mat</span> <span class="o">=</span> <span class="n">x_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
         <span class="n">y_mat</span> <span class="o">=</span> <span class="n">y_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
@@ -565,16 +565,16 @@
 
 
 <div class="viewcode-block" id="sqeuclidean"><a class="viewcode-back" href="../../../../../api/docarray.math.distance.torch/#docarray.math.distance.torch.sqeuclidean">[docs]</a><span class="k">def</span> <span class="nf">sqeuclidean</span><span class="p">(</span>
-    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">'tensor'</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'cpu'</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'numpy.ndarray'</span><span class="p">:</span>
-    <span class="sd">"""Squared euclidean distance between each row in x_mat and each row in y_mat.</span>
+    <span class="n">x_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">y_mat</span><span class="p">:</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;numpy.ndarray&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Squared euclidean distance between each row in x_mat and each row in y_mat.</span>
 
 <span class="sd">    :param x_mat:  torch array with ndim=2</span>
 <span class="sd">    :param y_mat:  torch array with ndim=2</span>
 <span class="sd">    :param device: the computational device for `embed_model`, can be either `cpu` or `cuda`.</span>
 <span class="sd">    :return: np.ndarray  with ndim=2</span>
-<span class="sd">    """</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">'cuda'</span><span class="p">:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
         <span class="n">x_mat</span> <span class="o">=</span> <span class="n">x_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
         <span class="n">y_mat</span> <span class="o">=</span> <span class="n">y_mat</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
 
@@ -593,7 +593,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

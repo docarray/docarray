@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/document/mixins/featurehash.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.document.mixins.featurehash - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.document.mixins.featurehash - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -529,16 +529,16 @@
 
 
 <div class="viewcode-block" id="FeatureHashMixin"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin">[docs]</a><span class="k">class</span> <span class="nc">FeatureHashMixin</span><span class="p">:</span>
-    <span class="sd">"""Provide helper functions for feature hashing."""</span>
+    <span class="sd">&quot;&quot;&quot;Provide helper functions for feature hashing.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FeatureHashMixin.embed_feature_hashing"><a class="viewcode-back" href="../../../../../api/docarray.document.mixins.featurehash/#docarray.document.mixins.featurehash.FeatureHashMixin.embed_feature_hashing">[docs]</a>    <span class="k">def</span> <span class="nf">embed_feature_hashing</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">:</span> <span class="s1">'T'</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
         <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="s1">'tags'</span><span class="p">),</span>
+        <span class="n">fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">),</span>
         <span class="n">max_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1_000_000</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-        <span class="sd">"""Convert an arbitrary set of attributes into a fixed-dimensional matrix using the hashing trick.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Convert an arbitrary set of attributes into a fixed-dimensional matrix using the hashing trick.</span>
 
 <span class="sd">        :param n_dim: the dimensionality of each document in the output embedding.</span>
 <span class="sd">            Small numbers of features are likely to cause hash collisions,</span>
@@ -546,7 +546,7 @@
 <span class="sd">        :param sparse: whether the resulting feature matrix should be a sparse csr_matrix or dense ndarray.</span>
 <span class="sd">            Note that this feature requires ``scipy``</span>
 <span class="sd">        :param fields: which attributes to be considered as for feature hashing.</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
@@ -554,12 +554,12 @@
         <span class="n">table</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span>  <span class="c1"># dense</span>
 
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">'text'</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-                <span class="n">all_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vocabulary</span><span class="p">((</span><span class="s1">'text'</span><span class="p">,))</span>
+            <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">all_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vocabulary</span><span class="p">((</span><span class="s1">&#39;text&#39;</span><span class="p">,))</span>
                 <span class="k">for</span> <span class="n">f_id</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">all_tokens</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">_hash_column</span><span class="p">(</span><span class="n">f_id</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">idxs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">_hash_column</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">idxs</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">table</span><span class="p">)</span>
 
@@ -590,13 +590,13 @@
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'true'</span><span class="p">,</span> <span class="s1">'yes'</span><span class="p">}:</span>  <span class="c1"># parse boolean parameter</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">}:</span>  <span class="c1"># parse boolean parameter</span>
                 <span class="k">return</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">'false'</span><span class="p">,</span> <span class="s1">'no'</span><span class="p">}:</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">}:</span>
                 <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">base</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span> <span class="n">base</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>  <span class="c1"># parse int parameter</span>
@@ -619,7 +619,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

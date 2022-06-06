@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex/" /><link rel="search" title="Search" href="../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/dataclasses/types.html" />
 
-    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.04.07"/>
-        <title>docarray.dataclasses.types - DocArray 0.13.18 documentation</title>
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
+        <title>docarray.dataclasses.types - DocArray 0.13.19 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=68f4518137b9aefe99b631505a2064c3c42c9852" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../">
-                <div class="brand">DocArray 0.13.18 documentation</div>
+                <div class="brand">DocArray 0.13.19 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -549,16 +549,16 @@
 
 <span class="kn">from</span> <span class="nn">..typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Audio</span><span class="p">,</span> <span class="n">Video</span><span class="p">,</span> <span class="n">Mesh</span><span class="p">,</span> <span class="n">Tabular</span><span class="p">,</span> <span class="n">Blob</span><span class="p">,</span> <span class="n">JSON</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'field'</span><span class="p">,</span> <span class="s1">'dataclass'</span><span class="p">,</span> <span class="s1">'is_multimodal'</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;dataclass&#39;</span><span class="p">,</span> <span class="s1">&#39;is_multimodal&#39;</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">AttributeType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="n">DOCUMENT</span> <span class="o">=</span> <span class="s1">'document'</span>
-    <span class="n">PRIMITIVE</span> <span class="o">=</span> <span class="s1">'primitive'</span>
-    <span class="n">ITERABLE_PRIMITIVE</span> <span class="o">=</span> <span class="s1">'iterable_primitive'</span>
-    <span class="n">ITERABLE_DOCUMENT</span> <span class="o">=</span> <span class="s1">'iterable_document'</span>
-    <span class="n">NESTED</span> <span class="o">=</span> <span class="s1">'nested'</span>
-    <span class="n">ITERABLE_NESTED</span> <span class="o">=</span> <span class="s1">'iterable_nested'</span>
+    <span class="n">DOCUMENT</span> <span class="o">=</span> <span class="s1">&#39;document&#39;</span>
+    <span class="n">PRIMITIVE</span> <span class="o">=</span> <span class="s1">&#39;primitive&#39;</span>
+    <span class="n">ITERABLE_PRIMITIVE</span> <span class="o">=</span> <span class="s1">&#39;iterable_primitive&#39;</span>
+    <span class="n">ITERABLE_DOCUMENT</span> <span class="o">=</span> <span class="s1">&#39;iterable_document&#39;</span>
+    <span class="n">NESTED</span> <span class="o">=</span> <span class="s1">&#39;nested&#39;</span>
+    <span class="n">ITERABLE_NESTED</span> <span class="o">=</span> <span class="s1">&#39;iterable_nested&#39;</span>
 
 
 <span class="k">class</span> <span class="nc">Field</span><span class="p">(</span><span class="n">_Field</span><span class="p">):</span>
@@ -574,7 +574,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setter</span> <span class="o">=</span> <span class="n">setter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">getter</span> <span class="o">=</span> <span class="n">getter</span>
 
-    <span class="k">def</span> <span class="nf">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="s1">'_Field'</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">copy_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="s1">&#39;_Field&#39;</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__slots__</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
 
@@ -601,7 +601,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_field</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Field</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">'setter'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">'getter'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Field</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;setter&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;getter&#39;</span><span class="p">)</span>
 
 
 <span class="n">_TYPES_REGISTRY</span> <span class="o">=</span> <span class="p">{</span>
@@ -620,7 +620,7 @@
 
 <span class="nd">@overload</span>
 <span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
-    <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'T'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">init</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="nb">repr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -628,18 +628,18 @@
     <span class="n">order</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">unsafe_hash</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">frozen</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">type_var_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">'_Field'</span><span class="p">],</span> <span class="s1">'Field'</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+    <span class="n">type_var_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;_Field&#39;</span><span class="p">],</span> <span class="s1">&#39;Field&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
     <span class="o">...</span>
 
 
 <div class="viewcode-block" id="dataclass"><a class="viewcode-back" href="../../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.dataclass">[docs]</a><span class="k">def</span> <span class="nf">dataclass</span><span class="p">(</span>
-    <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">'T'</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="bp">cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">type_var_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">'_Field'</span><span class="p">],</span> <span class="s1">'Field'</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">type_var_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">TypeVar</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;_Field&#39;</span><span class="p">],</span> <span class="s1">&#39;Field&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
-    <span class="sd">"""Annotates a class as a DocArray dataclass type.</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Annotates a class as a DocArray dataclass type.</span>
 
 <span class="sd">    Example usage:</span>
 
@@ -647,8 +647,8 @@
 <span class="sd">    &gt;&gt;&gt; from docarray import dataclass</span>
 <span class="sd">    &gt;&gt;&gt; @dataclass:</span>
 <span class="sd">    &gt;&gt;&gt; class X:</span>
-<span class="sd">    &gt;&gt;&gt;     banner: Image = 'apple.png'</span>
-<span class="sd">    &gt;&gt;&gt;     description: Text = 'This is a big red apple.'</span>
+<span class="sd">    &gt;&gt;&gt;     banner: Image = &#39;apple.png&#39;</span>
+<span class="sd">    &gt;&gt;&gt;     description: Text = &#39;This is a big red apple.&#39;</span>
 
 <span class="sd">    :param type_var_map: a mapping from TypeVar to a callable that gives Field.</span>
 
@@ -662,7 +662,7 @@
 
 <span class="sd">        The default mapping will be overrided by this new mapping if they collide on the keys.</span>
 
-<span class="sd">    """</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">type_var_map</span><span class="p">:</span>
         <span class="n">type_var_map</span> <span class="o">=</span> <span class="n">_TYPES_REGISTRY</span>
@@ -674,12 +674,12 @@
     <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
     <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="sd">"""</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set Decorator function.</span>
 
 <span class="sd">        :param f: function the decorator is used for</span>
 <span class="sd">        :return: wrapper</span>
-<span class="sd">        """</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -694,10 +694,10 @@
         <span class="n">decorated_cls</span> <span class="o">=</span> <span class="n">_dataclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># inject flag for recognizing this is a multimodal dataclass</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">decorated_cls</span><span class="p">,</span> <span class="s1">'__is_multimodal__'</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">decorated_cls</span><span class="p">,</span> <span class="s1">&#39;__is_multimodal__&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># wrap init so `MMDoc(document)` is possible</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">decorated_cls</span><span class="p">,</span> <span class="s1">'__init__'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">decorated_cls</span><span class="p">,</span> <span class="s1">&#39;__init__&#39;</span><span class="p">):</span>
             <span class="n">decorated_cls</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">deco</span><span class="p">(</span><span class="n">decorated_cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">decorated_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -708,8 +708,8 @@
                 <span class="n">decorated_cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_var_map</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">](</span><span class="n">f</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">_GenericAlias</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="s1">'List'</span><span class="p">,</span>
-                <span class="s1">'Iterable'</span><span class="p">,</span>
+                <span class="s1">&#39;List&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Iterable&#39;</span><span class="p">,</span>
             <span class="p">]:</span>
                 <span class="n">sub_type</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">__args__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">sub_type</span> <span class="ow">in</span> <span class="n">type_var_map</span><span class="p">:</span>
@@ -724,71 +724,71 @@
 
 
 <div class="viewcode-block" id="is_multimodal"><a class="viewcode-back" href="../../../../api/docarray.dataclasses.types/#docarray.dataclasses.types.is_multimodal">[docs]</a><span class="k">def</span> <span class="nf">is_multimodal</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">"""Returns True if obj is an instance of :meth:`.dataclass`."""</span>
+    <span class="sd">&quot;&quot;&quot;Returns True if obj is an instance of :meth:`.dataclass`.&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_multimodal</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">'__is_multimodal__'</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_is_dataclass</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__is_multimodal__&#39;</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">_from_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">],</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_from_document</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">doc</span><span class="o">.</span><span class="n">is_multimodal</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">doc</span><span class="si">}</span><span class="s1"> is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.'</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">doc</span><span class="si">}</span><span class="s1"> is not a multimodal doc instantiated from a class wrapped by `docarray.dataclasses.tdataclass`.&#39;</span>
         <span class="p">)</span>
 
     <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attribute_info</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">'multi_modal_schema'</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">attribute_info</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;multi_modal_schema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">field</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">'multi_modal_schema'</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'position'</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">_metadata</span><span class="p">[</span><span class="s1">&#39;multi_modal_schema&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'type'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'bytes'</span>
-            <span class="ow">and</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">PRIMITIVE</span>
+            <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bytes&#39;</span>
+            <span class="ow">and</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">PRIMITIVE</span>
         <span class="p">):</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
-        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
             <span class="n">AttributeType</span><span class="o">.</span><span class="n">PRIMITIVE</span><span class="p">,</span>
             <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_PRIMITIVE</span><span class="p">,</span>
         <span class="p">]:</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">DOCUMENT</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">DOCUMENT</span><span class="p">:</span>
             <span class="n">attribute_doc</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
             <span class="n">attribute</span> <span class="o">=</span> <span class="n">_get_doc_attribute</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute</span>
-        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_DOCUMENT</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_DOCUMENT</span><span class="p">:</span>
             <span class="n">attribute_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">chunk_doc</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="n">position</span><span class="p">]</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
                 <span class="n">attribute_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_get_doc_attribute</span><span class="p">(</span><span class="n">chunk_doc</span><span class="p">,</span> <span class="n">field</span><span class="p">))</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_list</span>
-        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">NESTED</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">NESTED</span><span class="p">:</span>
             <span class="n">nested_cls</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_doc_nested_attribute</span><span class="p">(</span>
                 <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="n">position</span><span class="p">],</span> <span class="n">nested_cls</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">'attribute_type'</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_NESTED</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">attribute_info</span><span class="p">[</span><span class="s1">&#39;attribute_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_NESTED</span><span class="p">:</span>
             <span class="n">nested_cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__dataclass_fields__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">__args__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">attribute_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">chunk_doc</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="n">position</span><span class="p">]</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
                 <span class="n">attribute_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_get_doc_nested_attribute</span><span class="p">(</span><span class="n">chunk_doc</span><span class="p">,</span> <span class="n">nested_cls</span><span class="p">))</span>
             <span class="n">attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">attribute_list</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Invalid attribute at `</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">`'</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid attribute at `</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">attributes</span>
 
 
-<span class="k">def</span> <span class="nf">_get_doc_attribute</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_doc_attribute</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">_is_field</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">getter</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">'Invalid attribute type'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid attribute type&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_doc_nested_attribute</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">:</span> <span class="s1">'Document'</span><span class="p">,</span> <span class="n">nested_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">'T'</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">'T'</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_get_doc_nested_attribute</span><span class="p">(</span><span class="n">attribute_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">nested_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_multimodal</span><span class="p">(</span><span class="n">nested_cls</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Nested attribute </span><span class="si">{</span><span class="n">nested_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> is not a dataclass'</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nested attribute </span><span class="si">{</span><span class="n">nested_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> is not a dataclass&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">nested_cls</span><span class="p">(</span><span class="o">**</span><span class="n">_from_document</span><span class="p">(</span><span class="n">nested_cls</span><span class="p">,</span> <span class="n">attribute_doc</span><span class="p">))</span>
 </pre></div>
                 </article>
@@ -804,7 +804,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 01, 2022</div>
+                            Last updated on Jun 06, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
