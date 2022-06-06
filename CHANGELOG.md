@@ -99,6 +99,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2406,4 +2407,31 @@
 ### 🍹 Other Improvements
 
  - [[```fef03f0a```](https://github.com/jina-ai/docarray/commit/fef03f0a82229e088f76951a83e888e019d027f9)] __-__ __version__: the next version will be 0.13.18 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-19></a>
+## Release Note (`0.13.19`)
+
+> Release time: 2022-06-06 10:52:58
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  David Buchaca Prats,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```2098aa71```](https://github.com/jina-ai/docarray/commit/2098aa71ecddf289e5793ebf639adbdd5733534c)] __-__ filter in weav (#373) (*David Buchaca Prats*)
+
+### 🐞 Bug fixes
+
+ - [[```1df47c44```](https://github.com/jina-ai/docarray/commit/1df47c44dfeaef2d105fd696c736e1d09661153b)] __-__ __tests__: eq and neq operator for qdrant filtering  (#388) (*samsja*)
+
+### 🧼 Code Refactoring
+
+ - [[```d5597529```](https://github.com/jina-ai/docarray/commit/d559752930ddba594ec521a25ed67f56f4271eb6)] __-__ remove redundant code (#390) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```5870c552```](https://github.com/jina-ai/docarray/commit/5870c552a24ff14e1434571ebe139289c02e7ca6)] __-__ __version__: the next version will be 0.13.19 (*Jina Dev Bot*)
 
