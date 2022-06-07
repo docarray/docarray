@@ -11,7 +11,7 @@ from typing import (
 
 import numpy as np
 
-from ..base.backend import BaseBackendMixin
+from ..base.backend import BaseBackendMixin, TypeMap
 from ....helper import dataclass_from_dict, filter_dict
 
 if TYPE_CHECKING:
@@ -34,9 +34,9 @@ class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
     TYPE_MAP = {
-        'str': ('TEXT', str),
-        'float': ('float', float),
-        'int': ('integer', int),
+        'str': TypeMap(type='TEXT', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=int),
     }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':

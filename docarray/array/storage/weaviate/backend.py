@@ -15,7 +15,7 @@ import weaviate
 
 from .... import Document
 from ....helper import dataclass_from_dict, filter_dict
-from ..base.backend import BaseBackendMixin
+from ..base.backend import BaseBackendMixin, TypeMap
 from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
@@ -52,7 +52,11 @@ class WeaviateConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': ('string', str), 'float': ('number', float), 'int': ('int', int)}
+    TYPE_MAP = {
+        'str': TypeMap(type='string', converter=str),
+        'float': TypeMap(type='number', converter=float),
+        'int': TypeMap(type='int', converter=int),
+    }
 
     def _init_storage(
         self,
