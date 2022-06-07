@@ -52,7 +52,7 @@ class WeaviateConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'string', 'float': 'number', 'int': 'int'}
+    TYPE_MAP = {'str': ('string', str), 'float': ('number', float), 'int': ('int', int)}
 
     def _init_storage(
         self,
@@ -310,7 +310,10 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        extra_columns = {col: value.tags.get(col) for col, _ in self._config.columns}
+        extra_columns = {
+            col: self._map_column(value.tags.get(col), dict(*self._config.columns)[col])
+            for col, _ in self._config.columns
+        }
 
         return dict(
             data_object={

@@ -25,10 +25,13 @@ class BaseBackendMixin(ABC):
     def _map_id(self, _id: str) -> str:
         return _id
 
+    def _map_column(self, value, col_type) -> str:
+        return self.TYPE_MAP[col_type][1](value)
+
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         from ....math.ndarray import to_numpy_array
 
         return to_numpy_array(embedding)
 
     def _map_type(self, col_type: str) -> str:
-        return self.TYPE_MAP[col_type]
+        return self.TYPE_MAP[col_type][0]

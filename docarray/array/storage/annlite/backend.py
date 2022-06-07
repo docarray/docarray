@@ -33,7 +33,11 @@ class AnnliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'TEXT', 'float': 'float', 'int': 'integer'}
+    TYPE_MAP = {
+        'str': ('TEXT', str),
+        'float': ('float', float),
+        'int': ('integer', int),
+    }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
