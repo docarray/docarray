@@ -116,3 +116,27 @@ def test_cast_columns_annlite(start_storage, type_da, type_column):
     index.extend(docs)
 
     assert len(index) == N
+
+
+@pytest.mark.parametrize('type_da', [int, float, str])
+@pytest.mark.parametrize('type_column', ['int', 'float', 'str'])
+def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
+
+    test_id = request.node.callspec.id.replace(
+        '-', ''
+    )  # remove '-' from the test id for the weaviate name
+    N = 10
+
+    index = DocumentArray(
+        storage='qdrant',
+        config={
+            'name': f'test{test_id}',
+            'columns': [('price', type_column)],
+        },
+    )
+
+    docs = DocumentArray([Document(tags={'price': type_da(i)}) for i in range(10)])
+
+    index.extend(docs)
+
+    assert len(index) == N
