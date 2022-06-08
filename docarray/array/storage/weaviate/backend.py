@@ -314,8 +314,9 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
+        columns_dict = {key: val for [key, val] in self._config.columns}
         extra_columns = {
-            col: self._map_column(value.tags.get(col), dict(*self._config.columns)[col])
+            col: self._map_column(value.tags.get(col), columns_dict[col])
             for col, _ in self._config.columns
         }
 
