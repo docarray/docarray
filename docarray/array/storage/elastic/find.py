@@ -118,6 +118,7 @@ class FindMixin(BaseFindMixin):
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be stored in Elastic. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
+        :param filter: filter query used for pre-filtering
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
@@ -132,7 +133,7 @@ class FindMixin(BaseFindMixin):
 
         return [self._find_similar_vectors(q, limit=limit) for q in query]
 
-    def _find_with_filter(self, query: Dict, limit: int = 10):
+    def _find_with_filter(self, query: Dict, limit: Optional[Union[int, float]] = 20):
         resp = self._client.search(
             index=self._config.index_name,
             query=query,
@@ -149,6 +150,6 @@ class FindMixin(BaseFindMixin):
 
         return da
 
-    def _filter(self, query: Dict, limit: int = 10) -> 'DocumentArray':
+    def _filter(self, query: Dict, limit: Optional[Union[int, float]] = 20) -> 'DocumentArray':
 
         return self._find_with_filter(query, limit=limit)

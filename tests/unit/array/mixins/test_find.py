@@ -344,3 +344,28 @@ def test_unsupported_pre_filtering(storage, start_storage):
 
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'price': {'$gte': 2}})
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('elasticsearch', {'n_dim': 32, 'index_text': False}),
+    ],
+)
+def test_elastic_id_filter(storage, config):
+    da = DocumentArray(storage=storage, config=config)
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(1, 32)) for i in range(50)
+        ]
+    )
+    id_list = [np.random.choice(50, 10, replace=False) for _ in range(10)]
+
+    for id in id_list:
+        query = {
+                "bool": {
+                    "filter": {"ids": {"values": id}}
+                }
+        }
+        result = da.find(query=query)
+        assert all([r.id in id for r in result])
