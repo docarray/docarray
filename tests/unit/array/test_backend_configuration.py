@@ -1,6 +1,10 @@
-import requests
+from typing import Tuple, Iterator
 
-from docarray import DocumentArray
+import pytest
+import requests
+import itertools
+
+from docarray import DocumentArray, Document
 
 
 def test_weaviate_hnsw(start_storage):
@@ -45,3 +49,49 @@ def test_weaviate_hnsw(start_storage):
     assert main_class.get('vectorIndexConfig', {}).get('cleanupIntervalSeconds') == 1000
     assert main_class.get('vectorIndexConfig', {}).get('skip') is True
     assert main_class.get('vectorIndexConfig', {}).get('distance') == 'l2-squared'
+
+
+def test_weaviate_da_w_protobuff(start_storage):
+
+    N = 10
+
+    index = DocumentArray(
+        storage='weaviate',
+        config={
+            'name': 'Test',
+            'columns': [('price', 'int')],
+        },
+    )
+
+    docs = DocumentArray([Document(tags={'price': i}) for i in range(N)])
+    docs = DocumentArray.from_protobuf(
+        docs.to_protobuf()
+    )  # same as streaming the da in jina
+
+    index.extend(docs)
+
+    assert len(index) == N
+
+
+@pytest.mark.parametrize('type_da', [int, float, str])
+@pytest.mark.parametrize('type_column', ['int', 'float', 'str'])
+def test_cast_columns_weaviate(start_storage, type_da, type_column, request):
+
+    test_id = request.node.callspec.id.replace(
+        '-', ''
+    )  # remove '-' from the test id for the weaviate name
+    N = 10
+
+    index = DocumentArray(
+        storage='weaviate',
+        config={
+            'name': f'Test{test_id}',
+            'columns': [('price', type_column)],
+        },
+    )
+
+    docs = DocumentArray([Document(tags={'price': type_da(i)}) for i in range(10)])
+
+    index.extend(docs)
+
+    assert len(index) == N
