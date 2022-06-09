@@ -390,6 +390,8 @@ def test_filtering(storage, filter_gen, operator, numeric_operators, start_stora
         filter = filter_gen(operator, threshold)
         results = da.find(filter=filter)
 
+        assert len(results) > 0
+
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
         )
