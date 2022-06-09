@@ -58,9 +58,7 @@ class FindMixin:
                 f'find failed, please check your filter query. Errors: \n{errors}'
             )
 
-        found_results = (
-            results.get('data', {}).get('Get', {}).get(self._class_name, []) or []
-        )
+        found_results = results.get('data', {}).get('Get', {}).get(self._class_name, [])
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in found_results:
@@ -73,6 +71,44 @@ class FindMixin:
                 doc.scores['cosine_similarity'] = NamedScore(value=None)
             else:
                 doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+
+            doc.tags['wid'] = result['_additional']['id']
+
+            docs.append(doc)
+
+        return DocumentArray(docs)
+
+    def _filter(
+        self,
+        filter: Dict,
+    ) -> 'DocumentArray':
+        """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
+
+        :param filter: the input filter to apply in each stored document
+        :return: a `DocumentArray` containing the `Document` objects that verify the filter.
+        """
+        if not filter:
+            return self
+
+        results = (
+            self._client.query.get(self._class_name, '_serialized')
+            .with_additional('id')
+            .with_where(filter)
+            .do()
+        )
+
+        docs = []
+        if 'errors' in results:
+            errors = '\n'.join(map(lambda error: error['message'], results['errors']))
+            raise ValueError(
+                f'filter failed, please check your filter query. Errors: \n{errors}'
+            )
+
+        found_results = results.get('data', {}).get('Get', {}).get(self._class_name, [])
+
+        # The serialized document is stored in results['data']['Get'][self._class_name]
+        for result in found_results:
+            doc = Document.from_base64(result['_serialized'], **self._serialize_config)
 
             doc.tags['wid'] = result['_additional']['id']
 

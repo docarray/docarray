@@ -133,7 +133,7 @@ print(da.find(np.random.random(D), limit=10))
 <DocumentArray (length=10) at 4917906896>
 ```
 
-
+(qdrant-filter)=
 ## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 

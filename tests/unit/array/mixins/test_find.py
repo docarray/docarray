@@ -257,19 +257,26 @@ numeric_operators_qdrant = {
             )
             for operator in ['gte', 'gt', 'lte', 'lt']
         ],
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'value': {operator: threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    operator,
-                ]
-            )
-            for operator in ['eq', 'neq']
-        ],
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'eq',
+            ]
+        ),
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must_not': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'neq',
+            ]
+        ),
         *[
             tuple(
                 [
@@ -305,6 +312,47 @@ def test_search_pre_filtering(
 
         results = da.find(np.random.rand(n_dim), filter=filter)
 
+        assert len(results) > 0
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueNumber': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ]
+    ],
+)
+def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
+    )
+
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        filter = filter_gen(operator, threshold)
+        results = da.find(filter=filter)
+
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
         )
@@ -325,6 +373,11 @@ def test_weaviate_filter_query(start_storage):
 
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'wrong': 'filter'})
+
+    with pytest.raises(ValueError):
+        da._filter(filter={'wrong': 'filter'})
+
+    assert isinstance(da._filter(filter={}), type(da))
 
 
 @pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])

@@ -169,13 +169,66 @@ print(results[0].text)
 Persist Documents with Weaviate.
 ```
 
-
 ## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
 in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
 
-### Example of `.find` with a filter
+### Example of `.find` with a filter only
+
+Consider you store Documents with a certain tag `price` into weaviate and you want to retrieve all Documents
+with `price`  lower or equal to  some `max_price` value. 
+
+
+You can index such Documents as follows:
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+da = DocumentArray(
+    storage='weaviate',
+    config={
+        'n_dim': n_dim,
+        'columns': [('price', 'float')],
+    },
+)
+
+with da:
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
+
+print('\nIndexed Embeddings:\n')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
+filter:
+
+```python
+max_price = 3
+n_limit = 4
+
+filter = {'path': 'price', 'operator': 'LessThanEqual', 'valueNumber': max_price}
+results = da.find(filter=filter)
+
+print('\n Returned examples that verify filter "price at most 7":\n')
+for price in results[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+This would print
+
+```
+ Returned examples that satisfy condition "price at most 3":
+
+	 price=0
+	 price=1
+	 price=2
+	 price=3
+```
+
+### Example of `.find` with query vector and filter
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
@@ -236,3 +289,5 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
  ```
+
+
