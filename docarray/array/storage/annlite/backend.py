@@ -67,14 +67,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        if self._config.columns is None:
-            self._config.columns = []
-
-        for i in range(len(self._config.columns)):
-            self._config.columns[i] = (
-                self._config.columns[i][0],
-                self._map_type(self._config.columns[i][1]),
-            )
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         config = asdict(config)
         self.n_dim = config.pop('n_dim')

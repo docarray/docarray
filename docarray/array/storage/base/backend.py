@@ -32,3 +32,8 @@ class BaseBackendMixin(ABC):
 
     def _map_type(self, col_type: str) -> str:
         return self.TYPE_MAP[col_type]
+
+    def _normalize_columns(self, columns):
+        if columns is None:
+            return []
+        return columns
