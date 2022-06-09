@@ -10,12 +10,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     and ``__delitem__`` for ``DocumentArrayElastic``"""
 
     def _document_to_elastic(self, doc: 'Document') -> Dict:
+        extra_columns = {col: doc.tags.get(col) for col, _ in self._config.columns}
         request = {
             '_op_type': 'index',
             '_id': doc.id,
             '_index': self._config.index_name,
             'embedding': self._map_embedding(doc.embedding),
             'blob': doc.to_base64(),
+            **extra_columns,
         }
 
         if self._config.tag_indices:

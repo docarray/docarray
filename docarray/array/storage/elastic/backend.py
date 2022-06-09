@@ -48,6 +48,8 @@ class ElasticConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
+    TYPE_MAP = {'str': 'text', 'float': 'float', 'int': 'integer'}
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -70,6 +72,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
+
+        self._config.columns = self._normalize_columns(self._config.columns)
+
         self.n_dim = self._config.n_dim
         self._client = self._build_client()
         self._build_offset2id_index()
@@ -111,6 +116,12 @@ class BackendMixin(BaseBackendMixin):
                     'type': 'text',
                     'index': True,
                 }
+
+        for col, coltype in self._config.columns:
+            da_schema['mappings']['properties'][col] = {
+                'type': self._map_type(coltype),
+                'index': True,
+            }
 
         if self._config.m or self._config.ef_construction:
             index_options = {
