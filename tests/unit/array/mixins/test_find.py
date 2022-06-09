@@ -226,6 +226,15 @@ numeric_operators_qdrant = {
 }
 
 
+numeric_operators_elasticsearch = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+}
+
+
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
@@ -336,7 +345,35 @@ def test_search_pre_filtering(
                 ]
             )
             for operator in numeric_operators_weaviate.keys()
-        ]
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {'match': {'price': threshold}},
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['eq']
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
     ],
 )
 def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
