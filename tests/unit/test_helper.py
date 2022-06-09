@@ -8,6 +8,7 @@ from docarray.helper import (
     add_protocol_and_compress_to_file_path,
     filter_dict,
     get_full_version,
+    _safe_cast_int,
 )
 
 
@@ -61,3 +62,14 @@ def test_filter_dict():
 def test_ci_vendor():
     if 'GITHUB_WORKFLOW' in os.environ:
         assert get_full_version()['ci-vendor'] == 'GITHUB_ACTIONS'
+
+
+@pytest.mark.parametrize('input,output', [(1, 1), (1.0, 1), ('1', 1)])
+def test_safe_cast(input, output):
+    assert output == _safe_cast_int(input)
+
+
+@pytest.mark.parametrize('wrong_input', [1.5, 1.001, 2 / 3])
+def test_safe_cast_raise_error(wrong_input):
+    with pytest.raises(ValueError):
+        _safe_cast_int(wrong_input)

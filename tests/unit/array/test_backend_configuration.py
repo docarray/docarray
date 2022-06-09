@@ -130,7 +130,8 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
     index = DocumentArray(
         storage='qdrant',
         config={
-            'name': f'test{test_id}',
+            'collection_name': f'test{test_id}',
+            'n_dim': 3,
             'columns': [('price', type_column)],
         },
     )
