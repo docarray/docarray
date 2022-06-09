@@ -100,6 +100,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2434,4 +2435,23 @@
 ### 🍹 Other Improvements
 
  - [[```5870c552```](https://github.com/jina-ai/docarray/commit/5870c552a24ff14e1434571ebe139289c02e7ca6)] __-__ __version__: the next version will be 0.13.19 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-20></a>
+## Release Note (`0.13.20`)
+
+> Release time: 2022-06-09 13:40:09
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```68813513```](https://github.com/jina-ai/docarray/commit/68813513a88acddf66ada2950c2eae1d2114cc3f)] __-__ cast column to its correct type before insertion in database (#392) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```ae4d63b8```](https://github.com/jina-ai/docarray/commit/ae4d63b8e15f8c6e5ae65f9b1bcff8d9f4fe44c4)] __-__ __version__: the next version will be 0.13.20 (*Jina Dev Bot*)
 
