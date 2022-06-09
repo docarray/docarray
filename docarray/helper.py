@@ -449,10 +449,6 @@ def _safe_cast_int(value: Union[str, int, float]) -> int:
     :param value: value to be cast
     :return: cast integer
     """
-    if type(value) == float:
-        if value.is_integer():
-            return int(value)
-        else:
-            raise ValueError(f"Can't safely cast {value} to an int")
-    else:
-        return int(value)
+    if isinstance(value, float) and not value.is_integer():
+        raise ValueError(f"Can't safely cast {value} to an int")
+    return int(value)
