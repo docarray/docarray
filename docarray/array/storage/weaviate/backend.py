@@ -14,7 +14,7 @@ import numpy as np
 import weaviate
 
 from .... import Document
-from ....helper import dataclass_from_dict, filter_dict
+from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
 from ..base.backend import BaseBackendMixin, TypeMap
 from ..registry import _REGISTRY
 
@@ -55,7 +55,7 @@ class BackendMixin(BaseBackendMixin):
     TYPE_MAP = {
         'str': TypeMap(type='string', converter=str),
         'float': TypeMap(type='number', converter=float),
-        'int': TypeMap(type='int', converter=int),
+        'int': TypeMap(type='int', converter=_safe_cast_int),
     }
 
     def _init_storage(

@@ -5,7 +5,7 @@ import random
 import sys
 import uuid
 import warnings
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 __resources_path__ = os.path.join(
     os.path.dirname(
@@ -441,3 +441,18 @@ def filter_dict(d: Dict) -> Dict:
     :return: filtered dict
     """
     return dict(filter(lambda item: item[1] is not None, d.items()))
+
+
+def _safe_cast_int(value: Union[str, int, float]) -> int:
+    """Safely cast string and float to an integer
+    It mainly avoids silently rounding down the float value
+    :param value: value to be cast
+    :return: cast integer
+    """
+    if type(value) == float:
+        if value.is_integer():
+            return int(value)
+        else:
+            raise ValueError(f"Can't safely cast {value} to an int")
+    else:
+        return int(value)
