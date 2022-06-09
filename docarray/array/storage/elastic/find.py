@@ -17,6 +17,7 @@ from ....math.ndarray import to_numpy_array
 from ....score import NamedScore
 from ....array.mixins.find import FindMixin as BaseFindMixin
 
+
 if TYPE_CHECKING:
     import tensorflow
     import torch
@@ -150,6 +151,8 @@ class FindMixin(BaseFindMixin):
 
         return da
 
-    def _filter(self, query: Dict, limit: Optional[Union[int, float]] = 20) -> 'DocumentArray':
+    def _filter(
+        self, query: Dict, limit: Optional[Union[int, float]] = 20
+    ) -> 'DocumentArray':
 
         return self._find_with_filter(query, limit=limit)
