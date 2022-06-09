@@ -168,7 +168,7 @@ with da:
         ]
     )
 
-print('\nIndexed Embeddings:\n')
+print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```

@@ -169,7 +169,7 @@ print(results[0].text)
 Persist Documents with Weaviate.
 ```
 
-## Vector search with filter
+## Filtering
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
 in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
@@ -197,7 +197,7 @@ da = DocumentArray(
 with da:
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
 
-print('\nIndexed Embeddings:\n')
+print('\nIndexed Prices:\n')
 for price in da[:, 'tags__price']:
     print(f'\t price={price}')
 ```
@@ -212,7 +212,7 @@ n_limit = 4
 filter = {'path': 'price', 'operator': 'LessThanEqual', 'valueNumber': max_price}
 results = da.find(filter=filter)
 
-print('\n Returned examples that verify filter "price at most 7":\n')
+print('\n Returned examples that verify filter "price at most 3":\n')
 for price in results[:, 'tags__price']:
     print(f'\t price={price}')
 ```
@@ -253,7 +253,7 @@ with da:
         ]
     )
 
-print('\nIndexed Embeddings:\n')
+print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
