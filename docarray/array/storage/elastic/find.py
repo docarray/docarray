@@ -33,10 +33,13 @@ if TYPE_CHECKING:
 
 
 class FindMixin(BaseFindMixin):
-    def _find_similar_vectors(self, query: 'ElasticArrayType', limit=10):
+    def _find_similar_vectors(
+        self, query: 'ElasticArrayType', filter: Optional[Dict] = None, limit=10
+    ):
         """
         Return vector search results for the input query. `script_score` will be used in filter_field is set.
         :param query: query vector used for vector search
+        :param filter: filter query used for pre-filtering
         :param limit: number of items to be retrieved
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
@@ -55,6 +58,7 @@ class FindMixin(BaseFindMixin):
                 'k': limit,
                 'num_candidates': 10000,
             },
+            filter=filter,
         )
         list_of_hits = resp['hits']['hits']
 
@@ -123,16 +127,14 @@ class FindMixin(BaseFindMixin):
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
         """
-        if filter is not None:
-            raise ValueError(
-                'Filtered vector search is not supported for ElasticSearch backend'
-            )
         query = np.array(query)
         num_rows, n_dim = ndarray.get_array_rows(query)
         if n_dim != 2:
             query = query.reshape((num_rows, -1))
 
-        return [self._find_similar_vectors(q, limit=limit) for q in query]
+        return [
+            self._find_similar_vectors(q, filter=filter, limit=limit) for q in query
+        ]
 
     def _find_with_filter(self, query: Dict, limit: Optional[Union[int, float]] = 20):
         resp = self._client.search(
