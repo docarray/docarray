@@ -11,8 +11,8 @@ from typing import (
 
 import numpy as np
 
-from ..base.backend import BaseBackendMixin
-from ....helper import dataclass_from_dict, filter_dict
+from ..base.backend import BaseBackendMixin, TypeMap
+from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from ....typing import DocumentArraySourceType, ArrayType
@@ -33,7 +33,11 @@ class AnnliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'TEXT', 'float': 'float', 'int': 'integer'}
+    TYPE_MAP = {
+        'str': TypeMap(type='TEXT', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:

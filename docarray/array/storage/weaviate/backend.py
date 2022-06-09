@@ -14,8 +14,8 @@ import numpy as np
 import weaviate
 
 from .... import Document
-from ....helper import dataclass_from_dict, filter_dict
-from ..base.backend import BaseBackendMixin
+from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from ..base.backend import BaseBackendMixin, TypeMap
 from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
@@ -52,7 +52,11 @@ class WeaviateConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'string', 'float': 'number', 'int': 'int'}
+    TYPE_MAP = {
+        'str': TypeMap(type='string', converter=str),
+        'float': TypeMap(type='number', converter=float),
+        'int': TypeMap(type='int', converter=_safe_cast_int),
+    }
 
     def _init_storage(
         self,
@@ -309,7 +313,11 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        extra_columns = {col: value.tags.get(col) for col, _ in self._config.columns}
+        columns_dict = {key: val for [key, val] in self._config.columns}
+        extra_columns = {
+            col: self._map_column(value.tags.get(col), columns_dict[col])
+            for col, _ in self._config.columns
+        }
 
         return dict(
             data_object={

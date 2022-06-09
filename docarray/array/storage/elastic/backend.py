@@ -17,9 +17,9 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
-from ..base.backend import BaseBackendMixin
+from ..base.backend import BaseBackendMixin, TypeMap
 from .... import Document
-from ....helper import dataclass_from_dict
+from ....helper import dataclass_from_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from ....typing import (
@@ -48,7 +48,11 @@ class ElasticConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'text', 'float': 'float', 'int': 'integer'}
+    TYPE_MAP = {
+        'str': TypeMap(type='text', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
 
     def _init_storage(
         self,
