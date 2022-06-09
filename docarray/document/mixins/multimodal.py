@@ -113,7 +113,7 @@ class MultiModalMixin:
         attribute_type = self._metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self._metadata['multi_modal_schema'][attribute].get('position')
+        position = int(self._metadata['multi_modal_schema'][attribute].get('position'))
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
             return DocumentArray([self.chunks[position]])
