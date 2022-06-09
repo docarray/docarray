@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/base/backend.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>docarray.array.storage.base.backend - DocArray 0.13.19 documentation</title>
+        <title>docarray.array.storage.base.backend - DocArray 0.13.20 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.13.19 documentation</div>
+                <div class="brand">DocArray 0.13.20 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -519,15 +519,18 @@
                 <article role="main">
                     <h1>Source code for docarray.array.storage.base.backend</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">is_dataclass</span><span class="p">,</span> <span class="n">asdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">....typing</span> <span class="kn">import</span> <span class="n">DocumentArraySourceType</span><span class="p">,</span> <span class="n">ArrayType</span>
 
+<span class="n">TypeMap</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;TypeMap&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;converter&#39;</span><span class="p">])</span>
+
 
 <div class="viewcode-block" id="BaseBackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.backend/#docarray.array.storage.base.backend.BaseBackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BaseBackendMixin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="n">TYPE_MAP</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="n">TYPE_MAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TypeMap</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_init_storage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -545,13 +548,16 @@
     <span class="k">def</span> <span class="nf">_map_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_id</span>
 
+    <span class="k">def</span> <span class="nf">_map_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">col_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE_MAP</span><span class="p">[</span><span class="n">col_type</span><span class="p">]</span><span class="o">.</span><span class="n">converter</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_map_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">....math.ndarray</span> <span class="kn">import</span> <span class="n">to_numpy_array</span>
 
         <span class="k">return</span> <span class="n">to_numpy_array</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_map_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE_MAP</span><span class="p">[</span><span class="n">col_type</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">TYPE_MAP</span><span class="p">[</span><span class="n">col_type</span><span class="p">]</span><span class="o">.</span><span class="n">type</span></div>
 </pre></div>
                 </article>
             </div>
@@ -566,7 +572,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 06, 2022</div>
+                            Last updated on Jun 09, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
