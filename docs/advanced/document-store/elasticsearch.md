@@ -119,6 +119,70 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
+### Vector search with filter query
+One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
+
+
+Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
+has as tag `price` with value `i`. We can create such example with the following code:
+
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='elasticsearch',
+    config={'n_dim': n_dim, 'columns': [('price', 'int')]},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+print('\nIndexed Prices:\n')
+for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
+prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
+or equal than `max_price`. We can encode this information in ElasticSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
+
+Then the search with the proposed filter can be implemented and used with the following code:
+
+```python
+max_price = 7
+n_limit = 4
+
+np_query = np.ones(n_dim) * 8
+print(f'\nQuery vector: \t{np_query}')
+
+filter = {'range': {'price': {'lte': max_price}}}
+results = da.find(np_query, filter=filter, limit=n_limit)
+
+print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+This would print:
+
+```bash
+Embeddings Nearest Neighbours with "price" at most 7:
+
+	embedding=[7. 7. 7.],	 price=7
+	embedding=[6. 6. 6.],	 price=6
+	embedding=[5. 5. 5.],	 price=5
+	embedding=[4. 4. 4.],	 price=4
+ ```
+
 
 ### Search by filter query
 

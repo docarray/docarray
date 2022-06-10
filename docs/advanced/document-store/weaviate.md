@@ -262,7 +262,7 @@ Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the res
 prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in weaviate using `filter = {'path': ['price'], 'operator': 'LowerThanEqual', 'valueInt': max_price}`.
 
-Then the search with the proposed filter can implemented and used with the following code:
+Then the search with the proposed filter can be implemented and used with the following code:
 
 ```python
 max_price = 7
