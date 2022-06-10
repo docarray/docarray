@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
     Optional,
+    Union,
 )
 
 import numpy as np
@@ -79,8 +80,7 @@ class FindMixin:
         return DocumentArray(docs)
 
     def _filter(
-        self,
-        filter: Dict,
+        self, filter: Dict, limit: Optional[Union[int, float]] = 20
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
 
@@ -94,6 +94,7 @@ class FindMixin:
             self._client.query.get(self._class_name, '_serialized')
             .with_additional('id')
             .with_where(filter)
+            .with_limit(limit)
             .do()
         )
 
