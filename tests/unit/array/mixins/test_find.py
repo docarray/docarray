@@ -319,6 +319,7 @@ numeric_operators_elasticsearch = {
 def test_search_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage
 ):
+    np.random.seed(0)
     n_dim = 128
     da = DocumentArray(
         storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
