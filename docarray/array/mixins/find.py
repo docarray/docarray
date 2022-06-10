@@ -134,7 +134,7 @@ class FindMixin:
 
         if isinstance(query, dict):
             if filter is None:
-                return self._filter(query, limit=limit)
+                return self._filter(query)
             else:
                 raise ValueError(
                     'filter and query cannot be both dict type, set only one for filtering'
