@@ -436,7 +436,7 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-@pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])
+@pytest.mark.parametrize('storage', ['memory'])
 def test_unsupported_pre_filtering(storage, start_storage):
 
     n_dim = 128
