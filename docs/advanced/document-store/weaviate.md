@@ -169,7 +169,7 @@ print(results[0].text)
 Persist Documents with Weaviate.
 ```
 
-## Vector search with filter
+## Filtering
 
 Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
 in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/graphql-references/filters.html).
@@ -197,7 +197,7 @@ da = DocumentArray(
 with da:
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
 
-print('\nIndexed Embeddings:\n')
+print('\nIndexed Prices:\n')
 for price in da[:, 'tags__price']:
     print(f'\t price={price}')
 ```
@@ -212,7 +212,7 @@ n_limit = 4
 filter = {'path': 'price', 'operator': 'LessThanEqual', 'valueNumber': max_price}
 results = da.find(filter=filter)
 
-print('\n Returned examples that verify filter "price at most 7":\n')
+print('\n Returned examples that verify filter "price at most 3":\n')
 for price in results[:, 'tags__price']:
     print(f'\t price={price}')
 ```
@@ -253,7 +253,7 @@ with da:
         ]
     )
 
-print('\nIndexed Embeddings:\n')
+print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
@@ -262,7 +262,7 @@ Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the res
 prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in weaviate using `filter = {'path': ['price'], 'operator': 'LowerThanEqual', 'valueInt': max_price}`.
 
-Then the search with the proposed filter can implemented and used with the following code:
+Then the search with the proposed filter can be implemented and used with the following code:
 
 ```python
 max_price = 7

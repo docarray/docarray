@@ -134,7 +134,7 @@ class FindMixin:
 
         if isinstance(query, dict):
             if filter is None:
-                return self._filter(query)
+                return self._filter(query, limit=limit)
             else:
                 raise ValueError(
                     'filter and query cannot be both dict type, set only one for filtering'
@@ -256,7 +256,8 @@ class FindMixin:
 
     def _filter(
         self,
-        query: Dict,
+        query: Union[Dict, List[Dict]],
+        limit: Optional[Union[int, float]] = 20,
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given query.
 

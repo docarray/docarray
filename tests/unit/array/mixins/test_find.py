@@ -226,6 +226,15 @@ numeric_operators_qdrant = {
 }
 
 
+numeric_operators_elasticsearch = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+}
+
+
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
@@ -288,11 +297,29 @@ numeric_operators_qdrant = {
             )
             for operator in numeric_operators_annlite.keys()
         ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
     ],
 )
 def test_search_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage
 ):
+    np.random.seed(0)
     n_dim = 128
     da = DocumentArray(
         storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
@@ -336,7 +363,35 @@ def test_search_pre_filtering(
                 ]
             )
             for operator in numeric_operators_weaviate.keys()
-        ]
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {'match': {'price': threshold}},
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['eq']
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
     ],
 )
 def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
@@ -352,6 +407,8 @@ def test_filtering(storage, filter_gen, operator, numeric_operators, start_stora
 
         filter = filter_gen(operator, threshold)
         results = da.find(filter=filter)
+
+        assert len(results) > 0
 
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
@@ -380,7 +437,7 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-@pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])
+@pytest.mark.parametrize('storage', ['memory'])
 def test_unsupported_pre_filtering(storage, start_storage):
 
     n_dim = 128
@@ -397,3 +454,25 @@ def test_unsupported_pre_filtering(storage, start_storage):
 
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'price': {'$gte': 2}})
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('elasticsearch', {'n_dim': 32, 'index_text': False}),
+    ],
+)
+@pytest.mark.parametrize('limit', [1, 5, 10])
+def test_elastic_id_filter(storage, config, limit):
+    da = DocumentArray(storage=storage, config=config)
+    da.extend([Document(id=f'{i}', embedding=np.random.rand(32)) for i in range(50)])
+    id_list = [np.random.choice(50, 10, replace=False) for _ in range(3)]
+
+    for id in id_list:
+        id = list(map(lambda x: str(x), id))
+        query = {
+            "bool": {"filter": {"ids": {"values": id}}},
+        }
+        result = da.find(query=query, limit=limit)
+        assert all([r.id in id for r in result])
+        assert len(result) == limit

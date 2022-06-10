@@ -17,9 +17,9 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
-from ..base.backend import BaseBackendMixin
+from ..base.backend import BaseBackendMixin, TypeMap
 from .... import Document
-from ....helper import dataclass_from_dict
+from ....helper import dataclass_from_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from ....typing import (
@@ -48,6 +48,12 @@ class ElasticConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
+    TYPE_MAP = {
+        'str': TypeMap(type='text', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -70,6 +76,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
+
+        self._config.columns = self._normalize_columns(self._config.columns)
+
         self.n_dim = self._config.n_dim
         self._client = self._build_client()
         self._build_offset2id_index()
@@ -111,6 +120,12 @@ class BackendMixin(BaseBackendMixin):
                     'type': 'text',
                     'index': True,
                 }
+
+        for col, coltype in self._config.columns:
+            da_schema['mappings']['properties'][col] = {
+                'type': self._map_type(coltype),
+                'index': True,
+            }
 
         if self._config.m or self._config.ef_construction:
             index_options = {

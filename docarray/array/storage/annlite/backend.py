@@ -51,6 +51,15 @@ class BackendMixin(BaseBackendMixin):
                 embedding = np.asarray(embedding).squeeze()
         return embedding
 
+    def _normalize_columns(self, columns):
+        columns = super()._normalize_columns(columns)
+        for i in range(len(columns)):
+            columns[i] = (
+                columns[i][0],
+                self._map_type(columns[i][1]),
+            )
+        return columns
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -71,14 +80,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
 
-        if self._config.columns is None:
-            self._config.columns = []
-
-        for i in range(len(self._config.columns)):
-            self._config.columns[i] = (
-                self._config.columns[i][0],
-                self._map_type(self._config.columns[i][1]),
-            )
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
