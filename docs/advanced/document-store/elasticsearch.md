@@ -135,7 +135,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='elasticsearch',
-    config={'n_dim': n_dim, 'columns': [('price', 'int')]},
+    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
 )
 
 with da:
