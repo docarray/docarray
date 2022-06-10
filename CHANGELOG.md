@@ -101,6 +101,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2454,4 +2455,23 @@
 ### 🍹 Other Improvements
 
  - [[```ae4d63b8```](https://github.com/jina-ai/docarray/commit/ae4d63b8e15f8c6e5ae65f9b1bcff8d9f4fe44c4)] __-__ __version__: the next version will be 0.13.20 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-21></a>
+## Release Note (`0.13.21`)
+
+> Release time: 2022-06-10 12:23:58
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jie Fu,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```14824213```](https://github.com/jina-ai/docarray/commit/14824213d96f7a8fba0361b19ff5766c4eab123c)] __-__ add filter in elasticsearch backend (#375) (*Jie Fu*)
+
+### 🍹 Other Improvements
+
+ - [[```d88340f6```](https://github.com/jina-ai/docarray/commit/d88340f68e0a096ea39471c2f168ac4e7b75e55c)] __-__ __version__: the next version will be 0.13.21 (*Jina Dev Bot*)
 
