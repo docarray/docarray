@@ -297,6 +297,23 @@ numeric_operators_elasticsearch = {
             )
             for operator in numeric_operators_annlite.keys()
         ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
     ],
 )
 def test_search_pre_filtering(
