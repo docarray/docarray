@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/elasticsearch/" />
   
-<meta property="og:site_name" content="DocArray 0.13.20 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.21 Documentation" />
   
 <meta property="og:description" content="One can use Elasticsearch as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.20 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.21 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/elasticsearch.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>Elasticsearch - DocArray 0.13.20 documentation</title>
+        <title>Elasticsearch - DocArray 0.13.21 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.20 documentation</div>
+                <div class="brand">DocArray 0.13.21 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -656,6 +656,117 @@
 </div>
 <p>Other functions behave the same as in-memory DocumentArray.</p>
 </section>
+<section id="vector-search-with-filter-query">
+<h3>Vector search with filter query<a class="headerlink" href="#vector-search-with-filter-query" title="Permalink to this headline">#</a></h3>
+<p>One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s DSL</a>.</p>
+<p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
+has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">)],</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;l2_norm&#39;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed Prices:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that
+prices must follow a filter. As an example, let’s consider that retrieved documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower
+or equal than <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in ElasticSearch using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'range':</span> <span class="pre">{'price':</span> <span class="pre">{'lte':</span> <span class="pre">max_price}}}</span></code>.</p>
+<p>Then the search with the proposed filter can be implemented and used with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">np_query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Query vector: </span><span class="se">\t</span><span class="si">{</span><span class="n">np_query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lte&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">}}}</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Nearest Neighbours with &quot;price&quot; at most 7:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Embeddings Nearest Neighbours with <span class="s2">&quot;price&quot;</span> at most <span class="m">7</span>:
+
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+</pre></div>
+</div>
+</section>
+<section id="search-by-filter-query">
+<h3>Search by filter query<a class="headerlink" href="#search-by-filter-query" title="Permalink to this headline">#</a></h3>
+<p>One can search with user-defined query filters using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method. Such queries can be constructed following the
+guidelines in <a class="reference external" href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html">ElasticSearch’s Documentation</a>.</p>
+<p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into ElasticSearch and you want to retrieve all Documents
+with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower or equal to  some <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
+<p>You can index such Documents as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)],</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed Prices:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then you can retrieve all documents whose price is lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code> by applying the following
+filter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;lte&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Returned examples that verify filter &quot;price at most 3&quot;:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Returned</span> <span class="n">examples</span> <span class="n">that</span> <span class="n">satisfy</span> <span class="n">condition</span> <span class="s2">&quot;price at most 3&quot;</span><span class="p">:</span>
+
+	 <span class="n">price</span><span class="o">=</span><span class="mi">0</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">1</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">2</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">3</span>
+</pre></div>
+</div>
+</section>
 <section id="search-by-text-field">
 <h3>Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field<a class="headerlink" href="#search-by-text-field" title="Permalink to this headline">#</a></h3>
 <p>Text search can be easily leveraged in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with <code class="docutils literal notranslate"><span class="pre">storage='elasticsearch'</span></code>.
@@ -851,7 +962,7 @@ for search. If you want to use a specific tags field, make sure to specify it wi
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 09, 2022</div>
+                            Last updated on Jun 10, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -888,6 +999,8 @@ for search. If you want to use a specific tags field, make sure to specify it wi
 <li><a class="reference internal" href="#start-elastic-service">Start Elastic service</a></li>
 <li><a class="reference internal" href="#create-documentarray-with-elasticsearch-backend">Create DocumentArray with Elasticsearch backend</a></li>
 <li><a class="reference internal" href="#secure-connection">Secure connection</a></li>
+<li><a class="reference internal" href="#vector-search-with-filter-query">Vector search with filter query</a></li>
+<li><a class="reference internal" href="#search-by-filter-query">Search by filter query</a></li>
 <li><a class="reference internal" href="#search-by-text-field">Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field</a></li>
 <li><a class="reference internal" href="#search-by-tags-field">Search by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> field</a></li>
 </ul>
