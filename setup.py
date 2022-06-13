@@ -64,7 +64,7 @@ setup(
             'uvicorn',
             'strawberry-graphql',
             'weaviate-client~=3.3.0',
-            'annlite>=0.3.0',
+            'annlite>=0.3.2',
             'qdrant-client~=0.7.3',
             'elasticsearch>=8.2.0',
         ],
@@ -72,7 +72,7 @@ setup(
             'qdrant-client~=0.7.3',
         ],
         'annlite': [
-            'annlite>=0.3.0',
+            'annlite>=0.3.2',
         ],
         'weaviate': [
             'weaviate-client~=3.3.0',
@@ -100,7 +100,7 @@ setup(
             'jupyterlab',
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
-            'annlite>=0.3.0',
+            'annlite>=0.3.2',
             'elasticsearch>=8.2.0',
             'jina',
         ],
