@@ -482,6 +482,12 @@ def test_proto_serialization():
     assert deserialized_doc.chunks[1].tensor.shape == (10, 10, 3)
     assert deserialized_doc.tags['version'] == 20
 
+    images = deserialized_doc.get_multi_modal_attribute('image')
+    titles = doc.get_multi_modal_attribute('title')
+
+    assert images[0].tensor.shape == (10, 10, 3)
+    assert titles[0].text == 'hello world'
+
     assert 'multi_modal_schema' in deserialized_doc._metadata
 
     expected_schema = [
@@ -491,8 +497,10 @@ def test_proto_serialization():
     ]
     _assert_doc_schema(deserialized_doc, expected_schema)
 
-    translated_obj = MMDocument(doc)
-    assert translated_obj == obj
+    translated_obj = MMDocument(deserialized_doc)
+    assert (translated_obj.image == obj.image).all()
+    assert translated_obj.title == obj.title
+    assert translated_obj.version == obj.version
 
 
 def test_json_type():
