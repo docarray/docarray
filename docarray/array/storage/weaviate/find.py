@@ -132,7 +132,7 @@ class FindMixin:
            the closest Document objects for each of the queries in `query`.
 
         Note: Weaviate returns `certainty` values. To get cosine similarities one needs to use `cosine_sim = 2*certainty - 1` as explained here:
-                  https://www.semi.technology/developers/weaviate/current/more-resources/faq.html#q-how-do-i-get-the-cosine-similarity-from-weaviates-certainty
+                  https://weaviate.io/developers/weaviate/current/more-resources/faq.html#q-how-do-i-get-the-cosine-similarity-from-weaviates-certainty
         """
 
         num_rows, _ = ndarray.get_array_rows(query)
