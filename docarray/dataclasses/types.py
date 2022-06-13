@@ -234,23 +234,23 @@ def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
         ]:
             attributes[key] = doc.tags[key]
         elif attribute_info['attribute_type'] == AttributeType.DOCUMENT:
-            attribute_doc = doc.chunks[position]
+            attribute_doc = doc.chunks[int(position)]
             attribute = _get_doc_attribute(attribute_doc, field)
             attributes[key] = attribute
         elif attribute_info['attribute_type'] == AttributeType.ITERABLE_DOCUMENT:
             attribute_list = []
-            for chunk_doc in doc.chunks[position].chunks:
+            for chunk_doc in doc.chunks[int(position)].chunks:
                 attribute_list.append(_get_doc_attribute(chunk_doc, field))
             attributes[key] = attribute_list
         elif attribute_info['attribute_type'] == AttributeType.NESTED:
             nested_cls = field.type
             attributes[key] = _get_doc_nested_attribute(
-                doc.chunks[position], nested_cls
+                doc.chunks[int(position)], nested_cls
             )
         elif attribute_info['attribute_type'] == AttributeType.ITERABLE_NESTED:
             nested_cls = cls.__dataclass_fields__[key].type.__args__[0]
             attribute_list = []
-            for chunk_doc in doc.chunks[position].chunks:
+            for chunk_doc in doc.chunks[int(position)].chunks:
                 attribute_list.append(_get_doc_nested_attribute(chunk_doc, nested_cls))
             attributes[key] = attribute_list
         else:
