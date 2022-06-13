@@ -141,7 +141,7 @@ class FindMixin:
                 )
         elif query is None:
             if isinstance(filter, dict):
-                return self._filter(filter)
+                return self._filter(filter, limit=limit)
             else:
                 raise ValueError('filter must be dict when query is None')
         elif isinstance(query, str) or (
