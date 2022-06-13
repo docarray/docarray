@@ -8,7 +8,8 @@ from typing import (
 
 if TYPE_CHECKING:
     import numpy as np
-    from .... import DocumentArray
+
+from .... import DocumentArray
 
 
 class FindMixin:
@@ -41,3 +42,22 @@ class FindMixin:
         )
 
         return match_docs
+
+    def _filter(
+        self,
+        filter: Dict,
+        limit: Optional[Union[int, float]] = 20,
+        only_id: bool = False,
+    ) -> 'DocumentArray':
+        """Returns a subset of documents by filtering by the given filter (`Annlite` filter).
+
+        :param filter: the input filter to apply in each stored document
+        :param limit: the number of results to get for each query document in search.
+        :param only_id: if set, then returning matches will only contain ``id``
+        :return: a `DocumentArray` containing the `Document` objects that verify the filter.
+        """
+
+        docs = self._annlite.filter(
+            filter=filter, limit=limit, include_metadata=not only_id
+        )
+        return DocumentArray(docs)

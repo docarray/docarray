@@ -392,6 +392,17 @@ def test_search_pre_filtering(
             )
             for operator in ['gt', 'gte', 'lt', 'lte']
         ],
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
     ],
 )
 def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
