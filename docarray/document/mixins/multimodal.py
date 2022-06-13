@@ -113,15 +113,15 @@ class MultiModalMixin:
         attribute_type = self._metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self._metadata['multi_modal_schema'][attribute].get('position')
+        position = int(self._metadata['multi_modal_schema'][attribute].get('position'))
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
-            return DocumentArray([self.chunks[int(position)]])
+            return DocumentArray([self.chunks[position]])
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
         ]:
-            return self.chunks[int(position)].chunks
+            return self.chunks[position].chunks
         else:
             raise ValueError(
                 f'Invalid attribute {attribute}: must a Document attribute or nested dataclass'
