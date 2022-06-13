@@ -1,9 +1,9 @@
 import tempfile
 import os
 import time
+from typing import Dict
 
 import pytest
-from elasticsearch import Elasticsearch
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 compose_yml = os.path.abspath(
@@ -17,12 +17,14 @@ def tmpfile(tmpdir):
     return tmpdir / tmpfile
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def start_storage():
     os.system(
         f"docker-compose -f {compose_yml} --project-directory . up  --build -d "
         f"--remove-orphans"
     )
+    from elasticsearch import Elasticsearch
+
     es = Elasticsearch(hosts='http://localhost:9200/')
     while not es.ping():
         time.sleep(0.5)
@@ -32,3 +34,12 @@ def start_storage():
         f"docker-compose -f {compose_yml} --project-directory . down "
         f"--remove-orphans"
     )
+
+
+@pytest.fixture(scope='session')
+def set_env_vars(request):
+    _old_environ = dict(os.environ)
+    os.environ.update(request.param)
+    yield
+    os.environ.clear()
+    os.environ.update(_old_environ)

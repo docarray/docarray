@@ -14,8 +14,8 @@ import numpy as np
 import weaviate
 
 from .... import Document
-from ....helper import dataclass_from_dict, filter_dict
-from ..base.backend import BaseBackendMixin
+from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from ..base.backend import BaseBackendMixin, TypeMap
 from ..registry import _REGISTRY
 
 if TYPE_CHECKING:
@@ -33,14 +33,30 @@ class WeaviateConfig:
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
+    # vectorIndexConfig parameters
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
     timeout_config: Optional[Tuple[int, int]] = None
     max_connections: Optional[int] = None
+    dynamic_ef_min: Optional[int] = None
+    dynamic_ef_max: Optional[int] = None
+    dynamic_ef_factor: Optional[int] = None
+    vector_cache_max_objects: Optional[int] = None
+    flat_search_cutoff: Optional[int] = None
+    cleanup_interval_seconds: Optional[int] = None
+    skip: Optional[bool] = None
+    columns: Optional[List[Tuple[str, str]]] = None
+    distance: Optional[str] = None
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
+
+    TYPE_MAP = {
+        'str': TypeMap(type='string', converter=str),
+        'float': TypeMap(type='number', converter=float),
+        'int': TypeMap(type='int', converter=_safe_cast_int),
+    }
 
     def _init_storage(
         self,
@@ -78,6 +94,8 @@ class BackendMixin(BaseBackendMixin):
         )
         self._config = config
 
+        self._config.columns = self._normalize_columns(self._config.columns)
+
         self._schemas = self._load_or_create_weaviate_schema()
 
         _REGISTRY[self.__class__.__name__][self._class_name].append(self)
@@ -104,7 +122,7 @@ class BackendMixin(BaseBackendMixin):
         :return: string representing the name of  weaviate class/schema name of
             this :class:`DocumentArrayWeaviate` object
         """
-        return ''.join([i for i in uuid.uuid1().hex if not i.isdigit()]).capitalize()
+        return f'Class{uuid.uuid4().hex}'
 
     def _get_schema_by_name(self, cls_name: str) -> Dict:
         """Return the schema dictionary object with the class name
@@ -120,14 +138,22 @@ class BackendMixin(BaseBackendMixin):
             'ef': self._config.ef,
             'efConstruction': self._config.ef_construction,
             'maxConnections': self._config.max_connections,
+            'dynamicEfMin': self._config.dynamic_ef_min,
+            'dynamicEfMax': self._config.dynamic_ef_max,
+            'dynamicEfFactor': self._config.dynamic_ef_factor,
+            'vectorCacheMaxObjects': self._config.vector_cache_max_objects,
+            'flatSearchCutoff': self._config.flat_search_cutoff,
+            'cleanupIntervalSeconds': self._config.cleanup_interval_seconds,
+            'skip': self._config.skip,
+            'distance': self._config.distance,
         }
 
-        return {
+        base_classes = {
             'classes': [
                 {
                     'class': cls_name,
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': False},
+                    'vectorIndexConfig': {'skip': False, **filter_dict(hnsw_config)},
                     'properties': [
                         {
                             'dataType': ['blob'],
@@ -139,7 +165,7 @@ class BackendMixin(BaseBackendMixin):
                 {
                     'class': cls_name + 'Meta',
                     "vectorizer": "none",
-                    'vectorIndexConfig': {'skip': True, **filter_dict(hnsw_config)},
+                    'vectorIndexConfig': {'skip': True},
                     'properties': [
                         {
                             'dataType': ['string[]'],
@@ -150,6 +176,15 @@ class BackendMixin(BaseBackendMixin):
                 },
             ]
         }
+        for col, coltype in self._config.columns:
+            new_property = {
+                'dataType': [self._map_type(coltype)],
+                'name': col,
+                'indexInverted': True,
+            }
+            base_classes['classes'][0]['properties'].append(new_property)
+
+        return base_classes
 
     def _load_or_create_weaviate_schema(self):
         """Create a new weaviate schema for this :class:`DocumentArrayWeaviate` object
@@ -278,8 +313,17 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
+        columns_dict = {key: val for [key, val] in self._config.columns}
+        extra_columns = {
+            col: self._map_column(value.tags.get(col), columns_dict[col])
+            for col, _ in self._config.columns
+        }
+
         return dict(
-            data_object={'_serialized': value.to_base64(**self._serialize_config)},
+            data_object={
+                '_serialized': value.to_base64(**self._serialize_config),
+                **extra_columns,
+            },
             class_name=self._class_name,
             uuid=self._map_id(value.id),
             vector=self._map_embedding(value.embedding),

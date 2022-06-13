@@ -100,8 +100,6 @@ class PlotMixin:
         else:
             self.summary()
 
-    plot = deprecate_by(display, removed_at='0.5')
-
     def plot_matches_sprites(
         self,
         top_k: int = 10,

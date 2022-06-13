@@ -13,6 +13,7 @@ class PostMixin:
         show_progress: bool = False,
         batch_size: Optional[int] = None,
         parameters: Optional[Dict] = None,
+        **kwargs,
     ) -> 'DocumentArray':
         """Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back
 
@@ -66,6 +67,7 @@ class PostMixin:
                     show_progress=show_progress,
                     request_size=batch_size,
                     parameters=parameters,
+                    **kwargs,
                 )
         elif _scheme in ('grpc', 'http', 'ws', 'websocket'):
             from jina import Client
@@ -80,6 +82,7 @@ class PostMixin:
                 show_progress=show_progress,
                 request_size=batch_size,
                 parameters=parameters,
+                **kwargs,
             )
         else:
             raise ValueError(f'unsupported scheme: {r.scheme}')

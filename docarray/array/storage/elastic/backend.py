@@ -9,15 +9,17 @@ from typing import (
     List,
     Iterable,
     Any,
+    Tuple,
+    Mapping,
 )
 
 import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 
-from ..base.backend import BaseBackendMixin
+from ..base.backend import BaseBackendMixin, TypeMap
 from .... import Document
-from ....helper import dataclass_from_dict
+from ....helper import dataclass_from_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from ....typing import (
@@ -30,7 +32,9 @@ if TYPE_CHECKING:
 class ElasticConfig:
     n_dim: int  # dims  in elastic
     distance: str = 'cosine'  # similarity in elastic
-    hosts: str = 'http://localhost:9200'
+    hosts: Union[
+        str, List[Union[str, Mapping[str, Union[str, int]]]], None
+    ] = 'http://localhost:9200'
     index_name: Optional[str] = None
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
@@ -38,10 +42,17 @@ class ElasticConfig:
     batch_size: int = 64
     ef_construction: Optional[int] = None
     m: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
+
+    TYPE_MAP = {
+        'str': TypeMap(type='text', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
 
     def _init_storage(
         self,
@@ -65,6 +76,9 @@ class BackendMixin(BaseBackendMixin):
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
+
+        self._config.columns = self._normalize_columns(self._config.columns)
+
         self.n_dim = self._config.n_dim
         self._client = self._build_client()
         self._build_offset2id_index()
@@ -106,6 +120,12 @@ class BackendMixin(BaseBackendMixin):
                     'type': 'text',
                     'index': True,
                 }
+
+        for col, coltype in self._config.columns:
+            da_schema['mappings']['properties'][col] = {
+                'type': self._map_type(coltype),
+                'index': True,
+            }
 
         if self._config.m or self._config.ef_construction:
             index_options = {

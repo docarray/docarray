@@ -4,7 +4,7 @@
 One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `elasticsearch`. You can install it via `pip install "docarray[full]".` 
+This feature requires `elasticsearch`. You can install it via `pip install "docarray[elasticsearch]".` 
 ````
 
 ## Usage
@@ -119,6 +119,132 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
+### Vector search with filter query
+One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
+
+
+Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
+has as tag `price` with value `i`. We can create such example with the following code:
+
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='elasticsearch',
+    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+print('\nIndexed Prices:\n')
+for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
+prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
+or equal than `max_price`. We can encode this information in ElasticSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
+
+Then the search with the proposed filter can be implemented and used with the following code:
+
+```python
+max_price = 7
+n_limit = 4
+
+np_query = np.ones(n_dim) * 8
+print(f'\nQuery vector: \t{np_query}')
+
+filter = {'range': {'price': {'lte': max_price}}}
+results = da.find(np_query, filter=filter, limit=n_limit)
+
+print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+
+This would print:
+
+```bash
+Embeddings Nearest Neighbours with "price" at most 7:
+
+	embedding=[7. 7. 7.],	 price=7
+	embedding=[6. 6. 6.],	 price=6
+	embedding=[5. 5. 5.],	 price=5
+	embedding=[4. 4. 4.],	 price=4
+ ```
+
+
+### Search by filter query
+
+One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the 
+guidelines in [ElasticSearch's Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
+
+Consider you store Documents with a certain tag `price` into ElasticSearch and you want to retrieve all Documents
+with `price`  lower or equal to  some `max_price` value. 
+
+
+You can index such Documents as follows:
+```python
+from docarray import Document, DocumentArray
+
+n_dim = 3
+da = DocumentArray(
+    storage='elasticsearch',
+    config={
+        'n_dim': n_dim,
+        'columns': [('price', 'float')],
+    },
+)
+
+with da:
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
+
+print('\nIndexed Prices:\n')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
+filter:
+
+```python
+max_price = 3
+n_limit = 4
+
+filter = {
+    'range': {
+        'price': {
+            'lte': max_price,
+        }
+    }
+}
+results = da.find(filter=filter)
+
+print('\n Returned examples that verify filter "price at most 3":\n')
+for price in results[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+This would print
+
+```
+ Returned examples that satisfy condition "price at most 3":
+
+	 price=0
+	 price=1
+	 price=2
+	 price=3
+```
 
 ### Search by `.text` field
 

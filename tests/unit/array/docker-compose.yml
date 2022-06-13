@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   weaviate:
-    image: semitechnologies/weaviate:1.11.0
+    image: semitechnologies/weaviate:1.13.2
     ports:
       - "8080:8080"
     environment:
@@ -18,7 +18,7 @@ services:
         soft: 65535
         hard: 65535
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node

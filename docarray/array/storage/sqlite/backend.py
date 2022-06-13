@@ -8,6 +8,8 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Union,
+    List,
+    Tuple,
 )
 
 from .helper import initialize_table

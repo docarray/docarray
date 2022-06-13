@@ -7,6 +7,7 @@ from typing import (
     Dict,
     Iterable,
     List,
+    Tuple,
 )
 
 import numpy as np
@@ -41,6 +42,7 @@ class QdrantConfig:
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -85,6 +87,8 @@ class BackendMixin(BaseBackendMixin):
 
         self._config = config
         self._persist = bool(self._config.collection_name)
+
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         self._config.collection_name = (
             self.__class__.__name__ + random_identity()
@@ -186,6 +190,9 @@ class BackendMixin(BaseBackendMixin):
 
         if embedding.ndim > 1:
             embedding = np.asarray(embedding).squeeze()
+
+        if embedding.ndim == 0:  # scalar
+            embedding = np.array([embedding])
 
         if np.all(embedding == 0):
             embedding = embedding + EPSILON

@@ -28,28 +28,20 @@ def _get_hub_config() -> Optional[Dict]:
 
 
 @lru_cache()
-def _get_cloud_api() -> str:
-    """Get Cloud Api for transmiting data to the cloud.
+def _get_auth_token() -> Optional[str]:
+    hub_config = _get_hub_config()
+    config_auth_token = hub_config.get('auth_token') if hub_config else None
+    env_auth_token = os.environ.get('JINA_AUTH_TOKEN')
+    return env_auth_token or config_auth_token
 
-    :raises RuntimeError: Encounter error when fetching the cloud Api Url.
+
+@lru_cache()
+def _get_cloud_api() -> str:
+    """Get Cloud Api for transmitting data to the cloud.
+
     :return: Cloud Api Url
     """
-    if 'JINA_HUBBLE_REGISTRY' in os.environ:
-        u = os.environ['JINA_HUBBLE_REGISTRY']
-    else:
-        try:
-            req = Request(
-                'https://api.jina.ai/hub/hubble.json',
-                headers={'User-Agent': 'Mozilla/5.0'},
-            )
-            with urlopen(req) as resp:
-                u = json.load(resp)['url']
-        except Exception as ex:
-            raise RuntimeError(
-                f'Can not fetch Cloud API address from {req.full_url}'
-            ) from ex
-
-    return u
+    return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
 
 
 class PushPullMixin:
@@ -57,7 +49,7 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(self, name: str, show_progress: bool = False) -> Dict:
+    def push(self, name: str, show_progress: bool = False, public: bool = True) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -69,6 +61,7 @@ class PushPullMixin:
 
         :param name: a name that later can be used for retrieve this :class:`DocumentArray`.
         :param show_progress: if to show a progress bar on pulling
+        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.
         """
         import requests
 
@@ -82,14 +75,14 @@ class PushPullMixin:
                 ),
                 'name': name,
                 'type': 'documentArray',
+                'public': public,
             }
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        auth_token = _get_auth_token()
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
         _head, _tail = data.split(delimiter)
@@ -160,9 +153,8 @@ class PushPullMixin:
 
         headers = {}
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        auth_token = _get_auth_token()
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
         url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'

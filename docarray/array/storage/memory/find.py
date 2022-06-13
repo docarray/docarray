@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, Callable, TYPE_CHECKING
+from typing import Optional, Union, Tuple, Callable, TYPE_CHECKING, Dict
 
 import numpy as np
 
@@ -27,6 +27,7 @@ class FindMixin:
         use_scipy: bool = False,
         device: str = 'cpu',
         num_worker: Optional[int] = 1,
+        filter: Optional[Dict] = None,
         **kwargs,
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         """Returns approximate nearest neighbors given a batch of input queries.
@@ -47,11 +48,15 @@ class FindMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-
+        :param filter: filter query used for pre-filtering
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+        if filter is not None:
+            raise ValueError(
+                'Filtered vector search is not supported for In-Memory backend'
+            )
 
         if batch_size is not None:
             if batch_size <= 0:

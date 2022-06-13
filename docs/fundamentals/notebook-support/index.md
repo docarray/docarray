@@ -3,7 +3,7 @@
 Many data scientists work with Jupyter Notebook or Google Colab especially at the early prototyping stage. We understand that and that's why we optimize DocArray's user experience in these two environments. In this chapter, I use Jupyter Notebook as an example to demonstrate the features that can improve your productivity. On Google Colab, it is the same experience.
 
 ```{tip}
-Some features require extra dependencies beyond the basic install of DocArray. Use `pip install "docarray[commnon]"` to enable them.
+Some features require extra dependencies beyond the basic install of DocArray. Use `pip install "docarray[common]"` to enable them.
 ```
 
 

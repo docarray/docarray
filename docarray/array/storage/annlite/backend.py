@@ -5,12 +5,14 @@ from typing import (
     Optional,
     TYPE_CHECKING,
     Iterable,
+    List,
+    Tuple,
 )
 
 import numpy as np
 
-from ..base.backend import BaseBackendMixin
-from ....helper import dataclass_from_dict, filter_dict
+from ..base.backend import BaseBackendMixin, TypeMap
+from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from ....typing import DocumentArraySourceType, ArrayType
@@ -25,10 +27,17 @@ class AnnliteConfig:
     ef_construction: Optional[int] = None
     ef_search: Optional[int] = None
     max_connection: Optional[int] = None
+    columns: Optional[List[Tuple[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
+
+    TYPE_MAP = {
+        'str': TypeMap(type='TEXT', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
@@ -41,6 +50,15 @@ class BackendMixin(BaseBackendMixin):
             if embedding.ndim > 1:
                 embedding = np.asarray(embedding).squeeze()
         return embedding
+
+    def _normalize_columns(self, columns):
+        columns = super()._normalize_columns(columns)
+        for i in range(len(columns)):
+            columns[i] = (
+                columns[i][0],
+                self._map_type(columns[i][1]),
+            )
+        return columns
 
     def _init_storage(
         self,
@@ -61,6 +79,8 @@ class BackendMixin(BaseBackendMixin):
             config.data_path = TemporaryDirectory().name
 
         self._config = config
+
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
@@ -98,3 +118,6 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(n_dim, lock=False, **filter_dict(config))
+
+    def __len__(self):
+        return self._annlite.index_size

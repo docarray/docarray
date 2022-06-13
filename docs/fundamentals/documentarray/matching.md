@@ -14,7 +14,7 @@ Once `.embeddings` is set, one can use {meth}`~docarray.array.mixins.find.FindMi
 Though both `.find()` and `.match()` is about finding nearest neighbours of a given "query" and both accpet similar arguments, there are some differences between them:
 
 ##### Which side is the query at?
-- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neightbours you should write `one_million_docs.find(query)`;  
+- `.find()` always requires the query on the right-hand side. Say you have a DocumentArray with one million Documents, to find one query's nearest neighbours you should write `one_million_docs.find(query)`;  
 - `.match()` assumes the query is on left-hand side. `A.match(B)` semantically means "A matches against B and save the results to A". So with `.match()` you should write `query.match(one_million_docs)`.
 
 ##### What is the type of the query?
@@ -23,7 +23,7 @@ Though both `.find()` and `.match()` is about finding nearest neighbours of a gi
 
 ##### What is the return?
   - `.find()` returns a List of DocumentArray, each of which corresponds to one element/row in the query.
-  - `.match()` do not return anything. Match results are stored inside right-hand side's `.matches`.
+  - `.match()` do not return anything. Match results are stored inside left-hand side's `.matches`.
 
 In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
 
@@ -154,6 +154,28 @@ The following metrics are supported:
 Note that framework is auto-chosen based on the type of `.embeddings`. For example, if `.embeddings` is a Tensorflow Tensor, then Tensorflow will be used for computing. One exception is when `.embeddings` is a Numpy `ndarray`, you can choose to use Numpy or Scipy (by specify `.match(..., use_scipy=True)`) for computing. 
 
 By default `A.match(B)` will copy the top-K matched Documents from B to `A.matches`. When these matches are big, copying them can be time-consuming. In this case, one can leverage `.match(..., only_id=True)` to keep only {attr}`~docarray.Document.id`.
+
+### Pre filtering
+
+Both `match` and `find` support pre-filtering by passing a `filter` argument to the method.
+
+Pre-filtering is an advanced approximate nearest neighbors feature that allows to efficiently retrieve the nearest vectors
+that respect the filtering condition.
+
+In contrast, post-filtering in the naive approach where you first retrieve the 
+nearest neighbors and then discard all the candidates that do not respect the filter condition.
+
+````{admonition} Pre-filtering is not available for in-memory backend
+:class: caution
+By default a DocumentArray will use the in-memory backend which does not support pre-filtering
+```
+````
+
+You can find example on how to use the pre-filtering here:
+
+- {ref}`ANNLite <annlite-filter>`
+- {ref}`Weaviate <weaviate-filter>`
+- {ref}`Qdrant <qdrant-filter>`
 
 
 ### GPU support
