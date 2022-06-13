@@ -53,7 +53,7 @@ The following configs can be set:
 ## Vector search with filter
 
 Search with `.find` can be restricted by user-defined filters.
-Filters can be constructed following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).\
+Filters can be constructed following the guidelines provided in [the AnnLite source repository](https://github.com/jina-ai/annlite).
 
 ### Example of `.find` with a filter only
 
