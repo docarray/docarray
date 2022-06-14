@@ -102,6 +102,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2474,4 +2475,33 @@
 ### 🍹 Other Improvements
 
  - [[```d88340f6```](https://github.com/jina-ai/docarray/commit/d88340f68e0a096ea39471c2f168ac4e7b75e55c)] __-__ __version__: the next version will be 0.13.21 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-22></a>
+## Release Note (`0.13.22`)
+
+> Release time: 2022-06-14 11:17:55
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Simon Liang,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```52fde787```](https://github.com/jina-ai/docarray/commit/52fde78783a4fa78e7bd2e7c187cbd4dd7979609)] __-__ annlite find with filter and no query vector (#401) (*David Buchaca Prats*)
+
+### 🐞 Bug fixes
+
+ - [[```64f8ff5d```](https://github.com/jina-ai/docarray/commit/64f8ff5dfebb026cc9b13320b70222100cfb8e17)] __-__ propagate limit for filter (#400) (*AlaeddineAbdessalem*)
+ - [[```34d25345```](https://github.com/jina-ai/docarray/commit/34d253451d7f07d3c9ef8c4e9f587b887bb11dcc)] __-__ adding an int() cast to avoid IndexError (#394) (*Simon Liang*)
+
+### 📗 Documentation
+
+ - [[```c37e730c```](https://github.com/jina-ai/docarray/commit/c37e730cef840bf3c35cf90425945225e6269160)] __-__ weaviate doc fixes (#402) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```0b29c857```](https://github.com/jina-ai/docarray/commit/0b29c8577025df54e6bc97849e6ff03051ce4dd7)] __-__ update slack (*Han Xiao*)
+ - [[```aad1e1f6```](https://github.com/jina-ai/docarray/commit/aad1e1f66808848a9a07793527c687797a7a8c6d)] __-__ __version__: the next version will be 0.13.22 (*Jina Dev Bot*)
 
