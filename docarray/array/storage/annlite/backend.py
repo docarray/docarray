@@ -13,6 +13,7 @@ import numpy as np
 
 from ..base.backend import BaseBackendMixin, TypeMap
 from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from .... import Document
 
 if TYPE_CHECKING:
     from ....typing import DocumentArraySourceType, ArrayType
@@ -64,33 +65,69 @@ class BackendMixin(BaseBackendMixin):
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[AnnliteConfig, Dict]] = None,
+        secondary_indices: Optional[Dict] = None,
         **kwargs,
     ):
+
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
             config = dataclass_from_dict(AnnliteConfig, config)
 
         self._persist = bool(config.data_path)
-
         if not self._persist:
             from tempfile import TemporaryDirectory
 
             config.data_path = TemporaryDirectory().name
 
         self._config = config
-
         self._config.columns = self._normalize_columns(self._config.columns)
-
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
 
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
-        from .... import Document
 
         super()._init_storage()
+
+        ###
+        if secondary_indices:
+            self.secondary_indices = {}
+
+        for name, config_secondary_index in secondary_indices.items():
+            self.secondary_indices[name] = {}
+
+            config_joined = {**config, **config_secondary_index}
+            if not config_joined:
+                raise ValueError(
+                    f'Config object must be specified for secondary index {name}'
+                )
+            elif isinstance(config_joined, dict):
+                config_joined = dataclass_from_dict(AnnliteConfig, config_joined)
+
+            secondary_indices[name]['_config'] = config_joined
+            self.secondary_indices[name]['_persist'] = bool(
+                secondary_indices[name]['_config'].data_path
+            )
+            if not self.secondary_indices[name]['_persist']:
+                from tempfile import TemporaryDirectory
+
+                config_joined.data_path = TemporaryDirectory().name
+
+            self.secondary_indices[name]['_config'] = config_joined
+            self.secondary_indices[name]['_config'].columns = self._normalize_columns(
+                self.secondary_indices[name]['_config'].columns
+            )
+            config_joined = asdict(config_joined)
+            self.secondary_indices[name]['n_dim'] = config_joined.pop('n_dim')
+
+            from annlite import AnnLite
+
+            self._annlite = AnnLite(
+                self.n_dim, lock=False, **filter_dict(config_joined)
+            )
+        ###
 
         if _docs is None:
             return
