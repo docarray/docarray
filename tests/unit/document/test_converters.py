@@ -247,6 +247,7 @@ def test_glb_converters(uri, chunk_num):
     doc = Document(uri=uri)
     doc.load_uri_to_point_cloud_tensor(2000)
     assert doc.tensor.shape == (2000, 3)
+    assert isinstance(doc.tensor, np.ndarray)
 
     doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
     assert len(doc.chunks) == chunk_num

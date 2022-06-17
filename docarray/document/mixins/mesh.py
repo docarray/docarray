@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 if TYPE_CHECKING:
     from ...typing import T
 
@@ -31,10 +33,10 @@ class MeshDataMixin:
             scene = loader(self.uri, force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
-                self.chunks.append(Document(tensor=geo.sample(samples)))
+                self.chunks.append(Document(tensor=np.array(geo.sample(samples))))
         else:
             # combine a scene into a single mesh
             mesh = loader(self.uri, force='mesh')
-            self.tensor = mesh.sample(samples)
+            self.tensor = np.array(mesh.sample(samples))
 
         return self
