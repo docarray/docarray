@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.plot/" />
   
-<meta property="og:site_name" content="DocArray 0.13.22 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.23 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.22 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.23 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -37,7 +37,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.plot.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>docarray.array.mixins.plot module - DocArray 0.13.22 documentation</title>
+        <title>docarray.array.mixins.plot module - DocArray 0.13.23 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.22 documentation</div>
+                <div class="brand">DocArray 0.13.23 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -568,7 +568,7 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.plot.PlotMixin.plot_embeddings">
 <span class="sig-name descname"><span class="pre">plot_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MyDocumentArray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_sprites</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_image_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'127.0.0.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/plot/#PlotMixin.plot_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.plot.PlotMixin.plot_embeddings" title="Permalink to this definition">#</a></dt>
-<dd><p>Interactively visualize <a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin.embeddings" title="docarray.array.mixins.content.ContentPropertyMixin.embeddings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embeddings</span></code></a> using the Embedding Projector.</p>
+<dd><p>Interactively visualize <a class="reference internal" href="../docarray.array.chunk/#docarray.array.chunk.ChunkArray.embeddings" title="docarray.array.chunk.ChunkArray.embeddings"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embeddings</span></code></a> using the Embedding Projector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -576,7 +576,7 @@
 make sure to give different names each time and set <code class="docutils literal notranslate"><span class="pre">path</span></code> to the same value.</p></li>
 <li><p><strong>host</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – if set, bind the embedding-projector frontend to given host. Otherwise <cite>localhost</cite> is used.</p></li>
 <li><p><strong>port</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – if set, run the embedding-projector frontend at given port. Otherwise a random port is used.</p></li>
-<li><p><strong>image_sprites</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, visualize the dots using <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.uri" title="docarray.document.data.DocumentData.uri"><code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code></a> and <a class="reference internal" href="../docarray.document.data/#docarray.document.data.DocumentData.tensor" title="docarray.document.data.DocumentData.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a>.</p></li>
+<li><p><strong>image_sprites</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, visualize the dots using <a class="reference internal" href="../docarray.document/#docarray.document.Document.uri" title="docarray.document.Document.uri"><code class="xref py py-attr docutils literal notranslate"><span class="pre">uri</span></code></a> and <a class="reference internal" href="../docarray.document/#docarray.document.Document.tensor" title="docarray.document.Document.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a>.</p></li>
 <li><p><strong>path</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – if set, then append the visualization to an existing folder, where you can compare multiple
 embeddings at the same time. Make sure to use a different <code class="docutils literal notranslate"><span class="pre">title</span></code> each time .</p></li>
 <li><p><strong>min_image_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – only used when <cite>image_sprites=True</cite>. the minimum size of the image</p></li>
@@ -657,7 +657,7 @@ Each sub-image is also square-sized and equally-sized.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 14, 2022</div>
+                            Last updated on Jun 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

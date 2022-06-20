@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.base/" />
   
-<meta property="og:site_name" content="DocArray 0.13.22 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.23 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.22 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.23 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -37,7 +37,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.base.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.04.1"/>
-        <title>docarray.array.base module - DocArray 0.13.22 documentation</title>
+        <title>docarray.array.base module - DocArray 0.13.23 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.22 documentation</div>
+                <div class="brand">DocArray 0.13.23 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -554,6 +554,61 @@
 <dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.base.</span></span><span class="sig-name descname"><span class="pre">BaseDocumentArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">storage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'memory'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/base/#BaseDocumentArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.base.BaseDocumentArray" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MutableSequence</span></code>[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">docarray.document.Document</span></code></a>]</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.append" title="Permalink to this definition">#</a></dt>
+<dd><p>S.append(value) – append value to the end of the sequence</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">--</span> <span class="pre">remove</span> <span class="pre">all</span> <span class="pre">items</span> <span class="pre">from</span> <span class="pre">S</span></span></span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.clear" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.count">
+<span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">--</span> <span class="pre">return</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">occurrences</span> <span class="pre">of</span> <span class="pre">value</span></span></span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.count" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.extend" title="Permalink to this definition">#</a></dt>
+<dd><p>S.extend(iterable) – extend sequence by appending elements from the iterable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">integer</span> <span class="pre">--</span> <span class="pre">return</span> <span class="pre">first</span> <span class="pre">index</span> <span class="pre">of</span> <span class="pre">value.</span></span></span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.index" title="Permalink to this definition">#</a></dt>
+<dd><p>Raises ValueError if the value is not present.</p>
+<p>Supporting start and stop arguments is optional, but
+recommended.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.insert">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.insert" title="Permalink to this definition">#</a></dt>
+<dd><p>S.insert(index, value) – insert value before index</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">item</span> <span class="pre">--</span> <span class="pre">remove</span> <span class="pre">and</span> <span class="pre">return</span> <span class="pre">item</span> <span class="pre">at</span> <span class="pre">index</span> <span class="pre">(default</span> <span class="pre">last).</span></span></span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.pop" title="Permalink to this definition">#</a></dt>
+<dd><p>Raise IndexError if list is empty or index is out of range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.remove" title="Permalink to this definition">#</a></dt>
+<dd><p>S.remove(value) – remove first occurrence of value.
+Raise ValueError if the value is not present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.base.BaseDocumentArray.reverse">
+<span class="sig-name descname"><span class="pre">reverse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.base.BaseDocumentArray.reverse" title="Permalink to this definition">#</a></dt>
+<dd><p>S.reverse() – reverse <em>IN PLACE</em></p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -593,7 +648,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 14, 2022</div>
+                            Last updated on Jun 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
