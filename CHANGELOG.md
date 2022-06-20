@@ -103,6 +103,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2504,4 +2505,29 @@
 
  - [[```0b29c857```](https://github.com/jina-ai/docarray/commit/0b29c8577025df54e6bc97849e6ff03051ce4dd7)] __-__ update slack (*Han Xiao*)
  - [[```aad1e1f6```](https://github.com/jina-ai/docarray/commit/aad1e1f66808848a9a07793527c687797a7a8c6d)] __-__ __version__: the next version will be 0.13.22 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-23></a>
+## Release Note (`0.13.23`)
+
+> Release time: 2022-06-20 21:12:11
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ samsja,  Ziniu Yu,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```ed30272b```](https://github.com/jina-ai/docarray/commit/ed30272b1bc41f7f8a49b353a1257b3acfcb0a16)] __-__ better api ref (#396) (*samsja*)
+
+### 🐞 Bug fixes
+
+ - [[```b8feb53b```](https://github.com/jina-ai/docarray/commit/b8feb53bf8878c9fd598c3ea5fc8783924bfafe6)] __-__ convert mesh tensor to nparray (#404) (*Ziniu Yu*)
+ - [[```18a1c463```](https://github.com/jina-ai/docarray/commit/18a1c463c12ac56aa4d7511aa294ae23082c39a0)] __-__ customize metric fn expect no metric_name (#405) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```5a3ba782```](https://github.com/jina-ai/docarray/commit/5a3ba782262986a781f5c8504c333979d385475f)] __-__ fix readme (*Han Xiao*)
+ - [[```7639918a```](https://github.com/jina-ai/docarray/commit/7639918a6a9ef6d5d58919e9defc3048d5bef6b5)] __-__ __version__: the next version will be 0.13.23 (*Jina Dev Bot*)
 
