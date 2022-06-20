@@ -67,7 +67,7 @@ class FindMixin:
                 batch_size = int(batch_size)
 
         if callable(metric):
-            cdist = metric
+            cdist = lambda *x: metric(*x[:2])
         elif isinstance(metric, str):
             if use_scipy:
                 from scipy.spatial.distance import cdist as cdist
