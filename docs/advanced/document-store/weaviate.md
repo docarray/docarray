@@ -106,7 +106,7 @@ The following configs can be set:
 
 *You can read more about the HNSW parameters and their default values [here](https://weaviate.io/developers/weaviate/current/vector-index-plugins/hnsw.html#how-to-use-hnsw-and-parameters)
 
-## Minimum Example
+## Minimum example
 
 The following example shows how to use DocArray with Weaviate Document Store in order to index and search text 
 Documents.
