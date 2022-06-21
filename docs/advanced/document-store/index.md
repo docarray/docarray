@@ -13,7 +13,8 @@ extend
 benchmark
 ```
 
-Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
+Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis.
+Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
 
 The look-and-feel of a DocumentArray with external store is **almost the same** as a regular in-memory DocumentArray. This allows users to easily switch between backends under the same DocArray idiom.  
 
@@ -24,24 +25,44 @@ from docarray import DocumentArray, Document
 
 da = DocumentArray(storage='sqlite', config={'connection': 'example.db'})
 
-da.append(Document())
+with da:
+    da.append(Document())
 da.summary()
 ```
 
 ```text
-        Documents Summary         
-                                  
-  Length                 1        
-  Homogenous Documents   True     
-  Common Attributes      ('id',)  
-                                  
-                     Attributes Summary                     
-                                                            
-  Attribute   Data type   #Unique values   Has empty value  
- ────────────────────────────────────────────────────────── 
-  id          ('str',)    1                False            
-                                                           
+╭──────── Documents Summary ─────────╮
+│                                    │
+│   Length                 1         │
+│   Homogenous Documents   True      │
+│   Common Attributes      ('id',)   │
+│   Multimodal dataclass   False     │
+│                                    │
+╰────────────────────────────────────╯
+╭───────────────────── Attributes Summary ─────────────────────╮
+│                                                              │
+│   Attribute   Data type   #Unique values   Has empty value   │
+│  ──────────────────────────────────────────────────────────  │
+│   id          ('str',)    1                False             │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+╭──────────────────────── DocumentArraySqlite Config ────────────────────────╮
+│                                                                            │
+│   connection         example.db                                            │
+│   table_name         DocumentArraySqlite97c8c833586444a89272ff0ff4287edb   │
+│   serialize_config   {}                                                    │
+│   conn_config        {}                                                    │
+│   journal_mode       DELETE                                                │
+│   synchronous        OFF                                                   │
+│                                                                            │
+╰────────────────────────────────────────────────────────────────────────────╯
 ```
+Note that  `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
+which allow users to access the  `DocumentArray` position (allowing statements such as `da[1]`),
+are properly mapped and saved to the storage backend.
+This is the recommended approach to modify a DocumentArray that lives on a document store to avoid
+unexpected behaviors that can yield to, for example,  inaccessible elements by position.
+
 
 Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
 
@@ -136,7 +157,8 @@ The output is:
 0
 ```
 
-Looks like `db` is not really up-to-date with `da`. This is true and false. True in the sense that `1` is not `0`, number speaks by itself. False in the sense that, the Document is already written to the storage backend. You just can't see it. 
+Looks like `db` is not really up-to-date with `da`. This is true and false. True in the sense that `1` is not `0`, number speaks by itself. 
+False in the sense that, the Document is already written to the storage backend. You just can't see it. 
 
 To prove it does persist, run the following code snippet multiple times and you will see the length is increasing one at a time:
 
@@ -148,7 +170,8 @@ da.append(Document(text='hello'))
 print(len(da))
 ```
 
-Simply put, the reason of this behavior is that certain meta information **not synced immediately** to the backend on *every* operation; it would be very costly to do so. As a consequence, your multiple references to the same backend  would look different if they are written in one code block as the example above.
+Simply put, the reason of this behavior is that certain meta information **not synced immediately** to the backend on *every* operation; it would be very costly to do so.
+As a consequence, your multiple references to the same backend  would look different if they are written in one code block as the example above.
 
 To solve this problem, simply use `with` statement and use DocumentArray as a context manager. The last example can be refactored into the following: 
 
