@@ -66,6 +66,29 @@ unexpected behaviors that can yield to, for example, inaccessible elements by po
 
 Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
 
+## Storage Backend summary
+
+DocArray supports multiple storage backends with different features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
+
+
+| Name                                                                                        | Construction                             | vector search | vector search with filter | search with filter and no query vector |
+|---------------------------------------------------------------------------------------------|------------------------------------------|---------------|---------------------------|----------------------------------------|
+| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | ✅             | ✅                         | ✅                                      |
+| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | ❌             | ❌                         | ✅                                      | 
+| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | ✅             | ✅                         | ✅                                      |
+| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | ✅             | ✅                         | ❌                                      |
+| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | ✅             | ✅                         | ✅                                      |
+| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                         | ✅                                      |
+
+
+Here we understand by 
+
+- **vector search**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector. The result is a DocumentArray with the closest vectors to the query vector.
+
+- **vector search with filter**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector and a filter. The result is a DocumentArray with the closest vectors to the query vector that verify the filter.
+
+- **search with filter and no query vector**: perform a filter step over the data. The input is a filter. The result is a  DocumentArray with the elements that verify the filter.
+
 ## Construct
 
 There are two ways for initializing a DocumentArray with a store backend.
