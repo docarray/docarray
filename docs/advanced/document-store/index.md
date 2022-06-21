@@ -71,14 +71,14 @@ Creating, retrieving, updating, deleting Documents are identical to the regular 
 DocArray supports multiple storage backends with different features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
-| Name                                               | Construction                             | vector search | vector search + filter | filter|
-|----------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
-| {ref}`None <documentarray>`                        | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
-| {ref}`Sqlite <sqlite>`                             | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
-| [`Weaviate`](./weaviate/#weaviate)                 | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
-| [`Qdrant`](../qdrant/#qdrant)                      | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
-| [`Annlite`](../annlite/#annlite)                   | `DocumentArray(storage='anlite')`        | ✅             | ✅                      | ✅             |
-| [`ElasticSearch`](../elasticsearch/#elasticsearch) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+| Name                                                           | Construction                             | vector search | vector search + filter | filter|
+|----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
+| [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
+| [`Weaviate`](./sqlite/#sqlite)                                 | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
+| [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
+| [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
+| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='anlite')`        | ✅             | ✅                      | ✅             |
+| [`ElasticSearch`](./elasticsearch/#elasticsearch)              | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
 
 
 Here we understand by 
