@@ -31,7 +31,13 @@ if TYPE_CHECKING:
 
 class FindMixin:
     def _find_similar_vectors(
-        self, query: 'WeaviateArrayType', limit=10, filter: Optional[Dict] = None
+        self,
+        query: 'WeaviateArrayType',
+        limit=10,
+        additional: Optional[Union[Dict, List]] = None,
+        filter: Optional[Dict] = None,
+        sort: Optional[Union[Dict, List]] = None,
+        query_params: Optional[Dict] = None
     ):
         query = to_numpy_array(query)
         is_all_zero = np.all(query == 0)
@@ -40,15 +46,25 @@ class FindMixin:
 
         query_dict = {'vector': query}
 
+        if query_params:
+            query_dict.update(query_params)
+
+        _additional = ['id', 'certainty']
+        if additional:
+            _additional = _additional + additional
+
         query_builder = (
             self._client.query.get(self._class_name, '_serialized')
-            .with_additional(['id', 'certainty'])
+            .with_additional(_additional)
             .with_limit(limit)
             .with_near_vector(query_dict)
         )
 
         if filter:
             query_builder = query_builder.with_where(filter)
+
+        if sort:
+            query_builder = query_builder.with_sort(sort)
 
         results = query_builder.do()
 
@@ -75,12 +91,20 @@ class FindMixin:
 
             doc.tags['wid'] = result['_additional']['id']
 
+            if additional:
+                for add in additional:
+                    doc.tags[f'{add}'] = result['_additional'][add]
+
             docs.append(doc)
 
         return DocumentArray(docs)
 
     def _filter(
-        self, filter: Dict, limit: Optional[Union[int, float]] = 20
+        self,
+        filter: Dict,
+        limit: Optional[Union[int, float]] = 20,
+        additional: Optional[Union[Dict, List]] = None,
+        sort: Optional[Union[Dict, List]] = None
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
 
@@ -90,13 +114,21 @@ class FindMixin:
         if not filter:
             return self
 
-        results = (
+        _additional = ['id']
+        if additional:
+            _additional = _additional + additional
+
+        query_builder = (
             self._client.query.get(self._class_name, '_serialized')
-            .with_additional('id')
+            .with_additional(_additional)
             .with_where(filter)
             .with_limit(limit)
-            .do()
         )
+
+        if sort:
+            query_builder = query_builder.with_sort(sort)
+
+        results = query_builder.do()
 
         docs = []
         if 'errors' in results:
@@ -113,6 +145,10 @@ class FindMixin:
 
             doc.tags['wid'] = result['_additional']['id']
 
+            if additional:
+                for add in additional:
+                    doc.tags[f'{add}'] = result['_additional'][add]
+
             docs.append(doc)
 
         return DocumentArray(docs)
@@ -121,7 +157,10 @@ class FindMixin:
         self,
         query: 'WeaviateArrayType',
         limit: int = 10,
+        additional: Optional[List] = None,
         filter: Optional[Dict] = None,
+        sort: Optional[Union[Dict, List]] = None,
+        query_params: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
@@ -139,10 +178,24 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query, limit=limit, filter=filter)]
+            return [self._find_similar_vectors(
+                query,
+                limit=limit,
+                additional=additional,
+                filter=filter,
+                sort=sort,
+                query_params=query_params
+            )]
         else:
             closest_docs = []
             for q in query:
-                da = self._find_similar_vectors(q, limit=limit, filter=filter)
+                da = self._find_similar_vectors(
+                    q,
+                    limit=limit,
+                    additional=additional,
+                    filter=filter,
+                    sort=sort,
+                    query_params=query_params
+                )
                 closest_docs.append(da)
             return closest_docs
