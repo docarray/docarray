@@ -85,7 +85,7 @@ Here we understand by
 
 - **vector search**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector. The result is a DocumentArray with the closest vectors to the query vector.
 
-- **vector search + filterr**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector and a filter. The result is a DocumentArray with the closest vectors to the query vector that verify the filter.
+- **vector search + filter**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector and a filter. The result is a DocumentArray with the closest vectors to the query vector that verify the filter.
 
 - **filter**: perform a filter step over the data. The input is a filter. The result is a  DocumentArray with the elements that verify the filter.
 
