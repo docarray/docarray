@@ -58,10 +58,10 @@ da.summary()
 ╰────────────────────────────────────────────────────────────────────────────╯
 ```
 Note that  `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
-which allow users to access the  `DocumentArray` position (allowing statements such as `da[1]`),
+which allow users to access the  `DocumentArray` by position (allowing statements such as `da[1]`),
 are properly mapped and saved to the storage backend.
-This is the recommended approach to modify a DocumentArray that lives on a document store to avoid
-unexpected behaviors that can yield to, for example,  inaccessible elements by position.
+This is the recommended default usage to modify a DocumentArray that lives on a document store to avoid
+unexpected behaviors that can yield to, for example, inaccessible elements by position.
 
 
 Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
