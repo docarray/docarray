@@ -74,7 +74,7 @@ DocArray supports multiple storage backends with different features. The followi
 | Name                                                           | Construction                             | vector search | vector search + filter | filter|
 |----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
 | [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
-| [`Weaviate`](./sqlite/#sqlite)                                 | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
+| [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
 | [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
 | [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
 | [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='anlite')`        | ✅             | ✅                      | ✅             |
