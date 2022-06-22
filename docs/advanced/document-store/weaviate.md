@@ -498,7 +498,7 @@ results = da.find([Document(id='r1')],additional=additional)
 print('\n See when the Document was created and updated:\n')
 for res in results:
     print(f"\t creationTimeUnix={res[:, 'tags__creationTimeUnix']}")
-    print(f"\t lastUpdateTimeUnix={res[:, 'lastUpdateTimeUnix']}")
+    print(f"\t lastUpdateTimeUnix={res[:, 'tags__lastUpdateTimeUnix']}")
 
 ```
 
