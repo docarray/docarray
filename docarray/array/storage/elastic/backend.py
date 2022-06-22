@@ -182,7 +182,7 @@ class BackendMixin(BaseBackendMixin):
 
             # Clean trailing unused offsets
             offset_count = self._client.count(index=self._index_name_offset2id)
-            unused_offsets = range(len(self._offset2ids.ids), offset_count["count"])
+            unused_offsets = range(len(self._offset2ids.ids), offset_count['count'])
 
             if len(unused_offsets) > 0:
                 requests = [
