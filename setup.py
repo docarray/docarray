@@ -102,6 +102,8 @@ setup(
             'weaviate-client~=3.3.0',
             'annlite>=0.3.2',
             'elasticsearch>=8.2.0',
+            'qdrant-client~=0.7.3',
+            'strawberry-graphql',
             'jina',
         ],
     },
