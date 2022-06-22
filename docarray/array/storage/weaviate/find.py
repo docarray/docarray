@@ -37,7 +37,7 @@ class FindMixin:
         limit=10,
         additional: Optional[List] = None,
         sort: Optional[Union[Dict, List]] = None,
-        query_params: Optional[Dict] = None
+        query_params: Optional[Dict] = None,
     ):
         """Returns a subset of documents by the given vector.
 
@@ -113,7 +113,7 @@ class FindMixin:
         filter: Dict,
         limit: Optional[Union[int, float]] = 20,
         additional: Optional[List] = None,
-        sort: Optional[Union[Dict, List]] = None
+        sort: Optional[Union[Dict, List]] = None,
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
 
@@ -193,14 +193,16 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(
-                query,
-                limit=limit,
-                additional=additional,
-                filter=filter,
-                sort=sort,
-                query_params=query_params
-            )]
+            return [
+                self._find_similar_vectors(
+                    query,
+                    limit=limit,
+                    additional=additional,
+                    filter=filter,
+                    sort=sort,
+                    query_params=query_params,
+                )
+            ]
         else:
             closest_docs = []
             for q in query:
@@ -210,7 +212,7 @@ class FindMixin:
                     additional=additional,
                     filter=filter,
                     sort=sort,
-                    query_params=query_params
+                    query_params=query_params,
                 )
                 closest_docs.append(da)
             return closest_docs
