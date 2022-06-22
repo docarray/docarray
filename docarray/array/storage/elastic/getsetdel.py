@@ -74,30 +74,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         self._refresh(self._config.index_name)
 
-    def _get_offset_by_id(self, _id: str) -> str:
-        """Find offset by id
-
-        :param _id: the id of the document
-        """
-        result = self._client.search(
-            index=self._index_name_offset2id, query={"match": {"blob": _id}}
-        )["hits"]
-
-        return result["hits"][0]["_id"]
-
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
 
         :param _id: the id of the document to delete
         """
         if self._doc_id_exists(_id):
-            _offset_id = self._get_offset_by_id(_id)
-
             self._client.delete(index=self._config.index_name, id=_id)
-            self._client.delete(index=self._index_name_offset2id, id=_offset_id)
-
         self._refresh(self._config.index_name)
-        self._refresh(self._index_name_offset2id)
 
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
