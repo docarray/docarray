@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
-from docarray.array.storage.base.helper import Offset2ID
+
 import docarray.array.storage.elastic.backend as elastic_backend
+from docarray.array.storage.base.helper import Offset2ID
 
 MOCK_ES_OFFSET_INDEX = {
     0: {"_id": 0, "_source": {"blob": "r0"}},
@@ -79,7 +80,7 @@ def mock_bulk_index(*args, **kwargs):
         assert MOCK_ES_OFFSET_INDEX == EXPECTED_INDEX_AFTER_DELETION
 
 
-def test_delete_offset(mocker):
+def test_delete_offset_success_sync_es_offset_index(mocker):
     mocker.patch.object(
         elastic_backend, "Elasticsearch", return_value=MockElasticClient()
     )
