@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 import docarray.array.storage.elastic.backend as elastic_backend
 from docarray.array.storage.base.helper import Offset2ID
 
@@ -51,42 +49,39 @@ class MockElasticIndices:
 
 
 class MockElasticClient:
+    bulk_call_count = 0
+
     def __init__(self, **kwargs):
         self.indices = MockElasticIndices()
 
     def count(self, **kwargs):
         return {"count": len(MOCK_ES_OFFSET_INDEX)}
 
+    @classmethod
+    def bulk(cls, *args, **kwargs):
+        cls.bulk_call_count += 1
 
-def mock_bulk_index(*args, **kwargs):
-    global ES_BULK_COUNT
+        requests = args[1]
 
-    ES_BULK_COUNT += 1
-    requests = args[1]
+        for request in requests:
+            if request["_op_type"] == "index":
+                MOCK_ES_OFFSET_INDEX[request["_id"]] = {
+                    "_id": request["_id"],
+                    "_source": {"blob": request["blob"]},
+                }
+            elif request["_op_type"] == "delete":
+                del MOCK_ES_OFFSET_INDEX[request["_id"]]
 
-    for request in requests:
-        if request["_op_type"] == "index":
-            MOCK_ES_OFFSET_INDEX[request["_id"]] = {
-                "_id": request["_id"],
-                "_source": {"blob": request["blob"]},
-            }
-        elif request["_op_type"] == "delete":
-            del MOCK_ES_OFFSET_INDEX[request["_id"]]
-
-    if ES_BULK_COUNT == 1:  # 1st bulk api call, update offset index
-        assert MOCK_ES_OFFSET_INDEX == BUG_OFFSET_INDEX_AFTER_DELETION
-
-    if ES_BULK_COUNT == 2:
-        assert MOCK_ES_OFFSET_INDEX == EXPECTED_INDEX_AFTER_DELETION
+        if ES_BULK_COUNT == 1:  # 1st bulk api call, update offset index
+            assert MOCK_ES_OFFSET_INDEX == BUG_OFFSET_INDEX_AFTER_DELETION
 
 
-def test_delete_offset_success_sync_es_offset_index(mocker):
-    mocker.patch.object(
-        elastic_backend, "Elasticsearch", return_value=MockElasticClient()
-    )
-    mocker.patch("docarray.array.storage.elastic.backend.bulk", mock_bulk_index)
+def test_delete_offset_success_sync_es_offset_index(monkeypatch):
+    monkeypatch.setattr(elastic_backend, "Elasticsearch", MockElasticClient)
+    monkeypatch.setattr(elastic_backend, "bulk", MockElasticClient.bulk)
+
     es_backend = elastic_backend.BackendMixin()
-    es_backend._load_offset2ids = MagicMock()
+    es_backend._load_offset2ids = lambda **kwargs: None
 
     # del docs with id ["r0","r1","r2"]
     modified_ids_after_delete = ["r3", "r4", "r5", "r6", "r7", "r8"]
@@ -100,3 +95,4 @@ def test_delete_offset_success_sync_es_offset_index(mocker):
         }
     )
     es_backend._update_offset2ids_meta()
+    assert MOCK_ES_OFFSET_INDEX == EXPECTED_INDEX_AFTER_DELETION

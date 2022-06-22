@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 from docarray import Document
 from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.elastic.seqlike import SequenceLikeMixin
@@ -28,8 +26,8 @@ def test_add_ids_that_already_exist():
     expected_ids_after_extend = ["r0", "r1", "r2", "r3", "r4", "r5"]
 
     es_seq_mixin._offset2ids = Offset2ID(ids=initial_ids)
-    es_seq_mixin._upload_batch = MagicMock()
-    es_seq_mixin._save_offset2ids = MagicMock()
+    es_seq_mixin._upload_batch = lambda *args, **kwargs: None
+    es_seq_mixin._save_offset2ids = lambda *args, **kwargs: None
     es_seq_mixin.extend(new_docs)
 
     assert es_seq_mixin._offset2ids.ids == expected_ids_after_extend
