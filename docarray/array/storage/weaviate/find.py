@@ -33,12 +33,21 @@ class FindMixin:
     def _find_similar_vectors(
         self,
         query: 'WeaviateArrayType',
-        limit=10,
-        additional: Optional[Union[Dict, List]] = None,
         filter: Optional[Dict] = None,
+        limit=10,
+        additional: Optional[List] = None,
         sort: Optional[Union[Dict, List]] = None,
         query_params: Optional[Dict] = None
     ):
+        """Returns a subset of documents by the given vector.
+
+        :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
+        :param filter: the input filter to apply in each stored document
+        :param limit: number of retrieved items
+        :param additional: Optional Weaviate flags for meta data
+        :param sort: sort parameters performed on matches performed on results
+        :return: a `DocumentArray` containing the `Document` objects that verify the filter.
+        """
         query = to_numpy_array(query)
         is_all_zero = np.all(query == 0)
         if is_all_zero:
@@ -103,12 +112,15 @@ class FindMixin:
         self,
         filter: Dict,
         limit: Optional[Union[int, float]] = 20,
-        additional: Optional[Union[Dict, List]] = None,
+        additional: Optional[List] = None,
         sort: Optional[Union[Dict, List]] = None
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (Weaviate `where` filter).
 
         :param filter: the input filter to apply in each stored document
+        :param limit: number of retrieved items
+        :param additional: Optional Weaviate flags for meta data
+        :param sort: sort parameters performed on matches performed on results
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
         if not filter:
@@ -157,8 +169,8 @@ class FindMixin:
         self,
         query: 'WeaviateArrayType',
         limit: int = 10,
-        additional: Optional[List] = None,
         filter: Optional[Dict] = None,
+        additional: Optional[List] = None,
         sort: Optional[Union[Dict, List]] = None,
         query_params: Optional[Dict] = None,
         **kwargs,
@@ -167,6 +179,9 @@ class FindMixin:
         :param query: input supported to be stored in Weaviate. This includes any from the list '[np.ndarray, tensorflow.Tensor, torch.Tensor, Sequence[float]]'
         :param limit: number of retrieved items
         :param filter: filter query used for pre-filtering
+        :param additional: Optional Weaviate flags for meta data
+        :param sort: sort parameters performed on matches performed on results
+        :param query_params: additional applied to the query outside of the where clause
 
         :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
            the closest Document objects for each of the queries in `query`.
