@@ -64,7 +64,7 @@ class BackendMixin(BaseBackendMixin):
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[AnnliteConfig, Dict]] = None,
-        secondary_indices: Optional[Dict] = None,
+        secondary_indices_configs: Optional[Dict] = None,
         **kwargs,
     ):
 
@@ -92,21 +92,21 @@ class BackendMixin(BaseBackendMixin):
 
         super()._init_storage()
 
-        if secondary_indices:
-            self.secondary_indices = {}
+        if secondary_indices_configs:
+            self._secondary_indices = {}
 
-        for name, config_secondary_index in secondary_indices.items():
-            config_joined = {**config, **config_secondary_index}
-            if not config_joined:
-                raise ValueError(
-                    f'Config object must be specified for secondary index {name}'
+            for name, config_secondary_index in secondary_indices_configs.items():
+                config_joined = {**config, **config_secondary_index}
+                if not config_joined:
+                    raise ValueError(
+                        f'Config object must be specified for secondary index {name}'
+                    )
+                elif isinstance(config_joined, dict):
+                    config_joined = dataclass_from_dict(AnnliteConfig, config_joined)
+
+                self._secondary_indices[name] = DocumentArray(
+                    storage='annlite', config=config_joined
                 )
-            elif isinstance(config_joined, dict):
-                config_joined = dataclass_from_dict(AnnliteConfig, config_joined)
-
-            self.secondary_indices[name] = DocumentArray(
-                storage='annlite', config=config_joined
-            )
 
         if _docs is None:
             return
