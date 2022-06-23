@@ -16,14 +16,14 @@ class MockESMixin(SequenceLikeMixin):
 
 def test_add_ids_that_already_exist():
     es_seq_mixin = MockESMixin()
-    initial_ids = ["r0", "r1", "r2", "r3"]
+    initial_ids = ['r0', 'r1', 'r2', 'r3']
     new_docs = [
-        Document(id="r0"),
-        Document(id="r3"),
-        Document(id="r4"),
-        Document(id="r5"),
+        Document(id='r0'),
+        Document(id='r3'),
+        Document(id='r4'),
+        Document(id='r5'),
     ]
-    expected_ids_after_extend = ["r0", "r1", "r2", "r3", "r4", "r5"]
+    expected_ids_after_extend = ['r0', 'r1', 'r2', 'r3', 'r4', 'r5']
 
     es_seq_mixin._offset2ids = Offset2ID(ids=initial_ids)
     es_seq_mixin._upload_batch = lambda *args, **kwargs: None
