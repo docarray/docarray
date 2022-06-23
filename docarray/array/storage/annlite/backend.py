@@ -10,7 +10,7 @@ from typing import (
 )
 
 import numpy as np
-
+import os
 from ..base.backend import BaseBackendMixin, TypeMap
 from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
@@ -92,11 +92,18 @@ class BackendMixin(BaseBackendMixin):
 
         super()._init_storage()
 
+        self._secondary_indices = {}
         if secondary_indices_configs:
-            self._secondary_indices = {}
 
             for name, config_secondary_index in secondary_indices_configs.items():
+
                 config_joined = {**config, **config_secondary_index}
+
+                if 'data_path' not in config_secondary_index:
+                    config_joined['data_path'] = os.path.join(
+                        config_joined['data_path'], 'secondary_index_' + name
+                    )
+
                 if not config_joined:
                     raise ValueError(
                         f'Config object must be specified for secondary index {name}'

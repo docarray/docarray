@@ -38,6 +38,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._set_doc_by_id(_id, doc)
 
     def _del_docs_by_ids(self, ids):
+
+        if self._secondary_indices:
+            ids_secondary_index = self[ids][:, 'id']
+            for name, da in self._secondary_indices.items():
+                da._del_docs_by_ids(ids_secondary_index)
+
         self._annlite.delete(ids)
 
     def _load_offset2ids(self):
