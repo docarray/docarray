@@ -40,10 +40,3 @@ def test_add_ignore_existing_doc_id(start_storage):
 
     assert len(elastic_doc) == len(elastic_doc[:, 'embedding'])
     assert len(elastic_doc) == indexed_offset_count
-
-    elastic_doc._client.indices.delete(
-        index=elastic_doc._index_name_offset2id, ignore=[400, 404]
-    )
-    elastic_doc._client.indices.delete(
-        index=elastic_doc._config.index_name, ignore=[400, 404]
-    )

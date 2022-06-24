@@ -45,10 +45,3 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storag
             index=elastic_doc._index_name_offset2id, query={'match': {'blob': id}}
         )['hits']['hits'][0]['_id']
         assert actual_offset_index == expected_offset
-
-    elastic_doc._client.indices.delete(
-        index=elastic_doc._index_name_offset2id, ignore=[400, 404]
-    )
-    elastic_doc._client.indices.delete(
-        index=elastic_doc._config.index_name, ignore=[400, 404]
-    )
