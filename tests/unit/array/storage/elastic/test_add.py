@@ -8,7 +8,7 @@ def test_add_ignore_existing_doc_id():
             'n_dim': 3,
             'columns': [('price', 'int')],
             'distance': 'l2_norm',
-            'index_name': 'test_delete',
+            'index_name': 'test_add',
         },
     )
 
