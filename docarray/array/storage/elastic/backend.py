@@ -189,11 +189,10 @@ class BackendMixin(BaseBackendMixin):
                         '_op_type': 'delete',
                         '_id': offset_,  # note offset goes here because it's what we want to get by
                         '_index': self._index_name_offset2id,
-                    }  # id here
+                    }
                     for offset_ in unused_offsets
                 ]
                 r = bulk(self._client, requests)
-
                 self._client.indices.refresh(index=self._index_name_offset2id)
 
     def _get_offset2ids_meta(self) -> List:
