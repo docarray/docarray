@@ -1,7 +1,7 @@
 from docarray import Document, DocumentArray
 
 
-def test_add_ignore_existing_doc_id():
+def test_add_ignore_existing_doc_id(start_storage):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={

@@ -3,7 +3,7 @@ import pytest
 
 
 @pytest.mark.parametrize('deleted_elmnts', [[0, 1], ['r0', 'r1']])
-def test_delete_offset_success_sync_es_offset_index(deleted_elmnts):
+def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storage):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
