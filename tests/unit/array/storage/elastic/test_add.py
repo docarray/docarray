@@ -15,22 +15,22 @@ def test_add_ignore_existing_doc_id():
     with elastic_doc:
         elastic_doc.extend(
             [
-                Document(id=f'r0', embedding=[0, 0, 0]),
-                Document(id=f'r1', embedding=[1, 1, 1]),
-                Document(id=f'r2', embedding=[2, 2, 2]),
-                Document(id=f'r3', embedding=[3, 3, 3]),
-                Document(id=f'r4', embedding=[4, 4, 4]),
+                Document(id='r0', embedding=[0, 0, 0]),
+                Document(id='r1', embedding=[1, 1, 1]),
+                Document(id='r2', embedding=[2, 2, 2]),
+                Document(id='r3', embedding=[3, 3, 3]),
+                Document(id='r4', embedding=[4, 4, 4]),
             ]
         )
 
     with elastic_doc:
         elastic_doc.extend(
             [
-                Document(id=f'r0', embedding=[0, 0, 0]),
-                Document(id=f'r2', embedding=[2, 2, 2]),
-                Document(id=f'r4', embedding=[4, 4, 4]),
-                Document(id=f'r5', embedding=[2, 2, 2]),
-                Document(id=f'r6', embedding=[4, 4, 4]),
+                Document(id='r0', embedding=[0, 0, 0]),
+                Document(id='r2', embedding=[2, 2, 2]),
+                Document(id='r4', embedding=[4, 4, 4]),
+                Document(id='r5', embedding=[2, 2, 2]),
+                Document(id='r6', embedding=[4, 4, 4]),
             ]
         )
 

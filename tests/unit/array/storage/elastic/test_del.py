@@ -17,14 +17,14 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts):
     with elastic_doc:
         elastic_doc.extend(
             [
-                Document(id=f'r0', embedding=[0, 0, 0]),
-                Document(id=f'r1', embedding=[1, 1, 1]),
-                Document(id=f'r2', embedding=[2, 2, 2]),
-                Document(id=f'r3', embedding=[3, 3, 3]),
-                Document(id=f'r4', embedding=[4, 4, 4]),
-                Document(id=f'r5', embedding=[5, 5, 5]),
-                Document(id=f'r6', embedding=[6, 6, 6]),
-                Document(id=f'r7', embedding=[7, 7, 7]),
+                Document(id='r0', embedding=[0, 0, 0]),
+                Document(id='r1', embedding=[1, 1, 1]),
+                Document(id='r2', embedding=[2, 2, 2]),
+                Document(id='r3', embedding=[3, 3, 3]),
+                Document(id='r4', embedding=[4, 4, 4]),
+                Document(id='r5', embedding=[5, 5, 5]),
+                Document(id='r6', embedding=[6, 6, 6]),
+                Document(id='r7', embedding=[7, 7, 7]),
             ]
         )
 
