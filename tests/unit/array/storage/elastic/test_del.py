@@ -38,6 +38,8 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storag
     )['count']
 
     assert len(elastic_doc._offset2ids.ids) == indexed_offset_count
+    assert len(elastic_doc._offset2ids.ids) == 6
+    assert len(elastic_doc[:, 'embedding']) == 6
 
     for id in expected_offset_after_del:
         expected_offset = str(expected_offset_after_del.index(id))

@@ -40,3 +40,4 @@ def test_add_ignore_existing_doc_id(start_storage):
 
     assert len(elastic_doc) == len(elastic_doc[:, 'embedding'])
     assert len(elastic_doc) == indexed_offset_count
+    assert len(elastic_doc[:, 'embedding']) == 7
