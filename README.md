@@ -13,13 +13,13 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
+DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the multi-modal data with a Pythonic API.
 
-🌌 **Rich data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
+🌌 **Key to cross-/multi-modal world**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data. The foundation data structure of [Jina](https://github.com/jina-ai/jina), [CLIP-as-service](https://github.com/jina-ai/clip-as-service), [DALL·E Flow](https://github.com/jina-ai/dalle-flow), etc.
 
 🐍 **Pythonic experience**: designed to be as easy as a Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
 
-🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, matching, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
+🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, k-NN matching, querying, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
 
 🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. 
 
@@ -30,6 +30,11 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
+
+<p align="center">
+<a href="#"><img src="https://github.com/jina-ai/jina/blob/master/.github/readme/core-tree-graph.svg?raw=true" alt="Jina in Jina AI neural search ecosystem" width="100%"></a>
+</p>
+
 <!-- end elevator-pitch -->
 
 
