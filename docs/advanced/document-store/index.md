@@ -160,7 +160,7 @@ Here we understand by
 
 The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods thorugh a  `DocumentArray`.
 The **filter** functionality is available using the `.find` method in a `DocumentArray`. 
-A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/documentarray/matching) 
+A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/matching) 
 
 
 ### Vector search example
