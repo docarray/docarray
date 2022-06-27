@@ -881,6 +881,220 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 </div>
 </section>
 </section>
+<section id="sorting">
+<h2>Sorting<a class="headerlink" href="#sorting" title="Permalink to this headline">#</a></h2>
+<p><em><strong>Note: Support for sorting was added to the weaviate-client v3.5.0. You can upgrade with the following command:
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">weaviate-client</span></code></strong></em></p>
+<p>You can sort results by any primitive property, typically a text, string, number, or int property. When a query has a
+natural order (e.g. because of a near vector search), adding a sort operator will override the order.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/get.html#sorting">Further documentation here.</a></p>
+<section id="example-of-find-with-vector-and-sort">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort<a class="headerlink" href="#example-of-find-with-vector-and-sort" title="Permalink to this headline">#</a></h3>
+<p>Consider Documents with the column ‘price’ and on the return you want to sort these documents by highest price to lowest
+price. You can create an example with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># make connection and set columns</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">)],</span>
+        <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;l2-squared&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># load the dummy data</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;word</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+
+<span class="n">np_query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
+<span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">],</span> <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">}]</span>  <span class="c1"># or &quot;asc&quot;</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Returned examples that verify results are in order from highest price to lowest:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Returned examples that verify results are <span class="k">in</span> order from highest price to lowest:
+    
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+<p>For ascending the results would be as expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="set-minimum-certainty-on-query-results">
+<h2>Set minimum certainty on query results<a class="headerlink" href="#set-minimum-certainty-on-query-results" title="Permalink to this headline">#</a></h2>
+<p>The DocArray/Weaviate find class uses the NearVector search argument since Weaviate is only being used in this combination to store
+vectors generated by DocArray. Sometimes you want to set the certainty at a certain level to limit the return results.
+You can do this with the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">find()</span></code> method.</p>
+<p><code class="docutils literal notranslate"><span class="pre">query_params</span></code> is a Dictionary element that combines itself with the request body. To set you must pass the value as a
+Dict (<code class="docutils literal notranslate"><span class="pre">query_params={&quot;key&quot;:</span> <span class="pre">&quot;value}</span></code>) within the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function</p>
+<p>If you are familiar with Weaviates GraphQL structure then you can see where the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> goes:</p>
+<div class="highlight-grapql notranslate"><div class="highlight"><pre><span></span>{
+  Get{
+    Persisted(
+      nearVector: {
+        vector: [-0.36840257,0.13973749,-0.28994447, ...]
+        # query_params goes here. Example: &quot;certainty&quot;: 0.9
+      }
+    ){
+      name
+      _additional {
+        certainty
+      }
+    }
+  }
+}
+</pre></div>
+</div>
+<p>With that said, theoretically, anything other than Certainty that can be used in this query position can be used with
+<code class="docutils literal notranslate"><span class="pre">query_params</span></code> as well.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html#nearvector-vector-search-argument">Further documentation Here</a></p>
+<p>Using the above minimum example you can add the minimum certainty score.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># make connection</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;weaviate&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># load the dummy data</span>
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;And enjoy fast nearest neighbor search.&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All while using DocArray API.&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">query_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;certainty&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only results that have a &#39;weaviate_certainty&#39; of higher than 0.9 should show:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> text=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This should return something similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only results that have a <span class="s1">&#39;weaviate_certainty&#39;</span> of higher than <span class="m">0</span>.9 should show:
+         <span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
+         <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;weaviate_certainty&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000001<span class="o">}</span>, <span class="s1">&#39;cosine_similarity&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000002000000001<span class="o">}}]</span>
+</pre></div>
+</div>
+</section>
+<section id="include-additional-properties-in-the-return">
+<h2>Include additional properties in the return<a class="headerlink" href="#include-additional-properties-in-the-return" title="Permalink to this headline">#</a></h2>
+<p>GraphQL additional properties can be used on data objects in Get{} Queries to get additional information about the
+returned data objects. Which additional properties are available depends on the modules that are attached to Weaviate.
+The fields id, certainty, featureProjection and classification are available from Weaviate Core. On nested GraphQL
+fields (references to other data classes), only the id can be returned. Explanation on specific additional properties
+can be found on the module pages, see for example
+<a class="reference external" href="https://weaviate.io/developers/weaviate/current/modules/text2vec-contextionary.html#additional-graphql-api-properties">text2vec-contextionary</a>.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/additional-properties.html">Further documentation here</a></p>
+<p>In order to include additional properties on the request you can use the <code class="docutils literal notranslate"><span class="pre">additional</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function.
+These will be included as Tags on the response.</p>
+<p>Assume you want to know when the document was inserted and last updated in the DB.
+You can run the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># make connection</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;weaviate&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># load some dummy data</span>
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;And enjoy fast nearest neighbor search.&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All while using DocArray API.&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+
+<span class="c1"># set additional params and do a lookup</span>
+<span class="n">additional</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;creationTimeUnix&#39;</span><span class="p">,</span> <span class="s1">&#39;lastUpdateTimeUnix&#39;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;How to persist Documents&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">additional</span><span class="o">=</span><span class="n">additional</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> See when the Document was created and updated:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> creationTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__creationTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> lastUpdateTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__lastUpdateTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+<p>This should return:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> See when the Document was created and updated:
+
+         <span class="nv">creationTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+         <span class="nv">lastUpdateTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+</pre></div>
+</div>
+</section>
 </section>
 
                 </article>
@@ -918,7 +1132,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jun 25, 2022</div>
+                            Last updated on Jun 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -963,6 +1177,12 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 <li><a class="reference internal" href="#example-of-find-with-query-vector-and-filter">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#sorting">Sorting</a><ul>
+<li><a class="reference internal" href="#example-of-find-with-vector-and-sort">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#set-minimum-certainty-on-query-results">Set minimum certainty on query results</a></li>
+<li><a class="reference internal" href="#include-additional-properties-in-the-return">Include additional properties in the return</a></li>
 </ul>
 </li>
 </ul>
