@@ -96,11 +96,15 @@ A detailed explanation of the differences between `.find` and `.match` can be fo
 
 ### Vector search example
 
-```
+Example of  **vector search**
+
+````{tab} .find
+
+```python
 from docarray import Document, DocumentArray
 import numpy as np
 
-n_dim = 3 
+n_dim = 3
 da = DocumentArray(
     storage='annlite',
     config={'n_dim': n_dim, 'metric': 'Euclidean'},
@@ -109,10 +113,133 @@ da = DocumentArray(
 with da:
     da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
 
-result = da.find(np.array([2,2,2]), limit=3)
-result[:,'embedding']
-```
 
+result = da.find(np.array([2, 2, 2]), limit=6)
+result[:, 'embedding']
+```
+````
+
+````{tab} .match
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'metric': 'Euclidean'},
+)
+
+with da:
+    da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
+
+
+query = Document(embedding=np.array([2, 2, 2]))
+query.match(da, limit=6)
+query.matches[:, 'embedding']
+```
+````
+
+### Vector search with filter example
+
+Example of **vector search + filter**
+
+````{tab} .find
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price = 3
+n_limit = 4
+
+filter = {'price': {'$lte': max_price}}
+query = np.array([2, 2, 2])
+results = da.find(query=query, filter=filter)
+results[:, 'embedding']
+```
+````
+
+````{tab} .match
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price = 3
+n_limit = 4
+
+filter = {'price': {'$lte': max_price}}
+query = Document(embedding=np.array([2, 2, 2]))
+query.match(da, filter=filter)
+query.matches[:, 'embedding']
+```
+````
+
+### Filter example
+
+Example of **filter**
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price, n_limit = 7, 4
+np_query = np.ones(n_dim) * 8
+filter = {'price': {'$lte': max_price}}
+
+results = da.find(np_query, filter=filter, limit=n_limit)
+results[:, 'embedding']
+```
 
 ## Construct
 
