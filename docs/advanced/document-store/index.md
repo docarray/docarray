@@ -83,11 +83,36 @@ DocArray supports multiple storage backends with different features. The followi
 
 Here we understand by 
 
-- **vector search**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector. The result is a DocumentArray with the closest vectors to the query vector.
+- **vector search**: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding. 
 
-- **vector search + filter**: perform approximate nearest neighbour search (or exact full scan search). The input is a vector and a filter. The result is a DocumentArray with the closest vectors to the query vector that verify the filter.
+- **vector search + filter**: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding and a filter. 
 
-- **filter**: perform a filter step over the data. The input is a filter. The result is a  DocumentArray with the elements that verify the filter.
+- **filter**: perform a filter step over the data. The input of the search function is a filter. 
+
+The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods thorugh a  `DocumentArray`.
+The **filter** functionality is available using the `.find` method in a `DocumentArray`. 
+A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/documentarray/#matching) 
+
+
+### Vector search example
+
+```
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3 
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'metric': 'Euclidean'},
+)
+
+with da:
+    da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
+
+result = da.find(np.array([2,2,2]), limit=3)
+result[:,'embedding']
+```
+
 
 ## Construct
 
