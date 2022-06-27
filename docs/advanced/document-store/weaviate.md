@@ -290,12 +290,10 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[4. 4. 4.],	 price=4
  ```
 
-
 ## Sorting
 
 ***Note: Support for sorting was added to the weaviate-client v3.5.0. You can upgrade with the following command: 
 `pip install --upgrade weaviate-client`***
-
 
 You can sort results by any primitive property, typically a text, string, number, or int property. When a query has a 
 natural order (e.g. because of a near vector search), adding a sort operator will override the order.
@@ -306,7 +304,6 @@ natural order (e.g. because of a near vector search), adding a sort operator wil
 
 Consider Documents with the column 'price' and on the return you want to sort these documents by highest price to lowest 
 price. You can create an example with the following code:
-
 
 ```python
 from docarray import Document, DocumentArray
@@ -320,17 +317,20 @@ da = DocumentArray(
     config={
         'n_dim': n_dim,
         'columns': [('price', 'float')],
-        'distance': 'l2-squared'
+        'distance': 'l2-squared',
+        "name": "Persisted",
+        "host": "localhost",
+        "port": 8080
     },
 )
 
 # load the dummy data
 with da:
-    da.extend([Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i}) for i in range(10)])
+    da.extend([Document(text=f'word{i}', id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i}) for i in range(10)])
 
-
-sort = sort=[{"path": ["price"], "order": "desc"}]
-results = da.find(sort=sort)
+np_query = np.ones(n_dim) * 8
+sort = sort = [{"path": ["price"], "order": "desc"}]  # or "asc"
+results = da.find(np_query, sort=sort)
 
 print('\n Returned examples that verify results are in order from highest price to lowest:\n')
 for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
@@ -354,6 +354,21 @@ Returned examples that verify results are in order from highest price to lowest:
     embedding=[1. 1. 1.],	 price=1
     embedding=[0. 0. 0.],	 price=0
  ```
+
+For ascending the results would be as expected:
+
+```bash
+    embedding=[0. 0. 0.],    price=0
+    embedding=[1. 1. 1.],    price=1
+    embedding=[2. 2. 2.],    price=2
+    embedding=[3. 3. 3.],    price=3
+    embedding=[4. 4. 4.],    price=4
+    embedding=[5. 5. 5.],    price=5
+    embedding=[6. 6. 6.],    price=6
+    embedding=[7. 7. 7.],    price=7
+    embedding=[8. 8. 8.],    price=8
+    embedding=[9. 9. 9.],    price=9
+```
 
 ## Set Minimum Certainty on Query Results
 
@@ -393,11 +408,12 @@ Using the above minimum example you can add the minimum certainty score.
 from docarray import DocumentArray, Document
 from transformers import AutoModel, AutoTokenizer
 
+# make connection
 da = DocumentArray(
     storage="weaviate", config={"name": "Persisted", "host": "localhost", "port": 8080}
 )
 
-# index some documents
+# load the dummy data
 da.extend(
     [
         Document(text='Persist Documents with Weaviate.'),
@@ -406,7 +422,6 @@ da.extend(
     ]
 )
 
-# Generate embeddings inside the database using BERT model:
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 model = AutoModel.from_pretrained('bert-base-uncased')
 
@@ -414,18 +429,13 @@ def collate_fn(da):
     return tokenizer(da.texts, return_tensors='pt', truncation=True, padding=True)
 
 da.embed(model, collate_fn=collate_fn)
-```
 
-
-Finally, you can query the database and print the results:
-
-```python
 results = da.find(
     DocumentArray([Document(text='Persist Documents with Weaviate.')]).embed(
-        model, collate_fn=collate_fn
+        model,
+        collate_fn=collate_fn,
     ),
     query_params={"certainty": 0.9},
-    
 )
 
 print("Only results that have a 'weaviate_certainty' of higher than 0.9 should show:")
@@ -438,21 +448,8 @@ This should return something similar to:
 
 ```bash
 Only results that have a 'weaviate_certainty' of higher than 0.9 should show:
-    text=Persist Documents with Weaviate.
-    scores={
-        "cosine_similarity": {
-            "value": 1.0000003576278687,
-            "op_name": null,
-            "description": null,
-            "ref_id": null
-        },
-        "weaviate_certainty": {
-            "value": 1.000000238418579,
-            "op_name": null,
-            "description": null,
-            "ref_id": null
-        }
-    }
+         text=['Persist Documents with Weaviate.']
+         scores=[{'weaviate_certainty': {'value': 1.0000001}, 'cosine_similarity': {'value': 1.0000002000000001}}]
 ```
 
 ## Including Additional Properties in the Return
@@ -473,27 +470,43 @@ Assume you want to know when the document was inserted and last updated in the D
 You can run the following:
 
 ```python
-from docarray import Document, DocumentArray
-import numpy as np
-
-n_dim = 3
+from docarray import DocumentArray, Document
+from transformers import AutoModel, AutoTokenizer
 
 # make connection
 da = DocumentArray(
-    storage='weaviate',
-    config={
-        'n_dim': n_dim,
-        'distance': 'l2-squared'
-    },
+    storage="weaviate", config={"name": "Persisted", "host": "localhost", "port": 8080}
 )
 
-# load the dummy data
-with da:
-    da.extend([Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i}) for i in range(10)])
+# load some dummy data
+da.extend(
+    [
+        Document(text='Persist Documents with Weaviate.'),
+        Document(text='And enjoy fast nearest neighbor search.'),
+        Document(text='All while using DocArray API.'),
+    ]
+)
 
-# add the additional List and get the document with the ID r1
-additional=['creationTimeUnix', 'lastUpdateTimeUnix']
-results = da.find([Document(id='r1')],additional=additional)
+tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+model = AutoModel.from_pretrained('bert-base-uncased')
+
+
+def collate_fn(da):
+    return tokenizer(da.texts, return_tensors='pt', truncation=True, padding=True)
+
+
+da.embed(model, collate_fn=collate_fn)
+
+# set additional params and do a lookup
+additional = ['creationTimeUnix', 'lastUpdateTimeUnix']
+results = da.find(
+    DocumentArray([Document(text='How to persist Documents')]).embed(
+        model,
+        collate_fn=collate_fn,
+    ),
+    limit=1,
+    additional=additional,
+)
 
 print('\n See when the Document was created and updated:\n')
 for res in results:
@@ -505,8 +518,8 @@ for res in results:
 This should return:
 
 ```bash
-See when the Document was created and updated:
-    creationTimeUnix=1655823836009
-    lastUpdateTimeUnix=1655823836009
-```
+ See when the Document was created and updated:
 
+         creationTimeUnix=['1656020204563']
+         lastUpdateTimeUnix=['1656020204563']
+```
