@@ -27,7 +27,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._annlite.update(docs)
 
     def _del_doc_by_id(self, _id: str):
-        self._annlite.delete([_id])
+        # delete the root document
+        self._del_docs_by_ids([_id])
 
     def _clear_storage(self):
         self._annlite.clear()
@@ -40,8 +41,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _del_docs_by_ids(self, ids):
 
         if self._secondary_indices:
-            ids_secondary_index = self[ids][:, 'id']
             for name, da in self._secondary_indices.items():
+                ids_secondary_index = self[ids][name, 'id']
                 da._del_docs_by_ids(ids_secondary_index)
 
         self._annlite.delete(ids)
