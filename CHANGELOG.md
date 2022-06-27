@@ -104,6 +104,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2530,4 +2531,32 @@
 
  - [[```5a3ba782```](https://github.com/jina-ai/docarray/commit/5a3ba782262986a781f5c8504c333979d385475f)] __-__ fix readme (*Han Xiao*)
  - [[```7639918a```](https://github.com/jina-ai/docarray/commit/7639918a6a9ef6d5d58919e9defc3048d5bef6b5)] __-__ __version__: the next version will be 0.13.23 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-24></a>
+## Release Note (`0.13.24`)
+
+> Release time: 2022-06-27 21:19:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jonathan Rowley,  Alvin Prayuda,  Han Xiao,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```50d907c2```](https://github.com/jina-ai/docarray/commit/50d907c26559adfd277b3069899345a52289278e)] __-__ open weaviate functionalities to docarray (#415) (*Jonathan Rowley*)
+
+### 🐞 Bug fixes
+
+ - [[```87aff37d```](https://github.com/jina-ai/docarray/commit/87aff37d830886ba97ccc4803bab7da1b504d0c6)] __-__ __elastic__: update offset2ids management (#416) (*Alvin Prayuda*)
+
+### 📗 Documentation
+
+ - [[```f3534cc6```](https://github.com/jina-ai/docarray/commit/f3534cc6dddbd6c7854f2910cf912ff6b951f18e)] __-__ present documentarray modification with context manager (#406) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```6e514c74```](https://github.com/jina-ai/docarray/commit/6e514c745862bb05dbd9c3581c1eba57fa5724bf)] __-__ update readme (*Han Xiao*)
+ - [[```2a06be1f```](https://github.com/jina-ai/docarray/commit/2a06be1feb7d962a81c082cd39a67cd41b208e38)] __-__ __version__: the next version will be 0.13.24 (*Jina Dev Bot*)
 
