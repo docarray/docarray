@@ -179,6 +179,22 @@ class BackendMixin(BaseBackendMixin):
             r = bulk(self._client, requests)
             self._client.indices.refresh(index=self._index_name_offset2id)
 
+            # Clean trailing unused offsets
+            offset_count = self._client.count(index=self._index_name_offset2id)
+            unused_offsets = range(len(self._offset2ids.ids), offset_count['count'])
+
+            if len(unused_offsets) > 0:
+                requests = [
+                    {
+                        '_op_type': 'delete',
+                        '_id': offset_,  # note offset goes here because it's what we want to get by
+                        '_index': self._index_name_offset2id,
+                    }
+                    for offset_ in unused_offsets
+                ]
+                r = bulk(self._client, requests)
+                self._client.indices.refresh(index=self._index_name_offset2id)
+
     def _get_offset2ids_meta(self) -> List:
         """Return the offset2ids stored in elastic
 
