@@ -66,9 +66,78 @@ unexpected behaviors that can yield to, for example, inaccessible elements by po
 
 Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
 
-## Storage Backend summary
 
-DocArray supports multiple storage backends with different features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
+## Construct
+
+There are two ways for initializing a DocumentArray with a store backend.
+
+````{tab} Specify storage
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray(storage='sqlite')
+```
+
+
+```text
+<DocumentArray[SQLite] (length=0) at 4477814032>
+```
+````
+
+````{tab} Import the class and alias it  
+
+```python
+from docarray.array.sqlite import DocumentArraySqlite as DocumentArray
+
+da = DocumentArray()
+```
+
+```text
+<DocumentArray[SQLite] (length=0) at 4477814032>
+```
+
+````
+
+Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as `DocumentArray.empty(10)`, then explicit importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
+
+### Construct with config
+
+The config of a store backend is either store-specific dataclass object or a `dict` that can be parsed into the former.
+
+One can pass the config in the constructor via `config`:
+
+````{tab} Use dataclass
+
+```python
+from docarray import DocumentArray
+from docarray.array.sqlite import SqliteConfig
+
+cfg = SqliteConfig(connection='example.db', table_name='test')
+
+da = DocumentArray(storage='sqlite', config=cfg)
+```
+
+````
+
+````{tab} Use dict
+
+```python
+from docarray import DocumentArray
+
+da = DocumentArray(
+    storage='sqlite', config={'connection': 'example.db', 'table_name': 'test'}
+)
+```
+
+````
+
+Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
+
+
+## Search summary
+
+DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
 | Name                                                           | Construction                             | vector search | vector search + filter | filter|
@@ -113,7 +182,6 @@ da = DocumentArray(
 with da:
     da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
 
-
 result = da.find(np.array([2, 2, 2]), limit=6)
 result[:, 'embedding']
 ```
@@ -134,12 +202,20 @@ da = DocumentArray(
 with da:
     da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
 
-
 query = Document(embedding=np.array([2, 2, 2]))
 query.match(da, limit=6)
 query.matches[:, 'embedding']
 ```
 ````
+
+```text
+array([[2., 2., 2.],
+       [1., 1., 1.],
+       [3., 3., 3.],
+       [0., 0., 0.],
+       [4., 4., 4.],
+       [5., 5., 5.]])
+```
 
 ### Vector search with filter example
 
@@ -209,6 +285,13 @@ query.matches[:, 'embedding']
 ```
 ````
 
+```text
+array([[2., 2., 2.],
+       [1., 1., 1.],
+       [3., 3., 3.],
+       [0., 0., 0.]])
+```
+
 ### Filter example
 
 Example of **filter**
@@ -241,72 +324,12 @@ results = da.find(np_query, filter=filter, limit=n_limit)
 results[:, 'embedding']
 ```
 
-## Construct
-
-There are two ways for initializing a DocumentArray with a store backend.
-
-````{tab} Specify storage
-
-```python
-from docarray import DocumentArray
-
-da = DocumentArray(storage='sqlite')
-```
-
-
 ```text
-<DocumentArray[SQLite] (length=0) at 4477814032>
+array([[7., 7., 7.],
+       [6., 6., 6.],
+       [5., 5., 5.],
+       [4., 4., 4.]])
 ```
-````
-
-````{tab} Import the class and alias it  
-
-```python
-from docarray.array.sqlite import DocumentArraySqlite as DocumentArray
-
-da = DocumentArray()
-```
-
-```text
-<DocumentArray[SQLite] (length=0) at 4477814032>
-```
-
-````
-
-Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as `DocumentArray.empty(10)`, then explicit importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
-
-### Construct with config
-
-The config of a store backend is either store-specific dataclass object or a `dict` that can be parsed into the former.
-
-One can pass the config in the constructor via `config`:
-
-````{tab} Use dataclass
-
-```python
-from docarray import DocumentArray
-from docarray.array.sqlite import SqliteConfig
-
-cfg = SqliteConfig(connection='example.db', table_name='test')
-
-da = DocumentArray(storage='sqlite', config=cfg)
-```
-
-````
-
-````{tab} Use dict
-
-```python
-from docarray import DocumentArray
-
-da = DocumentArray(
-    storage='sqlite', config={'connection': 'example.db', 'table_name': 'test'}
-)
-```
-
-````
-
-Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
 
 ## Known limitations
 
