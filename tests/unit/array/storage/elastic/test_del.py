@@ -10,7 +10,7 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storag
             'n_dim': 3,
             'columns': [('price', 'int')],
             'distance': 'l2_norm',
-            'index_name': 'test_delete',
+            'index_name': 'test_delete_offset_success_sync_es_offset_index',
         },
     )
 
