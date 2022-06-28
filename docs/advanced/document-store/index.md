@@ -146,7 +146,7 @@ DocArray supports multiple storage backends with different search features. The 
 | [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
 | [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
 | [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
-| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='anlite')`        | ✅             | ✅                      | ✅             |
+| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
 | [`ElasticSearch`](./elasticsearch/#elasticsearch)              | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
 
 
