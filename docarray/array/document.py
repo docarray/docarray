@@ -17,6 +17,60 @@ if TYPE_CHECKING:
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
+    """
+    DocumentArray is a list-like container of :class:`~docarray.Document` objects.
+
+    A DocumentArray can be used to store, embed, and retrieve :class:`~docarray.Document` objects.
+
+    .. code-block:: python
+
+        from docarray import Document, DocumentArray
+
+        da = DocumentArray(
+            [Document(text='The cake is a lie'), Document(text='Do a barrel roll!')]
+        )
+        da.apply(Document.embed_feature_hashing)
+
+        query = Document(text='Can i have some cake?').embed_feature_hashing()
+        query.match(da, metric='jaccard', use_scipy=True)
+
+        print(query.matches[:, ('text', 'scores__jaccard__value')])
+
+    .. code-block:: bash
+
+        [['The cake is a lie', 'Do a barrel roll!'], [0.9, 1.0]]
+
+    A DocumentArray can also :ref:`embed its contents using a neural network <embed-via-model>`,
+    process them using an :ref:`external Flow or Executor <da-post>`, and persist Documents in a :ref:`Document Store <doc-store>` for
+    fast vector search:
+
+    .. code-block:: python
+
+        from docarray import Document, DocumentArray
+        import numpy as np
+
+        n_dim = 3
+        metric = 'Euclidean'
+
+        # initialize a DocumentArray with ANNLiter Document Store
+        da = DocumentArray(
+            storage='annlite',
+            config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+        )
+        # add Documents to the DocumentArray
+        with da:
+            da.extend(
+                [
+                    Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+                    for i in range(10)
+                ]
+            )
+        # perform vector search
+        np_query = np.ones(n_dim) * 8
+        results = da.find(np_query)
+
+    For further details, see our :ref:`user guide <documentarray>`.
+    """
     @overload
     def __new__(
         cls, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
