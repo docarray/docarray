@@ -66,6 +66,7 @@ unexpected behaviors that can yield to, for example, inaccessible elements by po
 
 Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
 
+
 ## Construct
 
 There are two ways for initializing a DocumentArray with a store backend.
@@ -132,6 +133,203 @@ da = DocumentArray(
 ````
 
 Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
+
+
+## Search summary
+
+DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
+
+
+| Name                                                           | Construction                             |  vector search | vector search + filter | filter|
+|----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
+| [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
+| [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
+| [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
+| [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
+| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
+| [`ElasticSearch`](./elasticsearch/#elasticsearch)              | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+
+
+Here we understand by 
+
+- **vector search**: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding. 
+
+- **vector search + filter**: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding and a filter. 
+
+- **filter**: perform a filter step over the data. The input of the search function is a filter. 
+
+The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods thorugh a  `DocumentArray`.
+The **filter** functionality is available using the `.find` method in a `DocumentArray`. 
+A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/matching) 
+
+
+### Vector search example
+
+Example of  **vector search**
+
+````{tab} .find
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'metric': 'Euclidean'},
+)
+
+with da:
+    da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
+
+result = da.find(np.array([2, 2, 2]), limit=6)
+result[:, 'embedding']
+```
+````
+
+````{tab} .match
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'metric': 'Euclidean'},
+)
+
+with da:
+    da.extend([Document(embedding=i * np.ones(n_dim)) for i in range(10)])
+
+query = Document(embedding=np.array([2, 2, 2]))
+query.match(da, limit=6)
+query.matches[:, 'embedding']
+```
+````
+
+```text
+array([[2., 2., 2.],
+       [1., 1., 1.],
+       [3., 3., 3.],
+       [0., 0., 0.],
+       [4., 4., 4.],
+       [5., 5., 5.]])
+```
+
+### Vector search with filter example
+
+Example of **vector search + filter**
+
+````{tab} .find
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price = 3
+n_limit = 4
+
+filter = {'price': {'$lte': max_price}}
+query = np.array([2, 2, 2])
+results = da.find(query=query, filter=filter)
+results[:, 'embedding']
+```
+````
+
+````{tab} .match
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price = 3
+n_limit = 4
+
+filter = {'price': {'$lte': max_price}}
+query = Document(embedding=np.array([2, 2, 2]))
+query.match(da, filter=filter)
+query.matches[:, 'embedding']
+```
+````
+
+```text
+array([[2., 2., 2.],
+       [1., 1., 1.],
+       [3., 3., 3.],
+       [0., 0., 0.]])
+```
+
+### Filter example
+
+Example of **filter**
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+metric = 'Euclidean'
+
+da = DocumentArray(
+    storage='annlite',
+    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+max_price, n_limit = 7, 4
+np_query = np.ones(n_dim) * 8
+filter = {'price': {'$lte': max_price}}
+
+results = da.find(np_query, filter=filter, limit=n_limit)
+results[:, 'embedding']
+```
+
+```text
+array([[7., 7., 7.],
+       [6., 6., 6.],
+       [5., 5., 5.],
+       [4., 4., 4.]])
+```
 
 ## Known limitations
 
