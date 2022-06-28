@@ -140,7 +140,7 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
-| Name                                                           | Construction                             | vector search | vector search + filter | filter|
+| Name                                                           | Construction                             | fast vector search | vector search + filter | filter|
 |----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
 | [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
 | [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
