@@ -71,6 +71,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
     For further details, see our :ref:`user guide <documentarray>`.
     """
+
     @overload
     def __new__(
         cls, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
