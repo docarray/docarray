@@ -22,7 +22,22 @@ For further details, please refer to the full :ref:`user guide <document>`.
    array.match.MatchArray
 
 
-:mod:`docarray.array` - Storage backends
+
+:mod:`docarray.dataclasses` - Dataclass
+--------------------
+
+.. currentmodule:: docarray.dataclasses
+
+.. autosummary::
+   :nosignatures:
+   :template: class.rst
+
+   types.dataclass
+   types.is_multimodal
+   types.field
+   
+   
+:mod:`docarray.array` - Document stores
 --------------------
 
 .. currentmodule:: docarray.array
@@ -39,15 +54,4 @@ For further details, please refer to the full :ref:`user guide <document>`.
    elastic.DocumentArrayElastic
 
 
-:mod:`docarray.dataclasses` - Dataclass
---------------------
 
-.. currentmodule:: docarray.dataclasses
-
-.. autosummary::
-   :nosignatures:
-   :template: class.rst
-
-   types.dataclass
-   types.is_multimodal
-   types.field
