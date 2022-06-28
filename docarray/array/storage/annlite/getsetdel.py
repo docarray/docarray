@@ -4,7 +4,7 @@ from .helper import OffsetMapping
 from ..base.getsetdel import BaseGetSetDelMixin
 from ..base.helper import Offset2ID
 from ...memory import DocumentArrayInMemory
-from .... import Document
+from .... import Document, DocumentArray
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -19,11 +19,24 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return doc
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
+
+        if self._secondary_indices:
+            for name, da in self._secondary_indices.items():
+                old_ids = DocumentArray(self[_id])[
+                    name, 'id'
+                ]  # hack to get the Document['@c'] without having to do Document.chunks
+                print(da.embeddings)
+                with da:
+                    del da[old_ids]
+                    da.extend(DocumentArray(value)[name])  # same hack here
+                print(da.embeddings)
+
         if _id != value.id:
             self._del_doc_by_id(_id)
 
         value.embedding = self._map_embedding(value.embedding)
         docs = DocumentArrayInMemory([value])
+
         self._annlite.update(docs)
 
     def _del_doc_by_id(self, _id: str):
