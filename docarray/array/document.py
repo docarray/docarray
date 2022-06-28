@@ -70,7 +70,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         results = da.find(np_query)
 
     .. seealso::
-        Further details can be found in our :ref:`user guide <documentarray>`.
+        For further details, see our :ref:`user guide <documentarray>`.
     """
 
     @overload

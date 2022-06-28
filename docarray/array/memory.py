@@ -7,6 +7,8 @@ class DocumentArrayInMemory(StorageMixins, DocumentArray):
     Default DocumentArray that stores Documents in memory.
     With this implementation, :meth:`match` and :meth:`find` perform exact (exhaustive) vector search.
 
+    Example usage:
+
     .. code-block:: python
 
         from docarray import Document, DocumentArray
@@ -26,7 +28,7 @@ class DocumentArrayInMemory(StorageMixins, DocumentArray):
         [['The cake is a lie', 'Do a barrel roll!'], [0.9, 1.0]]
 
     .. seealso::
-        Further details can be found in our :ref:`user guide <documentarray>`.
+        For further details, see our :ref:`user guide <documentarray>`.
     """
 
     def __new__(cls, *args, **kwargs):
