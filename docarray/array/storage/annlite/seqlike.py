@@ -20,10 +20,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._offset2ids.extend([doc.id for doc in docs])
 
         if self._secondary_indices:
-            for name, da in self._secondary_indices.items():
-                docs_name = docs[name]
-                if len(docs_name) > 0:
-                    da.extend(docs_name)
+            for selector, da in self._secondary_indices.items():
+                docs_selector = docs[selector]
+                if len(docs_selector) > 0:
+                    da.extend(docs_selector)
 
     def append(self, value: 'Document'):
         self.extend([value])
