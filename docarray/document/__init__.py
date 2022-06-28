@@ -57,7 +57,8 @@ class Document(AllMixins, BaseDCType):
 
     Multiple Documents can be organized into a :class:`~docarray.array.document.DocumentArray`.
 
-    For further details, see our :ref:`user guide <document>`.
+    .. seealso::
+        Further details can be found in our :ref:`user guide <document>`.
     """
 
     _data_class = DocumentData

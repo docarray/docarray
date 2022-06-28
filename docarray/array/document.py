@@ -69,7 +69,8 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         np_query = np.ones(n_dim) * 8
         results = da.find(np_query)
 
-    For further details, see our :ref:`user guide <documentarray>`.
+    .. seealso::
+        Further details can be found in our :ref:`user guide <documentarray>`.
     """
 
     @overload
