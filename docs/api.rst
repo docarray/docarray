@@ -17,7 +17,7 @@ For further details, please refer to the full :ref:`user guide <document>`.
    :template: class.rst
 
    document.Document
-   document.DocumentArray
+   array.document.DocumentArray
    array.chunk.ChunkArray
    array.match.MatchArray
 
