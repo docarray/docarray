@@ -161,7 +161,7 @@ class BackendMixin(BaseBackendMixin):
     def _send_requests(self, request):
         failed_index = []
         for success, info in parallel_bulk(self._client, request, raise_on_error=False):
-            if success is not True:
+            if not success:
                 failed_index.append(info['index'])
 
         return failed_index
