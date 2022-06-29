@@ -25,7 +25,7 @@ class PlotMixin:
         for f in self.non_empty_fields:
             if f.startswith('_'):
                 continue
-            elif f in ('text', 'blob') and len(getattr(self, f)) > 100:
+            elif f in ('text', 'blob', 'uri') and len(getattr(self, f)) > 100:
                 v = getattr(self, f)
                 my_table.add_row(f, str(v)[:100] + f'... [dim](length: {len(v)})')
             elif f in ('embedding', 'tensor'):
