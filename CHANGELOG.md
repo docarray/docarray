@@ -105,6 +105,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2559,4 +2560,28 @@
 
  - [[```6e514c74```](https://github.com/jina-ai/docarray/commit/6e514c745862bb05dbd9c3581c1eba57fa5724bf)] __-__ update readme (*Han Xiao*)
  - [[```2a06be1f```](https://github.com/jina-ai/docarray/commit/2a06be1feb7d962a81c082cd39a67cd41b208e38)] __-__ __version__: the next version will be 0.13.24 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-25></a>
+## Release Note (`0.13.25`)
+
+> Release time: 2022-06-29 07:32:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  David Buchaca Prats,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```0d052278```](https://github.com/jina-ai/docarray/commit/0d052278b9755b87e83a971800e8376413823ce0)] __-__ added es data type for long, double, bool (#420) (*Alvin Prayuda*)
+
+### 📗 Documentation
+
+ - [[```a1828ffc```](https://github.com/jina-ai/docarray/commit/a1828ffcec57b4dac70e1333f523fb87c50bedbe)] __-__ add table with basic capabilities of different storage backends (#408) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```04b394e5```](https://github.com/jina-ai/docarray/commit/04b394e5135437eb3886d5051bd06c10ed4d0e7b)] __-__ change readme narrative (*Han Xiao*)
+ - [[```72139165```](https://github.com/jina-ai/docarray/commit/72139165f6d9b09dd793e084f89b695e48e90288)] __-__ __version__: the next version will be 0.13.25 (*Jina Dev Bot*)
 
