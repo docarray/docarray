@@ -12,8 +12,8 @@ from typing import (
 if TYPE_CHECKING:
     from ....typing import (
         DocumentArraySourceType,
+        ArrayType
     )
-    from ....typing import DocumentArraySourceType, ArrayType
 import numpy as np
 
 import clickhouse_driver
@@ -22,9 +22,6 @@ from clickhouse_driver import connect
 from .helper import initialize_table
 from ..base.backend import BaseBackendMixin
 from ....helper import random_identity, dataclass_from_dict
-
-if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType
 
 
 def _sanitize_table_name(table_name: str) -> str:
@@ -91,13 +88,12 @@ class BackendMixin(BaseBackendMixin):
         if _docs is None:
             return
         
-        if isinstance(_docs, Iterable):
-            self.clear()
+        self.clear()
+        
+        if isinstance(_docs, Iterable):   
             self.extend(_docs)
-        else:
-            self.clear()
-            if isinstance(_docs, Document):
-                self.append(_docs)
+        elif isinstance(_docs, Document):
+            self.append(_docs)
 
     def build_cur(self, config):
         conn = connect(host=config.host, user=config.user,
