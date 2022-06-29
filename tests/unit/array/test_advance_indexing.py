@@ -505,7 +505,16 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize(
-    'storage', ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'clickhouse']
+    'storage',
+    [
+        'memory',
+        'sqlite',
+        'weaviate',
+        'annlite',
+        'qdrant',
+        'elasticsearch',
+        'clickhouse',
+    ],
 )
 def test_single_boolean_and_padding(storage, start_storage):
     if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'clickhouse'):

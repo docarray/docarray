@@ -2,15 +2,17 @@ import clickhouse_driver
 
 
 def initialize_table(
-    table_name: str, container_type_name: str, schema_version: str, cur: clickhouse_driver.dbapi.cursor.Cursor
+    table_name: str,
+    container_type_name: str,
+    schema_version: str,
+    cur: clickhouse_driver.dbapi.cursor.Cursor,
 ) -> None:
     if not _is_metadata_table_initialized(cur):
         _do_initialize_metadata_table(cur)
 
     if not _is_table_initialized(table_name, container_type_name, schema_version, cur):
         _do_create_table(table_name, cur)
-        _do_tidy_table_metadata(
-            table_name, container_type_name, schema_version, cur)
+        _do_tidy_table_metadata(table_name, container_type_name, schema_version, cur)
 
 
 def _is_metadata_table_initialized(cur: clickhouse_driver.dbapi.cursor.Cursor) -> bool:
@@ -60,7 +62,10 @@ def _do_create_table(
 
 
 def _is_table_initialized(
-    table_name: str, container_type_name: str, schema_version: str, cur: clickhouse_driver.dbapi.cursor.Cursor
+    table_name: str,
+    container_type_name: str,
+    schema_version: str,
+    cur: clickhouse_driver.dbapi.cursor.Cursor,
 ) -> bool:
     try:
         cur.execute(
@@ -82,7 +87,10 @@ def _is_table_initialized(
 
 
 def _do_tidy_table_metadata(
-    table_name: str, container_type_name: str, schema_version: str, cur: clickhouse_driver.dbapi.cursor.Cursor
+    table_name: str,
+    container_type_name: str,
+    schema_version: str,
+    cur: clickhouse_driver.dbapi.cursor.Cursor,
 ) -> None:
     cur.execute(
         f"INSERT INTO metadata VALUES ('{table_name}', '{schema_version}', '{container_type_name}')"

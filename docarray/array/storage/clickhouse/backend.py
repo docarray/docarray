@@ -9,11 +9,9 @@ from typing import (
     Iterable,
     Mapping,
 )
+
 if TYPE_CHECKING:
-    from ....typing import (
-        DocumentArraySourceType,
-        ArrayType
-    )
+    from ....typing import DocumentArraySourceType, ArrayType
 import numpy as np
 
 import clickhouse_driver
@@ -27,8 +25,7 @@ from ....helper import random_identity, dataclass_from_dict
 def _sanitize_table_name(table_name: str) -> str:
     ret = ''.join(c for c in table_name if c.isalnum() or c == '_')
     if ret != table_name:
-        warnings.warn(
-            f'The table name is changed to {ret} due to illegal characters')
+        warnings.warn(f'The table name is changed to {ret} due to illegal characters')
     return ret
 
 
@@ -79,7 +76,7 @@ class BackendMixin(BaseBackendMixin):
         config.table_name = self._table_name
         self.n_dim = config.n_dim
         initialize_table(
-            self._table_name, self.__class__.__name__, self.schema_version,  self._client
+            self._table_name, self.__class__.__name__, self.schema_version, self._client
         )
         self._config = config
 
@@ -87,17 +84,22 @@ class BackendMixin(BaseBackendMixin):
 
         if _docs is None:
             return
-        
+
         self.clear()
-        
-        if isinstance(_docs, Iterable):   
+
+        if isinstance(_docs, Iterable):
             self.extend(_docs)
         elif isinstance(_docs, Document):
             self.append(_docs)
 
     def build_cur(self, config):
-        conn = connect(host=config.host, user=config.user,
-                       password=config.password, port=config.port, database=config.database)
+        conn = connect(
+            host=config.host,
+            user=config.user,
+            password=config.password,
+            port=config.port,
+            database=config.database,
+        )
         cursor = conn.cursor()
         return cursor
 

@@ -14,7 +14,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             'doc_id': doc.id,
             'serialized_value': doc.to_base64(),
             'embedding': self._map_embedding(doc.embedding),
-            'text': ''
+            'text': '',
         }
 
         if doc.text:
@@ -25,7 +25,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         self._client.execute(
-            f"ALTER TABLE {self._table_name} DELETE WHERE startsWith(doc_id, '{_id}') = 1")
+            f"ALTER TABLE {self._table_name} DELETE WHERE startsWith(doc_id, '{_id}') = 1"
+        )
         self._offset2ids.delete_by_id(_id)
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):

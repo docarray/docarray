@@ -80,7 +80,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __contains__(self, item: Union[str, 'Document']):
         if isinstance(item, str):
             self._client.execute(
-                    f"SELECT 1 FROM {self._table_name} WHERE startsWith(doc_id, '{item}') = 1")
+                f"SELECT 1 FROM {self._table_name} WHERE startsWith(doc_id, '{item}') = 1"
+            )
             r = self._client.fetchall()
             return len(list(r)) > 0
         elif isinstance(item, Document):
@@ -90,8 +91,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __len__(self) -> int:
         # for _ in range(10):
-        request = self._client.execute(
-            f'SELECT COUNT(*) FROM {self._table_name}')
+        request = self._client.execute(f'SELECT COUNT(*) FROM {self._table_name}')
         request = self._client.fetchone()
         return request[0]
 
@@ -119,6 +119,4 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             self._offset2ids.append(doc.id)
             self_len += 1
 
-        self._client.execute(
-            f"INSERT INTO {self._table_name} VALUES", ch_docs
-        )
+        self._client.execute(f"INSERT INTO {self._table_name} VALUES", ch_docs)

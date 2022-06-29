@@ -1,7 +1,7 @@
 from abc import ABC
 
 from .backend import BackendMixin, ClickHouseConfig
-from .find import FindMixin  
+from .find import FindMixin
 from .getsetdel import GetSetDelMixin
 from .seqlike import SequenceLikeMixin
 
