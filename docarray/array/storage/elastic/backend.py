@@ -15,7 +15,7 @@ from typing import (
 
 import numpy as np
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
+from elasticsearch.helpers import parallel_bulk
 
 from ..base.backend import BaseBackendMixin, TypeMap
 from .... import Document
@@ -159,7 +159,12 @@ class BackendMixin(BaseBackendMixin):
         return client
 
     def _send_requests(self, request):
-        bulk(self._client, request)
+        failed_index = []
+        for success, info in parallel_bulk(self._client, request, raise_on_error=False):
+            if success is not True:
+                failed_index.append(info['index'])
+
+        return failed_index
 
     def _refresh(self, index_name):
         self._client.indices.refresh(index=index_name)
@@ -179,7 +184,7 @@ class BackendMixin(BaseBackendMixin):
                 }  # id here
                 for offset_, id_ in enumerate(self._offset2ids.ids)
             ]
-            r = bulk(self._client, requests)
+            self._send_requests(requests)
             self._client.indices.refresh(index=self._index_name_offset2id)
 
             # Clean trailing unused offsets
@@ -195,7 +200,7 @@ class BackendMixin(BaseBackendMixin):
                     }
                     for offset_ in unused_offsets
                 ]
-                r = bulk(self._client, requests)
+                self._send_requests(requests)
                 self._client.indices.refresh(index=self._index_name_offset2id)
 
     def _get_offset2ids_meta(self) -> List:
