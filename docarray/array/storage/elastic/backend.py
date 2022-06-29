@@ -52,6 +52,9 @@ class BackendMixin(BaseBackendMixin):
         'str': TypeMap(type='text', converter=str),
         'float': TypeMap(type='float', converter=float),
         'int': TypeMap(type='integer', converter=_safe_cast_int),
+        'double': TypeMap(type='double', converter=float),
+        'long': TypeMap(type='long', converter=_safe_cast_int),
+        'bool': TypeMap(type='boolean', converter=bool),
     }
 
     def _init_storage(
