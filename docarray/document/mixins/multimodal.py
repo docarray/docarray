@@ -116,8 +116,7 @@ class MultiModalMixin:
         position = self._metadata['multi_modal_schema'][attribute].get('position')
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
-            d = DocumentArray([self.chunks[int(position)]])
-            return d
+            return DocumentArray([self.chunks[int(position)]])
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
