@@ -115,6 +115,19 @@ def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height, form
     assert doc.tensor.any()  # assure after conversion tensor still exist.
 
 
+def test_convert_pillow_image_to_uri():
+    doc = Document(content=np.random.randint(0, 255, [32, 32, 3]))
+    assert doc.tensor.any()
+    assert not doc.uri
+    import PIL.Image
+
+    p = PIL.Image.fromarray(doc.tensor, mode='RGB')
+    doc.load_pil_image_to_datauri(p)
+    assert doc.uri.startswith(f'data:image/png;base64,')
+    assert doc.mime_type == 'image/png'
+    assert doc.tensor.any()  # assure after conversion tensor still exist.
+
+
 @pytest.mark.xfail(
     condition=__windows__, reason='x-python is not detected on windows CI'
 )

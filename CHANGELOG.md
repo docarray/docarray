@@ -104,6 +104,9 @@
 
 
 
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2530,4 +2533,75 @@
 
  - [[```5a3ba782```](https://github.com/jina-ai/docarray/commit/5a3ba782262986a781f5c8504c333979d385475f)] __-__ fix readme (*Han Xiao*)
  - [[```7639918a```](https://github.com/jina-ai/docarray/commit/7639918a6a9ef6d5d58919e9defc3048d5bef6b5)] __-__ __version__: the next version will be 0.13.23 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-24></a>
+## Release Note (`0.13.24`)
+
+> Release time: 2022-06-27 21:19:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jonathan Rowley,  Alvin Prayuda,  Han Xiao,  David Buchaca Prats,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```50d907c2```](https://github.com/jina-ai/docarray/commit/50d907c26559adfd277b3069899345a52289278e)] __-__ open weaviate functionalities to docarray (#415) (*Jonathan Rowley*)
+
+### 🐞 Bug fixes
+
+ - [[```87aff37d```](https://github.com/jina-ai/docarray/commit/87aff37d830886ba97ccc4803bab7da1b504d0c6)] __-__ __elastic__: update offset2ids management (#416) (*Alvin Prayuda*)
+
+### 📗 Documentation
+
+ - [[```f3534cc6```](https://github.com/jina-ai/docarray/commit/f3534cc6dddbd6c7854f2910cf912ff6b951f18e)] __-__ present documentarray modification with context manager (#406) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```6e514c74```](https://github.com/jina-ai/docarray/commit/6e514c745862bb05dbd9c3581c1eba57fa5724bf)] __-__ update readme (*Han Xiao*)
+ - [[```2a06be1f```](https://github.com/jina-ai/docarray/commit/2a06be1feb7d962a81c082cd39a67cd41b208e38)] __-__ __version__: the next version will be 0.13.24 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-25></a>
+## Release Note (`0.13.25`)
+
+> Release time: 2022-06-29 07:32:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  David Buchaca Prats,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```0d052278```](https://github.com/jina-ai/docarray/commit/0d052278b9755b87e83a971800e8376413823ce0)] __-__ added es data type for long, double, bool (#420) (*Alvin Prayuda*)
+
+### 📗 Documentation
+
+ - [[```a1828ffc```](https://github.com/jina-ai/docarray/commit/a1828ffcec57b4dac70e1333f523fb87c50bedbe)] __-__ add table with basic capabilities of different storage backends (#408) (*David Buchaca Prats*)
+
+### 🍹 Other Improvements
+
+ - [[```04b394e5```](https://github.com/jina-ai/docarray/commit/04b394e5135437eb3886d5051bd06c10ed4d0e7b)] __-__ change readme narrative (*Han Xiao*)
+ - [[```72139165```](https://github.com/jina-ai/docarray/commit/72139165f6d9b09dd793e084f89b695e48e90288)] __-__ __version__: the next version will be 0.13.25 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-26></a>
+## Release Note (`0.13.26`)
+
+> Release time: 2022-06-29 10:40:41
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```a18805f9```](https://github.com/jina-ai/docarray/commit/a18805f9992199063b6219708246ca3b2284217d)] __-__ skip render long uri (#421) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```7d287a74```](https://github.com/jina-ai/docarray/commit/7d287a7433b9c3e01e709e26b1a463f433cd8e89)] __-__ __version__: the next version will be 0.13.26 (*Jina Dev Bot*)
 

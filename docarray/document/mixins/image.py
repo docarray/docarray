@@ -10,6 +10,7 @@ from .helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
     from ...typing import T
+    from PIL.Image import Image as PILImage
 
 
 class ImageDataMixin:
@@ -27,6 +28,19 @@ class ImageDataMixin:
         """
         self.tensor = _move_channel_axis(
             self.tensor, original_channel_axis, new_channel_axis
+        )
+        return self
+
+    def load_pil_image_to_datauri(self, image: 'PILImage'):
+        """Convert a pillow image into a datauri with header `data:image/png`.
+
+        :param image: a pillow image
+        :return: itself after processed
+        """
+        buffer = io.BytesIO()
+        image.save(buffer, format='png')
+        self.uri = (
+            f'data:image/png;base64,' + base64.b64encode(buffer.getvalue()).decode()
         )
         return self
 
