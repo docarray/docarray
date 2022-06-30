@@ -116,7 +116,8 @@ class MultiModalMixin:
         position = self._metadata['multi_modal_schema'][attribute].get('position')
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
-            return DocumentArray([self.chunks[int(position)]])
+            d = DocumentArray([self.chunks[int(position)]])
+            return d
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
@@ -142,7 +143,17 @@ class MultiModalMixin:
 
     def __getattr__(self, attr):
         if self.is_multimodal and attr in self._metadata['multi_modal_schema']:
-            content = self.get_multi_modal_attribute(attr)[:, 'content']
-            return content[0] if len(content) == 1 else content
+            mm_attr_da = self.get_multi_modal_attribute(attr)
+            collected_attributes = []
+            for d in mm_attr_da:
+                if d.is_multimodal:  # comes from nested dataclass, add Document as is
+                    collected_attributes.append(d)
+                else:  # comes from a non-nested attribute, add the value
+                    collected_attributes.append(d.content)
+            return (
+                collected_attributes
+                if len(collected_attributes) > 1
+                else collected_attributes[0]
+            )
         else:
             raise AttributeError(f'{self.__class__.__name__} has no attribute {attr}')
