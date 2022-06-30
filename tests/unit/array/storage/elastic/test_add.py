@@ -2,6 +2,7 @@ from docarray import Document, DocumentArray
 
 import pytest
 
+
 def test_add_ignore_existing_doc_id(start_storage):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
@@ -77,9 +78,9 @@ def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
                 ]
             )
 
-    expected_ids = ["0", "1", "2", "3", "5", "7"]
+    expected_ids = ['0', '1', '2', '3', '5', '7']
 
     assert len(elastic_doc) == 6
-    assert len(elastic_doc[:, "id"]) == 6
-    assert elastic_doc[:, "id"] == expected_ids
+    assert len(elastic_doc[:, 'id']) == 6
+    assert elastic_doc[:, 'id'] == expected_ids
     assert elastic_doc._offset2ids.ids == expected_ids
