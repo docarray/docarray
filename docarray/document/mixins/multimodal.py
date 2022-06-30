@@ -139,3 +139,10 @@ class MultiModalMixin:
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
+
+    def __getattr__(self, attr):
+        if self.is_multimodal and attr in self._metadata['multi_modal_schema']:
+            content = self.get_multi_modal_attribute(attr)[:, 'content']
+            return content[0] if len(content) == 1 else content
+        else:
+            raise AttributeError(f'{self.__class__.__name__} has no attribute {attr}')
