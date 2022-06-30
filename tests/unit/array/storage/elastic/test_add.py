@@ -1,6 +1,6 @@
 from docarray import Document, DocumentArray
-import pytest
 
+import pytest
 
 def test_add_ignore_existing_doc_id(start_storage):
     elastic_doc = DocumentArray(
@@ -63,18 +63,19 @@ def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
             ]
         )
 
-    with elastic_doc:
-        elastic_doc.extend(
-            [
-                Document(id='0', price=10000),
-                Document(id='1', price=20000),
-                Document(id='3', price=30000),
-                Document(id='4', price=100000000000),  # overflow int32
-                Document(id='5', price=2000),
-                Document(id='6', price=100000000000),  # overflow int32
-                Document(id='7', price=30000),
-            ]
-        )
+    with pytest.raises(IndexError):
+        with elastic_doc:
+            elastic_doc.extend(
+                [
+                    Document(id='0', price=10000),
+                    Document(id='1', price=20000),
+                    Document(id='3', price=30000),
+                    Document(id='4', price=100000000000),  # overflow int32
+                    Document(id='5', price=2000),
+                    Document(id='6', price=100000000000),  # overflow int32
+                    Document(id='7', price=30000),
+                ]
+            )
 
     expected_ids = ["0", "1", "2", "3", "5", "7"]
 

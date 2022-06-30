@@ -1,4 +1,5 @@
 from typing import Union, Iterable, Dict
+import warnings
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
@@ -83,3 +84,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
                 if (doc.id not in self._offset2ids.ids) and (doc.id not in failed_ids)
             ]
         )
+
+        if len(failed_ids)>0:
+            err_msg = f'fail to add Documents with ids: {failed_ids}'
+            warnings.warn(err_msg)
+            raise IndexError(err_msg)
+
