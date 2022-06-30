@@ -85,8 +85,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             ]
         )
 
-        if len(failed_ids)>0:
+        if len(failed_ids) > 0:
             err_msg = f'fail to add Documents with ids: {failed_ids}'
             warnings.warn(err_msg)
             raise IndexError(err_msg)
-
