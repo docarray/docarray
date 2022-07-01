@@ -1,7 +1,7 @@
 import base64
 import os
 import pickle
-from typing import List
+from typing import List, TypeVar
 
 import numpy as np
 import pytest
@@ -665,3 +665,74 @@ def test_multimodal_serialize_deserialize(serialization):
     assert doc._metadata
     assert doc.is_multimodal
     assert _metadata_before == doc._metadata
+
+
+def test_acess_multimodal():
+    MyText = TypeVar('MyText', bound=str)
+
+    def my_setter(value) -> 'Document':
+        return Document(text=value + ' but custom!')
+
+    def my_getter(doc: 'Document'):
+        return doc.text
+
+    @dataclass
+    class MyMultiModalDoc:
+        avatar: Image
+        description: Text
+        heading_list: List[Text]
+        heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+    m = MyMultiModalDoc(
+        avatar='toydata/test.png',
+        description='hello, world',
+        heading='hello, world',
+        heading_list=['hello', 'world'],
+    )
+    d = Document(m)
+    assert d.description == 'hello, world'
+    assert d.heading == 'hello, world but custom!'
+    assert d.heading_list == ['hello', 'world']
+
+
+def test_access_multimodal_nested():
+    MyText = TypeVar('MyText', bound=str)
+
+    def my_setter(value) -> 'Document':
+        return Document(text=value + ' but custom!')
+
+    def my_getter(doc: 'Document'):
+        return doc.text
+
+    @dataclass
+    class InnerDoc:
+        avatar: Image
+        description: Text
+        heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+    @dataclass
+    class MyMultiModalDoc:
+        other_doc: InnerDoc
+        other_doc_list: List[InnerDoc]
+
+    inner_doc = InnerDoc(
+        avatar='toydata/test.png',
+        description='inner hello, world',
+        heading='inner hello, world',
+    )
+    inner_doc_list = [
+        InnerDoc(
+            avatar='toydata/test.png',
+            description='inner list hello, world',
+            heading=f'{i} inner list hello, world',
+        )
+        for i in range(3)
+    ]
+
+    m = MyMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
+    d = Document(m)
+    assert isinstance(d.other_doc, Document)
+    assert d.other_doc.heading == 'inner hello, world but custom!'
+    assert isinstance(d.other_doc_list, list)
+    assert isinstance(d.other_doc_list[0], Document)
+    assert d.other_doc_list[1].heading == '1 inner list hello, world but custom!'
