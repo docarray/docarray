@@ -142,7 +142,15 @@ class MultiModalMixin:
         return doc, attribute_type
 
     def __getattr__(self, attr):
-        if self.is_multimodal and attr in self._metadata['multi_modal_schema']:
+        has_metadata = (
+            super().__getattribute__('_data') is not None
+            and getattr(self._data, '_metadata') is not None
+        )
+        if (
+            has_metadata
+            and self.is_multimodal
+            and attr in self._metadata['multi_modal_schema']
+        ):
             mm_attr_da = self.get_multi_modal_attribute(attr)
             collected_attributes = []
             for d in mm_attr_da:
