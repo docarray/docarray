@@ -141,10 +141,13 @@ class MultiModalMixin:
         return doc, attribute_type
 
     def __getattr__(self, attr):
-        has_metadata = (
-            super().__getattribute__('_data') is not None
-            and getattr(self._data, '_metadata') is not None
-        )
+        try:
+            data = super().__getattribute__('_data')
+            has_data = bool(data)
+        except AttributeError:
+            has_data = False
+
+        has_metadata = has_data and getattr(self._data, '_metadata') is not None
         if (
             has_metadata
             and self.is_multimodal
