@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/plot.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.plot - DocArray 0.13.27 documentation</title>
+        <title>docarray.array.mixins.plot - DocArray 0.13.28 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.27 documentation</div>
+                <div class="brand">DocArray 0.13.28 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -838,7 +838,8 @@
         <span class="n">skip_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">show_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">fig_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fig_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="n">keep_aspect_ratio</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Generate a sprite image for all image tensors in this DocumentArray-like object.</span>
 
@@ -851,7 +852,10 @@
 <span class="sd">        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
 <span class="sd">        :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri</span>
 <span class="sd">        :param skip_empty: skip Document who has no .uri or .tensor.</span>
-<span class="sd">        :param show_progress: show a progresbar.</span>
+<span class="sd">        :param show_index: show the index on the top-right corner of every image</span>
+<span class="sd">        :param fig_size: the size of the figure</span>
+<span class="sd">        :param show_progress: show a progressbar while plotting.</span>
+<span class="sd">        :param keep_aspect_ratio: preserve the aspect ratio of the image by using the aspect ratio of the first image in self.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> is empty&#39;</span><span class="p">)</span>
@@ -871,6 +875,8 @@
             <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span>
         <span class="p">)</span>
         <span class="n">img_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">img_size_w</span><span class="p">,</span> <span class="n">img_size_h</span> <span class="o">=</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span>
+        <span class="n">set_aspect_ratio</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span>
@@ -898,9 +904,18 @@
                 <span class="k">elif</span> <span class="n">image_source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">,</span> <span class="s1">&#39;tensor&#39;</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image_source can be only `uri` or `tensor`&#39;</span><span class="p">)</span>
 
-                <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span>
-                    <span class="n">channel_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">set_image_tensor_shape</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">))</span>
+                <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="n">channel_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">keep_aspect_ratio</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">set_aspect_ratio</span><span class="p">:</span>
+                    <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="n">img_size_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">img_size</span> <span class="o">/</span> <span class="n">w</span><span class="p">)</span>
+                    <span class="n">sprite_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">img_size_h</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size_w</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">set_aspect_ratio</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_shape</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">img_size_h</span><span class="p">,</span> <span class="n">img_size_w</span><span class="p">))</span>
 
                 <span class="n">row_id</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">img_id</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
                 <span class="n">col_id</span> <span class="o">=</span> <span class="n">img_id</span> <span class="o">%</span> <span class="n">img_per_row</span>
@@ -912,8 +927,8 @@
                     <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_img</span><span class="p">)</span>
 
                 <span class="n">sprite_img</span><span class="p">[</span>
-                    <span class="p">(</span><span class="n">row_id</span> <span class="o">*</span> <span class="n">img_size</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">row_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">img_size</span><span class="p">),</span>
-                    <span class="p">(</span><span class="n">col_id</span> <span class="o">*</span> <span class="n">img_size</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">col_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">img_size</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">row_id</span> <span class="o">*</span> <span class="n">img_size_h</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">row_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">img_size_h</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">col_id</span> <span class="o">*</span> <span class="n">img_size_w</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">col_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">img_size_w</span><span class="p">),</span>
                 <span class="p">]</span> <span class="o">=</span> <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span>
 
                 <span class="n">img_id</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -930,8 +945,7 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fig_size</span><span class="p">:</span>
-                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">fig_size</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">top</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -953,7 +967,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 01, 2022</div>
+                            Last updated on Jul 03, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
