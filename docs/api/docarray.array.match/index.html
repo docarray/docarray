@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.match/" />
   
-<meta property="og:site_name" content="DocArray 0.13.28 Documentation" />
+<meta property="og:site_name" content="DocArray 0.13.29 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.28 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.13.29 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -37,7 +37,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.match.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.match module - DocArray 0.13.28 documentation</title>
+        <title>docarray.array.match module - DocArray 0.13.29 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.13.28 documentation</div>
+                <div class="brand">DocArray 0.13.29 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -1467,7 +1467,7 @@ Each sub-image is also square-sized and equally-sized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.match.MatchArray.pull">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.match.MatchArray.pull" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.match.MatchArray.pull" title="Permalink to this definition">#</a></dt>
 <dd><p>Pulling a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> from Jina Cloud Service to local.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1693,6 +1693,33 @@ parameters together.</p></li>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.match.MatchArray.save_gif">
+<span class="sig-name descname"><span class="pre">save_gif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline_display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tensor'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.match.MatchArray.save_gif" title="Permalink to this definition">#</a></dt>
+<dd><p>Save a gif of the DocumentArray. Each frame corresponds to a Document.uri/.tensor in the DocumentArray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the file path to save the gif to.</p></li>
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the color channel axis of the tensor.</p></li>
+<li><p><strong>duration</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the duration of each frame in milliseconds.</p></li>
+<li><p><strong>size_ratio</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – the size ratio of each frame.</p></li>
+<li><p><strong>inline_display</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show the gif in Jupyter notebook.</p></li>
+<li><p><strong>image_source</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the source of the image in Document atribute.</p></li>
+<li><p><strong>skip_empty</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to skip empty documents.</p></li>
+<li><p><strong>show_index</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show the index of the document in the top-right corner.</p></li>
+<li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>

@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/plot.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.plot - DocArray 0.13.28 documentation</title>
+        <title>docarray.array.mixins.plot - DocArray 0.13.29 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.13.28 documentation</div>
+                <div class="brand">DocArray 0.13.29 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -827,6 +827,95 @@
                     <span class="p">)</span>
             <span class="n">t_m</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="PlotMixin.save_gif"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.save_gif">[docs]</a>    <span class="k">def</span> <span class="nf">save_gif</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+        <span class="n">size_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">inline_display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">image_source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tensor&#39;</span><span class="p">,</span>
+        <span class="n">skip_empty</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a gif of the DocumentArray. Each frame corresponds to a Document.uri/.tensor in the DocumentArray.</span>
+
+<span class="sd">        :param output: the file path to save the gif to.</span>
+<span class="sd">        :param channel_axis: the color channel axis of the tensor.</span>
+<span class="sd">        :param duration: the duration of each frame in milliseconds.</span>
+<span class="sd">        :param size_ratio: the size ratio of each frame.</span>
+<span class="sd">        :param inline_display: if to show the gif in Jupyter notebook.</span>
+<span class="sd">        :param image_source: the source of the image in Document atribute.</span>
+<span class="sd">        :param skip_empty: if to skip empty documents.</span>
+<span class="sd">        :param show_index: if to show the index of the document in the top-right corner.</span>
+<span class="sd">        :param show_progress: if to show a progress bar.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span> <span class="nn">rich.progress</span> <span class="kn">import</span> <span class="n">track</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span>
+
+        <span class="k">def</span> <span class="nf">img_iterator</span><span class="p">(</span><span class="n">channel_axis</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_idx</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="n">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Plotting&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">show_progress</span><span class="p">)</span>
+            <span class="p">):</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">uri</span> <span class="ow">and</span> <span class="n">d</span><span class="o">.</span><span class="n">tensor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">skip_empty</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;Document has neither `uri` nor `tensor`, can not be plotted&#39;</span>
+                        <span class="p">)</span>
+
+                <span class="n">_d</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">image_source</span> <span class="o">==</span> <span class="s1">&#39;uri&#39;</span> <span class="ow">or</span> <span class="p">(</span>
+                    <span class="n">image_source</span> <span class="o">==</span> <span class="s1">&#39;tensor&#39;</span> <span class="ow">and</span> <span class="n">_d</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s1">&#39;tensor&#39;</span>
+                <span class="p">):</span>
+                    <span class="n">_d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>
+                    <span class="n">channel_axis</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">image_source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">,</span> <span class="s1">&#39;tensor&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image_source can be only `uri` or `tensor`&#39;</span><span class="p">)</span>
+
+                <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="n">channel_axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">size_ratio</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">img_size_h</span><span class="p">,</span> <span class="n">img_size_w</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_shape</span><span class="p">(</span>
+                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">size_ratio</span> <span class="o">*</span> <span class="n">img_size_h</span><span class="p">),</span>
+                            <span class="nb">int</span><span class="p">(</span><span class="n">size_ratio</span> <span class="o">*</span> <span class="n">img_size_w</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">show_index</span><span class="p">:</span>
+                    <span class="n">_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
+                    <span class="n">draw</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="n">_img</span><span class="p">)</span>
+                    <span class="n">draw</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">_idx</span><span class="p">),</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+                    <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_img</span><span class="p">)</span>
+
+                <span class="k">yield</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+
+        <span class="n">imgs</span> <span class="o">=</span> <span class="n">img_iterator</span><span class="p">(</span><span class="n">channel_axis</span><span class="p">)</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">imgs</span><span class="p">)</span>  <span class="c1"># extract first image from iterator</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                <span class="n">fp</span><span class="o">=</span><span class="n">fp</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;GIF&#39;</span><span class="p">,</span>
+                <span class="n">append_images</span><span class="o">=</span><span class="n">imgs</span><span class="p">,</span>
+                <span class="n">save_all</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+                <span class="n">loop</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inline_display</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">display</span>
+
+            <span class="n">display</span><span class="p">(</span><span class="n">Image</span><span class="p">(</span><span class="n">output</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PlotMixin.plot_image_sprites"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin.plot_image_sprites">[docs]</a>    <span class="k">def</span> <span class="nf">plot_image_sprites</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
