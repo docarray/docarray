@@ -338,7 +338,7 @@ class PlotMixin:
         from rich.progress import track
         from PIL import Image, ImageDraw
 
-        def img_iterator():
+        def img_iterator(channel_axis):
             for _idx, d in enumerate(
                 track(self, description='Plotting', disable=not show_progress)
             ):
@@ -379,7 +379,7 @@ class PlotMixin:
 
                 yield Image.fromarray(_d.tensor).convert('RGB')
 
-        imgs = img_iterator()
+        imgs = img_iterator(channel_axis)
         img = next(imgs)  # extract first image from iterator
         img.save(
             fp=output,
