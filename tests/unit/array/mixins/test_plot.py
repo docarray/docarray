@@ -52,7 +52,7 @@ def test_sprite_fail_tensor_success_uri(
         keep_aspect_ratio=keep_aspect_ratio,
         show_index=show_index,
     )
-    da.save_gif(tmpdir / 'sprint_da.gif', show_index=show_index)
+    da.save_gif(tmpdir / 'sprint_da.gif', show_index=show_index, channel_axis=0)
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
