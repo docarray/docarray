@@ -381,14 +381,16 @@ class PlotMixin:
 
         imgs = img_iterator(channel_axis)
         img = next(imgs)  # extract first image from iterator
-        img.save(
-            fp=output,
-            format='GIF',
-            append_images=imgs,
-            save_all=True,
-            duration=duration,
-            loop=0,
-        )
+
+        with open(output, 'wb') as fp:
+            img.save(
+                fp=fp,
+                format='GIF',
+                append_images=imgs,
+                save_all=True,
+                duration=duration,
+                loop=0,
+            )
 
         if inline_display:
             from IPython.display import Image, display
