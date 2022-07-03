@@ -5,6 +5,7 @@ import random
 import sys
 import uuid
 import warnings
+from os.path import expanduser
 from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 __resources_path__ = os.path.join(
@@ -13,6 +14,8 @@ __resources_path__ = os.path.join(
     ),
     'resources',
 )
+
+__cache_path__ = f'{expanduser("~")}/.cache/{__package__}'
 
 
 def typename(obj):

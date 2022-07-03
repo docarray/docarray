@@ -308,6 +308,83 @@ class PlotMixin:
             t_m.join()
         return path
 
+    def save_gif(
+        self,
+        output: str,
+        channel_axis: int = -1,
+        duration: int = 200,
+        inline_display: bool = False,
+        image_source: str = 'tensor',
+        skip_empty: bool = False,
+        show_index: bool = False,
+        show_progress: bool = False,
+    ) -> None:
+        """
+        Save a gif of the DocumentArray. Each frame corresponds to a Document.uri/.tensor in the DocumentArray.
+
+        :param output: the file path to save the gif to.
+        :param channel_axis: the color channel axis of the tensor.
+        :param duration: the duration of each frame in milliseconds.
+        :param inline_display: if to show the gif in Jupyter notebook.
+        :param image_source: the source of the image in Document atribute.
+        :param skip_empty: if to skip empty documents.
+        :param show_index: if to show the index of the document in the top-right corner.
+        :param show_progress: if to show a progress bar.
+        :return:
+        """
+
+        from rich.progress import track
+        from PIL import Image, ImageDraw
+
+        def img_iterator():
+            for _idx, d in enumerate(
+                track(self, description='Plotting', disable=not show_progress)
+            ):
+
+                if not d.uri and d.tensor is None:
+                    if skip_empty:
+                        continue
+                    else:
+                        raise ValueError(
+                            f'Document has neither `uri` nor `tensor`, can not be plotted'
+                        )
+
+                _d = copy.deepcopy(d)
+
+                if image_source == 'uri' or (
+                    image_source == 'tensor' and _d.content_type != 'tensor'
+                ):
+                    _d.load_uri_to_image_tensor()
+                    channel_axis = -1
+                elif image_source not in ('uri', 'tensor'):
+                    raise ValueError(f'image_source can be only `uri` or `tensor`')
+
+                _d.set_image_tensor_channel_axis(channel_axis, -1)
+
+                if show_index:
+                    _img = Image.fromarray(_d.tensor)
+                    draw = ImageDraw.Draw(_img)
+                    draw.text((0, 0), str(_idx), (255, 255, 255))
+                    _d.tensor = np.asarray(_img)
+
+                yield Image.fromarray(_d.tensor).convert('RGB')
+
+        imgs = img_iterator()
+        img = next(imgs)  # extract first image from iterator
+        img.save(
+            fp=output,
+            format='GIF',
+            append_images=imgs,
+            save_all=True,
+            duration=duration,
+            loop=1,
+        )
+
+        if inline_display:
+            from IPython.display import Image, display
+
+            display(Image(output))
+
     def plot_image_sprites(
         self,
         output: Optional[str] = None,
