@@ -318,7 +318,8 @@ class PlotMixin:
         skip_empty: bool = False,
         show_progress: bool = False,
         show_index: bool = False,
-        fig_size: Optional[Tuple[int, int]] = None,
+        fig_size: Optional[Tuple[int, int]] = (10, 10),
+        keep_aspect_ratio: bool = False,
     ) -> None:
         """Generate a sprite image for all image tensors in this DocumentArray-like object.
 
@@ -331,7 +332,10 @@ class PlotMixin:
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :param skip_empty: skip Document who has no .uri or .tensor.
-        :param show_progress: show a progresbar.
+        :param show_index: show the index on the top-right corner of every image
+        :param fig_size: the size of the figure
+        :param show_progress: show a progressbar while plotting.
+        :param keep_aspect_ratio: preserve the aspect ratio of the image by using the aspect ratio of the first image in self.
         """
         if not self:
             raise ValueError(f'{self!r} is empty')
@@ -351,6 +355,8 @@ class PlotMixin:
             [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
         )
         img_id = 0
+        img_size_w, img_size_h = img_size, img_size
+        set_aspect_ratio = False
 
         from rich.progress import track
         from PIL import Image, ImageDraw
@@ -378,9 +384,18 @@ class PlotMixin:
                 elif image_source not in ('uri', 'tensor'):
                     raise ValueError(f'image_source can be only `uri` or `tensor`')
 
-                _d.set_image_tensor_channel_axis(
-                    channel_axis, -1
-                ).set_image_tensor_shape(shape=(img_size, img_size))
+                _d.set_image_tensor_channel_axis(channel_axis, -1)
+
+                if keep_aspect_ratio and not set_aspect_ratio:
+                    h, w, _ = _d.tensor.shape
+                    img_size_h = int(h * img_size / w)
+                    sprite_img = np.zeros(
+                        [img_size_h * img_per_row, img_size_w * img_per_row, 3],
+                        dtype='uint8',
+                    )
+                    set_aspect_ratio = True
+
+                _d.set_image_tensor_shape(shape=(img_size_h, img_size_w))
 
                 row_id = floor(img_id / img_per_row)
                 col_id = img_id % img_per_row
@@ -392,8 +407,8 @@ class PlotMixin:
                     _d.tensor = np.asarray(_img)
 
                 sprite_img[
-                    (row_id * img_size) : ((row_id + 1) * img_size),
-                    (col_id * img_size) : ((col_id + 1) * img_size),
+                    (row_id * img_size_h) : ((row_id + 1) * img_size_h),
+                    (col_id * img_size_w) : ((col_id + 1) * img_size_w),
                 ] = _d.tensor
 
                 img_id += 1
@@ -410,8 +425,7 @@ class PlotMixin:
             with open(output, 'wb') as fp:
                 im.save(fp)
         else:
-            if fig_size:
-                plt.figure(figsize=fig_size, frameon=False)
+            plt.figure(figsize=fig_size, frameon=False)
             plt.gca().set_axis_off()
             plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
             plt.margins(0, 0)
