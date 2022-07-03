@@ -377,7 +377,7 @@ class PlotMixin:
             append_images=imgs,
             save_all=True,
             duration=duration,
-            loop=1,
+            loop=0,
         )
 
         if inline_display:
