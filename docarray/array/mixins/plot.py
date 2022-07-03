@@ -313,6 +313,7 @@ class PlotMixin:
         output: str,
         channel_axis: int = -1,
         duration: int = 200,
+        size_ratio: float = 1.0,
         inline_display: bool = False,
         image_source: str = 'tensor',
         skip_empty: bool = False,
@@ -325,6 +326,7 @@ class PlotMixin:
         :param output: the file path to save the gif to.
         :param channel_axis: the color channel axis of the tensor.
         :param duration: the duration of each frame in milliseconds.
+        :param size_ratio: the size ratio of each frame.
         :param inline_display: if to show the gif in Jupyter notebook.
         :param image_source: the source of the image in Document atribute.
         :param skip_empty: if to skip empty documents.
@@ -360,6 +362,14 @@ class PlotMixin:
                     raise ValueError(f'image_source can be only `uri` or `tensor`')
 
                 _d.set_image_tensor_channel_axis(channel_axis, -1)
+                if size_ratio < 1:
+                    img_size_h, img_size_w, _ = _d.tensor.shape
+                    _d.set_image_tensor_shape(
+                        shape=(
+                            int(size_ratio * img_size_h),
+                            int(size_ratio * img_size_w),
+                        )
+                    )
 
                 if show_index:
                     _img = Image.fromarray(_d.tensor)
