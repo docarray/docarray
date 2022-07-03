@@ -17,6 +17,8 @@ from docarray.array.storage.annlite import AnnliteConfig
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 
+@pytest.mark.parametrize('keep_aspect_ratio', [True, False])
+@pytest.mark.parametrize('show_index', [True, False])
 @pytest.mark.parametrize(
     'da_cls,config',
     [
@@ -29,7 +31,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
     ],
 )
 def test_sprite_fail_tensor_success_uri(
-    pytestconfig, tmpdir, da_cls, config, start_storage
+    pytestconfig, tmpdir, da_cls, config, start_storage, keep_aspect_ratio, show_index
 ):
     files = [
         f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
@@ -44,7 +46,13 @@ def test_sprite_fail_tensor_success_uri(
     )
     with pytest.raises(ValueError):
         da.plot_image_sprites()
-    da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source='uri')
+    da.plot_image_sprites(
+        tmpdir / 'sprint_da.png',
+        image_source='uri',
+        keep_aspect_ratio=keep_aspect_ratio,
+        show_index=show_index,
+    )
+    da.save_gif(tmpdir / 'sprint_da.gif', show_index=show_index)
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
