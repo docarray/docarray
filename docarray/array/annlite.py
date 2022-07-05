@@ -9,7 +9,7 @@ class DocumentArrayAnnlite(StorageMixins, DocumentArray):
     DocumentArray that stores Documents in `ANNLite <https://github.com/jina-ai/annlite>`_.
 
     .. note::
-        This feature requires `annlite`. You can install it via `pip install "docarray[annlite]"`.
+        This DocumentArray requires `annlite`. You can install it via `pip install "docarray[annlite]"`.
 
     With this implementation, :meth:`match` and :meth:`find` perform fast (approximate) vector search.
     Additionally, search with filters on a :class:`~docarray.document.Document` s :attr:`~docarray.document.Document.tags` attribute is supported.
