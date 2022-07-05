@@ -6,7 +6,7 @@ __all__ = ['AnnliteConfig', 'DocumentArrayAnnlite']
 
 class DocumentArrayAnnlite(StorageMixins, DocumentArray):
     """
-    Default DocumentArray that stores Documents in `ANNLite <https://github.com/jina-ai/annlite>`_.
+    DocumentArray that stores Documents in `ANNLite <https://github.com/jina-ai/annlite>`_.
 
     .. note::
         This feature requires `annlite`. You can install it via `pip install "docarray[annlite]"`.
