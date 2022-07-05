@@ -9,7 +9,7 @@ class DocumentArrayQdrant(StorageMixins, DocumentArray):
     DocumentArray that stores Documents in a `Qdrant <https://weaviate.io/>`_ vector search engine.
 
     .. note::
-        This feature requires `qdrant-client`. You can install it via `pip install "docarray[qdrant]"`.
+        This DocumentArray requires `qdrant-client`. You can install it via `pip install "docarray[qdrant]"`.
 
         To use Qdrant as storage backend, a Qdrant service needs to be running on your machine.
 
