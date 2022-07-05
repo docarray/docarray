@@ -9,7 +9,7 @@ class DocumentArrayWeaviate(StorageMixins, DocumentArray):
     DocumentArray that stores Documents in a `Weaviate <https://weaviate.io/>`_ vector search engine.
 
     .. note::
-        This feature requires `weaviate-client`. You can install it via `pip install "docarray[weaviate]"`.
+        This DocumentArray requires `weaviate-client`. You can install it via `pip install "docarray[weaviate]"`.
 
         To use Weaviate as storage backend, a Weaviate service needs to be running on your machine.
 
