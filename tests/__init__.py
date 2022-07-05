@@ -1,8 +1,4 @@
 import numpy as np
-import os
-
-os.environ['PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION'] = 'python'
-
 from docarray import DocumentArray, Document
 
 
