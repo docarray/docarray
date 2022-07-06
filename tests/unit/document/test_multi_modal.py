@@ -631,7 +631,6 @@ def test_field_fn():
     assert m1 == m2
 
 
-<<<<<<< HEAD
 def _serialize_deserialize(doc, serialization_type):
     if serialization_type == 'protobuf':
         return Document.from_protobuf(doc.to_protobuf())
@@ -694,12 +693,17 @@ def test_acess_multimodal(serialization):
         heading_list=['hello', 'world'],
     )
     d = Document(m)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
     assert d.description == 'hello, world'
     assert d.heading == 'hello, world but custom!'
     assert d.heading_list == ['hello', 'world']
 
 
-def test_access_multimodal_nested():
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_access_multimodal_nested(serialization):
     MyText = TypeVar('MyText', bound=str)
 
     def my_setter(value) -> 'Document':
@@ -735,6 +739,8 @@ def test_access_multimodal_nested():
 
     m = MyMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
     d = Document(m)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
     assert isinstance(d.other_doc, Document)
     assert d.other_doc.heading == 'inner hello, world but custom!'
     assert isinstance(d.other_doc_list, list)
