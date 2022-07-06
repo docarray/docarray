@@ -77,6 +77,32 @@ def field(
 
 
 def field(**kwargs) -> Field:
+    """
+    Creates new multimodal type for a DocArray dataclass.
+
+    :meth:`field` is used to define the *get* and *set* behaviour of custom types when used in a DocArray dataclass.
+
+    .. code-block:: python
+
+        from docarray import Document, dataclass, field
+        from typing import TypeVar
+
+        MyImage = TypeVar('MyImage', bound=str)
+
+
+        def my_setter(value) -> 'Document':
+            return Document(uri=value).load_uri_to_blob()
+
+
+        def my_getter(doc: 'Document'):
+            return doc.uri
+
+
+        @dataclass
+        class MMDoc:
+            banner: MyImage = field(setter=my_setter, getter=my_getter, default='test-1.jpeg')
+
+    """
     return Field(**kwargs)
 
 
@@ -204,7 +230,7 @@ def dataclass(
 
 
 def is_multimodal(obj) -> bool:
-    """Returns True if obj is an instance of :meth:`.dataclass`."""
+    """Returns True if obj is an instance of :meth:`dataclass`."""
     from docarray import Document
 
     if isinstance(obj, Document):
