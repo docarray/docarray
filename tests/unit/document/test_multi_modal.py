@@ -631,6 +631,7 @@ def test_field_fn():
     assert m1 == m2
 
 
+<<<<<<< HEAD
 def _serialize_deserialize(doc, serialization_type):
     if serialization_type == 'protobuf':
         return Document.from_protobuf(doc.to_protobuf())
@@ -667,7 +668,10 @@ def test_multimodal_serialize_deserialize(serialization):
     assert _metadata_before == doc._metadata
 
 
-def test_acess_multimodal():
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_acess_multimodal(serialization):
     MyText = TypeVar('MyText', bound=str)
 
     def my_setter(value) -> 'Document':
@@ -684,7 +688,7 @@ def test_acess_multimodal():
         heading: MyText = field(setter=my_setter, getter=my_getter, default='')
 
     m = MyMultiModalDoc(
-        avatar='toydata/test.png',
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
         description='hello, world',
         heading='hello, world',
         heading_list=['hello', 'world'],
@@ -716,13 +720,13 @@ def test_access_multimodal_nested():
         other_doc_list: List[InnerDoc]
 
     inner_doc = InnerDoc(
-        avatar='toydata/test.png',
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
         description='inner hello, world',
         heading='inner hello, world',
     )
     inner_doc_list = [
         InnerDoc(
-            avatar='toydata/test.png',
+            avatar=os.path.join(cur_dir, 'toydata/test.png'),
             description='inner list hello, world',
             heading=f'{i} inner list hello, world',
         )
