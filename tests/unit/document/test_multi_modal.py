@@ -699,6 +699,14 @@ def test_acess_multimodal(serialization):
     assert d.heading == 'hello, world but custom!'
     assert d.heading_list == ['hello', 'world']
 
+    d.description = 'hello, beautiful world'
+    d.heading = 'hello, world but beautifully custom!'
+    d.heading_list = ['hello', 'beautiful', 'world']
+
+    assert d.description == 'hello, beautiful world'
+    assert d.heading == 'hello, world but beautifully custom!'
+    assert d.heading_list == ['hello', 'beautiful', 'world']
+
 
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
@@ -746,3 +754,11 @@ def test_access_multimodal_nested(serialization):
     assert isinstance(d.other_doc_list, list)
     assert isinstance(d.other_doc_list[0], Document)
     assert d.other_doc_list[1].heading == '1 inner list hello, world but custom!'
+
+    d.other_doc.heading = 'inner hello, beautiful world but custom!'
+    d.other_doc_list[1].heading = '1 inner list hello, beautiful world but custom!'
+
+    assert d.other_doc.heading == 'inner hello, beautiful world but custom!'
+    assert (
+        d.other_doc_list[1].heading == '1 inner list hello, beautiful world but custom!'
+    )
