@@ -432,6 +432,7 @@ class PlotMixin:
         import matplotlib.pyplot as plt
 
         img_per_row = ceil(sqrt(len(self)))
+        img_per_col = ceil(len(self) / img_per_row)
         img_size = int(canvas_size / img_per_row)
 
         if img_size < min_size:
@@ -439,11 +440,10 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
 
-        max_num_img = img_per_row**2
+        max_num_img = img_per_row * img_per_col
         sprite_img = np.zeros(
-            [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
+            [img_size * img_per_col, img_size * img_per_row, 3], dtype='uint8'
         )
-        img_id = 0
         img_size_w, img_size_h = img_size, img_size
         set_aspect_ratio = False
 
@@ -479,15 +479,15 @@ class PlotMixin:
                     h, w, _ = _d.tensor.shape
                     img_size_h = int(h * img_size / w)
                     sprite_img = np.zeros(
-                        [img_size_h * img_per_row, img_size_w * img_per_row, 3],
+                        [img_size_h * img_per_col, img_size_w * img_per_row, 3],
                         dtype='uint8',
                     )
                     set_aspect_ratio = True
 
                 _d.set_image_tensor_shape(shape=(img_size_h, img_size_w))
 
-                row_id = floor(img_id / img_per_row)
-                col_id = img_id % img_per_row
+                row_id = floor(_idx / img_per_row)
+                col_id = _idx % img_per_row
 
                 if show_index:
                     _img = Image.fromarray(_d.tensor)
@@ -500,9 +500,6 @@ class PlotMixin:
                     (col_id * img_size_w) : ((col_id + 1) * img_size_w),
                 ] = _d.tensor
 
-                img_id += 1
-                if img_id >= max_num_img:
-                    break
         except Exception as ex:
             raise ValueError(
                 'Bad image tensor. Try different `image_source` or `channel_axis`'
