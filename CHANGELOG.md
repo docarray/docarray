@@ -110,6 +110,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2668,4 +2669,28 @@
 ### 🍹 Other Improvements
 
  - [[```29ded845```](https://github.com/jina-ai/docarray/commit/29ded8456e7d8f40f3fb05dec5778004d92da8fe)] __-__ __version__: the next version will be 0.13.29 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-30></a>
+## Release Note (`0.13.30`)
+
+> Release time: 2022-07-08 13:30:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```42d6005d```](https://github.com/jina-ai/docarray/commit/42d6005d42950038047ab19d5b2fe8f076bca978)] __-__ __plot__: remove empty black sprites on nonsquare length (#431) (*Han Xiao*)
+
+### 📗 Documentation
+
+ - [[```9b8ada83```](https://github.com/jina-ai/docarray/commit/9b8ada837320ec50b18184e005c0ef13a12e9b99)] __-__ create api reference landing page (#418) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```df5ad710```](https://github.com/jina-ai/docarray/commit/df5ad710a0995fc4c2926afc36d1914c6ecf7434)] __-__ update readme (*Han Xiao*)
+ - [[```0bb0d04a```](https://github.com/jina-ai/docarray/commit/0bb0d04a42a96860e49e0cbd84ff95ff9cf25544)] __-__ __version__: the next version will be 0.13.30 (*Jina Dev Bot*)
 
