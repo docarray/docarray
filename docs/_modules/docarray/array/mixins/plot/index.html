@@ -769,6 +769,7 @@
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
         <span class="n">img_per_row</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">img_per_col</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
         <span class="n">img_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">canvas_size</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">img_size</span> <span class="o">&lt;</span> <span class="n">min_size</span><span class="p">:</span>
@@ -776,11 +777,10 @@
             <span class="n">img_size</span> <span class="o">=</span> <span class="n">min_size</span>
             <span class="n">img_per_row</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">canvas_size</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">)</span>
 
-        <span class="n">max_num_img</span> <span class="o">=</span> <span class="n">img_per_row</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">max_num_img</span> <span class="o">=</span> <span class="n">img_per_row</span> <span class="o">*</span> <span class="n">img_per_col</span>
         <span class="n">sprite_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span>
+            <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_col</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span>
         <span class="p">)</span>
-        <span class="n">img_id</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">img_size_w</span><span class="p">,</span> <span class="n">img_size_h</span> <span class="o">=</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span>
         <span class="n">set_aspect_ratio</span> <span class="o">=</span> <span class="kc">False</span>
 
@@ -816,15 +816,15 @@
                     <span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span>
                     <span class="n">img_size_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span> <span class="o">*</span> <span class="n">img_size</span> <span class="o">/</span> <span class="n">w</span><span class="p">)</span>
                     <span class="n">sprite_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                        <span class="p">[</span><span class="n">img_size_h</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="n">img_size_w</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">img_size_h</span> <span class="o">*</span> <span class="n">img_per_col</span><span class="p">,</span> <span class="n">img_size_w</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
                         <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">set_aspect_ratio</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="n">_d</span><span class="o">.</span><span class="n">set_image_tensor_shape</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">img_size_h</span><span class="p">,</span> <span class="n">img_size_w</span><span class="p">))</span>
 
-                <span class="n">row_id</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">img_id</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
-                <span class="n">col_id</span> <span class="o">=</span> <span class="n">img_id</span> <span class="o">%</span> <span class="n">img_per_row</span>
+                <span class="n">row_id</span> <span class="o">=</span> <span class="n">floor</span><span class="p">(</span><span class="n">_idx</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
+                <span class="n">col_id</span> <span class="o">=</span> <span class="n">_idx</span> <span class="o">%</span> <span class="n">img_per_row</span>
 
                 <span class="k">if</span> <span class="n">show_index</span><span class="p">:</span>
                     <span class="n">_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">_d</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>
@@ -837,9 +837,6 @@
                     <span class="p">(</span><span class="n">col_id</span> <span class="o">*</span> <span class="n">img_size_w</span><span class="p">)</span> <span class="p">:</span> <span class="p">((</span><span class="n">col_id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">img_size_w</span><span class="p">),</span>
                 <span class="p">]</span> <span class="o">=</span> <span class="n">_d</span><span class="o">.</span><span class="n">tensor</span>
 
-                <span class="n">img_id</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">if</span> <span class="n">img_id</span> <span class="o">&gt;=</span> <span class="n">max_num_img</span><span class="p">:</span>
-                    <span class="k">break</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;Bad image tensor. Try different `image_source` or `channel_axis`&#39;</span>
@@ -873,7 +870,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 06, 2022</div>
+                            Last updated on Jul 08, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
