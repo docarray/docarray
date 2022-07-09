@@ -100,6 +100,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .elastic import DocumentArrayElastic
 
                 instance = super().__new__(DocumentArrayElastic)
+            elif storage == 'redis':
+                from .redis import DocumentArrayRedis
+
+                instance = super().__new__(DocumentArrayRedis)
 
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
