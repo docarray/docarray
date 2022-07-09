@@ -162,7 +162,7 @@ results = da.find(
     limit=1,
 )
 
-print(results[0].text)
+print(results[0].texts)
 ```
 
 ```text
