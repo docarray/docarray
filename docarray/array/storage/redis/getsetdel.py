@@ -64,6 +64,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _save_offset2ids(self):
         self._update_offset2ids_meta()
 
-    # TODO finish this method
-    # def _clear_storage(self):
-    #     """Concrete implementation of base class' ``_clear_storage``"""
+    def _clear_storage(self):
+        for key in self._client.scan_iter(self._config.key_prefix + '*'):
+            self._client.delete(key)
+        self._client.delete(self._offset2id_key)
