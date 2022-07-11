@@ -58,7 +58,19 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return f'<DocumentArray[Redis] (length={len(self)}) at {id(self)}>'
 
-    def extend(self, docs: Iterable['Document']):
+    def _upload_batch(self, docs: Iterable['Document']):
+        pipe = self._client.pipeline()
+        batch = 0
         for doc in docs:
-            self._set_doc_by_id(doc.id, doc)
+            payload = self._document_to_redis(doc)
+            pipe.hset(self._config.key_prefix + doc.id, mapping=payload)
+            batch += 1
+            if len(batch) >= self._config.batch_size:
+                pipe.execute()
+                batch = 0
+        if batch > 0:
+            pipe.execute()
+
+    def extend(self, docs: Iterable['Document']):
+        self._upload_batch(docs)
         self._offset2ids.extend([doc.id for doc in docs])

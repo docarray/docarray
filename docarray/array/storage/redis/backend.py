@@ -36,6 +36,7 @@ class RedisConfig:
     redis_config: Dict[str, Any] = field(default_factory=dict)
     index_text: Optional[bool] = field(default=False)
     tag_indices: List[str] = field(default_factory=list)
+    batch_size: Optional[int] = field(default=64)
     initial_cap: Optional[int] = None
     ef_construction: Optional[int] = None
     m: Optional[int] = None
