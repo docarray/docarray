@@ -91,12 +91,10 @@ class BackendMixin(BaseBackendMixin):
             port=self._config.port,
             **self._config.redis_config,
         )
-
-        if not client.ft(self.index_name):
-            idef = IndexDefinition(prefix=[self._config.key_prefix])  # add prefix
-            schema = self._build_schema_from_redis_config(self._config)
-            self.searchclient = client.ft(index_name=self.index_name)
-            self.searchclient.create_index(schema, definition=idef)
+        idef = IndexDefinition(prefix=[self._config.key_prefix])  # add prefix
+        schema = self._build_schema_from_redis_config(self._config)
+        self.searchclient = client.ft(index_name=self.index_name)
+        self.searchclient.create_index(schema, definition=idef)
 
         return client
 

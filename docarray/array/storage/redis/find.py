@@ -39,19 +39,23 @@ class FindMixin(BaseFindMixin):
         self, query: 'RedisArrayType', filter: Optional[Dict] = None, limit=10
     ):
         q = (
-            Query("*=>[KNN " + limit + " @embedding $vec]")
-            .return_field("__embedding_score")
-            .sort_by("__embedding_score")
+            Query("*=>[KNN " + str(limit) + " @embedding $vec AS vector_score]")
+            .sort_by('vector_score')
+            .dialect(2)
         )
-        query_params = {"vec": to_numpy_array(query)}
-        query_params.update(filter)
-        results = self.searchclient.search(q, query_params).docs
+
+        query_params = {"vec": to_numpy_array(query).astype(np.float32).tobytes()}
+        if filter:
+            query_params.update(filter)
+        results = (
+            self._client.ft(index_name=self.index_name).search(q, query_params).docs
+        )
 
         da = DocumentArray()
         for res in results:
-            doc = Document.from_base64(res['blob'])
-            doc.embedding = res['embedding']
-            doc.scores['score'] = NamedScore(value=res['__v_score'])
+            doc = Document.from_base64(res.blob)
+            doc.embedding = np.frombuffer(res.embedding, dtype=np.float32)
+            doc.scores['score'] = NamedScore(value=res.vector_score)
             da.append(doc)
         return da
 
