@@ -65,7 +65,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             payload = self._document_to_redis(doc)
             pipe.hset(self._config.key_prefix + doc.id, mapping=payload)
             batch += 1
-            if len(batch) >= self._config.batch_size:
+            if batch >= self._config.batch_size:
                 pipe.execute()
                 batch = 0
         if batch > 0:
