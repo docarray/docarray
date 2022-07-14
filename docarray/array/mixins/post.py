@@ -1,7 +1,11 @@
-from typing import TYPE_CHECKING, Optional, Dict
+import re
+from typing import TYPE_CHECKING, Dict, Optional
 
 if TYPE_CHECKING:
     from ... import DocumentArray
+
+# To match versions v1, v1.1, v1.1.1, latest, v1.1.1-gpu
+_VERSION_PATTERN = '(v\d.\d.\d|v\d.\d|v\d|latest)((-(c|g)pu)?)'
 
 
 class PostMixin:
@@ -23,6 +27,8 @@ class PostMixin:
             - `http://192.168.0.123:8080/endpoint`
             - `jinahub://Hello/endpoint`
             - `jinahub+docker://Hello/endpoint`
+            - `jinahub+docker://Hello/v0.0.1/endpoint`
+            - `jinahub+docker://Hello/latest/endpoint`
             - `jinahub+sandbox://Hello/endpoint`
 
         :param show_progress: if to show a progressbar
@@ -44,6 +50,11 @@ class PostMixin:
             ._replace(path='')
             .geturl()
         )
+        version_match = re.search(_VERSION_PATTERN, r.path)
+        if version_match:
+            version = version_match.group(0)
+            _on = r.path[version_match.end(0) :]
+            standardized_host = standardized_host + '/' + version
         batch_size = batch_size or len(self)
 
         _scheme = r.scheme
@@ -59,7 +70,7 @@ class PostMixin:
         if _scheme.startswith('jinahub'):
             from jina import Flow
 
-            f = Flow(quiet=True, prefetch=1).add(uses=standardized_host)
+            f = Flow(quiet=True, prefetch=1).add(uses=standardized_host, **kwargs)
             with f:
                 return f.post(
                     _on,
