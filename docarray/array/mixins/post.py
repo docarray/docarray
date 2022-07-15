@@ -1,4 +1,3 @@
-import re
 from collections import namedtuple
 from typing import TYPE_CHECKING, Dict, NamedTuple, Optional
 from urllib.parse import urlparse
@@ -6,8 +5,6 @@ from urllib.parse import urlparse
 if TYPE_CHECKING:
     from ... import DocumentArray
 
-# To match versions v1, v1.1, v1.1.1, latest, v1.1.1-gpu
-_VERSION_PATTERN = '(v\d.\d.\d|v\d.\d|v\d|latest)((-(c|g)pu)?)'
 
 _ParsedHost = namedtuple('ParsedHost', 'on host port version scheme')
 
@@ -34,11 +31,13 @@ def _parse_host(host: str) -> NamedTuple:
     port = r.port or None
     version = None
     scheme = r.scheme
-    version_match = re.search(_VERSION_PATTERN, r.path)
-    if version_match:
-        version = version_match.group(0)
-        on = r.path[version_match.end(0) :]
+    splited_path = list(filter(None, r.path.split('/')))
+    if len(splited_path) == 2:
+        # path includes version and endpoint
+        version = splited_path[0]
         host = host + '/' + version
+        on = '/' + splited_path[1]
+
     return _ParsedHost(on=on, host=host, port=port, version=version, scheme=scheme)
 
 
