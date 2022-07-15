@@ -451,6 +451,11 @@
 <td>Any Executor <a href="https://hub.jina.ai">listed here</a></td>
 </tr>
 <tr>
+<td></td>
+<td>3. Executor version(optional)</td>
+<td>Such as v0.1.1, v0.1.1-gpu, by default latest</td>
+</tr>
+<tr>
 <td><code>:port</code></td>
 <td>e.g. <code>:55566</code></td>
 <td><code>port</code> of the connected Flow. This is required when using <code>scheme</code> type (1) ; it is ignored when using hub-related <code>scheme</code> type (2)</td>
@@ -468,6 +473,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">.post('grpc://192.168.12.2:12345/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Flow on <code class="docutils literal notranslate"><span class="pre">192.168.12.2</span></code> port <code class="docutils literal notranslate"><span class="pre">12345</span></code> with <code class="docutils literal notranslate"><span class="pre">grpc</span></code> protocol to process the DocumentArray; processing is on remote.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Executor <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; porcessing is on local.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+sandbox://Hello/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> to process the DocumentArray; porcessing is on remote.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.post('jinahub+docker://Hello/v0.5.0/foo')</span></code>: call the <code class="docutils literal notranslate"><span class="pre">/foo</span></code> endpoint of the Hub Sandbox <code class="docutils literal notranslate"><span class="pre">Hello</span></code> of version <code class="docutils literal notranslate"><span class="pre">v0.5.0</span></code> to process the DocumentArray; porcessing in container.</p></li>
 </ul>
 </section>
 <section id="read-more">
@@ -511,7 +517,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 09, 2022</div>
+                            Last updated on Jul 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
