@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, PrivateAttr
 
 from ..math.ndarray import to_list
 
@@ -12,6 +12,7 @@ _ProtoValueType = Optional[Union[bool, float, str, list, dict]]
 _StructValueType = Union[
     _ProtoValueType, List[_ProtoValueType], Dict[str, _ProtoValueType]
 ]
+_MetadataType = Dict[str, _StructValueType]
 
 
 def _convert_ndarray_to_list(v: 'ArrayType'):
@@ -24,6 +25,10 @@ class _NamedScore(BaseModel):
     op_name: Optional[str] = None
     description: Optional[str] = None
     ref_id: Optional[str] = None
+
+
+class _MetadataModel(BaseModel):
+    metadata: _MetadataType
 
 
 class PydanticDocument(BaseModel):
@@ -53,6 +58,16 @@ class PydanticDocument(BaseModel):
 
     class Config:
         smart_union = True
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        # underscore attributes need to be set and validated manually
+        _metadata = data.get('_metadata', None)
+        if _metadata is not None:
+            _MetadataModel(metadata=_metadata)  # validate _metadata
+            object.__setattr__(
+                self, '_metadata', _metadata
+            )  # if no exception, assign _metadata
 
 
 PydanticDocument.update_forward_refs()
