@@ -65,9 +65,7 @@ class PydanticDocument(BaseModel):
         _metadata = data.get('_metadata', None)
         if _metadata is not None:
             _MetadataModel(metadata=_metadata)  # validate _metadata
-            object.__setattr__(
-                self, '_metadata', _metadata
-            )  # if no exception, assign _metadata
+            object.__setattr__(self, '_metadata', _metadata)
 
 
 PydanticDocument.update_forward_refs()
