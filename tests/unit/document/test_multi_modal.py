@@ -660,6 +660,8 @@ def test_multimodal_serialize_deserialize(serialization):
     doc = Document(mm)
     assert doc._metadata
     assert doc.is_multimodal
+    _metadata_before = doc._metadata
     doc = _serialize_deserialize(doc, serialization)
     assert doc._metadata
     assert doc.is_multimodal
+    assert _metadata_before == doc._metadata
