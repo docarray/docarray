@@ -629,3 +629,39 @@ def test_field_fn():
     m1 = MMDoc()
     m2 = MMDoc(Document(m1))
     assert m1 == m2
+
+
+def _serialize_deserialize(doc, serialization_type):
+    if serialization_type == 'protobuf':
+        return Document.from_protobuf(doc.to_protobuf())
+    if serialization_type == 'pickle':
+        return Document.from_bytes(doc.to_bytes())
+    if serialization_type == 'json':
+        return Document.from_json(doc.to_json())
+    if serialization_type == 'dict':
+        return Document.from_dict(doc.to_dict())
+    if serialization_type == 'base64':
+        return Document.from_base64(doc.to_base64())
+    return doc
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_multimodal_serialize_deserialize(serialization):
+    @dataclass
+    class MMDocument:
+        text: Text
+
+    mm = MMDocument(
+        text='hello world',
+    )
+
+    doc = Document(mm)
+    assert doc._metadata
+    assert doc.is_multimodal
+    _metadata_before = doc._metadata
+    doc = _serialize_deserialize(doc, serialization)
+    assert doc._metadata
+    assert doc.is_multimodal
+    assert _metadata_before == doc._metadata
