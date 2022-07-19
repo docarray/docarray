@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
-from pydantic import BaseModel, validator, PrivateAttr
+from pydantic import BaseModel, validator
 
 from ..math.ndarray import to_list
 
