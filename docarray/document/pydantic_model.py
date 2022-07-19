@@ -64,8 +64,8 @@ class PydanticDocument(BaseModel):
         # underscore attributes need to be set and validated manually
         _metadata = data.get('_metadata', None)
         if _metadata is not None:
-            _MetadataModel(metadata=_metadata)  # validate _metadata
-            object.__setattr__(self, '_metadata', _metadata)
+            _md_model = _MetadataModel(metadata=_metadata)  # validate _metadata
+            object.__setattr__(self, '_metadata', _md_model.metadata)
 
 
 PydanticDocument.update_forward_refs()
