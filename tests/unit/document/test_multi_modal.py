@@ -670,7 +670,7 @@ def test_multimodal_serialize_deserialize(serialization):
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
 )
-def test_acess_multimodal(serialization):
+def test_access_multimodal(serialization):
     MyText = TypeVar('MyText', bound=str)
 
     def my_setter(value) -> 'Document':
@@ -695,17 +695,26 @@ def test_acess_multimodal(serialization):
     d = Document(m)
     if serialization:
         d = _serialize_deserialize(d, serialization)
-    assert d.description == 'hello, world'
-    assert d.heading == 'hello, world but custom!'
-    assert d.heading_list == ['hello', 'world']
 
-    d.description = 'hello, beautiful world'
-    d.heading = 'hello, world but beautifully custom!'
-    d.heading_list = ['hello', 'beautiful', 'world']
+    assert isinstance(d.description, Document)
+    assert d.description.content == 'hello, world'
+    assert isinstance(d.heading, Document)
+    assert d.heading.content == 'hello, world but custom!'
+    assert isinstance(d.heading_list, DocumentArray)
+    assert d.heading_list.texts == ['hello', 'world']
 
-    assert d.description == 'hello, beautiful world'
-    assert d.heading == 'hello, world but beautifully custom!'
-    assert d.heading_list == ['hello', 'beautiful', 'world']
+    d.description = Document(text='hello, beautiful world')
+    d.heading.text = 'hello, world but beautifully custom!'
+    d.heading_list = DocumentArray(
+        [Document(text=t) for t in ['hello', 'beautiful', 'world']]
+    )
+
+    assert isinstance(d.description, Document)
+    assert d.description.content == 'hello, beautiful world'
+    assert isinstance(d.heading, Document)
+    assert d.heading.content == 'hello, world but beautifully custom!'
+    assert isinstance(d.heading_list, DocumentArray)
+    assert d.heading_list.texts == ['hello', 'beautiful', 'world']
 
 
 @pytest.mark.parametrize(
@@ -750,15 +759,19 @@ def test_access_multimodal_nested(serialization):
     if serialization:
         d = _serialize_deserialize(d, serialization)
     assert isinstance(d.other_doc, Document)
-    assert d.other_doc.heading == 'inner hello, world but custom!'
-    assert isinstance(d.other_doc_list, list)
+    assert d.other_doc.is_multimodal
+    assert d.other_doc.heading.content == 'inner hello, world but custom!'
+    assert isinstance(d.other_doc_list, DocumentArray)
     assert isinstance(d.other_doc_list[0], Document)
-    assert d.other_doc_list[1].heading == '1 inner list hello, world but custom!'
-
-    d.other_doc.heading = 'inner hello, beautiful world but custom!'
-    d.other_doc_list[1].heading = '1 inner list hello, beautiful world but custom!'
-
-    assert d.other_doc.heading == 'inner hello, beautiful world but custom!'
     assert (
-        d.other_doc_list[1].heading == '1 inner list hello, beautiful world but custom!'
+        d.other_doc_list[1].heading.content == '1 inner list hello, world but custom!'
+    )
+
+    d.other_doc.heading.text = 'inner hello, beautiful world but custom!'
+    d.other_doc_list[1].heading.text = '1 inner list hello, beautiful world but custom!'
+
+    assert d.other_doc.heading.text == 'inner hello, beautiful world but custom!'
+    assert (
+        d.other_doc_list[1].heading.text
+        == '1 inner list hello, beautiful world but custom!'
     )
