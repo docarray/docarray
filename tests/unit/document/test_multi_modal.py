@@ -674,7 +674,7 @@ def test_access_multimodal(serialization):
     MyText = TypeVar('MyText', bound=str)
 
     def my_setter(value) -> 'Document':
-        return Document(text=value + ' but custom!')
+        return Document(text=value + ' but custom!', tags={'custom': 'tag'})
 
     def my_getter(doc: 'Document'):
         return doc.text
@@ -700,6 +700,7 @@ def test_access_multimodal(serialization):
     assert d.description.content == 'hello, world'
     assert isinstance(d.heading, Document)
     assert d.heading.content == 'hello, world but custom!'
+    assert d.heading.tags == {'custom': 'tag'}
     assert isinstance(d.heading_list, DocumentArray)
     assert d.heading_list.texts == ['hello', 'world']
 
@@ -713,6 +714,7 @@ def test_access_multimodal(serialization):
     assert d.description.content == 'hello, beautiful world'
     assert isinstance(d.heading, Document)
     assert d.heading.content == 'hello, world but beautifully custom!'
+    assert d.heading.tags == {'custom': 'tag'}
     assert isinstance(d.heading_list, DocumentArray)
     assert d.heading_list.texts == ['hello', 'beautiful', 'world']
 
