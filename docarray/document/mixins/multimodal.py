@@ -154,16 +154,6 @@ class MultiModalMixin:
             and attr in self._metadata['multi_modal_schema']
         ):
             mm_attr_da = self.get_multi_modal_attribute(attr)
-            collected_attributes = []
-            for d in mm_attr_da:
-                if d.is_multimodal:  # comes from nested dataclass, add Document as is
-                    collected_attributes.append(d)
-                else:  # comes from a non-nested attribute, add the value
-                    collected_attributes.append(d.content)
-            return (
-                collected_attributes
-                if len(collected_attributes) > 1
-                else collected_attributes[0]
-            )
+            return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
         else:
             raise AttributeError(f'{self.__class__.__name__} has no attribute {attr}')
