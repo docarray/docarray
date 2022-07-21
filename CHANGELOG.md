@@ -113,6 +113,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2741,4 +2742,28 @@
 ### 🍹 Other Improvements
 
  - [[```138e7b30```](https://github.com/jina-ai/docarray/commit/138e7b30bcf4ea9438ab6c6e9fd0616fb8399a1e)] __-__ __version__: the next version will be 0.13.32 (*Jina Dev Bot*)
+
+<a name=release-note-0-13-33></a>
+## Release Note (`0.13.33`)
+
+> Release time: 2022-07-21 12:27:03
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Johannes Messner,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```bb132b30```](https://github.com/jina-ai/docarray/commit/bb132b30551ce851aaad4ad0ca8703b8dbeb3763)] __-__ allow modalities of multimodal docs to be accessed (#425) (*Johannes Messner*)
+
+### 🐞 Bug fixes
+
+ - [[```64721a62```](https://github.com/jina-ai/docarray/commit/64721a62d2af0a2bb951c5f57702703e5d045f14)] __-__ keep _metadata when serializing to dict and json (#443) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```69926d41```](https://github.com/jina-ai/docarray/commit/69926d41585ac6617b225e04cec97ad2b213d95b)] __-__ fix readme (*Han Xiao*)
+ - [[```3d75db4f```](https://github.com/jina-ai/docarray/commit/3d75db4f7da53d0164470dc43111ec9f9b8158ba)] __-__ __version__: the next version will be 0.13.33 (*Jina Dev Bot*)
 
