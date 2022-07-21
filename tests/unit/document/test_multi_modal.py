@@ -674,6 +674,38 @@ def mmdoc():
     )
 
 
+@dataclass
+class InnerDoc:
+    avatar: Image
+    description: Text
+    heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+
+@dataclass
+class MyMultiModalDoc:
+    other_doc: InnerDoc
+    other_doc_list: List[InnerDoc]
+
+
+@pytest.fixture
+def nested_mmdoc():
+    inner_doc = InnerDoc(
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
+        description='inner hello, world',
+        heading='inner hello, world',
+    )
+
+    inner_doc_list = [
+        InnerDoc(
+            avatar=os.path.join(cur_dir, 'toydata/test.png'),
+            description='inner list hello, world',
+            heading=f'{i} inner list hello, world',
+        )
+        for i in range(3)
+    ]
+    return MyMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
+
+
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
 )
@@ -731,44 +763,11 @@ def test_set_multimodal(serialization, mmdoc):
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
 )
-def test_access_multimodal_nested(serialization):
-    MyText = TypeVar('MyText', bound=str)
-
-    def my_setter(value) -> 'Document':
-        return Document(text=value + ' but custom!')
-
-    def my_getter(doc: 'Document'):
-        return doc.text
-
-    @dataclass
-    class InnerDoc:
-        avatar: Image
-        description: Text
-        heading: MyText = field(setter=my_setter, getter=my_getter, default='')
-
-    @dataclass
-    class MyMultiModalDoc:
-        other_doc: InnerDoc
-        other_doc_list: List[InnerDoc]
-
-    inner_doc = InnerDoc(
-        avatar=os.path.join(cur_dir, 'toydata/test.png'),
-        description='inner hello, world',
-        heading='inner hello, world',
-    )
-    inner_doc_list = [
-        InnerDoc(
-            avatar=os.path.join(cur_dir, 'toydata/test.png'),
-            description='inner list hello, world',
-            heading=f'{i} inner list hello, world',
-        )
-        for i in range(3)
-    ]
-
-    m = MyMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
-    d = Document(m)
+def test_access_multimodal_nested(serialization, nested_mmdoc):
+    d = Document(nested_mmdoc)
     if serialization:
         d = _serialize_deserialize(d, serialization)
+
     assert isinstance(d.other_doc, Document)
     assert d.other_doc.is_multimodal
     assert d.other_doc.heading.content == 'inner hello, world but custom!'
@@ -778,11 +777,22 @@ def test_access_multimodal_nested(serialization):
         d.other_doc_list[1].heading.content == '1 inner list hello, world but custom!'
     )
 
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_set_multimodal_nested(serialization, nested_mmdoc):
+    d = Document(nested_mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
+
     d.other_doc.heading.text = 'inner hello, beautiful world but custom!'
-    d.other_doc_list[1].heading.text = '1 inner list hello, beautiful world but custom!'
+    d.other_doc_list[0].heading.text = '1 inner list hello, beautiful world but custom!'
+    d.other_doc_list[1].heading = Document(text='set as subdoc')
 
     assert d.other_doc.heading.text == 'inner hello, beautiful world but custom!'
     assert (
-        d.other_doc_list[1].heading.text
+        d.other_doc_list[0].heading.text
         == '1 inner list hello, beautiful world but custom!'
     )
+    assert d.other_doc_list[1].heading.text == 'set as subdoc'
