@@ -645,19 +645,40 @@ def _serialize_deserialize(doc, serialization_type):
     return doc
 
 
+MyText = TypeVar('MyText', bound=str)
+
+
+def my_setter(value) -> 'Document':
+    return Document(text=value + ' but custom!', tags={'custom': 'tag'})
+
+
+def my_getter(doc: 'Document'):
+    return doc.text
+
+
+@dataclass
+class MyMultiModalDoc:
+    avatar: Image
+    description: Text
+    heading_list: List[Text]
+    heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+
+@pytest.fixture
+def mmdoc():
+    return MyMultiModalDoc(
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
+        description='hello, world',
+        heading='hello, world',
+        heading_list=['hello', 'world'],
+    )
+
+
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
 )
-def test_multimodal_serialize_deserialize(serialization):
-    @dataclass
-    class MMDocument:
-        text: Text
-
-    mm = MMDocument(
-        text='hello world',
-    )
-
-    doc = Document(mm)
+def test_multimodal_serialize_deserialize(serialization, mmdoc):
+    doc = Document(mmdoc)
     assert doc._metadata
     assert doc.is_multimodal
     _metadata_before = doc._metadata
@@ -670,29 +691,8 @@ def test_multimodal_serialize_deserialize(serialization):
 @pytest.mark.parametrize(
     'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
 )
-def test_access_multimodal(serialization):
-    MyText = TypeVar('MyText', bound=str)
-
-    def my_setter(value) -> 'Document':
-        return Document(text=value + ' but custom!', tags={'custom': 'tag'})
-
-    def my_getter(doc: 'Document'):
-        return doc.text
-
-    @dataclass
-    class MyMultiModalDoc:
-        avatar: Image
-        description: Text
-        heading_list: List[Text]
-        heading: MyText = field(setter=my_setter, getter=my_getter, default='')
-
-    m = MyMultiModalDoc(
-        avatar=os.path.join(cur_dir, 'toydata/test.png'),
-        description='hello, world',
-        heading='hello, world',
-        heading_list=['hello', 'world'],
-    )
-    d = Document(m)
+def test_get_multimodal(serialization, mmdoc):
+    d = Document(mmdoc)
     if serialization:
         d = _serialize_deserialize(d, serialization)
 
@@ -703,6 +703,15 @@ def test_access_multimodal(serialization):
     assert d.heading.tags == {'custom': 'tag'}
     assert isinstance(d.heading_list, DocumentArray)
     assert d.heading_list.texts == ['hello', 'world']
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_set_multimodal(serialization, mmdoc):
+    d = Document(mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
 
     d.description = Document(text='hello, beautiful world')
     d.heading.text = 'hello, world but beautifully custom!'
