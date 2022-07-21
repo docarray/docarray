@@ -682,7 +682,7 @@ class InnerDoc:
 
 
 @dataclass
-class MyMultiModalDoc:
+class NestedMultiModalDoc:
     other_doc: InnerDoc
     other_doc_list: List[InnerDoc]
 
@@ -703,7 +703,7 @@ def nested_mmdoc():
         )
         for i in range(3)
     ]
-    return MyMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
+    return NestedMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
 
 
 @pytest.mark.parametrize(
