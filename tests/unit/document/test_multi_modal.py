@@ -1,7 +1,7 @@
 import base64
 import os
 import pickle
-from typing import List
+from typing import List, TypeVar
 
 import numpy as np
 import pytest
@@ -629,3 +629,170 @@ def test_field_fn():
     m1 = MMDoc()
     m2 = MMDoc(Document(m1))
     assert m1 == m2
+
+
+def _serialize_deserialize(doc, serialization_type):
+    if serialization_type == 'protobuf':
+        return Document.from_protobuf(doc.to_protobuf())
+    if serialization_type == 'pickle':
+        return Document.from_bytes(doc.to_bytes())
+    if serialization_type == 'json':
+        return Document.from_json(doc.to_json())
+    if serialization_type == 'dict':
+        return Document.from_dict(doc.to_dict())
+    if serialization_type == 'base64':
+        return Document.from_base64(doc.to_base64())
+    return doc
+
+
+MyText = TypeVar('MyText', bound=str)
+
+
+def my_setter(value) -> 'Document':
+    return Document(text=value + ' but custom!', tags={'custom': 'tag'})
+
+
+def my_getter(doc: 'Document'):
+    return doc.text
+
+
+@dataclass
+class MyMultiModalDoc:
+    avatar: Image
+    description: Text
+    heading_list: List[Text]
+    heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+
+@pytest.fixture
+def mmdoc():
+    return MyMultiModalDoc(
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
+        description='hello, world',
+        heading='hello, world',
+        heading_list=['hello', 'world'],
+    )
+
+
+@dataclass
+class InnerDoc:
+    avatar: Image
+    description: Text
+    heading: MyText = field(setter=my_setter, getter=my_getter, default='')
+
+
+@dataclass
+class NestedMultiModalDoc:
+    other_doc: InnerDoc
+    other_doc_list: List[InnerDoc]
+
+
+@pytest.fixture
+def nested_mmdoc():
+    inner_doc = InnerDoc(
+        avatar=os.path.join(cur_dir, 'toydata/test.png'),
+        description='inner hello, world',
+        heading='inner hello, world',
+    )
+
+    inner_doc_list = [
+        InnerDoc(
+            avatar=os.path.join(cur_dir, 'toydata/test.png'),
+            description='inner list hello, world',
+            heading=f'{i} inner list hello, world',
+        )
+        for i in range(3)
+    ]
+    return NestedMultiModalDoc(other_doc=inner_doc, other_doc_list=inner_doc_list)
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_multimodal_serialize_deserialize(serialization, mmdoc):
+    doc = Document(mmdoc)
+    assert doc._metadata
+    assert doc.is_multimodal
+    _metadata_before = doc._metadata
+    doc = _serialize_deserialize(doc, serialization)
+    assert doc._metadata
+    assert doc.is_multimodal
+    assert _metadata_before == doc._metadata
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_get_multimodal(serialization, mmdoc):
+    d = Document(mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
+
+    assert isinstance(d.description, Document)
+    assert d.description.content == 'hello, world'
+    assert isinstance(d.heading, Document)
+    assert d.heading.content == 'hello, world but custom!'
+    assert d.heading.tags == {'custom': 'tag'}
+    assert isinstance(d.heading_list, DocumentArray)
+    assert d.heading_list.texts == ['hello', 'world']
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_set_multimodal(serialization, mmdoc):
+    d = Document(mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
+
+    d.description = Document(text='hello, beautiful world')
+    d.heading.text = 'hello, world but beautifully custom!'
+    d.heading_list = DocumentArray(
+        [Document(text=t) for t in ['hello', 'beautiful', 'world']]
+    )
+
+    assert isinstance(d.description, Document)
+    assert d.description.content == 'hello, beautiful world'
+    assert isinstance(d.heading, Document)
+    assert d.heading.content == 'hello, world but beautifully custom!'
+    assert d.heading.tags == {'custom': 'tag'}
+    assert isinstance(d.heading_list, DocumentArray)
+    assert d.heading_list.texts == ['hello', 'beautiful', 'world']
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_access_multimodal_nested(serialization, nested_mmdoc):
+    d = Document(nested_mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
+
+    assert isinstance(d.other_doc, Document)
+    assert d.other_doc.is_multimodal
+    assert d.other_doc.heading.content == 'inner hello, world but custom!'
+    assert isinstance(d.other_doc_list, DocumentArray)
+    assert isinstance(d.other_doc_list[0], Document)
+    assert (
+        d.other_doc_list[1].heading.content == '1 inner list hello, world but custom!'
+    )
+
+
+@pytest.mark.parametrize(
+    'serialization', [None, 'protobuf', 'pickle', 'json', 'dict', 'base64']
+)
+def test_set_multimodal_nested(serialization, nested_mmdoc):
+    d = Document(nested_mmdoc)
+    if serialization:
+        d = _serialize_deserialize(d, serialization)
+
+    d.other_doc.heading.text = 'inner hello, beautiful world but custom!'
+    d.other_doc_list[0].heading.text = '1 inner list hello, beautiful world but custom!'
+    d.other_doc_list[1].heading = Document(text='set as subdoc')
+
+    assert d.other_doc.heading.text == 'inner hello, beautiful world but custom!'
+    assert (
+        d.other_doc_list[0].heading.text
+        == '1 inner list hello, beautiful world but custom!'
+    )
+    assert d.other_doc_list[1].heading.text == 'set as subdoc'

@@ -1,11 +1,11 @@
 <p align="center">
 <img src="https://github.com/jina-ai/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
 <br>
-<b>The data structure for unstructured data</b>
+<b>The data structure for unstructured multimodal data</b>
 </p>
 
 <p align=center>
-<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=PyPI&amp;logo=pypi&amp;logoColor=white" alt="PyPI"></a>
+<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
 <a href="https://codecov.io/gh/jina-ai/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
 <a href="https://pypi.org/project/docarray/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.1k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
@@ -13,13 +13,13 @@
 
 <!-- start elevator-pitch -->
 
-DocArray is a library for nested, unstructured data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the data with a Pythonic API.
+DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the multi-modal data with a Pythonic API.
 
-🌌 **Rich data types**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data.
+🚪 **Door to cross-/multi-modal world**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data. The foundation data structure of [Jina](https://github.com/jina-ai/jina), [CLIP-as-service](https://github.com/jina-ai/clip-as-service), [DALL·E Flow](https://github.com/jina-ai/dalle-flow), [DiscoArt](https://github.com/jina-ai/discoart) etc.
 
 🐍 **Pythonic experience**: designed to be as easy as a Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
 
-🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, matching, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
+🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, k-NN matching, querying, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
 
 🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. 
 
@@ -30,6 +30,11 @@ DocArray is a library for nested, unstructured data in transit, including text, 
 🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
 Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
+
+<p align="center">
+<a href="#"><img src="https://github.com/jina-ai/jina/blob/master/.github/readme/core-tree-graph.svg?raw=true" alt="Jina in Jina AI neural search ecosystem" width="100%"></a>
+</p>
+
 <!-- end elevator-pitch -->
 
 
@@ -400,8 +405,6 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 ## Support
 
 - Check out the [Learning Bootcamp](https://learn.jina.ai) to get started with DocArray.
-- Use [Discussions](https://github.com/jina-ai/docarray/discussions) to talk about your use cases, questions, and
-  support queries.
 - Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
 - Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
     - **When?** The second Tuesday of every month

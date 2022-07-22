@@ -1,3 +1,4 @@
+(document)=
 # Document
 
 {class}`~docarray.document.Document` is the basic data type in DocArray. Whether you're working with text, image, video, audio, 3D meshes or the nested or the combined of them, you can always represent them as Document.

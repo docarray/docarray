@@ -1,4 +1,5 @@
 from typing import Union, Iterable, Dict
+import warnings
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
@@ -59,17 +60,32 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def _upload_batch(self, docs: Iterable['Document']):
         batch = []
+        failed_index = []
         for doc in docs:
             batch.append(self._document_to_elastic(doc))
             if len(batch) > self._config.batch_size:
-                self._send_requests(batch)
+                failed_index.extend(self._send_requests(batch))
                 self._refresh(self._config.index_name)
                 batch = []
         if len(batch) > 0:
-            self._send_requests(batch)
+            failed_index.extend(self._send_requests(batch))
             self._refresh(self._config.index_name)
+
+        return failed_index
 
     def extend(self, docs: Iterable['Document']):
         docs = list(docs)
-        self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        failed_index = self._upload_batch(docs)
+        failed_ids = [index['_id'] for index in failed_index]
+        self._offset2ids.extend(
+            [
+                doc.id
+                for doc in docs
+                if (doc.id not in self._offset2ids.ids) and (doc.id not in failed_ids)
+            ]
+        )
+
+        if len(failed_ids) > 0:
+            err_msg = f'fail to add Documents with ids: {failed_ids}'
+            warnings.warn(err_msg)
+            raise IndexError(err_msg)

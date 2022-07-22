@@ -2,7 +2,6 @@ from typing import Union, Optional, Iterable
 
 from ..base.seqlike import BaseSequenceLikeMixin
 from .... import Document
-from ...memory import DocumentArrayInMemory
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -40,13 +39,14 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._insert_doc_at_idx(doc=value, idx=index)
         self._commit()
 
-    def append(self, doc: 'Document') -> None:
+    def append(self, doc: 'Document', commit: bool = True) -> None:
         self._sql(
             f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
             (doc.id, doc, len(self)),
         )
         self._offset2ids.append(doc.id)
-        self._commit()
+        if commit:
+            self._commit()
 
     def __del__(self) -> None:
         super().__del__()
@@ -83,13 +83,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         )
 
     def extend(self, docs: Iterable['Document']) -> None:
-
-        self_len = len(self)
         for doc in docs:
-            self._sql(
-                f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
-                (doc.id, doc, self_len),
-            )
-            self._offset2ids.append(doc.id)
-            self_len += 1
+            self.append(doc, commit=False)
         self._commit()

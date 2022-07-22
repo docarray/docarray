@@ -10,6 +10,57 @@ if TYPE_CHECKING:
 
 
 class Document(AllMixins, BaseDCType):
+    """Document is the basic data type in DocArray.
+    A Document is a container for any kind of data, be it text, image, audio, video, or 3D meshes.
+
+    You can initialize a Document object with given attributes:
+
+    .. code-block:: python
+
+        from docarray import Document
+        import numpy
+
+        d1 = Document(text='hello')
+        d3 = Document(tensor=numpy.array([1, 2, 3]))
+        d4 = Document(
+            uri='https://jina.ai',
+            mime_type='text/plain',
+            granularity=1,
+            adjacency=3,
+            tags={'foo': 'bar'},
+        )
+
+    Documents support a :ref:`nested structure <recursive-nested-document>`, which can also be specified during construction:
+
+    .. code-block:: python
+
+        d = Document(
+            id='d0',
+            chunks=[Document(id='d1', chunks=Document(id='d2'))],
+            matches=[Document(id='d3')],
+        )
+
+    A Document can embed its contents using the :meth:`embed` method and a provided embedding model:
+
+    .. code-block:: python
+
+        import torchvision
+
+        q = (
+            Document(uri='/Users/usr/path/to/image.jpg')
+            .load_uri_to_image_tensor()
+            .set_image_tensor_normalization()
+            .set_image_tensor_channel_axis(-1, 0)
+        )
+        model = torchvision.models.resnet50(pretrained=True)
+        q.embed(model)
+
+    Multiple Documents can be organized into a :class:`~docarray.array.document.DocumentArray`.
+
+    .. seealso::
+        For further details, see our :ref:`user guide <document>`.
+    """
+
     _data_class = DocumentData
     _unresolved_fields_dest = 'tags'
     _post_init_fields = (

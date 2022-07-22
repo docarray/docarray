@@ -27,7 +27,7 @@ Though both `.find()` and `.match()` is about finding nearest neighbours of a gi
 
 In the sequel, we will use `.match()` to describe the features. But keep in mind that `.find()` should also work by simply switching the right and left-hand sides.
 
-## Example
+### Example
 
 The following example finds for each element in `da1` the three closest Documents from the elements in `da2` according to Euclidean distance.
 
@@ -134,11 +134,11 @@ da2.find(da1, metric='euclidean', limit=3)
 or simply:
 
 ```python
-da2.find(np.array(
-         [[0, 0, 0, 0, 1], 
-         [1, 0, 0, 0, 0],
-         [1, 1, 1, 1, 0], 
-         [1, 2, 2, 1, 0]]), metric='euclidean', limit=3)
+da2.find(
+    np.array([[0, 0, 0, 0, 1], [1, 0, 0, 0, 0], [1, 1, 1, 1, 0], [1, 2, 2, 1, 0]]),
+    metric='euclidean',
+    limit=3,
+)
 ```
 
 The following metrics are supported:
@@ -155,27 +155,6 @@ Note that framework is auto-chosen based on the type of `.embeddings`. For examp
 
 By default `A.match(B)` will copy the top-K matched Documents from B to `A.matches`. When these matches are big, copying them can be time-consuming. In this case, one can leverage `.match(..., only_id=True)` to keep only {attr}`~docarray.Document.id`.
 
-### Pre filtering
-
-Both `match` and `find` support pre-filtering by passing a `filter` argument to the method.
-
-Pre-filtering is an advanced approximate nearest neighbors feature that allows to efficiently retrieve the nearest vectors
-that respect the filtering condition.
-
-In contrast, post-filtering in the naive approach where you first retrieve the 
-nearest neighbors and then discard all the candidates that do not respect the filter condition.
-
-````{admonition} Pre-filtering is not available for in-memory backend
-:class: caution
-By default a DocumentArray will use the in-memory backend which does not support pre-filtering
-```
-````
-
-You can find example on how to use the pre-filtering here:
-
-- {ref}`ANNLite <annlite-filter>`
-- {ref}`Weaviate <weaviate-filter>`
-- {ref}`Qdrant <qdrant-filter>`
 
 
 ### GPU support
@@ -224,7 +203,7 @@ da2.embeddings = np.random.random([M, D]).astype(np.float32)
 ```
 
 ```python
-%timeit da1.match(da2, only_id=True)
+da1.match(da2, only_id=True)
 ```
 
 ```text
@@ -243,7 +222,7 @@ da2.embeddings = torch.tensor(np.random.random([M, D]).astype(np.float32))
 ```
 
 ```python
-%timeit da1.match(da2, device='cuda', batch_size=1_000, only_id=True)
+da1.match(da2, device='cuda', batch_size=1_000, only_id=True)
 ```
 
 ```text

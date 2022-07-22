@@ -15,7 +15,7 @@ from typing import (
 
 import numpy as np
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
+from elasticsearch.helpers import parallel_bulk
 
 from ..base.backend import BaseBackendMixin, TypeMap
 from .... import Document
@@ -52,6 +52,9 @@ class BackendMixin(BaseBackendMixin):
         'str': TypeMap(type='text', converter=str),
         'float': TypeMap(type='float', converter=float),
         'int': TypeMap(type='integer', converter=_safe_cast_int),
+        'double': TypeMap(type='double', converter=float),
+        'long': TypeMap(type='long', converter=_safe_cast_int),
+        'bool': TypeMap(type='boolean', converter=bool),
     }
 
     def _init_storage(
@@ -156,7 +159,12 @@ class BackendMixin(BaseBackendMixin):
         return client
 
     def _send_requests(self, request):
-        bulk(self._client, request)
+        failed_index = []
+        for success, info in parallel_bulk(self._client, request, raise_on_error=False):
+            if not success:
+                failed_index.append(info['index'])
+
+        return failed_index
 
     def _refresh(self, index_name):
         self._client.indices.refresh(index=index_name)
@@ -176,8 +184,24 @@ class BackendMixin(BaseBackendMixin):
                 }  # id here
                 for offset_, id_ in enumerate(self._offset2ids.ids)
             ]
-            r = bulk(self._client, requests)
+            self._send_requests(requests)
             self._client.indices.refresh(index=self._index_name_offset2id)
+
+            # Clean trailing unused offsets
+            offset_count = self._client.count(index=self._index_name_offset2id)
+            unused_offsets = range(len(self._offset2ids.ids), offset_count['count'])
+
+            if len(unused_offsets) > 0:
+                requests = [
+                    {
+                        '_op_type': 'delete',
+                        '_id': offset_,  # note offset goes here because it's what we want to get by
+                        '_index': self._index_name_offset2id,
+                    }
+                    for offset_ in unused_offsets
+                ]
+                self._send_requests(requests)
+                self._client.indices.refresh(index=self._index_name_offset2id)
 
     def _get_offset2ids_meta(self) -> List:
         """Return the offset2ids stored in elastic

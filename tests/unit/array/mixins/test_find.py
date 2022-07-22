@@ -8,6 +8,23 @@ from docarray.math import ndarray
 import operator
 
 
+def test_customize_metric_fn():
+    N, D = 4, 128
+    da = DocumentArray.empty(N)
+    da.embeddings = np.random.random([N, D])
+
+    q = np.random.random([D])
+    _, r1 = da.find(q)[:, ['scores__cosine__value', 'id']]
+
+    from docarray.math.distance.numpy import cosine
+
+    def inv_cosine(*args):
+        return -cosine(*args)
+
+    _, r2 = da.find(q, metric=inv_cosine)[:, ['scores__inv_cosine__value', 'id']]
+    assert list(reversed(r1)) == r2
+
+
 @pytest.mark.parametrize(
     'storage, config',
     [

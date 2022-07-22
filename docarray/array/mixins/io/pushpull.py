@@ -4,9 +4,9 @@ import warnings
 from functools import lru_cache
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, Optional
-from urllib.request import Request, urlopen
 
-from ....helper import get_request_header
+
+from ....helper import get_request_header, __cache_path__
 
 if TYPE_CHECKING:
     from ....typing import T
@@ -137,7 +137,7 @@ class PushPullMixin:
         cls: Type['T'],
         name: str,
         show_progress: bool = False,
-        local_cache: bool = False,
+        local_cache: bool = True,
         *args,
         **kwargs,
     ) -> 'T':
@@ -177,10 +177,10 @@ class PushPullMixin:
             from .binary import LazyRequestReader
 
             _source = LazyRequestReader(r)
-            if local_cache and os.path.exists(f'.cache/{name}'):
-                _cache_len = os.path.getsize(f'.cache/{name}')
+            if local_cache and os.path.exists(f'{__cache_path__}/{name}'):
+                _cache_len = os.path.getsize(f'{__cache_path__}/{name}')
                 if _cache_len == _da_len:
-                    _source = f'.cache/{name}'
+                    _source = f'{__cache_path__}/{name}'
 
             r = cls.load_binary(
                 _source,
@@ -192,8 +192,8 @@ class PushPullMixin:
             )
 
             if isinstance(_source, LazyRequestReader) and local_cache:
-                os.makedirs('.cache', exist_ok=True)
-                with open(f'.cache/{name}', 'wb') as fp:
+                Path(__cache_path__).mkdir(parents=True, exist_ok=True)
+                with open(f'{__cache_path__}/{name}', 'wb') as fp:
                     fp.write(_source.content)
 
             return r
