@@ -1,3 +1,4 @@
+(mm-construct)=
 # Construct
 
 ```{tip}
@@ -32,7 +33,9 @@ d = Document(m)
 d.summary()
 ```
 
-One can see that this creates a Document object with two chunks nested.
+You can see that this creates a Document object with two chunks.
+
+````{dropdown} Nested structure (chunks)
 
 ```text
 📄 Document: f3b193bbe8403c3ce1599b82f941f68a
@@ -58,6 +61,8 @@ One can see that this creates a Document object with two chunks nested.
         │ modality             │ text                                                  │
         ╰──────────────────────┴───────────────────────────────────────────────────────╯
 ```
+
+````
 
 To convert a Document object back to a `MyMultiModalDoc` object,
 
@@ -162,6 +167,7 @@ d = Document(m)
 
 One can look at the structure of `d` via `d.summary()`:
 
+````{dropdown} Nested structure (chunks)
 
 ```text
 📄 Document: 90c744c5155c2356d27f8c91955f70f7
@@ -197,6 +203,9 @@ One can look at the structure of `d` via `d.summary()`:
         ╰──────────────┴───────────────────────────────────────────────────────────────╯
 ```
 
+````
+
+(mm-annotation)=
 ## Behavior of field annotation
 
 This section explains the behavior of field annotations in details.
