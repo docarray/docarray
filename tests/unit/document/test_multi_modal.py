@@ -805,7 +805,6 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
     d.other_doc_list[0].heading.text = '0 new text list'
     d.other_doc_list[1].heading = new_inner_list_doc
 
-    print(d.other_doc.heading)
     assert d.other_doc.heading.text == 'new text inner doc'
     assert d.other_doc.heading in d.other_doc.chunks
     heading_in_chunk_of_chunks = False
