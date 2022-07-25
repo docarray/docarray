@@ -35,7 +35,7 @@ doc = Document(
     )
 )
 
-print(doc.banner)  # returns a Document with the test.jpg imge tensor
+print(doc.banner)  # returns a Document with the test.jpg image tensor
 print(doc.banner.tensor)  # returns the image tensor
 print(doc.paragraphs)  # returns a DocumentArray with one Document per paragraph
 print(doc.paragraphs.texts)  # returns the paragraph texts
