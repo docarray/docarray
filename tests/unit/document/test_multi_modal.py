@@ -753,11 +753,24 @@ def test_set_multimodal(serialization, mmdoc):
 
     assert isinstance(d.description, Document)
     assert d.description.content == 'hello, beautiful world'
+    assert d.description in d.chunks
+    assert DocumentArray(d)['@.[description]'][0] == d.description
+
     assert isinstance(d.heading, Document)
     assert d.heading.content == 'hello, world but beautifully custom!'
     assert d.heading.tags == {'custom': 'tag'}
+    assert d.heading in d.chunks
+    assert DocumentArray(d)['@.[heading]'][0] == d.heading
+
     assert isinstance(d.heading_list, DocumentArray)
     assert d.heading_list.texts == ['hello', 'beautiful', 'world']
+    heading_list_in_chunks = False
+    for c in d.chunks:
+        if c.chunks == d.heading_list:
+            heading_list_in_chunks = True
+    assert heading_list_in_chunks
+    for d1, d2 in zip(DocumentArray(d)['@.[heading_list]'], d.heading_list):
+        assert d1 == d2
 
 
 @pytest.mark.parametrize(
@@ -786,13 +799,26 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
     if serialization:
         d = _serialize_deserialize(d, serialization)
 
-    d.other_doc.heading.text = 'inner hello, beautiful world but custom!'
-    d.other_doc_list[0].heading.text = '1 inner list hello, beautiful world but custom!'
-    d.other_doc_list[1].heading = Document(text='set as subdoc')
+    new_inner_doc = Document(text='new text inner doc')
+    new_inner_list_doc = Document(text='1 new text list')
+    d.other_doc.heading = new_inner_doc
+    d.other_doc_list[0].heading.text = '0 new text list'
+    d.other_doc_list[1].heading = new_inner_list_doc
 
-    assert d.other_doc.heading.text == 'inner hello, beautiful world but custom!'
-    assert (
-        d.other_doc_list[0].heading.text
-        == '1 inner list hello, beautiful world but custom!'
-    )
-    assert d.other_doc_list[1].heading.text == 'set as subdoc'
+    print(d.other_doc.heading)
+    assert d.other_doc.heading.text == 'new text inner doc'
+    assert d.other_doc.heading in d.other_doc.chunks
+    heading_in_chunk_of_chunks = False
+    for c in d.chunks:
+        if c.chunks:
+            for cc in c.chunks:
+                if cc == d.other_doc.heading:
+                    heading_in_chunk_of_chunks = True
+    assert heading_in_chunk_of_chunks
+    assert DocumentArray(d.other_doc)['@.[heading]'][0] == new_inner_doc
+
+    assert d.other_doc_list[0].heading.text == '0 new text list'
+    assert '0 new text list' in d.other_doc_list['@.[heading]'][:, 'text']
+
+    assert d.other_doc_list[1].heading.text == '1 new text list'
+    assert new_inner_list_doc in d.other_doc_list['@.[heading]']
