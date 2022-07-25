@@ -97,34 +97,55 @@ class MultiModalMixin:
 
         return root
 
-    def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
-        from docarray import DocumentArray
-
+    def _get_mm_attr_postion(self, attr):
         if not self.is_multimodal:
             raise ValueError(
                 'the Document does not correspond to a Multi Modal Document'
             )
 
-        if attribute not in self._metadata['multi_modal_schema']:
-            raise ValueError(
-                f'the Document schema does not contain attribute {attribute}'
-            )
+        if attr not in self._metadata['multi_modal_schema']:
+            raise ValueError(f'the Document schema does not contain attribute {attr}')
 
+        return int(self._metadata['multi_modal_schema'][attr].get('position'))
+
+    def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
+        from docarray import DocumentArray
+
+        position = self._get_mm_attr_postion(attribute)
         attribute_type = self._metadata['multi_modal_schema'][attribute][
             'attribute_type'
         ]
-        position = self._metadata['multi_modal_schema'][attribute].get('position')
 
         if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
-            return DocumentArray([self.chunks[int(position)]])
+            return DocumentArray([self.chunks[position]])
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
         ]:
-            return self.chunks[int(position)].chunks
+            return self.chunks[position].chunks
         else:
             raise ValueError(
-                f'Invalid attribute {attribute}: must a Document attribute or nested dataclass'
+                f'Invalid attribute {attribute}: must be a Document attribute or nested dataclass'
+            )
+
+    def set_multi_modal_attribute(
+        self, attribute: str, value: typing.Union['Document', 'DocumentArray']
+    ):
+        position = self._get_mm_attr_postion(attribute)
+        attribute_type = self._metadata['multi_modal_schema'][attribute][
+            'attribute_type'
+        ]
+
+        if attribute_type in [AttributeType.DOCUMENT, AttributeType.NESTED]:
+            self.chunks[position] = value
+        elif attribute_type in [
+            AttributeType.ITERABLE_DOCUMENT,
+            AttributeType.ITERABLE_NESTED,
+        ]:
+            self.chunks[position].chunks = value
+        else:
+            raise ValueError(
+                f'Invalid attribute {attribute}: must be a Document attribute or nested dataclass'
             )
 
     @classmethod
@@ -140,20 +161,29 @@ class MultiModalMixin:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
 
-    def __getattr__(self, attr):
+    def _has_multimodal_attr(self, attr):
         try:
             data = super().__getattribute__('_data')
             has_data = bool(data)
         except AttributeError:
-            has_data = False
+            return False
 
         has_metadata = has_data and getattr(self._data, '_metadata') is not None
-        if (
+        return (
             has_metadata
             and self.is_multimodal
             and attr in self._metadata['multi_modal_schema']
-        ):
+        )
+
+    def __getattr__(self, attr):
+        if self._has_multimodal_attr(attr):
             mm_attr_da = self.get_multi_modal_attribute(attr)
             return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
         else:
             raise AttributeError(f'{self.__class__.__name__} has no attribute {attr}')
+
+    def __setattr__(self, attr, value):
+        if self._has_multimodal_attr(attr):
+            self.set_multi_modal_attribute(attr, value)
+        else:
+            object.__setattr__(self, attr, value)
