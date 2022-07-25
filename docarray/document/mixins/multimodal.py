@@ -106,7 +106,13 @@ class MultiModalMixin:
         if attr not in self._metadata['multi_modal_schema']:
             raise ValueError(f'the Document schema does not contain attribute {attr}')
 
-        return int(self._metadata['multi_modal_schema'][attr].get('position'))
+        pos = self._metadata['multi_modal_schema'][attr].get('position')
+        if pos is None:
+            raise ValueError(
+                f'attribute {attr} is not a valid multi modal attribute.'
+                f' One possible cause is the usage of a non-supported type in the dataclass definition.'
+            )
+        return int(pos)
 
     def get_multi_modal_attribute(self, attribute: str) -> 'DocumentArray':
         from docarray import DocumentArray
