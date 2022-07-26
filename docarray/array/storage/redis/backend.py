@@ -1,26 +1,18 @@
 from dataclasses import dataclass, field
-from typing import (
-    Iterable,
-    Dict,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    Any,
-    Tuple,
-    List,
-)
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
+
+import numpy as np
+
+from redis import Redis
+from redis.commands.search.field import NumericField, TextField, VectorField
+from redis.exceptions import ResponseError
 
 from .... import Document
-import numpy as np
-from ..base.backend import BaseBackendMixin, TypeMap
-from redis import Redis
-from redis.exceptions import ResponseError
-from redis.commands.search.field import VectorField, TextField, NumericField
 from ....helper import dataclass_from_dict
+from ..base.backend import BaseBackendMixin, TypeMap
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType
-    from ....typing import DocumentArraySourceType, ArrayType
+    from ....typing import ArrayType, DocumentArraySourceType
 
 
 @dataclass
@@ -68,9 +60,9 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(RedisConfig, config)
 
-        if not config.distance in ['L2', 'IP', 'COSINE']:
+        if config.distance not in ['L2', 'IP', 'COSINE']:
             raise ValueError(f'Distance metric {config.distance} not supported')
-        if not config.method in ['HNSW', 'FLAT']:
+        if config.method not in ['HNSW', 'FLAT']:
             raise ValueError(f'Method {config.method} not supported')
 
         self._offset2id_key = 'offset2id'
@@ -161,7 +153,7 @@ class BackendMixin(BaseBackendMixin):
             embedding = np.zeros(self.n_dim)
         return embedding.astype(np.float32).tobytes()
 
-    def _get_offset2ids_meta(self) -> List:
+    def _get_offset2ids_meta(self) -> List[str]:
         """Return the offset2ids stored in redis
 
         :return: a list containing ids
