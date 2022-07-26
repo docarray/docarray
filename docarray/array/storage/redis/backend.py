@@ -98,12 +98,12 @@ class BackendMixin(BaseBackendMixin):
                 pass
 
         if self._config.flush or self._config.update_schema:
-            schema = self._build_schema_from_redis_config(self._config)
+            schema = self._build_schema_from_redis_config()
             client.ft().create_index(schema)
 
         return client
 
-    def _build_schema_from_redis_config(self, redis_config):
+    def _build_schema_from_redis_config(self):
         index_param = {
             'TYPE': 'FLOAT32',
             'DIM': self.n_dim,
@@ -128,8 +128,8 @@ class BackendMixin(BaseBackendMixin):
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
 
-        if redis_config.tag_indices:
-            for index in redis_config.tag_indices:
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
                 # TODO TextField or TagField
                 schema.append(TextField(index))
 
