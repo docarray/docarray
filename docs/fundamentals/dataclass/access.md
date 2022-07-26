@@ -11,6 +11,7 @@ Accessing a modality always returns a Document or a DocumentArray, instead of di
 If you are interested in the principles behind this design decision, you can learn more [here](TODO LINK TO BLOG POST).
 ```
 
+(mm-access-doc)=
 ## Document level access
 
 Even after conversion to {class}`~docarray.document.Document`, custom-defines modalities can be accessed by their names, returning a

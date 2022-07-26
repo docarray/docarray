@@ -22,7 +22,20 @@ class MyMultiModalDoc:
 m = MyMultiModalDoc(avatar='test-1.jpeg', description='hello, world')
 ```
 
-**Each field is a modality.** The above example contains two modalities: image and text. 
+**Each field is a modality.** The above example contains two modalities: image and text.
+
+```{Caution}
+
+Be careful when assigning names to your modalities.
+ 
+Do not use names that are properties of {class}`~docarray.document.Document`, such as
+`text`, `tensor`, `embedding`, etc.
+Instead, use more specific names that fit your domain, such as `avatar` and `description` in the example above.
+
+If there is a conflict between the name of a modality and a property of {class}`~docarray.document.Document`,
+no guarantees about the behavior while {ref}`accessing <mm-access-doc>` such a name can be made.
+
+```
 
 To convert it into a `Document` object, simply:
 
@@ -33,7 +46,7 @@ d = Document(m)
 d.summary()
 ```
 
-You can see that this creates a Document object with two chunks.
+This creates a Document object with two chunks:
 
 ````{dropdown} Nested structure (chunks)
 
@@ -64,7 +77,7 @@ You can see that this creates a Document object with two chunks.
 
 ````
 
-To convert a Document object back to a `MyMultiModalDoc` object,
+To convert a Document object back to a `MyMultiModalDoc` object, do:
 
 ```python
 m = MyMultiModalDoc(d)
