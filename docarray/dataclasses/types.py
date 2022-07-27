@@ -19,15 +19,15 @@ from typing import (
     Type,
 )
 
-from .getter import *
-from .setter import *
+from docarray.dataclasses.getter import *
+from docarray.dataclasses.setter import *
 
 if TYPE_CHECKING:
     import numpy as np
-    from ..typing import T
+    from docarray.typing import T
     from docarray import Document
 
-from ..typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 
 __all__ = ['field', 'dataclass', 'is_multimodal']
 

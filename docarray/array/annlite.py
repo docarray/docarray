@@ -1,5 +1,5 @@
-from .document import DocumentArray
-from .storage.annlite import StorageMixins, AnnliteConfig
+from docarray.array.document import DocumentArray
+from docarray.array.storage.annlite import StorageMixins, AnnliteConfig
 
 __all__ = ['AnnliteConfig', 'DocumentArrayAnnlite']
 

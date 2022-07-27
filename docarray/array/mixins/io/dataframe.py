@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
     from pandas import DataFrame
-    from ....typing import T
+    from docarray.typing import T
 
 
 class DataframeIOMixin:
@@ -31,7 +31,7 @@ class DataframeIOMixin:
         :return: a :class:`DocumentArray` object
         """
         da = cls(**kwargs)
-        from .... import Document
+        from docarray import Document
 
         for m in df.to_dict(orient='records'):
             # drop nan

@@ -10,8 +10,8 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from ... import DocumentArray, Document
-    from ...typing import T
+    from docarray import DocumentArray, Document
+    from docarray.typing import T
 
 ATTRIBUTES_SEPARATOR = ','
 PATHS_SEPARATOR = ','
@@ -149,7 +149,7 @@ class TraverseMixin:
         elif filter_fn is None:
             yield docs
         else:
-            from .. import DocumentArray
+            from docarray.array import DocumentArray
 
             yield DocumentArray(list(filter(filter_fn, docs)))
 
@@ -202,7 +202,7 @@ class TraverseMixin:
 
         :return: a flattened :class:`DocumentArray` object.
         """
-        from .. import DocumentArray
+        from docarray.array import DocumentArray
 
         if hasattr(self, '_flattened') and getattr(self, '_flattened'):
             return self
@@ -229,7 +229,7 @@ class TraverseMixin:
 
     @staticmethod
     def _flatten(sequence) -> 'DocumentArray':
-        from ... import DocumentArray
+        from docarray import DocumentArray
 
         return DocumentArray(list(itertools.chain.from_iterable(sequence)))
 

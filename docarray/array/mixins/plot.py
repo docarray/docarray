@@ -149,7 +149,7 @@ class PlotMixin:
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :return: the path to the embeddings visualization info.
         """
-        from ...helper import random_port, __resources_path__
+        from docarray.helper import random_port, __resources_path__
 
         path = path or tempfile.mkdtemp()
         emb_fn = f'{title}.tsv'

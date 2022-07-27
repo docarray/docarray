@@ -1,5 +1,5 @@
-from .document import DocumentArray
-from .storage.elastic import StorageMixins, ElasticConfig
+from docarray.array.document import DocumentArray
+from docarray.array.storage.elastic import StorageMixins, ElasticConfig
 
 __all__ = ['DocumentArrayElastic', 'ElasticConfig']
 

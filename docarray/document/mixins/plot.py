@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from ...helper import deprecate_by
+from docarray.helper import deprecate_by
 
 
 class PlotMixin:
@@ -29,11 +29,11 @@ class PlotMixin:
                 v = getattr(self, f)
                 my_table.add_row(f, str(v)[:100] + f'... [dim](length: {len(v)})')
             elif f in ('embedding', 'tensor'):
-                from ...math.ndarray import to_numpy_array
+                from docarray.math.ndarray import to_numpy_array
 
                 v = to_numpy_array(getattr(self, f))
                 if v.squeeze().ndim == 1 and len(v) < 1000:
-                    from .rich_embedding import ColorBoxEmbedding
+                    from docarray.document.mixins.rich_embedding import ColorBoxEmbedding
 
                     v = ColorBoxEmbedding(v.squeeze())
                 else:
@@ -219,7 +219,7 @@ class PlotMixin:
 
 def _convert_display_uri(uri, mime_type):
     import urllib
-    from .helper import _to_datauri, _uri_to_blob
+    from docarray.document.mixins.helper import _to_datauri, _uri_to_blob
 
     scheme = urllib.parse.urlparse(uri).scheme
 

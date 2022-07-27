@@ -1,6 +1,6 @@
 from typing import List, Union, Any
 
-from ...helper import dunder_get
+from docarray.helper import dunder_get
 
 
 class GetAttributesMixin:

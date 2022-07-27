@@ -6,10 +6,10 @@ from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _get_file_context, _uri_to_blob
+from docarray.document.mixins.helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
     from PIL.Image import Image as PILImage
 
 
@@ -302,7 +302,7 @@ class ImageDataMixin:
         ]
         expanded_img = expanded_img.reshape((-1, window_h, window_w, c))
         if as_chunks:
-            from .. import Document
+            from docarray.document import Document
 
             for location, _tensor in zip(bbox_locations, expanded_img):
                 self.chunks.append(

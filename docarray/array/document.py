@@ -1,19 +1,19 @@
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
-from .base import BaseDocumentArray
-from .mixins import AllMixins
+from docarray.array.base import BaseDocumentArray
+from docarray.array.mixins import AllMixins
 
 if TYPE_CHECKING:
-    from ..typing import DocumentArraySourceType
-    from .memory import DocumentArrayInMemory
-    from .sqlite import DocumentArraySqlite
-    from .annlite import DocumentArrayAnnlite
-    from .weaviate import DocumentArrayWeaviate
-    from .elastic import DocumentArrayElastic
-    from .storage.sqlite import SqliteConfig
-    from .storage.annlite import AnnliteConfig
-    from .storage.weaviate import WeaviateConfig
-    from .storage.elastic import ElasticConfig
+    from docarray.typing import DocumentArraySourceType
+    from docarray.array.memory import DocumentArrayInMemory
+    from docarray.array.sqlite import DocumentArraySqlite
+    from docarray.array.annlite import DocumentArrayAnnlite
+    from docarray.array.weaviate import DocumentArrayWeaviate
+    from docarray.array.elastic import DocumentArrayElastic
+    from docarray.array.storage.sqlite import SqliteConfig
+    from docarray.array.storage.annlite import AnnliteConfig
+    from docarray.array.storage.weaviate import WeaviateConfig
+    from docarray.array.storage.elastic import ElasticConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
@@ -133,27 +133,27 @@ class DocumentArray(AllMixins, BaseDocumentArray):
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
             if storage == 'memory':
-                from .memory import DocumentArrayInMemory
+                from docarray.array.memory import DocumentArrayInMemory
 
                 instance = super().__new__(DocumentArrayInMemory)
             elif storage == 'sqlite':
-                from .sqlite import DocumentArraySqlite
+                from docarray.array.sqlite import DocumentArraySqlite
 
                 instance = super().__new__(DocumentArraySqlite)
             elif storage == 'annlite':
-                from .annlite import DocumentArrayAnnlite
+                from docarray.array.annlite import DocumentArrayAnnlite
 
                 instance = super().__new__(DocumentArrayAnnlite)
             elif storage == 'weaviate':
-                from .weaviate import DocumentArrayWeaviate
+                from docarray.array.weaviate import DocumentArrayWeaviate
 
                 instance = super().__new__(DocumentArrayWeaviate)
             elif storage == 'qdrant':
-                from .qdrant import DocumentArrayQdrant
+                from docarray.array.qdrant import DocumentArrayQdrant
 
                 instance = super().__new__(DocumentArrayQdrant)
             elif storage == 'elasticsearch':
-                from .elastic import DocumentArrayElastic
+                from docarray.array.elastic import DocumentArrayElastic
 
                 instance = super().__new__(DocumentArrayElastic)
 

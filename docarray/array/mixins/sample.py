@@ -2,7 +2,7 @@ import random
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..document import DocumentArray
+    from docarray.array.document import DocumentArray
 
 
 class SampleMixin:
@@ -24,7 +24,7 @@ class SampleMixin:
         # however it's only work on DocumentArray.
         sampled = random.sample(self, k)
 
-        from ..document import DocumentArray
+        from docarray.array.document import DocumentArray
 
         return DocumentArray(sampled)
 

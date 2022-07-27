@@ -2,12 +2,12 @@ import copy as cp
 from dataclasses import fields
 from functools import lru_cache
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
-from .dataclasses import is_multimodal
+from docarray.dataclasses import is_multimodal
 
-from .helper import typename
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from .typing import T
+    from docarray.typing import T
 
 
 @lru_cache()

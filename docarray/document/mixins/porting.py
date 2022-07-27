@@ -3,10 +3,10 @@ import json
 import pickle
 from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
 
-from ...helper import compress_bytes, decompress_bytes
+from docarray.helper import compress_bytes, decompress_bytes
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class PortingMixin:
@@ -22,12 +22,12 @@ class PortingMixin:
         :return: the parsed Document object
         """
         if protocol == 'jsonschema':
-            from ..pydantic_model import PydanticDocument
+            from docarray.document.pydantic_model import PydanticDocument
 
             return cls.from_pydantic_model(PydanticDocument.parse_obj(obj, **kwargs))
         elif protocol == 'protobuf':
             from google.protobuf import json_format
-            from ...proto.docarray_pb2 import DocumentProto
+            from docarray.proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
             json_format.ParseDict(obj, pb_msg, **kwargs)
@@ -50,12 +50,12 @@ class PortingMixin:
         :return: the parsed Document object
         """
         if protocol == 'jsonschema':
-            from ..pydantic_model import PydanticDocument
+            from docarray.document.pydantic_model import PydanticDocument
 
             return cls.from_pydantic_model(PydanticDocument.parse_raw(obj, **kwargs))
         elif protocol == 'protobuf':
             from google.protobuf import json_format
-            from ...proto.docarray_pb2 import DocumentProto
+            from docarray.proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
             json_format.Parse(obj, pb_msg, **kwargs)
@@ -113,7 +113,7 @@ class PortingMixin:
         if protocol == 'pickle':
             return pickle.loads(bstr)
         elif protocol == 'protobuf':
-            from ...proto.docarray_pb2 import DocumentProto
+            from docarray.proto.docarray_pb2 import DocumentProto
 
             pb_msg = DocumentProto()
             pb_msg.ParseFromString(bstr)

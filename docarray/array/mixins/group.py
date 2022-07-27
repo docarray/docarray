@@ -4,10 +4,10 @@ from typing import Dict, Any, TYPE_CHECKING, Generator, List
 
 import numpy as np
 
-from ...helper import dunder_get
+from docarray.helper import dunder_get
 
 if TYPE_CHECKING:
-    from ... import DocumentArray
+    from docarray import DocumentArray
 
 
 class GroupMixin:
@@ -25,7 +25,7 @@ class GroupMixin:
             If the :attr:`tags` of :class:`Document` do not contains the specified :attr:`tag`,
             return an empty dict.
         """
-        from ... import DocumentArray
+        from docarray import DocumentArray
 
         rv = defaultdict(DocumentArray)
         for doc in self:

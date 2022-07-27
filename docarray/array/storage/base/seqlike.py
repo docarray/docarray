@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Iterator, Iterable, MutableSequence
 
-from .... import Document
+from docarray import Document
 
 
 class BaseSequenceLikeMixin(MutableSequence[Document]):

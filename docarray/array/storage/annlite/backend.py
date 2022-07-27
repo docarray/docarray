@@ -11,11 +11,11 @@ from typing import (
 
 import numpy as np
 
-from ..base.backend import BaseBackendMixin, TypeMap
-from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -43,7 +43,7 @@ class BackendMixin(BaseBackendMixin):
         if embedding is None:
             embedding = np.zeros(self.n_dim, dtype=np.float32)
         elif isinstance(embedding, list):
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 
@@ -88,7 +88,7 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
-        from .... import Document
+        from docarray import Document
 
         super()._init_storage()
 

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     import numpy as np
     from PIL.Image import Image as PILImage
 
-    from .. import Document
+    from docarray import Document
 
     ArrayType = TypeVar(
         'ArrayType',
