@@ -98,7 +98,7 @@ class BackendMixin(BaseBackendMixin):
 
         if self._config.update_schema:
             if len(client.execute_command('FT._LIST')) > 0:
-                client.ft().dropindex('idx')
+                client.ft().dropindex()
 
         if self._config.flush or self._config.update_schema:
             schema = self._build_schema_from_redis_config()
