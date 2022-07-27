@@ -33,7 +33,9 @@ class PlotMixin:
 
                 v = to_numpy_array(getattr(self, f))
                 if v.squeeze().ndim == 1 and len(v) < 1000:
-                    from docarray.document.mixins.rich_embedding import ColorBoxEmbedding
+                    from docarray.document.mixins.rich_embedding import (
+                        ColorBoxEmbedding,
+                    )
 
                     v = ColorBoxEmbedding(v.squeeze())
                 else:

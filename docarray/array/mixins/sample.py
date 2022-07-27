@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 
 class SampleMixin:
-    """ A mixin that provides search functionality to DocumentArrays"""
+    """A mixin that provides search functionality to DocumentArrays"""
 
     def sample(self, k: int, seed: Optional[int] = None) -> 'DocumentArray':
         """random sample k elements from :class:`DocumentArray` without replacement.

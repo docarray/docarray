@@ -4,7 +4,7 @@ from docarray.helper import dunder_get
 
 
 class GetAttributesMixin:
-    """Provide helper functions for :class:`Document` to allow advanced set and get attributes """
+    """Provide helper functions for :class:`Document` to allow advanced set and get attributes"""
 
     def _get_attributes(self, *fields: str) -> Union[Any, List[Any]]:
         """Bulk fetch Document fields and return a list of the values of these fields

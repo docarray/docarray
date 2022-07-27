@@ -40,6 +40,6 @@ class AllMixins(
     GetAttributesMixin,
     MultiModalMixin,
 ):
-    """All plugins that can be used in :class:`Document`. """
+    """All plugins that can be used in :class:`Document`."""
 
     ...
