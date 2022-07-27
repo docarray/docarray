@@ -96,6 +96,7 @@ print(doc.feature_image.description.text)  # returns 'this is a description'
 this is a description
 ```
 
+(mm-access-da)=
 ## DocumentArray level access
 
 Custom modalities can be accessed through the familiar {ref}`selector syntax <access-elements>`.
