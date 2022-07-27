@@ -67,6 +67,7 @@ setup(
             'annlite>=0.3.2',
             'qdrant-client~=0.7.3',
             'elasticsearch>=8.2.0',
+            'redis>=4.3.4',
         ],
         'qdrant': [
             'qdrant-client~=0.7.3',
@@ -79,6 +80,9 @@ setup(
         ],
         'elasticsearch': [
             'elasticsearch>=8.2.0',
+        ],
+        'redis': [
+            'redis>=4.3.4',
         ],
         'test': [
             'pytest',
@@ -102,6 +106,7 @@ setup(
             'weaviate-client~=3.3.0',
             'annlite>=0.3.2',
             'elasticsearch>=8.2.0',
+            'redis>=4.3.4',
             'jina',
         ],
     },
