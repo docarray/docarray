@@ -7,11 +7,11 @@ from typing import (
     Dict,
 )
 
-from ..base.backend import BaseBackendMixin
-from .... import Document
+from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray import Document
 
 if TYPE_CHECKING:
-    from ....typing import (
+    from docarray.typing import (
         DocumentArraySourceType,
     )
 

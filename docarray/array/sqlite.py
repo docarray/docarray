@@ -1,6 +1,6 @@
-from .document import DocumentArray
+from docarray.array.document import DocumentArray
 
-from .storage.sqlite import StorageMixins, SqliteConfig
+from docarray.array.storage.sqlite import StorageMixins, SqliteConfig
 
 __all__ = ['SqliteConfig', 'DocumentArraySqlite']
 

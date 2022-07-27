@@ -6,8 +6,8 @@ import numpy as np
 
 if TYPE_CHECKING:
     from pydantic import BaseModel
-    from ...typing import T
-    from ..pydantic_model import PydanticDocument
+    from docarray.typing import T
+    from docarray.document.pydantic_model import PydanticDocument
 
 
 class PydanticMixin:
@@ -16,7 +16,7 @@ class PydanticMixin:
     @classmethod
     def get_json_schema(cls, indent: int = 2) -> str:
         """Return a JSON Schema of Document class."""
-        from ..pydantic_model import PydanticDocument as DP
+        from docarray.document.pydantic_model import PydanticDocument as DP
 
         from pydantic import schema_json_of
 
@@ -24,7 +24,7 @@ class PydanticMixin:
 
     def to_pydantic_model(self) -> 'PydanticDocument':
         """Convert a Document object into a Pydantic model."""
-        from ..pydantic_model import PydanticDocument as DP
+        from docarray.document.pydantic_model import PydanticDocument as DP
 
         _p_dict = {}
         for f in self.non_empty_fields:
@@ -46,7 +46,7 @@ class PydanticMixin:
         :param model: the pydantic data model object that represents a Document
         :return: a Document object
         """
-        from ... import Document
+        from docarray import Document
 
         fields = {}
         _field_chunks, _field_matches = None, None

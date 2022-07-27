@@ -2,8 +2,8 @@ from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
     import numpy as np
-    from ...typing import ArrayType
-    from ... import DocumentArray
+    from docarray.typing import ArrayType
+    from docarray import DocumentArray
 
 
 class MatchMixin:

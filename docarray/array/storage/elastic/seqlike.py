@@ -1,8 +1,8 @@
 from typing import Union, Iterable, Dict
 import warnings
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):

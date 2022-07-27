@@ -20,7 +20,7 @@ from typing import (
 import numpy as np
 
 if TYPE_CHECKING:
-    from .. import Document
+    from docarray import Document
 
 
 def from_ndarray(
@@ -40,7 +40,7 @@ def from_ndarray(
     :yield: documents
     """
 
-    from . import Document
+    from docarray.document import Document
 
     if shuffle:
         # shuffle for random query
@@ -81,7 +81,7 @@ def from_files(
     .. note::
         This function should not be directly used, use :meth:`Flow.index_files`, :meth:`Flow.search_files` instead
     """
-    from . import Document
+    from docarray.document import Document
 
     if read_mode not in {'r', 'rb', None}:
         raise RuntimeError(f'read_mode should be "r", "rb" or None, got {read_mode}')
@@ -150,7 +150,7 @@ def from_csv(
     :yield: documents
 
     """
-    from . import Document
+    from docarray.document import Document
 
     if hasattr(file, 'read'):
         file_ctx = nullcontext(file)
@@ -204,7 +204,7 @@ def from_huggingface_datasets(
             https://huggingface.co/docs/datasets/package_reference/loading_methods.html#datasets.load_dataset
     :yield: documents
     """
-    from . import Document
+    from docarray.document import Document
 
     import datasets
 
@@ -253,7 +253,7 @@ def from_ndjson(
     :yield: documents
 
     """
-    from . import Document
+    from docarray.document import Document
 
     for line in _subsample(fp, size, sampling_rate):
         value = json.loads(line)

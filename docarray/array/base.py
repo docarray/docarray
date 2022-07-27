@@ -1,9 +1,9 @@
 from typing import MutableSequence, TYPE_CHECKING, Union, Iterable
 
-from .. import Document
+from docarray import Document
 
 if TYPE_CHECKING:
-    from ..typing import T
+    from docarray.typing import T
 
 
 class BaseDocumentArray(MutableSequence[Document]):

@@ -1,9 +1,9 @@
 from abc import ABC
 
-from .backend import BackendMixin
-from .find import FindMixin
-from .getsetdel import GetSetDelMixin
-from .seqlike import SequenceLikeMixin
+from docarray.array.storage.memory.backend import BackendMixin
+from docarray.array.storage.memory.find import FindMixin
+from docarray.array.storage.memory.getsetdel import GetSetDelMixin
+from docarray.array.storage.memory.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins']
 

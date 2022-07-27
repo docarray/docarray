@@ -27,7 +27,7 @@ from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -184,7 +184,7 @@ class BackendMixin(BaseBackendMixin):
         if embedding is None:
             embedding = np.random.rand(self.n_dim)
         else:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 

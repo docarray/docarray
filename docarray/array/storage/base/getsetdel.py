@@ -7,8 +7,8 @@ from typing import (
     Dict,
 )
 
-from .helper import Offset2ID
-from .... import Document
+from docarray.array.storage.base.helper import Offset2ID
+from docarray import Document
 
 
 class BaseGetSetDelMixin(ABC):

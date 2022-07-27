@@ -12,12 +12,12 @@ from typing import (
     Tuple,
 )
 
-from .helper import initialize_table
-from ..base.backend import BaseBackendMixin
-from ....helper import random_identity, dataclass_from_dict
+from docarray.array.storage.sqlite.helper import initialize_table
+from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray.helper import random_identity, dataclass_from_dict
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType
+    from docarray.typing import DocumentArraySourceType
 
 
 def _sanitize_table_name(table_name: str) -> str:

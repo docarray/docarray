@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 
-from ...math.ndarray import get_array_type, to_numpy_array
+from docarray.math.ndarray import get_array_type, to_numpy_array
 
 if TYPE_CHECKING:
-    from ...typing import ArrayType
-    from ..docarray_pb2 import NdArrayProto
+    from docarray.typing import ArrayType
+    from docarray.proto.docarray_pb2 import NdArrayProto
 
 
 def read_ndarray(pb_msg: 'NdArrayProto') -> 'ArrayType':

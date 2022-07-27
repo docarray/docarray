@@ -1,10 +1,10 @@
 from typing import Iterable, Dict
 
-from .helper import OffsetMapping
-from ..base.getsetdel import BaseGetSetDelMixin
-from ..base.helper import Offset2ID
-from ...memory import DocumentArrayInMemory
-from .... import Document
+from docarray.array.storage.annlite.helper import OffsetMapping
+from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
+from docarray.array.memory import DocumentArrayInMemory
+from docarray import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):

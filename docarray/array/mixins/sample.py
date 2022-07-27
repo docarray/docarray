@@ -2,11 +2,11 @@ import random
 from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..document import DocumentArray
+    from docarray.array.document import DocumentArray
 
 
 class SampleMixin:
-    """ A mixin that provides search functionality to DocumentArrays"""
+    """A mixin that provides search functionality to DocumentArrays"""
 
     def sample(self, k: int, seed: Optional[int] = None) -> 'DocumentArray':
         """random sample k elements from :class:`DocumentArray` without replacement.
@@ -24,7 +24,7 @@ class SampleMixin:
         # however it's only work on DocumentArray.
         sampled = random.sample(self, k)
 
-        from ..document import DocumentArray
+        from docarray.array.document import DocumentArray
 
         return DocumentArray(sampled)
 

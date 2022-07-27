@@ -1,8 +1,8 @@
 from typing import Union, Iterable
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from ..registry import _REGISTRY
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray.array.storage.registry import _REGISTRY
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):

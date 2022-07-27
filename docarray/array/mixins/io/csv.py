@@ -5,7 +5,7 @@ from typing import Union, TextIO, Optional, Dict, TYPE_CHECKING, Type, Sequence
 import numpy as np
 
 if TYPE_CHECKING:
-    from ....typing import T
+    from docarray.typing import T
 
 
 class CsvIOMixin:
@@ -104,6 +104,6 @@ class CsvIOMixin:
         :return: a DocumentArray object
         """
 
-        from ....document.generators import from_csv
+        from docarray.document.generators import from_csv
 
         return cls(from_csv(file, field_resolver=field_resolver, encoding=encoding))

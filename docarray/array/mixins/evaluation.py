@@ -3,10 +3,10 @@ from typing import Optional, Union, TYPE_CHECKING, Callable
 
 import numpy as np
 
-from ...score import NamedScore
+from docarray.score import NamedScore
 
 if TYPE_CHECKING:
-    from ... import Document, DocumentArray
+    from docarray import Document, DocumentArray
 
 
 class EvaluationMixin:
@@ -46,7 +46,7 @@ class EvaluationMixin:
         if callable(metric):
             metric_fn = metric
         elif isinstance(metric, str):
-            from ...math import evaluation
+            from docarray.math import evaluation
 
             metric_fn = getattr(evaluation, metric)
 
