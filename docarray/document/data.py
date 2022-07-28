@@ -30,6 +30,7 @@ default_values = dict(
     chunks='ChunkArray',
     matches='MatchArray',
     timestamps=dict,
+    root_id='self.id',
 )
 
 _all_mime_types = set(mimetypes.types_map.values())
@@ -42,6 +43,7 @@ class DocumentData:
         default_factory=lambda: random.getrandbits(128).to_bytes(16, 'big').hex()
     )
     parent_id: Optional[str] = None
+    root_id: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
     blob: Optional[bytes] = None
@@ -113,6 +115,8 @@ class DocumentData:
                     from docarray.score import NamedScore
 
                     setattr(self, key, defaultdict(NamedScore))
+                elif v == 'self.id':
+                    setattr(self, key, self.id)
                 else:
                     setattr(self, key, v() if callable(v) else v)
 
