@@ -95,7 +95,7 @@ class MatchMixin:
         except TypeError as e:
             if 'secondary_index' in str(e):
                 raise ValueError(
-                    f'secondary_index is not available for this Document Store ({self.__class__.__name__}).'
+                    f'secondary_index is not available for this Document Store ({darray.__class__.__name__}).'
                 )
             else:
                 raise e
