@@ -68,7 +68,7 @@ class BackendMixin(BaseBackendMixin):
         **kwargs,
     ):
 
-        from .... import Document, DocumentArray
+        from docarray import Document, DocumentArray
 
         if not config:
             raise ValueError('Config object must be specified')
@@ -89,8 +89,6 @@ class BackendMixin(BaseBackendMixin):
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
-
-        from docarray import Document
 
         super()._init_storage()
 
