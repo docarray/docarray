@@ -576,5 +576,4 @@ def test_find_secondary_index_annlite_multimodal():
 
     assert (closest_docs[0].embedding == [2, 2]).all()
     for d in closest_docs:
-        print(d.id)
         assert d.id.endswith('_0') or d.id.endswith('_1')
