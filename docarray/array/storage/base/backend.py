@@ -4,7 +4,7 @@ from dataclasses import is_dataclass, asdict
 from typing import Dict, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 TypeMap = namedtuple('TypeMap', ['type', 'converter'])
 
@@ -32,7 +32,7 @@ class BaseBackendMixin(ABC):
         return self.TYPE_MAP[col_type].converter(value)
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
-        from ....math.ndarray import to_numpy_array
+        from docarray.math.ndarray import to_numpy_array
 
         return to_numpy_array(embedding)
 

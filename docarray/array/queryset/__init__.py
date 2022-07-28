@@ -1,1 +1,1 @@
-from .parser import QueryParser
+from docarray.array.queryset.parser import QueryParser

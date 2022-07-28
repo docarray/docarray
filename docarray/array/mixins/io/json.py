@@ -3,7 +3,7 @@ from contextlib import nullcontext
 from typing import Union, TextIO, TYPE_CHECKING, Type, List
 
 if TYPE_CHECKING:
-    from ....typing import T
+    from docarray.typing import T
 
 
 class JsonIOMixin:
@@ -63,7 +63,7 @@ class JsonIOMixin:
         protocol: str = 'jsonschema',
         **kwargs
     ) -> 'T':
-        from .... import Document
+        from docarray import Document
 
         json_docs = json.loads(file)
         return cls(
@@ -74,7 +74,7 @@ class JsonIOMixin:
     def from_list(
         cls: Type['T'], values: List, protocol: str = 'jsonschema', **kwargs
     ) -> 'T':
-        from .... import Document
+        from docarray import Document
 
         return cls(Document.from_dict(v, protocol=protocol, **kwargs) for v in values)
 

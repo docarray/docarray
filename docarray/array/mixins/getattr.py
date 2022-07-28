@@ -2,7 +2,7 @@ from typing import List
 
 
 class GetAttributeMixin:
-    """Helpers that provide attributes getter in bulk """
+    """Helpers that provide attributes getter in bulk"""
 
     def _get_attributes(self, *fields: str) -> List:
         """Return all nonempty values of the fields from all docs this array contains

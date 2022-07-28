@@ -5,10 +5,10 @@ from typing import (
 
 import numpy as np
 
-from ...helper import typename
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import (
+    from docarray.typing import (
         DocumentArrayIndexType,
     )
 

@@ -40,8 +40,8 @@ def sqeuclidean(
     paddle.set_device(device)
 
     return (
-        paddle.sum(y_mat ** 2, axis=1)
-        + paddle.sum(x_mat ** 2, axis=1)[:, None]
+        paddle.sum(y_mat**2, axis=1)
+        + paddle.sum(x_mat**2, axis=1)[:, None]
         - 2 * paddle.mm(x_mat, y_mat.transpose(perm=[1, 0]))
     ).numpy()
 
@@ -57,7 +57,7 @@ def euclidean(x_mat: 'tensor', y_mat: 'tensor', device: str = 'cpu') -> 'numpy.n
     paddle.set_device(device)
 
     return paddle.sqrt(
-        paddle.sum(y_mat ** 2, axis=1)
-        + paddle.sum(x_mat ** 2, axis=1)[:, None]
+        paddle.sum(y_mat**2, axis=1)
+        + paddle.sum(x_mat**2, axis=1)[:, None]
         - 2 * paddle.mm(x_mat, y_mat.transpose(perm=[1, 0]))
     ).numpy()

@@ -1,9 +1,9 @@
 from abc import ABC
 
-from .backend import BackendMixin, WeaviateConfig
-from .find import FindMixin
-from .getsetdel import GetSetDelMixin
-from .seqlike import SequenceLikeMixin
+from docarray.array.storage.weaviate.backend import BackendMixin, WeaviateConfig
+from docarray.array.storage.weaviate.find import FindMixin
+from docarray.array.storage.weaviate.getsetdel import GetSetDelMixin
+from docarray.array.storage.weaviate.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'WeaviateConfig']
 

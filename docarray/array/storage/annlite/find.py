@@ -9,7 +9,7 @@ from typing import (
 if TYPE_CHECKING:
     import numpy as np
 
-from .... import DocumentArray
+from docarray import DocumentArray
 
 
 class FindMixin:
@@ -31,7 +31,7 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
-        from ....math import ndarray
+        from docarray.math import ndarray
 
         n_rows, _ = ndarray.get_array_rows(query)
         if n_rows == 1:

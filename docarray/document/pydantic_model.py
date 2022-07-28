@@ -2,10 +2,10 @@ from typing import Optional, List, Dict, Any, TYPE_CHECKING, Union
 
 from pydantic import BaseModel, validator
 
-from ..math.ndarray import to_list
+from docarray.math.ndarray import to_list
 
 if TYPE_CHECKING:
-    from ..typing import ArrayType
+    from docarray.typing import ArrayType
 
 # this order must be preserved: https://pydantic-docs.helpmanual.io/usage/types/#unions
 _ProtoValueType = Optional[Union[bool, float, str, list, dict]]

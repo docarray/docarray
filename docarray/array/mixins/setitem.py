@@ -10,11 +10,11 @@ from typing import (
 
 import numpy as np
 
-from ... import Document
-from ...helper import typename
+from docarray import Document
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import (
+    from docarray.typing import (
         DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,

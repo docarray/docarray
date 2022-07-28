@@ -2,10 +2,10 @@ from typing import Optional, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _uri_to_blob, _to_datauri, _is_datauri
+from docarray.document.mixins.helper import _uri_to_blob, _to_datauri, _is_datauri
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class ConvertMixin:

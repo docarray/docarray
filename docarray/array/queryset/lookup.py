@@ -29,7 +29,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ... import Document
+    from docarray import Document
 import re
 from functools import partial
 

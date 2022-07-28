@@ -10,18 +10,18 @@ from typing import (
 
 import numpy as np
 
-from ... import Document
-from ...helper import typename
+from docarray import Document
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import (
+    from docarray.typing import (
         DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,
         DocumentArrayMultipleAttributeType,
         DocumentArraySingleAttributeType,
     )
-    from ... import DocumentArray
+    from docarray import DocumentArray
 
 
 class GetItemMixin:
@@ -56,13 +56,13 @@ class GetItemMixin:
             else:
                 return self._get_doc_by_id(index)
         elif isinstance(index, slice):
-            from ... import DocumentArray
+            from docarray import DocumentArray
 
             return DocumentArray(self._get_docs_by_slice(index))
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
-            from ... import DocumentArray
+            from docarray import DocumentArray
 
             if (
                 isinstance(index, tuple)

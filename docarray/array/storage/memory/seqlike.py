@@ -1,9 +1,9 @@
 from typing import Union, Iterable, MutableSequence, Iterator
 
-from ..memory.backend import needs_id2offset_rebuild
+from docarray.array.storage.memory.backend import needs_id2offset_rebuild
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):

@@ -1,9 +1,9 @@
 from typing import Dict, TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from ... import Document
+    from docarray import Document
 
-from .lookup import Q, LookupNode, LookupLeaf
+from docarray.array.queryset.lookup import Q, LookupNode, LookupLeaf
 
 LOGICAL_OPERATORS = {'$and': 'and', '$or': 'or', '$not': True}
 

@@ -1,9 +1,9 @@
 from abc import ABC
 
-from .backend import BackendMixin, ElasticConfig
-from .find import FindMixin
-from .getsetdel import GetSetDelMixin
-from .seqlike import SequenceLikeMixin
+from docarray.array.storage.elastic.backend import BackendMixin, ElasticConfig
+from docarray.array.storage.elastic.find import FindMixin
+from docarray.array.storage.elastic.getsetdel import GetSetDelMixin
+from docarray.array.storage.elastic.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'ElasticConfig']
 

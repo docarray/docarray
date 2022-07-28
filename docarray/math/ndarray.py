@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List, Any
 import numpy as np
 
 if TYPE_CHECKING:
-    from ..typing import ArrayType
-    from .. import Document, DocumentArray
+    from docarray.typing import ArrayType
+    from docarray import Document, DocumentArray
 
 
 def unravel(docs: Sequence['Document'], field: str) -> Optional['ArrayType']:

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Dict, NamedTuple, Optional
 from urllib.parse import urlparse
 
 if TYPE_CHECKING:
-    from ... import DocumentArray
+    from docarray import DocumentArray
 
 
 _ParsedHost = namedtuple('ParsedHost', 'on host port version scheme')

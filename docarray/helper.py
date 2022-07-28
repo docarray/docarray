@@ -161,7 +161,7 @@ def get_full_version() -> Dict:
     :return: Version information and environment variables
     """
     import google.protobuf, platform
-    from . import __version__
+    from docarray import __version__
     from google.protobuf.internal import api_implementation
     from uuid import getnode
 

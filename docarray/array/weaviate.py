@@ -1,5 +1,5 @@
-from .document import DocumentArray
-from .storage.weaviate import StorageMixins, WeaviateConfig
+from docarray.array.document import DocumentArray
+from docarray.array.storage.weaviate import StorageMixins, WeaviateConfig
 
 __all__ = ['DocumentArrayWeaviate', 'WeaviateConfig']
 
