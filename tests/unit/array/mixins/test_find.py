@@ -532,3 +532,49 @@ def test_find_secondary_index_annlite():
     closest_docs = da.find(query=np.array([3, 3]), secondary_index='@c')
 
     assert (closest_docs[0].embedding == [2, 2]).all()
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')
+
+
+def test_find_secondary_index_annlite_multimodal():
+    from docarray import dataclass
+    from docarray.typing import Text
+
+    @dataclass
+    class MMDoc:
+        my_text: Text
+        my_other_text: Text
+
+    n_dim = 3
+    da = DocumentArray(
+        storage='annlite',
+        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        secondary_indices_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
+    )
+
+    num_docs = 3
+    docs_to_add = DocumentArray(
+        [
+            Document(MMDoc(my_text='hello', my_other_text='world'))
+            for _ in range(num_docs)
+        ]
+    )
+    for i, d in enumerate(docs_to_add):
+        d.id = str(i)
+        d.embedding = i * np.ones(n_dim)
+        d.my_text.id = str(i) + '_0'
+        d.my_text.embedding = [i, i]
+        d.my_other_text.id = str(i) + '_1'
+        d.my_other_text.embedding = [i, i]
+
+    with da:
+        da.extend(docs_to_add)
+
+    closest_docs = da.find(
+        query=np.array([3, 3]), secondary_index='@.[my_text, my_other_text]'
+    )
+
+    assert (closest_docs[0].embedding == [2, 2]).all()
+    for d in closest_docs:
+        print(d.id)
+        assert d.id.endswith('_0') or d.id.endswith('_1')
