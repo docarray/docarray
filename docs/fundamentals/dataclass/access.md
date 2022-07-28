@@ -8,7 +8,7 @@ modalities by their names.
 
 Accessing a modality always returns a Document or a DocumentArray, instead of directly returning the data stored in them.
 
-If you are interested in the principles behind this design decision, you can learn more [here](TODO LINK TO BLOG POST).
+This allows you, for example, to store embeddings directly in this Document.
 ```
 
 (mm-access-doc)=
