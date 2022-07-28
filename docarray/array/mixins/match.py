@@ -61,6 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
+        :param secondary_index: if set, then the returned DocumentArray will be retrieved from the given secondary index. Not available for all Document Stores.
         :param kwargs: other kwargs.
         """
 
@@ -70,20 +71,34 @@ class MatchMixin:
         for d in self:
             d.matches.clear()
 
-        match_docs = darray.find(
-            self,
-            metric=metric,
-            limit=limit,
-            normalization=normalization,
-            metric_name=metric_name,
-            batch_size=batch_size,
-            exclude_self=exclude_self,
-            filter=filter,
-            only_id=only_id,
-            use_scipy=use_scipy,
-            device=device,
-            num_worker=num_worker,
-        )
+        if secondary_index is not None:
+            find_kwargs = {'secondary_index': secondary_index}
+        else:
+            find_kwargs = {}
+
+        try:
+            match_docs = darray.find(
+                self,
+                metric=metric,
+                limit=limit,
+                normalization=normalization,
+                metric_name=metric_name,
+                batch_size=batch_size,
+                exclude_self=exclude_self,
+                filter=filter,
+                only_id=only_id,
+                use_scipy=use_scipy,
+                device=device,
+                num_worker=num_worker,
+                **find_kwargs,
+            )
+        except TypeError as e:
+            if 'secondary_index' in str(e):
+                raise ValueError(
+                    f'secondary_index is not available for this Document Store ({self.__class__.__name__}).'
+                )
+            else:
+                raise e
 
         if not isinstance(match_docs, list):
             match_docs = [match_docs]
