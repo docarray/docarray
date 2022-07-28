@@ -87,6 +87,7 @@ class BackendMixin(BaseBackendMixin):
         self.n_dim = config.pop('n_dim')
 
         from annlite import AnnLite
+        import os
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
 
