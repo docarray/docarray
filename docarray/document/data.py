@@ -4,12 +4,12 @@ from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
-from ..math.ndarray import check_arraylike_equality
+from docarray.math.ndarray import check_arraylike_equality
 
 if TYPE_CHECKING:
-    from ..score import NamedScore
-    from .. import DocumentArray, Document
-    from ..typing import ArrayType, StructValueType, DocumentContentType
+    from docarray.score import NamedScore
+    from docarray import DocumentArray, Document
+    from docarray.typing import ArrayType, StructValueType, DocumentContentType
 
 default_values = dict(
     granularity=0,
@@ -94,23 +94,23 @@ class DocumentData:
             v = default_values.get(key, None)
             if v is not None:
                 if v == 'DocumentArray':
-                    from .. import DocumentArray
+                    from docarray import DocumentArray
 
                     setattr(self, key, DocumentArray())
                 elif v == 'ChunkArray':
-                    from ..array.chunk import ChunkArray
+                    from docarray.array.chunk import ChunkArray
 
                     setattr(
                         self, key, ChunkArray(None, reference_doc=self._reference_doc)
                     )
                 elif v == 'MatchArray':
-                    from ..array.match import MatchArray
+                    from docarray.array.match import MatchArray
 
                     setattr(
                         self, key, MatchArray(None, reference_doc=self._reference_doc)
                     )
                 elif v == 'Dict[str, NamedScore]':
-                    from ..score import NamedScore
+                    from docarray.score import NamedScore
 
                     setattr(self, key, defaultdict(NamedScore))
                 else:

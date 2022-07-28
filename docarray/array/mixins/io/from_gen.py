@@ -11,7 +11,7 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from ....typing import T
+    from docarray.typing import T
     import numpy as np
     import csv
 
@@ -21,7 +21,7 @@ class FromGeneratorMixin:
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
-        from ....document import generators
+        from docarray.document import generators
 
         from_fn = getattr(generators, meth)
         da_like = cls(**kwargs)

@@ -2,11 +2,11 @@
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 if TYPE_CHECKING:
-    from ...score import NamedScore
-    from ...array.match import MatchArray
-    from ...array.chunk import ChunkArray
-    from ... import DocumentArray
-    from ...typing import ArrayType, StructValueType, DocumentContentType
+    from docarray.score import NamedScore
+    from docarray.array.match import MatchArray
+    from docarray.array.chunk import ChunkArray
+    from docarray import DocumentArray
+    from docarray.typing import ArrayType, StructValueType, DocumentContentType
 
 
 class _PropertyMixin:

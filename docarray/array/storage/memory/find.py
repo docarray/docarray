@@ -2,13 +2,13 @@ from typing import Optional, Union, Tuple, Callable, TYPE_CHECKING, Dict
 
 import numpy as np
 
-from ....math import ndarray
-from ....math.helper import top_k, minmax_normalize, update_rows_x_mat_best
+from docarray.math import ndarray
+from docarray.math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 
 if TYPE_CHECKING:
-    from ....typing import T, ArrayType
+    from docarray.typing import T, ArrayType
 
-    from .... import DocumentArray
+    from docarray import DocumentArray
 
 
 class FindMixin:
@@ -72,7 +72,7 @@ class FindMixin:
             if use_scipy:
                 from scipy.spatial.distance import cdist as cdist
             else:
-                from ....math.distance import cdist as _cdist
+                from docarray.math.distance import cdist as _cdist
 
                 cdist = lambda *x: _cdist(*x, device=device)
         else:

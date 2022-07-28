@@ -44,7 +44,7 @@ class DataLoaderMixin:
         :param show_progress: if set, show a progressbar
         :return:
         """
-        from .helper import DocumentArrayLoader
+        from docarray.array.mixins.dataloader.helper import DocumentArrayLoader
 
         for da in DocumentArrayLoader(
             path, protocol=protocol, compress=compress, show_progress=False

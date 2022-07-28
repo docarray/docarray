@@ -3,13 +3,13 @@ from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_
 
 import numpy as np
 
-from ...math import ndarray
-from ...score import NamedScore
+from docarray.math import ndarray
+from docarray.score import NamedScore
 
 if TYPE_CHECKING:
-    from ...typing import T, ArrayType
+    from docarray.typing import T, ArrayType
 
-    from ... import Document, DocumentArray
+    from docarray import Document, DocumentArray
 
 
 class FindMixin:
@@ -130,7 +130,7 @@ class FindMixin:
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
 
-        from ... import Document, DocumentArray
+        from docarray import Document, DocumentArray
 
         if isinstance(query, dict):
             if filter is None:
@@ -263,8 +263,8 @@ class FindMixin:
 
         :return: a `DocumentArray` containing the `Document` objects for matching with the query.
         """
-        from ... import DocumentArray
-        from ..queryset import QueryParser
+        from docarray import DocumentArray
+        from docarray.array.queryset import QueryParser
 
         if query:
             parser = QueryParser(query)

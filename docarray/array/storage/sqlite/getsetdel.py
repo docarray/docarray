@@ -1,9 +1,9 @@
 from operator import itemgetter
 from typing import Sequence, Iterable
 
-from ..base.getsetdel import BaseGetSetDelMixin
-from ..base.helper import Offset2ID
-from .... import Document
+from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
+from docarray import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):

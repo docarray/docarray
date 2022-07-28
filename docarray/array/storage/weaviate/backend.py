@@ -13,13 +13,13 @@ from typing import (
 import numpy as np
 import weaviate
 
-from .... import Document
-from ....helper import dataclass_from_dict, filter_dict, _safe_cast_int
-from ..base.backend import BaseBackendMixin, TypeMap
-from ..registry import _REGISTRY
+from docarray import Document
+from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.array.storage.registry import _REGISTRY
 
 if TYPE_CHECKING:
-    from ....typing import ArrayType, DocumentArraySourceType
+    from docarray.typing import ArrayType, DocumentArraySourceType
 
 
 @dataclass
@@ -343,7 +343,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType'):
         if embedding is not None:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 

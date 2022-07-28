@@ -10,12 +10,12 @@ from typing import (
 
 import numpy as np
 
-from .... import Document, DocumentArray
-from ....math import ndarray
-from ....math.helper import EPSILON
-from ....math.ndarray import to_numpy_array
-from ....score import NamedScore
-from ....array.mixins.find import FindMixin as BaseFindMixin
+from docarray import Document, DocumentArray
+from docarray.math import ndarray
+from docarray.math.helper import EPSILON
+from docarray.math.ndarray import to_numpy_array
+from docarray.score import NamedScore
+from docarray.array.mixins.find import FindMixin as BaseFindMixin
 
 
 if TYPE_CHECKING:

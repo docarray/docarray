@@ -17,15 +17,15 @@ import numpy as np
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
 
-from ..base.backend import BaseBackendMixin, TypeMap
-from .... import Document
-from ....helper import dataclass_from_dict, _safe_cast_int
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray import Document
+from docarray.helper import dataclass_from_dict, _safe_cast_int
 
 if TYPE_CHECKING:
-    from ....typing import (
+    from docarray.typing import (
         DocumentArraySourceType,
     )
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -224,12 +224,12 @@ class BackendMixin(BaseBackendMixin):
             return []
 
     def _map_embedding(self, embedding: 'ArrayType') -> List[float]:
-        from ....math.helper import EPSILON
+        from docarray.math.helper import EPSILON
 
         if embedding is None:
             embedding = np.zeros(self.n_dim) + EPSILON
         else:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 

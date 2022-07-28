@@ -6,10 +6,10 @@ from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, Optional
 
 
-from ....helper import get_request_header, __cache_path__
+from docarray.helper import get_request_header, __cache_path__
 
 if TYPE_CHECKING:
-    from ....typing import T
+    from docarray.typing import T
 
 JINA_CLOUD_CONFIG = 'config.json'
 
@@ -88,7 +88,7 @@ class PushPullMixin:
         _head, _tail = data.split(delimiter)
         _head += self._stream_header
         from rich import filesize
-        from .pbar import get_progressbar
+        from docarray.array.mixins.io.pbar import get_progressbar
 
         pbar, t = get_progressbar('Pushing', disable=not show_progress, total=len(self))
 
@@ -174,7 +174,7 @@ class PushPullMixin:
 
             _da_len = int(r.headers['Content-length'])
 
-            from .binary import LazyRequestReader
+            from docarray.array.mixins.io.binary import LazyRequestReader
 
             _source = LazyRequestReader(r)
             if local_cache and os.path.exists(f'{__cache_path__}/{name}'):

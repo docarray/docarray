@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class MeshDataMixin:
@@ -27,7 +27,7 @@ class MeshDataMixin:
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
         if as_chunks:
-            from .. import Document
+            from docarray.document import Document
 
             # try to coerce everything into a scene
             scene = loader(self.uri, force='scene')

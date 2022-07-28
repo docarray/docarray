@@ -1,5 +1,5 @@
-from .document import DocumentArray
-from .storage.memory import StorageMixins
+from docarray.array.document import DocumentArray
+from docarray.array.storage.memory import StorageMixins
 
 
 class DocumentArrayInMemory(StorageMixins, DocumentArray):

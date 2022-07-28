@@ -1,5 +1,5 @@
-from .document import DocumentArray
-from .storage.qdrant import StorageMixins, QdrantConfig
+from docarray.array.document import DocumentArray
+from docarray.array.storage.qdrant import StorageMixins, QdrantConfig
 
 __all__ = ['DocumentArrayQdrant', 'QdrantConfig']
 

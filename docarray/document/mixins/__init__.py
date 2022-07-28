@@ -1,22 +1,22 @@
-from .attribute import GetAttributesMixin
-from .audio import AudioDataMixin
-from .blob import BlobDataMixin
-from .content import ContentPropertyMixin
-from .convert import ConvertMixin
-from .dump import UriFileMixin
-from .featurehash import FeatureHashMixin
-from .image import ImageDataMixin
-from .mesh import MeshDataMixin
-from .multimodal import MultiModalMixin
-from .plot import PlotMixin
-from .porting import PortingMixin
-from .property import PropertyMixin
-from .protobuf import ProtobufMixin
-from .pydantic import PydanticMixin
-from .strawberry import StrawberryMixin
-from .sugar import SingletonSugarMixin
-from .text import TextDataMixin
-from .video import VideoDataMixin
+from docarray.document.mixins.attribute import GetAttributesMixin
+from docarray.document.mixins.audio import AudioDataMixin
+from docarray.document.mixins.blob import BlobDataMixin
+from docarray.document.mixins.content import ContentPropertyMixin
+from docarray.document.mixins.convert import ConvertMixin
+from docarray.document.mixins.dump import UriFileMixin
+from docarray.document.mixins.featurehash import FeatureHashMixin
+from docarray.document.mixins.image import ImageDataMixin
+from docarray.document.mixins.mesh import MeshDataMixin
+from docarray.document.mixins.multimodal import MultiModalMixin
+from docarray.document.mixins.plot import PlotMixin
+from docarray.document.mixins.porting import PortingMixin
+from docarray.document.mixins.property import PropertyMixin
+from docarray.document.mixins.protobuf import ProtobufMixin
+from docarray.document.mixins.pydantic import PydanticMixin
+from docarray.document.mixins.strawberry import StrawberryMixin
+from docarray.document.mixins.sugar import SingletonSugarMixin
+from docarray.document.mixins.text import TextDataMixin
+from docarray.document.mixins.video import VideoDataMixin
 
 
 class AllMixins(
@@ -40,6 +40,6 @@ class AllMixins(
     GetAttributesMixin,
     MultiModalMixin,
 ):
-    """All plugins that can be used in :class:`Document`. """
+    """All plugins that can be used in :class:`Document`."""
 
     ...

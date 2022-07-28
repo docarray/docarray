@@ -5,7 +5,7 @@ from typing import List, Dict, Union, NewType, Any, Optional
 import numpy as np
 import strawberry
 
-from ..math.ndarray import to_list
+from docarray.math.ndarray import to_list
 
 _ProtoValueType = Union[bool, float, str]
 

@@ -1,9 +1,9 @@
 from typing import Type, TYPE_CHECKING
 
-from ... import Document
+from docarray import Document
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class EmptyMixin:
