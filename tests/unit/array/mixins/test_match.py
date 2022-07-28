@@ -703,3 +703,35 @@ def test_match_pre_filtering(
                 for r in doc.matches
             ]
         )
+
+
+def test_match_secondary_index_annlite():
+    n_dim = 3
+    da = DocumentArray(
+        storage='annlite',
+        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        secondary_indices_configs={'@c': {'n_dim': 2}},
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=[i, i]),
+                        Document(id=str(i) + '_1', embedding=[i, i]),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+
+    query = Document(embedding=np.array([3, 3]))
+    query.match(da, secondary_index='@c')
+    closest_docs = query.matches
+
+    assert (closest_docs[0].embedding == [2, 2]).all()
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')
