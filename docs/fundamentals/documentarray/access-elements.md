@@ -139,6 +139,13 @@ da['@path1,path2,path3']
 - A path can only go deep, not go back. You can use comma `,` to start a new path from the very top-level.
 - Optionally, you can specify a slice or offset at each level, for example, `r[-1]m[:3]` will select the first 3 matches of the last root document.
 
+```{seealso}
+If you are working with a DocumentArray that was created through DocArray's {ref}`dataclass <dataclass>` API,
+you can also directly access sub-documents by specifying the modality name that you have assigend to them.
+
+To see how to do that, see {ref}`here <mm-access-da>`.
+```
+
 Let's practice a bit. First construct a DocumentArray with nested Documents:
 
 ```python
