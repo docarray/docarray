@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/access/" />
   
-<meta property="og:site_name" content="DocArray 0.13.31 Documentation" />
+<meta property="og:site_name" content="DocArray 0.14.0 Documentation" />
   
-<meta property="og:description" content="Accessing modality means accessing the sub-Documents corresponding to a dataclass field. In the last chapter, we learned how to represent a multimodal document via@dataclass and type annotation from docarray.typing. We also learned that a multimodal dataclass can be converted into a Document obje..." />
+<meta property="og:description" content="After constructing a multi-modal Document or DocumentArray, you can directly access your custom-defined modalities by their names. Document level access: Even after conversion to Document, custom-defines modalities can be accessed by their names, returning a Document or, for list-types, a Documen..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.13.31 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.14.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/access.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Access Modality - DocArray 0.13.31 documentation</title>
+        <title>Access Modality - DocArray 0.14.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.13.31 documentation</div>
+                <div class="brand">DocArray 0.14.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -266,6 +266,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/audio/"><svg aria-hidden="true" class="sd-octicon sd-octicon-unmute" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.563 2.069A.75.75 0 018 2.75v10.5a.75.75 0 01-1.238.57L3.472 11H1.75A1.75 1.75 0 010 9.25v-2.5C0 5.784.784 5 1.75 5h1.723l3.289-2.82a.75.75 0 01.801-.111zM6.5 4.38L4.238 6.319a.75.75 0 01-.488.181h-2a.25.25 0 00-.25.25v2.5c0 .138.112.25.25.25h2a.75.75 0 01.488.18L6.5 11.62V4.38zm6.096-2.038a.75.75 0 011.06 0 8 8 0 010 11.314.75.75 0 01-1.06-1.06 6.5 6.5 0 000-9.193.75.75 0 010-1.06v-.001zm-1.06 2.121a.75.75 0 10-1.061 1.061 3.5 3.5 0 010 4.95.75.75 0 101.06 1.06 5 5 0 000-7.07l.001-.001z" fill-rule="evenodd"></path></svg> Audio</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/mesh/"><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../datatypes/tabular/"><svg aria-hidden="true" class="sd-octicon sd-octicon-table" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v3.585a.746.746 0 010 .83v8.085A1.75 1.75 0 0114.25 16H6.309a.748.748 0 01-1.118 0H1.75A1.75 1.75 0 010 14.25V6.165a.746.746 0 010-.83V1.75zM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8H1.5zM5 5H1.5V1.75a.25.25 0 01.25-.25H5V5zm1.5 1.5v8h7.75a.25.25 0 00.25-.25V6.5h-8zm8-1.5h-8V1.5h7.75a.25.25 0 01.25.25V5z" fill-rule="evenodd"></path></svg> Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/multimodal/"><svg aria-hidden="true" class="sd-octicon sd-octicon-stack" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z" fill-rule="evenodd"></path></svg> Multi-modal</a></li>
 </ul>
 </li>
 </ul>
@@ -369,12 +370,109 @@
                 <article role="main">
                     <section class="tex2jax_ignore mathjax_ignore" id="access-modality">
 <h1>Access Modality<a class="headerlink" href="#access-modality" title="Permalink to this headline">#</a></h1>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>It is strongly recommended to go through the <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a> section first before continuing.</p>
+<p>After <a class="reference internal" href="../construct/#mm-construct"><span class="std std-ref">constructing a multi-modal Document or DocumentArray</span></a>, you can directly access your custom-defined
+modalities by their names.</p>
+<div class="seealso admonition">
+<p class="admonition-title">Return types</p>
+<p>Accessing a modality always returns a Document or a DocumentArray, instead of directly returning the data stored in them.
+This ensures maximum flexibility for the use.</p>
+<p>If you want to learn more about the rationale behind this design, you can read our <a class="reference external" href="https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0">blog post</a>.</p>
 </div>
-<p>Accessing modality means accessing the sub-Documents corresponding to a dataclass field.</p>
-<p>In the last chapter, we learned how to represent a multimodal document via <code class="docutils literal notranslate"><span class="pre">&#64;dataclass</span></code> and type annotation from <code class="docutils literal notranslate"><span class="pre">docarray.typing</span></code>. We also learned that a multimodal dataclass can be converted into a <code class="docutils literal notranslate"><span class="pre">Document</span></code> object easily. That means if we have a list of multimodal dataclass objects, we can build a DocumentArray out of them:</p>
+<section id="document-level-access">
+<span id="mm-access-doc"></span><h2>Document level access<a class="headerlink" href="#document-level-access" title="Permalink to this headline">#</a></h2>
+<p>Even after conversion to <a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, custom-defines modalities can be accessed by their names, returning a
+<a class="reference internal" href="../../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> or, for list-types, a <a class="reference internal" href="../../../api/docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MMDoc</span><span class="p">:</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span>
+    <span class="n">paragraphs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Text</span><span class="p">]</span>
+
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
+    <span class="n">MMDoc</span><span class="p">(</span>
+        <span class="n">banner</span><span class="o">=</span><span class="s1">&#39;test.jpg&#39;</span><span class="p">,</span>
+        <span class="n">paragraphs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;This is a paragraph&#39;</span><span class="p">,</span> <span class="s1">&#39;this is another paragraph&#39;</span><span class="p">],</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="p">)</span>  <span class="c1"># returns a Document with the test.jpg image tensor</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span>  <span class="c1"># returns the image tensor</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span><span class="p">)</span>  <span class="c1"># returns a DocumentArray with one Document per paragraph</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>  <span class="c1"># returns the paragraph texts</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;tensor&#39;, &#39;mime_type&#39;, &#39;uri&#39;, &#39;_metadata&#39;, &#39;modality&#39;) at eaccc9c573c07f13b7ee8aa04a83c9eb&gt;
+[[[255 255 255]
+  [255 255 255]
+  [255 255 255]]]
+&lt;DocumentArray (length=2) at 140540453339296&gt;
+[&#39;This is a paragraph&#39;, &#39;this is another paragraph&#39;]
+</pre></div>
+</div>
+<p>The returned Documents (or DocumentArrays) can be directly used to store additional information about the modality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span><span class="o">,</span> <span class="nn">torchvision</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">resnet50</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">banner_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">tensor</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">banner</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">banner_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="select-nested-fields">
+<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this headline">#</a></h3>
+<p>Nested field, coming from <a class="reference internal" href="../construct/#mm-annotation"><span class="std std-ref">nested dataclasses</span></a>, can be accessed by selecting the outer field,
+and then selecting the inner field:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">InnerDoc</span><span class="p">:</span>
+    <span class="n">description</span><span class="p">:</span> <span class="n">Text</span>
+    <span class="n">banner</span><span class="p">:</span> <span class="n">Image</span> <span class="o">=</span> <span class="s1">&#39;test-1.jpeg&#39;</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">OuterDoc</span><span class="p">:</span>
+    <span class="n">feature_image</span><span class="p">:</span> <span class="n">InnerDoc</span>
+    <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;https://jina.ai&#39;</span>
+
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">OuterDoc</span><span class="p">(</span><span class="n">feature_image</span><span class="o">=</span><span class="n">InnerDoc</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;this is a description&#39;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">feature_image</span><span class="o">.</span><span class="n">description</span>
+<span class="p">)</span>  <span class="c1"># returns a Document with &#39;this is a description&#39; as text</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">feature_image</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># returns &#39;this is a description&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;Document (&#39;id&#39;, &#39;parent_id&#39;, &#39;granularity&#39;, &#39;text&#39;, &#39;modality&#39;) at 94de1bef2fc8010ff4fe86791a671c44&gt;
+this is a description
+</pre></div>
+</div>
+</section>
+</section>
+<section id="documentarray-level-access">
+<span id="mm-access-da"></span><h2>DocumentArray level access<a class="headerlink" href="#documentarray-level-access" title="Permalink to this headline">#</a></h2>
+<p>Custom modalities can be accessed through the familiar <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">selector syntax</span></a>.</p>
+<p>Like all selectors, a selector for a multi-modal attribute begins with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>.
+The fact that a custom modality is accessed is denoted through the addition of a <code class="docutils literal notranslate"><span class="pre">.</span></code>, coming before a list of modality names:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...]
+^^ ~~~~~~  ~~~~~~
+||   |       |
+||   |-------|
+||       |
+||       | --- indicate the field of dataclass (modality name)
+||
+|| ------ indicate the start of modality selector
+|
+| ---- indicate the start of selector
+</pre></div>
+</div>
+<p>Selecting a modality form a DocumentArray always results in another DocumentArray:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">DocumentArray</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
 
@@ -399,48 +497,18 @@
 <span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭────────────── Documents Summary ───────────────╮
-│                                                │
-│   Length                    2                  │
-│   Homogenous Documents      True               │
-│   Has nested Documents in   (&#39;chunks&#39;,)        │
-│   Common Attributes         (&#39;id&#39;, &#39;chunks&#39;)   │
-│   Multimodal dataclass      True               │
-│                                                │
-╰────────────────────────────────────────────────╯
-╭──────────────────────── Attributes Summary ────────────────────────╮
-│                                                                    │
-│   Attribute   Data type         #Unique values   Has empty value   │
-│  ────────────────────────────────────────────────────────────────  │
-│   chunks      (&#39;ChunkArray&#39;,)   2                False             │
-│   id          (&#39;str&#39;,)          2                False             │
-│                                                                    │
-╰────────────────────────────────────────────────────────────────────╯
-</pre></div>
-</div>
-<p>A natural question would be, how do we select those Documents that correspond to <code class="docutils literal notranslate"><span class="pre">MMDoc.banner</span></code>?</p>
-<p>This chapter describes how to select the sub-documents that correspond to a modality from a DocumentArray. So let me reiterate the logic here: when calling <code class="docutils literal notranslate"><span class="pre">Document()</span></code> to build Document object from a dataclass object, each field in that dataclass will generate a sub-document nested under <code class="docutils literal notranslate"><span class="pre">.chunks</span></code> or even <code class="docutils literal notranslate"><span class="pre">.chunks.chunks.chunks</span></code> at arbitrary level (except primitive types, which are stored in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> of the root Document). To process a dataclass field via existing DocArray API/Jina/Hub Executor, we need a way to accurately select those sub-documents from the nested structure, which is the purpose of this chapter.</p>
-<section id="selector-syntax">
-<h2>Selector Syntax<a class="headerlink" href="#selector-syntax" title="Permalink to this headline">#</a></h2>
-<p>Following the syntax convention described in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>, a modality selector also starts with <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, it uses <code class="docutils literal notranslate"><span class="pre">.</span></code> to indicate the field of the dataclass. Selecting a DocumentArray always results in another DocumentArray.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...]
-^^ ~~~~~~  ~~~~~~
-||   |       |
-||   |-------|
-||       |
-||       | --- indicate the field of dataclass
-||
-|| ------ indicate the start of modality selector
-|
-| ---- indicate the start of selector
-</pre></div>
-</div>
-<p>Use the above DocumentArray as an example,</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Select Documents corresponding to .banner </label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Output<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 2                                                   │
@@ -466,10 +534,18 @@
 </pre></div>
 </div>
 </div>
+</details></div>
 <input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Select Documents corresponding to .description </label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Output<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 2                                                   │
@@ -493,17 +569,21 @@
 </pre></div>
 </div>
 </div>
+</details></div>
 </div>
 <section id="select-multiple-fields">
 <h3>Select multiple fields<a class="headerlink" href="#select-multiple-fields" title="Permalink to this headline">#</a></h3>
-<p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>.</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">Select Documents correspond to two fields</label><div class="tab-content docutils">
+<p>You can select multiple fields by including them in the square brackets, separated by a comma <code class="docutils literal notranslate"><span class="pre">,</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@.[description, banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">Result</label><div class="tab-content docutils">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Output<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                        4                                            │
@@ -532,23 +612,25 @@
 </pre></div>
 </div>
 </div>
-</div>
-</section>
+</details></section>
 <section id="slice-dataclass-objects">
 <h3>Slice dataclass objects<a class="headerlink" href="#slice-dataclass-objects" title="Permalink to this headline">#</a></h3>
-<p>Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do</p>
+<p>Remember each dataclass object corresponds to one Document object, you can first slice the DocumentArray before selecting the field. Specifically, you can do:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@r[slice].[field1, field2, ...]
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">slice</span></code> can be any slice syntax accepted in <a class="reference internal" href="../../documentarray/access-elements/#access-elements"><span class="std std-ref">Access Documents</span></a>.</p>
-<p>For example, to select the sub-Document <code class="docutils literal notranslate"><span class="pre">.banner</span></code> for only the first Document,</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">Select .banner of the first dataclass  </label><div class="tab-content docutils">
+<p>For example, to select the sub-Document <code class="docutils literal notranslate"><span class="pre">.banner</span></code> for only the first Document:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;@r[:1].[banner]&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">Result</label><div class="tab-content docutils">
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+Output<div class="sd-summary-down docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-down" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.72a.75.75 0 000 1.06l6.25 6.25a.75.75 0 001.06 0l6.25-6.25a.75.75 0 00-1.06-1.06L12 14.44 6.28 8.72a.75.75 0 00-1.06 0z"></path></svg></div>
+<div class="sd-summary-up docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M18.78 15.28a.75.75 0 000-1.06l-6.25-6.25a.75.75 0 00-1.06 0l-6.25 6.25a.75.75 0 101.06 1.06L12 9.56l5.72 5.72a.75.75 0 001.06 0z"></path></svg></div>
+</summary><div class="sd-summary-content sd-card-body docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>╭───────────────────────────── Documents Summary ──────────────────────────────╮
 │                                                                              │
 │   Length                 1                                                   │
@@ -574,8 +656,7 @@
 </pre></div>
 </div>
 </div>
-</div>
-</section>
+</details></section>
 <section id="slice-list-type-fields">
 <h3>Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields<a class="headerlink" href="#slice-list-type-fields" title="Permalink to this headline">#</a></h3>
 <p>If a field is annotated as a List of DocArray types, it will create a DocumentArray, one can add slicing after the field selector to further restrict the size of the sub-Documents.</p>
@@ -618,8 +699,8 @@ test-1.jpeg
 </div>
 <p>To summarize, slicing can be put in front of the field selector  to restrict the number of dataclass objects; or can be put after the field selector to restrict the number of sub-Documents.</p>
 </section>
-<section id="select-nested-fields">
-<h3>Select nested fields<a class="headerlink" href="#select-nested-fields" title="Permalink to this headline">#</a></h3>
+<section id="id1">
+<h3>Select nested fields<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h3>
 <p>A field can be annotated as a DocArray dataclass. In this case, the nested structure from the latter dataclass is copied to the former’s <code class="docutils literal notranslate"><span class="pre">.chunks</span></code>. To select the deeply nested field, one can simply follow:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>@.[field1, field2, ...].[nested_field1, nested_field1, ...]
 </pre></div>
@@ -694,7 +775,7 @@ test-2.jpeg
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Jul 15, 2022</div>
+                            Last updated on Jul 29, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -727,11 +808,15 @@ test-2.jpeg
                     <div class="toc-tree">
                         <ul>
 <li><a class="reference internal" href="#">Access Modality</a><ul>
-<li><a class="reference internal" href="#selector-syntax">Selector Syntax</a><ul>
+<li><a class="reference internal" href="#document-level-access">Document level access</a><ul>
+<li><a class="reference internal" href="#select-nested-fields">Select nested fields</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentarray-level-access">DocumentArray level access</a><ul>
 <li><a class="reference internal" href="#select-multiple-fields">Select multiple fields</a></li>
 <li><a class="reference internal" href="#slice-dataclass-objects">Slice dataclass objects</a></li>
 <li><a class="reference internal" href="#slice-list-type-fields">Slice <code class="docutils literal notranslate"><span class="pre">List[Type]</span></code> fields</a></li>
-<li><a class="reference internal" href="#select-nested-fields">Select nested fields</a></li>
+<li><a class="reference internal" href="#id1">Select nested fields</a></li>
 </ul>
 </li>
 </ul>

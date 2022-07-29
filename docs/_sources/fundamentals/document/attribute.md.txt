@@ -40,6 +40,13 @@ You can check which attributes are set by `.non_empty_fields`.
 
 Among all attributes, content attributes, namely `.text`, `.tensor`, and `.blob`, are super important. They contain the actual content.
 
+```{seealso}
+If you are working with a Document that was created through DocArray's {ref}`dataclass <dataclass>` API,
+you can not only access the attributes that are described here, but also the attributes that you defined yourself.
+
+To see how to do that, see {ref}`here <mm-access-doc>`.
+```
+
 They correspond to string-like data (e.g. for natural language), `ndarray`-like data (e.g. for image/audio/video data), and binary data for general purpose, respectively. 
 
 
