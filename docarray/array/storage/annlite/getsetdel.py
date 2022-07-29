@@ -25,11 +25,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 old_ids = DocumentArray(self[_id])[
                     selector, 'id'
                 ]  # hack to get the Document['@c'] without having to do Document.chunks
-                print(da.embeddings)
                 with da:
                     del da[old_ids]
                     da.extend(DocumentArray(value)[selector])  # same hack here
-                print(da.embeddings)
 
         if _id != value.id:
             self._del_doc_by_id(_id)
