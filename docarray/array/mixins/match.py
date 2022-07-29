@@ -25,7 +25,7 @@ class MatchMixin:
         use_scipy: bool = False,
         device: str = 'cpu',
         num_worker: Optional[int] = 1,
-        secondary_index: Optional[str] = None,
+        on: Optional[str] = None,
         **kwargs,
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
@@ -61,7 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-        :param secondary_index: if set, then the returned DocumentArray will be retrieved from the given secondary index. Not available for all Document Stores.
+        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex. Not available for all Document Stores.
         :param kwargs: other kwargs.
         """
 
@@ -71,8 +71,8 @@ class MatchMixin:
         for d in self:
             d.matches.clear()
 
-        if secondary_index is not None:
-            find_kwargs = {'secondary_index': secondary_index}
+        if on is not None:
+            find_kwargs = {'on': on}
         else:
             find_kwargs = {}
 
@@ -93,9 +93,9 @@ class MatchMixin:
                 **find_kwargs,
             )
         except TypeError as e:
-            if 'secondary_index' in str(e):
+            if 'on' in str(e):
                 raise ValueError(
-                    f'secondary_index is not available for this Document Store ({darray.__class__.__name__}).'
+                    f'subindices (`on=`) are not available for this Document Store ({darray.__class__.__name__}).'
                 )
             else:
                 raise e

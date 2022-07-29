@@ -66,9 +66,13 @@ For example, we have a DocumentArray with three Documents:
 ```python
 from docarray import DocumentArray, Document
 
-da = DocumentArray([Document(text='hello world'), 
-                    Document(text='goodbye world'),
-                    Document(text='hello goodbye')])
+da = DocumentArray(
+    [
+        Document(text='hello world'),
+        Document(text='goodbye world'),
+        Document(text='hello goodbye'),
+    ]
+)
 ```
 
 To get the vocabulary, you can use:
@@ -102,9 +106,13 @@ When you have text in different length and you want the output `.tensor` to have
 ```python
 from docarray import Document, DocumentArray
 
-da = DocumentArray([Document(text='a short phrase'), 
-                    Document(text='word'), 
-                    Document(text='this is a much longer sentence')])
+da = DocumentArray(
+    [
+        Document(text='a short phrase'),
+        Document(text='word'),
+        Document(text='this is a much longer sentence'),
+    ]
+)
 vocab = da.get_vocabulary()
 
 for d in da:
@@ -122,7 +130,7 @@ You can get also use `.tensors` of DocumentArray to get all tensors in one `ndar
 
 ```python
 print(da.tensors)
-````
+```
 
 ```text
 [[ 0  0  0  0  0  0  0  2  3  4]
@@ -137,9 +145,13 @@ As a bonus, you can also easily convert an integer `ndarray` back to text based 
 ```python
 from docarray import Document, DocumentArray
 
-da = DocumentArray([Document(text='a short phrase'), 
-                    Document(text='word'), 
-                    Document(text='this is a much longer sentence')])
+da = DocumentArray(
+    [
+        Document(text='a short phrase'),
+        Document(text='word'),
+        Document(text='this is a much longer sentence'),
+    ]
+)
 vocab = da.get_vocabulary()
 
 # encoding
@@ -193,15 +205,15 @@ print(q.matches[:, ('text', 'scores__jaccard')])
 ```
 
 
-## Searching at chunk level with secondary index
+## Searching at chunk level with subindex
 
-One can create applications that search at chunk level using a secondary index. 
+One can create applications that search at chunk level using a subindex. 
 Imagine you want an application that searches at a sentences granularity and returns the document title of the document
 containing the sentence closest to the query. For example, you can have a database of lyrics of songs and you want to
 search the song title of a song from which you might remember a small part of it (likely the chorus).
 
 ```python
-song1_title = 'Take On Me' 
+song1_title = 'Take On Me'
 
 song1 = """
 #A-ha
@@ -241,7 +253,7 @@ I'll be gone
 In a day
 """
 
-song2_title = 'The trooper' 
+song2_title = 'The trooper'
 
 song2 = """
 You'll take my life, but I'll take yours too
@@ -275,8 +287,13 @@ We can now create one document for each of the songs, containing as chunks the s
 
 ```python
 from docarray import Document, DocumentArray
-doc1 = Document(chunks = [ Document(text=line) for line in song1.split('\n')], song_title = song1_title)
-doc2 = Document(chunks = [ Document(text=line) for line in song2.split('\n')], song_title = song2_title)
+
+doc1 = Document(
+    chunks=[Document(text=line) for line in song1.split('\n')], song_title=song1_title
+)
+doc2 = Document(
+    chunks=[Document(text=line) for line in song2.split('\n')], song_title=song2_title
+)
 da = DocumentArray()
 da.extend([doc1, doc2])
 ```
@@ -287,27 +304,29 @@ feature vector.
 ```python
 import re
 
+
 def build_tokenizer(token_pattern=r"(?u)\b\w\w+\b"):
     token_pattern = re.compile(token_pattern)
     return token_pattern.findall
 
+
 def bow_feature_vector(d, vocab, tokenizer):
-    embedding = np.zeros(len(vocab)+2)
+    embedding = np.zeros(len(vocab) + 2)
     tokens = tokenizer(d.text)
     for token in tokens:
         if token in vocab:
-            embedding[vocab.get(token)] +=1
-        
+            embedding[vocab.get(token)] += 1
+
     return embedding
 
 
 tokenizer = build_tokenizer()
 vocab = da['@c'].get_vocabulary()
 for d in da['@c']:
-    d.embedding=bow_feature_vector(d, vocab, tokenizer)
+    d.embedding = bow_feature_vector(d, vocab, tokenizer)
 ```
 
-Once we have the data prepared, we can store it into a DocumentArray that supports a secondary index.
+Once we have the data prepared, we can store it into a DocumentArray that supports a subindex.
 
 ```buildoutcfg
 n_features = len(vocab)+2
@@ -317,7 +336,7 @@ da_backend=DocumentArray(
     config={'data_path':'./annlite_data',
             'n_dim': n_dim, 
             'metric': 'Cosine'},
-    secondary_indices_configs={'@c': {'n_dim': n_features}},
+    subindex_configs={'@c': {'n_dim': n_features}},
 )
 
 with da_backend:
@@ -327,13 +346,11 @@ with da_backend:
 Given a query such as `into death` we want to search which song contained a similar sentence.
 
 ```python
-def find_song_name_from_song_snippet(query: Document,
-                                     da_backend) -> str:
-    similar_items = da_backend.find(query=query,
-                                    secondary_index = '@c',
-                                    limit=10)[0]
+def find_song_name_from_song_snippet(query: Document, da_backend) -> str:
+    similar_items = da_backend.find(query=query, on='@c', limit=10)[0]
     most_similar_docs = similar_items[0]
     return da_backend[most_similar_docs.parent_id].tags
+
 
 query = Document(text='into death')
 query.embedding = bow_feature_vector(query, vocab, tokenizer)

@@ -506,12 +506,12 @@ def test_elastic_id_filter(storage, config, limit):
         assert len(result) == limit
 
 
-def test_find_secondary_index_annlite():
+def test_find_subindex_annlite():
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -529,14 +529,14 @@ def test_find_secondary_index_annlite():
             ]
         )
 
-    closest_docs = da.find(query=np.array([3, 3]), secondary_index='@c')
+    closest_docs = da.find(query=np.array([3, 3]), on='@c')
 
     assert (closest_docs[0].embedding == [2, 2]).all()
     for d in closest_docs:
         assert d.id.endswith('_0') or d.id.endswith('_1')
 
 
-def test_find_secondary_index_annlite_multimodal():
+def test_find_subindex_annlite_multimodal():
     from docarray import dataclass
     from docarray.typing import Text
 
@@ -549,7 +549,7 @@ def test_find_secondary_index_annlite_multimodal():
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
+        subindex_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
     )
 
     num_docs = 3
@@ -570,9 +570,7 @@ def test_find_secondary_index_annlite_multimodal():
     with da:
         da.extend(docs_to_add)
 
-    closest_docs = da.find(
-        query=np.array([3, 3]), secondary_index='@.[my_text, my_other_text]'
-    )
+    closest_docs = da.find(query=np.array([3, 3]), on='@.[my_text, my_other_text]')
 
     assert (closest_docs[0].embedding == [2, 2]).all()
     for d in closest_docs:

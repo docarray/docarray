@@ -19,8 +19,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._annlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
-        if self._secondary_indices:
-            for selector, da in self._secondary_indices.items():
+        if self._subindices:
+            for selector, da in self._subindices.items():
                 docs_selector = docs[selector]
                 if len(docs_selector) > 0:
                     da.extend(docs_selector)

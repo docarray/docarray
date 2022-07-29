@@ -394,13 +394,13 @@ def test_zero_embeddings(da_cls, config, start_storage):
         assert d.embedding.shape == (1, 6)
 
 
-def test_getset_secondary_index_annlite():
+def test_getset_subindex_annlite():
 
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -430,5 +430,5 @@ def test_getset_secondary_index_annlite():
     assert (da[0].chunks[0].embedding == [-1, -1]).all()
     assert (da[0].chunks[1].embedding == [-2, -2]).all()
 
-    assert (da._secondary_indices['@c']['c_0'].embedding == [-1, -1]).all()
-    assert (da._secondary_indices['@c']['c_1'].embedding == [-2, -2]).all()
+    assert (da._subindices['@c']['c_0'].embedding == [-1, -1]).all()
+    assert (da._subindices['@c']['c_1'].embedding == [-2, -2]).all()

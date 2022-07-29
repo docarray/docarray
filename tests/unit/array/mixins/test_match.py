@@ -705,12 +705,12 @@ def test_match_pre_filtering(
         )
 
 
-def test_match_secondary_index_annlite():
+def test_match_subindex_annlite():
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -729,7 +729,7 @@ def test_match_secondary_index_annlite():
         )
 
     query = Document(embedding=np.array([3, 3]))
-    query.match(da, secondary_index='@c')
+    query.match(da, on='@c')
     closest_docs = query.matches
 
     assert (closest_docs[0].embedding == [2, 2]).all()

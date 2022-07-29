@@ -107,13 +107,13 @@ def test_del_da_attribute():
         assert d.embedding is None
 
 
-def test_del_secondary_index_annlite():
+def test_del_subindex_annlite():
 
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -133,10 +133,10 @@ def test_del_secondary_index_annlite():
 
     del da['0']
     assert len(da) == 9
-    assert len(da._secondary_indices['@c']) == 18
+    assert len(da._subindices['@c']) == 18
 
 
-def test_del_secondary_index_annlite_multimodal():
+def test_del_subindex_annlite_multimodal():
     from docarray import dataclass
     from docarray.typing import Text
 
@@ -149,7 +149,7 @@ def test_del_secondary_index_annlite_multimodal():
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
+        subindex_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
     )
 
     num_docs = 10
@@ -172,4 +172,4 @@ def test_del_secondary_index_annlite_multimodal():
 
     del da['0']
     assert len(da) == 9
-    assert len(da._secondary_indices['@.[my_text, my_other_text]']) == 18
+    assert len(da._subindices['@.[my_text, my_other_text]']) == 18

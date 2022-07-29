@@ -105,13 +105,13 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     del da2
 
 
-def test_extend_secondary_index_annlite():
+def test_extend_subindex_annlite():
 
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -129,20 +129,20 @@ def test_extend_secondary_index_annlite():
             ]
         )
 
-    assert len(da._secondary_indices['@c']) == 6
+    assert len(da._subindices['@c']) == 6
 
     for j in range(2):
         for i in range(3):
-            assert (da._secondary_indices['@c'][f'{i}_{j}'].embedding == [i, i]).all()
+            assert (da._subindices['@c'][f'{i}_{j}'].embedding == [i, i]).all()
 
 
-def test_append_secondary_index_annlite():
+def test_append_subindex_annlite():
 
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        secondary_indices_configs={'@c': {'n_dim': 2}},
+        subindex_configs={'@c': {'n_dim': 2}},
     )
 
     with da:
@@ -157,7 +157,7 @@ def test_append_secondary_index_annlite():
         )
 
     with da:
-        assert len(da._secondary_indices['@c']) == 2
+        assert len(da._subindices['@c']) == 2
 
         for i in range(2):
-            assert (da._secondary_indices['@c'][f'{i}'].embedding == [i, i]).all()
+            assert (da._subindices['@c'][f'{i}'].embedding == [i, i]).all()
