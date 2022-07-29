@@ -439,7 +439,7 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
         
-        img_per_col = ceil(len(self) / img_per_row)
+        img_per_col = ceil(len(self) / img_per_row) 
 
         max_num_img = img_per_row * img_per_col
         sprite_img = np.zeros(
