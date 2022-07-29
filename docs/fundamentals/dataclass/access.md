@@ -7,8 +7,9 @@ modalities by their names.
 :class: seealso
 
 Accessing a modality always returns a Document or a DocumentArray, instead of directly returning the data stored in them.
+This ensures maximum flexibility for the use.
 
-This allows you, for example, to store embeddings directly in this Document.
+If you want to learn more about the rationale behind this design, you can read our [blog post](https://medium.com/jina-ai/the-next-level-of-multi-modality-in-docarray-and-jina-a97b38280ab0).
 ```
 
 (mm-access-doc)=
