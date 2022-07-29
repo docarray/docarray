@@ -30,6 +30,7 @@ default_values = dict(
     chunks='ChunkArray',
     matches='MatchArray',
     timestamps=dict,
+    root_id='self.id',
 )
 
 _all_mime_types = set(mimetypes.types_map.values())
@@ -61,6 +62,7 @@ class DocumentData:
     scores: Optional[Dict[str, Union['NamedScore', Dict]]] = None
     chunks: Optional['DocumentArray'] = None
     matches: Optional['DocumentArray'] = None
+    root_id: Optional[str] = None
 
     @property
     def _non_empty_fields(self) -> Tuple[str]:
@@ -113,6 +115,8 @@ class DocumentData:
                     from docarray.score import NamedScore
 
                     setattr(self, key, defaultdict(NamedScore))
+                elif v == 'self.id':
+                    setattr(self, key, self.id)
                 else:
                     setattr(self, key, v() if callable(v) else v)
 
