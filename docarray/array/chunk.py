@@ -30,7 +30,6 @@ class ChunkArray(DocumentArrayInMemory):
         if isinstance(docs, Iterable) and self._ref_doc is not None:
             for d in docs:
                 d.parent_id = self._ref_doc.id
-                d.root_id = self._ref_doc.root_id
                 d.granularity = self._ref_doc.granularity + 1
 
     def append(self, document: 'Document'):
@@ -43,7 +42,6 @@ class ChunkArray(DocumentArrayInMemory):
             make sure the added chunk is legit.
         """
         document.parent_id = self._ref_doc.id
-        document.root_id = self._ref_doc.root_id
         document.granularity = self._ref_doc.granularity + 1
         super().append(document)
 

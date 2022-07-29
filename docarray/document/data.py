@@ -30,7 +30,6 @@ default_values = dict(
     chunks='ChunkArray',
     matches='MatchArray',
     timestamps=dict,
-    root_id='self.id',
 )
 
 _all_mime_types = set(mimetypes.types_map.values())
@@ -115,8 +114,6 @@ class DocumentData:
                     from docarray.score import NamedScore
 
                     setattr(self, key, defaultdict(NamedScore))
-                elif v == 'self.id':
-                    setattr(self, key, self.id)
                 else:
                     setattr(self, key, v() if callable(v) else v)
 

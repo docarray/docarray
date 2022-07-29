@@ -29,15 +29,6 @@ class _PropertyMixin:
         self._data.parent_id = value
 
     @property
-    def root_id(self) -> Optional[str]:
-        self._data._set_default_value_if_none('root_id')
-        return self._data.root_id
-
-    @root_id.setter
-    def root_id(self, value: str):
-        self._data.root_id = value
-
-    @property
     def granularity(self) -> Optional[int]:
         self._data._set_default_value_if_none('granularity')
         return self._data.granularity
