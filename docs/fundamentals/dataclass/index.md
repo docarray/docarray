@@ -74,7 +74,7 @@ doc = Document(a)
 ::::
 
 
-Under the hood, `doc` is represented as a {class}`~docarray.Document` containing a {property}`~docarray.Document.chunks`
+Under the hood, `doc` is represented as a {class}`~docarray.document.Document` containing a {attr}`~docarray.document.Document.chunks`
 each, for `banner`, `headline` and `meta`.
 
 But the beauty of DocArray's dataclass is that as a user you don't have to reason about `chunks` at all.
