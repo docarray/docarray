@@ -1,5 +1,5 @@
 import mimetypes
-import random
+import os
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
@@ -38,9 +38,7 @@ _all_mime_types = set(mimetypes.types_map.values())
 @dataclass(unsafe_hash=True, eq=False)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
-    id: str = field(
-        default_factory=lambda: random.getrandbits(128).to_bytes(16, 'big').hex()
-    )
+    id: str = field(default_factory=lambda: os.urandom(16).hex())
     parent_id: Optional[str] = None
     granularity: Optional[int] = None
     adjacency: Optional[int] = None
