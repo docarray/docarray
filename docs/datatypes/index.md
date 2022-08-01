@@ -10,4 +10,5 @@ video/index
 audio/index
 mesh/index
 tabular/index
+multimodal/index
 ```
