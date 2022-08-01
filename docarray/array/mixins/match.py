@@ -61,7 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex. Not available for all Document Stores.
+        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex. Needs to be supported by a given Document Store.
         :param kwargs: other kwargs.
         """
 
@@ -76,29 +76,21 @@ class MatchMixin:
         else:
             find_kwargs = {}
 
-        try:
-            match_docs = darray.find(
-                self,
-                metric=metric,
-                limit=limit,
-                normalization=normalization,
-                metric_name=metric_name,
-                batch_size=batch_size,
-                exclude_self=exclude_self,
-                filter=filter,
-                only_id=only_id,
-                use_scipy=use_scipy,
-                device=device,
-                num_worker=num_worker,
-                **find_kwargs,
-            )
-        except TypeError as e:
-            if 'on' in str(e):
-                raise ValueError(
-                    f'subindices (`on=`) are not available for this Document Store ({darray.__class__.__name__}).'
-                )
-            else:
-                raise e
+        match_docs = darray.find(
+            self,
+            metric=metric,
+            limit=limit,
+            normalization=normalization,
+            metric_name=metric_name,
+            batch_size=batch_size,
+            exclude_self=exclude_self,
+            filter=filter,
+            only_id=only_id,
+            use_scipy=use_scipy,
+            device=device,
+            num_worker=num_worker,
+            **find_kwargs,
+        )
 
         if not isinstance(match_docs, list):
             match_docs = [match_docs]

@@ -53,6 +53,11 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+        if 'on' in kwargs.keys():
+            raise ValueError(
+                f'subindices (`on=...`) are not available for this Document Store ({self.__class__.__name__}).'
+            )
+
         if filter is not None:
             raise ValueError(
                 'Filtered vector search is not supported for In-Memory backend'

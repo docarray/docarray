@@ -99,6 +99,7 @@ class FindMixin:
         filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
+        on: Optional[str] = None,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns matching Documents given an input query.
@@ -125,10 +126,14 @@ class FindMixin:
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
                       otherwise the tag field specified by `index` will be used. You can only use this parameter if the
                       storage backend supports searching by text.
+        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex. Needs to be supported by a given Document Store.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+
+        if on is not None:
+            kwargs.update({'on': on})
 
         from docarray import Document, DocumentArray
 
