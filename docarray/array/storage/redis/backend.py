@@ -2,14 +2,12 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
+from docarray import Document
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.helper import dataclass_from_dict
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
-from redis.exceptions import ResponseError
-
-from .... import Document
-from ....helper import dataclass_from_dict
-from ..base.backend import BaseBackendMixin, TypeMap
 
 if TYPE_CHECKING:
     from ....typing import ArrayType, DocumentArraySourceType
