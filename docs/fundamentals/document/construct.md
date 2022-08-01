@@ -22,6 +22,7 @@ The random `id` is the hex value of [UUID1](https://docs.python.org/3/library/uu
 
 ```python
 import uuid
+
 str(uuid.UUID(d.id))
 ```
 ````
@@ -40,11 +41,13 @@ import numpy
 d1 = Document(text='hello')
 d2 = Document(blob=b'\f1')
 d3 = Document(tensor=numpy.array([1, 2, 3]))
-d4 = Document(uri='https://jina.ai',
-              mime_type='text/plain',
-              granularity=1,
-              adjacency=3,
-              tags={'foo': 'bar'})
+d4 = Document(
+    uri='https://jina.ai',
+    mime_type='text/plain',
+    granularity=1,
+    adjacency=3,
+    tags={'foo': 'bar'},
+)
 ```
 
 Don't forget to leverage autocomplete in your IDE.
@@ -78,25 +81,29 @@ When you `print()` a Document, you get a string representation such as `<Documen
 One can also wrap the keyword arguments into `dict`. The following ways of initialization have the same effect:
 
 ```python
-d1 = Document(uri='https://jina.ai',
-              mime_type='text/plain',
-              granularity=1,
-              adjacency=3)
+d1 = Document(uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3)
 
-d2 = Document(dict(uri='https://jina.ai',
-                   mime_type='text/plain',
-                   granularity=1,
-                   adjacency=3))
+d2 = Document(
+    dict(uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3)
+)
 
-d3 = Document({'uri': 'https://jina.ai',
-               'mime_type': 'text/plain',
-               'granularity': 1,
-               'adjacency': 3})
+d3 = Document(
+    {
+        'uri': 'https://jina.ai',
+        'mime_type': 'text/plain',
+        'granularity': 1,
+        'adjacency': 3,
+    }
+)
 ```
 
 ### Nested Document
 
 ```{seealso}
+This section describes how to manually construct a nested Document, for example to hold different modalities, such as text and image.
+\
+To construct such multi-modal Documents in a more comfortabe, readable, and idiomatic way you should use DocArray's {ref}`dataclass <dataclass>` API.
+
 To learn more about nested Document, please read {ref}`recursive-nested-document`.
 ```
 
@@ -184,7 +191,7 @@ from docarray import Document
 d = Document(text='hello')
 d1 = Document(d, copy=True)
 
-print(d==d1, id(d)==id(d1))
+print(d == d1, id(d) == id(d1))
 ```
 
 ```text

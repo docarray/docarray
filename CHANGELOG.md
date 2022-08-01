@@ -114,6 +114,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2766,4 +2767,33 @@
 
  - [[```69926d41```](https://github.com/jina-ai/docarray/commit/69926d41585ac6617b225e04cec97ad2b213d95b)] __-__ fix readme (*Han Xiao*)
  - [[```3d75db4f```](https://github.com/jina-ai/docarray/commit/3d75db4f7da53d0164470dc43111ec9f9b8158ba)] __-__ __version__: the next version will be 0.13.33 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-0></a>
+## Release Note (`0.14.0`)
+
+> Release time: 2022-07-29 09:45:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```cebaf75e```](https://github.com/jina-ai/docarray/commit/cebaf75e3fe25a82528c4c7fb1c4318782fc3a2b)] __-__ fix deploy to netlify (#458) (*Joan Fontanals*)
+ - [[```b905405b```](https://github.com/jina-ai/docarray/commit/b905405bf2d74daab9c95f68ffceb5ca82523e74)] __-__ proper setting of multimodal attributes (#448) (*Johannes Messner*)
+
+### 🧼 Code Refactoring
+
+ - [[```21084e27```](https://github.com/jina-ai/docarray/commit/21084e27fc0fadfc6e5a2413c40d54616bd5c086)] __-__ move to absolute imports (#454) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```ed7e9b66```](https://github.com/jina-ai/docarray/commit/ed7e9b6620c73badb87fb4a973fe51d3048e9a51)] __-__ describe new access syntax (#451) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```aa7306d9```](https://github.com/jina-ai/docarray/commit/aa7306d9e0b8b8a097e062fb1c4a22b0414417db)] __-__ bump version to 0.14.0 (#457) (*Joan Fontanals*)
+ - [[```4748fe51```](https://github.com/jina-ai/docarray/commit/4748fe51b8bcedaf74d4f5dc17abc48df1585488)] __-__ __version__: the next version will be 0.13.34 (*Jina Dev Bot*)
 
