@@ -1,10 +1,10 @@
 import mimetypes
-import random
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from docarray.math.ndarray import check_arraylike_equality
+from docarray.helper import random_uuid
 
 if TYPE_CHECKING:
     from docarray.score import NamedScore
@@ -39,7 +39,7 @@ _all_mime_types = set(mimetypes.types_map.values())
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
     id: str = field(
-        default_factory=lambda: random.getrandbits(128).to_bytes(16, 'big').hex()
+        default_factory=lambda: str(random_uuid(True).hex())
     )
     parent_id: Optional[str] = None
     granularity: Optional[int] = None
