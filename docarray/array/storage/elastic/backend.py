@@ -158,13 +158,13 @@ class BackendMixin(BaseBackendMixin):
         client.indices.refresh(index=self._config.index_name)
         return client
 
-    def _send_requests(self, request):
-        failed_index = []
+    def _send_requests(self, request) -> List[Dict]:
+        accumulated_info = []
         for success, info in parallel_bulk(self._client, request, raise_on_error=False):
             if not success:
-                failed_index.append(info['index'])
+                accumulated_info.append(info)
 
-        return failed_index
+        return accumulated_info
 
     def _refresh(self, index_name):
         self._client.indices.refresh(index=index_name)

@@ -1,4 +1,4 @@
-from typing import Union, Iterable, Dict
+from typing import Union, Iterable, Dict, List
 import warnings
 
 from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
@@ -58,34 +58,47 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
+    def _parse_failed_index_ids_from_bulk_info(
+        self, accumulated_info: List[Dict]
+    ) -> List[int]:
+        failed_index_ids = []
+
+        for info in accumulated_info:
+            if 'index' in info:
+                failed_index_ids.append(info['index']['_id'])
+
+        return failed_index_ids
+
     def _upload_batch(self, docs: Iterable['Document']):
         batch = []
-        failed_index = []
+        accumulated_info = []
         for doc in docs:
             batch.append(self._document_to_elastic(doc))
             if len(batch) > self._config.batch_size:
-                failed_index.extend(self._send_requests(batch))
+                accumulated_info.extend(self._send_requests(batch))
                 self._refresh(self._config.index_name)
                 batch = []
         if len(batch) > 0:
-            failed_index.extend(self._send_requests(batch))
+            accumulated_info.extend(self._send_requests(batch))
             self._refresh(self._config.index_name)
 
-        return failed_index
+        failed_index_ids = self._parse_failed_index_ids_from_bulk_info(accumulated_info)
+
+        return failed_index_ids
 
     def extend(self, docs: Iterable['Document']):
         docs = list(docs)
-        failed_index = self._upload_batch(docs)
-        failed_ids = [index['_id'] for index in failed_index]
+        failed_index_ids = self._upload_batch(docs)
         self._offset2ids.extend(
             [
                 doc.id
                 for doc in docs
-                if (doc.id not in self._offset2ids.ids) and (doc.id not in failed_ids)
+                if (doc.id not in self._offset2ids.ids)
+                and (doc.id not in failed_index_ids)
             ]
         )
 
-        if len(failed_ids) > 0:
-            err_msg = f'fail to add Documents with ids: {failed_ids}'
+        if len(failed_index_ids) > 0:
+            err_msg = f'fail to add Documents with ids: {failed_index_ids}'
             warnings.warn(err_msg)
             raise IndexError(err_msg)
