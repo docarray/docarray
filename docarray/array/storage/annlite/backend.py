@@ -60,11 +60,12 @@ class BackendMixin(BaseBackendMixin):
             )
         return columns
 
-    def _init_subindices(self, subindex_configs=None, *args, **kwargs):
+    def _init_subindices(self, *args, **kwargs):
         from docarray import DocumentArray
         import os
 
         self._subindices = {}
+        subindex_configs = kwargs.get('subindex_configs', None)
         if not subindex_configs:
             return
 
