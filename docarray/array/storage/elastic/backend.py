@@ -1,6 +1,7 @@
 import copy
 import uuid
 from dataclasses import dataclass, field
+import warnings
 from typing import (
     Dict,
     Optional,
@@ -159,9 +160,12 @@ class BackendMixin(BaseBackendMixin):
         return client
 
     def _send_requests(self, request) -> List[Dict]:
+        """Send bulk request to Elastic and gather the successful info"""
         accumulated_info = []
         for success, info in parallel_bulk(self._client, request, raise_on_error=False):
             if not success:
+                warnings.warn(str(info))
+            else:
                 accumulated_info.append(info)
 
         return accumulated_info
