@@ -117,6 +117,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2836,4 +2837,23 @@
 ### 🍹 Other Improvements
 
  - [[```dadce129```](https://github.com/jina-ai/docarray/commit/dadce12907808f216148bc46d44609f290d54539)] __-__ __version__: the next version will be 0.14.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-3></a>
+## Release Note (`0.14.3`)
+
+> Release time: 2022-08-02 11:24:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```951004ee```](https://github.com/jina-ai/docarray/commit/951004ee976cdd0e0a3a624520c818d2576017a7)] __-__ __elastic__: handle bulk operation error info for another op type (#465) (*Alvin Prayuda*)
+
+### 🍹 Other Improvements
+
+ - [[```889b2ad8```](https://github.com/jina-ai/docarray/commit/889b2ad88ddfb3a1ccaa4ebd95d4fc2f3e2b7b7a)] __-__ __version__: the next version will be 0.14.3 (*Jina Dev Bot*)
 
