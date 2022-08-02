@@ -146,9 +146,6 @@ class FindMixin:
                 on=None,
             )
 
-        if on is not None:
-            kwargs.update({'on': on})
-
         from docarray import Document, DocumentArray
 
         if isinstance(query, dict):

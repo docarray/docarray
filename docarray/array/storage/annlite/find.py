@@ -19,7 +19,6 @@ class FindMixin:
         limit: Optional[Union[int, float]] = 20,
         only_id: bool = False,
         filter: Optional[Dict] = None,
-        on: Optional[str] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given an input query.
@@ -28,7 +27,6 @@ class FindMixin:
         :param limit: the number of results to get for each query document in search.
         :param only_id: if set, then returning matches will only contain ``id``
         :param filter: filter query used for pre-filtering
-        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
@@ -50,14 +48,12 @@ class FindMixin:
         filter: Dict,
         limit: Optional[Union[int, float]] = 20,
         only_id: bool = False,
-        on: Optional[str] = None,
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given filter (`Annlite` filter).
 
         :param filter: the input filter to apply in each stored document
         :param limit: the number of results to get for each query document in search.
         :param only_id: if set, then returning matches will only contain ``id``
-        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex.
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
 
