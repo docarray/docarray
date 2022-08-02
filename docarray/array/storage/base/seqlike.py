@@ -28,6 +28,10 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
         :param value: The doc needs to be appended.
         """
+        self._append(value)
+        self._update_subindices_append_extend(value)
+
+    def _append(self, value):
         self._set_doc_by_id(value.id, value)
         self._offset2ids.append(value.id)
 
@@ -58,6 +62,9 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         return len(self) > 0
 
     def extend(self, values: Iterable['Document']) -> None:
-        for value in values:
-            self.append(value)
+        self._extend(values)
         self._update_subindices_append_extend(values)
+
+    def _extend(self, values):
+        for value in values:
+            self._append(value)

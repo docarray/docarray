@@ -107,12 +107,22 @@ def test_del_da_attribute():
         assert d.embedding is None
 
 
-def test_del_subindex_annlite():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        # ('memory', None),
+        # ('weaviate', {'n_dim': 32}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        # ('elasticsearch', {'n_dim': 32}),
+    ],
+)
+def test_del_subindex_annlite(storage, config):
 
     n_dim = 3
     da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        storage=storage,
+        config=config,
         subindex_configs={'@c': {'n_dim': 2}},
     )
 

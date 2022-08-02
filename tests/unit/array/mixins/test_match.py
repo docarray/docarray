@@ -705,11 +705,29 @@ def test_match_pre_filtering(
         )
 
 
-def test_match_subindex_annlite():
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        # ('memory', None),
+        # ('weaviate', {'n_dim': 32}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        # ('elasticsearch', {'n_dim': 32}),
+    ],
+)
+def test_match_subindex_annlite(storage, config):
     n_dim = 3
     da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        storage=storage,
+        config=config,
         subindex_configs={'@c': {'n_dim': 2}},
     )
 
@@ -732,6 +750,6 @@ def test_match_subindex_annlite():
     query.match(da, on='@c')
     closest_docs = query.matches
 
-    assert (closest_docs[0].embedding == [2, 2]).all()
+    assert embeddings_eq(closest_docs[0].embedding, [2, 2])
     for d in closest_docs:
         assert d.id.endswith('_0') or d.id.endswith('_1')

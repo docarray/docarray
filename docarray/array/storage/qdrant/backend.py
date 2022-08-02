@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -112,6 +112,32 @@ class BackendMixin(BaseBackendMixin):
             self.extend(docs)
         elif isinstance(docs, Document):
             self.append(docs)
+
+    def _init_subindices(self, *args, **kwargs):
+        from docarray import DocumentArray
+
+        self._subindices = {}
+        subindex_configs = kwargs.get('subindex_configs', None)
+        if not subindex_configs:
+            return
+
+        config = asdict(self._config)
+
+        for name, config_subindex in subindex_configs.items():
+
+            config_joined = {**config, **config_subindex}
+
+            if 'collection_name' not in config_subindex:
+                config_joined['collection_name'] = (
+                    config_joined['collection_name'] + '_subindex_' + name
+                )
+
+            if not config_joined:
+                raise ValueError(f'Config object must be specified for subindex {name}')
+
+            self._subindices[name] = DocumentArray(
+                storage='qdrant', config=config_joined
+            )
 
     def _initialize_qdrant_schema(self):
         if not self._collection_exists(self.collection_name):

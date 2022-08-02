@@ -136,12 +136,30 @@ def test_extend_subindex_annlite():
             assert (da._subindices['@c'][f'{i}_{j}'].embedding == [i, i]).all()
 
 
-def test_append_subindex_annlite():
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        # ('memory', None),
+        # ('weaviate', {'n_dim': 32}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        # ('elasticsearch', {'n_dim': 32}),
+    ],
+)
+def test_append_subindex_annlite(storage, config):
 
     n_dim = 3
     da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        storage=storage,
+        config=config,
         subindex_configs={'@c': {'n_dim': 2}},
     )
 
@@ -160,4 +178,4 @@ def test_append_subindex_annlite():
         assert len(da._subindices['@c']) == 2
 
         for i in range(2):
-            assert (da._subindices['@c'][f'{i}'].embedding == [i, i]).all()
+            assert embeddings_eq(da._subindices['@c'][f'{i}'].embedding, [i, i])

@@ -394,12 +394,30 @@ def test_zero_embeddings(da_cls, config, start_storage):
         assert d.embedding.shape == (1, 6)
 
 
-def test_getset_subindex_annlite():
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        # ('memory', None),
+        # ('weaviate', {'n_dim': 32}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        # ('elasticsearch', {'n_dim': 32}),
+    ],
+)
+def test_getset_subindex_annlite(storage, config):
 
     n_dim = 3
     da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        storage=storage,
+        config=config,
         subindex_configs={'@c': {'n_dim': 2}},
     )
 
@@ -439,24 +457,24 @@ def test_getset_subindex_annlite():
         ]
 
     # test insert single doc
-    assert (da[0].embedding == -1 * np.ones(n_dim)).all()
-    assert (da[0].chunks[0].embedding == [-1, -1]).all()
-    assert (da[0].chunks[1].embedding == [-2, -2]).all()
+    assert embeddings_eq(da[0].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[0].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[0].chunks[1].embedding, [-2, -2])
 
-    assert (da._subindices['@c']['c_0'].embedding == [-1, -1]).all()
-    assert (da._subindices['@c']['c_1'].embedding == [-2, -2]).all()
+    assert embeddings_eq(da._subindices['@c']['c_0'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_1'].embedding, [-2, -2])
 
     # test insert slice of docs
-    assert (da[1].embedding == -1 * np.ones(n_dim)).all()
-    assert (da[1].chunks[0].embedding == [-1, -1]).all()
-    assert (da[1].chunks[1].embedding == [-2, -2]).all()
+    assert embeddings_eq(da[1].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[1].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[1].chunks[1].embedding, [-2, -2])
 
-    assert (da._subindices['@c']['c_00'].embedding == [-1, -1]).all()
-    assert (da._subindices['@c']['c_10'].embedding == [-2, -2]).all()
+    assert embeddings_eq(da._subindices['@c']['c_00'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_10'].embedding, [-2, -2])
 
-    assert (da[2].embedding == -1 * np.ones(n_dim)).all()
-    assert (da[2].chunks[0].embedding == [-1, -1]).all()
-    assert (da[2].chunks[1].embedding == [-2, -2]).all()
+    assert embeddings_eq(da[2].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[2].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[2].chunks[1].embedding, [-2, -2])
 
-    assert (da._subindices['@c']['c_01'].embedding == [-1, -1]).all()
-    assert (da._subindices['@c']['c_11'].embedding == [-2, -2]).all()
+    assert embeddings_eq(da._subindices['@c']['c_01'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_11'].embedding, [-2, -2])
