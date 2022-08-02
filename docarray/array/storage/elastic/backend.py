@@ -1,6 +1,7 @@
 import copy
 import uuid
 from dataclasses import dataclass, field
+import warnings
 from typing import (
     Dict,
     Optional,
@@ -158,13 +159,16 @@ class BackendMixin(BaseBackendMixin):
         client.indices.refresh(index=self._config.index_name)
         return client
 
-    def _send_requests(self, request):
-        failed_index = []
+    def _send_requests(self, request) -> List[Dict]:
+        """Send bulk request to Elastic and gather the successful info"""
+        accumulated_info = []
         for success, info in parallel_bulk(self._client, request, raise_on_error=False):
             if not success:
-                failed_index.append(info['index'])
+                warnings.warn(str(info))
+            else:
+                accumulated_info.append(info)
 
-        return failed_index
+        return accumulated_info
 
     def _refresh(self, index_name):
         self._client.indices.refresh(index=index_name)
