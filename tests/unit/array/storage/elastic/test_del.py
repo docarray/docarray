@@ -47,3 +47,42 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storag
             index=elastic_doc._index_name_offset2id, query={'match': {'blob': id}}
         )['hits']['hits'][0]['_id']
         assert actual_offset_index == expected_offset
+
+
+def test_success_handle_bulk_delete_not_found(start_storage):
+    elastic_doc = DocumentArray(
+        storage='elasticsearch',
+        config={
+            'n_dim': 3,
+            'columns': [('price', 'int')],
+            'distance': 'l2_norm',
+            'index_name': 'test_bulk_delete_not_found',
+        },
+    )
+    with elastic_doc:
+        elastic_doc.extend(
+            [
+                Document(id='r0', embedding=[0, 0, 0]),
+                Document(id='r1', embedding=[1, 1, 1]),
+            ]
+        )
+
+    offset_index = elastic_doc._index_name_offset2id
+
+    expected_to_be_fail_del_data = [
+        {
+            '_op_type': 'delete',
+            '_id': 0,  # offset data exist
+            '_index': offset_index,
+        },
+        {
+            '_op_type': 'delete',
+            '_id': 2,  # offset data not exist, expect to fail
+            '_index': offset_index,
+        },
+    ]
+
+    info = elastic_doc._send_requests(expected_to_be_fail_del_data)
+
+    assert len(info) == 1
+    assert 'delete' in info[0].keys()
