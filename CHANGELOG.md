@@ -118,6 +118,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2856,4 +2857,23 @@
 ### 🍹 Other Improvements
 
  - [[```889b2ad8```](https://github.com/jina-ai/docarray/commit/889b2ad88ddfb3a1ccaa4ebd95d4fc2f3e2b7b7a)] __-__ __version__: the next version will be 0.14.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-4></a>
+## Release Note (`0.14.4`)
+
+> Release time: 2022-08-02 15:34:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```30486b2a```](https://github.com/jina-ai/docarray/commit/30486b2a6eb9f7517a8e93018883c6257853ea80)] __-__ fix plot bug recompute size (#468) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```f5887584```](https://github.com/jina-ai/docarray/commit/f5887584f921db2789822590bc9b70b013970477)] __-__ __version__: the next version will be 0.14.4 (*Jina Dev Bot*)
 
