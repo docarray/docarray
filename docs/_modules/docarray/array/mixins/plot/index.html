@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/plot.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.plot - DocArray 0.14.3 documentation</title>
+        <title>docarray.array.mixins.plot - DocArray 0.14.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.14.3 documentation</div>
+                <div class="brand">DocArray 0.14.4 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -770,7 +770,6 @@
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
         <span class="n">img_per_row</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
-        <span class="n">img_per_col</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
         <span class="n">img_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">canvas_size</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">img_size</span> <span class="o">&lt;</span> <span class="n">min_size</span><span class="p">:</span>
@@ -778,6 +777,10 @@
             <span class="n">img_size</span> <span class="o">=</span> <span class="n">min_size</span>
             <span class="n">img_per_row</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">canvas_size</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">img_per_row</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">img_per_row</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">img_per_col</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="n">img_per_row</span><span class="p">)</span>
         <span class="n">max_num_img</span> <span class="o">=</span> <span class="n">img_per_row</span> <span class="o">*</span> <span class="n">img_per_col</span>
         <span class="n">sprite_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">[</span><span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_col</span><span class="p">,</span> <span class="n">img_size</span> <span class="o">*</span> <span class="n">img_per_row</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;uint8&#39;</span>
