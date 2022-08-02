@@ -19,16 +19,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return doc
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
-
-        if self._subindices:
-            for selector, da in self._subindices.items():
-                old_ids = DocumentArray(self[_id])[
-                    selector, 'id'
-                ]  # hack to get the Document['@c'] without having to do Document.chunks
-                with da:
-                    del da[old_ids]
-                    da.extend(DocumentArray(value)[selector])  # same hack here
-
         if _id != value.id:
             self._del_doc_by_id(_id)
 
@@ -50,12 +40,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._set_doc_by_id(_id, doc)
 
     def _del_docs_by_ids(self, ids):
-
-        if self._subindices:
-            for selector, da in self._subindices.items():
-                ids_subindex = self[ids][selector, 'id']
-                da._del_docs_by_ids(ids_subindex)
-
         self._annlite.delete(ids)
 
     def _load_offset2ids(self):

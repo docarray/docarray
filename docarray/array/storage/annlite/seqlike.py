@@ -19,11 +19,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._annlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
-        if self._subindices:
-            for selector, da in self._subindices.items():
-                docs_selector = docs[selector]
-                if len(docs_selector) > 0:
-                    da.extend(docs_selector)
+        self._update_subindices_append_extend(docs)
 
     def append(self, value: 'Document'):
         self.extend([value])

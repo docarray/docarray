@@ -17,9 +17,25 @@ class BaseBackendMixin(ABC):
         _docs: Optional['DocumentArraySourceType'] = None,
         copy: bool = False,
         *args,
-        **kwargs
+        **kwargs,
     ):
         self._load_offset2ids()
+
+    def _init_subindices(self, *args, **kwargs):
+        self._subindices = {}
+        subindex_configs = kwargs.get('subindex_configs', None)
+        if subindex_configs:
+            config = asdict(self._config) if getattr(self, '_config', None) else dict()
+
+            for name, config_subindex in subindex_configs.items():
+
+                config_joined = {**config, **config_subindex}
+                if not config_joined:
+                    raise ValueError(
+                        f'Config object must be specified for subindex {name}'
+                    )
+
+                self._subindices[name] = self.__class__(config=config_joined)
 
     def _get_storage_infos(self) -> Optional[Dict]:
         if hasattr(self, '_config') and is_dataclass(self._config):

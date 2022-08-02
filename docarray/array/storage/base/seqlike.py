@@ -1,11 +1,18 @@
 from abc import abstractmethod
 from typing import Iterator, Iterable, MutableSequence
 
-from docarray import Document
+from docarray import Document, DocumentArray
 
 
 class BaseSequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
+
+    def _update_subindices_append_extend(self, value):
+        if self._subindices:
+            for selector, da in self._subindices.items():
+                docs_selector = DocumentArray(value)[selector]
+                if len(docs_selector) > 0:
+                    da.extend(docs_selector)
 
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
@@ -53,3 +60,4 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
     def extend(self, values: Iterable['Document']) -> None:
         for value in values:
             self.append(value)
+        self._update_subindices_append_extend(values)

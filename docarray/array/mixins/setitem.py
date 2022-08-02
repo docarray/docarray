@@ -64,6 +64,7 @@ class SetItemMixin:
         value: Union['Document', Sequence['Document']],
     ):
 
+        self._update_subindices_set(index, value)
         # set by offset
         # allows da[1] = Document()
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):

@@ -426,9 +426,37 @@ def test_getset_subindex_annlite():
             ],
         )
 
+    with da:
+        da[1:] = [
+            Document(
+                embedding=-1 * np.ones(n_dim),
+                chunks=[
+                    Document(id='c_0' + str(i), embedding=[-1, -1]),
+                    Document(id='c_1' + str(i), embedding=[-2, -2]),
+                ],
+            )
+            for i in range(2)
+        ]
+
+    # test insert single doc
     assert (da[0].embedding == -1 * np.ones(n_dim)).all()
     assert (da[0].chunks[0].embedding == [-1, -1]).all()
     assert (da[0].chunks[1].embedding == [-2, -2]).all()
 
     assert (da._subindices['@c']['c_0'].embedding == [-1, -1]).all()
     assert (da._subindices['@c']['c_1'].embedding == [-2, -2]).all()
+
+    # test insert slice of docs
+    assert (da[1].embedding == -1 * np.ones(n_dim)).all()
+    assert (da[1].chunks[0].embedding == [-1, -1]).all()
+    assert (da[1].chunks[1].embedding == [-2, -2]).all()
+
+    assert (da._subindices['@c']['c_00'].embedding == [-1, -1]).all()
+    assert (da._subindices['@c']['c_10'].embedding == [-2, -2]).all()
+
+    assert (da[2].embedding == -1 * np.ones(n_dim)).all()
+    assert (da[2].chunks[0].embedding == [-1, -1]).all()
+    assert (da[2].chunks[1].embedding == [-2, -2]).all()
+
+    assert (da._subindices['@c']['c_01'].embedding == [-1, -1]).all()
+    assert (da._subindices['@c']['c_11'].embedding == [-2, -2]).all()

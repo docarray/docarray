@@ -13,17 +13,6 @@ from docarray import DocumentArray
 
 
 class FindMixin:
-    def _get_index(self, subindex_name):
-        is_root_index = subindex_name is None or subindex_name == '@r'
-        if is_root_index:
-            return self._annlite
-        if subindex_name in self._subindices.keys():
-            return self._subindices[subindex_name]._annlite
-        raise ValueError(
-            f"No subindex available for on='{subindex_name}'. "
-            f'To create a subindex, pass `subindex_configs` when creating the DocumentArray.'
-        )
-
     def _find(
         self,
         query: 'np.ndarray',
@@ -46,13 +35,11 @@ class FindMixin:
         """
         from docarray.math import ndarray
 
-        _annlite = self._get_index(on)
-
         n_rows, _ = ndarray.get_array_rows(query)
         if n_rows == 1:
             query = query.reshape(1, -1)
 
-        _, match_docs = _annlite._search_documents(
+        _, match_docs = self._annlite._search_documents(
             query, limit=limit, filter=filter or {}, include_metadata=not only_id
         )
 
@@ -74,9 +61,7 @@ class FindMixin:
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
 
-        _annlite = self._get_index(on)
-
-        docs = _annlite.filter(
+        docs = self._annlite.filter(
             filter=filter,
             limit=limit,
             include_metadata=not only_id,

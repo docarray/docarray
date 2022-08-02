@@ -60,6 +60,32 @@ class BackendMixin(BaseBackendMixin):
             )
         return columns
 
+    def _init_subindices(self, subindex_configs=None, *args, **kwargs):
+        from docarray import DocumentArray
+        import os
+
+        self._subindices = {}
+        if not subindex_configs:
+            return
+
+        config = asdict(self._config)
+
+        for name, config_subindex in subindex_configs.items():
+
+            config_joined = {**config, **config_subindex}
+
+            if 'data_path' not in config_subindex:
+                config_joined['data_path'] = os.path.join(
+                    config_joined['data_path'], 'subindex_' + name
+                )
+
+            if not config_joined:
+                raise ValueError(f'Config object must be specified for subindex {name}')
+
+            self._subindices[name] = DocumentArray(
+                storage='annlite', config=config_joined
+            )
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -68,7 +94,7 @@ class BackendMixin(BaseBackendMixin):
         **kwargs,
     ):
 
-        from docarray import Document, DocumentArray
+        from docarray import Document
 
         if not config:
             raise ValueError('Config object must be specified')
@@ -87,34 +113,10 @@ class BackendMixin(BaseBackendMixin):
         self.n_dim = config.pop('n_dim')
 
         from annlite import AnnLite
-        import os
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
 
         super()._init_storage()
-
-        self._subindices = {}
-        if subindex_configs:
-
-            for name, config_subindex in subindex_configs.items():
-
-                config_joined = {**config, **config_subindex}
-
-                if 'data_path' not in config_subindex:
-                    config_joined['data_path'] = os.path.join(
-                        config_joined['data_path'], 'subindex_' + name
-                    )
-
-                if not config_joined:
-                    raise ValueError(
-                        f'Config object must be specified for subindex {name}'
-                    )
-                elif isinstance(config_joined, dict):
-                    config_joined = dataclass_from_dict(AnnliteConfig, config_joined)
-
-                self._subindices[name] = DocumentArray(
-                    storage='annlite', config=config_joined
-                )
 
         if _docs is None:
             return
