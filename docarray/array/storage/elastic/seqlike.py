@@ -69,7 +69,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         return failed_index_ids
 
-    def _upload_batch(self, docs: Iterable['Document']):
+    def _upload_batch(self, docs: Iterable['Document']) -> List[int]:
         batch = []
         accumulated_info = []
         for doc in docs:
