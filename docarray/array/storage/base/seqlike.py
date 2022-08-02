@@ -8,7 +8,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
 
     def _update_subindices_append_extend(self, value):
-        if self._subindices:
+        if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 docs_selector = DocumentArray(value)[selector]
                 if len(docs_selector) > 0:

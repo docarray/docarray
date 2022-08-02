@@ -128,7 +128,7 @@ class BaseGetSetDelMixin(ABC):
             self._del_doc_by_id(_id)
 
     def _update_subindices_del(self, ids):
-        if self._subindices:
+        if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 ids_subindex = DocumentArray(self[ids])[selector, 'id']
                 da._del_docs_by_ids(ids_subindex)
@@ -146,7 +146,7 @@ class BaseGetSetDelMixin(ABC):
             self._del_doc_by_id(doc.id)
 
     def _clear_subindices(self):
-        if self._subindices:
+        if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 da._del_all_docs()
 
@@ -174,7 +174,7 @@ class BaseGetSetDelMixin(ABC):
             self._set_doc_by_id(_id, doc)
 
     def _update_subindices_set(self, ids, docs):
-        if self._subindices:
+        if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 old_ids = DocumentArray(self[ids])[
                     selector, 'id'
