@@ -147,20 +147,24 @@ def embeddings_eq(emb1, emb2):
 @pytest.mark.parametrize(
     'storage, config',
     [
-        # ('memory', None),
+        ('memory', None),
         ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
     ],
 )
 def test_append_subindex_annlite(storage, config):
 
     n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
     da = DocumentArray(
         storage=storage,
         config=config,
-        subindex_configs={'@c': {'n_dim': 2}},
+        subindex_configs=subindex_configs,
     )
 
     with da:
@@ -168,8 +172,8 @@ def test_append_subindex_annlite(storage, config):
             Document(
                 embedding=np.ones(n_dim),
                 chunks=[
-                    Document(id='0', embedding=[0, 0]),
-                    Document(id='1', embedding=[1, 1]),
+                    Document(id='0', embedding=np.array([0, 0])),
+                    Document(id='1', embedding=np.array([1, 1])),
                 ],
             )
         )

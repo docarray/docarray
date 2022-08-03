@@ -405,20 +405,24 @@ def embeddings_eq(emb1, emb2):
 @pytest.mark.parametrize(
     'storage, config',
     [
-        # ('memory', None),
+        ('memory', None),
         ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
     ],
 )
 def test_getset_subindex_annlite(storage, config):
 
     n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
     da = DocumentArray(
         storage=storage,
         config=config,
-        subindex_configs={'@c': {'n_dim': 2}},
+        subindex_configs=subindex_configs,
     )
 
     with da:
@@ -428,8 +432,8 @@ def test_getset_subindex_annlite(storage, config):
                     id=str(i),
                     embedding=i * np.ones(n_dim),
                     chunks=[
-                        Document(id=str(i) + '_0', embedding=[i, i]),
-                        Document(id=str(i) + '_1', embedding=[i, i]),
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
                     ],
                 )
                 for i in range(3)
@@ -439,8 +443,8 @@ def test_getset_subindex_annlite(storage, config):
         da[0] = Document(
             embedding=-1 * np.ones(n_dim),
             chunks=[
-                Document(id='c_0', embedding=[-1, -1]),
-                Document(id='c_1', embedding=[-2, -2]),
+                Document(id='c_0', embedding=np.array([-1, -1])),
+                Document(id='c_1', embedding=np.array([-2, -2])),
             ],
         )
 
@@ -449,8 +453,8 @@ def test_getset_subindex_annlite(storage, config):
             Document(
                 embedding=-1 * np.ones(n_dim),
                 chunks=[
-                    Document(id='c_0' + str(i), embedding=[-1, -1]),
-                    Document(id='c_1' + str(i), embedding=[-2, -2]),
+                    Document(id='c_0' + str(i), embedding=np.array([-1, -1])),
+                    Document(id='c_1' + str(i), embedding=np.array([-2, -2])),
                 ],
             )
             for i in range(2)

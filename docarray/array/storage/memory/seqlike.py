@@ -18,7 +18,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         self._data.insert(index, value)
 
-    def append(self, value: 'Document'):
+    def _append(self, value: 'Document'):
         """Append `doc` to the end of the array.
 
         :param value: The doc needs to be appended.
@@ -56,7 +56,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         v.extend(other)
         return v
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def _extend(self, values: Iterable['Document']) -> None:
         values = list(values)  # consume the iterator only once
         last_idx = len(self._id2offset)
         self._data.extend(values)

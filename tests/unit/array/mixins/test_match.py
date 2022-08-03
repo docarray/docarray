@@ -716,19 +716,23 @@ def embeddings_eq(emb1, emb2):
 @pytest.mark.parametrize(
     'storage, config',
     [
-        # ('memory', None),
+        ('memory', None),
         ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
     ],
 )
 def test_match_subindex_annlite(storage, config):
     n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
     da = DocumentArray(
         storage=storage,
         config=config,
-        subindex_configs={'@c': {'n_dim': 2}},
+        subindex_configs=subindex_configs,
     )
 
     with da:
@@ -738,8 +742,8 @@ def test_match_subindex_annlite(storage, config):
                     id=str(i),
                     embedding=i * np.ones(n_dim),
                     chunks=[
-                        Document(id=str(i) + '_0', embedding=[i, i]),
-                        Document(id=str(i) + '_1', embedding=[i, i]),
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
                     ],
                 )
                 for i in range(3)
@@ -747,7 +751,10 @@ def test_match_subindex_annlite(storage, config):
         )
 
     query = Document(embedding=np.array([3, 3]))
-    query.match(da, on='@c')
+    if storage in ['sqlite', 'memory']:
+        query.match(da, on='@c', metric='euclidean')
+    else:
+        query.match(da, on='@c')
     closest_docs = query.matches
 
     assert embeddings_eq(closest_docs[0].embedding, [2, 2])

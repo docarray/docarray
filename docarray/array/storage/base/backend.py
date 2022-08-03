@@ -30,10 +30,6 @@ class BaseBackendMixin(ABC):
             for name, config_subindex in subindex_configs.items():
 
                 config_joined = {**config, **config_subindex}
-                if not config_joined:
-                    raise ValueError(
-                        f'Config object must be specified for subindex {name}'
-                    )
 
                 self._subindices[name] = self.__class__(config=config_joined)
 
