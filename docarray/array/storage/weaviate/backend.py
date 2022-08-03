@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Iterable,
     Dict,
@@ -114,6 +114,30 @@ class BackendMixin(BaseBackendMixin):
             self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def _init_subindices(self, *args, **kwargs):
+        from docarray import DocumentArray
+
+        self._subindices = {}
+        subindex_configs = kwargs.get('subindex_configs', None)
+        if not subindex_configs:
+            return
+
+        config = asdict(self._config)
+
+        for name, config_subindex in subindex_configs.items():
+
+            config_joined = {**config, **config_subindex}
+
+            if 'name' not in config_subindex:
+                config_joined['name'] = config_joined['name'] + 'subindex' + name[1:]
+
+            if not config_joined:
+                raise ValueError(f'Config object must be specified for subindex {name}')
+
+            self._subindices[name] = DocumentArray(
+                storage='weaviate', config=config_joined
+            )
 
     def _get_weaviate_class_name(self) -> str:
         """Generate the class/schema name using the ``uuid1`` module with some

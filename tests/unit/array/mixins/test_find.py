@@ -510,7 +510,7 @@ def test_elastic_id_filter(storage, config, limit):
     'storage, config',
     [
         # ('memory', None),
-        # ('weaviate', {'n_dim': 32}),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         # ('elasticsearch', {'n_dim': 32}),
