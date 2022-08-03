@@ -165,10 +165,9 @@ def test_api_url_change(mocker, monkeypatch):
 
 
 def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     os.environ['JINA_HUB_ROOT'] = str(tmpdir)
 
@@ -188,7 +187,6 @@ def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
     del os.environ['JINA_HUB_ROOT']
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
@@ -203,10 +201,9 @@ def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
     'set_env_vars', [{'JINA_AUTH_TOKEN': 'test-auth-token'}], indirect=True
 )
 def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     mock = mocker.Mock()
     _mock_post(mock, monkeypatch)
@@ -218,7 +215,6 @@ def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
     DocumentArray.pull(name)
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
@@ -235,10 +231,9 @@ def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
 def test_api_authorization_header_env_and_config(
     mocker, monkeypatch, tmpdir, set_env_vars
 ):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     os.environ['JINA_HUB_ROOT'] = str(tmpdir)
 
@@ -258,7 +253,6 @@ def test_api_authorization_header_env_and_config(
     del os.environ['JINA_HUB_ROOT']
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 

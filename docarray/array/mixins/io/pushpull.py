@@ -27,7 +27,6 @@ def _get_hub_config() -> Optional[Dict]:
             return json.load(f)
 
 
-@lru_cache()
 def _get_auth_token() -> Optional[str]:
     hub_config = _get_hub_config()
     config_auth_token = hub_config.get('auth_token') if hub_config else None
