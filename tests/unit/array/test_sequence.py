@@ -151,7 +151,7 @@ def embeddings_eq(emb1, emb2):
         ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
-        # ('elasticsearch', {'n_dim': 32}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
     ],
 )
 def test_append_subindex_annlite(storage, config):

@@ -513,7 +513,7 @@ def test_elastic_id_filter(storage, config, limit):
         ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
-        # ('elasticsearch', {'n_dim': 32}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
     ],
 )
 def test_find_subindex_annlite(storage, config):

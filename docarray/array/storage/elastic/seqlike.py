@@ -73,7 +73,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         return failed_index
 
-    def extend(self, docs: Iterable['Document']):
+    def _extend(self, docs: Iterable['Document']):
         docs = list(docs)
         failed_index = self._upload_batch(docs)
         failed_ids = [index['_id'] for index in failed_index]
