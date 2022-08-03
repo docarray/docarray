@@ -493,7 +493,7 @@ class PlotMixin:
                 col_id = _idx % img_per_row
 
                 if show_index:
-                    _img = Image.fromarray(_d.tensor)
+                    _img = Image.fromarray(np.asarray(_d.tensor, dtype='uint8'))
                     draw = ImageDraw.Draw(_img)
                     draw.text((0, 0), str(_idx), (255, 255, 255))
                     _d.tensor = np.asarray(_img)

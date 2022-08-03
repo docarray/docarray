@@ -123,6 +123,13 @@ def test_plot_embeddings(da_and_dam):
         _test_plot_embeddings(da)
 
 
+def test_plot_sprites(tmpdir):
+    da = DocumentArray.empty(5)
+    da.tensors = np.random.random([5, 3, 226, 226])
+    da.plot_image_sprites(tmpdir / 'a.png', channel_axis=0, show_index=True)
+    assert os.path.exists(tmpdir / 'a.png')
+
+
 def _test_plot_embeddings(da):
     p = da.plot_embeddings(start_server=False)
     assert os.path.exists(p)
