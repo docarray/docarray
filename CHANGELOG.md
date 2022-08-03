@@ -119,6 +119,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2876,4 +2877,23 @@
 ### 🍹 Other Improvements
 
  - [[```f5887584```](https://github.com/jina-ai/docarray/commit/f5887584f921db2789822590bc9b70b013970477)] __-__ __version__: the next version will be 0.14.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-5></a>
+## Release Note (`0.14.5`)
+
+> Release time: 2022-08-03 09:21:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Michael Günther,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```ccf8e741```](https://github.com/jina-ai/docarray/commit/ccf8e74124d1399bd7a17cac1d82b04c093d4286)] __-__ remove lru_cache decorator from _get_auth_token (#469) (*Michael Günther*)
+
+### 🍹 Other Improvements
+
+ - [[```07123faf```](https://github.com/jina-ai/docarray/commit/07123faf9f5d8c1a86bb1a8c55d7d3cc37456d2c)] __-__ __version__: the next version will be 0.14.5 (*Jina Dev Bot*)
 
