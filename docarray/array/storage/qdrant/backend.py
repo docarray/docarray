@@ -124,7 +124,7 @@ class BackendMixin(BaseBackendMixin):
             config_joined['collection_name'] = (
                 config_joined['collection_name'] + '_subindex_' + subindex_name
             )
-        return config_subindex
+        return config_joined
 
     def _initialize_qdrant_schema(self):
         if not self._collection_exists(self.collection_name):
