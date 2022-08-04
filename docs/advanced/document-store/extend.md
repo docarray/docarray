@@ -189,14 +189,32 @@ class BackendMixin(BaseBackendMixin):
     ):
         super()._init_storage(_docs, config, **kwargs)
         ...
-```
 
-`_init_storage` is a very important function to be called during the DocumentArray construction. You will need to handle different construction & copy behaviors in this function.
+    def _ensure_subindex_is_unique(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        ...  # ensure unique identifiers here
+        return config_joined
+```
 
 `MyDocStoreConfig` is a dataclass for containing the configs. You can expose arguments of your document store to this data class and allow users to customize them. In `init_storage` function, you need to parse `config` either from `MyDocStoreConfig` object or a `Dict`.
 
+
+`_init_storage` is a very important function to be called during the DocumentArray construction.
+You will need to handle different construction & copy behaviors in this function.
+
+`_ensure_subindex_is_unique` is needed to support DocArray's subindex feature.
+A subindex inherits its configuration from the root index, unless a field of the configuration is explicitly provided to the subindex.
+Usually however, each table in a database has to have a unique identifier (e.g. 'name', 'table_name', 'data_path', etc.).
+In order to avoid clashes you need to make sure that this identifier is actually unique between parent und subindices, despite the inheritance of configurations.
+
+
 ```{seealso}
-As a reference, you can check out how we implement for SQLite, check out {class}`~docarray.array.storage.sqlite.backend.BackendMixin`.
+As a reference, you can check out how we implement for SQLite here: {class}`~docarray.array.storage.sqlite.backend.BackendMixin`.
 ```
 
 ## Step 5: implement `find.py`
