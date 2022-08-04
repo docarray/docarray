@@ -18,7 +18,8 @@ As in element selector, one can use attribute selector to **get/set/delete** att
 
 | Example                                      | Return                                                                                                                        |
 |----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `da[:, 'id']`                                | all `.id` in a List                                                                                                           |
+| `da[:, 'id']`                                | all `.id` from all root Documents in a List                                                                                   |
+| `da[..., 'id']`                              | all `.id` from all flattened Documents (root, chunks, and matches) in a List                                                                                |
 | `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                       |
 | `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
 | `da[:, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |

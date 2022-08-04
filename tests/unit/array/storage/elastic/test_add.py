@@ -3,6 +3,7 @@ from docarray import Document, DocumentArray
 import pytest
 
 
+@pytest.mark.filterwarnings('ignore::UserWarning')
 def test_add_ignore_existing_doc_id(start_storage):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
@@ -45,6 +46,7 @@ def test_add_ignore_existing_doc_id(start_storage):
     assert len(elastic_doc[:, 'embedding']) == 7
 
 
+@pytest.mark.filterwarnings('ignore::UserWarning')
 def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
     elastic_doc = DocumentArray(
         storage='elasticsearch',

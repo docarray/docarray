@@ -85,12 +85,13 @@ class GetItemMixin:
                         if isinstance(_docs, Document):
                             return getattr(_docs, index[1])
                         return _docs._get_attributes(index[1])
-                elif isinstance(index[0], (slice, Sequence)):
+                elif isinstance(index[0], (slice, Sequence)) or index[0] is Ellipsis:
                     _docs = self[index[0]]
                     _attrs = index[1]
                     if isinstance(_attrs, str):
                         _attrs = (index[1],)
                     return _docs._get_attributes(*_attrs)
+
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self, index))
             elif isinstance(index[0], int):

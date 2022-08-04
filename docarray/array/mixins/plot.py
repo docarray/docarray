@@ -432,7 +432,6 @@ class PlotMixin:
         import matplotlib.pyplot as plt
 
         img_per_row = ceil(sqrt(len(self)))
-        img_per_col = ceil(len(self) / img_per_row)
         img_size = int(canvas_size / img_per_row)
 
         if img_size < min_size:
@@ -440,6 +439,10 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
 
+        if img_per_row == 0:
+            img_per_row = 1
+
+        img_per_col = ceil(len(self) / img_per_row)
         max_num_img = img_per_row * img_per_col
         sprite_img = np.zeros(
             [img_size * img_per_col, img_size * img_per_row, 3], dtype='uint8'
@@ -490,7 +493,7 @@ class PlotMixin:
                 col_id = _idx % img_per_row
 
                 if show_index:
-                    _img = Image.fromarray(_d.tensor)
+                    _img = Image.fromarray(np.asarray(_d.tensor, dtype='uint8'))
                     draw = ImageDraw.Draw(_img)
                     draw.text((0, 0), str(_idx), (255, 255, 255))
                     _d.tensor = np.asarray(_img)

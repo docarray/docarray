@@ -7,6 +7,7 @@ from io import BytesIO
 
 from docarray import DocumentArray
 from docarray.array.mixins.io.pushpull import JINA_CLOUD_CONFIG
+from docarray.helper import random_identity
 
 from tests import random_docs
 
@@ -79,7 +80,8 @@ def test_push(mocker, monkeypatch):
     _mock_post(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
+    name = random_identity()
+    docs.push(name)
 
     assert mock.call_count == 1
 
@@ -90,7 +92,8 @@ def test_push_with_public(mocker, monkeypatch, public):
     _mock_post(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name', public=public)
+    name = random_identity()
+    docs.push(name, public=public)
 
     _, mock_kwargs = mock.call_args_list[0]
 
@@ -145,8 +148,9 @@ def test_api_url_change(mocker, monkeypatch):
     _mock_get(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
-    docs.pull(name='test_name')
+    name = random_identity()
+    docs.push(name)
+    docs.pull(name)
 
     del os.environ['JINA_HUBBLE_REGISTRY']
     _get_cloud_api.cache_clear()
@@ -161,10 +165,9 @@ def test_api_url_change(mocker, monkeypatch):
 
 
 def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     os.environ['JINA_HUB_ROOT'] = str(tmpdir)
 
@@ -177,13 +180,13 @@ def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
     _mock_get(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
-    DocumentArray.pull(name='test_name')
+    name = random_identity()
+    docs.push(name)
+    DocumentArray.pull(name)
 
     del os.environ['JINA_HUB_ROOT']
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
@@ -198,21 +201,20 @@ def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
     'set_env_vars', [{'JINA_AUTH_TOKEN': 'test-auth-token'}], indirect=True
 )
 def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     mock = mocker.Mock()
     _mock_post(mock, monkeypatch)
     _mock_get(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
-    DocumentArray.pull(name='test_name')
+    name = random_identity()
+    docs.push(name)
+    DocumentArray.pull(name)
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
@@ -229,10 +231,9 @@ def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
 def test_api_authorization_header_env_and_config(
     mocker, monkeypatch, tmpdir, set_env_vars
 ):
-    from docarray.array.mixins.io.pushpull import _get_hub_config, _get_auth_token
+    from docarray.array.mixins.io.pushpull import _get_hub_config
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     os.environ['JINA_HUB_ROOT'] = str(tmpdir)
 
@@ -245,13 +246,13 @@ def test_api_authorization_header_env_and_config(
     _mock_get(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
-    DocumentArray.pull(name='test_name')
+    name = random_identity()
+    docs.push(name)
+    DocumentArray.pull(name)
 
     del os.environ['JINA_HUB_ROOT']
 
     _get_hub_config.cache_clear()
-    _get_auth_token.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
