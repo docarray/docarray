@@ -119,8 +119,19 @@ def test_sqlite_del_and_append(index):
 
 
 @pytest.mark.parametrize('index', [1, '1', slice(1, 2), [1]])
-def test_sqlite_del_and_append(index):
-    da = DocumentArray(storage='sqlite')
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_del_and_append(index, storage, config):
+    da = DocumentArray(storage=storage, config=config)
 
     with da:
         da.extend([Document(id=str(i)) for i in range(5)])
