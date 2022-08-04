@@ -119,32 +119,20 @@ class BackendMixin(BaseBackendMixin):
             if isinstance(_docs, Document):
                 self.append(_docs)
 
-    def _init_subindices(self, *args, **kwargs):
-        from docarray import DocumentArray
-
-        self._subindices = {}
-        subindex_configs = kwargs.get('subindex_configs', None)
-        if not subindex_configs:
-            return
-
-        config = asdict(self._config)
-
-        for name, config_subindex in subindex_configs.items():
-
-            config_joined = {**config, **config_subindex}
-
-            if 'table_name' not in config_subindex:
-                subindex_table_name = _sanitize_table_name(
-                    config_joined['table_name'] + 'subindex' + name, raise_warning=False
-                )
-                config_joined['table_name'] = subindex_table_name
-
-            if not config_joined:
-                raise ValueError(f'Config object must be specified for subindex {name}')
-
-            self._subindices[name] = DocumentArray(
-                storage='sqlite', config=config_joined
+    def _ensure_subindex_is_unique(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'table_name' not in config_subindex:
+            subindex_table_name = _sanitize_table_name(
+                config_joined['table_name'] + 'subindex' + subindex_name,
+                raise_warning=False,
             )
+            config_joined['table_name'] = subindex_table_name
+        return config_joined
 
     def __getstate__(self):
         d = dict(self.__dict__)

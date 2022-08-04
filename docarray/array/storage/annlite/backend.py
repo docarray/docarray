@@ -60,32 +60,20 @@ class BackendMixin(BaseBackendMixin):
             )
         return columns
 
-    def _init_subindices(self, *args, **kwargs):
-        from docarray import DocumentArray
+    def _ensure_subindex_is_unique(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
         import os
 
-        self._subindices = {}
-        subindex_configs = kwargs.get('subindex_configs', None)
-        if not subindex_configs:
-            return
-
-        config = asdict(self._config)
-
-        for name, config_subindex in subindex_configs.items():
-
-            config_joined = {**config, **config_subindex}
-
-            if 'data_path' not in config_subindex:
-                config_joined['data_path'] = os.path.join(
-                    config_joined['data_path'], 'subindex_' + name
-                )
-
-            if not config_joined:
-                raise ValueError(f'Config object must be specified for subindex {name}')
-
-            self._subindices[name] = DocumentArray(
-                storage='annlite', config=config_joined
+        if 'data_path' not in config_subindex:
+            config_joined['data_path'] = os.path.join(
+                config_joined['data_path'], 'subindex_' + subindex_name
             )
+        return config_joined
 
     def _init_storage(
         self,

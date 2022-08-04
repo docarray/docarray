@@ -87,3 +87,12 @@ class BackendMixin(BaseBackendMixin):
                     self.append(Document(_docs, copy=True))
                 else:
                     self.append(_docs)
+
+    def _ensure_subindex_is_unique(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        return config_joined  # InMemory has no config, so no clash is possible

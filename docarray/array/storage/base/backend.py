@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections import namedtuple
 from dataclasses import is_dataclass, asdict
 from typing import Dict, Optional, TYPE_CHECKING
@@ -28,10 +28,30 @@ class BaseBackendMixin(ABC):
             config = asdict(self._config) if getattr(self, '_config', None) else dict()
 
             for name, config_subindex in subindex_configs.items():
-
                 config_joined = {**config, **config_subindex}
-
+                config_joined = self._ensure_subindex_is_unique(
+                    config, config_subindex, config_joined, name
+                )
                 self._subindices[name] = self.__class__(config=config_joined)
+
+    @abstractmethod
+    def _ensure_subindex_is_unique(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        """
+        Ensures that the subindex configuration is unique, despite it inheriting unpopulated fields from the root config.
+
+        :param config_root: The configuration of the root index.
+        :param config_subindex: The configuration that was explicitly provided by the user for the subindex.
+        :param config_joined: The configuration that combines root and subindex configs. This is the configuration that will be used for subindex construction.
+        :param subindex_name: Name (access path) of the subindex
+        :return: config_joined that is unique compared to config_root
+        """
+        ...
 
     def _get_storage_infos(self) -> Optional[Dict]:
         if hasattr(self, '_config') and is_dataclass(self._config):
