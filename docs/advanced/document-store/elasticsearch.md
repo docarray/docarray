@@ -1,10 +1,11 @@
 (elasticsearch)=
+
 # Elasticsearch
 
 One can use [Elasticsearch](https://www.elastic.co) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `elasticsearch`. You can install it via `pip install "docarray[elasticsearch]".` 
+This feature requires `elasticsearch`. You can install it via `pip install "docarray[elasticsearch]".`
 ````
 
 ## Usage
@@ -37,7 +38,6 @@ Then
 docker-compose up
 ```
 
-
 ### Create DocumentArray with Elasticsearch backend
 
 Assuming service is started using the default configuration (i.e. server address is `http://localhost:9200`), one can instantiate a DocumentArray with Elasticsearch storage as such:
@@ -69,6 +69,25 @@ da = DocumentArray(
 
 Here is [the official Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#elasticsearch-security-certificates) for you to get certificate, password etc.
 
+In addition, you also can configure how bulk requests is being sent to Elasticsearch via `bulk_config` parameter. Bulk operation is used for several index operations; like (`index` or `delete`). See [the official Documentation](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html) for more details. Notes that only the following parameters are accepted, the others will be ignored
+
+```python
+da = DocumentArray(
+    storage='elasticsearch',
+    config={
+        'hosts': 'https://elastic:PRq7je_hJ4i4auh+Hq+*@localhost:9200',
+        'n_dim': 128,
+        'es_config': {'ca_certs': '/Users/hanxiao/http_ca.crt'},
+        'bulk_config': {
+            'thread_count': 4,
+            'chunk_size': 500,
+            'max_chunk_bytes': 104857600,
+            'queue_size': 4,
+        },
+    },
+)
+```
+
 To access a DocumentArray formerly persisted, one can specify `index_name` and the hosts.
 
 The following example will build a DocumentArray with previously stored data from `old_stuff` on `http://localhost:9200`:
@@ -92,27 +111,27 @@ da2.summary()
 ```
 
 ```text
-              Documents Summary               
-                                              
-  Length                 2000                 
-  Homogenous Documents   True                 
-  Common Attributes      ('id', 'embedding')  
-                                              
-                      Attributes Summary                       
-                                                               
-  Attribute   Data type      #Unique values   Has empty value  
- ───────────────────────────────────────────────────────────── 
-  embedding   ('ndarray',)   1000             False            
-  id          ('str',)       1000             False            
-                                                               
-              Storage Summary               
-                                            
-  Backend            ElasticSearch          
-  Host               http://localhost:9200  
-  Distance           cosine                 
-  Vector dimension   128                    
-  ES config          {}                     
-                                            
+              Documents Summary
+
+  Length                 2000
+  Homogenous Documents   True
+  Common Attributes      ('id', 'embedding')
+
+                      Attributes Summary
+
+  Attribute   Data type      #Unique values   Has empty value
+ ─────────────────────────────────────────────────────────────
+  embedding   ('ndarray',)   1000             False
+  id          ('str',)       1000             False
+
+              Storage Summary
+
+  Backend            ElasticSearch
+  Host               http://localhost:9200
+  Distance           cosine
+  Vector dimension   128
+  ES config          {}
+
 [0.14890289 0.3168339  0.03050802 0.06785086 0.94719299 0.32490566
  ...]
 ```
@@ -120,14 +139,11 @@ da2.summary()
 Other functions behave the same as in-memory DocumentArray.
 
 ### Vector search with filter query
+
 One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
-
-
-Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the document with embedding `[i,i,i]`
+Consider Documents with embeddings `[0,0,0]` up to `[9,9,9] where the document with embedding`[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
 
-
-```python
 from docarray import Document, DocumentArray
 import numpy as np
 
@@ -149,6 +165,7 @@ with da:
 print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
+
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
@@ -177,24 +194,22 @@ This would print:
 ```bash
 Embeddings Nearest Neighbours with "price" at most 7:
 
-	embedding=[7. 7. 7.],	 price=7
-	embedding=[6. 6. 6.],	 price=6
-	embedding=[5. 5. 5.],	 price=5
-	embedding=[4. 4. 4.],	 price=4
+ embedding=[7. 7. 7.],  price=7
+ embedding=[6. 6. 6.],  price=6
+ embedding=[5. 5. 5.],  price=5
+ embedding=[4. 4. 4.],  price=4
  ```
-
 
 ### Search by filter query
 
-One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the 
+One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
 guidelines in [ElasticSearch's Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
 
 Consider you store Documents with a certain tag `price` into ElasticSearch and you want to retrieve all Documents
-with `price`  lower or equal to  some `max_price` value. 
-
+with `price`  lower or equal to  some `max_price` value.
 
 You can index such Documents as follows:
-```python
+
 from docarray import Document, DocumentArray
 
 n_dim = 3
@@ -212,9 +227,10 @@ with da:
 print('\nIndexed Prices:\n')
 for price in da[:, 'tags__price']:
     print(f'\t price={price}')
+
 ```
 
-Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
+Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following
 filter:
 
 ```python
@@ -240,17 +256,17 @@ This would print
 ```
  Returned examples that satisfy condition "price at most 3":
 
-	 price=0
-	 price=1
-	 price=2
-	 price=3
-```
+  price=0
+  price=1
+  price=2
+  price=3
+ ``
 
 ### Search by `.text` field
 
 Text search can be easily leveraged in a `DocumentArray` with `storage='elasticsearch'`.
 To do this text needs to be indexed using the boolean flag `'index_text'` which is set when
-the `DocumentArray` is created  with `config={'index_text': True, ...}`.  
+the `DocumentArray` is created  with `config={'index_text': True, ...}`.
 The following example builds a `DocumentArray` with several documents containing text and searches
 for those that have `pizza` in their text description.
 
@@ -269,7 +285,9 @@ da.extend(
 pizza_docs = da.find('pizza')
 pizza_docs[:, 'text']
 ```
+
 will print
+
 ```text
 ['Pizza restaurant', 'Person eating pizza']
 ```
@@ -277,10 +295,11 @@ will print
 ### Search by `.tags` field
 
 Text can also be indexed when it is part of `tags`.
-This is mostly useful in applications where text data can be split into groups and applications might require 
+This is mostly useful in applications where text data can be split into groups and applications might require
 retrieving items based on a text search in an specific tag.
 
 For example:
+
 ```python
 from docarray import DocumentArray, Document
 
@@ -320,23 +339,18 @@ print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_
 will print
 
 ```text
-searching "cheap" in <price>:
-	 ['cheap but not that cheap', 'quite cheap for what you get!']
-searching "italian" in <food_type>:
-	 ['Italian and Spanish food', 'French and Italian food']
+ earching "cheap" in <price>:
+  ['cheap but not that cheap', 'quite cheap for what you get!']
+ earching "italian" in <food_type>:
+  ['Italian and Spanish food', 'French and Italian food']
 ```
 
-
-
-
-
-````{admonition} Note
-:class: note
-By default, if you don't specify the parameter `index` in the `find` method, the Document attribute `text` will be used 
 for search. If you want to use a specific tags field, make sure to specify it with parameter `index`:
+
 ```python
 results = da.find('cheap', index='price')
 ```
+
 ````
 
 ## Config
