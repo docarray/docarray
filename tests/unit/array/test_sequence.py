@@ -105,20 +105,6 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     del da2
 
 
-@pytest.mark.parametrize('index', [1, '1', slice(1, 2), [1]])
-def test_sqlite_del_and_append(index):
-    da = DocumentArray(storage='sqlite')
-
-    with da:
-        da.extend([Document(id=str(i)) for i in range(5)])
-    with da:
-        del da[1]
-        da.append(Document(id='new'))
-
-    assert da[:, 'id'] == ['0', '2', '3', '4', 'new']
-
-
-@pytest.mark.parametrize('index', [1, '1', slice(1, 2), [1]])
 @pytest.mark.parametrize(
     'storage, config',
     [
@@ -130,13 +116,46 @@ def test_sqlite_del_and_append(index):
         ('sqlite', dict()),
     ],
 )
+@pytest.mark.parametrize(
+    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
+)
 def test_del_and_append(index, storage, config):
     da = DocumentArray(storage=storage, config=config)
 
     with da:
         da.extend([Document(id=str(i)) for i in range(5)])
     with da:
-        da[1] = Document(id='new')
+        del da[index]
+        da.append(Document(id='new'))
+
+    assert da[:, 'id'] == ['0', '2', '3', '4', 'new']
+
+
+@pytest.mark.parametrize(
+    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_set_and_append(index, storage, config):
+    da = DocumentArray(storage=storage, config=config)
+
+    with da:
+        da.extend([Document(id=str(i)) for i in range(5)])
+    with da:
+        da[index] = (
+            Document(id='new')
+            if isinstance(index, int) or isinstance(index, str)
+            else [Document(id='new')]
+        )
         da.append(Document(id='new_new'))
 
     assert da[:, 'id'] == ['0', 'new', '2', '3', '4', 'new_new']
