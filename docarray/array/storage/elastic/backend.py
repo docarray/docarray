@@ -83,10 +83,10 @@ class BackendMixin(BaseBackendMixin):
 
         # Only accept several params for es parallel bulk operation
         accepted_bulk_config = [
-            "thread_count",
-            "chunk_size",
-            "max_chunk_bytes",
-            "queue_size",
+            'thread_count',
+            'chunk_size',
+            'max_chunk_bytes',
+            'queue_size',
         ]
         self._config.bulk_config = {
             k: v
