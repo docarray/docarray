@@ -413,7 +413,7 @@ def embeddings_eq(emb1, emb2):
         ('sqlite', dict()),
     ],
 )
-def test_getset_subindex_annlite(storage, config):
+def test_getset_subindex(storage, config):
 
     n_dim = 3
     subindex_configs = (

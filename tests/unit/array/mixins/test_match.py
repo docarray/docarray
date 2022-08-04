@@ -724,7 +724,7 @@ def embeddings_eq(emb1, emb2):
         ('sqlite', dict()),
     ],
 )
-def test_match_subindex_annlite(storage, config):
+def test_match_subindex(storage, config):
     n_dim = 3
     subindex_configs = (
         {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}

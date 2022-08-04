@@ -118,7 +118,7 @@ def test_del_da_attribute():
         ('sqlite', dict()),
     ],
 )
-def test_del_subindex_annlite(storage, config):
+def test_del_subindex(storage, config):
 
     n_dim = 3
     subindex_configs = (

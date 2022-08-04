@@ -517,7 +517,7 @@ def test_elastic_id_filter(storage, config, limit):
         ('sqlite', dict()),
     ],
 )
-def test_find_subindex_annlite(storage, config):
+def test_find_subindex(storage, config):
     n_dim = 3
     subindex_configs = (
         {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
