@@ -280,6 +280,3 @@ class BackendMixin(BaseBackendMixin):
     def __setstate__(self, state):
         self.__dict__ = state
         self._client = self._build_client()
-
-    # def clear(self):
-    #    self._client.indices.delete(index=self._config.index_name)
