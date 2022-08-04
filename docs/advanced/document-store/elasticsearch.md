@@ -368,7 +368,11 @@ The following configs can be set:
 | `m`               | Similarity metric in Elasticsearch                                                                    | `None`, defaults to the default value in ElasticSearch* |
 | `index_text`      | Boolean flag indicating whether to index `.text` or not                                               | False                                                   |
 | `tag_indices`     | List of tags to index                                                                                 | False                                                   |
-| `batch_size`      | Batch size used to handle storage refreshes/updates                                                   | 64                                                      |
+| `bulk_config`     | Parallel bulk configuration used to handle storage refreshes/updates                                  | None                                                    |
+
+```{tip}
+You can read more about parallel bulk config and their default values [here](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html)
+```
 
 ```{tip}
 You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
