@@ -155,6 +155,32 @@ def embeddings_eq(emb1, emb2):
         ('sqlite', dict()),
     ],
 )
+@pytest.mark.parametrize(
+    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
+)
+def test_del_and_append(index, storage, config):
+    da = DocumentArray(storage=storage, config=config)
+
+    with da:
+        da.extend([Document(id=str(i)) for i in range(5)])
+    with da:
+        del da[index]
+        da.append(Document(id='new'))
+
+    assert da[:, 'id'] == ['0', '2', '3', '4', 'new']
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
 def test_append_subindex(storage, config):
 
     n_dim = 3
@@ -183,3 +209,33 @@ def test_append_subindex(storage, config):
 
         for i in range(2):
             assert embeddings_eq(da._subindices['@c'][f'{i}'].embedding, [i, i])
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+@pytest.mark.parametrize(
+    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
+)
+def test_set_and_append(index, storage, config):
+    da = DocumentArray(storage=storage, config=config)
+
+    with da:
+        da.extend([Document(id=str(i)) for i in range(5)])
+    with da:
+        da[index] = (
+            Document(id='new')
+            if isinstance(index, int) or isinstance(index, str)
+            else [Document(id='new')]
+        )
+        da.append(Document(id='new_new'))
+
+    assert da[:, 'id'] == ['0', 'new', '2', '3', '4', 'new_new']
