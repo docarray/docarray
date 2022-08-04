@@ -40,6 +40,7 @@ class ElasticConfig:
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
     tag_indices: List[str] = field(default_factory=list)
+    batch_size: int = 64
     bulk_config: Dict[str, Any] = field(default_factory=dict)
     ef_construction: Optional[int] = None
     m: Optional[int] = None
@@ -88,11 +89,16 @@ class BackendMixin(BaseBackendMixin):
             'max_chunk_bytes',
             'queue_size',
         ]
-        self._config.bulk_config = {
-            k: v
-            for k, v in self._config.bulk_config.items()
-            if k in accepted_bulk_config
-        }
+        # for backward compatibility
+        self._config.bulk_config['chunk_size'] = self._config.batch_size
+
+        self._config.bulk_config.update(
+            {
+                k: v
+                for k, v in self._config.bulk_config.items()
+                if k in accepted_bulk_config
+            }
+        )
 
         self._config.columns = self._normalize_columns(self._config.columns)
 

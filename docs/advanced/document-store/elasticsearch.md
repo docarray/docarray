@@ -368,6 +368,7 @@ The following configs can be set:
 | `m`               | Similarity metric in Elasticsearch                                                                    | `None`, defaults to the default value in ElasticSearch* |
 | `index_text`      | Boolean flag indicating whether to index `.text` or not                                               | False                                                   |
 | `tag_indices`     | List of tags to index                                                                                 | False                                                   |
+| `batch_size`      | Batch size used to handle storage refreshes/updates                                                   | 64                                                      |
 | `bulk_config`     | Parallel bulk configuration used to handle storage refreshes/updates                                  | None                                                    |
 
 ```{tip}
