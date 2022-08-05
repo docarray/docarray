@@ -29,13 +29,13 @@ class BaseBackendMixin(ABC):
 
             for name, config_subindex in subindex_configs.items():
                 config_joined = {**config, **config_subindex}
-                config_joined = self._ensure_subindex_is_unique(
+                config_joined = self._ensure_unique_config(
                     config, config_subindex, config_joined, name
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
 
     @abstractmethod
-    def _ensure_subindex_is_unique(
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,

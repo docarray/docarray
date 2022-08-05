@@ -49,6 +49,31 @@ class WeaviateConfig:
     distance: Optional[str] = None
 
 
+_banned_classname_chars = [
+    '[',
+    ' ',
+    '"',
+    '*',
+    '\\',
+    '<',
+    '|',
+    ',',
+    '>',
+    '/',
+    '?',
+    ']',
+    '@',
+    '.',
+]
+
+
+def _sanitize_class_name(name):
+    new_name = name
+    for char in _banned_classname_chars:
+        new_name = new_name.replace(char, '')
+    return new_name
+
+
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
@@ -115,29 +140,7 @@ class BackendMixin(BaseBackendMixin):
             if isinstance(_docs, Document):
                 self.append(_docs)
 
-    def _sanitize_class_name(self, name):
-        banned_chars = [
-            '[',
-            ' ',
-            '"',
-            '*',
-            '\\',
-            '<',
-            '|',
-            ',',
-            '>',
-            '/',
-            '?',
-            ']',
-            '@',
-            '.',
-        ]
-        new_name = name
-        for char in banned_chars:
-            new_name = new_name.replace(char, '')
-        return new_name
-
-    def _ensure_subindex_is_unique(
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,
@@ -145,7 +148,7 @@ class BackendMixin(BaseBackendMixin):
         subindex_name: str,
     ) -> dict:
         if 'name' not in config_subindex:
-            unique_name = self._sanitize_class_name(
+            unique_name = _sanitize_class_name(
                 config_joined['name'] + 'subindex' + subindex_name
             )
             config_joined['name'] = unique_name

@@ -88,11 +88,18 @@ class BackendMixin(BaseBackendMixin):
                 else:
                     self.append(_docs)
 
-    def _ensure_subindex_is_unique(
+    def _init_subindices(self, *args, **kwargs):
+        self._subindices = {}
+        subindex_configs = kwargs.get('subindex_configs', None)
+        if subindex_configs:
+            for name, config_subindex in subindex_configs.items():
+                self._subindices[name] = self.__class__()
+
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,
         config_joined: dict,
         subindex_name: str,
     ) -> dict:
-        return config_joined  # InMemory has no config, so no clash is possible
+        return config_joined

@@ -519,9 +519,12 @@ def test_elastic_id_filter(storage, config, limit):
 )
 def test_find_subindex(storage, config):
     n_dim = 3
-    subindex_configs = (
-        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
-    )
+    subindex_configs = {'@c': None}
+    if storage == 'sqlite':
+        subindex_configs['@c'] = dict()
+    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch']:
+        subindex_configs['@c'] = {'n_dim': 2}
+
     da = DocumentArray(
         storage=storage,
         config=config,

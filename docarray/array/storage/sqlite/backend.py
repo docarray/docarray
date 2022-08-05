@@ -119,7 +119,7 @@ class BackendMixin(BaseBackendMixin):
             if isinstance(_docs, Document):
                 self.append(_docs)
 
-    def _ensure_subindex_is_unique(
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,

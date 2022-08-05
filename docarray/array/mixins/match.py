@@ -71,11 +71,6 @@ class MatchMixin:
         for d in self:
             d.matches.clear()
 
-        if on is not None:
-            find_kwargs = {'on': on}
-        else:
-            find_kwargs = {}
-
         match_docs = darray.find(
             self,
             metric=metric,
@@ -89,7 +84,8 @@ class MatchMixin:
             use_scipy=use_scipy,
             device=device,
             num_worker=num_worker,
-            **find_kwargs,
+            on=on,
+            **kwargs,
         )
 
         if not isinstance(match_docs, list):

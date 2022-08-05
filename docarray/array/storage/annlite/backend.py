@@ -60,7 +60,7 @@ class BackendMixin(BaseBackendMixin):
             )
         return columns
 
-    def _ensure_subindex_is_unique(
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,
