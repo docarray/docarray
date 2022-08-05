@@ -557,7 +557,18 @@ def test_find_subindex(storage, config):
         assert d.id.endswith('_0') or d.id.endswith('_1')
 
 
-def test_find_subindex_annlite_multimodal():
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_find_subindex_multimodal(storage, config):
     from docarray import dataclass
     from docarray.typing import Text
 
@@ -568,13 +579,19 @@ def test_find_subindex_annlite_multimodal():
         my_third_text: Text
 
     n_dim = 3
+    subindex_configs = {
+        '@.[my_text, my_other_text]': {'n_dim': 2},
+        '@.[my_third_text]': {'n_dim': 2},
+    }
+
+    if storage in ['sqlite', 'memory']:
+        subindex_configs['@.[my_text, my_other_text]'] = dict()
+        subindex_configs['@.[my_third_text]'] = dict()
+
     da = DocumentArray(
-        storage='annlite',
-        config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        subindex_configs={
-            '@.[my_text, my_other_text]': {'n_dim': 2},
-            '@.[my_third_text]': {'n_dim': 2},
-        },
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
     )
 
     num_docs = 3
@@ -592,24 +609,31 @@ def test_find_subindex_annlite_multimodal():
         d.id = str(i)
         d.embedding = i * np.ones(n_dim)
         d.my_text.id = str(i) + '_0'
-        d.my_text.embedding = [i, i]
+        d.my_text.embedding = np.array([i, i])
         d.my_other_text.id = str(i) + '_1'
-        d.my_other_text.embedding = [i, i]
+        d.my_other_text.embedding = np.array([i, i])
         d.my_third_text.id = str(i) + '_2'
-        d.my_third_text.embedding = [3 * i, 3 * i]
+        d.my_third_text.embedding = np.array([3 * i, 3 * i])
 
     with da:
         da.extend(docs_to_add)
 
-    closest_docs = da.find(query=np.array([3, 3]), on='@.[my_text, my_other_text]')
-
-    assert (closest_docs[0].embedding == [2, 2]).all()
+    if storage in ['sqlite', 'memory']:
+        closest_docs = da.find(
+            query=np.array([3, 3]), on='@.[my_text, my_other_text]', metric='euclidean'
+        )
+    else:
+        closest_docs = da.find(query=np.array([3, 3]), on='@.[my_text, my_other_text]')
+    assert (closest_docs[0].embedding == np.array([2, 2])).all()
     for d in closest_docs:
         assert d.id.endswith('_0') or d.id.endswith('_1')
 
-    closest_docs = da.find(query=np.array([3, 3]), on='@.[my_third_text]')
-    print(closest_docs.embeddings)
-    print(closest_docs[:, 'id'])
-    assert (closest_docs[0].embedding == [3, 3]).all()
+    if storage in ['sqlite', 'memory']:
+        closest_docs = da.find(
+            query=np.array([3, 3]), on='@.[my_third_text]', metric='euclidean'
+        )
+    else:
+        closest_docs = da.find(query=np.array([3, 3]), on='@.[my_third_text]')
+    assert (closest_docs[0].embedding == np.array([3, 3])).all()
     for d in closest_docs:
         assert d.id.endswith('_2')
