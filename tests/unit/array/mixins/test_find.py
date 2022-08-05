@@ -565,18 +565,26 @@ def test_find_subindex_annlite_multimodal():
     class MMDoc:
         my_text: Text
         my_other_text: Text
+        my_third_text: Text
 
     n_dim = 3
     da = DocumentArray(
         storage='annlite',
         config={'n_dim': n_dim, 'metric': 'Euclidean'},
-        subindex_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
+        subindex_configs={
+            '@.[my_text, my_other_text]': {'n_dim': 2},
+            '@.[my_third_text]': {'n_dim': 2},
+        },
     )
 
     num_docs = 3
     docs_to_add = DocumentArray(
         [
-            Document(MMDoc(my_text='hello', my_other_text='world'))
+            Document(
+                MMDoc(
+                    my_text='hello', my_other_text='world', my_third_text='hello again'
+                )
+            )
             for _ in range(num_docs)
         ]
     )
@@ -587,6 +595,8 @@ def test_find_subindex_annlite_multimodal():
         d.my_text.embedding = [i, i]
         d.my_other_text.id = str(i) + '_1'
         d.my_other_text.embedding = [i, i]
+        d.my_third_text.id = str(i) + '_2'
+        d.my_third_text.embedding = [3 * i, 3 * i]
 
     with da:
         da.extend(docs_to_add)
@@ -596,3 +606,10 @@ def test_find_subindex_annlite_multimodal():
     assert (closest_docs[0].embedding == [2, 2]).all()
     for d in closest_docs:
         assert d.id.endswith('_0') or d.id.endswith('_1')
+
+    closest_docs = da.find(query=np.array([3, 3]), on='@.[my_third_text]')
+    print(closest_docs.embeddings)
+    print(closest_docs[:, 'id'])
+    assert (closest_docs[0].embedding == [3, 3]).all()
+    for d in closest_docs:
+        assert d.id.endswith('_2')
