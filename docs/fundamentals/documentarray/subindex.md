@@ -29,7 +29,7 @@ from docarray.typing import Image, Text
 
 
 @dataclass
-class MyDocument(Document):
+class MyDocument:
     image: Image
     paragraph: Text
 
@@ -81,6 +81,8 @@ This means that you can insert, extend, delete etc. it like any other DocumentAr
 
 ````{tab} Subindex with dataclass modalities
 ```python
+import numpy as np
+
 # construct DocumentArry with subindices
 da = DocumentArray(
     config={'n_dim': 256},
@@ -92,7 +94,7 @@ _docs = [
     Document(MyDocument(image='image.png', paragraph='hello world')) for _ in range(10)
 ]
 for d in _docs:
-    d.image.embedding = np.random.rand(128)
+    d.image.embedding = np.random.rand(512)
     d.paragraph.embedding = np.random.rand(128)
 with da:
     da.extend(_docs)
@@ -100,6 +102,8 @@ with da:
 ````
 ````{tab} Subindex with chunks
 ```python
+import numpy as np
+
 # construct DocumentArry with subindices
 da = DocumentArray(
     config={'n_dim': 256},
@@ -115,7 +119,7 @@ _docs = [
     for _ in range(10)
 ]
 for d in _docs:
-    d.embedding = np.random.rand(128)
+    d.embedding = np.random.rand(256)
     d.chunks[0].embedding = np.random.rand(128)
 with da:
     da.extend(_docs)
@@ -129,7 +133,7 @@ You can search through a subindex using the `on=` keyword in {meth}`~docarray.ar
 ````{tab} Subindex with dataclass modalities
 ```python
 # find best matching images using .find()
-top_image_matches = da.find(query=np.random.rand(128), on='@.[image]')
+top_image_matches = da.find(query=np.random.rand(512), on='@.[image]')
 # find best matching paragraphs using .match()
 Document(embedding=np.random.rand(128)).match(da, on='@.[paragraph]')
 ```
@@ -148,7 +152,7 @@ a match, you can retrieve them using `parent_id`:
 
 ````{tab} Subindex with dataclass modalities
 ```python
-top_image_matches = da.find(query=np.random.rand(128), on='@.[image]')
+top_image_matches = da.find(query=np.random.rand(512), on='@.[image]')
 top_level_matches = da[top_image_matches[:, 'parent_id']]
 ```
 ````
