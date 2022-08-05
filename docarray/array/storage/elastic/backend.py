@@ -159,10 +159,21 @@ class BackendMixin(BaseBackendMixin):
         client.indices.refresh(index=self._config.index_name)
         return client
 
-    def _send_requests(self, request) -> List[Dict]:
+    def _send_requests(self, request, **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
+
+        # for backward compatibility
+        if 'chunk_size' not in kwargs:
+            kwargs['chunk_size'] = self._config.batch_size
+
         accumulated_info = []
-        for success, info in parallel_bulk(self._client, request, raise_on_error=False):
+        for success, info in parallel_bulk(
+            self._client,
+            request,
+            raise_on_error=False,
+            raise_on_exception=False,
+            **kwargs,
+        ):
             if not success:
                 warnings.warn(str(info))
             else:
