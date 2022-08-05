@@ -119,9 +119,9 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
-### Bulk request configuration
+### Bulk request customization
 
-You can configure how bulk requests is being sent to Elasticsearch when adding documents by adding additional `kwargs` when adding documents. Bulk operation is used for several index operations; like (`index` or `delete`). See [the official Documentation](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html) for more details. Notes that only the following parameters are accepted, the others will be ignored
+You can customize how bulk requests is being sent to Elasticsearch when adding documents by adding additional `kwargs` on `extend` method call. See [the official Documentation](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html) for more details. See the following code for example:
 
 ```python
 from docarray import Document, DocumentArray

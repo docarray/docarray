@@ -90,9 +90,11 @@ def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
-@pytest.mark.parametrize("assert_config_propagation", [True, False])
-def test_succes_add_bulk_config(monkeypatch, start_storage, assert_config_propagation):
-    bulk_config = {
+@pytest.mark.parametrize("assert_customization_propagation", [True, False])
+def test_succes_add_bulk_custom_params(
+    monkeypatch, start_storage, assert_customization_propagation
+):
+    bulk_custom_params = {
         'thread_count': 4,
         'chunk_size': 100,
         'max_chunk_bytes': 104857600,
@@ -100,11 +102,14 @@ def test_succes_add_bulk_config(monkeypatch, start_storage, assert_config_propag
     }
     nrof_docs = 100
 
-    # TODO still blocked by `_update_offset2ids_meta` function which
-    # not receiving bulk config, ideally we should assert that this
-    # function receive the propagated kwargs properly
     def _mock_send_requests(requests, **kwargs):
-        # assert kwargs==bulk_config
+        # Currently only self._send_requests from extend method which
+        # receive customization
+        if (
+            not requests[0]['_index'].startswith('offset2id__')
+            and requests[0]['_op_type'] == 'index'
+        ):
+            assert kwargs == bulk_custom_params
 
         return [{'index': {'_id': f'r{i}'}} for i in range(nrof_docs)]
 
@@ -118,11 +123,11 @@ def test_succes_add_bulk_config(monkeypatch, start_storage, assert_config_propag
                 ('test_double', 'double'),
             ],
             'distance': 'l2_norm',
-            'index_name': 'test_data_type',
+            'index_name': 'test_succes_add_bulk_custom_params',
         },
     )
 
-    if assert_config_propagation:
+    if assert_customization_propagation:
         monkeypatch.setattr(elastic_doc, '_send_requests', _mock_send_requests)
 
     with elastic_doc:
@@ -131,5 +136,5 @@ def test_succes_add_bulk_config(monkeypatch, start_storage, assert_config_propag
                 Document(id=f'r{i}', embedding=np.ones((3,)) * i)
                 for i in range(nrof_docs)
             ],
-            **bulk_config,
+            **bulk_custom_params,
         )

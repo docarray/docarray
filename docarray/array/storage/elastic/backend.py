@@ -161,21 +161,10 @@ class BackendMixin(BaseBackendMixin):
 
     def _send_requests(self, request, **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
-        bulk_config = {}
 
         # for backward compatibility
         if 'chunk_size' not in kwargs:
-            bulk_config['chunk_size'] = self._config.batch_size
-
-        # Only accept several params for es parallel bulk operation
-        accepted_config = [
-            'thread_count',
-            'chunk_size',
-            'max_chunk_bytes',
-            'queue_size',
-        ]
-
-        bulk_config.update({k: v for k, v in kwargs.items() if k in accepted_config})
+            kwargs['chunk_size'] = self._config.batch_size
 
         accumulated_info = []
         for success, info in parallel_bulk(
@@ -183,7 +172,7 @@ class BackendMixin(BaseBackendMixin):
             request,
             raise_on_error=False,
             raise_on_exception=False,
-            **bulk_config,
+            **kwargs,
         ):
             if not success:
                 warnings.warn(str(info))
