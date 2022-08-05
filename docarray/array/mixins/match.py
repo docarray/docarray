@@ -61,7 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-        :param on: specifies a subindex to search on. If set, then the returned DocumentArray will be retrieved from the given subindex. Needs to be supported by a given Document Store.
+        :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
         """
 
