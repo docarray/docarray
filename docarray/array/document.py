@@ -78,7 +78,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         cls,
         _docs: Optional['DocumentArraySourceType'] = None,
         copy: bool = False,
-        subindex_configs: Optional[Dict[str, 'NoneType']] = None,
+        subindex_configs: Optional[Dict[str, 'None']] = None,
     ) -> 'DocumentArrayInMemory':
         """Create an in-memory DocumentArray object."""
         ...
