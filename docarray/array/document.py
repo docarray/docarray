@@ -1,4 +1,3 @@
-from types import NoneType
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
 from docarray.array.base import BaseDocumentArray
@@ -79,7 +78,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         cls,
         _docs: Optional['DocumentArraySourceType'] = None,
         copy: bool = False,
-        subindex_configs: Optional[Dict[str, NoneType]] = None,
+        subindex_configs: Optional[Dict[str, 'NoneType']] = None,
     ) -> 'DocumentArrayInMemory':
         """Create an in-memory DocumentArray object."""
         ...
