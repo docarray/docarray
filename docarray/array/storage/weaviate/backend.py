@@ -115,6 +115,28 @@ class BackendMixin(BaseBackendMixin):
             if isinstance(_docs, Document):
                 self.append(_docs)
 
+    def _sanitize_class_name(self, name):
+        banned_chars = [
+            '[',
+            ' ',
+            '"',
+            '*',
+            '\\',
+            '<',
+            '|',
+            ',',
+            '>',
+            '/',
+            '?',
+            ']',
+            '@',
+            '.',
+        ]
+        new_name = name
+        for char in banned_chars:
+            new_name = new_name.replace(char, '')
+        return new_name
+
     def _ensure_subindex_is_unique(
         self,
         config_root: dict,
@@ -123,9 +145,10 @@ class BackendMixin(BaseBackendMixin):
         subindex_name: str,
     ) -> dict:
         if 'name' not in config_subindex:
-            config_joined['name'] = (
-                config_joined['name'] + 'subindex' + subindex_name[1:]
-            )  # weaviate names cannot contain '@'
+            unique_name = self._sanitize_class_name(
+                config_joined['name'] + 'subindex' + subindex_name
+            )
+            config_joined['name'] = unique_name
         return config_joined
 
     def _get_weaviate_class_name(self) -> str:

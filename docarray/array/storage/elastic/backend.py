@@ -1,4 +1,5 @@
 import copy
+import re
 import uuid
 from dataclasses import dataclass, field, asdict
 import warnings
@@ -99,6 +100,13 @@ class BackendMixin(BaseBackendMixin):
             if isinstance(_docs, Document):
                 self.append(_docs)
 
+    def _sanitize_index_name(self, name):
+        banned_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
+        new_name = name
+        for char in banned_chars:
+            new_name = new_name.replace(char, '')
+        return new_name
+
     def _ensure_subindex_is_unique(
         self,
         config_root: dict,
@@ -107,9 +115,10 @@ class BackendMixin(BaseBackendMixin):
         subindex_name: str,
     ) -> dict:
         if 'index_name' not in config_subindex:
-            config_joined['index_name'] = (
+            unique_index_name = self._sanitize_index_name(
                 config_joined['index_name'] + '_subindex_' + subindex_name
             )
+            config_joined['index_name'] = unique_index_name
         return config_joined
 
     def _build_offset2id_index(self):
