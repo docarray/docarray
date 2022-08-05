@@ -65,7 +65,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __repr__(self):
         return f'<DocumentArray[Qdrant] (length={len(self)}) at {id(self)}>'
 
-    def _extend(self, docs: Iterable['Document']):
+    def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
         self._upload_batch(docs)
         self._offset2ids.extend([doc.id for doc in docs])

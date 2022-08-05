@@ -23,15 +23,15 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         self._set_doc_by_id(value.id, value)
         self._offset2ids.insert(index, value.id)
 
-    def append(self, value: 'Document'):
+    def append(self, value: 'Document', **kwargs):
         """Append `doc` to the end of the array.
 
         :param value: The doc needs to be appended.
         """
-        self._append(value)
+        self._append(value, **kwargs)
         self._update_subindices_append_extend(value)
 
-    def _append(self, value):
+    def _append(self, value, **kwargs):
         self._set_doc_by_id(value.id, value)
         self._offset2ids.append(value.id)
 
@@ -61,10 +61,10 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         """
         return len(self) > 0
 
-    def extend(self, values: Iterable['Document']) -> None:
-        self._extend(values)
+    def extend(self, values: Iterable['Document'], **kwargs) -> None:
+        self._extend(values, **kwargs)
         self._update_subindices_append_extend(values)
 
-    def _extend(self, values):
+    def _extend(self, values, **kwargs):
         for value in values:
-            self._append(value)
+            self._append(value, **kwargs)

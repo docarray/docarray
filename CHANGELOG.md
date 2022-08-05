@@ -122,6 +122,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2936,4 +2937,23 @@
 ### 🍹 Other Improvements
 
  - [[```505d7767```](https://github.com/jina-ai/docarray/commit/505d7767eec23e47aba25d0908285f94c413b4d9)] __-__ __version__: the next version will be 0.14.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-8></a>
+## Release Note (`0.14.8`)
+
+> Release time: 2022-08-05 09:17:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```9f939e6f```](https://github.com/jina-ai/docarray/commit/9f939e6f15cb30f8af2a27a22398e09027aea1d2)] __-__ __elastic__: allow kwargs to be pass at extend (#473) (*Alvin Prayuda*)
+
+### 🍹 Other Improvements
+
+ - [[```67f60cd7```](https://github.com/jina-ai/docarray/commit/67f60cd7afe14e6f1f5f949c8f301df6dc4bdfc2)] __-__ __version__: the next version will be 0.14.8 (*Jina Dev Bot*)
 
