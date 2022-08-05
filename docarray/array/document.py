@@ -1,3 +1,4 @@
+from types import NoneType
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
 from docarray.array.base import BaseDocumentArray
@@ -75,7 +76,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
     @overload
     def __new__(
-        cls, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        copy: bool = False,
+        subindex_configs: Optional[Dict[str, NoneType]] = None,
     ) -> 'DocumentArrayInMemory':
         """Create an in-memory DocumentArray object."""
         ...
@@ -86,6 +90,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'sqlite',
         config: Optional[Union['SqliteConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArraySqlite':
         """Create a SQLite-powered DocumentArray object."""
         ...
@@ -96,6 +101,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'weaviate',
         config: Optional[Union['WeaviateConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayWeaviate':
         """Create a Weaviate-powered DocumentArray object."""
         ...
@@ -106,6 +112,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'annlite',
         config: Optional[Union['AnnliteConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayAnnlite':
         """Create a AnnLite-powered DocumentArray object."""
         ...
@@ -116,6 +123,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'elasticsearch',
         config: Optional[Union['ElasticConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayElastic':
         """Create a Elastic-powered DocumentArray object."""
         ...
