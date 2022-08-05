@@ -1,20 +1,15 @@
 (subindex)=
 # Subindices
 
-Subindices offer to possibility to efficiently search through nested documents.
+Subindices offer to possibility to efficiently search through multimodal or nested documents.
 
-Each subindex indexes one nesting level, such as `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`, and makes it directly searchable.
+Each subindex indexes and stores one nesting level, such as `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`, and makes it directly searchable.
 
 
 ```{admonition} Document stores
 :class: hint
 
-Subindices are available for all DocumentArray types, but are most useful in combination with a {ref}`Document Store <doc-store>`.
-
-When used with persisted data, subindices offer you the possiblity to efficiently search through a specific nesting level without loading your
-DocumentArray into memory.
-
-With the default in-memory DocumentArray subindices can still lead to a performance gain, but come at the cost of higher memory consumption.
+Subindices are available for all DocumentArray types, including in-memory, but are most useful in combination with a {ref}`Document Store <doc-store>`.
 ```
 
 ## Construct subindices

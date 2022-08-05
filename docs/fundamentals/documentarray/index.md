@@ -41,6 +41,5 @@ visualization
 post-external
 embedding
 matching
-subindex
 evaluation
 ```
