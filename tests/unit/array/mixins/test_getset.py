@@ -4,6 +4,7 @@ import scipy.sparse
 import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix
+from torch import nn
 
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
@@ -482,3 +483,41 @@ def test_getset_subindex(storage, config):
 
     assert embeddings_eq(da._subindices['@c']['c_01'].embedding, [-1, -1])
     assert embeddings_eq(da._subindices['@c']['c_11'].embedding, [-2, -2])
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_set_on_subindex(storage, config):
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        [Document(chunks=[Document() for j in range(3)]) for i in range(5)],
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da['@c'].embeddings = np.random.random((5 * 3, 128))
+    assert da['@c'].embeddings.shape == (5 * 3, 128)
+    assert da._subindices['@c'].embeddings.shape == (5 * 3, 128)
+
+    with da:
+        da['@c'].texts = ['hello' for _ in range(5 * 3)]
+    assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
+    assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
+
+    matches = da.find(query=np.random.random(128), on='@c')
+    assert matches
+    assert matches[0].embedding.shape == (128,)
