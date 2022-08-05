@@ -147,10 +147,10 @@ with da:
     )
 ```
 
-```text
+````{admonition} Note
 :class: note
 `batch_size` configuration will be overriden by `chunk_size` kwargs if provided
-```
+````
 
 ```{tip}
 You can read more about parallel bulk config and their default values [here](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html)
