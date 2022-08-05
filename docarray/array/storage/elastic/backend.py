@@ -41,7 +41,6 @@ class ElasticConfig:
     index_text: bool = False
     tag_indices: List[str] = field(default_factory=list)
     batch_size: int = 64
-    bulk_config: Dict[str, Any] = field(default_factory=dict)
     ef_construction: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[List[Tuple[str, str]]] = None
@@ -81,24 +80,6 @@ class BackendMixin(BaseBackendMixin):
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
-
-        # Only accept several params for es parallel bulk operation
-        accepted_bulk_config = [
-            'thread_count',
-            'chunk_size',
-            'max_chunk_bytes',
-            'queue_size',
-        ]
-        # for backward compatibility
-        self._config.bulk_config['chunk_size'] = self._config.batch_size
-
-        self._config.bulk_config.update(
-            {
-                k: v
-                for k, v in self._config.bulk_config.items()
-                if k in accepted_bulk_config
-            }
-        )
 
         self._config.columns = self._normalize_columns(self._config.columns)
 
@@ -178,15 +159,31 @@ class BackendMixin(BaseBackendMixin):
         client.indices.refresh(index=self._config.index_name)
         return client
 
-    def _send_requests(self, request) -> List[Dict]:
+    def _send_requests(self, request, **kwargs) -> List[Dict]:
         """Send bulk request to Elastic and gather the successful info"""
+        bulk_config = {}
+
+        # for backward compatibility
+        if 'chunk_size' not in kwargs:
+            bulk_config['chunk_size'] = self._config.batch_size
+
+        # Only accept several params for es parallel bulk operation
+        accepted_config = [
+            'thread_count',
+            'chunk_size',
+            'max_chunk_bytes',
+            'queue_size',
+        ]
+
+        bulk_config.update({k: v for k, v in kwargs.items() if k in accepted_config})
+
         accumulated_info = []
         for success, info in parallel_bulk(
             self._client,
             request,
             raise_on_error=False,
             raise_on_exception=False,
-            **self._config.bulk_config,
+            **bulk_config,
         ):
             if not success:
                 warnings.warn(str(info))

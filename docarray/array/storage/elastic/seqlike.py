@@ -80,9 +80,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         return parsed_ids
 
-    def _upload_batch(self, docs: Iterable['Document']) -> List[int]:
+    def _upload_batch(self, docs: Iterable['Document'], **kwargs) -> List[int]:
         requests = [self._document_to_elastic(doc) for doc in docs]
-        accumulated_info = self._send_requests(requests)
+        accumulated_info = self._send_requests(requests, **kwargs)
         self._refresh(self._config.index_name)
 
         successful_ids = self._parse_index_ids_from_bulk_info(accumulated_info)
@@ -91,9 +91,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         return successful_ids['index']
 
-    def extend(self, docs: Iterable['Document']):
+    def extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
-        successful_indexed_ids = self._upload_batch(docs)
+        successful_indexed_ids = self._upload_batch(docs, **kwargs)
         self._offset2ids.extend(
             [_id for _id in successful_indexed_ids if _id not in self._offset2ids.ids]
         )

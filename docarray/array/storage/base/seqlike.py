@@ -50,6 +50,6 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         """
         return len(self) > 0
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def extend(self, values: Iterable['Document'], **kwargs) -> None:
         for value in values:
             self.append(value)

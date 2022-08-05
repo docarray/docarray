@@ -69,25 +69,6 @@ da = DocumentArray(
 
 Here is [the official Documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#elasticsearch-security-certificates) for you to get certificate, password etc.
 
-In addition, you also can configure how bulk requests is being sent to Elasticsearch via `bulk_config` parameter. Bulk operation is used for several index operations; like (`index` or `delete`). See [the official Documentation](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html) for more details. Notes that only the following parameters are accepted, the others will be ignored
-
-```python
-da = DocumentArray(
-    storage='elasticsearch',
-    config={
-        'hosts': 'https://elastic:PRq7je_hJ4i4auh+Hq+*@localhost:9200',
-        'n_dim': 128,
-        'es_config': {'ca_certs': '/Users/hanxiao/http_ca.crt'},
-        'bulk_config': {
-            'thread_count': 4,
-            'chunk_size': 500,
-            'max_chunk_bytes': 104857600,
-            'queue_size': 4,
-        },
-    },
-)
-```
-
 To access a DocumentArray formerly persisted, one can specify `index_name` and the hosts.
 
 The following example will build a DocumentArray with previously stored data from `old_stuff` on `http://localhost:9200`:
@@ -138,12 +119,51 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
+### Bulk request configuration
+
+You can configure how bulk requests is being sent to Elasticsearch when adding documents by adding additional `kwargs` when adding documents. Bulk operation is used for several index operations; like (`index` or `delete`). See [the official Documentation](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html) for more details. Notes that only the following parameters are accepted, the others will be ignored
+
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='elasticsearch',
+    config={'n_dim': 3, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ],
+        thread_count=4,
+        chunk_size=500,
+        max_chunk_bytes=104857600,
+        queue_size=4,
+    )
+```
+
+```text
+:class: note
+`batch_size` configuration will be overriden by `chunk_size` kwargs if provided
+```
+
+```{tip}
+You can read more about parallel bulk config and their default values [here](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html)
+```
+
 ### Vector search with filter query
 
 One can perform Approximate Nearest Neighbor Search and pre-filter results using a filter query that follows [ElasticSearch's DSL](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html).
-Consider Documents with embeddings `[0,0,0]` up to `[9,9,9] where the document with embedding`[i,i,i]`
+
+Consider Documents with embeddings `[0,0,0]` up to `[9,9,9]` where the document with embedding `[i,i,i]`
 has as tag `price` with value `i`. We can create such example with the following code:
 
+```python
 from docarray import Document, DocumentArray
 import numpy as np
 
@@ -165,7 +185,6 @@ with da:
 print('\nIndexed Prices:\n')
 for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
-
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
@@ -210,6 +229,7 @@ with `price`  lower or equal to  some `max_price` value.
 
 You can index such Documents as follows:
 
+```python
 from docarray import Document, DocumentArray
 
 n_dim = 3
@@ -227,7 +247,6 @@ with da:
 print('\nIndexed Prices:\n')
 for price in da[:, 'tags__price']:
     print(f'\t price={price}')
-
 ```
 
 Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following
@@ -260,7 +279,7 @@ This would print
   price=1
   price=2
   price=3
- ``
+```
 
 ### Search by `.text` field
 
@@ -339,18 +358,19 @@ print('searching "italian" in <food_type>:\n\t', results_italian[:, 'tags__food_
 will print
 
 ```text
- earching "cheap" in <price>:
+searching "cheap" in <price>:
   ['cheap but not that cheap', 'quite cheap for what you get!']
- earching "italian" in <food_type>:
+searching "italian" in <food_type>:
   ['Italian and Spanish food', 'French and Italian food']
 ```
 
+````{admonition} Note
+:class: note
+By default, if you don't specify the parameter `index` in the `find` method, the Document attribute `text` will be used
 for search. If you want to use a specific tags field, make sure to specify it with parameter `index`:
-
 ```python
 results = da.find('cheap', index='price')
 ```
-
 ````
 
 ## Config
@@ -369,11 +389,6 @@ The following configs can be set:
 | `index_text`      | Boolean flag indicating whether to index `.text` or not                                               | False                                                   |
 | `tag_indices`     | List of tags to index                                                                                 | False                                                   |
 | `batch_size`      | Batch size used to handle storage refreshes/updates                                                   | 64                                                      |
-| `bulk_config`     | Parallel bulk configuration used to handle storage refreshes/updates                                  | None                                                    |
-
-```{tip}
-You can read more about parallel bulk config and their default values [here](https://elasticsearch-py.readthedocs.io/en/v8.3.3/helpers.html)
-```
 
 ```{tip}
 You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)
