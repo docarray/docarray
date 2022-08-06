@@ -75,7 +75,7 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._client = self._build_client()
-        super()._init_storage(_docs, config, **kwargs)
+        super()._init_storage()
 
         if _docs is None:
             return
