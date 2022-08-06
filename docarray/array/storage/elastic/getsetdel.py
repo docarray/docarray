@@ -60,12 +60,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param ids:  ids of the document
         :return: Iterable[Document]
         """
+        accumulated_docs = []
+        accumulated_docs_not_found = []
+
+        if len(ids) < 1:
+            return accumulated_docs
+
         # Handle if doc len is more than MAX_ES_RETURNED_DOCS
         nrof_arr_split = math.ceil(len(ids) / MAX_ES_RETURNED_DOCS)
         split_ids = np.array_split(ids, nrof_arr_split)
-
-        accumulated_docs = []
-        accumulated_docs_not_found = []
         for split in split_ids:
             es_docs = self._client.mget(index=self._config.index_name, ids=split)[
                 'docs'
