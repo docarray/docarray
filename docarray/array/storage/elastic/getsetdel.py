@@ -65,13 +65,24 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         split_ids = np.array_split(ids, nrof_arr_split)
 
         accumulated_docs = []
+        accumulated_docs_not_found = []
         for split in split_ids:
             es_docs = self._client.mget(index=self._config.index_name, ids=split)[
                 'docs'
             ]
-            docs = [Document.from_base64(doc['_source']['blob']) for doc in es_docs]
+
+            docs = [
+                Document.from_base64(doc['_source']['blob'])
+                for doc in es_docs
+                if doc['found'] is True
+            ]
+            docs_not_found = [doc['_id'] for doc in es_docs if doc['found'] is False]
 
             accumulated_docs.extend(docs)
+            accumulated_docs_not_found.extend(docs_not_found)
+
+        if len(accumulated_docs_not_found) > 0:
+            raise KeyError(accumulated_docs_not_found)
 
         return accumulated_docs
 
@@ -94,6 +105,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param ids: the ids used for indexing
         """
+        breakpoint()
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
 
