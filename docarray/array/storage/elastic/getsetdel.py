@@ -1,4 +1,4 @@
-from typing import Iterable, Dict
+from typing import Iterable, Dict, Sequence
 
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
@@ -49,6 +49,16 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :return: the retrieved document from elastic
         """
         return self._getitem(_id)
+
+    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
+        """Helper method for getting multiple docs with elastic as storage
+
+        :param ids:  ids of the document
+        :return: Iterable[Document]
+        """
+        es_docs = self._client.mget(index=self._config.index_name, ids=ids)['docs']
+        docs = [Document.from_base64(doc['_source']['blob']) for doc in es_docs]
+        return docs
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
