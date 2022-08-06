@@ -1,20 +1,20 @@
+import tempfile
 import uuid
 
+import numpy as np
 import pytest
-import tempfile
-
 from docarray import Document, DocumentArray
+from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
+from docarray.array.redis import DocumentArrayRedis
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.storage.sqlite import SqliteConfig
-from docarray.array.weaviate import DocumentArrayWeaviate
-from docarray.array.elastic import DocumentArrayElastic
-from docarray.array.storage.qdrant import QdrantConfig
-from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.storage.elastic import ElasticConfig
-import numpy as np
-
+from docarray.array.storage.qdrant import QdrantConfig
+from docarray.array.storage.redis import RedisConfig
+from docarray.array.storage.sqlite import SqliteConfig
+from docarray.array.storage.weaviate import WeaviateConfig
+from docarray.array.weaviate import DocumentArrayWeaviate
 from tests.conftest import tmpfile
 
 
@@ -26,6 +26,7 @@ from tests.conftest import tmpfile
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=1)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1, flush=True)),
     ],
 )
 def test_insert(da_cls, config, start_storage):
@@ -48,6 +49,7 @@ def test_insert(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=1)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1, flush=True)),
     ],
 )
 def test_append_extend(da_cls, config, start_storage):
@@ -81,6 +83,7 @@ def update_config_inplace(config, tmpdir, tmpfile):
         ('weaviate', {'n_dim': 3, 'name': 'Weaviate'}),
         ('qdrant', {'n_dim': 3, 'collection_name': 'qdrant'}),
         ('elasticsearch', {'n_dim': 3, 'index_name': 'elasticsearch'}),
+        ('redis', {'n_dim': 3, 'flush': True}),
     ],
 )
 def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfile):
@@ -96,6 +99,8 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     assert len(da) == 2
     assert len(da._offset2ids.ids) == 2
 
+    if storage == 'redis':
+        config['flush'] = False
     da2 = DocumentArray(storage=storage, config=config)
 
     assert len(da2) == 2
