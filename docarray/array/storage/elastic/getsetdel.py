@@ -105,7 +105,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param ids: the ids used for indexing
         """
-        breakpoint()
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
 
