@@ -32,7 +32,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._del_doc_by_id(_id)
 
         payload = self._document_to_redis(value)
-        self._client.hset(_id, mapping=payload)
+        self._client.hset(value.id, mapping=payload)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
