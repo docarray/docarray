@@ -1,8 +1,12 @@
 from typing import Iterable, Dict, Sequence
+import math
+import numpy as np
 
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
 from docarray import Document
+
+MAX_ES_RETURNED_DOCS = 10000
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -51,14 +55,25 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         return self._getitem(_id)
 
     def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
-        """Helper method for getting multiple docs with elastic as storage
+        """Concrete implementation of base class' ``_get_docs_by_ids``
 
         :param ids:  ids of the document
         :return: Iterable[Document]
         """
-        es_docs = self._client.mget(index=self._config.index_name, ids=ids)['docs']
-        docs = [Document.from_base64(doc['_source']['blob']) for doc in es_docs]
-        return docs
+        # Handle if doc len is more than MAX_ES_RETURNED_DOCS
+        nrof_arr_split = math.ceil(len(ids) / MAX_ES_RETURNED_DOCS)
+        split_ids = np.array_split(ids, nrof_arr_split)
+
+        accumulated_docs = []
+        for split in split_ids:
+            es_docs = self._client.mget(index=self._config.index_name, ids=split)[
+                'docs'
+            ]
+            docs = [Document.from_base64(doc['_source']['blob']) for doc in es_docs]
+
+            accumulated_docs.extend(docs)
+
+        return accumulated_docs
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``

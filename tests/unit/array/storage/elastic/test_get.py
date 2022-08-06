@@ -1,7 +1,10 @@
 from docarray import Document, DocumentArray
+import numpy as np
 
 
 def test_get_bulk_data(start_storage):
+    nrof_docs = 20000
+
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
@@ -15,12 +18,9 @@ def test_get_bulk_data(start_storage):
     with elastic_doc:
         elastic_doc.extend(
             [
-                Document(id='r0', embedding=[0, 0, 0]),
-                Document(id='r1', embedding=[1, 1, 1]),
-                Document(id='r2', embedding=[2, 2, 2]),
-                Document(id='r3', embedding=[3, 3, 3]),
-                Document(id='r4', embedding=[4, 4, 4]),
+                Document(id=f'r{i}', embedding=np.ones((3,)) * i)
+                for i in range(nrof_docs)
             ]
         )
 
-    print(elastic_doc[:, "id"])
+    assert len(elastic_doc[:, "id"]) == nrof_docs
