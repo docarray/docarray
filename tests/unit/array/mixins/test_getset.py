@@ -496,6 +496,45 @@ def test_getset_subindex(storage, config):
         ('sqlite', dict()),
     ],
 )
+def test_init_subindex(storage, config):
+    num_top_level_docs = 5
+    num_chunks_per_doc = 3
+    subindex_configs = (
+        {'@c': None} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        [
+            Document(
+                chunks=[Document(text=f'{i}{j}') for j in range(num_chunks_per_doc)]
+            )
+            for i in range(num_top_level_docs)
+        ],
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    assert len(da['@c']) == num_top_level_docs * num_chunks_per_doc
+    assert len(da._subindices['@c']) == num_top_level_docs * num_chunks_per_doc
+    expected_texts = []
+    for i in range(num_top_level_docs):
+        for j in range(num_chunks_per_doc):
+            expected_texts.append(f'{i}{j}')
+    assert da['@c'].texts == expected_texts
+    assert da._subindices['@c'].texts == expected_texts
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
 def test_set_on_subindex(storage, config):
     n_dim = 3
     subindex_configs = (
