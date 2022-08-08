@@ -51,7 +51,14 @@ class GetItemMixin:
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             return self._get_doc_by_offset(int(index))
         elif isinstance(index, str):
-            if index.startswith('@'):
+            is_access_path = index.startswith('@')
+            if (
+                is_access_path
+                and getattr(self, '_subindices', None) is not None
+                and index in self._subindices
+            ):
+                return self._subindices[index]
+            elif is_access_path:
                 return self.traverse_flat(index[1:])
             else:
                 return self._get_doc_by_id(index)
