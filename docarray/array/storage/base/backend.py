@@ -28,11 +28,15 @@ class BaseBackendMixin(ABC):
             config = asdict(self._config) if getattr(self, '_config', None) else dict()
 
             for name, config_subindex in subindex_configs.items():
+                config_subindex = (
+                    dict() if config_subindex is None else config_subindex
+                )  # allow None as input
                 config_joined = {**config, **config_subindex}
                 config_joined = self._ensure_unique_config(
                     config, config_subindex, config_joined, name
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
+                self._subindices[name].extend(self[name])
 
     @abstractmethod
     def _ensure_unique_config(
