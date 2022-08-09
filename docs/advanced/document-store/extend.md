@@ -133,11 +133,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         # if you want to customize this, make sure to handle offset2id
         ...
 
-    def append(self, value: 'Document'):
+    def _append(self, value: 'Document'):
         # Optional. Override this if you have a better implementation than inserting at the last position
         ...
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def _extend(self, values: Iterable['Document']) -> None:
         # Optional. Override this if you have better implementation than appending one by one
         ...
 
@@ -190,7 +190,7 @@ class BackendMixin(BaseBackendMixin):
         super()._init_storage(_docs, config, **kwargs)
         ...
 
-    def _ensure_subindex_is_unique(
+    def _ensure_unique_config(
         self,
         config_root: dict,
         config_subindex: dict,
@@ -207,7 +207,7 @@ class BackendMixin(BaseBackendMixin):
 `_init_storage` is a very important function to be called during the DocumentArray construction.
 You will need to handle different construction & copy behaviors in this function.
 
-`_ensure_subindex_is_unique` is needed to support DocArray's subindex feature.
+`_ensure_unique_config` is needed to support DocArray's subindex feature.
 A subindex inherits its configuration from the root index, unless a field of the configuration is explicitly provided to the subindex.
 Usually however, each table in a database has to have a unique identifier (e.g. 'name', 'table_name', 'data_path', etc.).
 In order to avoid clashes you need to make sure that this identifier is actually unique between parent und subindices, despite the inheritance of configurations.
