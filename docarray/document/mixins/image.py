@@ -289,7 +289,7 @@ class ImageDataMixin:
         expanded_img = np.lib.stride_tricks.as_strided(
             tensor,
             shape=(
-                math.ceil(w / stride_h),
+                math.ceil(h / stride_h),
                 math.ceil(w / stride_w),
                 window_h,
                 window_w,
