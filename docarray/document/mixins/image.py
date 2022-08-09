@@ -269,8 +269,12 @@ class ImageDataMixin:
             h, w, c = tensor.shape
             if h % window_h:
                 ext_h = window_h - h % window_h
+            else:
+                ext_h = 0
             if w % window_w:
                 ext_w = window_w - w % window_w
+            else:
+                ext_w = 0
             tensor = np.pad(
                 tensor,
                 ((0, ext_h), (0, ext_w), (0, 0)),
