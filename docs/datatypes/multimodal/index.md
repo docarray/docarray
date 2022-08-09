@@ -416,6 +416,15 @@ With the embeddings from above you can tackle downstream tasks, such as neural s
 Let's assume you have multiple pages, and you want to find the page that contains a similar image as some other page
 (the query page).
 
+
+```{admonition} Subindices
+:class: seealso
+
+For this search task we use DocumentArray {ref}`subindices <subindex>`.
+
+This patterns is especially important when using a {ref}`Document store <doc-store>`, since it avoid loading Documents into memory.
+```
+
 First, create your dataset and query Document:
 
 ```python
@@ -454,7 +463,8 @@ da = DocumentArray(
                 description='This is an image of a pear',
             )
         ),
-    ]
+    ],
+    subindex_configs={'@.[image]': None},
 )  # our dataset of pages
 ```
 
@@ -482,7 +492,7 @@ Finally, cou can perform a search using {meth}`~docarray.array.document.Document
 and the parent Document that contains that image:
 
 ```python
-closest_match_img = da['@.[image]'].find(query.image)[0][0]
+closest_match_img = da.find(query.image, on='@.[image]')[0][0]
 print('CLOSEST IMAGE:')
 closest_match_img.summary()
 print('PAGE WITH THE CLOSEST IMAGE:')
