@@ -407,6 +407,7 @@ print(da.embeddings.shape)
 (2, 1512)
 ```
 
+(multimodal-search-example)=
 ## Perform search
 
 With the embeddings from above you can tackle downstream tasks, such as neural search.

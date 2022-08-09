@@ -3,7 +3,12 @@
 
 Subindices allow you to efficiently search through multimodal or nested Documents.
 
+```{seealso}
+To see an example of subindices in action, see {ref}`here <multimodal-search-example>`.
+```
+
 Each subindex indexes and stores one nesting level, such as `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`, and makes it directly searchable.
+Under the hood, subindices are fully fledged DocumentArrays with their own Document Store.
 
 
 ```{admonition} Document stores
