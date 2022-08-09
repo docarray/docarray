@@ -267,12 +267,12 @@ class ImageDataMixin:
         tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         if padding:
             h, w, c = tensor.shape
-            if h % window_h:
-                ext_h = window_h - h % window_h
+            if h % stride_h:
+                ext_h = window_h - h % stride_h
             else:
                 ext_h = 0
-            if w % window_w:
-                ext_w = window_w - w % window_w
+            if w % stride_w:
+                ext_w = window_w - w % stride_w
             else:
                 ext_w = 0
             tensor = np.pad(
