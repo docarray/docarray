@@ -1,7 +1,7 @@
 (subindex)=
 # Subindices
 
-Subindices offer the possibility to efficiently search through multimodal or nested documents.
+Subindices allow you to efficiently search through multimodal or nested Documents.
 
 Each subindex indexes and stores one nesting level, such as `'@c'` or a {ref}`custom modality <dataclass>` like `'@.[image]'`, and makes it directly searchable.
 
