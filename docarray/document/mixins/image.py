@@ -1,5 +1,6 @@
 import base64
 import io
+import math
 import struct
 import warnings
 from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
@@ -288,8 +289,8 @@ class ImageDataMixin:
         expanded_img = np.lib.stride_tricks.as_strided(
             tensor,
             shape=(
-                1 + int((h - window_h) / stride_h),
-                1 + int((w - window_w) / stride_w),
+                math.ceil(w / stride_h),
+                math.ceil(w / stride_w),
                 window_h,
                 window_w,
                 c,
