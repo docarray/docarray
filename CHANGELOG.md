@@ -123,6 +123,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2956,4 +2957,23 @@
 ### 🍹 Other Improvements
 
  - [[```67f60cd7```](https://github.com/jina-ai/docarray/commit/67f60cd7afe14e6f1f5f949c8f301df6dc4bdfc2)] __-__ __version__: the next version will be 0.14.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-9></a>
+## Release Note (`0.14.9`)
+
+> Release time: 2022-08-09 20:59:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```30e00322```](https://github.com/jina-ai/docarray/commit/30e00322d1ea35aacb924c0b6c2d7ce79d052ee0)] __-__ __image__: fix image padding on vertical direction (#480) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```23ce6518```](https://github.com/jina-ai/docarray/commit/23ce6518f77bc60a303ccc2a33f8ddc67d358926)] __-__ __version__: the next version will be 0.14.9 (*Jina Dev Bot*)
 
