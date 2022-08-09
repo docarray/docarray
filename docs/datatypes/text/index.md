@@ -207,10 +207,19 @@ print(q.matches[:, ('text', 'scores__jaccard')])
 
 ## Searching at chunk level with subindex
 
-One can create applications that search at chunk level using a subindex. 
+You can create applications that search at chunk level using a subindex. 
 Imagine you want an application that searches at a sentences granularity and returns the document title of the document
 containing the sentence closest to the query. For example, you can have a database of lyrics of songs and you want to
 search the song title of a song from which you might remember a small part of it (likely the chorus).
+
+```{admonition} Multi-modal Documents
+:class: seealso
+
+Modelling nested Documents is often more convenient using DocArray's {ref}`dataclass API <dataclass>`, especially when multiple modalities are
+involved.
+
+You can find the corresponding example {ref}`here <multimodal-example>`.
+```
 
 ```python
 song1_title = 'Take On Me'
