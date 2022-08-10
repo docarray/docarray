@@ -4,7 +4,6 @@ import scipy.sparse
 import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix
-from torch import nn
 
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
