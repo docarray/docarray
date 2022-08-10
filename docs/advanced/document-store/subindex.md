@@ -60,7 +60,7 @@ da = DocumentArray(
     _docs,
     config={'n_dim': 256},
     storage='annlite',
-    subindex_configs={'@c': {'n_dim': 128}},
+    subindex_configs={'@c': {'n_dim': 512}},
 )
 ```
 ````
@@ -108,7 +108,7 @@ import numpy as np
 da = DocumentArray(
     config={'n_dim': 256},
     storage='annlite',
-    subindex_configs={'@c': {'n_dim': 128}},
+    subindex_configs={'@c': {'n_dim': 512}},
 )
 # extend with Documents, including embeddings
 _docs = [
@@ -120,7 +120,7 @@ _docs = [
 ]
 for d in _docs:
     d.embedding = np.random.rand(256)
-    d.chunks[0].embedding = np.random.rand(128)
+    d.chunks[0].embedding = np.random.rand(512)
 with da:
     da.extend(_docs)
 ```
@@ -141,9 +141,9 @@ Document(embedding=np.random.rand(128)).match(da, on='@.[paragraph]')
 ````{tab} Subindex with chunks
 ```python
 # find best matching images using .find()
-top_image_matches = da.find(query=np.random.rand(128), on='@c')
+top_image_matches = da.find(query=np.random.rand(512), on='@c')
 # find best matching images using .match()
-Document(embedding=np.random.rand(128)).match(da, on='@c')
+Document(embedding=np.random.rand(512)).match(da, on='@c')
 ```
 ````
 
@@ -158,7 +158,7 @@ top_level_matches = da[top_image_matches[:, 'parent_id']]
 ````
 ````{tab} Subindex with chunks
 ```python
-top_image_matches = da.find(query=np.random.rand(128), on='@c')
+top_image_matches = da.find(query=np.random.rand(512), on='@c')
 top_level_matches = da[top_image_matches[:, 'parent_id']]
 ```
 ````
