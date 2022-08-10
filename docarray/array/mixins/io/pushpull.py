@@ -11,36 +11,12 @@ from docarray.helper import get_request_header, __cache_path__
 if TYPE_CHECKING:
     from docarray.typing import T
 
-JINA_CLOUD_CONFIG = 'config.json'
-
 
 @lru_cache()
-def _get_hub_config() -> Optional[Dict]:
-    hub_root = Path(os.environ.get('JINA_HUB_ROOT', Path.home().joinpath('.jina')))
-
-    if not hub_root.exists():
-        hub_root.mkdir(parents=True, exist_ok=True)
-
-    config_file = hub_root.joinpath(JINA_CLOUD_CONFIG)
-    if config_file.exists():
-        with open(config_file) as f:
-            return json.load(f)
-
-
 def _get_auth_token() -> Optional[str]:
-    hub_config = _get_hub_config()
-    config_auth_token = hub_config.get('auth_token') if hub_config else None
-    env_auth_token = os.environ.get('JINA_AUTH_TOKEN')
-    return env_auth_token or config_auth_token
+    import hubble
 
-
-@lru_cache()
-def _get_cloud_api() -> str:
-    """Get Cloud Api for transmitting data to the cloud.
-
-    :return: Cloud Api Url
-    """
-    return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
+    return os.environ.get('JINA_AUTH_TOKEN', hubble.show_hint())
 
 
 class PushPullMixin:
@@ -48,7 +24,13 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(self, name: str, show_progress: bool = False, public: bool = True) -> Dict:
+    def push(
+        self,
+        name: str,
+        show_progress: bool = False,
+        public: bool = True,
+        extra_headers: Dict = {},
+    ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -120,8 +102,11 @@ class PushPullMixin:
             yield _tail
 
         with pbar:
+            from hubble import Client
+            from hubble.client.endpoints import EndpointsV2
+
             response = requests.post(
-                f'{_get_cloud_api()}/v2/rpc/artifact.upload',
+                Client()._base_url + EndpointsV2.upload_artifact,
                 data=gen(),
                 headers=headers,
             )
@@ -156,7 +141,10 @@ class PushPullMixin:
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
-        url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'
+        from hubble import Client
+        from hubble.client.endpoints import EndpointsV2
+
+        url = Client()._base_url + EndpointsV2.download_artifact + f'?name={name}'
         response = requests.get(url, headers=headers)
 
         if response.ok:

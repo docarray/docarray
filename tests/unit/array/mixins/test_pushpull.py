@@ -6,10 +6,11 @@ import requests
 from io import BytesIO
 
 from docarray import DocumentArray
-from docarray.array.mixins.io.pushpull import JINA_CLOUD_CONFIG
 from docarray.helper import random_identity
 
 from tests import random_docs
+
+JINA_CLOUD_CONFIG = 'config.json'
 
 
 class PushMockResponse:
@@ -137,9 +138,7 @@ def test_push_fail(mocker, monkeypatch):
 
 
 def test_api_url_change(mocker, monkeypatch):
-    from docarray.array.mixins.io.pushpull import _get_cloud_api
 
-    _get_cloud_api.cache_clear()
     test_api_url = 'http://localhost:8080'
     os.environ['JINA_HUBBLE_REGISTRY'] = test_api_url
 
@@ -153,7 +152,6 @@ def test_api_url_change(mocker, monkeypatch):
     docs.pull(name)
 
     del os.environ['JINA_HUBBLE_REGISTRY']
-    _get_cloud_api.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
