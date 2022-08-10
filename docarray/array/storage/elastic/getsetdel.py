@@ -85,7 +85,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             accumulated_docs_not_found.extend(docs_not_found)
 
         if len(accumulated_docs_not_found) > 0:
-            raise KeyError(accumulated_docs_not_found)
+            raise KeyError((accumulated_docs_not_found,accumulated_docs))
 
         return accumulated_docs
 
