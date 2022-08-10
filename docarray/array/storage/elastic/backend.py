@@ -1,7 +1,8 @@
 import copy
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 import warnings
+
 from typing import (
     Dict,
     Optional,
@@ -44,6 +45,16 @@ class ElasticConfig:
     ef_construction: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[List[Tuple[str, str]]] = None
+
+
+_banned_indexname_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
+
+
+def _sanitize_index_name(name):
+    new_name = name
+    for char in _banned_indexname_chars:
+        new_name = new_name.replace(char, '')
+    return new_name
 
 
 class BackendMixin(BaseBackendMixin):
@@ -97,6 +108,20 @@ class BackendMixin(BaseBackendMixin):
         else:
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'index_name' not in config_subindex:
+            unique_index_name = _sanitize_index_name(
+                config_joined['index_name'] + '_subindex_' + subindex_name
+            )
+            config_joined['index_name'] = unique_index_name
+        return config_joined
 
     def _build_offset2id_index(self):
         if not self._client.indices.exists(index=self._index_name_offset2id):
@@ -264,6 +289,3 @@ class BackendMixin(BaseBackendMixin):
     def __setstate__(self, state):
         self.__dict__ = state
         self._client = self._build_client()
-
-    # def clear(self):
-    #    self._client.indices.delete(index=self._config.index_name)

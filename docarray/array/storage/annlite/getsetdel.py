@@ -4,7 +4,7 @@ from docarray.array.storage.annlite.helper import OffsetMapping
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.memory import DocumentArrayInMemory
-from docarray import Document
+from docarray import Document, DocumentArray
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -24,10 +24,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         value.embedding = self._map_embedding(value.embedding)
         docs = DocumentArrayInMemory([value])
+
         self._annlite.update(docs)
 
     def _del_doc_by_id(self, _id: str):
-        self._annlite.delete([_id])
+        # delete the root document
+        self._del_docs_by_ids([_id])
 
     def _clear_storage(self):
         self._annlite.clear()

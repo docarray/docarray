@@ -91,7 +91,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         return successful_ids['index']
 
-    def extend(self, docs: Iterable['Document'], **kwargs):
+    def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
         successful_indexed_ids = self._upload_batch(docs, **kwargs)
         self._offset2ids.extend(

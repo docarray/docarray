@@ -17,6 +17,8 @@ class DelItemMixin:
     """Provide help function to enable advanced indexing in `__delitem__`"""
 
     def __delitem__(self, index: 'DocumentArrayIndexType'):
+        self._update_subindices_del(index)
+
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             self._del_doc_by_offset(int(index))
 

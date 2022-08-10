@@ -58,6 +58,8 @@ class FindMixin:
         """
 
         docs = self._annlite.filter(
-            filter=filter, limit=limit, include_metadata=not only_id
+            filter=filter,
+            limit=limit,
+            include_metadata=not only_id,
         )
         return DocumentArray(docs)

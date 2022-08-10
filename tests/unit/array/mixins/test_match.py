@@ -703,3 +703,60 @@ def test_match_pre_filtering(
                 for r in doc.matches
             ]
         )
+
+
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_match_subindex(storage, config):
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+
+    query = Document(embedding=np.array([3, 3]))
+    if storage in ['sqlite', 'memory']:
+        query.match(da, on='@c', metric='euclidean')
+    else:
+        query.match(da, on='@c')
+    closest_docs = query.matches
+
+    assert embeddings_eq(closest_docs[0].embedding, [2, 2])
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')

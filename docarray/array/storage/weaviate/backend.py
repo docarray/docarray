@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Iterable,
     Dict,
@@ -47,6 +47,31 @@ class WeaviateConfig:
     skip: Optional[bool] = None
     columns: Optional[List[Tuple[str, str]]] = None
     distance: Optional[str] = None
+
+
+_banned_classname_chars = [
+    '[',
+    ' ',
+    '"',
+    '*',
+    '\\',
+    '<',
+    '|',
+    ',',
+    '>',
+    '/',
+    '?',
+    ']',
+    '@',
+    '.',
+]
+
+
+def _sanitize_class_name(name):
+    new_name = name
+    for char in _banned_classname_chars:
+        new_name = new_name.replace(char, '')
+    return new_name
 
 
 class BackendMixin(BaseBackendMixin):
@@ -114,6 +139,20 @@ class BackendMixin(BaseBackendMixin):
             self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'name' not in config_subindex:
+            unique_name = _sanitize_class_name(
+                config_joined['name'] + 'subindex' + subindex_name
+            )
+            config_joined['name'] = unique_name
+        return config_joined
 
     def _get_weaviate_class_name(self) -> str:
         """Generate the class/schema name using the ``uuid1`` module with some

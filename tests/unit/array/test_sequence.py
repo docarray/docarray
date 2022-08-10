@@ -116,6 +116,100 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
         ('sqlite', dict()),
     ],
 )
+def test_extend_subindex(storage, config):
+
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+
+    assert len(da._subindices['@c']) == 6
+
+    for j in range(2):
+        for i in range(3):
+            assert (da._subindices['@c'][f'{i}_{j}'].embedding == [i, i]).all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_append_subindex(storage, config):
+
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.append(
+            Document(
+                embedding=np.ones(n_dim),
+                chunks=[
+                    Document(id='0', embedding=np.array([0, 0])),
+                    Document(id='1', embedding=np.array([1, 1])),
+                ],
+            )
+        )
+
+    with da:
+        assert len(da._subindices['@c']) == 2
+
+        for i in range(2):
+            assert embeddings_eq(da._subindices['@c'][f'{i}'].embedding, [i, i])
+
+
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
 @pytest.mark.parametrize(
     'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
 )
@@ -132,9 +226,6 @@ def test_del_and_append(index, storage, config):
 
 
 @pytest.mark.parametrize(
-    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
-)
-@pytest.mark.parametrize(
     'storage, config',
     [
         ('memory', None),
@@ -144,6 +235,9 @@ def test_del_and_append(index, storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
     ],
+)
+@pytest.mark.parametrize(
+    'index', [1, '1', slice(1, 2), [1], [False, True, False, False, False]]
 )
 def test_set_and_append(index, storage, config):
     da = DocumentArray(storage=storage, config=config)

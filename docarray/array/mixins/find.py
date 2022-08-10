@@ -99,6 +99,7 @@ class FindMixin:
         filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
+        on: Optional[str] = None,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns matching Documents given an input query.
@@ -125,10 +126,25 @@ class FindMixin:
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
                       otherwise the tag field specified by `index` will be used. You can only use this parameter if the
                       storage backend supports searching by text.
+        :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+
+        index_da = self._get_index(subindex_name=on)
+        if index_da is not self:
+            return index_da.find(
+                query,
+                metric,
+                limit,
+                metric_name,
+                exclude_self,
+                filter,
+                only_id,
+                index,
+                on=None,
+            )
 
         from docarray import Document, DocumentArray
 
@@ -253,6 +269,17 @@ class FindMixin:
         self, query: 'ArrayType', limit: int, filter: Optional[Dict] = None, **kwargs
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
+
+    def _get_index(self, subindex_name):
+        is_root_index = subindex_name is None or subindex_name == '@r'
+        if is_root_index:
+            return self
+        if subindex_name in self._subindices.keys():
+            return self._subindices[subindex_name]
+        raise ValueError(
+            f"No subindex available for on='{subindex_name}'. "
+            f'To create a subindex, pass `subindex_configs` when creating the DocumentArray.'
+        )
 
     def _filter(
         self,

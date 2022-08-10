@@ -8,7 +8,7 @@ from typing import (
 )
 
 from docarray.array.storage.base.helper import Offset2ID
-from docarray import Document
+from docarray import Document, DocumentArray
 
 
 class BaseGetSetDelMixin(ABC):
@@ -114,6 +114,7 @@ class BaseGetSetDelMixin(ABC):
         self._del_docs(ids)
 
     def _del_all_docs(self):
+        self._clear_subindices()
         self._clear_storage()
         self._offset2ids = Offset2ID()
 
@@ -126,6 +127,12 @@ class BaseGetSetDelMixin(ABC):
         for _id in ids:
             self._del_doc_by_id(_id)
 
+    def _update_subindices_del(self, ids):
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                ids_subindex = DocumentArray(self[ids])[selector, 'id']
+                da._del_docs_by_ids(ids_subindex)
+
     def _del_docs(self, ids):
         self._del_docs_by_ids(ids)
         self._offset2ids.delete_by_ids(ids)
@@ -137,6 +144,11 @@ class BaseGetSetDelMixin(ABC):
         If you override this method, you should only take care of clearing the storage backend."""
         for doc in self:
             self._del_doc_by_id(doc.id)
+
+    def _clear_subindices(self):
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                da._del_all_docs()
 
     # Setitem API
 
@@ -160,6 +172,16 @@ class BaseGetSetDelMixin(ABC):
         """
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
+
+    def _update_subindices_set(self, ids, docs):
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                old_ids = DocumentArray(self[ids])[
+                    selector, 'id'
+                ]  # hack to get the Document['@c'] without having to do Document.chunks
+                with da:
+                    del da[old_ids]
+                    da.extend(DocumentArray(docs)[selector])  # same hack here
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)

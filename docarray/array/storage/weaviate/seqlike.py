@@ -71,7 +71,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def _extend(self, values: Iterable['Document'], **kwargs) -> None:
         """Extends the array with the given values
 
         :param values: Documents to be added

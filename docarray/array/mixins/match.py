@@ -25,6 +25,7 @@ class MatchMixin:
         use_scipy: bool = False,
         device: str = 'cpu',
         num_worker: Optional[int] = 1,
+        on: Optional[str] = None,
         **kwargs,
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
@@ -60,7 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-
+        :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
         """
 
@@ -83,6 +84,8 @@ class MatchMixin:
             use_scipy=use_scipy,
             device=device,
             num_worker=num_worker,
+            on=on,
+            **kwargs,
         )
 
         if not isinstance(match_docs, list):

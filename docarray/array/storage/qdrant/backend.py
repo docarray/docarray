@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -112,6 +112,19 @@ class BackendMixin(BaseBackendMixin):
             self.extend(docs)
         elif isinstance(docs, Document):
             self.append(docs)
+
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'collection_name' not in config_subindex:
+            config_joined['collection_name'] = (
+                config_joined['collection_name'] + '_subindex_' + subindex_name
+            )
+        return config_joined
 
     def _initialize_qdrant_schema(self):
         if not self._collection_exists(self.collection_name):
