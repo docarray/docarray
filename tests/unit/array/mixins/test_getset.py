@@ -489,10 +489,10 @@ def test_getset_subindex(storage, config):
     'storage, config',
     [
         ('memory', None),
-        # ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
-        # ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
-        # ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
     ],
 )
