@@ -50,6 +50,7 @@ setup(
             'Pillow',
             'fastapi',
             'uvicorn',
+            'jina-auth',
         ],
         'full': [
             'protobuf>=3.13.0,<=3.20.1',

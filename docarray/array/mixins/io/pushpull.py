@@ -42,7 +42,8 @@ class PushPullMixin:
 
         :param name: a name that later can be used for retrieve this :class:`DocumentArray`.
         :param show_progress: if to show a progress bar on pulling
-        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.
+        :param public: by default anyone can pull a DocumentArray if they know its name.
+            Setting this to False will allow only the creator to pull it. This feature of course you to login first.
         """
         import requests
 
@@ -65,6 +66,11 @@ class PushPullMixin:
         auth_token = _get_auth_token()
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
+
+        if not public and not auth_token:
+            warnings.warn(
+                'You are not logged in, and `public=False` if only for logged in users. To login, use `jina auth login`.'
+            )
 
         _head, _tail = data.split(delimiter)
         _head += self._stream_header
