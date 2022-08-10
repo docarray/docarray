@@ -63,7 +63,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         accumulated_docs = []
         accumulated_docs_not_found = []
 
-        if len(ids) < 1:
+        if not ids
             return accumulated_docs
 
         # Handle if doc len is more than MAX_ES_RETURNED_DOCS
