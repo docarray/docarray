@@ -79,7 +79,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 for doc in es_docs
                 if doc['found'] is True
             ]
-            docs_not_found = [doc['_id'] for doc in es_docs if doc['found'] is False]
+            docs_id_not_found = [doc['_id'] for doc in es_docs if doc['found'] is False]
 
             accumulated_docs.extend(docs)
             accumulated_docs_not_found.extend(docs_not_found)
