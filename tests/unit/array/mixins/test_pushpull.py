@@ -10,8 +10,6 @@ from docarray.helper import random_identity
 
 from tests import random_docs
 
-JINA_CLOUD_CONFIG = 'config.json'
-
 
 class PushMockResponse:
     def __init__(self, status_code: int = 200):
@@ -160,87 +158,3 @@ def test_api_url_change(mocker, monkeypatch):
 
     assert push_kwargs['url'].startswith(test_api_url)
     assert pull_kwargs['url'].startswith(test_api_url)
-
-
-def test_api_authorization_header_from_config(mocker, monkeypatch, tmpdir):
-
-    os.environ['JINA_HUB_ROOT'] = str(tmpdir)
-
-    token = 'test-auth-token'
-    with open(tmpdir / JINA_CLOUD_CONFIG, 'w') as f:
-        json.dump({'auth_token': token}, f)
-
-    mock = mocker.Mock()
-    _mock_post(mock, monkeypatch)
-    _mock_get(mock, monkeypatch)
-
-    docs = random_docs(2)
-    name = random_identity()
-    docs.push(name)
-    DocumentArray.pull(name)
-
-    del os.environ['JINA_HUB_ROOT']
-
-    assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
-
-    _, push_kwargs = mock.call_args_list[0]
-    _, pull_kwargs = mock.call_args_list[1]
-
-    assert push_kwargs['headers'].get('Authorization') == f'token {token}'
-    assert pull_kwargs['headers'].get('Authorization') == f'token {token}'
-
-
-@pytest.mark.parametrize(
-    'set_env_vars', [{'JINA_AUTH_TOKEN': 'test-auth-token'}], indirect=True
-)
-def test_api_authorization_header_from_env(mocker, monkeypatch, set_env_vars):
-
-    mock = mocker.Mock()
-    _mock_post(mock, monkeypatch)
-    _mock_get(mock, monkeypatch)
-
-    docs = random_docs(2)
-    name = random_identity()
-    docs.push(name)
-    DocumentArray.pull(name)
-
-    assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
-
-    _, push_kwargs = mock.call_args_list[0]
-    _, pull_kwargs = mock.call_args_list[1]
-
-    assert push_kwargs['headers'].get('Authorization') == 'token test-auth-token'
-    assert pull_kwargs['headers'].get('Authorization') == 'token test-auth-token'
-
-
-@pytest.mark.parametrize(
-    'set_env_vars', [{'JINA_AUTH_TOKEN': 'test-auth-token-env'}], indirect=True
-)
-def test_api_authorization_header_env_and_config(
-    mocker, monkeypatch, tmpdir, set_env_vars
-):
-
-    os.environ['JINA_HUB_ROOT'] = str(tmpdir)
-
-    token = 'test-auth-token-config'
-    with open(tmpdir / JINA_CLOUD_CONFIG, 'w') as f:
-        json.dump({'auth_token': token}, f)
-
-    mock = mocker.Mock()
-    _mock_post(mock, monkeypatch)
-    _mock_get(mock, monkeypatch)
-
-    docs = random_docs(2)
-    name = random_identity()
-    docs.push(name)
-    DocumentArray.pull(name)
-
-    del os.environ['JINA_HUB_ROOT']
-
-    assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
-
-    _, push_kwargs = mock.call_args_list[0]
-    _, pull_kwargs = mock.call_args_list[1]
-
-    assert push_kwargs['headers'].get('Authorization') == 'token test-auth-token-env'
-    assert pull_kwargs['headers'].get('Authorization') == 'token test-auth-token-env'

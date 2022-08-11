@@ -13,15 +13,14 @@ class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _max_bytes = 4 * 1024 * 1024 * 1024
-    _hint_showed = False
 
     @property
     def auth_token(self) -> Optional[str]:
         import hubble
 
-        if not self._hint_showed:
+        if 'HUBBLE_HINT_SHOWED' not in os.environ:
             token = hubble.show_hint()
-            _hint_showed = True
+            os.environ['HUBBLE_HINT_SHOWED'] = '1'
         else:
             token = hubble.Client(jsonify=True).token
 
