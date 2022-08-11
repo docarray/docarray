@@ -219,6 +219,16 @@ Embeddings Nearest Neighbours with "price" at most 7:
  embedding=[4. 4. 4.],  price=4
  ```
 
+Additionally you can tune the approximate kNN for speed or accuracy by providing `num_candidates` kwarg when calling the `find` method:
+
+```python
+results = da.find(np_query, filter=filter, limit=n_limit, num_candidates=100)
+```
+
+```{tip}
+You can read more about approximate kNN tuning [here](https://www.elastic.co/guide/en/elasticsearch/reference/master/knn-search.html#tune-approximate-knn-for-speed-accuracy)
+```
+
 ### Search by filter query
 
 One can search with user-defined query filters using the `.find` method. Such queries can be constructed following the
