@@ -50,7 +50,7 @@ setup(
             'Pillow',
             'fastapi',
             'uvicorn',
-            'jina-hubble-sdk>=0.9.1',
+            'jina-auth>=0.2.2',
         ],
         'full': [
             'protobuf>=3.13.0,<=3.20.1',
@@ -60,6 +60,7 @@ setup(
             'Pillow',
             'trimesh',
             'scipy',
+            'jina-auth>=0.2.2',
             'av',
             'fastapi',
             'uvicorn',
