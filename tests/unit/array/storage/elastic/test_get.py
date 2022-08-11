@@ -2,10 +2,9 @@ from docarray import Document, DocumentArray
 import numpy as np
 import pytest
 
+
 @pytest.mark.parametrize('nrof_docs', [10, 100, 10_000, 10_100, 20_000, 20_100])
 def test_success_get_bulk_data(start_storage, nrof_docs):
-
-
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
