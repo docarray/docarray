@@ -1,4 +1,6 @@
-from typing import Iterable, Dict
+from typing import Iterable, Dict, Sequence
+import math
+import numpy as np
 
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
@@ -8,6 +10,8 @@ from docarray import Document
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
     and ``__delitem__`` for ``DocumentArrayElastic``"""
+
+    MAX_ES_RETURNED_DOCS = 10000
 
     def _document_to_elastic(self, doc: 'Document') -> Dict:
         extra_columns = {col: doc.tags.get(col) for col, _ in self._config.columns}
@@ -49,6 +53,41 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :return: the retrieved document from elastic
         """
         return self._getitem(_id)
+
+    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
+        """Concrete implementation of base class' ``_get_docs_by_ids``
+
+        :param ids:  ids of the document
+        :return: Iterable[Document]
+        """
+        accumulated_docs = []
+        accumulated_docs_id_not_found = []
+
+        if not ids:
+            return accumulated_docs
+
+        # Handle if doc len is more than MAX_ES_RETURNED_DOCS
+        nrof_arr_split = math.ceil(len(ids) / self.MAX_ES_RETURNED_DOCS)
+        split_ids = np.array_split(ids, nrof_arr_split)
+        for split in split_ids:
+            es_docs = self._client.mget(index=self._config.index_name, ids=split)[
+                'docs'
+            ]
+
+            docs = [
+                Document.from_base64(doc['_source']['blob'])
+                for doc in es_docs
+                if doc['found'] is True
+            ]
+            docs_id_not_found = [doc['_id'] for doc in es_docs if doc['found'] is False]
+
+            accumulated_docs.extend(docs)
+            accumulated_docs_id_not_found.extend(docs_id_not_found)
+
+        if len(accumulated_docs_id_not_found) > 0:
+            raise KeyError(accumulated_docs_id_not_found, accumulated_docs)
+
+        return accumulated_docs
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
