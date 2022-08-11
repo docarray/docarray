@@ -1,10 +1,7 @@
-import json
 import os
 import warnings
-from functools import lru_cache
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, Optional
-
 
 from docarray.helper import get_request_header, __cache_path__
 
@@ -12,24 +9,29 @@ if TYPE_CHECKING:
     from docarray.typing import T
 
 
-@lru_cache()
-def _get_auth_token() -> Optional[str]:
-    import hubble
-
-    return os.environ.get('JINA_AUTH_TOKEN', hubble.show_hint())
-
-
 class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _max_bytes = 4 * 1024 * 1024 * 1024
+    _hint_showed = False
+
+    @property
+    def auth_token(self) -> Optional[str]:
+        import hubble
+
+        if not self._hint_showed:
+            token = hubble.show_hint()
+            _hint_showed = True
+        else:
+            token = hubble.Client(jsonify=True).token
+
+        return os.environ.get('JINA_AUTH_TOKEN', token)
 
     def push(
         self,
         name: str,
         show_progress: bool = False,
         public: bool = True,
-        extra_headers: Dict = {},
     ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
@@ -63,7 +65,7 @@ class PushPullMixin:
 
         headers = {'Content-Type': ctype, **get_request_header()}
 
-        auth_token = _get_auth_token()
+        auth_token = self.auth_token
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
@@ -143,7 +145,7 @@ class PushPullMixin:
 
         headers = {}
 
-        auth_token = _get_auth_token()
+        auth_token = cls.auth_token
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
