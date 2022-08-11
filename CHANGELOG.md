@@ -125,6 +125,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3006,4 +3007,23 @@
 ### 🍹 Other Improvements
 
  - [[```fc39c042```](https://github.com/jina-ai/docarray/commit/fc39c042f16e3096329c9ac8a955b955c876a2d9)] __-__ __version__: the next version will be 0.14.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-11></a>
+## Release Note (`0.14.11`)
+
+> Release time: 2022-08-11 20:09:20
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```930c75cb```](https://github.com/jina-ai/docarray/commit/930c75cbb272078b31e097f3c4d78a2d8a6d5132)] __-__ use hubble sdk for get_token (#485) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f7b8eb89```](https://github.com/jina-ai/docarray/commit/f7b8eb89d2be2cb938f2b617a66d305f03fd90d8)] __-__ __version__: the next version will be 0.14.11 (*Jina Dev Bot*)
 
