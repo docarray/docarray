@@ -1,5 +1,5 @@
 (match-documentarray)=
-# Match Nearest Neighbours
+# Find Nearest Neighbours
 
 ```{important}
 

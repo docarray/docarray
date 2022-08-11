@@ -43,6 +43,7 @@ class PlotMixin:
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
+        table.add_row('Type', self.__class__.__name__)
         table.add_row('Length', str(len(self)))
         is_homo = len(attr_counter) == 1
         table.add_row('Homogenous Documents', str(is_homo))
@@ -76,6 +77,9 @@ class PlotMixin:
 
         is_multimodal = all(d.is_multimodal for d in self)
         table.add_row('Multimodal dataclass', str(is_multimodal))
+
+        if getattr(self, '_subindices'):
+            table.add_row('Subindices', str(tuple(self._subindices.keys())))
 
         tables.append(Panel(table, title='Documents Summary', expand=False))
 
