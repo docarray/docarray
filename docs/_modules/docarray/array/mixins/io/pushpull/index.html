@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/io/pushpull.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.io.pushpull - DocArray 0.14.10 documentation</title>
+        <title>docarray.array.mixins.io.pushpull - DocArray 0.14.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.14.10 documentation</div>
+                <div class="brand">DocArray 0.14.11 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -215,7 +215,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/matching/">Match Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
@@ -240,12 +241,11 @@
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/sqlite/">SQLite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/annlite/">Annlite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/subindex/">Subindices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -353,18 +353,6 @@
 
     <span class="n">_max_bytes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">auth_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="kn">import</span> <span class="nn">hubble</span>
-
-        <span class="k">if</span> <span class="s1">&#39;HUBBLE_HINT_SHOWED&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
-            <span class="n">token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">show_hint</span><span class="p">()</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HUBBLE_HINT_SHOWED&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">jsonify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">token</span>
-
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_AUTH_TOKEN&#39;</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
-
 <div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -402,8 +390,9 @@
         <span class="p">)</span>
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">ctype</span><span class="p">,</span> <span class="o">**</span><span class="n">get_request_header</span><span class="p">()}</span>
+        <span class="kn">import</span> <span class="nn">hubble</span>
 
-        <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_token</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
             <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 
@@ -483,7 +472,10 @@
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">auth_token</span>
+        <span class="kn">import</span> <span class="nn">hubble</span>
+
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
             <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 

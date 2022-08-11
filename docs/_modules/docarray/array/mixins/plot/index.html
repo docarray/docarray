@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/plot.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.plot - DocArray 0.14.10 documentation</title>
+        <title>docarray.array.mixins.plot - DocArray 0.14.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.14.10 documentation</div>
+                <div class="brand">DocArray 0.14.11 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -215,7 +215,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/matching/">Match Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
@@ -240,12 +241,11 @@
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/sqlite/">SQLite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/annlite/">Annlite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/subindex/">Subindices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -369,6 +369,7 @@
         <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
         <span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
         <span class="kn">from</span> <span class="nn">rich.panel</span> <span class="kn">import</span> <span class="n">Panel</span>
+        <span class="kn">import</span> <span class="nn">rich.markup</span>
 
         <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="n">box</span>
 
@@ -382,6 +383,7 @@
 
         <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">show_header</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
         <span class="n">is_homo</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr_counter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Homogenous Documents&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_homo</span><span class="p">))</span>
@@ -415,6 +417,11 @@
 
         <span class="n">is_multimodal</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">is_multimodal</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
         <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span><span class="s1">&#39;Multimodal dataclass&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">is_multimodal</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subindices&#39;</span><span class="p">):</span>
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+                <span class="s1">&#39;Subindices&#39;</span><span class="p">,</span> <span class="n">rich</span><span class="o">.</span><span class="n">markup</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+            <span class="p">)</span>
 
         <span class="n">tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Panel</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Documents Summary&#39;</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 

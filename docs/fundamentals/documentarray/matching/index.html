@@ -4,19 +4,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<meta property="og:title" content="Match Nearest Neighbours" />
+<meta property="og:title" content="Find Nearest Neighbours" />
   
 <meta property="og:type" content="website" />
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/matching/" />
   
-<meta property="og:site_name" content="DocArray 0.14.10 Documentation" />
+<meta property="og:site_name" content="DocArray 0.14.11 Documentation" />
   
 <meta property="og:description" content="Once.embeddings is set, one can use find() or match() function to find the nearest-neighbour Documents from another DocumentArray (or itself) based on their.embeddings and distance metrics. Difference between find and match: Though both.find() and.match() is about finding nearest neighbours of a ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.14.10 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.14.11 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -35,11 +35,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Evaluate Matches" href="../evaluation/" /><link rel="prev" title="Embed via Neural Network" href="../embedding/" />
+    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Search over Nested Structure" href="../subindex/" /><link rel="prev" title="Embed via Neural Network" href="../embedding/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/matching.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Match Nearest Neighbours - DocArray 0.14.10 documentation</title>
+        <title>Find Nearest Neighbours - DocArray 0.14.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.14.10 documentation</div>
+                <div class="brand">DocArray 0.14.11 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -248,7 +248,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../visualization/">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../post-external/">Process via External Flow or Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../embedding/">Embed via Neural Network</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Match Nearest Neighbours</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../subindex/">Search over Nested Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
@@ -273,12 +274,11 @@
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/sqlite/">SQLite</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/annlite/">Annlite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/subindex/">Subindices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/weaviate/">Weaviate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -369,8 +369,8 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="match-nearest-neighbours">
-<span id="match-documentarray"></span><h1>Match Nearest Neighbours<a class="headerlink" href="#match-nearest-neighbours" title="Permalink to this headline">#</a></h1>
+                    <section class="tex2jax_ignore mathjax_ignore" id="find-nearest-neighbours">
+<span id="match-documentarray"></span><h1>Find Nearest Neighbours<a class="headerlink" href="#find-nearest-neighbours" title="Permalink to this headline">#</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><a class="reference internal" href="../../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-meth docutils literal notranslate"><span class="pre">match()</span></code></a> and <a class="reference internal" href="../../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> support both CPU &amp; GPU.</p>
@@ -602,12 +602,12 @@ match emb =   (0, 0)	1.0
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../evaluation/">
+                    <a class="next-page" href="../subindex/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Evaluate Matches</div>
+                            <div class="title">Search over Nested Structure</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -664,7 +664,7 @@ match emb =   (0, 0)	1.0
                 <div class="toc-tree-container">
                     <div class="toc-tree">
                         <ul>
-<li><a class="reference internal" href="#">Match Nearest Neighbours</a><ul>
+<li><a class="reference internal" href="#">Find Nearest Neighbours</a><ul>
 <li><a class="reference internal" href="#difference-between-find-and-match">Difference between find and match</a><ul>
 <li><a class="reference internal" href="#which-side-is-the-query-at">Which side is the query at?</a></li>
 <li><a class="reference internal" href="#what-is-the-type-of-the-query">What is the type of the query?</a></li>
