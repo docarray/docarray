@@ -1,6 +1,4 @@
 from typing import Iterable, Dict, Sequence
-import math
-import numpy as np
 
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
@@ -67,24 +65,20 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             return accumulated_docs
 
         # Handle if doc len is more than MAX_ES_RETURNED_DOCS
-        nrof_arr_split = math.ceil(len(ids) / self.MAX_ES_RETURNED_DOCS)
-        split_ids = np.array_split(ids, nrof_arr_split)
-        for split in split_ids:
-            es_docs = self._client.mget(index=self._config.index_name, ids=split)[
-                'docs'
-            ]
+        for pos in range(0, len(ids), self.MAX_ES_RETURNED_DOCS):
+            es_docs = self._client.mget(
+                index=self._config.index_name,
+                ids=ids[pos : pos + self.MAX_ES_RETURNED_DOCS],
+            )['docs']
+            for doc in es_docs:
+                if doc['found']:
+                    accumulated_docs.append(
+                        Document.from_base64(doc['_source']['blob'])
+                    )
+                else:
+                    accumulated_docs_id_not_found.append(doc['_id'])
 
-            docs = [
-                Document.from_base64(doc['_source']['blob'])
-                for doc in es_docs
-                if doc['found'] is True
-            ]
-            docs_id_not_found = [doc['_id'] for doc in es_docs if doc['found'] is False]
-
-            accumulated_docs.extend(docs)
-            accumulated_docs_id_not_found.extend(docs_id_not_found)
-
-        if len(accumulated_docs_id_not_found) > 0:
+        if accumulated_docs_id_not_found:
             raise KeyError(accumulated_docs_id_not_found, accumulated_docs)
 
         return accumulated_docs
@@ -120,7 +114,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         """
         if self._doc_id_exists(_id):
             self._client.delete(index=self._config.index_name, id=_id)
-
         self._refresh(self._config.index_name)
 
     def _clear_storage(self):
