@@ -4,12 +4,11 @@
 ```{toctree}
 :hidden:
 
-weaviate
 sqlite
-qdrant
 annlite
+qdrant
 elasticsearch
-subindex
+weaviate
 extend
 benchmark
 ```
