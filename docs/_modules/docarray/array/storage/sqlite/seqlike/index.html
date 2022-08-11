@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/sqlite/seqlike.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.storage.sqlite.seqlike - DocArray 0.14.9 documentation</title>
+        <title>docarray.array.storage.sqlite.seqlike - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.14.9 documentation</div>
+                <div class="brand">DocArray 0.14.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -245,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/subindex/">Subindices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -377,14 +378,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_insert_doc_at_idx</span><span class="p">(</span><span class="n">doc</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="SequenceLikeMixin.append"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">commit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;INSERT INTO </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> (doc_id, serialized_value, item_order) VALUES (?, ?, ?)&#39;</span><span class="p">,</span>
             <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">commit</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span>
@@ -420,10 +421,10 @@
             <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_config</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="SequenceLikeMixin.extend"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.sqlite.seqlike/#docarray.array.storage.sqlite.seqlike.SequenceLikeMixin.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_append</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -438,7 +439,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 09, 2022</div>
+                            Last updated on Aug 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

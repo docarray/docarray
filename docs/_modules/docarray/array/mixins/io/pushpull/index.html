@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/io/pushpull.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins.io.pushpull - DocArray 0.14.9 documentation</title>
+        <title>docarray.array.mixins.io.pushpull - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.14.9 documentation</div>
+                <div class="brand">DocArray 0.14.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -245,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/subindex/">Subindices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -336,49 +337,15 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.mixins.io.pushpull</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
-
 
 <span class="kn">from</span> <span class="nn">docarray.helper</span> <span class="kn">import</span> <span class="n">get_request_header</span><span class="p">,</span> <span class="n">__cache_path__</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">T</span>
-
-<span class="n">JINA_CLOUD_CONFIG</span> <span class="o">=</span> <span class="s1">&#39;config.json&#39;</span>
-
-
-<span class="nd">@lru_cache</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">_get_hub_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-    <span class="n">hub_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_HUB_ROOT&#39;</span><span class="p">,</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;.jina&#39;</span><span class="p">)))</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">hub_root</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">hub_root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="n">config_file</span> <span class="o">=</span> <span class="n">hub_root</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">JINA_CLOUD_CONFIG</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_get_auth_token</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">hub_config</span> <span class="o">=</span> <span class="n">_get_hub_config</span><span class="p">()</span>
-    <span class="n">config_auth_token</span> <span class="o">=</span> <span class="n">hub_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;auth_token&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">hub_config</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="n">env_auth_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_AUTH_TOKEN&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">env_auth_token</span> <span class="ow">or</span> <span class="n">config_auth_token</span>
-
-
-<span class="nd">@lru_cache</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">_get_cloud_api</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get Cloud Api for transmitting data to the cloud.</span>
-
-<span class="sd">    :return: Cloud Api Url</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_HUBBLE_REGISTRY&#39;</span><span class="p">,</span> <span class="s1">&#39;https://api.hubble.jina.ai&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PushPullMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin">[docs]</a><span class="k">class</span> <span class="nc">PushPullMixin</span><span class="p">:</span>
@@ -386,7 +353,24 @@
 
     <span class="n">_max_bytes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
-<div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">auth_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="kn">import</span> <span class="nn">hubble</span>
+
+        <span class="k">if</span> <span class="s1">&#39;HUBBLE_HINT_SHOWED&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">show_hint</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HUBBLE_HINT_SHOWED&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">jsonify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">token</span>
+
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_AUTH_TOKEN&#39;</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
 
 <span class="sd">        .. note::</span>
@@ -398,7 +382,8 @@
 
 <span class="sd">        :param name: a name that later can be used for retrieve this :class:`DocumentArray`.</span>
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
-<span class="sd">        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.</span>
+<span class="sd">        :param public: by default anyone can pull a DocumentArray if they know its name.</span>
+<span class="sd">            Setting this to False will allow only the creator to pull it. This feature of course you to login first.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -418,9 +403,14 @@
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">ctype</span><span class="p">,</span> <span class="o">**</span><span class="n">get_request_header</span><span class="p">()}</span>
 
-        <span class="n">auth_token</span> <span class="o">=</span> <span class="n">_get_auth_token</span><span class="p">()</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_token</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
             <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">public</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">auth_token</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;You are not logged in, and `public=False` if only for logged in users. To login, use `jina auth login`.&#39;</span>
+            <span class="p">)</span>
 
         <span class="n">_head</span><span class="p">,</span> <span class="n">_tail</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
         <span class="n">_head</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_header</span>
@@ -458,8 +448,11 @@
             <span class="k">yield</span> <span class="n">_tail</span>
 
         <span class="k">with</span> <span class="n">pbar</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">Client</span>
+            <span class="kn">from</span> <span class="nn">hubble.client.endpoints</span> <span class="kn">import</span> <span class="n">EndpointsV2</span>
+
             <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.upload&#39;</span><span class="p">,</span>
+                <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">upload_artifact</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">(),</span>
                 <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
             <span class="p">)</span>
@@ -490,11 +483,14 @@
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="n">auth_token</span> <span class="o">=</span> <span class="n">_get_auth_token</span><span class="p">()</span>
+        <span class="n">auth_token</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">auth_token</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
             <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_get_cloud_api</span><span class="p">()</span><span class="si">}</span><span class="s1">/v2/rpc/artifact.getDownloadUrl?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">Client</span>
+        <span class="kn">from</span> <span class="nn">hubble.client.endpoints</span> <span class="kn">import</span> <span class="n">EndpointsV2</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">download_artifact</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
@@ -548,7 +544,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 09, 2022</div>
+                            Last updated on Aug 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

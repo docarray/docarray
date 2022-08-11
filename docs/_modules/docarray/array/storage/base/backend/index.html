@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/base/backend.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.storage.base.backend - DocArray 0.14.9 documentation</title>
+        <title>docarray.array.storage.base.backend - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.14.9 documentation</div>
+                <div class="brand">DocArray 0.14.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -245,6 +245,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/subindex/">Subindices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -336,7 +337,7 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.storage.base.backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">is_dataclass</span><span class="p">,</span> <span class="n">asdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
@@ -355,9 +356,45 @@
         <span class="n">_docs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArraySourceType&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_offset2ids</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_subindices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">subindex_configs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;subindex_configs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">subindex_configs</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_config&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">config_subindex</span> <span class="ow">in</span> <span class="n">subindex_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">config_subindex</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">dict</span><span class="p">()</span> <span class="k">if</span> <span class="n">config_subindex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">config_subindex</span>
+                <span class="p">)</span>  <span class="c1"># allow None as input</span>
+                <span class="n">config_joined</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">config_subindex</span><span class="p">}</span>
+                <span class="n">config_joined</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_unique_config</span><span class="p">(</span>
+                    <span class="n">config</span><span class="p">,</span> <span class="n">config_subindex</span><span class="p">,</span> <span class="n">config_joined</span><span class="p">,</span> <span class="n">name</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config_joined</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traverse_flat</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_ensure_unique_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config_root</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">config_subindex</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">config_joined</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">subindex_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ensures that the subindex configuration is unique, despite it inheriting unpopulated fields from the root config.</span>
+
+<span class="sd">        :param config_root: The configuration of the root index.</span>
+<span class="sd">        :param config_subindex: The configuration that was explicitly provided by the user for the subindex.</span>
+<span class="sd">        :param config_joined: The configuration that combines root and subindex configs. This is the configuration that will be used for subindex construction.</span>
+<span class="sd">        :param subindex_name: Name (access path) of the subindex</span>
+<span class="sd">        :return: config_joined that is unique compared to config_root</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
 
     <span class="k">def</span> <span class="nf">_get_storage_infos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_config&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">):</span>
@@ -395,7 +432,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 09, 2022</div>
+                            Last updated on Aug 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

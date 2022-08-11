@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/text/index/" />
   
-<meta property="og:site_name" content="DocArray 0.14.9 Documentation" />
+<meta property="og:site_name" content="DocArray 0.14.10 Documentation" />
   
 <meta property="og:description" content="Text: Representing text in DocArray is easy. Simply do: If your text data is big and can not be written inline, or it comes from a URI, then you can also define uri first and load the text into Document later. And of course, you can have characters from different languages. Segment long documents..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.14.9 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.14.10 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/text/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Text - DocArray 0.14.9 documentation</title>
+        <title>Text - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.14.9 documentation</div>
+                <div class="brand">DocArray 0.14.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -278,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/subindex/">Subindices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -423,9 +424,13 @@
 <p>For example, we have a DocumentArray with three Documents:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello world&#39;</span><span class="p">),</span> 
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;goodbye world&#39;</span><span class="p">),</span>
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello goodbye&#39;</span><span class="p">)])</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello world&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;goodbye world&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;hello goodbye&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>To get the vocabulary, you can use:</p>
@@ -450,9 +455,13 @@
 <p>When you have text in different length and you want the output <code class="docutils literal notranslate"><span class="pre">.tensor</span></code> to have the same length, you can define <code class="docutils literal notranslate"><span class="pre">max_length</span></code> during converting:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;a short phrase&#39;</span><span class="p">),</span> 
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">),</span> 
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;this is a much longer sentence&#39;</span><span class="p">)])</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;a short phrase&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;this is a much longer sentence&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 <span class="n">vocab</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">get_vocabulary</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
@@ -480,9 +489,13 @@
 <p>As a bonus, you can also easily convert an integer <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> back to text based on some given vocabulary. This procedure is often termed as “decoding”.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;a short phrase&#39;</span><span class="p">),</span> 
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">),</span> 
-                    <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;this is a much longer sentence&#39;</span><span class="p">)])</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;a short phrase&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;this is a much longer sentence&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 <span class="n">vocab</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">get_vocabulary</span><span class="p">()</span>
 
 <span class="c1"># encoding</span>
@@ -532,6 +545,161 @@ this is a much longer sentence
 </pre></div>
 </div>
 </section>
+<section id="searching-at-chunk-level-with-subindex">
+<h2>Searching at chunk level with subindex<a class="headerlink" href="#searching-at-chunk-level-with-subindex" title="Permalink to this headline">#</a></h2>
+<p>You can create applications that search at chunk level using a subindex.
+Imagine you want an application that searches at a sentences granularity and returns the document title of the document
+containing the sentence closest to the query. For example, you can have a database of lyrics of songs and you want to
+search the song title of a song from which you might remember a small part of it (likely the chorus).</p>
+<div class="seealso admonition">
+<p class="admonition-title">Multi-modal Documents</p>
+<p>Modelling nested Documents is often more convenient using DocArray’s <a class="reference internal" href="../../fundamentals/dataclass/#dataclass"><span class="std std-ref">dataclass API</span></a>, especially when multiple modalities are
+involved.</p>
+<p>You can find the corresponding example <a class="reference internal" href="../multimodal/#multimodal-example"><span class="std std-ref">here</span></a>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">song1_title</span> <span class="o">=</span> <span class="s1">&#39;Take On Me&#39;</span>
+
+<span class="n">song1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">#A-ha</span>
+<span class="s2">Talking away</span>
+<span class="s2">I don&#39;t know what I&#39;m to say</span>
+<span class="s2">I&#39;ll say it anyway</span>
+<span class="s2">Today is another day to find you</span>
+<span class="s2">Shying away</span>
+<span class="s2">I&#39;ll be coming for your love. OK?</span>
+
+<span class="s2">Take on me (take on me)</span>
+<span class="s2">Take me on (take on me)</span>
+<span class="s2">I&#39;ll be gone</span>
+<span class="s2">In a day or two</span>
+
+<span class="s2">So needless to say</span>
+<span class="s2">Of odds and ends</span>
+<span class="s2">But I&#39;ll be stumbling away</span>
+<span class="s2">Slowly learning that life is OK.</span>
+<span class="s2">Say after me,</span>
+<span class="s2">&quot;It&#39;s no better to be safe than sorry.&quot;</span>
+
+<span class="s2">Take on me (take on me)</span>
+<span class="s2">Take me on (take on me)</span>
+<span class="s2">I&#39;ll be gone</span>
+<span class="s2">In a day or two</span>
+
+<span class="s2">Oh, things that you say. Yeah.</span>
+<span class="s2">Is it life or just to play my worries away?</span>
+<span class="s2">You&#39;re all the things I&#39;ve got to remember</span>
+<span class="s2">You&#39;re shying away</span>
+<span class="s2">I&#39;ll be coming for you anyway</span>
+
+<span class="s2">Take on me (take on me)</span>
+<span class="s2">Take me on (take on me)</span>
+<span class="s2">I&#39;ll be gone</span>
+<span class="s2">In a day</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">song2_title</span> <span class="o">=</span> <span class="s1">&#39;The trooper&#39;</span>
+
+<span class="n">song2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You&#39;ll take my life, but I&#39;ll take yours too</span>
+<span class="s2">You&#39;ll fire your musket, but I&#39;ll run you through</span>
+<span class="s2">So when you&#39;re waiting for the next attack</span>
+<span class="s2">You&#39;d better stand, there&#39;s no turning back</span>
+<span class="s2">The bugle sounds, the charge begins</span>
+<span class="s2">But on this battlefield, no one wins</span>
+<span class="s2">The smell of acrid smoke and horses&#39; breath</span>
+<span class="s2">As I plunge on into certain death</span>
+<span class="s2">The horse, he sweats with fear, we break to run</span>
+<span class="s2">The mighty roar of the Russian guns</span>
+<span class="s2">And as we race towards the human wall</span>
+<span class="s2">The screams of pain as my comrades fall</span>
+<span class="s2">We hurdle bodies that lay on the ground</span>
+<span class="s2">And the Russians fire another round</span>
+<span class="s2">We get so near, yet so far away</span>
+<span class="s2">We won&#39;t live to fight another day</span>
+<span class="s2">We get so close, near enough to fight</span>
+<span class="s2">When a Russian gets me in his sights</span>
+<span class="s2">He pulls the trigger and I feel the blow</span>
+<span class="s2">A burst of rounds take my horse below</span>
+<span class="s2">And as I lay there gazing at the sky</span>
+<span class="s2">My body&#39;s numb and my throat is dry</span>
+<span class="s2">And as I lay forgotten and alone</span>
+<span class="s2">Without a tear, I draw my parting groan</span>
+<span class="s2">&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>We can now create one document for each of the songs, containing as chunks the song sentences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">doc1</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
+    <span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">song1</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)],</span> <span class="n">song_title</span><span class="o">=</span><span class="n">song1_title</span>
+<span class="p">)</span>
+<span class="n">doc2</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span>
+    <span class="n">chunks</span><span class="o">=</span><span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">song2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)],</span> <span class="n">song_title</span><span class="o">=</span><span class="n">song2_title</span>
+<span class="p">)</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">doc1</span><span class="p">,</span> <span class="n">doc2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Now we can build a feature vector for each line of each song. Here we use a very simple Bag of Words descriptor as
+feature vector.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+
+<span class="k">def</span> <span class="nf">build_tokenizer</span><span class="p">(</span><span class="n">token_pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;(?u)\b\w\w+\b&quot;</span><span class="p">):</span>
+    <span class="n">token_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">token_pattern</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">token_pattern</span><span class="o">.</span><span class="n">findall</span>
+
+
+<span class="k">def</span> <span class="nf">bow_feature_vector</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+            <span class="n">embedding</span><span class="p">[</span><span class="n">vocab</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">embedding</span>
+
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">build_tokenizer</span><span class="p">()</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_vocabulary</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[</span><span class="s1">&#39;@c&#39;</span><span class="p">]:</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">bow_feature_vector</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once we have the data prepared, we can store it into a DocumentArray that supports a subindex.</p>
+<div class="highlight-buildoutcfg notranslate"><div class="highlight"><pre><span></span>n_features = len(vocab)+2
+n_dim = 3
+da_backend=DocumentArray(
+    storage=&#39;annlite&#39;,
+    config={&#39;data_path&#39;:&#39;./annlite_data&#39;,
+            &#39;n_dim&#39;: n_dim, 
+            &#39;metric&#39;: &#39;Cosine&#39;},
+    subindex_configs={&#39;@c&#39;: {&#39;n_dim&#39;: n_features}},
+)
+
+with da_backend:
+    da_backend.extend(da)
+</pre></div>
+</div>
+<p>Given a query such as <code class="docutils literal notranslate"><span class="pre">into</span> <span class="pre">death</span></code> we want to search which song contained a similar sentence.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_song_name_from_song_snippet</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">da_backend</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">similar_items</span> <span class="o">=</span> <span class="n">da_backend</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;@c&#39;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">most_similar_docs</span> <span class="o">=</span> <span class="n">similar_items</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">da_backend</span><span class="p">[</span><span class="n">most_similar_docs</span><span class="o">.</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span>
+
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;into death&#39;</span><span class="p">)</span>
+<span class="n">query</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">bow_feature_vector</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
+
+<span class="n">similar_items</span> <span class="o">=</span> <span class="n">find_song_name_from_song_snippet</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">da_backend</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">similar_items</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Will print</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;song_title&#39;: &#39;The trooper&#39;}
+</pre></div>
+</div>
+</section>
 </section>
 
                 </article>
@@ -569,7 +737,7 @@ this is a much longer sentence
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 09, 2022</div>
+                            Last updated on Aug 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -606,6 +774,7 @@ this is a much longer sentence
 <li><a class="reference internal" href="#convert-text-into-ndarray">Convert text into <code class="docutils literal notranslate"><span class="pre">ndarray</span></code></a></li>
 <li><a class="reference internal" href="#convert-ndarray-back-to-text">Convert <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> back to text</a></li>
 <li><a class="reference internal" href="#simple-text-matching-via-feature-hashing">Simple text matching via feature hashing</a></li>
+<li><a class="reference internal" href="#searching-at-chunk-level-with-subindex">Searching at chunk level with subindex</a></li>
 </ul>
 </li>
 </ul>

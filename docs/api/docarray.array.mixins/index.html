@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins/" />
   
-<meta property="og:site_name" content="DocArray 0.14.9 Documentation" />
+<meta property="og:site_name" content="DocArray 0.14.10 Documentation" />
   
 <meta property="og:description" content="Subpackages: docarray.array.mixins.dataloader package- Submodules- docarray.array.mixins.dataloader.helper module., Module contents., docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module, docarray.array.mixins.io.common module, docarray.array.mixins.io.csv module, ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.14.9 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.14.10 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.mixins package - DocArray 0.14.9 documentation</title>
+        <title>docarray.array.mixins package - DocArray 0.14.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.14.9 documentation</div>
+                <div class="brand">DocArray 0.14.10 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -278,6 +278,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/subindex/">Subindices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
@@ -452,6 +453,16 @@
 # noqa: DAR201
 :rtype: T
 :return: a new <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.array.mixins.AllMixins.auth_token">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auth_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.array.mixins.AllMixins.auth_token" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -651,7 +662,7 @@ you to evaluate on irrelevant matches accidentally.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.AllMixins.find">
-<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.AllMixins.find" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'text'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.AllMixins.find" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns matching Documents given an input query.
 If the query is a <cite>DocumentArray</cite>, <cite>Document</cite> or <cite>ArrayType</cite>, exhaustive or approximate nearest neighbor search
 will be performed depending on whether the storage backend supports ANN. Furthermore, if filter is not None,
@@ -678,6 +689,7 @@ considered as matches. This is only applied when the input query is Document or 
 parameter is ignored. By default, the Document <cite>text</cite> attribute will be used for search,
 otherwise the tag field specified by <cite>index</cite> will be used. You can only use this parameter if the
 storage backend supports searching by text.</p></li>
+<li><p><strong>on</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.</p></li>
 <li><p><strong>kwargs</strong> – other kwargs.</p></li>
 </ul>
 </dd>
@@ -1111,7 +1123,7 @@ and the original object do <strong>not</strong> share the same memory.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.AllMixins.match">
-<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">darray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.AllMixins.match" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">darray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.AllMixins.match" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute embedding based nearest neighbour in <cite>another</cite> for each Document in <cite>self</cite>,
 and store results in <cite>matches</cite>.
 .. note:</p>
@@ -1157,6 +1169,7 @@ on sparse matrix.</p></li>
 <p>This argument is only effective when <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> is set.</p>
 </div>
 </p></li>
+<li><p><strong>on</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.</p></li>
 <li><p><strong>kwargs</strong> – other kwargs.</p></li>
 </ul>
 </dd>
@@ -1292,7 +1305,8 @@ persistence. Only use this full temporary transmission/storage/clipboard.</p></l
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – a name that later can be used for retrieve this <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p></li>
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar on pulling</p></li>
-<li><p><strong>public</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the DocumentArray will be shared publicly. Otherwise, it will be private.</p></li>
+<li><p><strong>public</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – by default anyone can pull a DocumentArray if they know its name.
+Setting this to False will allow only the creator to pull it. This feature of course you to login first.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -1845,7 +1859,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 09, 2022</div>
+                            Last updated on Aug 11, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

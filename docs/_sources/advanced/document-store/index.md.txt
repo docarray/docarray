@@ -9,6 +9,7 @@ sqlite
 qdrant
 annlite
 elasticsearch
+subindex
 extend
 benchmark
 ```
@@ -100,6 +101,16 @@ da = DocumentArray()
 ````
 
 Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as `DocumentArray.empty(10)`, then explicit importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
+
+```{admonition} Subindices
+:class: seealso
+
+When working with multimodal or nested data, you often want to perform search on a particular modality or nesting.
+
+To enable this without having to load data into memory, you can construct your DocumentArray with a subindex.
+To learn how to do that, see {ref}`here <subindex>`.
+
+```
 
 ### Construct with config
 
