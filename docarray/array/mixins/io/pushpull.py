@@ -14,18 +14,6 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    @property
-    def auth_token(self) -> Optional[str]:
-        import hubble
-
-        if 'HUBBLE_HINT_SHOWED' not in os.environ:
-            token = hubble.show_hint()
-            os.environ['HUBBLE_HINT_SHOWED'] = '1'
-        else:
-            token = hubble.Client(jsonify=True).token
-
-        return os.environ.get('JINA_AUTH_TOKEN', token)
-
     def push(
         self,
         name: str,
@@ -63,8 +51,9 @@ class PushPullMixin:
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
+        import hubble
 
-        auth_token = self.auth_token
+        auth_token = hubble.get_token()
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
@@ -144,7 +133,10 @@ class PushPullMixin:
 
         headers = {}
 
-        auth_token = cls.auth_token
+        import hubble
+
+        auth_token = hubble.get_token()
+
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
