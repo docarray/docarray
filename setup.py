@@ -44,16 +44,19 @@ setup(
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
             'protobuf>=3.13.0,<=3.20.1',
+            'jina-auth>=0.2',
+            'jina-hubble-sdk>=0.9.1',
             'lz4',
             'requests',
             'matplotlib',
             'Pillow',
             'fastapi',
             'uvicorn',
-            'jina-auth',
         ],
         'full': [
             'protobuf>=3.13.0,<=3.20.1',
+            'jina-auth>=0.2',
+            'jina-hubble-sdk>=0.9.1',
             'lz4',
             'requests',
             'matplotlib',
