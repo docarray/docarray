@@ -52,3 +52,4 @@ def test_error_get_bulk_data_id_not_exist(start_storage):
         elastic_doc[['r1', 'r11', 'r21'], 'id']
 
     assert e.value.args[0] == ['r11', 'r21']
+    assert len(e.value.args[1]) == 1
