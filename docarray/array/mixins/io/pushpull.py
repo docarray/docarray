@@ -69,8 +69,7 @@ class PushPullMixin:
 
         if not public and not auth_token:
             warnings.warn(
-                'You are not logged in, and `public=False` if only for logged in users. To login, use `jina auth login`.'
-            )
+                'You are not logged in, and `public=False` is only for logged in users. To login, use `jina auth login`.'
 
         _head, _tail = data.split(delimiter)
         _head += self._stream_header
