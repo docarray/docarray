@@ -30,6 +30,7 @@ class PlotMixin:
         from rich.table import Table
         from rich.console import Console
         from rich.panel import Panel
+        import rich.markup
 
         from rich import box
 
@@ -79,7 +80,9 @@ class PlotMixin:
         table.add_row('Multimodal dataclass', str(is_multimodal))
 
         if getattr(self, '_subindices'):
-            table.add_row('Subindices', str(tuple(self._subindices.keys())))
+            table.add_row(
+                'Subindices', rich.markup.escape(str(tuple(self._subindices.keys())))
+            )
 
         tables.append(Panel(table, title='Documents Summary', expand=False))
 
