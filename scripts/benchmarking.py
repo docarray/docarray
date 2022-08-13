@@ -105,7 +105,7 @@ if args.default_hnsw:
             {'n_dim': D},
         ),
         ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
-        ('weaviate', {'n_dim': D}),
+        ('weaviate', {'n_dim': D, 'distance': 'l2-squared'}),
         ('elasticsearch', {'n_dim': D}),
     ]
 else:
@@ -124,7 +124,7 @@ else:
         ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
         (
             'weaviate',
-            {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
+            {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16, 'distance': 'l2-squared'},
         ),
         ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
     ]
