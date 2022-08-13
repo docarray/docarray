@@ -65,7 +65,7 @@ setup(
             'fastapi',
             'uvicorn',
             'strawberry-graphql',
-            'weaviate-client~=3.3.0',
+            'weaviate-client~=3.7.0',
             'annlite>=0.3.2',
             'qdrant-client~=0.7.3',
             'elasticsearch>=8.2.0',
@@ -77,7 +77,7 @@ setup(
             'annlite>=0.3.2',
         ],
         'weaviate': [
-            'weaviate-client~=3.3.0',
+            'weaviate-client~=3.7.0',
         ],
         'elasticsearch': [
             'elasticsearch>=8.2.0',
@@ -101,10 +101,11 @@ setup(
             'onnxruntime',
             'jupyterlab',
             'transformers>=4.16.2',
-            'weaviate-client~=3.3.0',
+            'weaviate-client~=3.7.0',
             'annlite>=0.3.2',
             'elasticsearch>=8.2.0',
             'jina',
+            'lorem'
         ],
     },
     classifiers=[

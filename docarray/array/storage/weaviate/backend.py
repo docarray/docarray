@@ -68,11 +68,38 @@ _banned_classname_chars = [
 
 
 def _sanitize_class_name(name):
+    """
+    Sanitiazes class name if its not set correctly
+
+    Parameters
+    ----------
+    results : string
+        A sanitized string
+    """
+
     new_name = name
     for char in _banned_classname_chars:
         new_name = new_name.replace(char, '')
     return new_name
 
+def _check_batch_result(results: dict):
+    """
+    Check batch results for errors.
+
+    Parameters
+    ----------
+    results : dict
+        The Weaviate batch creation return value.
+    """
+
+    if results is not None:
+        for result in results:
+            if 'result' in result and 'errors' in result['result']:
+                if 'error' in result['result']['errors']:
+                    raise ValueError(
+                        'Weaviate throws an error',
+                        result['result']['errors']['error'][0]['message']
+                    )
 
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
@@ -117,6 +144,14 @@ class BackendMixin(BaseBackendMixin):
             f'{config.protocol}://{config.host}:{config.port}',
             timeout_config=config.timeout_config,
         )
+        self._client.batch(
+            batch_size=1250,
+            dynamic=True,
+            creation_time=5,
+            timeout_retries=3,
+            callback=_check_batch_result,
+        )
+
         self._config = config
 
         self._config.columns = self._normalize_columns(self._config.columns)
@@ -154,15 +189,6 @@ class BackendMixin(BaseBackendMixin):
             config_joined['name'] = unique_name
         return config_joined
 
-    def _get_weaviate_class_name(self) -> str:
-        """Generate the class/schema name using the ``uuid1`` module with some
-        formatting to tailor to weaviate class name convention
-
-        :return: string representing the name of  weaviate class/schema name of
-            this :class:`DocumentArrayWeaviate` object
-        """
-        return f'Class{uuid.uuid4().hex}'
-
     def _get_schema_by_name(self, cls_name: str) -> Dict:
         """Return the schema dictionary object with the class name
         Content of the all dictionaries by this method are the same except the name
@@ -171,8 +197,7 @@ class BackendMixin(BaseBackendMixin):
         :param cls_name: the name of the schema/class in weaviate
         :return: the schema dictionary
         """
-        # TODO: ideally we should only use one schema. this will allow us to deal with
-        # consistency better
+
         hnsw_config = {
             'ef': self._config.ef,
             'efConstruction': self._config.ef_construction,
@@ -195,9 +220,77 @@ class BackendMixin(BaseBackendMixin):
                     'vectorIndexConfig': {'skip': False, **filter_dict(hnsw_config)},
                     'properties': [
                         {
+                            'dataType': ['string'],
+                            'name': '_docarray_id',
+                            'indexInverted': True,
+                        },
+                        {
                             'dataType': ['blob'],
-                            'name': '_serialized',
+                            'name': 'blob',
                             'indexInverted': False,
+                        },
+                        {
+                            'dataType': ['number[]'],
+                            'name': 'tensor',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['text'],
+                            'name': 'text',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['int'],
+                            'name': 'granularity',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['int'],
+                            'name': 'adjacency',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['string'],
+                            'name': 'parent_id',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['number'],
+                            'name': 'weight',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['string'],
+                            'name': 'uri',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['string'],
+                            'name': 'modality',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['string'],
+                            'name': 'mime_type',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['number'],
+                            'name': 'offset',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': ['number'],
+                            'name': 'location',
+                            'indexInverted': True,
+                        },
+                        {
+                            'dataType': [cls_name],
+                            'name': 'chunks'
+                        },
+                        {
+                            'dataType': [cls_name],
+                            'name': 'matches'
                         },
                     ],
                 },
@@ -234,14 +327,10 @@ class BackendMixin(BaseBackendMixin):
         :return: the schemas of this :class`DocumentArrayWeaviate` object and its meta
         """
         if not self._config.name:
-            name_candidate = self._get_weaviate_class_name()
-            doc_schemas = self._get_schema_by_name(name_candidate)
-            while self._client.schema.contains(doc_schemas):
-                name_candidate = self._get_weaviate_class_name()
-                doc_schemas = self._get_schema_by_name(name_candidate)
-            self._client.schema.create(doc_schemas)
-            self._config.name = name_candidate
-            return doc_schemas
+            raise ValueError(
+                'You need to set config.name',
+                'Every config.name contains its own vector space'    
+            )
 
         doc_schemas = self._get_schema_by_name(self._config.name)
         if self._client.schema.contains(doc_schemas):
@@ -252,6 +341,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _update_offset2ids_meta(self):
         """Update the offset2ids in weaviate the the current local version"""
+
         if self._offset2ids_wid is not None and self._client.data_object.exists(
             self._offset2ids_wid
         ):
@@ -277,6 +367,7 @@ class BackendMixin(BaseBackendMixin):
 
         :raises ValueError: error is raised if meta class name is not defined
         """
+
         if not self._meta_name:
             raise ValueError('meta object is not defined')
 
@@ -302,6 +393,7 @@ class BackendMixin(BaseBackendMixin):
 
         :return: name of weaviate class/schema of this :class:`DocumentArrayWeaviate`
         """
+
         return self._class_name
 
     @property
@@ -310,6 +402,7 @@ class BackendMixin(BaseBackendMixin):
 
         :return: name of weaviate class/schema of this :class:`DocumentArrayWeaviate`
         """
+
         if not self._schemas:
             return None
         return self._schemas['classes'][0]['class']
@@ -321,7 +414,7 @@ class BackendMixin(BaseBackendMixin):
 
         :return: name of weaviate class/schema of class that stores the meta information
         """
-        # TODO: remove this after we combine the meta info to the DocumentArray class
+
         if not self._schemas:
             return None
         return self._schemas['classes'][1]['class']
@@ -332,6 +425,7 @@ class BackendMixin(BaseBackendMixin):
 
         :return: the dictionary representing this weaviate schema
         """
+
         if not self._schemas:
             return None
         return self._schemas['classes'][0]
@@ -342,6 +436,7 @@ class BackendMixin(BaseBackendMixin):
 
         :return: the dictionary representing a meta object's weaviate schema
         """
+
         if not self._schemas and len(self._schemas) < 2:
             return None
         return self._schemas['classes'][1]
@@ -352,21 +447,70 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
+
         columns_dict = {key: val for [key, val] in self._config.columns}
         extra_columns = {
             col: self._map_column(value.tags.get(col), columns_dict[col])
             for col, _ in self._config.columns
         }
 
-        return dict(
-            data_object={
-                '_serialized': value.to_base64(**self._serialize_config),
-                **extra_columns,
-            },
-            class_name=self._class_name,
-            uuid=self._map_id(value.id),
-            vector=self._map_embedding(value.embedding),
-        )
+        data_object = {
+            **extra_columns,
+        }
+
+        options_without_cross_refs = [ 'id',
+                    'blob',
+                    'tensor',
+                    'text',
+                    'granularity',
+                    'adjacency',
+                    'parent_id',
+                    'weight',
+                    'uri',
+                    'modality',
+                    'mime_type',
+                    'offset',
+                    'location',
+                    'tags']
+
+        options_with_cross_refs = ['chunks', 'matches']
+
+        # set Weaviate object without cross references
+        for opt in options_without_cross_refs:
+            if getattr(value, opt):
+                # filter out IDs
+                if opt == 'id':
+                    data_object['_docarray_id'] = getattr(value, opt)
+                else:
+                    data_object[opt] = getattr(value, opt)
+
+        # set Weaviate object with cross references
+        references = []
+        for opt in options_with_cross_refs:
+            if len(getattr(value, opt)) > 0:
+                data_object[opt] = []
+                for doc in getattr(value, opt):
+                    references.append([
+                        # from Weaviate uuid
+                        self._map_id(getattr(value, 'id')),
+                        # from class name
+                        self._config.name,
+                        # from property name
+                        opt,
+                        # to entity uuid
+                        self._map_id(doc.id),
+                        # to class name
+                        self._config.name
+                    ])
+
+        return [dict(
+                data_object=data_object,
+                class_name=self._class_name,
+                uuid=self._map_id(value.id),
+                vector=self._map_embedding(value.embedding),
+            ),
+            references
+        ]
 
     def _map_id(self, doc_id: str):
         """the function maps doc id to weaviate id
@@ -389,9 +533,6 @@ class BackendMixin(BaseBackendMixin):
             if embedding.ndim > 1:
                 embedding = np.asarray(embedding).squeeze()
 
-            # Weaviate expects vector to have dim 2 at least
-            # or get weaviate.exceptions.UnexpectedStatusCodeException:  models.C11yVector
-            # hence we cast it to list of a single element
             if len(embedding) == 1:
                 embedding = [embedding[0]]
         else:
@@ -408,3 +549,4 @@ class BackendMixin(BaseBackendMixin):
         self._client = weaviate.Client(
             f'{state["_config"].protocol}://{state["_config"].host}:{state["_config"].port}'
         )
+        

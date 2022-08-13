@@ -1,3 +1,4 @@
+from tokenize import String
 from typing import (
     TYPE_CHECKING,
     TypeVar,
@@ -28,8 +29,65 @@ if TYPE_CHECKING:
         Sequence[float],
     )
 
+options_without_cross_refs = [
+    '_docarray_id',
+    'blob',
+    'tensor',
+    'text',
+    'granularity',
+    'adjacency',
+    'parent_id',
+    'weight',
+    'uri',
+    'modality',
+    'mime_type',
+    'offset',
+    'location']
+
+options_with_cross_refs = ['chunks', 'matches']
+
 
 class FindMixin:
+
+    def collect_results_from_weaviate(self, result, include_cosine):
+        """Returns a Doc based on Weaviate results
+
+        :param result: the result from Weaviate
+        :param include_cosine: should cosine distance be included in the results?
+        """
+
+        doc = Document(id=result['_docarray_id'])
+
+        if include_cosine == True:
+            certainty = result['_additional']['certainty']
+            doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
+            if certainty is None:
+                doc.scores['cosine_similarity'] = NamedScore(value=None)
+            else:
+                doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+
+        # populate all the values for non-cross-ref values
+        for opt in options_without_cross_refs:  
+            if opt in result:
+                setattr(doc, opt, result[opt])
+
+        # populate all cross ref values
+        add_array= {}
+        for opt in options_with_cross_refs:
+            add_array[opt] = []
+            if opt in result and result[opt] != None:
+                    for cref_doc in result[opt]:
+                        add_array[opt].append(self._getitem(self._map_id(cref_doc['_docarray_id'])))
+            setattr(doc, opt, add_array[opt])
+
+        doc.tags['wid'] = result['_additional']['id']
+
+        if len(result['_additional']['vector']) > 0:
+            setattr(doc, 'embedding', result['_additional']['vector'])
+
+        return doc
+        
+
     def _find_similar_vectors(
         self,
         query: 'WeaviateArrayType',
@@ -49,6 +107,7 @@ class FindMixin:
         :param query_params: additional parameters applied to the query outside of the where clause
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
+
         query = to_numpy_array(query)
         is_all_zero = np.all(query == 0)
         if is_all_zero:
@@ -59,12 +118,12 @@ class FindMixin:
         if query_params:
             query_dict.update(query_params)
 
-        _additional = ['id', 'certainty']
+        _additional = ['id', 'certainty', 'vector']
         if additional:
             _additional = _additional + additional
 
         query_builder = (
-            self._client.query.get(self._class_name, '_serialized')
+            self._client.query.get(self._class_name, options_without_cross_refs)
             .with_additional(_additional)
             .with_limit(limit)
             .with_near_vector(query_dict)
@@ -89,23 +148,7 @@ class FindMixin:
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in found_results:
-            doc = Document.from_base64(result['_serialized'], **self._serialize_config)
-            certainty = result['_additional']['certainty']
-
-            doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
-
-            if certainty is None:
-                doc.scores['cosine_similarity'] = NamedScore(value=None)
-            else:
-                doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
-
-            doc.tags['wid'] = result['_additional']['id']
-
-            if additional:
-                for add in additional:
-                    doc.tags[f'{add}'] = result['_additional'][add]
-
-            docs.append(doc)
+            docs.append(self.collect_results_from_weaviate(result, True))
 
         return DocumentArray(docs)
 
@@ -124,15 +167,24 @@ class FindMixin:
         :param sort: sort parameters performed on matches performed on results
         :return: a `DocumentArray` containing the `Document` objects that verify the filter.
         """
+
         if not filter:
             return self
 
-        _additional = ['id']
+        # if the id is specified, use this
+        if 'id' in filter:
+            filter = { 'path': 'id', 'operator': 'Equal', 'valueString': self._map_id(filter['id']) }
+            limit = 1
+
+        _additional = ['id', 'vector']
         if additional:
             _additional = _additional + additional
 
         query_builder = (
-            self._client.query.get(self._class_name, '_serialized')
+            self._client.query.get(self._class_name, options_without_cross_refs + 
+                ['chunks { ... on ' + self._class_name + ' { _docarray_id } }',
+                'matches { ... on ' + self._class_name + ' { _docarray_id } }']
+            )
             .with_additional(_additional)
             .with_where(filter)
             .with_limit(limit)
@@ -154,15 +206,7 @@ class FindMixin:
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
         for result in found_results:
-            doc = Document.from_base64(result['_serialized'], **self._serialize_config)
-
-            doc.tags['wid'] = result['_additional']['id']
-
-            if additional:
-                for add in additional:
-                    doc.tags[f'{add}'] = result['_additional'][add]
-
-            docs.append(doc)
+            docs.append(self.collect_results_from_weaviate(result, False))
 
         return DocumentArray(docs)
 
