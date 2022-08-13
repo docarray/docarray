@@ -33,6 +33,7 @@ def test_customize_metric_fn():
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
+        ('redis', {'n_dim': 32, 'flush': True}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -251,6 +252,14 @@ numeric_operators_elasticsearch = {
     'eq': operator.eq,
 }
 
+numeric_operators_redis = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+}
+
 
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
@@ -326,6 +335,21 @@ numeric_operators_elasticsearch = {
                         }
                     },
                     numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {
+                        'key': 'price',
+                        'operator': operator,
+                        'value': threshold,
+                    },
+                    numeric_operators_redis,
                     operator,
                 ]
             )
@@ -419,6 +443,21 @@ def test_search_pre_filtering(
                 ]
             )
             for operator in numeric_operators_annlite.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {
+                        'key': 'price',
+                        'operator': operator,
+                        'value': threshold,
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
         ],
     ],
 )
