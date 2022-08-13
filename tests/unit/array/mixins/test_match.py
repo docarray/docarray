@@ -75,6 +75,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
         ('weaviate', {'n_dim': 3}),
+        ('redis', {'n_dim': 3, 'flush': True}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
@@ -607,6 +608,14 @@ numeric_operators_qdrant = {
     'neq': operator.ne,
 }
 
+numeric_operators_redis = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+}
+
 
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
@@ -669,6 +678,21 @@ numeric_operators_qdrant = {
                 ]
             )
             for operator in numeric_operators_annlite.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {
+                        'key': 'price',
+                        'operator': operator,
+                        'value': threshold,
+                    },
+                    numeric_operators_redis,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
         ],
     ],
 )
