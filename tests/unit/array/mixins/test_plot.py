@@ -15,6 +15,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.storage.annlite import AnnliteConfig
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 
 
 @pytest.mark.parametrize('keep_aspect_ratio', [True, False])
@@ -28,6 +29,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_sprite_fail_tensor_success_uri(
@@ -66,6 +68,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_sprite_image_generator(
@@ -101,6 +104,7 @@ def da_and_dam(start_storage):
             (DocumentArrayWeaviate, {'config': {'n_dim': 3}}),
             (DocumentArrayAnnlite, {'config': {'n_dim': 3}}),
             (DocumentArrayQdrant, {'config': {'n_dim': 3}}),
+            (DocumentArrayRedis, {'config': {'n_dim': 3, 'flush': True}}),
         ]
     ]
 
@@ -158,6 +162,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_summary_homo_hetero(da_cls, config, start_storage):
@@ -181,6 +186,7 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_empty_get_attributes(da_cls, config, start_storage):
