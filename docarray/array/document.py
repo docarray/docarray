@@ -10,10 +10,12 @@ if TYPE_CHECKING:
     from .annlite import DocumentArrayAnnlite
     from .weaviate import DocumentArrayWeaviate
     from .elastic import DocumentArrayElastic
+    from .redis import DocumentArrayRedis
     from .storage.sqlite import SqliteConfig
     from .storage.annlite import AnnliteConfig
     from .storage.weaviate import WeaviateConfig
     from .storage.elastic import ElasticConfig
+    from .storage.redis import RedisConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
@@ -120,6 +122,16 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         """Create a Elastic-powered DocumentArray object."""
         ...
 
+    @overload
+    def __new__(
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        storage: str = 'redis',
+        config: Optional[Union['RedisConfig', Dict]] = None,
+    ) -> 'DocumentArrayRedis':
+        """Create a Redis-powered DocumentArray object."""
+        ...
+
     def __enter__(self):
         return self
 
@@ -156,6 +168,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .elastic import DocumentArrayElastic
 
                 instance = super().__new__(DocumentArrayElastic)
+            elif storage == 'redis':
+                from .redis import DocumentArrayRedis
+
+                instance = super().__new__(DocumentArrayRedis)
 
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
