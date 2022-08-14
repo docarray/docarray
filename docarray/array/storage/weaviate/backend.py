@@ -144,11 +144,18 @@ class BackendMixin(BaseBackendMixin):
             f'{config.protocol}://{config.host}:{config.port}',
             timeout_config=config.timeout_config,
         )
+
+        # Configure the Weaviate batch functionality
         self._client.batch(
+            # Batch size starts with 1250 items per batch
             batch_size=1250,
+            # If the batch size is too large, the Weaviate-client
+            # updates the batch size dynamically
             dynamic=True,
-            creation_time=5,
+            # Amount of times the clients aims to send a batch
             timeout_retries=3,
+            creation_time=5,
+            # Handle any error received from Weaviate
             callback=_check_batch_result,
         )
 
