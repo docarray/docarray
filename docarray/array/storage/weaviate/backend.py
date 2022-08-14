@@ -94,7 +94,7 @@ def _check_batch_result(results: dict):
 
     if results is not None:
         for result in results:
-            if 'result' in result and 'errors' in result['result']:
+            if result.get('result', {}).get('errors', {}).get('error', None) is not None:
                 if 'error' in result['result']['errors']:
                     raise ValueError(
                         'Weaviate throws an error',
