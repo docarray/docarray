@@ -1,4 +1,5 @@
 import uuid
+import warnings
 from dataclasses import dataclass, field, asdict
 from typing import (
     Iterable,
@@ -334,10 +335,10 @@ class BackendMixin(BaseBackendMixin):
         :return: the schemas of this :class`DocumentArrayWeaviate` object and its meta
         """
         if not self._config.name:
-            raise ValueError(
-                'You need to set config.name',
-                'Every config.name contains its own vector space'    
-            )
+            warnings.warn("​You didn't set `config.name`, but it's better practice to set it. " + \
+                "​This is because all Documents are stored as Weaviate Classes with their own vector spaces. " + \
+                "For now, the class 'Document' is used.")
+            self._config.name = 'Document'
 
         doc_schemas = self._get_schema_by_name(self._config.name)
         if self._client.schema.contains(doc_schemas):
