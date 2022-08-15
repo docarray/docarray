@@ -104,6 +104,15 @@ class BackendMixin(BaseBackendMixin):
 
         return client
 
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        return config_joined
+
     def _build_schema_from_redis_config(self):
         index_param = {
             'TYPE': 'FLOAT32',
