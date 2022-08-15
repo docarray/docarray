@@ -13,8 +13,8 @@ from typing import (
 )
 
 if TYPE_CHECKING:
-    from ...typing import T
-    from ... import Document, DocumentArray
+    from docarray.typing import T
+    from docarray import Document, DocumentArray
     from multiprocessing.pool import ThreadPool, Pool
 
 
@@ -244,7 +244,7 @@ def _globalize_lambda_function(func):
     def result(*args, **kwargs):
         return func(*args, **kwargs)
 
-    from ...helper import random_identity
+    from docarray.helper import random_identity
 
     result.__name__ = result.__qualname__ = random_identity()
     setattr(sys.modules[result.__module__], result.__name__, result)

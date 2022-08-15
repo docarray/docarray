@@ -13,6 +13,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.helper import random_identity
 from tests import random_docs
 
 
@@ -227,9 +228,11 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     random_texts = [str(uuid.uuid1()) for _ in da1]
     da1[:, 'text'] = random_texts
 
-    da1.push('myda', show_progress=show_progress)
+    name = random_identity()
 
-    da2 = da_cls.pull('myda', show_progress=show_progress, config=config())
+    da1.push(name, show_progress=show_progress)
+
+    da2 = da_cls.pull(name, show_progress=show_progress, config=config())
 
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts

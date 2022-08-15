@@ -1,9 +1,9 @@
 from operator import itemgetter
 from typing import Sequence, Iterable
 
-from ..base.getsetdel import BaseGetSetDelMixin
-from ..base.helper import Offset2ID
-from .... import Document
+from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
+from docarray import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -13,6 +13,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         self._sql(f'DELETE FROM {self._table_name} WHERE doc_id=?', (_id,))
+        self._save_offset2ids()
         self._commit()
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
@@ -47,6 +48,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             f"DELETE FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
             ids,
         )
+        self._save_offset2ids()
         self._commit()
 
     def _load_offset2ids(self):
@@ -64,3 +66,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 (offset, doc_id),
             )
         self._commit()
+
+    def _del_docs(self, ids):
+        super()._del_docs(ids)
+        self._save_offset2ids()
+
+    def _del_doc_by_offset(self, offset: int):
+        super()._del_doc_by_offset(offset)
+        self._save_offset2ids()

@@ -1,8 +1,8 @@
 from typing import Union, Iterable
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from ..registry import _REGISTRY
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray.array.storage.registry import _REGISTRY
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -71,7 +71,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def _extend(self, values: Iterable['Document'], **kwargs) -> None:
         """Extends the array with the given values
 
         :param values: Documents to be added

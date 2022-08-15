@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
-from .backend import BackendMixin, QdrantConfig
-from .find import FindMixin
-from .getsetdel import GetSetDelMixin
-from .helper import DISTANCES
-from .seqlike import SequenceLikeMixin
+from docarray.array.storage.qdrant.backend import BackendMixin, QdrantConfig
+from docarray.array.storage.qdrant.find import FindMixin
+from docarray.array.storage.qdrant.getsetdel import GetSetDelMixin
+from docarray.array.storage.qdrant.helper import DISTANCES
+from docarray.array.storage.qdrant.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'QdrantConfig']
 

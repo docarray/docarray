@@ -7,8 +7,8 @@ from rich.measure import Measurement
 from rich.segment import Segment
 from rich.style import Style
 
-from ...math.helper import minmax_normalize
-from ...math.ndarray import to_numpy_array
+from docarray.math.helper import minmax_normalize
+from docarray.math.ndarray import to_numpy_array
 
 
 class ColorBoxEmbedding:

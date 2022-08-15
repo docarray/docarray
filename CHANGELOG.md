@@ -114,6 +114,19 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -2766,4 +2779,268 @@
 
  - [[```69926d41```](https://github.com/jina-ai/docarray/commit/69926d41585ac6617b225e04cec97ad2b213d95b)] __-__ fix readme (*Han Xiao*)
  - [[```3d75db4f```](https://github.com/jina-ai/docarray/commit/3d75db4f7da53d0164470dc43111ec9f9b8158ba)] __-__ __version__: the next version will be 0.13.33 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-0></a>
+## Release Note (`0.14.0`)
+
+> Release time: 2022-07-29 09:45:06
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```cebaf75e```](https://github.com/jina-ai/docarray/commit/cebaf75e3fe25a82528c4c7fb1c4318782fc3a2b)] __-__ fix deploy to netlify (#458) (*Joan Fontanals*)
+ - [[```b905405b```](https://github.com/jina-ai/docarray/commit/b905405bf2d74daab9c95f68ffceb5ca82523e74)] __-__ proper setting of multimodal attributes (#448) (*Johannes Messner*)
+
+### 🧼 Code Refactoring
+
+ - [[```21084e27```](https://github.com/jina-ai/docarray/commit/21084e27fc0fadfc6e5a2413c40d54616bd5c086)] __-__ move to absolute imports (#454) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```ed7e9b66```](https://github.com/jina-ai/docarray/commit/ed7e9b6620c73badb87fb4a973fe51d3048e9a51)] __-__ describe new access syntax (#451) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```aa7306d9```](https://github.com/jina-ai/docarray/commit/aa7306d9e0b8b8a097e062fb1c4a22b0414417db)] __-__ bump version to 0.14.0 (#457) (*Joan Fontanals*)
+ - [[```4748fe51```](https://github.com/jina-ai/docarray/commit/4748fe51b8bcedaf74d4f5dc17abc48df1585488)] __-__ __version__: the next version will be 0.13.34 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-1></a>
+## Release Note (`0.14.1`)
+
+> Release time: 2022-08-01 11:22:58
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```fa8b3d0e```](https://github.com/jina-ai/docarray/commit/fa8b3d0e8cc1731fb718dcc946b35a5443d8c0e7)] __-__ use os urandom to generate doc id (#464) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```8d6d3d21```](https://github.com/jina-ai/docarray/commit/8d6d3d2145047d9d67cafff2f4bc8c3234a01a11)] __-__ __version__: the next version will be 0.14.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-2></a>
+## Release Note (`0.14.2`)
+
+> Release time: 2022-08-02 11:02:28
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```be3bf214```](https://github.com/jina-ai/docarray/commit/be3bf214c0908437ef490a93f2f5859f8b3c59cb)] __-__ fix getitem by ellipsis (#467) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```dadce129```](https://github.com/jina-ai/docarray/commit/dadce12907808f216148bc46d44609f290d54539)] __-__ __version__: the next version will be 0.14.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-3></a>
+## Release Note (`0.14.3`)
+
+> Release time: 2022-08-02 11:24:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```951004ee```](https://github.com/jina-ai/docarray/commit/951004ee976cdd0e0a3a624520c818d2576017a7)] __-__ __elastic__: handle bulk operation error info for another op type (#465) (*Alvin Prayuda*)
+
+### 🍹 Other Improvements
+
+ - [[```889b2ad8```](https://github.com/jina-ai/docarray/commit/889b2ad88ddfb3a1ccaa4ebd95d4fc2f3e2b7b7a)] __-__ __version__: the next version will be 0.14.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-4></a>
+## Release Note (`0.14.4`)
+
+> Release time: 2022-08-02 15:34:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```30486b2a```](https://github.com/jina-ai/docarray/commit/30486b2a6eb9f7517a8e93018883c6257853ea80)] __-__ fix plot bug recompute size (#468) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```f5887584```](https://github.com/jina-ai/docarray/commit/f5887584f921db2789822590bc9b70b013970477)] __-__ __version__: the next version will be 0.14.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-5></a>
+## Release Note (`0.14.5`)
+
+> Release time: 2022-08-03 09:21:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Michael Günther,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```ccf8e741```](https://github.com/jina-ai/docarray/commit/ccf8e74124d1399bd7a17cac1d82b04c093d4286)] __-__ remove lru_cache decorator from _get_auth_token (#469) (*Michael Günther*)
+
+### 🍹 Other Improvements
+
+ - [[```07123faf```](https://github.com/jina-ai/docarray/commit/07123faf9f5d8c1a86bb1a8c55d7d3cc37456d2c)] __-__ __version__: the next version will be 0.14.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-6></a>
+## Release Note (`0.14.6`)
+
+> Release time: 2022-08-03 18:25:38
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```933ddf02```](https://github.com/jina-ai/docarray/commit/933ddf020ba51c7046f22a33d31d0d20d802ef9d)] __-__ __plot__: convert uint8 before plotting (#472) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```04c50a75```](https://github.com/jina-ai/docarray/commit/04c50a758c1e13ade9df902d7e7ddbdd89ce8e38)] __-__ __version__: the next version will be 0.14.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-7></a>
+## Release Note (`0.14.7`)
+
+> Release time: 2022-08-04 12:53:30
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```6b4f6fc0```](https://github.com/jina-ai/docarray/commit/6b4f6fc0bc620fe6e2ab13e5e2caa67783de36fa)] __-__ keep offset2id updated when deleting in sqlite (#471) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```505d7767```](https://github.com/jina-ai/docarray/commit/505d7767eec23e47aba25d0908285f94c413b4d9)] __-__ __version__: the next version will be 0.14.7 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-8></a>
+## Release Note (`0.14.8`)
+
+> Release time: 2022-08-05 09:17:34
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Alvin Prayuda,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```9f939e6f```](https://github.com/jina-ai/docarray/commit/9f939e6f15cb30f8af2a27a22398e09027aea1d2)] __-__ __elastic__: allow kwargs to be pass at extend (#473) (*Alvin Prayuda*)
+
+### 🍹 Other Improvements
+
+ - [[```67f60cd7```](https://github.com/jina-ai/docarray/commit/67f60cd7afe14e6f1f5f949c8f301df6dc4bdfc2)] __-__ __version__: the next version will be 0.14.8 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-9></a>
+## Release Note (`0.14.9`)
+
+> Release time: 2022-08-09 20:59:47
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```30e00322```](https://github.com/jina-ai/docarray/commit/30e00322d1ea35aacb924c0b6c2d7ce79d052ee0)] __-__ __image__: fix image padding on vertical direction (#480) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```23ce6518```](https://github.com/jina-ai/docarray/commit/23ce6518f77bc60a303ccc2a33f8ddc67d358926)] __-__ __version__: the next version will be 0.14.9 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-10></a>
+## Release Note (`0.14.10`)
+
+> Release time: 2022-08-11 15:25:02
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Nan Wang,  Alvin Prayuda,  Han Xiao,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```8f66a15e```](https://github.com/jina-ai/docarray/commit/8f66a15e2995531fbfa0f12a5061ab15bbf215a7)] __-__ __elastic__: add bulk get operation (#478) (*Alvin Prayuda*)
+ - [[```413af099```](https://github.com/jina-ai/docarray/commit/413af0990ff09956d062597b66f4f8a8f80b1e24)] __-__ __elastic__: add find kwargs for perf tuning (#481) (*Alvin Prayuda*)
+ - [[```ec7dcce1```](https://github.com/jina-ai/docarray/commit/ec7dcce1d2c5bdec6b63aa730a1883eff7049c61)] __-__ subindex for all document stores (#456) (*Johannes Messner*)
+
+### 🐞 Bug fixes
+
+ - [[```71274d2d```](https://github.com/jina-ai/docarray/commit/71274d2d358fe00e42559df8278ad80e6fbbe7ff)] __-__ retrieve MAX_ES_RETURNED_DOCS docs in bulk operations (#484) (*Nan Wang*)
+
+### 🧼 Code Refactoring
+
+ - [[```a43b498d```](https://github.com/jina-ai/docarray/commit/a43b498d3da38bea3f4b09374f876a496157fc32)] __-__ use hubble sdk for push pull (#482) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```fc39c042```](https://github.com/jina-ai/docarray/commit/fc39c042f16e3096329c9ac8a955b955c876a2d9)] __-__ __version__: the next version will be 0.14.10 (*Jina Dev Bot*)
+
+<a name=release-note-0-14-11></a>
+## Release Note (`0.14.11`)
+
+> Release time: 2022-08-11 20:09:20
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🧼 Code Refactoring
+
+ - [[```930c75cb```](https://github.com/jina-ai/docarray/commit/930c75cbb272078b31e097f3c4d78a2d8a6d5132)] __-__ use hubble sdk for get_token (#485) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```f7b8eb89```](https://github.com/jina-ai/docarray/commit/f7b8eb89d2be2cb938f2b617a66d305f03fd90d8)] __-__ __version__: the next version will be 0.14.11 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-0></a>
+## Release Note (`0.15.0`)
+
+> Release time: 2022-08-12 19:11:24
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Nan Wang,  Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```fce2b883```](https://github.com/jina-ai/docarray/commit/fce2b8835cb95625494b3bd952c8157d14bbbc58)] __-__ bump version to 0.15.0 (#486) (*Nan Wang*)
+ - [[```8f7b3bed```](https://github.com/jina-ai/docarray/commit/8f7b3bed66c2f049e7a1990caa45be6fa7ad55ed)] __-__ __version__: the next version will be 0.14.12 (*Jina Dev Bot*)
 

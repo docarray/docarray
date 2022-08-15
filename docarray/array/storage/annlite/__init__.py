@@ -1,9 +1,9 @@
 from abc import ABC
 
-from .backend import BackendMixin, AnnliteConfig
-from .find import FindMixin
-from .getsetdel import GetSetDelMixin
-from .seqlike import SequenceLikeMixin
+from docarray.array.storage.annlite.backend import BackendMixin, AnnliteConfig
+from docarray.array.storage.annlite.find import FindMixin
+from docarray.array.storage.annlite.getsetdel import GetSetDelMixin
+from docarray.array.storage.annlite.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'AnnliteConfig']
 

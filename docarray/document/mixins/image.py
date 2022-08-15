@@ -1,15 +1,16 @@
 import base64
 import io
+import math
 import struct
 import warnings
 from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _get_file_context, _uri_to_blob
+from docarray.document.mixins.helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
     from PIL.Image import Image as PILImage
 
 
@@ -267,8 +268,14 @@ class ImageDataMixin:
         tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         if padding:
             h, w, c = tensor.shape
-            ext_h = window_h - h % stride_h
-            ext_w = window_w - w % window_w
+            if h % stride_h:
+                ext_h = window_h - h % stride_h
+            else:
+                ext_h = 0
+            if w % stride_w:
+                ext_w = window_w - w % stride_w
+            else:
+                ext_w = 0
             tensor = np.pad(
                 tensor,
                 ((0, ext_h), (0, ext_w), (0, 0)),
@@ -282,8 +289,8 @@ class ImageDataMixin:
         expanded_img = np.lib.stride_tricks.as_strided(
             tensor,
             shape=(
-                1 + int((h - window_h) / stride_h),
-                1 + int((w - window_w) / stride_w),
+                1 + math.ceil((h - window_h) / stride_h),
+                1 + math.ceil((w - window_w) / stride_w),
                 window_h,
                 window_w,
                 c,
@@ -302,7 +309,7 @@ class ImageDataMixin:
         ]
         expanded_img = expanded_img.reshape((-1, window_h, window_w, c))
         if as_chunks:
-            from .. import Document
+            from docarray.document import Document
 
             for location, _tensor in zip(bbox_locations, expanded_img):
                 self.chunks.append(

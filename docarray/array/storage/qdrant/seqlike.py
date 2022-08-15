@@ -3,8 +3,8 @@ from typing import Iterable, Union
 
 from qdrant_client import QdrantClient
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -65,7 +65,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __repr__(self):
         return f'<DocumentArray[Qdrant] (length={len(self)}) at {id(self)}>'
 
-    def extend(self, docs: Iterable['Document']):
+    def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
         self._upload_batch(docs)
         self._offset2ids.extend([doc.id for doc in docs])

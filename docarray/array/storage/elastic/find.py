@@ -10,12 +10,12 @@ from typing import (
 
 import numpy as np
 
-from .... import Document, DocumentArray
-from ....math import ndarray
-from ....math.helper import EPSILON
-from ....math.ndarray import to_numpy_array
-from ....score import NamedScore
-from ....array.mixins.find import FindMixin as BaseFindMixin
+from docarray import Document, DocumentArray
+from docarray.math import ndarray
+from docarray.math.helper import EPSILON
+from docarray.math.ndarray import to_numpy_array
+from docarray.score import NamedScore
+from docarray.array.mixins.find import FindMixin as BaseFindMixin
 
 
 if TYPE_CHECKING:
@@ -34,7 +34,11 @@ if TYPE_CHECKING:
 
 class FindMixin(BaseFindMixin):
     def _find_similar_vectors(
-        self, query: 'ElasticArrayType', filter: Optional[Dict] = None, limit=10
+        self,
+        query: 'ElasticArrayType',
+        filter: Optional[Dict] = None,
+        limit=10,
+        **kwargs,
     ):
         """
         Return vector search results for the input query. `script_score` will be used in filter_field is set.
@@ -50,14 +54,18 @@ class FindMixin(BaseFindMixin):
         if is_all_zero:
             query = query + EPSILON
 
+        knn_query = {
+            'field': 'embedding',
+            'query_vector': query,
+            'k': limit,
+            'num_candidates': 10000
+            if 'num_candidates' not in kwargs
+            else kwargs['num_candidates'],
+        }
+
         resp = self._client.knn_search(
             index=self._config.index_name,
-            knn={
-                'field': 'embedding',
-                'query_vector': query,
-                'k': limit,
-                'num_candidates': 10000,
-            },
+            knn=knn_query,
             filter=filter,
         )
         list_of_hits = resp['hits']['hits']
@@ -133,7 +141,8 @@ class FindMixin(BaseFindMixin):
             query = query.reshape((num_rows, -1))
 
         return [
-            self._find_similar_vectors(q, filter=filter, limit=limit) for q in query
+            self._find_similar_vectors(q, filter=filter, limit=limit, **kwargs)
+            for q in query
         ]
 
     def _find_with_filter(self, query: Dict, limit: Optional[Union[int, float]] = 20):

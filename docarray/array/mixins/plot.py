@@ -30,6 +30,7 @@ class PlotMixin:
         from rich.table import Table
         from rich.console import Console
         from rich.panel import Panel
+        import rich.markup
 
         from rich import box
 
@@ -43,6 +44,7 @@ class PlotMixin:
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
+        table.add_row('Type', self.__class__.__name__)
         table.add_row('Length', str(len(self)))
         is_homo = len(attr_counter) == 1
         table.add_row('Homogenous Documents', str(is_homo))
@@ -76,6 +78,11 @@ class PlotMixin:
 
         is_multimodal = all(d.is_multimodal for d in self)
         table.add_row('Multimodal dataclass', str(is_multimodal))
+
+        if getattr(self, '_subindices'):
+            table.add_row(
+                'Subindices', rich.markup.escape(str(tuple(self._subindices.keys())))
+            )
 
         tables.append(Panel(table, title='Documents Summary', expand=False))
 
@@ -149,7 +156,7 @@ class PlotMixin:
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :return: the path to the embeddings visualization info.
         """
-        from ...helper import random_port, __resources_path__
+        from docarray.helper import random_port, __resources_path__
 
         path = path or tempfile.mkdtemp()
         emb_fn = f'{title}.tsv'
@@ -432,7 +439,6 @@ class PlotMixin:
         import matplotlib.pyplot as plt
 
         img_per_row = ceil(sqrt(len(self)))
-        img_per_col = ceil(len(self) / img_per_row)
         img_size = int(canvas_size / img_per_row)
 
         if img_size < min_size:
@@ -440,6 +446,10 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
 
+        if img_per_row == 0:
+            img_per_row = 1
+
+        img_per_col = ceil(len(self) / img_per_row)
         max_num_img = img_per_row * img_per_col
         sprite_img = np.zeros(
             [img_size * img_per_col, img_size * img_per_row, 3], dtype='uint8'
@@ -490,7 +500,7 @@ class PlotMixin:
                 col_id = _idx % img_per_row
 
                 if show_index:
-                    _img = Image.fromarray(_d.tensor)
+                    _img = Image.fromarray(np.asarray(_d.tensor, dtype='uint8'))
                     draw = ImageDraw.Draw(_img)
                     draw.text((0, 0), str(_idx), (255, 255, 255))
                     _d.tensor = np.asarray(_img)

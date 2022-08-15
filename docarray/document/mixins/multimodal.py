@@ -1,8 +1,8 @@
 import base64
 import typing
 
-from ...dataclasses.types import Field, is_multimodal, _is_field
-from ...dataclasses.types import AttributeType
+from docarray.dataclasses.types import Field, is_multimodal, _is_field
+from docarray.dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray

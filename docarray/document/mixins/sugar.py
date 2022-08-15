@@ -1,8 +1,8 @@
 from typing import overload, TYPE_CHECKING, Union, Callable, Optional, Tuple
 
 if TYPE_CHECKING:
-    from ... import DocumentArray
-    from ...typing import AnyDNN, T, ArrayType
+    from docarray import DocumentArray
+    from docarray.typing import AnyDNN, T, ArrayType
 
     import numpy as np
 
@@ -57,7 +57,7 @@ class SingletonSugarMixin:
         ...
 
     def match(self: 'T', *args, **kwargs) -> 'T':
-        from ... import DocumentArray
+        from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
         _tmp.match(*args, **kwargs)
@@ -79,14 +79,14 @@ class SingletonSugarMixin:
         """
 
     def embed(self: 'T', *args, **kwargs) -> 'T':
-        from ... import DocumentArray
+        from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
         _tmp.embed(*args, **kwargs)
         return self
 
     def post(self: 'T', *args, **kwargs) -> 'T':
-        from ... import DocumentArray
+        from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
         return _tmp.post(*args, **kwargs)[0]

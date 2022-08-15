@@ -1,7 +1,7 @@
 from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type
 
 if TYPE_CHECKING:
-    from ....typing import T
+    from docarray.typing import T
 
 
 class CommonIOMixin:

@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Optional,
     TYPE_CHECKING,
@@ -27,7 +27,7 @@ from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -113,6 +113,19 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(docs, Document):
             self.append(docs)
 
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'collection_name' not in config_subindex:
+            config_joined['collection_name'] = (
+                config_joined['collection_name'] + '_subindex_' + subindex_name
+            )
+        return config_joined
+
     def _initialize_qdrant_schema(self):
         if not self._collection_exists(self.collection_name):
             hnsw_config = HnswConfigDiff(
@@ -184,7 +197,7 @@ class BackendMixin(BaseBackendMixin):
         if embedding is None:
             embedding = np.random.rand(self.n_dim)
         else:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 

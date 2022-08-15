@@ -1,7 +1,7 @@
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
-from .base import BaseDocumentArray
-from .mixins import AllMixins
+from docarray.array.base import BaseDocumentArray
+from docarray.array.mixins import AllMixins
 
 if TYPE_CHECKING:
     from docarray.typing import DocumentArraySourceType
@@ -77,7 +77,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
     @overload
     def __new__(
-        cls, _docs: Optional['DocumentArraySourceType'] = None, copy: bool = False
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        copy: bool = False,
+        subindex_configs: Optional[Dict[str, 'None']] = None,
     ) -> 'DocumentArrayInMemory':
         """Create an in-memory DocumentArray object."""
         ...
@@ -88,6 +91,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'sqlite',
         config: Optional[Union['SqliteConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArraySqlite':
         """Create a SQLite-powered DocumentArray object."""
         ...
@@ -98,6 +102,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'weaviate',
         config: Optional[Union['WeaviateConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayWeaviate':
         """Create a Weaviate-powered DocumentArray object."""
         ...
@@ -108,6 +113,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'annlite',
         config: Optional[Union['AnnliteConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayAnnlite':
         """Create a AnnLite-powered DocumentArray object."""
         ...
@@ -118,6 +124,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         _docs: Optional['DocumentArraySourceType'] = None,
         storage: str = 'elasticsearch',
         config: Optional[Union['ElasticConfig', Dict]] = None,
+        subindex_configs: Optional[Dict[str, Dict]] = None,
     ) -> 'DocumentArrayElastic':
         """Create a Elastic-powered DocumentArray object."""
         ...
@@ -145,27 +152,27 @@ class DocumentArray(AllMixins, BaseDocumentArray):
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
             if storage == 'memory':
-                from .memory import DocumentArrayInMemory
+                from docarray.array.memory import DocumentArrayInMemory
 
                 instance = super().__new__(DocumentArrayInMemory)
             elif storage == 'sqlite':
-                from .sqlite import DocumentArraySqlite
+                from docarray.array.sqlite import DocumentArraySqlite
 
                 instance = super().__new__(DocumentArraySqlite)
             elif storage == 'annlite':
-                from .annlite import DocumentArrayAnnlite
+                from docarray.array.annlite import DocumentArrayAnnlite
 
                 instance = super().__new__(DocumentArrayAnnlite)
             elif storage == 'weaviate':
-                from .weaviate import DocumentArrayWeaviate
+                from docarray.array.weaviate import DocumentArrayWeaviate
 
                 instance = super().__new__(DocumentArrayWeaviate)
             elif storage == 'qdrant':
-                from .qdrant import DocumentArrayQdrant
+                from docarray.array.qdrant import DocumentArrayQdrant
 
                 instance = super().__new__(DocumentArrayQdrant)
             elif storage == 'elasticsearch':
-                from .elastic import DocumentArrayElastic
+                from docarray.array.elastic import DocumentArrayElastic
 
                 instance = super().__new__(DocumentArrayElastic)
             elif storage == 'redis':

@@ -114,3 +114,25 @@ def test_set_content_none():
     assert da.texts == ['hello', 'world', '']
     da.tensors = None
     assert da.texts == ['hello', 'world', '']
+
+
+def test_getter_from_docs():
+    da = DocumentArray.empty(4)
+
+    for i, d in enumerate(da):
+        d.id = f'root{i}'
+        chunks = DocumentArray.empty(2)
+        for j, c in enumerate(chunks):
+            c.id = f'chunk{j}_root{i}'
+        matches = DocumentArray.empty(2)
+        for j, m in enumerate(matches):
+            m.id = f'match{j}_root{i}'
+        d.chunks = chunks
+        d.matches = matches
+
+    assert len(da['@m']) == 8
+    assert len(da['@m[:3]']) == 8
+    assert len(da['@m[1:3]']) == 4
+    assert len(da[:, 'id']) == 4
+    assert len(da[...][:, 'id']) == 20
+    assert len(da[..., 'id']) == 20

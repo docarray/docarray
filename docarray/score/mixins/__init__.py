@@ -1,5 +1,5 @@
-from .property import PropertyMixin
-from .representer import RepresentMixin
+from docarray.score.mixins.property import PropertyMixin
+from docarray.score.mixins.representer import RepresentMixin
 
 
 class AllMixins(RepresentMixin, PropertyMixin):

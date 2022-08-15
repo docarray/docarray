@@ -178,7 +178,7 @@ def gen():
 
 
 response = requests.post(
-    f'{_get_cloud_api()}/v2/rpc/artifact.upload',
+    'https://api.hubble.jina.ai/v2/rpc/artifact.upload',
     data=gen(),
     headers=headers,
 )

@@ -1,8 +1,8 @@
 from typing import Union, Iterable
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from ...memory import DocumentArrayInMemory
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray.array.memory import DocumentArrayInMemory
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -18,6 +18,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         self._annlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
+
+        self._update_subindices_append_extend(docs)
+
+    def append(self, value: 'Document'):
+        self.extend([value])
 
     def __del__(self) -> None:
         if not self._persist:

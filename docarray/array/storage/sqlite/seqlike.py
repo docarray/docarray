@@ -1,7 +1,7 @@
 from typing import Union, Optional, Iterable
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -39,7 +39,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._insert_doc_at_idx(doc=value, idx=index)
         self._commit()
 
-    def append(self, doc: 'Document', commit: bool = True) -> None:
+    def _append(self, doc: 'Document', commit: bool = True, **kwargs) -> None:
         self._sql(
             f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
             (doc.id, doc, len(self)),
@@ -82,7 +82,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             and self._config == other._config
         )
 
-    def extend(self, docs: Iterable['Document']) -> None:
+    def _extend(self, docs: Iterable['Document'], **kwargs) -> None:
         for doc in docs:
-            self.append(doc, commit=False)
+            self._append(doc, commit=False)
         self._commit()

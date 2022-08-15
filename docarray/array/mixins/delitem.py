@@ -5,10 +5,10 @@ from typing import (
 
 import numpy as np
 
-from ...helper import typename
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import (
+    from docarray.typing import (
         DocumentArrayIndexType,
     )
 
@@ -17,6 +17,8 @@ class DelItemMixin:
     """Provide help function to enable advanced indexing in `__delitem__`"""
 
     def __delitem__(self, index: 'DocumentArrayIndexType'):
+        self._update_subindices_del(index)
+
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             self._del_doc_by_offset(int(index))
 

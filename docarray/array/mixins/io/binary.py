@@ -7,16 +7,16 @@ from contextlib import nullcontext
 from pathlib import Path
 from typing import Union, BinaryIO, TYPE_CHECKING, Type, Optional, Generator
 
-from ....helper import (
+from docarray.helper import (
     get_compress_ctx,
     decompress_bytes,
     protocol_and_compress_from_file_path,
 )
 
 if TYPE_CHECKING:
-    from ....typing import T
-    from ....proto.docarray_pb2 import DocumentArrayProto
-    from .... import Document, DocumentArray
+    from docarray.typing import T
+    from docarray.proto.docarray_pb2 import DocumentArrayProto
+    from docarray import Document, DocumentArray
 
 
 class LazyRequestReader:
@@ -105,9 +105,9 @@ class BinaryIOMixin:
         :return: a generator of `Document` objects
         """
 
-        from .... import Document
+        from docarray import Document
 
-        from .pbar import get_progressbar
+        from docarray.array.mixins.io.pbar import get_progressbar
         from rich import filesize
 
         with file_ctx as f:
@@ -150,7 +150,7 @@ class BinaryIOMixin:
         :param _show_progress: show progress bar, only works when protocol is `pickle` or `protobuf`
         :return: a `DocumentArray`
         """
-        from .... import Document
+        from docarray import Document
 
         with file_ctx as fp:
             d = fp.read() if hasattr(fp, 'read') else fp
@@ -161,7 +161,7 @@ class BinaryIOMixin:
                 compress = None
 
         if protocol == 'protobuf-array':
-            from ....proto.docarray_pb2 import DocumentArrayProto
+            from docarray.proto.docarray_pb2 import DocumentArrayProto
 
             dap = DocumentArrayProto()
             dap.ParseFromString(d)
@@ -173,7 +173,7 @@ class BinaryIOMixin:
         # Binary format for streaming case
         else:
             from rich import filesize
-            from .pbar import get_progressbar
+            from docarray.array.mixins.io.pbar import get_progressbar
 
             # 1 byte (uint8)
             version = int.from_bytes(d[0:1], 'big', signed=False)
@@ -312,7 +312,7 @@ class BinaryIOMixin:
                     f.write(pickle.dumps(self))
                 elif protocol in ('pickle', 'protobuf'):
                     from rich import filesize
-                    from .pbar import get_progressbar
+                    from docarray.array.mixins.io.pbar import get_progressbar
 
                     pbar, t = get_progressbar(
                         'Serializing', disable=not _show_progress, total=len(self)
@@ -347,7 +347,7 @@ class BinaryIOMixin:
             Documents to ``List`` or ``numpy.ndarray``.
         :return: the protobuf message
         """
-        from ....proto.docarray_pb2 import DocumentArrayProto
+        from docarray.proto.docarray_pb2 import DocumentArrayProto
 
         dap = DocumentArrayProto()
         for d in self:
@@ -356,7 +356,7 @@ class BinaryIOMixin:
 
     @classmethod
     def from_protobuf(cls: Type['T'], pb_msg: 'DocumentArrayProto') -> 'T':
-        from .... import Document
+        from docarray import Document
 
         return cls(Document.from_protobuf(od) for od in pb_msg.docs)
 
