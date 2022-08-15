@@ -4,18 +4,18 @@ from .base import BaseDocumentArray
 from .mixins import AllMixins
 
 if TYPE_CHECKING:
-    from ..typing import DocumentArraySourceType
-    from .memory import DocumentArrayInMemory
-    from .sqlite import DocumentArraySqlite
-    from .annlite import DocumentArrayAnnlite
-    from .weaviate import DocumentArrayWeaviate
-    from .elastic import DocumentArrayElastic
-    from .redis import DocumentArrayRedis
-    from .storage.sqlite import SqliteConfig
-    from .storage.annlite import AnnliteConfig
-    from .storage.weaviate import WeaviateConfig
-    from .storage.elastic import ElasticConfig
-    from .storage.redis import RedisConfig
+    from docarray.typing import DocumentArraySourceType
+    from docarray.array.memory import DocumentArrayInMemory
+    from docarray.array.sqlite import DocumentArraySqlite
+    from docarray.array.annlite import DocumentArrayAnnlite
+    from docarray.array.weaviate import DocumentArrayWeaviate
+    from docarray.array.elastic import DocumentArrayElastic
+    from docarray.array.redis import DocumentArrayRedis
+    from docarray.array.storage.sqlite import SqliteConfig
+    from docarray.array.storage.annlite import AnnliteConfig
+    from docarray.array.storage.weaviate import WeaviateConfig
+    from docarray.array.storage.elastic import ElasticConfig
+    from docarray.array.storage.redis import RedisConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
