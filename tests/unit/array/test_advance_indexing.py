@@ -1,3 +1,5 @@
+import copy
+
 import numpy as np
 import pytest
 
@@ -349,14 +351,19 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     repeat = lambda s, l: [s] * l
     da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    subindex_configs = {'@c': config} if use_subindex else None
     if config:
         da = DocumentArray(
-            da, storage=storage, config=config, subindex_configs=subindex_configs
+            da,
+            storage=storage,
+            config=config,
+            subindex_configs={'@c': {'n_dim': 123}} if use_subindex else None,
         )
     else:
-        da = DocumentArray(da, storage=storage, subindex_configs=subindex_configs)
+        da = DocumentArray(
+            da, storage=storage, subindex_configs={'@c': None} if use_subindex else None
+        )
 
+    assert da['@c'].texts == repeat('a', 3 * 5)
     assert da['@c', 'text'] == repeat('a', 3 * 5)
     if use_subindex:
         assert da._subindices['@c'].texts == repeat('a', 3 * 5)
@@ -432,7 +439,7 @@ def test_getset_subindex(storage, config, start_storage):
     da = DocumentArray(
         [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
         config=config,
-        subindex_configs={'@c': config},
+        subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
     )
     assert len(da['@c']) == 15
     assert len(da._subindices['@c']) == 15
