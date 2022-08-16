@@ -64,6 +64,7 @@ class SetItemMixin:
         value: Union['Document', Sequence['Document']],
     ):
 
+        self._update_subindices_set(index, value)
         # set by offset
         # allows da[1] = Document()
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
@@ -118,7 +119,6 @@ class SetItemMixin:
                 )
         else:
             raise IndexError(f'Unsupported index type {typename(index)}: {index}')
-        self._update_subindices_set(index, value)
 
     def _set_by_pair(self, idx1, idx2, value):
 

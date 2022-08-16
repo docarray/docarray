@@ -11,6 +11,19 @@ from docarray.array.storage.base.helper import Offset2ID
 from docarray import Document, DocumentArray
 
 
+def _check_valid_values_nested_set(docs, values):
+    docs, values = DocumentArray(docs), DocumentArray(values)
+    if len(docs) != len(values):
+        raise ValueError(
+            f'length of docs to set({len(docs)}) does not match '
+            f'length of values({len(values)})'
+        )
+    if docs[:, 'id'] != values[:, 'id']:
+        raise ValueError(
+            'Setting Documents by traversal paths with different IDs is not supported'
+        )
+
+
 class BaseGetSetDelMixin(ABC):
     """Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``
 
@@ -173,15 +186,24 @@ class BaseGetSetDelMixin(ABC):
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
 
-    def _update_subindices_set(self, ids, docs):
-        if getattr(self, '_subindices', None):
-            for selector, da in self._subindices.items():
-                old_ids = DocumentArray(self[ids])[
-                    selector, 'id'
-                ]  # hack to get the Document['@c'] without having to do Document.chunks
-                with da:
-                    del da[old_ids]
-                    da.extend(DocumentArray(docs)[selector])  # same hack here
+    def _update_subindices_set(self, set_selector, docs):
+        subindices = getattr(self, '_subindices', None)
+        if not subindices:
+            return
+        if isinstance(set_selector, tuple):  # handled later in recursive call
+            return
+        if isinstance(set_selector, str) and set_selector.startswith('@'):
+            # 'nested' (non root-level) set, update entire subindex directly
+            _check_valid_values_nested_set(DocumentArray(self[set_selector]), docs)
+            if set_selector in subindices.keys():
+                subindices[set_selector].clear()
+                subindices[set_selector].extend(docs)
+        else:  # root level set, update subindices iteratively
+            for subindex_selector, subindex_da in subindices.items():
+                old_ids = DocumentArray(self[set_selector])[subindex_selector, 'id']
+                with subindex_da:
+                    del subindex_da[old_ids]
+                    subindex_da.extend(DocumentArray(docs)[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
@@ -228,17 +250,9 @@ class BaseGetSetDelMixin(ABC):
         :param values: the value docs will be updated to
         """
         docs = list(docs)
-        if len(docs) != len(values):
-            raise ValueError(
-                f'length of docs to set({len(docs)}) does not match '
-                f'length of values({len(values)})'
-            )
+        _check_valid_values_nested_set(docs, values)
 
         for _d, _v in zip(docs, values):
-            if _d.id != _v.id:
-                raise ValueError(
-                    'Setting Documents by traversal paths with different IDs is not supported'
-                )
             _d._data = _v._data
             if _d not in self:
                 root_d = self._find_root_doc_and_modify(_d)
