@@ -428,10 +428,7 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
         ('elasticsearch', ElasticConfig(n_dim=123)),
     ],
 )
-def test_getset_subindex(
-    storage,
-    config,
-):  # start_storage):
+def test_getset_subindex(storage, config, start_storage):
     da = DocumentArray(
         [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
         config=config,
