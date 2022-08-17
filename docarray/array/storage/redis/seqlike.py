@@ -27,11 +27,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: the length of this :class:`DocumentArrayRedis` object
         """
         try:
-            keys = self._client.keys()
-            if b'offset2id' in keys:
-                return len(keys) - 1
+            dbsize = self._client.dbsize()
+            if self._client.exists(b'offset2id'):
+                return dbsize - 1
             else:
-                return len(keys)
+                return dbsize
 
         except:
             return 0
