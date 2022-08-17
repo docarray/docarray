@@ -1,4 +1,3 @@
-import dataclasses
 from abc import ABC, abstractmethod
 from collections import namedtuple
 from dataclasses import is_dataclass, asdict
@@ -32,7 +31,7 @@ class BaseBackendMixin(ABC):
                 config_subindex = (
                     dict() if config_subindex is None else config_subindex
                 )  # allow None as input
-                if dataclasses.is_dataclass(config_subindex):
+                if is_dataclass(config_subindex):
                     config_subindex = asdict(config_subindex)
                 config_joined = {**config, **config_subindex}
                 config_joined = self._ensure_unique_config(
