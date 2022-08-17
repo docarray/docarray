@@ -61,7 +61,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         return f'<DocumentArray[Redis] (length={len(self)}) at {id(self)}>'
 
     def _upload_batch(self, docs: Iterable['Document']):
-        print('uploading batch @', __import__('time').time_ns())
         pipe = self._client.pipeline()
         batch = 0
         for doc in docs:
