@@ -142,7 +142,7 @@ class PushPullMixin:
                 'type': 'documentArray',
                 'public': public,
                 'metaData': json.dumps(
-                    {'preview': self._get_raw_summary(), 'branding': branding},
+                    {'summary': self._get_raw_summary(), 'branding': branding},
                     sort_keys=True,
                 ),
             }
