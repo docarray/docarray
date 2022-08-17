@@ -198,8 +198,8 @@ class BaseGetSetDelMixin(ABC):
             if set_index in subindices:
                 subindex_da = subindices[set_index]
                 with subindex_da:
-                    subindices[set_index].clear()
-                    subindices[set_index].extend(docs)
+                    subindex_da.clear()
+                    subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
