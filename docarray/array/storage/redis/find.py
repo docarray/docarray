@@ -67,11 +67,9 @@ class FindMixin(BaseFindMixin):
         ]
 
     def _find_with_filter(self, filter: Dict, limit: Optional[Union[int, float]] = 20):
-
-        if filter:
-            s = self._build_query_str(filter)
-            q = Query(s)
-            q.paging(0, limit)
+        s = self._build_query_str(filter)
+        q = Query(s)
+        q.paging(0, limit)
 
         results = self._client.ft().search(q).docs
 
@@ -89,7 +87,6 @@ class FindMixin(BaseFindMixin):
 
     # TODO return NumericFilter or List[NumericFilter]
     def _build_fiter(self, filter: Dict) -> NumericFilter:
-
         INF = "+inf"
         NEG_INF = "-inf"
 
