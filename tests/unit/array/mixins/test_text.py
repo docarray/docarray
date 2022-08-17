@@ -145,12 +145,12 @@ def test_da_text_to_tensor_max_len_1(docs, da_cls, config, start_storage):
 @pytest.mark.parametrize(
     'da_cls,config',
     [
-        # (DocumentArray, None),
-        # (DocumentArraySqlite, None),
-        # (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
-        # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
-        # (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
-        # (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArray, None),
+        (DocumentArraySqlite, None),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
