@@ -28,12 +28,15 @@ class FindMixin(BaseFindMixin):
         self, query: 'RedisArrayType', filter: Optional[Dict] = None, limit=10
     ):
         q = (
-            Query("*=>[KNN " + str(limit) + " @embedding $vec AS vector_score]")
+            Query('*=>[KNN $limit @embedding $vec AS vector_score]')
             .sort_by('vector_score')
             .dialect(2)
         )
 
-        query_params = {"vec": to_numpy_array(query).astype(np.float32).tobytes()}
+        query_params = {
+            'vec': to_numpy_array(query).astype(np.float32).tobytes(),
+            'limit': str(limit),
+        }
         if filter:
             f = self._build_fiter(filter)
             q.add_filter(f)
