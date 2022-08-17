@@ -186,21 +186,23 @@ class BaseGetSetDelMixin(ABC):
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
 
-    def _update_subindices_set(self, set_selector, docs):
+    def _update_subindices_set(self, set_index, docs):
         subindices = getattr(self, '_subindices', None)
         if not subindices:
             return
-        if isinstance(set_selector, tuple):  # handled later in recursive call
+        if isinstance(set_index, tuple):  # handled later in recursive call
             return
-        if isinstance(set_selector, str) and set_selector.startswith('@'):
+        if isinstance(set_index, str) and set_index.startswith('@'):
             # 'nested' (non root-level) set, update entire subindex directly
-            _check_valid_values_nested_set(DocumentArray(self[set_selector]), docs)
-            if set_selector in subindices.keys():
-                subindices[set_selector].clear()
-                subindices[set_selector].extend(docs)
+            _check_valid_values_nested_set(DocumentArray(self[set_index]), docs)
+            if set_index in subindices.keys():
+                subindex_da = subindices[set_index]
+                with subindex_da:
+                    subindices[set_index].clear()
+                    subindices[set_index].extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
-                old_ids = DocumentArray(self[set_selector])[subindex_selector, 'id']
+                old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
                 with subindex_da:
                     del subindex_da[old_ids]
                     subindex_da.extend(DocumentArray(docs)[subindex_selector])
