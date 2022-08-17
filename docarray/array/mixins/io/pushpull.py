@@ -1,7 +1,10 @@
+import json
 import os
+import os.path
 import warnings
+from collections import Counter
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING, Optional
+from typing import Dict, Type, TYPE_CHECKING
 
 from docarray.helper import get_request_header, __cache_path__
 
@@ -13,6 +16,95 @@ class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _max_bytes = 4 * 1024 * 1024 * 1024
+
+    def _get_raw_summary(self) -> str:
+        all_attrs = self._get_attributes('non_empty_fields')
+        # remove underscore attribute
+        all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
+        attr_counter = Counter(all_attrs)
+
+        all_attrs_names = set(v for k in all_attrs for v in k)
+        _nested_in = []
+        if 'chunks' in all_attrs_names:
+            _nested_in.append('chunks')
+
+        if 'matches' in all_attrs_names:
+            _nested_in.append('matches')
+
+        is_homo = len(attr_counter) == 1
+
+        items = [
+            dict(
+                name='Type',
+                value=self.__class__.__name__,
+                description='The type of the DocumentArray',
+            ),
+            dict(
+                name='Length',
+                value=len(self),
+                description='The length of the DocumentArray',
+            ),
+            dict(
+                name='Homogenous Documents',
+                value=is_homo,
+                description='Whether all documents are of the same structure, attributes',
+            ),
+            dict(
+                name='Common Attributes',
+                value=list(attr_counter.items())[0][0],
+                description='The common attributes of all documents',
+            ),
+            dict(
+                name='Has nested Documents in',
+                value=tuple(_nested_in),
+                description='The field that contains nested Documents',
+            ),
+            dict(
+                name='Multimodal dataclass',
+                value=all(d.is_multimodal for d in self),
+                description='Whether all documents are multimodal',
+            ),
+            dict(
+                name='Subindices', value=tuple(getattr(self, '_subindices', {}).keys())
+            ),
+        ]
+
+        _nested_items = []
+        if not is_homo:
+            for _a, _n in attr_counter.most_common():
+                if _n == 1:
+                    _doc_text = f'{_n} Document has'
+                else:
+                    _doc_text = f'{_n} Documents have'
+                if len(_a) == 1:
+                    _text = f'{_doc_text} one attribute'
+                elif len(_a) == 0:
+                    _text = f'{_doc_text} no attribute'
+                else:
+                    _text = f'{_doc_text} attributes'
+                _nested_items.append(dict(name=_text, value=str(_a), description=''))
+        items.append(
+            dict(
+                name='Inspect attributes',
+                value=_nested_items,
+                description='Quick overview of attributes of all documents',
+            )
+        )
+
+        storage_infos = self._get_storage_infos()
+        _nested_items = []
+        if storage_infos:
+            for k, v in storage_infos.items():
+                _nested_items.append(dict(name=k, value=v))
+        items.append(
+            dict(
+                name='Storage backend',
+                value=_nested_items,
+                description='Quick overview of the Document Store',
+            )
+        )
+
+        return json.dumps(items, sort_keys=True)
 
     def push(
         self,
@@ -47,6 +139,7 @@ class PushPullMixin:
                 'name': name,
                 'type': 'documentArray',
                 'public': public,
+                'metaData': self._get_raw_summary(),
             }
         )
 
