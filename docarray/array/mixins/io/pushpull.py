@@ -4,7 +4,7 @@ import os.path
 import warnings
 from collections import Counter
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING
+from typing import Dict, Type, TYPE_CHECKING, Any, List
 
 from docarray.helper import get_request_header, __cache_path__
 
@@ -17,7 +17,7 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def _get_raw_summary(self) -> str:
+    def _get_raw_summary(self) -> List[Dict[str, Any]]:
         all_attrs = self._get_attributes('non_empty_fields')
         # remove underscore attribute
         all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
@@ -104,13 +104,14 @@ class PushPullMixin:
             )
         )
 
-        return json.dumps(items, sort_keys=True)
+        return items
 
     def push(
         self,
         name: str,
         show_progress: bool = False,
         public: bool = True,
+        branding: Dict = None,
     ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
@@ -125,6 +126,7 @@ class PushPullMixin:
         :param show_progress: if to show a progress bar on pulling
         :param public: by default anyone can pull a DocumentArray if they know its name.
             Setting this to False will allow only the creator to pull it. This feature of course you to login first.
+        :param branding: a dict of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
         import requests
 
@@ -139,7 +141,10 @@ class PushPullMixin:
                 'name': name,
                 'type': 'documentArray',
                 'public': public,
-                'metaData': self._get_raw_summary(),
+                'metaData': json.dumps(
+                    {'preview': self._get_raw_summary(), 'branding': branding},
+                    sort_keys=True,
+                ),
             }
         )
 
