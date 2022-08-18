@@ -50,7 +50,7 @@ setup(
             'Pillow',
             'fastapi',
             'uvicorn',
-            'jina-hubble-sdk>=0.11.0',
+            'jina-hubble-sdk==0.12.4',
         ],
         'full': [
             'protobuf>=3.13.0,<=3.20.1',
