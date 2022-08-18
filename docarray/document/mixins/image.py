@@ -109,8 +109,7 @@ class ImageDataMixin:
         tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         in_rows, in_cols, n_in = tensor.shape
         in_rows, in_cols = int(in_rows * ratio), int(in_cols * ratio)
-        self.set_image_tensor_shape((in_rows, in_cols), channel_axis=-1)
-        self.tensor = _move_channel_axis(tensor, -1, channel_axis)
+        self.set_image_tensor_shape((in_rows, in_cols), channel_axis)
 
         return self
 
