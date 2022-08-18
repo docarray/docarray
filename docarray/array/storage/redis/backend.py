@@ -18,9 +18,9 @@ class RedisConfig:
     n_dim: int
     host: str = field(default='localhost')
     port: int = field(default=6379)
+    index_name: str = field(default='idx')
     flush: bool = field(default=False)
     update_schema: bool = field(default=True)
-    index_name: str = field(default='idx')
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = field(default=False)
