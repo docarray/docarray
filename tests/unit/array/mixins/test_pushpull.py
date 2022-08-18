@@ -1,13 +1,13 @@
 import cgi
-import json
 import os
-import pytest
-import requests
 from io import BytesIO
 
-from docarray import DocumentArray
-from docarray.helper import random_identity
+import pytest
+import requests
 
+from docarray import DocumentArray, Document, dataclass
+from docarray.helper import random_identity
+from docarray.typing import Image, Text
 from tests import random_docs
 
 
@@ -136,7 +136,6 @@ def test_push_fail(mocker, monkeypatch):
 
 
 def test_api_url_change(mocker, monkeypatch):
-
     test_api_url = 'http://localhost:8080'
     os.environ['JINA_HUBBLE_REGISTRY'] = test_api_url
 
@@ -158,3 +157,38 @@ def test_api_url_change(mocker, monkeypatch):
 
     assert push_kwargs['url'].startswith(test_api_url)
     assert pull_kwargs['url'].startswith(test_api_url)
+
+
+@dataclass
+class MyDocument:
+    image: Image
+    paragraph: Text
+
+
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray(),
+        DocumentArray.empty(10),
+        DocumentArray.empty(10, storage='annlite', config={'n_dim': 10}),
+        DocumentArray(
+            [
+                Document(
+                    MyDocument(
+                        image='https://docarray.jina.ai/_images/apple.png',
+                        paragraph='hello world',
+                    )
+                )
+                for _ in range(10)
+            ],
+            config={'n_dim': 256},
+            storage='annlite',
+            subindex_configs={
+                '@.[image]': {'n_dim': 512},
+                '@.[paragraph]': {'n_dim': 128},
+            },
+        ),
+    ],
+)
+def test_get_raw_summary(da: DocumentArray):
+    assert da._get_raw_summary()

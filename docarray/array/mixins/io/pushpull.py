@@ -59,16 +59,15 @@ class PushPullMixin:
         table.add_column('Updated at', justify='center')
 
         for da in resp['data']:
-            if da['type'] == 'documentArray':
-                result.append(da['name'])
+            result.append(da['name'])
 
-                table.add_row(
-                    da['name'],
-                    str(_get_length_from_summary(da['metaData'].get('summary', []))),
-                    da['visibility'],
-                    da['createdAt'],
-                    da['updatedAt'],
-                )
+            table.add_row(
+                da['name'],
+                str(_get_length_from_summary(da['metaData'].get('summary', []))),
+                da['visibility'],
+                da['createdAt'],
+                da['updatedAt'],
+            )
 
         if show_table:
             print(table)
@@ -117,7 +116,7 @@ class PushPullMixin:
             ),
             dict(
                 name='Common Attributes',
-                value=list(attr_counter.items())[0][0],
+                value=list(attr_counter.items())[0][0] if attr_counter else None,
                 description='The common attributes of all documents',
             ),
             dict(
