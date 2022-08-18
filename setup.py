@@ -60,7 +60,7 @@ setup(
             'Pillow',
             'trimesh',
             'scipy',
-            'jina-hubble-sdk>=0.10.0',
+            'jina-hubble-sdk==0.12.4',
             'av',
             'fastapi',
             'uvicorn',
