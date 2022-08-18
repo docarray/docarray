@@ -1,7 +1,11 @@
 import os
 import warnings
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING, Optional
+from typing import Dict, Type, TYPE_CHECKING, List, Optional
+
+import hubble
+from hubble import Client
+from hubble.client.endpoints import EndpointsV2
 
 from docarray.helper import get_request_header, __cache_path__
 
@@ -9,11 +13,70 @@ if TYPE_CHECKING:
     from docarray.typing import T
 
 
+def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
+    """Get the length from summary."""
+    for item in summary:
+        if 'Length' == item['name']:
+            return item['value']
+
+
 class PushPullMixin:
     """Transmitting :class:`DocumentArray` via Jina Cloud Service"""
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
+    @classmethod
+    @hubble.login_required
+    def cloud_list(cls, show_table: bool = False) -> List[str]:
+        """List all available arrays in the cloud.
+
+        :param show_table: if true, show the table of the arrays.
+        :returns: List of available DocumentArray's names.
+        """
+
+        result = []
+        from rich.table import Table
+        from rich import box
+
+        table = Table(
+            title='Your DocumentArray on the cloud', box=box.SIMPLE, highlight=True
+        )
+        table.add_column('Name')
+        table.add_column('Length')
+        table.add_column('Visibility')
+        table.add_column('Create at', justify='center')
+        table.add_column('Updated at', justify='center')
+
+        for da in Client(jsonify=True).list_artifacts(
+            filter={'type': 'documentArray'}, sort={'createdAt': 1}
+        )['data']:
+            if da['type'] == 'documentArray':
+                result.append(da['name'])
+
+                table.add_row(
+                    da['name'],
+                    str(_get_length_from_summary(da['metaData'].get('summary', []))),
+                    da['visibility'],
+                    da['createdAt'],
+                    da['updatedAt'],
+                )
+
+        if show_table:
+            from rich import print
+
+            print(table)
+        return result
+
+    @classmethod
+    @hubble.login_required
+    def cloud_delete(cls, name: str) -> None:
+        """
+        Delete a DocumentArray from the cloud.
+        :param name: the name of the DocumentArray to delete.
+        """
+        Client(jsonify=True).delete_artifact(name)
+
+    @hubble.login_required
     def push(
         self,
         name: str,
@@ -51,7 +114,6 @@ class PushPullMixin:
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
-        import hubble
 
         auth_token = hubble.get_token()
         if auth_token:
@@ -98,8 +160,6 @@ class PushPullMixin:
             yield _tail
 
         with pbar:
-            from hubble import Client
-            from hubble.client.endpoints import EndpointsV2
 
             response = requests.post(
                 Client()._base_url + EndpointsV2.upload_artifact,
@@ -113,6 +173,7 @@ class PushPullMixin:
             response.raise_for_status()
 
     @classmethod
+    @hubble.login_required
     def pull(
         cls: Type['T'],
         name: str,
@@ -133,15 +194,10 @@ class PushPullMixin:
 
         headers = {}
 
-        import hubble
-
         auth_token = hubble.get_token()
 
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
-
-        from hubble import Client
-        from hubble.client.endpoints import EndpointsV2
 
         url = Client()._base_url + EndpointsV2.download_artifact + f'?name={name}'
         response = requests.get(url, headers=headers)
@@ -183,3 +239,6 @@ class PushPullMixin:
                     fp.write(_source.content)
 
             return r
+
+    cloud_push = push
+    cloud_pull = pull
