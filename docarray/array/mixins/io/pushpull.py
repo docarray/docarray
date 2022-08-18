@@ -37,23 +37,28 @@ class PushPullMixin:
         :param show_table: if true, show the table of the arrays.
         :returns: List of available DocumentArray's names.
         """
+        from rich import print
 
         result = []
         from rich.table import Table
         from rich import box
 
+        resp = Client(jsonify=True).list_artifacts(
+            filter={'type': 'documentArray'}, sort={'createdAt': 1}
+        )
+
         table = Table(
-            title='Your DocumentArray on the cloud', box=box.SIMPLE, highlight=True
+            title=f'Your {resp["meta"]["total"]} DocumentArray on the cloud',
+            box=box.SIMPLE,
+            highlight=True,
         )
         table.add_column('Name')
         table.add_column('Length')
-        table.add_column('Visibility')
-        table.add_column('Create at', justify='center')
+        table.add_column('Access')
+        table.add_column('Created at', justify='center')
         table.add_column('Updated at', justify='center')
 
-        for da in Client(jsonify=True).list_artifacts(
-            filter={'type': 'documentArray'}, sort={'createdAt': 1}
-        )['data']:
+        for da in resp['data']:
             if da['type'] == 'documentArray':
                 result.append(da['name'])
 
@@ -66,8 +71,6 @@ class PushPullMixin:
                 )
 
         if show_table:
-            from rich import print
-
             print(table)
         return result
 
