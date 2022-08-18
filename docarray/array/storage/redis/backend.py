@@ -20,6 +20,7 @@ class RedisConfig:
     port: int = field(default=6379)
     flush: bool = field(default=False)
     update_schema: bool = field(default=True)
+    index_name: str = field(default='idx')
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = field(default=False)
@@ -97,11 +98,11 @@ class BackendMixin(BaseBackendMixin):
 
         if self._config.update_schema:
             if len(client.execute_command('FT._LIST')) > 0:
-                client.ft().dropindex()
+                client.ft(index_name=self._config.index_name).dropindex()
 
         if self._config.flush or self._config.update_schema:
             schema = self._build_schema_from_redis_config()
-            client.ft().create_index(schema)
+            client.ft(index_name=self._config.index_name).create_index(schema)
 
         return client
 
