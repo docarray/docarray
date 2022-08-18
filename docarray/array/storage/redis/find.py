@@ -25,21 +25,23 @@ if TYPE_CHECKING:
 
 class FindMixin(BaseFindMixin):
     def _find_similar_vectors(
-        self, query: 'RedisArrayType', filter: Optional[Dict] = None, limit=10
+        self,
+        query: 'RedisArrayType',
+        filter: Optional[Dict] = None,
+        limit: Optional[Union[int, float]] = 20,
     ):
         q = (
-            Query('*=>[KNN $limit @embedding $vec AS vector_score]')
+            Query(f'*=>[KNN {limit} @embedding $vec AS vector_score]')
             .sort_by('vector_score')
+            .paging(0, limit)
             .dialect(2)
         )
 
-        query_params = {
-            'vec': to_numpy_array(query).astype(np.float32).tobytes(),
-            'limit': str(limit),
-        }
+        query_params = {'vec': to_numpy_array(query).astype(np.float32).tobytes()}
         if filter:
-            f = self._build_fiter(filter)
-            q.add_filter(f)
+            filters = self._build_fiter(filter)
+            for f in filters:
+                q.add_filter(f)
         results = self._client.ft().search(q, query_params).docs
 
         da = DocumentArray()
@@ -52,9 +54,9 @@ class FindMixin(BaseFindMixin):
     def _find(
         self,
         query: 'RedisArrayType',
-        limit: int = 10,
+        limit: Optional[Union[int, float]] = 20,
         filter: Optional[Dict] = None,
-        **kwargs
+        **kwargs,
     ) -> List['DocumentArray']:
 
         query = np.array(query)
@@ -86,34 +88,47 @@ class FindMixin(BaseFindMixin):
         return self._find_with_filter(filter, limit=limit)
 
     # TODO return NumericFilter or List[NumericFilter]
-    def _build_fiter(self, filter: Dict) -> NumericFilter:
+    def _build_fiter(self, filter: Dict) -> List[NumericFilter]:
         INF = "+inf"
         NEG_INF = "-inf"
+        f = []
 
-        if filter['operator'] == 'gt':
-            f = NumericFilter(filter['key'], filter['value'], INF, minExclusive=True)
-        elif filter['operator'] == 'gte':
-            f = NumericFilter(filter['key'], filter['value'], INF)
-        elif filter['operator'] == 'lt':
-            f = NumericFilter(
-                filter['key'], NEG_INF, filter['value'], maxExclusive=True
-            )
-        elif filter['operator'] == 'lte':
-            f = NumericFilter(filter['key'], NEG_INF, filter['value'])
+        for key in filter:
+            operator = list(filter[key].keys())[0]
+            threshold = filter[key][operator]
+            if operator == '$gt':
+                f.append(NumericFilter(key, threshold, INF, minExclusive=True))
+            elif operator == '$gte':
+                f.append(NumericFilter(key, threshold, INF))
+            elif operator == '$lt':
+                f.append(NumericFilter(key, NEG_INF, threshold, maxExclusive=True))
+            elif operator == '$lte':
+                f.append(NumericFilter(key, NEG_INF, threshold))
+            elif operator == '$eq':
+                f.append(NumericFilter(key, threshold, threshold))
+            # TODO add $neq if possible
 
         return f
 
     def _build_query_str(self, filter: Dict) -> str:
         INF = "+inf"
         NEG_INF = "-inf"
+        s = ""
 
-        if filter['operator'] == 'gt':
-            s = "@{}:[({} {}]".format(filter['key'], filter['value'], INF)
-        elif filter['operator'] == 'gte':
-            s = "@{}:[{} {}]".format(filter['key'], filter['value'], INF)
-        elif filter['operator'] == 'lt':
-            s = "@{}:[{} ({}]".format(filter['key'], NEG_INF, filter['value'])
-        elif filter['operator'] == 'lte':
-            s = "@{}:[{} {}]".format(filter['key'], NEG_INF, filter['value'])
+        for key in filter:
+            operator = list(filter[key].keys())[0]
+            threshold = filter[key][operator]
+            if operator == '$gt':
+                s += f"@{key}:[({threshold} {INF}] "
+            elif operator == '$gte':
+                s += f"@{key}:[{threshold} {INF}] "
+            elif operator == '$lt':
+                s += f"@{key}:[{NEG_INF} ({threshold}] "
+            elif operator == '$lte':
+                s += f"@{key}:[{NEG_INF} {threshold}] "
+            elif operator == '$eq':
+                s += f"@{key}:[{threshold} {threshold}] "
+            elif operator == '$neq':
+                s += f"-@{key}:[{threshold} {threshold}] "
 
         return s

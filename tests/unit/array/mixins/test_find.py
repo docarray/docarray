@@ -253,11 +253,12 @@ numeric_operators_elasticsearch = {
 }
 
 numeric_operators_redis = {
-    'gte': operator.ge,
-    'gt': operator.gt,
-    'lte': operator.le,
-    'lt': operator.lt,
-    'eq': operator.eq,
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$neq': operator.ne,
 }
 
 
@@ -344,16 +345,12 @@ numeric_operators_redis = {
             tuple(
                 [
                     'redis',
-                    lambda operator, threshold: {
-                        'key': 'price',
-                        'operator': operator,
-                        'value': threshold,
-                    },
+                    lambda operator, threshold: {'price': {operator: threshold}},
                     numeric_operators_redis,
                     operator,
                 ]
             )
-            for operator in ['gt', 'gte', 'lt', 'lte']
+            for operator in ['$gte', '$gt', '$lte', '$lt', '$eq']
         ],
     ],
 )
@@ -448,16 +445,12 @@ def test_search_pre_filtering(
             tuple(
                 [
                     'redis',
-                    lambda operator, threshold: {
-                        'key': 'price',
-                        'operator': operator,
-                        'value': threshold,
-                    },
-                    numeric_operators_elasticsearch,
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_redis,
                     operator,
                 ]
             )
-            for operator in ['gt', 'gte', 'lt', 'lte']
+            for operator in numeric_operators_redis.keys()
         ],
     ],
 )
