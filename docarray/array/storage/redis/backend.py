@@ -59,14 +59,15 @@ class BackendMixin(BaseBackendMixin):
             config = dataclass_from_dict(RedisConfig, config)
 
         if config.distance not in ['L2', 'IP', 'COSINE']:
-            raise ValueError(f'Distance metric {config.distance} not supported')
+            raise ValueError(
+                f'Expecting distance metric one of COSINE, L2 OR IP, got {config.distance} instead'
+            )
         if config.method not in ['HNSW', 'FLAT']:
-            raise ValueError(f'Method {config.method} not supported')
+            raise ValueError(
+                f'Expecting search method one of HNSW OR FLAT, got {config.method} instead'
+            )
 
-        if (
-            'decode_responses' in config.redis_config
-            and config.redis_config['decode_responses']
-        ):
+        if config.redis_config.get('decode_responses'):
             config.redis_config['decode_responses'] = False
 
         self._offset2id_key = 'offset2id'
