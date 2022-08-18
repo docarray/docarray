@@ -48,7 +48,7 @@ class PushPullMixin:
         )
 
         table = Table(
-            title=f'Your {resp["meta"]["total"]} DocumentArray on the cloud',
+            title=f'You have {resp["meta"]["total"]} DocumentArray on the cloud',
             box=box.SIMPLE,
             highlight=True,
         )
