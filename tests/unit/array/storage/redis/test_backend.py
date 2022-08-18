@@ -122,17 +122,22 @@ def test_init_storage(
 
 
 def test_init_storage_update_schema(start_storage):
-    cfg = RedisConfig(n_dim=128, tag_indices=['attr1'])
+    index = 'aaa'
+    cfg = RedisConfig(n_dim=128, tag_indices=['attr1'], index_name=index, flush=True)
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
+    assert redis_da._client.ft(index).info()['attributes'][1][1] == b'attr1'
 
     cfg = RedisConfig(n_dim=128, tag_indices=['attr2'], update_schema=False)
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
+    assert redis_da._client.ft(index).info()['attributes'][1][1] == b'attr1'
 
-    cfg = RedisConfig(n_dim=128, tag_indices=['attr2'], update_schema=True)
+    index2 = 'bbb'
+    cfg = RedisConfig(
+        n_dim=128, tag_indices=['attr2'], index_name=index2, update_schema=True
+    )
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr2'
+    assert redis_da._client.ft(index).info()['attributes'][1][1] == b'attr1'
+    assert redis_da._client.ft(index2).info()['attributes'][1][1] == b'attr2'
 
 
 def test_init_storage_empty_config(start_storage):

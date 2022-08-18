@@ -97,7 +97,7 @@ class BackendMixin(BaseBackendMixin):
             client.flushdb()
 
         if self._config.update_schema:
-            if len(client.execute_command('FT._LIST')) > 0:
+            if self._config.index_name in client.execute_command('FT._LIST'):
                 client.ft(index_name=self._config.index_name).dropindex()
 
         if self._config.flush or self._config.update_schema:
