@@ -141,6 +141,8 @@ class BaseGetSetDelMixin(ABC):
             self._del_doc_by_id(_id)
 
     def _update_subindices_del(self, ids):
+        if isinstance(ids, str) and ids.startswith('@'):
+            return  # deleting via access path is not supported
         if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 ids_subindex = DocumentArray(self[ids])[selector, 'id']
