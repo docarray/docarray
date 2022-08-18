@@ -1,4 +1,6 @@
-from typing import Union, BinaryIO, TYPE_CHECKING
+import threading
+import time
+from typing import Union, BinaryIO, TYPE_CHECKING, Generator, Type, Dict, Optional
 
 import numpy as np
 
@@ -8,6 +10,75 @@ if TYPE_CHECKING:
 
 class VideoDataMixin:
     """Provide helper functions for :class:`Document` to support video data."""
+
+    @classmethod
+    def generator_from_webcam(
+        cls: Type['T'],
+        show_window: bool = True,
+        window_title: str = 'webcam',
+        fps: int = 30,
+        exit_key: int = 27,
+        exit_event=None,
+        tags: Optional[Dict] = None,
+    ) -> Generator['T', None, None]:
+        """
+        Create a generator that yields a :class:`Document` object from the webcam.
+
+        This feature requires the `opencv-python` package.
+
+        :param show_window: if to show preview window of the webcam video
+        :param window_title: the window title of the preview window
+        :param fps: expected frames per second, note that this is not guaranteed, as the actual fps depends on the hardware limit
+        :param exit_key: the key to press to exit the preview window
+        :param exit_event: the multiprocessing/threading/asyncio event that once set to exit the preview window
+        :param tags: the tags to attach to the document
+        :return: a generator that yields a :class:`Document` object from a webcam
+        """
+        import cv2
+
+        if exit_event is None:
+            exit_event = threading.Event()
+
+        vc = cv2.VideoCapture(0)
+        prev_frame_time = time.perf_counter()
+        actual_fps = 0
+
+        try:
+            while not exit_event.is_set():
+                rval, frame = vc.read()
+                yield cls(tensor=frame, tags=tags)
+
+                key = cv2.waitKey(1000 // (fps + fps - actual_fps))
+
+                if show_window:
+                    new_frame_time = time.perf_counter()
+
+                    actual_fps = int(1 / (new_frame_time - prev_frame_time))
+                    prev_frame_time = new_frame_time
+
+                    # converting the fps into integer
+
+                    # putting the FPS count on the frame
+                    cv2.putText(
+                        frame,
+                        f'FPS {actual_fps:0.0f}/{fps}',
+                        (7, 70),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        3,
+                        (255, 255, 255),
+                        3,
+                        cv2.LINE_AA,
+                    )
+
+                    # displaying the frame with fps
+                    cv2.imshow(window_title, frame)
+
+                if key == exit_key or not rval:
+                    break
+        finally:
+            vc.release()
+            if show_window:
+                cv2.destroyWindow(window_title)
 
     def load_uri_to_video_tensor(self: 'T', only_keyframes: bool = False) -> 'T':
         """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.
