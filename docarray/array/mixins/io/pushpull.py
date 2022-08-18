@@ -78,7 +78,7 @@ class PushPullMixin:
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
         """
-        Client(jsonify=True).delete_artifact(name)
+        Client(jsonify=True).delete_artifact(name=name)
 
     def _get_raw_summary(self) -> List[Dict[str, Any]]:
         all_attrs = self._get_attributes('non_empty_fields')
