@@ -4,7 +4,7 @@ import os.path
 import warnings
 from collections import Counter
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING, List, Optional
+from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
 import hubble
 from hubble import Client
@@ -79,7 +79,6 @@ class PushPullMixin:
         :param name: the name of the DocumentArray to delete.
         """
         Client(jsonify=True).delete_artifact(name)
-
 
     def _get_raw_summary(self) -> List[Dict[str, Any]]:
         all_attrs = self._get_attributes('non_empty_fields')
