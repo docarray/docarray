@@ -196,12 +196,12 @@ class BaseGetSetDelMixin(ABC):
             return
         if isinstance(set_index, str) and set_index.startswith('@'):
             # 'nested' (non root-level) set, update entire subindex directly
-            _check_valid_values_nested_set(DocumentArray(self[set_index]), docs)
-            if set_index in subindices.keys():
+            _check_valid_values_nested_set(self[set_index], docs)
+            if set_index in subindices:
                 subindex_da = subindices[set_index]
                 with subindex_da:
-                    subindices[set_index].clear()
-                    subindices[set_index].extend(docs)
+                    subindex_da.clear()
+                    subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
