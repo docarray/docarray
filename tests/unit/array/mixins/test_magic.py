@@ -80,7 +80,7 @@ def test_repr(da_cls, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=128)),
         ('qdrant', QdrantConfig(n_dim=128)),
         ('elasticsearch', ElasticConfig(n_dim=128)),
-        ('redis', RedisConfig(n_dim=128)),
+        ('redis', RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_repr_str(docs, storage, config, start_storage):
