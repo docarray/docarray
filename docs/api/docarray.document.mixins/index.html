@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.mixins/" />
   
-<meta property="og:site_name" content="DocArray 0.15.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.15.1 Documentation" />
   
 <meta property="og:description" content="Submodules: docarray.document.mixins.attribute module, docarray.document.mixins.audio module, docarray.document.mixins.blob module, docarray.document.mixins.content module, docarray.document.mixins.convert module, docarray.document.mixins.dump module, docarray.document.mixins.featurehash module, ..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.15.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.15.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.mixins.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.document.mixins package - DocArray 0.15.0 documentation</title>
+        <title>docarray.document.mixins package - DocArray 0.15.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.15.0 documentation</div>
+                <div class="brand">DocArray 0.15.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -906,6 +906,31 @@ Note that this feature requires <code class="docutils literal notranslate"><span
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.AllMixins.generator_from_webcam">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">generator_from_webcam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'webcam'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">27</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.document.mixins.AllMixins.generator_from_webcam" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a generator that yields a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object from the webcam.</p>
+<p>This feature requires the <cite>opencv-python</cite> package.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show_window</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show preview window of the webcam video</p></li>
+<li><p><strong>window_title</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the window title of the preview window</p></li>
+<li><p><strong>fps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – expected frames per second, note that this is not guaranteed, as the actual fps depends on the hardware limit</p></li>
+<li><p><strong>exit_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the key to press to exit the preview window</p></li>
+<li><p><strong>exit_event</strong> – the multiprocessing/threading/asyncio event that once set to exit the preview window</p></li>
+<li><p><strong>tags</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – the tags to attach to the document</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a generator that yields a <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> object from a webcam</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.AllMixins.get_json_schema">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_json_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.document.mixins.AllMixins.get_json_schema" title="Permalink to this definition">#</a></dt>
 <dd><p>Return a JSON Schema of Document class.</p>
@@ -1377,6 +1402,26 @@ non RGB image. if you look at their MNIST examples, the mean and stddev are 1-di
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="docarray.document.mixins.AllMixins.set_image_tensor_resample">
+<span class="sig-name descname"><span class="pre">set_image_tensor_resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.document.mixins.AllMixins.set_image_tensor_resample" title="Permalink to this definition">#</a></dt>
+<dd><p>Resample the image <a class="reference internal" href="#docarray.document.mixins.AllMixins.tensor" title="docarray.document.mixins.AllMixins.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into different size inplace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ratio</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – scale ratio of the resampled image tensor.</p></li>
+<li><p><strong>channel_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the axis id of the color channel, <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicates the color channel info at the last axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>itself after processed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="docarray.document.mixins.AllMixins.set_image_tensor_shape">
 <span class="sig-name descname"><span class="pre">set_image_tensor_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.document.mixins.AllMixins.set_image_tensor_shape" title="Permalink to this definition">#</a></dt>
 <dd><p>Resample the image <a class="reference internal" href="#docarray.document.mixins.AllMixins.tensor" title="docarray.document.mixins.AllMixins.tensor"><code class="xref py py-attr docutils literal notranslate"><span class="pre">tensor</span></code></a> into different size inplace.</p>
@@ -1590,7 +1635,7 @@ non RGB image. if you look at their MNIST examples, the mean and stddev are 1-di
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 12, 2022</div>
+                            Last updated on Aug 19, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

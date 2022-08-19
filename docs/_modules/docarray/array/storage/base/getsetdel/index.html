@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/base/getsetdel.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>docarray.array.storage.base.getsetdel - DocArray 0.15.0 documentation</title>
+        <title>docarray.array.storage.base.getsetdel - DocArray 0.15.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.15.0 documentation</div>
+                <div class="brand">DocArray 0.15.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -350,6 +350,19 @@
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 
+<span class="k">def</span> <span class="nf">_check_valid_values_nested_set</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="n">docs</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;length of docs to set(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s1">) does not match &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;length of values(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">docs</span><span class="p">[:,</span> <span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">values</span><span class="p">[:,</span> <span class="s1">&#39;id&#39;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;Setting Documents by traversal paths with different IDs is not supported&#39;</span>
+        <span class="p">)</span>
+
+
 <div class="viewcode-block" id="BaseGetSetDelMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.base.getsetdel/#docarray.array.storage.base.getsetdel.BaseGetSetDelMixin">[docs]</a><span class="k">class</span> <span class="nc">BaseGetSetDelMixin</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Provide abstract methods and derived methods for ``__getitem__``, ``__setitem__`` and ``__delitem__``</span>
 
@@ -467,6 +480,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_del_doc_by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_subindices_del</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ids</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+            <span class="k">return</span>  <span class="c1"># deleting via access path is not supported</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">selector</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">ids_subindex</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">ids</span><span class="p">])[</span><span class="n">selector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]</span>
@@ -512,15 +527,26 @@
         <span class="k">for</span> <span class="n">_id</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_doc_by_id</span><span class="p">(</span><span class="n">_id</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_update_subindices_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">selector</span><span class="p">,</span> <span class="n">da</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subindices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">old_ids</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">ids</span><span class="p">])[</span>
-                    <span class="n">selector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span>
-                <span class="p">]</span>  <span class="c1"># hack to get the Document[&#39;@c&#39;] without having to do Document.chunks</span>
-                <span class="k">with</span> <span class="n">da</span><span class="p">:</span>
-                    <span class="k">del</span> <span class="n">da</span><span class="p">[</span><span class="n">old_ids</span><span class="p">]</span>
-                    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">)[</span><span class="n">selector</span><span class="p">])</span>  <span class="c1"># same hack here</span>
+    <span class="k">def</span> <span class="nf">_update_subindices_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_index</span><span class="p">,</span> <span class="n">docs</span><span class="p">):</span>
+        <span class="n">subindices</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">subindices</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">set_index</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>  <span class="c1"># handled later in recursive call</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">set_index</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">set_index</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+            <span class="c1"># &#39;nested&#39; (non root-level) set, update entire subindex directly</span>
+            <span class="n">_check_valid_values_nested_set</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">set_index</span><span class="p">],</span> <span class="n">docs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">set_index</span> <span class="ow">in</span> <span class="n">subindices</span><span class="p">:</span>
+                <span class="n">subindex_da</span> <span class="o">=</span> <span class="n">subindices</span><span class="p">[</span><span class="n">set_index</span><span class="p">]</span>
+                <span class="k">with</span> <span class="n">subindex_da</span><span class="p">:</span>
+                    <span class="n">subindex_da</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="n">subindex_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># root level set, update subindices iteratively</span>
+            <span class="k">for</span> <span class="n">subindex_selector</span><span class="p">,</span> <span class="n">subindex_da</span> <span class="ow">in</span> <span class="n">subindices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">old_ids</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">set_index</span><span class="p">])[</span><span class="n">subindex_selector</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">]</span>
+                <span class="k">with</span> <span class="n">subindex_da</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">subindex_da</span><span class="p">[</span><span class="n">old_ids</span><span class="p">]</span>
+                    <span class="n">subindex_da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">DocumentArray</span><span class="p">(</span><span class="n">docs</span><span class="p">)[</span><span class="n">subindex_selector</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_set_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
         <span class="n">docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
@@ -567,17 +593,9 @@
 <span class="sd">        :param values: the value docs will be updated to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;length of docs to set(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s1">) does not match &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;length of values(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
-            <span class="p">)</span>
+        <span class="n">_check_valid_values_nested_set</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_d</span><span class="p">,</span> <span class="n">_v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">_d</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">_v</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Setting Documents by traversal paths with different IDs is not supported&#39;</span>
-                <span class="p">)</span>
             <span class="n">_d</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">_v</span><span class="o">.</span><span class="n">_data</span>
             <span class="k">if</span> <span class="n">_d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
                 <span class="n">root_d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_root_doc_and_modify</span><span class="p">(</span><span class="n">_d</span><span class="p">)</span>
@@ -663,7 +681,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 12, 2022</div>
+                            Last updated on Aug 19, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
