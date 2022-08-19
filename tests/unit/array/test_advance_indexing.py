@@ -522,8 +522,10 @@ def test_advance_selector_mixed(storage):
     ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis'],
 )
 def test_single_boolean_and_padding(storage, start_storage):
-    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis'):
+    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
+    elif storage == 'redis':
+        da = DocumentArray(storage=storage, config={'n_dim': 10, 'flush': True})
     else:
         da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
@@ -661,6 +663,7 @@ def test_offset2ids_persistence(storage, config, start_storage):
 
     if storage == 'redis':
         config.flush = False
+        config.update_schema = False
     da = DocumentArray(storage=storage, config=config)
 
     assert da[:, 'id'] == da_ids
