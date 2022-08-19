@@ -359,9 +359,16 @@ def test_search_pre_filtering(
 ):
     np.random.seed(0)
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+
+    if storage == 'redis':
+        da = DocumentArray(
+            storage=storage,
+            config={'n_dim': n_dim, 'columns': [('price', 'int')], 'flush': True},
+        )
+    else:
+        da = DocumentArray(
+            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+        )
 
     da.extend(
         [
@@ -456,9 +463,16 @@ def test_search_pre_filtering(
 )
 def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
-    )
+
+    if storage == 'redis':
+        da = DocumentArray(
+            storage=storage,
+            config={'n_dim': n_dim, 'columns': [('price', 'float')], 'flush': True},
+        )
+    else:
+        da = DocumentArray(
+            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
+        )
 
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
     thresholds = [10, 20, 30]
