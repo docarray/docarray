@@ -101,6 +101,7 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
 
     if storage == 'redis':
         config['flush'] = False
+        config['update_schema'] = False
     da2 = DocumentArray(storage=storage, config=config)
 
     assert len(da2) == 2
@@ -119,6 +120,7 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_extend_subindex(storage, config):
@@ -164,6 +166,7 @@ def test_extend_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_append_subindex(storage, config):
@@ -213,6 +216,7 @@ def embeddings_eq(emb1, emb2):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 @pytest.mark.parametrize(
@@ -239,6 +243,7 @@ def test_del_and_append(index, storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 @pytest.mark.parametrize(

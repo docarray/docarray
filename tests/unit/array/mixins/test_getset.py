@@ -425,6 +425,7 @@ def embeddings_eq(emb1, emb2):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_getset_subindex(storage, config):
@@ -507,6 +508,7 @@ def test_getset_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_init_subindex(storage, config):
@@ -546,6 +548,7 @@ def test_init_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_set_on_subindex(storage, config):
