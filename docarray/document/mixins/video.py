@@ -1,11 +1,21 @@
 import threading
 import time
-from typing import Union, BinaryIO, TYPE_CHECKING, Generator, Type, Dict, Optional
+from typing import (
+    Union,
+    BinaryIO,
+    TYPE_CHECKING,
+    Generator,
+    Type,
+    Dict,
+    Optional,
+    Tuple,
+)
 
 import numpy as np
 
 if TYPE_CHECKING:
     from docarray.typing import T
+    from docarray import Document
 
 
 class VideoDataMixin:
@@ -14,6 +24,7 @@ class VideoDataMixin:
     @classmethod
     def generator_from_webcam(
         cls: Type['T'],
+        height_width: Optional[Tuple[int, int]] = None,
         show_window: bool = True,
         window_title: str = 'webcam',
         fps: int = 30,
@@ -26,6 +37,8 @@ class VideoDataMixin:
 
         This feature requires the `opencv-python` package.
 
+        :param height_width: the shape of the video frame, if not provided, the shape will be determined from the first frame.
+            Note that this is restricted by the hardware of the camera.
         :param show_window: if to show preview window of the webcam video
         :param window_title: the window title of the preview window
         :param fps: expected frames per second, note that this is not guaranteed, as the actual fps depends on the hardware limit
@@ -46,7 +59,11 @@ class VideoDataMixin:
         try:
             while not exit_event.is_set():
                 rval, frame = vc.read()
-                yield cls(tensor=frame, tags=tags)
+                d = cls(tensor=frame, tags=tags)  # type: Document
+                if height_width:
+                    d.set_image_tensor_shape(height_width)
+
+                yield d
 
                 key = cv2.waitKey(1000 // (fps + fps - actual_fps))
 
@@ -60,7 +77,7 @@ class VideoDataMixin:
 
                     # putting the FPS count on the frame
                     cv2.putText(
-                        frame,
+                        d.tensor,
                         f'FPS {actual_fps:0.0f}/{fps}',
                         (7, 70),
                         cv2.FONT_HERSHEY_SIMPLEX,
@@ -71,7 +88,7 @@ class VideoDataMixin:
                     )
 
                     # displaying the frame with fps
-                    cv2.imshow(window_title, frame)
+                    cv2.imshow(window_title, d.tensor)
 
                 if key == exit_key or not rval:
                     break
