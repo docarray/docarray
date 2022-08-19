@@ -609,11 +609,12 @@ numeric_operators_qdrant = {
 }
 
 numeric_operators_redis = {
-    'gte': operator.ge,
-    'gt': operator.gt,
-    'lte': operator.le,
-    'lt': operator.lt,
-    'eq': operator.eq,
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    # '$neq': operator.ne,
 }
 
 
@@ -683,16 +684,12 @@ numeric_operators_redis = {
             tuple(
                 [
                     'redis',
-                    lambda operator, threshold: {
-                        'key': 'price',
-                        'operator': operator,
-                        'value': threshold,
-                    },
+                    lambda operator, threshold: {'price': {operator: threshold}},
                     numeric_operators_redis,
                     operator,
                 ]
             )
-            for operator in ['gt', 'gte', 'lt', 'lte']
+            for operator in numeric_operators_redis.keys()
         ],
     ],
 )
@@ -700,9 +697,16 @@ def test_match_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage
 ):
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+
+    if storage == 'redis':
+        da = DocumentArray(
+            storage=storage,
+            config={'n_dim': n_dim, 'columns': [('price', 'int')], 'flush': True},
+        )
+    else:
+        da = DocumentArray(
+            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+        )
 
     da.extend(
         [
