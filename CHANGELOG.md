@@ -128,6 +128,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3069,4 +3070,23 @@
 
  - [[```7e3988c2```](https://github.com/jina-ai/docarray/commit/7e3988c24fb54da55f2075e1a56e557294999ad9)] __-__ Revert &#34;feat: push meta data along with docarray&#34; (*Han Xiao*)
  - [[```42bf943c```](https://github.com/jina-ai/docarray/commit/42bf943c9333639e62e0f948517c5673e934147c)] __-__ __version__: the next version will be 0.15.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-2></a>
+## Release Note (`0.15.2`)
+
+> Release time: 2022-08-19 12:58:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```b54bb09a```](https://github.com/jina-ai/docarray/commit/b54bb09a9450f7f02d65a50f592ac34881fb23b9)] __-__ __video__: add height_width for webcam caps (#494) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```fefc0025```](https://github.com/jina-ai/docarray/commit/fefc00257e5f193b5f1eadc864caedc61cfc49a5)] __-__ __version__: the next version will be 0.15.2 (*Jina Dev Bot*)
 
