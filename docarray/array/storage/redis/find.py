@@ -42,7 +42,11 @@ class FindMixin(BaseFindMixin):
             filters = self._build_fiter(filter)
             for f in filters:
                 q.add_filter(f)
-        results = self._client.ft().search(q, query_params).docs
+        results = (
+            self._client.ft(index_name=self._config.index_name)
+            .search(q, query_params)
+            .docs
+        )
 
         da = DocumentArray()
         for res in results:
@@ -73,7 +77,7 @@ class FindMixin(BaseFindMixin):
         q = Query(s)
         q.paging(0, limit)
 
-        results = self._client.ft().search(q).docs
+        results = self._client.ft(index_name=self._config.index_name).search(q).docs
 
         da = DocumentArray()
         for res in results:

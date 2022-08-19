@@ -27,12 +27,24 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: the length of this :class:`DocumentArrayRedis` object
         """
         try:
-            dbsize = self._client.dbsize()
-            if self._client.exists(b'offset2id'):
-                return dbsize - 1
-            else:
-                return dbsize
+            # TODO
+            # method 1
+            # keys = self._client.keys(pattern) and add same prefix to all docs in one docarray
+            # if self._offset2id_key.encode() in keys:
+            #     return len(keys) - 1
+            # else:
+            #     return len(keys)
 
+            # method 2
+            # this way, extend(), insert() funcs have to call self._save_offset2ids()
+            # if self._client.exists(self._offset2id_key.encode()):
+            #     print('offset2id exists')
+            #     return self._client.llen(self._offset2id_key.encode())
+            # else:
+            #     return 0
+
+            # method 3
+            return len(self._offset2ids)
         except:
             return 0
 
@@ -65,7 +77,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         batch = 0
         for doc in docs:
             payload = self._document_to_redis(doc)
-            pipe.hset(doc.id, mapping=payload)
+            pipe.hset(self._doc_prefix + doc.id, mapping=payload)
             batch += 1
             if batch >= self._config.batch_size:
                 pipe.execute()
@@ -73,7 +85,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         if batch > 0:
             pipe.execute()
 
-    def extend(self, docs: Iterable['Document']):
+    def _extend(self, docs: Iterable['Document']):
         docs = list(docs)
         self._upload_batch(docs)
         self._offset2ids.extend([doc.id for doc in docs])

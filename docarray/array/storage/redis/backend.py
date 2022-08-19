@@ -8,6 +8,7 @@ from docarray.helper import dataclass_from_dict
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
+from redis.commands.search.indexDefinition import IndexDefinition
 
 if TYPE_CHECKING:
     from ....typing import ArrayType, DocumentArraySourceType
@@ -71,9 +72,10 @@ class BackendMixin(BaseBackendMixin):
         if config.redis_config.get('decode_responses'):
             config.redis_config['decode_responses'] = False
 
-        self._offset2id_key = 'offset2id'
+        self._offset2id_key = 'offset2id__' + config.index_name
         self._config = config
         self.n_dim = self._config.n_dim
+        self._doc_prefix = "doc__" + config.index_name + ":"
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._client = self._build_client()
@@ -102,7 +104,10 @@ class BackendMixin(BaseBackendMixin):
 
         if self._config.flush or self._config.update_schema:
             schema = self._build_schema_from_redis_config()
-            client.ft(index_name=self._config.index_name).create_index(schema)
+            idef = IndexDefinition(prefix=[self._doc_prefix])
+            client.ft(index_name=self._config.index_name).create_index(
+                schema, definition=idef
+            )
 
         return client
 
@@ -113,6 +118,11 @@ class BackendMixin(BaseBackendMixin):
         config_joined: dict,
         subindex_name: str,
     ) -> dict:
+        if 'index_name' not in config_subindex:
+            config_joined['index_name'] = (
+                config_joined['index_name'] + '_subindex_' + subindex_name
+            )
+        config_joined['flush'] = False
         return config_joined
 
     def _build_schema_from_redis_config(self):
@@ -154,7 +164,7 @@ class BackendMixin(BaseBackendMixin):
         return schema
 
     def _doc_id_exists(self, doc_id):
-        return self._client.exists(doc_id)
+        return self._client.exists(self._doc_prefix + doc_id)
 
     def _map_embedding(self, embedding: 'ArrayType') -> bytes:
         if embedding is not None:

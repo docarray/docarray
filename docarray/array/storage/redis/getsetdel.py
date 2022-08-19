@@ -16,7 +16,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :return: the retrieved document from redis
         """
         try:
-            result = self._client.hgetall(_id.encode())
+            result = self._client.hgetall(self._doc_prefix + _id)
             doc = Document.from_base64(result[b'blob'])
             return doc
         except Exception as ex:
@@ -32,7 +32,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._del_doc_by_id(_id)
 
         payload = self._document_to_redis(value)
-        self._client.hset(value.id, mapping=payload)
+        self._client.hset(self._doc_prefix + value.id, mapping=payload)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
@@ -40,7 +40,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of the document to delete
         """
         if self._doc_id_exists(_id):
-            self._client.delete(_id)
+            self._client.delete(self._doc_prefix + _id)
 
     def _document_to_redis(self, doc: 'Document') -> Dict:
         extra_columns = {
