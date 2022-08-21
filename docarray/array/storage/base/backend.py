@@ -31,6 +31,8 @@ class BaseBackendMixin(ABC):
                 config_subindex = (
                     dict() if config_subindex is None else config_subindex
                 )  # allow None as input
+                if is_dataclass(config_subindex):
+                    config_subindex = asdict(config_subindex)
                 config_joined = {**config, **config_subindex}
                 config_joined = self._ensure_unique_config(
                     config, config_subindex, config_joined, name
