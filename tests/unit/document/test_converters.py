@@ -108,10 +108,32 @@ def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height, form
     assert doc.tensor.any()
     assert not doc.uri
     doc.set_image_tensor_shape(channel_axis=channel_axis, shape=(width, height))
+    org_size = doc.tensor.shape
+    doc.set_image_tensor_resample(0.5, channel_axis=channel_axis)
+    for n, o in zip(doc.tensor.shape, org_size):
+        if o not in (1, 3):
+            assert n == 0.5 * o
+    doc.set_image_tensor_resample(2, channel_axis=channel_axis)
+    for n, o in zip(doc.tensor.shape, org_size):
+        if o not in (1, 3):
+            assert n == o
 
     doc.convert_image_tensor_to_uri(channel_axis=channel_axis, image_format=format)
     assert doc.uri.startswith(f'data:image/{format};base64,')
     assert doc.mime_type == f'image/{format}'
+    assert doc.tensor.any()  # assure after conversion tensor still exist.
+
+
+def test_convert_pillow_image_to_uri():
+    doc = Document(content=np.random.randint(0, 255, [32, 32, 3]))
+    assert doc.tensor.any()
+    assert not doc.uri
+    import PIL.Image
+
+    p = PIL.Image.fromarray(doc.tensor, mode='RGB')
+    doc.load_pil_image_to_datauri(p)
+    assert doc.uri.startswith(f'data:image/png;base64,')
+    assert doc.mime_type == 'image/png'
     assert doc.tensor.any()  # assure after conversion tensor still exist.
 
 
@@ -247,6 +269,7 @@ def test_glb_converters(uri, chunk_num):
     doc = Document(uri=uri)
     doc.load_uri_to_point_cloud_tensor(2000)
     assert doc.tensor.shape == (2000, 3)
+    assert isinstance(doc.tensor, np.ndarray)
 
     doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
     assert len(doc.chunks) == chunk_num

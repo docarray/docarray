@@ -3,13 +3,13 @@ from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_
 
 import numpy as np
 
-from ...math import ndarray
-from ...score import NamedScore
+from docarray.math import ndarray
+from docarray.score import NamedScore
 
 if TYPE_CHECKING:
-    from ...typing import T, ArrayType
+    from docarray.typing import T, ArrayType
 
-    from ... import Document, DocumentArray
+    from docarray import Document, DocumentArray
 
 
 class FindMixin:
@@ -99,6 +99,7 @@ class FindMixin:
         filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
+        on: Optional[str] = None,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
         """Returns matching Documents given an input query.
@@ -125,23 +126,38 @@ class FindMixin:
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
                       otherwise the tag field specified by `index` will be used. You can only use this parameter if the
                       storage backend supports searching by text.
+        :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
 
-        from ... import Document, DocumentArray
+        index_da = self._get_index(subindex_name=on)
+        if index_da is not self:
+            return index_da.find(
+                query,
+                metric,
+                limit,
+                metric_name,
+                exclude_self,
+                filter,
+                only_id,
+                index,
+                on=None,
+            )
+
+        from docarray import Document, DocumentArray
 
         if isinstance(query, dict):
             if filter is None:
-                return self._filter(query)
+                return self._filter(query, limit=limit)
             else:
                 raise ValueError(
                     'filter and query cannot be both dict type, set only one for filtering'
                 )
         elif query is None:
             if isinstance(filter, dict):
-                return self._filter(filter)
+                return self._filter(filter, limit=limit)
             else:
                 raise ValueError('filter must be dict when query is None')
         elif isinstance(query, str) or (
@@ -254,16 +270,28 @@ class FindMixin:
     ) -> Tuple['np.ndarray', 'np.ndarray']:
         raise NotImplementedError
 
+    def _get_index(self, subindex_name):
+        is_root_index = subindex_name is None or subindex_name == '@r'
+        if is_root_index:
+            return self
+        if subindex_name in self._subindices.keys():
+            return self._subindices[subindex_name]
+        raise ValueError(
+            f"No subindex available for on='{subindex_name}'. "
+            f'To create a subindex, pass `subindex_configs` when creating the DocumentArray.'
+        )
+
     def _filter(
         self,
-        query: Dict,
+        query: Union[Dict, List[Dict]],
+        limit: Optional[Union[int, float]] = 20,
     ) -> 'DocumentArray':
         """Returns a subset of documents by filtering by the given query.
 
         :return: a `DocumentArray` containing the `Document` objects for matching with the query.
         """
-        from ... import DocumentArray
-        from ..queryset import QueryParser
+        from docarray import DocumentArray
+        from docarray.array.queryset import QueryParser
 
         if query:
             parser = QueryParser(query)

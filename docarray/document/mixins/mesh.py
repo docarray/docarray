@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING
 
+import numpy as np
+
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class MeshDataMixin:
@@ -25,16 +27,16 @@ class MeshDataMixin:
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
         if as_chunks:
-            from .. import Document
+            from docarray.document import Document
 
             # try to coerce everything into a scene
             scene = loader(self.uri, force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
-                self.chunks.append(Document(tensor=geo.sample(samples)))
+                self.chunks.append(Document(tensor=np.array(geo.sample(samples))))
         else:
             # combine a scene into a single mesh
             mesh = loader(self.uri, force='mesh')
-            self.tensor = mesh.sample(samples)
+            self.tensor = np.array(mesh.sample(samples))
 
         return self

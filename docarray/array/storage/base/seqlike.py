@@ -1,11 +1,18 @@
 from abc import abstractmethod
 from typing import Iterator, Iterable, MutableSequence
 
-from .... import Document
+from docarray import Document, DocumentArray
 
 
 class BaseSequenceLikeMixin(MutableSequence[Document]):
     """Implement sequence-like methods"""
+
+    def _update_subindices_append_extend(self, value):
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                docs_selector = DocumentArray(value)[selector]
+                if len(docs_selector) > 0:
+                    da.extend(docs_selector)
 
     def insert(self, index: int, value: 'Document'):
         """Insert `doc` at `index`.
@@ -16,11 +23,15 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         self._set_doc_by_id(value.id, value)
         self._offset2ids.insert(index, value.id)
 
-    def append(self, value: 'Document'):
+    def append(self, value: 'Document', **kwargs):
         """Append `doc` to the end of the array.
 
         :param value: The doc needs to be appended.
         """
+        self._append(value, **kwargs)
+        self._update_subindices_append_extend(value)
+
+    def _append(self, value, **kwargs):
         self._set_doc_by_id(value.id, value)
         self._offset2ids.append(value.id)
 
@@ -50,6 +61,10 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         """
         return len(self) > 0
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def extend(self, values: Iterable['Document'], **kwargs) -> None:
+        self._extend(values, **kwargs)
+        self._update_subindices_append_extend(values)
+
+    def _extend(self, values, **kwargs):
         for value in values:
-            self.append(value)
+            self._append(value, **kwargs)

@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Union, BinaryIO
 
-from .helper import _uri_to_blob, _to_datauri, _get_file_context
+from docarray.document.mixins.helper import _uri_to_blob, _to_datauri, _get_file_context
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class BlobDataMixin:

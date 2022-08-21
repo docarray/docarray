@@ -19,15 +19,15 @@ from typing import (
     Type,
 )
 
-from .getter import *
-from .setter import *
+from docarray.dataclasses.getter import *
+from docarray.dataclasses.setter import *
 
 if TYPE_CHECKING:
     import numpy as np
-    from ..typing import T
+    from docarray.typing import T
     from docarray import Document
 
-from ..typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 
 __all__ = ['field', 'dataclass', 'is_multimodal']
 
@@ -77,6 +77,32 @@ def field(
 
 
 def field(**kwargs) -> Field:
+    """
+    Creates new multimodal type for a DocArray dataclass.
+
+    :meth:`field` is used to define the *get* and *set* behaviour of custom types when used in a DocArray dataclass.
+
+    .. code-block:: python
+
+        from docarray import Document, dataclass, field
+        from typing import TypeVar
+
+        MyImage = TypeVar('MyImage', bound=str)
+
+
+        def my_setter(value) -> 'Document':
+            return Document(uri=value).load_uri_to_blob()
+
+
+        def my_getter(doc: 'Document'):
+            return doc.uri
+
+
+        @dataclass
+        class MMDoc:
+            banner: MyImage = field(setter=my_setter, getter=my_getter, default='test-1.jpeg')
+
+    """
     return Field(**kwargs)
 
 
@@ -204,7 +230,7 @@ def dataclass(
 
 
 def is_multimodal(obj) -> bool:
-    """Returns True if obj is an instance of :meth:`.dataclass`."""
+    """Returns True if obj is an instance of :meth:`dataclass`."""
     from docarray import Document
 
     if isinstance(obj, Document):
@@ -234,23 +260,23 @@ def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
         ]:
             attributes[key] = doc.tags[key]
         elif attribute_info['attribute_type'] == AttributeType.DOCUMENT:
-            attribute_doc = doc.chunks[position]
+            attribute_doc = doc.chunks[int(position)]
             attribute = _get_doc_attribute(attribute_doc, field)
             attributes[key] = attribute
         elif attribute_info['attribute_type'] == AttributeType.ITERABLE_DOCUMENT:
             attribute_list = []
-            for chunk_doc in doc.chunks[position].chunks:
+            for chunk_doc in doc.chunks[int(position)].chunks:
                 attribute_list.append(_get_doc_attribute(chunk_doc, field))
             attributes[key] = attribute_list
         elif attribute_info['attribute_type'] == AttributeType.NESTED:
             nested_cls = field.type
             attributes[key] = _get_doc_nested_attribute(
-                doc.chunks[position], nested_cls
+                doc.chunks[int(position)], nested_cls
             )
         elif attribute_info['attribute_type'] == AttributeType.ITERABLE_NESTED:
             nested_cls = cls.__dataclass_fields__[key].type.__args__[0]
             attribute_list = []
-            for chunk_doc in doc.chunks[position].chunks:
+            for chunk_doc in doc.chunks[int(position)].chunks:
                 attribute_list.append(_get_doc_nested_attribute(chunk_doc, nested_cls))
             attributes[key] = attribute_list
         else:

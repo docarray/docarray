@@ -1,39 +1,12 @@
-import json
 import os
 import warnings
-from functools import lru_cache
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, Optional
-from urllib.request import Request, urlopen
 
-from ....helper import get_request_header
+from docarray.helper import get_request_header, __cache_path__
 
 if TYPE_CHECKING:
-    from ....typing import T
-
-JINA_CLOUD_CONFIG = 'config.json'
-
-
-@lru_cache()
-def _get_hub_config() -> Optional[Dict]:
-    hub_root = Path(os.environ.get('JINA_HUB_ROOT', Path.home().joinpath('.jina')))
-
-    if not hub_root.exists():
-        hub_root.mkdir(parents=True, exist_ok=True)
-
-    config_file = hub_root.joinpath(JINA_CLOUD_CONFIG)
-    if config_file.exists():
-        with open(config_file) as f:
-            return json.load(f)
-
-
-@lru_cache()
-def _get_cloud_api() -> str:
-    """Get Cloud Api for transmitting data to the cloud.
-
-    :return: Cloud Api Url
-    """
-    return os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
+    from docarray.typing import T
 
 
 class PushPullMixin:
@@ -41,7 +14,12 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    def push(self, name: str, show_progress: bool = False, public: bool = True) -> Dict:
+    def push(
+        self,
+        name: str,
+        show_progress: bool = False,
+        public: bool = True,
+    ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
         .. note::
@@ -53,7 +31,8 @@ class PushPullMixin:
 
         :param name: a name that later can be used for retrieve this :class:`DocumentArray`.
         :param show_progress: if to show a progress bar on pulling
-        :param public: If True, the DocumentArray will be shared publicly. Otherwise, it will be private.
+        :param public: by default anyone can pull a DocumentArray if they know its name.
+            Setting this to False will allow only the creator to pull it. This feature of course you to login first.
         """
         import requests
 
@@ -72,16 +51,21 @@ class PushPullMixin:
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
+        import hubble
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        auth_token = hubble.get_token()
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
+
+        if not public and not auth_token:
+            warnings.warn(
+                'You are not logged in, and `public=False` if only for logged in users. To login, use `jina auth login`.'
+            )
 
         _head, _tail = data.split(delimiter)
         _head += self._stream_header
         from rich import filesize
-        from .pbar import get_progressbar
+        from docarray.array.mixins.io.pbar import get_progressbar
 
         pbar, t = get_progressbar('Pushing', disable=not show_progress, total=len(self))
 
@@ -114,8 +98,11 @@ class PushPullMixin:
             yield _tail
 
         with pbar:
+            from hubble import Client
+            from hubble.client.endpoints import EndpointsV2
+
             response = requests.post(
-                f'{_get_cloud_api()}/v2/rpc/artifact.upload',
+                Client()._base_url + EndpointsV2.upload_artifact,
                 data=gen(),
                 headers=headers,
             )
@@ -130,7 +117,7 @@ class PushPullMixin:
         cls: Type['T'],
         name: str,
         show_progress: bool = False,
-        local_cache: bool = False,
+        local_cache: bool = True,
         *args,
         **kwargs,
     ) -> 'T':
@@ -146,12 +133,17 @@ class PushPullMixin:
 
         headers = {}
 
-        _hub_config = _get_hub_config()
-        if _hub_config:
-            auth_token = _hub_config.get('auth_token')
+        import hubble
+
+        auth_token = hubble.get_token()
+
+        if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
-        url = f'{_get_cloud_api()}/v2/rpc/artifact.getDownloadUrl?name={name}'
+        from hubble import Client
+        from hubble.client.endpoints import EndpointsV2
+
+        url = Client()._base_url + EndpointsV2.download_artifact + f'?name={name}'
         response = requests.get(url, headers=headers)
 
         if response.ok:
@@ -168,13 +160,13 @@ class PushPullMixin:
 
             _da_len = int(r.headers['Content-length'])
 
-            from .binary import LazyRequestReader
+            from docarray.array.mixins.io.binary import LazyRequestReader
 
             _source = LazyRequestReader(r)
-            if local_cache and os.path.exists(f'.cache/{name}'):
-                _cache_len = os.path.getsize(f'.cache/{name}')
+            if local_cache and os.path.exists(f'{__cache_path__}/{name}'):
+                _cache_len = os.path.getsize(f'{__cache_path__}/{name}')
                 if _cache_len == _da_len:
-                    _source = f'.cache/{name}'
+                    _source = f'{__cache_path__}/{name}'
 
             r = cls.load_binary(
                 _source,
@@ -186,8 +178,8 @@ class PushPullMixin:
             )
 
             if isinstance(_source, LazyRequestReader) and local_cache:
-                os.makedirs('.cache', exist_ok=True)
-                with open(f'.cache/{name}', 'wb') as fp:
+                Path(__cache_path__).mkdir(parents=True, exist_ok=True)
+                with open(f'{__cache_path__}/{name}', 'wb') as fp:
                     fp.write(_source.content)
 
             return r

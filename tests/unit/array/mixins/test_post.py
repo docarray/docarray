@@ -3,8 +3,105 @@ import time
 
 import pytest
 
-from docarray import DocumentArray, Document
+from docarray import Document, DocumentArray
+from docarray.array.mixins.post import _parse_host
 from docarray.helper import random_port
+
+
+@pytest.mark.parametrize(
+    'host, expected_on, expected_host, expected_port, expected_version, expected_scheme',
+    [
+        (
+            'grpc://192.168.0.123:8080/index',
+            '/index',
+            'grpc://192.168.0.123',
+            8080,
+            None,
+            'grpc',
+        ),
+        (
+            'ws://192.168.0.123:80/encode',
+            '/encode',
+            'ws://192.168.0.123',
+            80,
+            None,
+            'ws',
+        ),
+        (
+            'http://192.168.192.123:8080/index',
+            '/index',
+            'http://192.168.192.123',
+            8080,
+            None,
+            'http',
+        ),
+        (
+            'jinahub://Hello/endpoint',
+            '/endpoint',
+            'jinahub://Hello',
+            None,
+            None,
+            'jinahub',
+        ),
+        (
+            'jinahub+docker://Hello/index',
+            '/index',
+            'jinahub+docker://Hello',
+            None,
+            None,
+            'jinahub+docker',
+        ),
+        (
+            'jinahub+docker://Hello/v0.0.1/search',
+            '/search',
+            'jinahub+docker://Hello/v0.0.1',
+            None,
+            'v0.0.1',
+            'jinahub+docker',
+        ),
+        (
+            'jinahub+docker://Hello/latest/index',
+            '/index',
+            'jinahub+docker://Hello/latest',
+            None,
+            'latest',
+            'jinahub+docker',
+        ),
+        (
+            'jinahub+docker://Hello/v0.0.1-cpu/index',
+            '/index',
+            'jinahub+docker://Hello/v0.0.1-cpu',
+            None,
+            'v0.0.1-cpu',
+            'jinahub+docker',
+        ),
+        (
+            'jinahub+docker://Hello/v0.5-gpu/index',
+            '/index',
+            'jinahub+docker://Hello/v0.5-gpu',
+            None,
+            'v0.5-gpu',
+            'jinahub+docker',
+        ),
+        (
+            'jinahub+sandbox://Hello/index',
+            '/index',
+            'jinahub+sandbox://Hello',
+            None,
+            None,
+            'jinahub+sandbox',
+        ),
+    ],
+)
+def test_parse_host(
+    host, expected_on, expected_host, expected_port, expected_version, expected_scheme
+):
+    parsed_host = _parse_host(host)
+    assert parsed_host.on == expected_on
+    assert parsed_host.host == expected_host
+    assert parsed_host.port == expected_port
+    assert parsed_host.version == expected_version
+    assert parsed_host.scheme == expected_scheme
 
 
 @pytest.mark.parametrize(
@@ -49,7 +146,7 @@ def test_post_bad_scheme():
 
 
 def test_endpoint():
-    from jina import Executor, requests, Flow
+    from jina import Executor, Flow, requests
 
     class MyExec(Executor):
         @requests(on='/foo')

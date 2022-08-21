@@ -4,16 +4,16 @@ from typing import TYPE_CHECKING, Optional
 from google.protobuf.json_format import MessageToDict
 from google.protobuf.struct_pb2 import Struct
 
-from .ndarray import flush_ndarray, read_ndarray
-from ..docarray_pb2 import NdArrayProto, DocumentProto
+from docarray.proto.io.ndarray import flush_ndarray, read_ndarray
+from docarray.proto.docarray_pb2 import NdArrayProto, DocumentProto
 
 if TYPE_CHECKING:
-    from ... import Document
+    from docarray import Document
 
 
 def parse_proto(pb_msg: 'DocumentProto') -> 'Document':
-    from ... import Document
-    from ...score import NamedScore
+    from docarray import Document
+    from docarray.score import NamedScore
 
     fields = {}
     for (field, value) in pb_msg.ListFields():

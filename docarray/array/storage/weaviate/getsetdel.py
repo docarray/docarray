@@ -1,8 +1,8 @@
 from typing import Iterable, Dict
 
-from ..base.getsetdel import BaseGetSetDelMixin
-from ..base.helper import Offset2ID
-from .... import Document
+from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.base.helper import Offset2ID
+from docarray import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):

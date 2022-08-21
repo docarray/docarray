@@ -6,7 +6,7 @@ import requests
 from io import BytesIO
 
 from docarray import DocumentArray
-from docarray.array.mixins.io.pushpull import JINA_CLOUD_CONFIG
+from docarray.helper import random_identity
 
 from tests import random_docs
 
@@ -79,7 +79,8 @@ def test_push(mocker, monkeypatch):
     _mock_post(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
+    name = random_identity()
+    docs.push(name)
 
     assert mock.call_count == 1
 
@@ -90,7 +91,8 @@ def test_push_with_public(mocker, monkeypatch, public):
     _mock_post(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name', public=public)
+    name = random_identity()
+    docs.push(name, public=public)
 
     _, mock_kwargs = mock.call_args_list[0]
 
@@ -134,9 +136,7 @@ def test_push_fail(mocker, monkeypatch):
 
 
 def test_api_url_change(mocker, monkeypatch):
-    from docarray.array.mixins.io.pushpull import _get_cloud_api
 
-    _get_cloud_api.cache_clear()
     test_api_url = 'http://localhost:8080'
     os.environ['JINA_HUBBLE_REGISTRY'] = test_api_url
 
@@ -145,11 +145,11 @@ def test_api_url_change(mocker, monkeypatch):
     _mock_get(mock, monkeypatch)
 
     docs = random_docs(2)
-    docs.push(name='test_name')
-    docs.pull(name='test_name')
+    name = random_identity()
+    docs.push(name)
+    docs.pull(name)
 
     del os.environ['JINA_HUBBLE_REGISTRY']
-    _get_cloud_api.cache_clear()
 
     assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
 
@@ -158,33 +158,3 @@ def test_api_url_change(mocker, monkeypatch):
 
     assert push_kwargs['url'].startswith(test_api_url)
     assert pull_kwargs['url'].startswith(test_api_url)
-
-
-def test_api_authorization_header(mocker, monkeypatch, tmpdir):
-    from docarray.array.mixins.io.pushpull import _get_hub_config
-
-    _get_hub_config.cache_clear()
-    os.environ['JINA_HUB_ROOT'] = str(tmpdir)
-
-    token = 'test-auth-token'
-    with open(tmpdir / JINA_CLOUD_CONFIG, 'w') as f:
-        json.dump({'auth_token': token}, f)
-
-    mock = mocker.Mock()
-    _mock_post(mock, monkeypatch)
-    _mock_get(mock, monkeypatch)
-
-    docs = random_docs(2)
-    docs.push(name='test_name')
-    DocumentArray.pull(name='test_name')
-
-    del os.environ['JINA_HUB_ROOT']
-    _get_hub_config.cache_clear()
-
-    assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
-
-    _, push_kwargs = mock.call_args_list[0]
-    _, pull_kwargs = mock.call_args_list[1]
-
-    assert push_kwargs['headers'].get('Authorization') == f'token {token}'
-    assert pull_kwargs['headers'].get('Authorization') == f'token {token}'

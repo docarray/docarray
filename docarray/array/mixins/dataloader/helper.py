@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
-from .. import ParallelMixin, GroupMixin
-from ....helper import protocol_and_compress_from_file_path
+from docarray.array.mixins import ParallelMixin, GroupMixin
+from docarray.helper import protocol_and_compress_from_file_path
 
 if TYPE_CHECKING:
     from docarray import Document, DocumentArray
@@ -33,7 +33,7 @@ class DocumentArrayLoader(ParallelMixin, GroupMixin):
     def __iter__(self):
         from docarray import Document
 
-        from ..io.pbar import get_progressbar
+        from docarray.array.mixins.io.pbar import get_progressbar
         from rich import filesize
 
         with open(self._filename, 'rb') as f:

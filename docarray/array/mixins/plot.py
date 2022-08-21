@@ -30,6 +30,7 @@ class PlotMixin:
         from rich.table import Table
         from rich.console import Console
         from rich.panel import Panel
+        import rich.markup
 
         from rich import box
 
@@ -43,6 +44,7 @@ class PlotMixin:
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
+        table.add_row('Type', self.__class__.__name__)
         table.add_row('Length', str(len(self)))
         is_homo = len(attr_counter) == 1
         table.add_row('Homogenous Documents', str(is_homo))
@@ -76,6 +78,11 @@ class PlotMixin:
 
         is_multimodal = all(d.is_multimodal for d in self)
         table.add_row('Multimodal dataclass', str(is_multimodal))
+
+        if getattr(self, '_subindices'):
+            table.add_row(
+                'Subindices', rich.markup.escape(str(tuple(self._subindices.keys())))
+            )
 
         tables.append(Panel(table, title='Documents Summary', expand=False))
 
@@ -149,7 +156,7 @@ class PlotMixin:
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :return: the path to the embeddings visualization info.
         """
-        from ...helper import random_port, __resources_path__
+        from docarray.helper import random_port, __resources_path__
 
         path = path or tempfile.mkdtemp()
         emb_fn = f'{title}.tsv'
@@ -308,6 +315,95 @@ class PlotMixin:
             t_m.join()
         return path
 
+    def save_gif(
+        self,
+        output: str,
+        channel_axis: int = -1,
+        duration: int = 200,
+        size_ratio: float = 1.0,
+        inline_display: bool = False,
+        image_source: str = 'tensor',
+        skip_empty: bool = False,
+        show_index: bool = False,
+        show_progress: bool = False,
+    ) -> None:
+        """
+        Save a gif of the DocumentArray. Each frame corresponds to a Document.uri/.tensor in the DocumentArray.
+
+        :param output: the file path to save the gif to.
+        :param channel_axis: the color channel axis of the tensor.
+        :param duration: the duration of each frame in milliseconds.
+        :param size_ratio: the size ratio of each frame.
+        :param inline_display: if to show the gif in Jupyter notebook.
+        :param image_source: the source of the image in Document atribute.
+        :param skip_empty: if to skip empty documents.
+        :param show_index: if to show the index of the document in the top-right corner.
+        :param show_progress: if to show a progress bar.
+        :return:
+        """
+
+        from rich.progress import track
+        from PIL import Image, ImageDraw
+
+        def img_iterator(channel_axis):
+            for _idx, d in enumerate(
+                track(self, description='Plotting', disable=not show_progress)
+            ):
+
+                if not d.uri and d.tensor is None:
+                    if skip_empty:
+                        continue
+                    else:
+                        raise ValueError(
+                            f'Document has neither `uri` nor `tensor`, can not be plotted'
+                        )
+
+                _d = copy.deepcopy(d)
+
+                if image_source == 'uri' or (
+                    image_source == 'tensor' and _d.content_type != 'tensor'
+                ):
+                    _d.load_uri_to_image_tensor()
+                    channel_axis = -1
+                elif image_source not in ('uri', 'tensor'):
+                    raise ValueError(f'image_source can be only `uri` or `tensor`')
+
+                _d.set_image_tensor_channel_axis(channel_axis, -1)
+                if size_ratio < 1:
+                    img_size_h, img_size_w, _ = _d.tensor.shape
+                    _d.set_image_tensor_shape(
+                        shape=(
+                            int(size_ratio * img_size_h),
+                            int(size_ratio * img_size_w),
+                        )
+                    )
+
+                if show_index:
+                    _img = Image.fromarray(_d.tensor)
+                    draw = ImageDraw.Draw(_img)
+                    draw.text((0, 0), str(_idx), (255, 255, 255))
+                    _d.tensor = np.asarray(_img)
+
+                yield Image.fromarray(_d.tensor).convert('RGB')
+
+        imgs = img_iterator(channel_axis)
+        img = next(imgs)  # extract first image from iterator
+
+        with open(output, 'wb') as fp:
+            img.save(
+                fp=fp,
+                format='GIF',
+                append_images=imgs,
+                save_all=True,
+                duration=duration,
+                loop=0,
+            )
+
+        if inline_display:
+            from IPython.display import Image, display
+
+            display(Image(output))
+
     def plot_image_sprites(
         self,
         output: Optional[str] = None,
@@ -318,7 +414,8 @@ class PlotMixin:
         skip_empty: bool = False,
         show_progress: bool = False,
         show_index: bool = False,
-        fig_size: Optional[Tuple[int, int]] = None,
+        fig_size: Optional[Tuple[int, int]] = (10, 10),
+        keep_aspect_ratio: bool = False,
     ) -> None:
         """Generate a sprite image for all image tensors in this DocumentArray-like object.
 
@@ -331,7 +428,10 @@ class PlotMixin:
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
         :param skip_empty: skip Document who has no .uri or .tensor.
-        :param show_progress: show a progresbar.
+        :param show_index: show the index on the top-right corner of every image
+        :param fig_size: the size of the figure
+        :param show_progress: show a progressbar while plotting.
+        :param keep_aspect_ratio: preserve the aspect ratio of the image by using the aspect ratio of the first image in self.
         """
         if not self:
             raise ValueError(f'{self!r} is empty')
@@ -346,11 +446,16 @@ class PlotMixin:
             img_size = min_size
             img_per_row = int(canvas_size / img_size)
 
-        max_num_img = img_per_row**2
+        if img_per_row == 0:
+            img_per_row = 1
+
+        img_per_col = ceil(len(self) / img_per_row)
+        max_num_img = img_per_row * img_per_col
         sprite_img = np.zeros(
-            [img_size * img_per_row, img_size * img_per_row, 3], dtype='uint8'
+            [img_size * img_per_col, img_size * img_per_row, 3], dtype='uint8'
         )
-        img_id = 0
+        img_size_w, img_size_h = img_size, img_size
+        set_aspect_ratio = False
 
         from rich.progress import track
         from PIL import Image, ImageDraw
@@ -378,27 +483,33 @@ class PlotMixin:
                 elif image_source not in ('uri', 'tensor'):
                     raise ValueError(f'image_source can be only `uri` or `tensor`')
 
-                _d.set_image_tensor_channel_axis(
-                    channel_axis, -1
-                ).set_image_tensor_shape(shape=(img_size, img_size))
+                _d.set_image_tensor_channel_axis(channel_axis, -1)
 
-                row_id = floor(img_id / img_per_row)
-                col_id = img_id % img_per_row
+                if keep_aspect_ratio and not set_aspect_ratio:
+                    h, w, _ = _d.tensor.shape
+                    img_size_h = int(h * img_size / w)
+                    sprite_img = np.zeros(
+                        [img_size_h * img_per_col, img_size_w * img_per_row, 3],
+                        dtype='uint8',
+                    )
+                    set_aspect_ratio = True
+
+                _d.set_image_tensor_shape(shape=(img_size_h, img_size_w))
+
+                row_id = floor(_idx / img_per_row)
+                col_id = _idx % img_per_row
 
                 if show_index:
-                    _img = Image.fromarray(_d.tensor)
+                    _img = Image.fromarray(np.asarray(_d.tensor, dtype='uint8'))
                     draw = ImageDraw.Draw(_img)
                     draw.text((0, 0), str(_idx), (255, 255, 255))
                     _d.tensor = np.asarray(_img)
 
                 sprite_img[
-                    (row_id * img_size) : ((row_id + 1) * img_size),
-                    (col_id * img_size) : ((col_id + 1) * img_size),
+                    (row_id * img_size_h) : ((row_id + 1) * img_size_h),
+                    (col_id * img_size_w) : ((col_id + 1) * img_size_w),
                 ] = _d.tensor
 
-                img_id += 1
-                if img_id >= max_num_img:
-                    break
         except Exception as ex:
             raise ValueError(
                 'Bad image tensor. Try different `image_source` or `channel_axis`'
@@ -410,8 +521,7 @@ class PlotMixin:
             with open(output, 'wb') as fp:
                 im.save(fp)
         else:
-            if fig_size:
-                plt.figure(figsize=fig_size, frameon=False)
+            plt.figure(figsize=fig_size, frameon=False)
             plt.gca().set_axis_off()
             plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
             plt.margins(0, 0)

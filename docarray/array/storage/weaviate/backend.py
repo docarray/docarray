@@ -1,5 +1,5 @@
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import (
     Iterable,
     Dict,
@@ -13,13 +13,13 @@ from typing import (
 import numpy as np
 import weaviate
 
-from .... import Document
-from ....helper import dataclass_from_dict, filter_dict
-from ..base.backend import BaseBackendMixin
-from ..registry import _REGISTRY
+from docarray import Document
+from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.array.storage.registry import _REGISTRY
 
 if TYPE_CHECKING:
-    from ....typing import ArrayType, DocumentArraySourceType
+    from docarray.typing import ArrayType, DocumentArraySourceType
 
 
 @dataclass
@@ -49,10 +49,39 @@ class WeaviateConfig:
     distance: Optional[str] = None
 
 
+_banned_classname_chars = [
+    '[',
+    ' ',
+    '"',
+    '*',
+    '\\',
+    '<',
+    '|',
+    ',',
+    '>',
+    '/',
+    '?',
+    ']',
+    '@',
+    '.',
+]
+
+
+def _sanitize_class_name(name):
+    new_name = name
+    for char in _banned_classname_chars:
+        new_name = new_name.replace(char, '')
+    return new_name
+
+
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'string', 'float': 'number', 'int': 'int'}
+    TYPE_MAP = {
+        'str': TypeMap(type='string', converter=str),
+        'float': TypeMap(type='number', converter=float),
+        'int': TypeMap(type='int', converter=_safe_cast_int),
+    }
 
     def _init_storage(
         self,
@@ -90,8 +119,7 @@ class BackendMixin(BaseBackendMixin):
         )
         self._config = config
 
-        if self._config.columns is None:
-            self._config.columns = []
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         self._schemas = self._load_or_create_weaviate_schema()
 
@@ -111,6 +139,20 @@ class BackendMixin(BaseBackendMixin):
             self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
+
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        if 'name' not in config_subindex:
+            unique_name = _sanitize_class_name(
+                config_joined['name'] + 'subindex' + subindex_name
+            )
+            config_joined['name'] = unique_name
+        return config_joined
 
     def _get_weaviate_class_name(self) -> str:
         """Generate the class/schema name using the ``uuid1`` module with some
@@ -310,7 +352,11 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        extra_columns = {col: value.tags.get(col) for col, _ in self._config.columns}
+        columns_dict = {key: val for [key, val] in self._config.columns}
+        extra_columns = {
+            col: self._map_column(value.tags.get(col), columns_dict[col])
+            for col, _ in self._config.columns
+        }
 
         return dict(
             data_object={
@@ -336,7 +382,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType'):
         if embedding is not None:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 

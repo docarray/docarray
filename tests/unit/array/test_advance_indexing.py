@@ -337,7 +337,8 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('elasticsearch', ElasticConfig(n_dim=123)),
     ],
 )
-def test_path_syntax_indexing_set(storage, config, start_storage):
+@pytest.mark.parametrize('use_subindex', [False, True])
+def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
@@ -348,13 +349,22 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     repeat = lambda s, l: [s] * l
     da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    if storage != 'memory':
-        if config:
-            da = DocumentArray(da, storage=storage, config=config)
-        else:
-            da = DocumentArray(da, storage=storage)
+    if config:
+        da = DocumentArray(
+            da,
+            storage=storage,
+            config=config,
+            subindex_configs={'@c': {'n_dim': 123}} if use_subindex else None,
+        )
+    else:
+        da = DocumentArray(
+            da, storage=storage, subindex_configs={'@c': None} if use_subindex else None
+        )
 
+    assert da['@c'].texts == repeat('a', 3 * 5)
     assert da['@c', 'text'] == repeat('a', 3 * 5)
+    if use_subindex:
+        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
     assert da['@c:1', 'text'] == repeat('a', 3)
     assert da['@c-1:', 'text'] == repeat('a', 3)
     assert da['@c1', 'text'] == repeat('a', 3)
@@ -372,6 +382,8 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     da['@m,cc', 'text'] = repeat('b', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
     assert da['@c', 'text'] == repeat('a', 3 * 5)
+    if use_subindex:
+        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
     assert da['@c:1', 'text'] == repeat('a', 3)
     assert da['@c-1:', 'text'] == repeat('a', 3)
     assert da['@c1', 'text'] == repeat('a', 3)
@@ -408,6 +420,50 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     da[2, ['text', 'id']] = ['new_text', 'new_id']
     assert da[2].text == 'new_text'
     assert da[2].id == 'new_id'
+
+
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123)),
+        ('elasticsearch', ElasticConfig(n_dim=123)),
+    ],
+)
+def test_getset_subindex(storage, config, start_storage):
+    da = DocumentArray(
+        [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
+        config=config,
+        subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
+    )
+    assert len(da['@c']) == 15
+    assert len(da._subindices['@c']) == 15
+    # set entire subindex
+    chunks_ids = [c.id for c in da['@c']]
+    new_chunks = [Document(id=cid, text=f'{i}') for i, cid in enumerate(chunks_ids)]
+    da['@c'] = new_chunks
+    new_chunks = DocumentArray(new_chunks)
+    assert da['@c'] == new_chunks
+    assert da._subindices['@c'] == new_chunks
+    collected_chunks = DocumentArray.empty(0)
+    for d in da:
+        collected_chunks.extend(d.chunks)
+    assert collected_chunks == new_chunks
+    # set part of a subindex
+    chunks_ids = [c.id for c in da['@c:3']]
+    new_chunks = [Document(id=cid, text=f'{2*i}') for i, cid in enumerate(chunks_ids)]
+    da['@c:3'] = new_chunks
+    new_chunks = DocumentArray(new_chunks)
+    assert da['@c:3'] == new_chunks
+    for d in new_chunks:
+        assert d in da._subindices['@c']
+    collected_chunks = DocumentArray.empty(0)
+    for d in da:
+        collected_chunks.extend(d.chunks[:3])
+    assert collected_chunks == new_chunks
 
 
 @pytest.mark.parametrize('size', [1, 5])

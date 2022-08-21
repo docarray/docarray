@@ -1,15 +1,17 @@
 import base64
 import io
+import math
 import struct
 import warnings
 from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-from .helper import _get_file_context, _uri_to_blob
+from docarray.document.mixins.helper import _get_file_context, _uri_to_blob
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
+    from PIL.Image import Image as PILImage
 
 
 class ImageDataMixin:
@@ -27,6 +29,19 @@ class ImageDataMixin:
         """
         self.tensor = _move_channel_axis(
             self.tensor, original_channel_axis, new_channel_axis
+        )
+        return self
+
+    def load_pil_image_to_datauri(self, image: 'PILImage'):
+        """Convert a pillow image into a datauri with header `data:image/png`.
+
+        :param image: a pillow image
+        :return: itself after processed
+        """
+        buffer = io.BytesIO()
+        image.save(buffer, format='png')
+        self.uri = (
+            f'data:image/png;base64,' + base64.b64encode(buffer.getvalue()).decode()
         )
         return self
 
@@ -77,6 +92,25 @@ class ImageDataMixin:
         """
         tensor = _move_channel_axis(self.tensor, original_channel_axis=channel_axis)
         self.blob = _to_image_buffer(tensor, image_format)
+        return self
+
+    def set_image_tensor_resample(
+        self: 'T',
+        ratio: float,
+        channel_axis: int = -1,
+    ) -> 'T':
+        """
+        Resample the image :attr:`.tensor` into different size inplace.
+
+        :param ratio: scale ratio of the resampled image tensor.
+        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :return: itself after processed
+        """
+        tensor = _move_channel_axis(self.tensor, channel_axis, -1)
+        in_rows, in_cols, n_in = tensor.shape
+        in_rows, in_cols = int(in_rows * ratio), int(in_cols * ratio)
+        self.set_image_tensor_shape((in_rows, in_cols), channel_axis)
+
         return self
 
     def set_image_tensor_shape(
@@ -253,8 +287,14 @@ class ImageDataMixin:
         tensor = _move_channel_axis(self.tensor, channel_axis, -1)
         if padding:
             h, w, c = tensor.shape
-            ext_h = window_h - h % stride_h
-            ext_w = window_w - w % window_w
+            if h % stride_h:
+                ext_h = window_h - h % stride_h
+            else:
+                ext_h = 0
+            if w % stride_w:
+                ext_w = window_w - w % stride_w
+            else:
+                ext_w = 0
             tensor = np.pad(
                 tensor,
                 ((0, ext_h), (0, ext_w), (0, 0)),
@@ -268,8 +308,8 @@ class ImageDataMixin:
         expanded_img = np.lib.stride_tricks.as_strided(
             tensor,
             shape=(
-                1 + int((h - window_h) / stride_h),
-                1 + int((w - window_w) / stride_w),
+                1 + math.ceil((h - window_h) / stride_h),
+                1 + math.ceil((w - window_w) / stride_w),
                 window_h,
                 window_w,
                 c,
@@ -288,7 +328,7 @@ class ImageDataMixin:
         ]
         expanded_img = expanded_img.reshape((-1, window_h, window_w, c))
         if as_chunks:
-            from .. import Document
+            from docarray.document import Document
 
             for location, _tensor in zip(bbox_locations, expanded_img):
                 self.chunks.append(

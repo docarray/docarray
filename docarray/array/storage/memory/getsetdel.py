@@ -5,9 +5,9 @@ from typing import (
     Any,
 )
 
-from ..base.getsetdel import BaseGetSetDelMixin
-from ..memory.backend import needs_id2offset_rebuild
-from .... import Document
+from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
+from docarray.array.storage.memory.backend import needs_id2offset_rebuild
+from docarray import Document
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):

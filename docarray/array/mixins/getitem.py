@@ -10,18 +10,18 @@ from typing import (
 
 import numpy as np
 
-from ... import Document
-from ...helper import typename
+from docarray import Document
+from docarray.helper import typename
 
 if TYPE_CHECKING:
-    from ...typing import (
+    from docarray.typing import (
         DocumentArrayIndexType,
         DocumentArraySingletonIndexType,
         DocumentArrayMultipleIndexType,
         DocumentArrayMultipleAttributeType,
         DocumentArraySingleAttributeType,
     )
-    from ... import DocumentArray
+    from docarray import DocumentArray
 
 
 class GetItemMixin:
@@ -51,18 +51,25 @@ class GetItemMixin:
         if isinstance(index, (int, np.generic)) and not isinstance(index, bool):
             return self._get_doc_by_offset(int(index))
         elif isinstance(index, str):
-            if index.startswith('@'):
+            is_access_path = index.startswith('@')
+            if (
+                is_access_path
+                and getattr(self, '_subindices', None) is not None
+                and index in self._subindices
+            ):
+                return self._subindices[index]
+            elif is_access_path:
                 return self.traverse_flat(index[1:])
             else:
                 return self._get_doc_by_id(index)
         elif isinstance(index, slice):
-            from ... import DocumentArray
+            from docarray import DocumentArray
 
             return DocumentArray(self._get_docs_by_slice(index))
         elif index is Ellipsis:
             return self.flatten()
         elif isinstance(index, Sequence):
-            from ... import DocumentArray
+            from docarray import DocumentArray
 
             if (
                 isinstance(index, tuple)
@@ -85,12 +92,13 @@ class GetItemMixin:
                         if isinstance(_docs, Document):
                             return getattr(_docs, index[1])
                         return _docs._get_attributes(index[1])
-                elif isinstance(index[0], (slice, Sequence)):
+                elif isinstance(index[0], (slice, Sequence)) or index[0] is Ellipsis:
                     _docs = self[index[0]]
                     _attrs = index[1]
                     if isinstance(_attrs, str):
                         _attrs = (index[1],)
                     return _docs._get_attributes(*_attrs)
+
             elif isinstance(index[0], bool):
                 return DocumentArray(itertools.compress(self, index))
             elif isinstance(index[0], int):

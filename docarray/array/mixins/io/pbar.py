@@ -40,7 +40,7 @@ def get_pbar(disable):
             justify='right',
             style='progress.filesize',
         ),
-        transient=True,
+        transient=False,
         disable=disable,
     )
 

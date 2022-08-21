@@ -7,8 +7,21 @@ from typing import (
     Dict,
 )
 
-from .helper import Offset2ID
-from .... import Document
+from docarray.array.storage.base.helper import Offset2ID
+from docarray import Document, DocumentArray
+
+
+def _check_valid_values_nested_set(docs, values):
+    docs, values = DocumentArray(docs), DocumentArray(values)
+    if len(docs) != len(values):
+        raise ValueError(
+            f'length of docs to set({len(docs)}) does not match '
+            f'length of values({len(values)})'
+        )
+    if docs[:, 'id'] != values[:, 'id']:
+        raise ValueError(
+            'Setting Documents by traversal paths with different IDs is not supported'
+        )
 
 
 class BaseGetSetDelMixin(ABC):
@@ -114,6 +127,7 @@ class BaseGetSetDelMixin(ABC):
         self._del_docs(ids)
 
     def _del_all_docs(self):
+        self._clear_subindices()
         self._clear_storage()
         self._offset2ids = Offset2ID()
 
@@ -126,6 +140,14 @@ class BaseGetSetDelMixin(ABC):
         for _id in ids:
             self._del_doc_by_id(_id)
 
+    def _update_subindices_del(self, ids):
+        if isinstance(ids, str) and ids.startswith('@'):
+            return  # deleting via access path is not supported
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                ids_subindex = DocumentArray(self[ids])[selector, 'id']
+                da._del_docs_by_ids(ids_subindex)
+
     def _del_docs(self, ids):
         self._del_docs_by_ids(ids)
         self._offset2ids.delete_by_ids(ids)
@@ -137,6 +159,11 @@ class BaseGetSetDelMixin(ABC):
         If you override this method, you should only take care of clearing the storage backend."""
         for doc in self:
             self._del_doc_by_id(doc.id)
+
+    def _clear_subindices(self):
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                da._del_all_docs()
 
     # Setitem API
 
@@ -160,6 +187,27 @@ class BaseGetSetDelMixin(ABC):
         """
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc)
+
+    def _update_subindices_set(self, set_index, docs):
+        subindices = getattr(self, '_subindices', None)
+        if not subindices:
+            return
+        if isinstance(set_index, tuple):  # handled later in recursive call
+            return
+        if isinstance(set_index, str) and set_index.startswith('@'):
+            # 'nested' (non root-level) set, update entire subindex directly
+            _check_valid_values_nested_set(self[set_index], docs)
+            if set_index in subindices:
+                subindex_da = subindices[set_index]
+                with subindex_da:
+                    subindex_da.clear()
+                    subindex_da.extend(docs)
+        else:  # root level set, update subindices iteratively
+            for subindex_selector, subindex_da in subindices.items():
+                old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
+                with subindex_da:
+                    del subindex_da[old_ids]
+                    subindex_da.extend(DocumentArray(docs)[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
@@ -206,17 +254,9 @@ class BaseGetSetDelMixin(ABC):
         :param values: the value docs will be updated to
         """
         docs = list(docs)
-        if len(docs) != len(values):
-            raise ValueError(
-                f'length of docs to set({len(docs)}) does not match '
-                f'length of values({len(values)})'
-            )
+        _check_valid_values_nested_set(docs, values)
 
         for _d, _v in zip(docs, values):
-            if _d.id != _v.id:
-                raise ValueError(
-                    'Setting Documents by traversal paths with different IDs is not supported'
-                )
             _d._data = _v._data
             if _d not in self:
                 root_d = self._find_root_doc_and_modify(_d)

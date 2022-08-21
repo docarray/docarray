@@ -13,6 +13,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
 repo_dir = '../'
+autodoc_default_options = {"members": True, "inherited-members": True}
 
 try:
     if 'DOCARRAY_VERSION' not in os.environ:
@@ -96,6 +97,7 @@ epub_exclude_files = ['search.html']
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     'sphinx_autodoc_typehints',
     'sphinx.ext.viewcode',
     'sphinx.ext.coverage',

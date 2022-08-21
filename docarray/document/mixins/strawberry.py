@@ -3,8 +3,8 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Type, List
 
 if TYPE_CHECKING:
-    from ...typing import T
-    from ..strawberry_type import StrawberryDocument
+    from docarray.typing import T
+    from docarray.document.strawberry_type import StrawberryDocument
 
 
 class StrawberryMixin:
@@ -12,8 +12,8 @@ class StrawberryMixin:
 
     def to_strawberry_type(self) -> 'StrawberryDocument':
         """Convert a Document object into a Strawberry type."""
-        from ..strawberry_type import StrawberryDocument as SD
-        from ..strawberry_type import _NameScoreItem, _NamedScore
+        from docarray.document.strawberry_type import StrawberryDocument as SD
+        from docarray.document.strawberry_type import _NameScoreItem, _NamedScore
 
         _p_dict = {}
         for f in self.non_empty_fields:
@@ -36,7 +36,7 @@ class StrawberryMixin:
         :param model: the Strawberry data model object that represents a Document
         :return: a Document object
         """
-        from ... import Document
+        from docarray import Document
 
         fields = {}
         _field_chunks, _field_matches = None, None
@@ -52,7 +52,7 @@ class StrawberryMixin:
                 continue
             if f_name == 'scores' or f_name == 'evaluations':
                 from docarray.score import NamedScore
-                from ..strawberry_type import _NameScoreItem
+                from docarray.document.strawberry_type import _NameScoreItem
 
                 value: List[_NameScoreItem]
                 fields[f_name] = defaultdict(NamedScore)

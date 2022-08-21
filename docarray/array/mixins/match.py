@@ -1,9 +1,9 @@
-from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING
+from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING, Dict
 
 if TYPE_CHECKING:
     import numpy as np
-    from ...typing import ArrayType
-    from ... import DocumentArray
+    from docarray.typing import ArrayType
+    from docarray import DocumentArray
 
 
 class MatchMixin:
@@ -20,10 +20,12 @@ class MatchMixin:
         metric_name: Optional[str] = None,
         batch_size: Optional[int] = None,
         exclude_self: bool = False,
+        filter: Optional[Dict] = None,
         only_id: bool = False,
         use_scipy: bool = False,
         device: str = 'cpu',
         num_worker: Optional[int] = 1,
+        on: Optional[str] = None,
         **kwargs,
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
@@ -50,6 +52,7 @@ class MatchMixin:
             elements. When `darray` is big, this can significantly speedup the computation.
         :param exclude_self: if set, Documents in ``darray`` with same ``id`` as the left-hand values will not be
                         considered as matches.
+        :param filter: filter query used for pre-filtering
         :param only_id: if set, then returning matches will only contain ``id``
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note, ``scipy`` does not support distance
             on sparse matrix.
@@ -58,7 +61,7 @@ class MatchMixin:
 
                 .. note::
                     This argument is only effective when ``batch_size`` is set.
-
+        :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
         """
 
@@ -76,10 +79,13 @@ class MatchMixin:
             metric_name=metric_name,
             batch_size=batch_size,
             exclude_self=exclude_self,
+            filter=filter,
             only_id=only_id,
             use_scipy=use_scipy,
             device=device,
             num_worker=num_worker,
+            on=on,
+            **kwargs,
         )
 
         if not isinstance(match_docs, list):

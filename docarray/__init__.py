@@ -1,12 +1,12 @@
-__version__ = '0.13.17'
+__version__ = '0.15.3'
 
 import os
 
-from .document import Document
-from .array import DocumentArray
-from .dataclasses import dataclass, field
+from docarray.document import Document
+from docarray.array import DocumentArray
+from docarray.dataclasses import dataclass, field
 
-if 'DA_NO_RICH_HANDLER' not in os.environ:
+if 'DA_RICH_HANDLER' in os.environ:
     from rich.traceback import install
 
     install()
