@@ -299,5 +299,7 @@ class FindMixin:
         else:
             return self
 
-    def _find_by_text(self, query: Union[str, List[str]], index: str = 'text'):
-        raise NotImplementedError('Search by text is not supported')
+    def _find_by_text(self, *args, **kwargs):
+        raise NotImplementedError(
+            f'Search by text is not supported with this backend {self.__class__.__name__}'
+        )
