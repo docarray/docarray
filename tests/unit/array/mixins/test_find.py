@@ -511,6 +511,47 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
+def test_redis_category_filter(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='redis',
+        config={'n_dim': n_dim, 'columns': [('color', 'str')], 'flush': True},
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'red'})
+            for i in range(10)
+        ]
+    )
+
+    da.extend(
+        [
+            Document(
+                id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'blue'}
+            )
+            for i in range(10, 20)
+        ]
+    )
+
+    da.extend(
+        [
+            Document(
+                id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'green'}
+            )
+            for i in range(20, 30)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter={'color': {'$eq': 'red'}})
+    assert len(results) > 0
+    assert all([(r.tags['color'] == 'red') for r in results])
+
+    results = da.find(np.random.rand(n_dim), filter={'color': {'$neq': 'red'}})
+    assert len(results) > 0
+    assert all([(r.tags['color'] != 'red') for r in results])
+
+
 @pytest.mark.parametrize('storage', ['memory'])
 def test_unsupported_pre_filtering(storage, start_storage):
 
