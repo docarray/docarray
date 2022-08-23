@@ -129,6 +129,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3089,4 +3090,24 @@
 ### 🍹 Other Improvements
 
  - [[```fefc0025```](https://github.com/jina-ai/docarray/commit/fefc00257e5f193b5f1eadc864caedc61cfc49a5)] __-__ __version__: the next version will be 0.15.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-3></a>
+## Release Note (`0.15.3`)
+
+> Release time: 2022-08-23 12:02:49
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Johannes Messner,  Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```cb066d83```](https://github.com/jina-ai/docarray/commit/cb066d83aeef887a47b9f1e2d1f7a0ba84300bad)] __-__ update offset2id when deleting in subindex (#496) (*Johannes Messner*)
+ - [[```69a976fd```](https://github.com/jina-ai/docarray/commit/69a976fd7279d5612e9a04fa3a5f1f0decc59e9c)] __-__ __find__: fix misleading signature of _find_by_text (#495) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```0dfb5f2c```](https://github.com/jina-ai/docarray/commit/0dfb5f2ce222892002852601e66fc9d5ec2577ed)] __-__ __version__: the next version will be 0.15.3 (*Jina Dev Bot*)
 
