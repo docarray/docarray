@@ -146,7 +146,7 @@ class BaseGetSetDelMixin(ABC):
         if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
                 ids_subindex = DocumentArray(self[ids])[selector, 'id']
-                da._del_docs_by_ids(ids_subindex)
+                del da[ids_subindex]
 
     def _del_docs(self, ids):
         self._del_docs_by_ids(ids)
