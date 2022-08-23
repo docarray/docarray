@@ -350,7 +350,7 @@ numeric_operators_redis = {
                     operator,
                 ]
             )
-            for operator in ['$gte', '$gt', '$lte', '$lt', '$eq']
+            for operator in numeric_operators_redis.keys()
         ],
     ],
 )

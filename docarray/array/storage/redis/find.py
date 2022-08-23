@@ -30,18 +30,17 @@ class FindMixin(BaseFindMixin):
         filter: Optional[Dict] = None,
         limit: Optional[Union[int, float]] = 20,
     ):
+
+        query_str = self._build_query_str(filter) if filter else "*"
+
         q = (
-            Query(f'*=>[KNN {limit} @embedding $vec AS vector_score]')
+            Query(f'{query_str}=>[KNN {limit} @embedding $vec AS vector_score]')
             .sort_by('vector_score')
             .paging(0, limit)
             .dialect(2)
         )
 
         query_params = {'vec': to_numpy_array(query).astype(np.float32).tobytes()}
-        if filter:
-            filters = self._build_fiter(filter)
-            for f in filters:
-                q.add_filter(f)
         results = (
             self._client.ft(index_name=self._config.index_name)
             .search(q, query_params)
@@ -91,48 +90,32 @@ class FindMixin(BaseFindMixin):
 
         return self._find_with_filter(filter, limit=limit)
 
-    # TODO return NumericFilter or List[NumericFilter]
-    def _build_fiter(self, filter: Dict) -> List[NumericFilter]:
-        INF = "+inf"
-        NEG_INF = "-inf"
-        f = []
-
-        for key in filter:
-            operator = list(filter[key].keys())[0]
-            threshold = filter[key][operator]
-            if operator == '$gt':
-                f.append(NumericFilter(key, threshold, INF, minExclusive=True))
-            elif operator == '$gte':
-                f.append(NumericFilter(key, threshold, INF))
-            elif operator == '$lt':
-                f.append(NumericFilter(key, NEG_INF, threshold, maxExclusive=True))
-            elif operator == '$lte':
-                f.append(NumericFilter(key, NEG_INF, threshold))
-            elif operator == '$eq':
-                f.append(NumericFilter(key, threshold, threshold))
-            # TODO add $neq if possible
-
-        return f
-
     def _build_query_str(self, filter: Dict) -> str:
         INF = "+inf"
         NEG_INF = "-inf"
-        s = ""
+        s = "("
 
         for key in filter:
             operator = list(filter[key].keys())[0]
-            threshold = filter[key][operator]
+            value = filter[key][operator]
             if operator == '$gt':
-                s += f"@{key}:[({threshold} {INF}] "
+                s += f"@{key}:[({value} {INF}] "
             elif operator == '$gte':
-                s += f"@{key}:[{threshold} {INF}] "
+                s += f"@{key}:[{value} {INF}] "
             elif operator == '$lt':
-                s += f"@{key}:[{NEG_INF} ({threshold}] "
+                s += f"@{key}:[{NEG_INF} ({value}] "
             elif operator == '$lte':
-                s += f"@{key}:[{NEG_INF} {threshold}] "
+                s += f"@{key}:[{NEG_INF} {value}] "
             elif operator == '$eq':
-                s += f"@{key}:[{threshold} {threshold}] "
+                if type(value) is int:
+                    s += f"@{key}:[{value} {value}] "
+                else:
+                    s += f"@{key}:{value} "
             elif operator == '$neq':
-                s += f"-@{key}:[{threshold} {threshold}] "
+                if type(value) is int:
+                    s += f"-@{key}:[{value} {value}] "
+                else:
+                    s += f"-@{key}:{value} "
+        s += ")"
 
         return s
