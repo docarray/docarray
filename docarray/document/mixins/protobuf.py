@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Type, Optional
 
 if TYPE_CHECKING:
     from docarray.typing import T
-    from docarray.proto.docarray_pb2 import DocumentProto
+    from docarray.proto import DocumentProto
 
 
 class ProtobufMixin:

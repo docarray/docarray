@@ -27,7 +27,7 @@ class PortingMixin:
             return cls.from_pydantic_model(PydanticDocument.parse_obj(obj, **kwargs))
         elif protocol == 'protobuf':
             from google.protobuf import json_format
-            from docarray.proto.docarray_pb2 import DocumentProto
+            from docarray.proto import DocumentProto
 
             pb_msg = DocumentProto()
             json_format.ParseDict(obj, pb_msg, **kwargs)
@@ -55,7 +55,7 @@ class PortingMixin:
             return cls.from_pydantic_model(PydanticDocument.parse_raw(obj, **kwargs))
         elif protocol == 'protobuf':
             from google.protobuf import json_format
-            from docarray.proto.docarray_pb2 import DocumentProto
+            from docarray.proto import DocumentProto
 
             pb_msg = DocumentProto()
             json_format.Parse(obj, pb_msg, **kwargs)
@@ -113,7 +113,7 @@ class PortingMixin:
         if protocol == 'pickle':
             return pickle.loads(bstr)
         elif protocol == 'protobuf':
-            from docarray.proto.docarray_pb2 import DocumentProto
+            from docarray.proto import DocumentProto
 
             pb_msg = DocumentProto()
             pb_msg.ParseFromString(bstr)
