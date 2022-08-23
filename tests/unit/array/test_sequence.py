@@ -1,3 +1,4 @@
+import gc
 import tempfile
 import uuid
 
@@ -16,6 +17,11 @@ from docarray.array.storage.sqlite import SqliteConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from tests.conftest import tmpfile
+
+
+@pytest.fixture()
+def ensure_gc():
+    gc.collect()
 
 
 @pytest.mark.parametrize(
@@ -89,6 +95,9 @@ def update_config_inplace(config, tmpdir, tmpfile):
 def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfile):
     config = config
     update_config_inplace(config, tmpdir, tmpfile)
+
+    if storage == 'redis':
+        ensure_gc
 
     da = DocumentArray(storage=storage, config=config)
 

@@ -1,7 +1,7 @@
 from typing import Iterable, Union
 
-from .... import Document
-from ..base.seqlike import BaseSequenceLikeMixin
+from docarray import Document, DocumentArray
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -61,31 +61,21 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         else:
             return False
 
-    # TODO this del is unreachable, del will call __del__ in base/getsetdel
-    # def __del__(self):
-    #     """Delete this :class:`DocumentArrayRedis` object"""
-    #     self._offset2ids.clear()
-
     def __repr__(self):
         """Return the string representation of :class:`DocumentArrayRedis` object
         :return: string representation of this object
         """
         return f'<DocumentArray[Redis] (length={len(self)}) at {id(self)}>'
 
-    def _upload_batch(self, docs: Iterable['Document']):
+    def _upload_batch(self, batch_of_docs: DocumentArray):
         pipe = self._client.pipeline()
-        batch = 0
-        for doc in docs:
+        for doc in batch_of_docs:
             payload = self._document_to_redis(doc)
             pipe.hset(self._doc_prefix + doc.id, mapping=payload)
-            batch += 1
-            if batch >= self._config.batch_size:
-                pipe.execute()
-                batch = 0
-        if batch > 0:
-            pipe.execute()
+        pipe.execute()
 
     def _extend(self, docs: Iterable['Document']):
-        docs = list(docs)
-        self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        da = DocumentArray(docs)
+        for batch_of_docs in da.batch(self._config.batch_size):
+            self._upload_batch(batch_of_docs)
+            self._offset2ids.extend(batch_of_docs[:, 'id'])
