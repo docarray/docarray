@@ -2,16 +2,24 @@
 set -ex
 
 # Do NOT use this directly, use jinaai/protogen image
+# use jinaai/protogen:3.21 in order to use compiler version == 21 (creates docarray_pb.py)
+# and use jinaai/protogen:latest to use compiler version <= 20 (creates docarray_pb2.py)
+# make sure to use jinaai/protogen:3.21 to avoid overriting the module
 #
-# current dir: docarray root (the one with README.md)
+# current dir: docarray/docarray
 # run the following in bash:
 # docker run -v $(pwd)/proto:/jina/proto jinaai/protogen
 
 SRC_DIR=./
-SRC_NAME=docarray.proto
+MODULE=docarray
+SRC_NAME="${MODULE}.proto"
+COMP_OUT_NAME="${MODULE}_pb2.py"
+
+OUT_FOLDER=${2:-pb2}
+
 VER_FILE=../__init__.py
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
     echo "Error: Please specify the [PATH_TO_GRPC_PYTHON_PLUGIN], refer more details at " \
       "https://docarray.jina.ai/"
     printf "\n"
@@ -26,3 +34,4 @@ PLUGIN_PATH=${1}  # /Volumes/TOSHIBA-4T/Documents/grpc/bins/opt/grpc_python_plug
 printf "\e[1;33mgenerating protobuf and grpc python interface\e[0m\n"
 
 protoc -I ${SRC_DIR} --python_out=${SRC_DIR} ${SRC_DIR}${SRC_NAME}
+mv ${COMP_OUT_NAME} "${OUT_FOLDER}/${COMP_OUT_NAME}"
