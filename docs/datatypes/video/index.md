@@ -99,3 +99,21 @@ d = (
 <source src="../../_static/60fps.mp4" type="video/mp4">
 </video>
 
+## Create Document from webcam
+
+One can generate a stream of Documents from a webcam via {meth}`~docarray.document.mixins.video.VideoDataMixin.generator_from_webcam`:
+
+```python
+from docarray import Document
+
+for d in Document.generator_from_webcam():
+    pass
+```
+
+This will create a generator that yields a Document for each frame. One can control the framerate via `fps` parameter. Note that the upper bound of the framerate is determined by the hardware of webcam, not the software. Press `Esc` to exit.
+
+<video controls width="60%">
+<source src="../../_static/webcam.mp4" type="video/mp4">
+</video>
+
+

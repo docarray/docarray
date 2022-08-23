@@ -108,6 +108,15 @@ def test_convert_image_tensor_to_uri(arr_size, channel_axis, width, height, form
     assert doc.tensor.any()
     assert not doc.uri
     doc.set_image_tensor_shape(channel_axis=channel_axis, shape=(width, height))
+    org_size = doc.tensor.shape
+    doc.set_image_tensor_resample(0.5, channel_axis=channel_axis)
+    for n, o in zip(doc.tensor.shape, org_size):
+        if o not in (1, 3):
+            assert n == 0.5 * o
+    doc.set_image_tensor_resample(2, channel_axis=channel_axis)
+    for n, o in zip(doc.tensor.shape, org_size):
+        if o not in (1, 3):
+            assert n == o
 
     doc.convert_image_tensor_to_uri(channel_axis=channel_axis, image_format=format)
     assert doc.uri.startswith(f'data:image/{format};base64,')

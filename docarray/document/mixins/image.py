@@ -94,6 +94,25 @@ class ImageDataMixin:
         self.blob = _to_image_buffer(tensor, image_format)
         return self
 
+    def set_image_tensor_resample(
+        self: 'T',
+        ratio: float,
+        channel_axis: int = -1,
+    ) -> 'T':
+        """
+        Resample the image :attr:`.tensor` into different size inplace.
+
+        :param ratio: scale ratio of the resampled image tensor.
+        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :return: itself after processed
+        """
+        tensor = _move_channel_axis(self.tensor, channel_axis, -1)
+        in_rows, in_cols, n_in = tensor.shape
+        in_rows, in_cols = int(in_rows * ratio), int(in_cols * ratio)
+        self.set_image_tensor_shape((in_rows, in_cols), channel_axis)
+
+        return self
+
     def set_image_tensor_shape(
         self: 'T',
         shape: Tuple[int, int],

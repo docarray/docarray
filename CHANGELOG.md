@@ -127,6 +127,8 @@
 
 
 
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3043,4 +3045,48 @@
 
  - [[```fce2b883```](https://github.com/jina-ai/docarray/commit/fce2b8835cb95625494b3bd952c8157d14bbbc58)] __-__ bump version to 0.15.0 (#486) (*Nan Wang*)
  - [[```8f7b3bed```](https://github.com/jina-ai/docarray/commit/8f7b3bed66c2f049e7a1990caa45be6fa7ad55ed)] __-__ __version__: the next version will be 0.14.12 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-1></a>
+## Release Note (`0.15.1`)
+
+> Release time: 2022-08-19 11:18:56
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```c936b18f```](https://github.com/jina-ai/docarray/commit/c936b18fbad91db8e7a34bb68329c521bce0b19f)] __-__ __video__: add from_webcam generator (#493) (*Han Xiao*)
+ - [[```9e00a008```](https://github.com/jina-ai/docarray/commit/9e00a008ec1cd26aac14b685446cc440ca00a2f2)] __-__ push meta data along with docarray (*Han Xiao*)
+
+### 🐞 Bug fixes
+
+ - [[```461b996f```](https://github.com/jina-ai/docarray/commit/461b996f6e4267dff7507c3fb683ce16479b70b9)] __-__ set subindices directly via access path (#488) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```7e3988c2```](https://github.com/jina-ai/docarray/commit/7e3988c24fb54da55f2075e1a56e557294999ad9)] __-__ Revert &#34;feat: push meta data along with docarray&#34; (*Han Xiao*)
+ - [[```42bf943c```](https://github.com/jina-ai/docarray/commit/42bf943c9333639e62e0f948517c5673e934147c)] __-__ __version__: the next version will be 0.15.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-2></a>
+## Release Note (`0.15.2`)
+
+> Release time: 2022-08-19 12:58:37
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```b54bb09a```](https://github.com/jina-ai/docarray/commit/b54bb09a9450f7f02d65a50f592ac34881fb23b9)] __-__ __video__: add height_width for webcam caps (#494) (*Han Xiao*)
+
+### 🍹 Other Improvements
+
+ - [[```fefc0025```](https://github.com/jina-ai/docarray/commit/fefc00257e5f193b5f1eadc864caedc61cfc49a5)] __-__ __version__: the next version will be 0.15.2 (*Jina Dev Bot*)
 
