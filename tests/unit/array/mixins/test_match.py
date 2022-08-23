@@ -10,7 +10,7 @@ from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
 from scipy.spatial.distance import cdist as scipy_cdist
 
 from docarray import Document, DocumentArray
-from docarray.array.storage.weaviate import WeaviateConfig
+import operator
 
 
 @pytest.fixture()
@@ -577,3 +577,186 @@ def test_match_ensure_scores_unique():
         for m in query.matches:
             assert m.scores['euclidean'].value >= previous_score
             previous_score = m.scores['euclidean'].value
+
+
+numeric_operators_annlite = {
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$neq': operator.ne,
+}
+
+numeric_operators_weaviate = {
+    'GreaterThanEqual': operator.ge,
+    'GreaterThan': operator.gt,
+    'LessThanEqual': operator.le,
+    'LessThan': operator.lt,
+    'Equal': operator.eq,
+    'NotEqual': operator.ne,
+}
+
+
+numeric_operators_qdrant = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'neq': operator.ne,
+}
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueInt': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'range': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['gte', 'gt', 'lte', 'lt']
+        ],
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'eq',
+            ]
+        ),
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must_not': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'neq',
+            ]
+        ),
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
+    ],
+)
+def test_match_pre_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage
+):
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+    )
+
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'price': i})
+            for i in range(50)
+        ]
+    )
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        filter = filter_gen(operator, threshold)
+
+        doc = Document(embedding=np.random.rand(n_dim))
+        doc.match(da, filter=filter)
+
+        assert len(doc.matches) > 0
+
+        assert all(
+            [
+                numeric_operators[operator](r.tags['price'], threshold)
+                for r in doc.matches
+            ]
+        )
+
+
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_match_subindex(storage, config):
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+
+    query = Document(embedding=np.array([3, 3]))
+    if storage in ['sqlite', 'memory']:
+        query.match(da, on='@c', metric='euclidean')
+    else:
+        query.match(da, on='@c')
+    closest_docs = query.matches
+
+    assert embeddings_eq(closest_docs[0].embedding, [2, 2])
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')

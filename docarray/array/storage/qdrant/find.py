@@ -10,9 +10,9 @@ from typing import (
 
 from qdrant_client.http.models.models import Distance
 
-from .... import Document, DocumentArray
-from ....math import ndarray
-from ....score import NamedScore
+from docarray import Document, DocumentArray
+from docarray.math import ndarray
+from docarray.score import NamedScore
 
 if TYPE_CHECKING:
     import tensorflow

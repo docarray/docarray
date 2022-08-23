@@ -1,7 +1,8 @@
-from typing import Union, Iterable, Dict
+from typing import Union, Iterable, Dict, List
+import warnings
 
-from ..base.seqlike import BaseSequenceLikeMixin
-from .... import Document
+from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
@@ -57,19 +58,50 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
-    def _upload_batch(self, docs: Iterable['Document']):
-        batch = []
-        for doc in docs:
-            batch.append(self._document_to_elastic(doc))
-            if len(batch) > self._config.batch_size:
-                self._send_requests(batch)
-                self._refresh(self._config.index_name)
-                batch = []
-        if len(batch) > 0:
-            self._send_requests(batch)
-            self._refresh(self._config.index_name)
+    @staticmethod
+    def _parse_index_ids_from_bulk_info(
+        accumulated_info: List[Dict],
+    ) -> Dict[str, List[int]]:
+        """Parse ids from bulk info of failed send request to ES operation
 
-    def extend(self, docs: Iterable['Document']):
+        :param accumulated_info: accumulated info of failed operation
+        :return: dict containing failed index ids of each operation type
+        """
+
+        parsed_ids = {}
+
+        for info in accumulated_info:
+            for _op_type in info.keys():
+                if '_id' in info[_op_type]:
+                    if _op_type not in parsed_ids:
+                        parsed_ids[_op_type] = []
+
+                    parsed_ids[_op_type].append(info[_op_type]['_id'])
+
+        return parsed_ids
+
+    def _upload_batch(self, docs: Iterable['Document'], **kwargs) -> List[int]:
+        requests = [self._document_to_elastic(doc) for doc in docs]
+        accumulated_info = self._send_requests(requests, **kwargs)
+        self._refresh(self._config.index_name)
+
+        successful_ids = self._parse_index_ids_from_bulk_info(accumulated_info)
+        if 'index' not in successful_ids:
+            return []
+
+        return successful_ids['index']
+
+    def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
-        self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        successful_indexed_ids = self._upload_batch(docs, **kwargs)
+        self._offset2ids.extend(
+            [_id for _id in successful_indexed_ids if _id not in self._offset2ids.ids]
+        )
+
+        if len(successful_indexed_ids) != len(docs):
+            doc_ids = [doc.id for doc in docs]
+            failed_index_ids = set(doc_ids) - set(successful_indexed_ids)
+
+            err_msg = f'fail to add Documents with ids: {failed_index_ids}'
+            warnings.warn(err_msg)
+            raise IndexError(err_msg)

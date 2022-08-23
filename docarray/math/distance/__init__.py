@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from ..ndarray import get_array_type
+from docarray.math.ndarray import get_array_type
 
 if TYPE_CHECKING:
-    from ...typing import ArrayType
+    from docarray.typing import ArrayType
     import numpy as np
 
 
@@ -48,67 +48,67 @@ def cdist(
     dists = None
     if metric == 'cosine':
         if framework == 'scipy' and is_sparse:
-            from .numpy import sparse_cosine
+            from docarray.math.distance.numpy import sparse_cosine
 
             dists = sparse_cosine(x_mat, y_mat)
         elif framework == 'numpy':
-            from .numpy import cosine
+            from docarray.math.distance.numpy import cosine
 
             dists = cosine(x_mat, y_mat)
         elif framework == 'tensorflow':
-            from .tensorflow import cosine
+            from docarray.math.distance.tensorflow import cosine
 
             dists = cosine(x_mat, y_mat, device=device)
         elif framework == 'torch':
-            from .torch import cosine
+            from docarray.math.distance.torch import cosine
 
             dists = cosine(x_mat, y_mat, device=device)
         elif framework == 'paddle':
-            from .paddle import cosine
+            from docarray.math.distance.paddle import cosine
 
             dists = cosine(x_mat, y_mat, device=device)
 
     elif metric == 'sqeuclidean':
         if framework == 'scipy' and is_sparse:
-            from .numpy import sparse_sqeuclidean
+            from docarray.math.distance.numpy import sparse_sqeuclidean
 
             dists = sparse_sqeuclidean(x_mat, y_mat)
         elif framework == 'numpy':
-            from .numpy import sqeuclidean
+            from docarray.math.distance.numpy import sqeuclidean
 
             dists = sqeuclidean(x_mat, y_mat)
         elif framework == 'tensorflow':
-            from .tensorflow import sqeuclidean
+            from docarray.math.distance.tensorflow import sqeuclidean
 
             dists = sqeuclidean(x_mat, y_mat, device=device)
         elif framework == 'torch':
-            from .torch import sqeuclidean
+            from docarray.math.distance.torch import sqeuclidean
 
             dists = sqeuclidean(x_mat, y_mat, device=device)
         elif framework == 'paddle':
-            from .paddle import sqeuclidean
+            from docarray.math.distance.paddle import sqeuclidean
 
             dists = sqeuclidean(x_mat, y_mat, device=device)
 
     elif metric == 'euclidean':
         if framework == 'scipy' and is_sparse:
-            from .numpy import sparse_euclidean
+            from docarray.math.distance.numpy import sparse_euclidean
 
             dists = sparse_euclidean(x_mat, y_mat)
         elif framework == 'numpy':
-            from .numpy import euclidean
+            from docarray.math.distance.numpy import euclidean
 
             dists = euclidean(x_mat, y_mat)
         elif framework == 'tensorflow':
-            from .tensorflow import euclidean
+            from docarray.math.distance.tensorflow import euclidean
 
             dists = euclidean(x_mat, y_mat, device=device)
         elif framework == 'torch':
-            from .torch import euclidean
+            from docarray.math.distance.torch import euclidean
 
             dists = euclidean(x_mat, y_mat, device=device)
         elif framework == 'paddle':
-            from .paddle import euclidean
+            from docarray.math.distance.paddle import euclidean
 
             dists = euclidean(x_mat, y_mat, device=device)
     else:

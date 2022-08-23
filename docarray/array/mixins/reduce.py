@@ -1,7 +1,7 @@
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...typing import T, Document
+    from docarray.typing import T, Document
 
 
 def _reduce_doc_props(doc1: 'Document', doc2: 'Document'):

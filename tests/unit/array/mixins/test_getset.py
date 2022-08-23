@@ -392,3 +392,171 @@ def test_zero_embeddings(da_cls, config, start_storage):
     for d in da:
         # scipy sparse row-vector can only be a (1, m) not squeezible
         assert d.embedding.shape == (1, 6)
+
+
+def embeddings_eq(emb1, emb2):
+    b = emb1 == emb2
+    if isinstance(b, bool):
+        return b
+    else:
+        return b.all()
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_getset_subindex(storage, config):
+
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+    with da:
+        da[0] = Document(
+            embedding=-1 * np.ones(n_dim),
+            chunks=[
+                Document(id='c_0', embedding=np.array([-1, -1])),
+                Document(id='c_1', embedding=np.array([-2, -2])),
+            ],
+        )
+
+    with da:
+        da[1:] = [
+            Document(
+                embedding=-1 * np.ones(n_dim),
+                chunks=[
+                    Document(id='c_0' + str(i), embedding=np.array([-1, -1])),
+                    Document(id='c_1' + str(i), embedding=np.array([-2, -2])),
+                ],
+            )
+            for i in range(2)
+        ]
+
+    # test insert single doc
+    assert embeddings_eq(da[0].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[0].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[0].chunks[1].embedding, [-2, -2])
+
+    assert embeddings_eq(da._subindices['@c']['c_0'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_1'].embedding, [-2, -2])
+
+    # test insert slice of docs
+    assert embeddings_eq(da[1].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[1].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[1].chunks[1].embedding, [-2, -2])
+
+    assert embeddings_eq(da._subindices['@c']['c_00'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_10'].embedding, [-2, -2])
+
+    assert embeddings_eq(da[2].embedding, -1 * np.ones(n_dim))
+    assert embeddings_eq(da[2].chunks[0].embedding, [-1, -1])
+    assert embeddings_eq(da[2].chunks[1].embedding, [-2, -2])
+
+    assert embeddings_eq(da._subindices['@c']['c_01'].embedding, [-1, -1])
+    assert embeddings_eq(da._subindices['@c']['c_11'].embedding, [-2, -2])
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_init_subindex(storage, config):
+    num_top_level_docs = 5
+    num_chunks_per_doc = 3
+    subindex_configs = (
+        {'@c': None} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        [
+            Document(
+                chunks=[Document(text=f'{i}{j}') for j in range(num_chunks_per_doc)]
+            )
+            for i in range(num_top_level_docs)
+        ],
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    assert len(da['@c']) == num_top_level_docs * num_chunks_per_doc
+    assert len(da._subindices['@c']) == num_top_level_docs * num_chunks_per_doc
+    expected_texts = []
+    for i in range(num_top_level_docs):
+        for j in range(num_chunks_per_doc):
+            expected_texts.append(f'{i}{j}')
+    assert da['@c'].texts == expected_texts
+    assert da._subindices['@c'].texts == expected_texts
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_set_on_subindex(storage, config):
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        [Document(chunks=[Document() for j in range(3)]) for i in range(5)],
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    embeddings_to_assign = np.random.random((5 * 3, 2))
+    with da:
+        da['@c'].embeddings = embeddings_to_assign
+    assert (da['@c'].embeddings == embeddings_to_assign).all()
+    assert (da._subindices['@c'].embeddings == embeddings_to_assign).all()
+
+    with da:
+        da['@c'].texts = ['hello' for _ in range(5 * 3)]
+    assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
+    assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
+
+    matches = da.find(query=np.random.random(2), on='@c')
+    assert matches
+    assert len(matches[0].embedding) == 2

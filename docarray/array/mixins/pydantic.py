@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Type, List
 
 if TYPE_CHECKING:
-    from ...document.pydantic_model import PydanticDocumentArray
+    from docarray.document.pydantic_model import PydanticDocumentArray
 
-    from ...typing import T
+    from docarray.typing import T
     from pydantic import BaseModel
 
 
@@ -12,7 +12,7 @@ class PydanticMixin:
     def get_json_schema(cls, indent: int = 2) -> str:
         """Return a JSON Schema of DocumentArray class."""
         from pydantic import schema_json_of
-        from ...document.pydantic_model import PydanticDocumentArray
+        from docarray.document.pydantic_model import PydanticDocumentArray
 
         return schema_json_of(
             PydanticDocumentArray, title='DocumentArray Schema', indent=indent
@@ -29,6 +29,6 @@ class PydanticMixin:
         :param model: the list of pydantic data model objects that represents a DocumentArray
         :return: a DocumentArray
         """
-        from ... import Document
+        from docarray import Document
 
         return cls(Document.from_pydantic_model(m) for m in model)

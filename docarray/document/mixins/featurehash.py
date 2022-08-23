@@ -5,7 +5,7 @@ from typing import Tuple, TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from ...typing import T
+    from docarray.typing import T
 
 
 class FeatureHashMixin:

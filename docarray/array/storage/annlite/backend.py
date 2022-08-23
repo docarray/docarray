@@ -11,11 +11,11 @@ from typing import (
 
 import numpy as np
 
-from ..base.backend import BaseBackendMixin
-from ....helper import dataclass_from_dict, filter_dict
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
 if TYPE_CHECKING:
-    from ....typing import DocumentArraySourceType, ArrayType
+    from docarray.typing import DocumentArraySourceType, ArrayType
 
 
 @dataclass
@@ -33,13 +33,17 @@ class AnnliteConfig:
 class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
-    TYPE_MAP = {'str': 'TEXT', 'float': 'float', 'int': 'integer'}
+    TYPE_MAP = {
+        'str': TypeMap(type='TEXT', converter=str),
+        'float': TypeMap(type='float', converter=float),
+        'int': TypeMap(type='integer', converter=_safe_cast_int),
+    }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         if embedding is None:
             embedding = np.zeros(self.n_dim, dtype=np.float32)
         elif isinstance(embedding, list):
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 
@@ -47,42 +51,59 @@ class BackendMixin(BaseBackendMixin):
                 embedding = np.asarray(embedding).squeeze()
         return embedding
 
+    def _normalize_columns(self, columns):
+        columns = super()._normalize_columns(columns)
+        for i in range(len(columns)):
+            columns[i] = (
+                columns[i][0],
+                self._map_type(columns[i][1]),
+            )
+        return columns
+
+    def _ensure_unique_config(
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
+    ) -> dict:
+        import os
+
+        if 'data_path' not in config_subindex:
+            config_joined['data_path'] = os.path.join(
+                config_joined['data_path'], 'subindex_' + subindex_name
+            )
+        return config_joined
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
         config: Optional[Union[AnnliteConfig, Dict]] = None,
+        subindex_configs: Optional[Dict] = None,
         **kwargs,
     ):
+
+        from docarray import Document
+
         if not config:
             raise ValueError('Config object must be specified')
         elif isinstance(config, dict):
             config = dataclass_from_dict(AnnliteConfig, config)
 
         self._persist = bool(config.data_path)
-
         if not self._persist:
             from tempfile import TemporaryDirectory
 
             config.data_path = TemporaryDirectory().name
 
         self._config = config
-
-        if self._config.columns is None:
-            self._config.columns = []
-
-        for i in range(len(self._config.columns)):
-            self._config.columns[i] = (
-                self._config.columns[i][0],
-                self._map_type(self._config.columns[i][1]),
-            )
-
+        self._config.columns = self._normalize_columns(self._config.columns)
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
 
         from annlite import AnnLite
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
-        from .... import Document
 
         super()._init_storage()
 

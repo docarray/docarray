@@ -139,7 +139,7 @@ advanced/graphql-support/index
 :hidden:
 :maxdepth: 1
 
-api/docarray
+api
 proto/index
 changelog/index
 ```

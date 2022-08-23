@@ -1,6 +1,6 @@
-from .data import NamedScoreData
-from .mixins import AllMixins
-from ..base import BaseDCType
+from docarray.score.data import NamedScoreData
+from docarray.score.mixins import AllMixins
+from docarray.base import BaseDCType
 
 
 class NamedScore(AllMixins, BaseDCType):

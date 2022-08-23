@@ -105,3 +105,89 @@ def test_del_da_attribute():
 
     for d in da:
         assert d.embedding is None
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_del_subindex(storage, config):
+
+    n_dim = 3
+    subindex_configs = (
+        {'@c': dict()} if storage in ['sqlite', 'memory'] else {'@c': {'n_dim': 2}}
+    )
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(10)
+            ]
+        )
+
+    del da['0']
+    assert len(da) == 9
+    assert len(da._subindices['@c']) == 18
+
+    del da[-2:]
+    assert len(da) == 7
+    assert len(da._subindices['@c']) == 14
+
+
+def test_del_subindex_annlite_multimodal():
+    from docarray import dataclass
+    from docarray.typing import Text
+
+    @dataclass
+    class MMDoc:
+        my_text: Text
+        my_other_text: Text
+
+    n_dim = 3
+    da = DocumentArray(
+        storage='annlite',
+        config={'n_dim': n_dim, 'metric': 'Euclidean'},
+        subindex_configs={'@.[my_text, my_other_text]': {'n_dim': 2}},
+    )
+
+    num_docs = 10
+    docs_to_add = DocumentArray(
+        [
+            Document(MMDoc(my_text='hello', my_other_text='world'))
+            for _ in range(num_docs)
+        ]
+    )
+    for i, d in enumerate(docs_to_add):
+        d.id = str(i)
+        d.embedding = i * np.ones(n_dim)
+        d.my_text.id = str(i) + '_0'
+        d.my_text.embedding = [i, i]
+        d.my_other_text.id = str(i) + '_1'
+        d.my_other_text.embedding = [i, i]
+
+    with da:
+        da.extend(docs_to_add)
+
+    del da['0']
+    assert len(da) == 9
+    assert len(da._subindices['@.[my_text, my_other_text]']) == 18

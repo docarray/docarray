@@ -1,5 +1,8 @@
+import random
+
 import numpy as np
 import pytest
+import torch
 
 from docarray import Document, DocumentArray
 from docarray.array.chunk import ChunkArray
@@ -29,6 +32,21 @@ def test_doc_id_setter():
         id='d0',
     )
     assert d.id == d.chunks[0].parent_id == 'd0'
+
+
+def test_random_seed_no_effect_on_id():
+    da = DocumentArray()
+    for _ in range(10):
+        random.seed(0)
+        np.random.seed(0)
+        torch.manual_seed(0)
+        torch.cuda.manual_seed_all(0)
+        da.append(
+            Document(
+                chunks=[Document()],
+            )
+        )
+    assert len(set(da[...][:, 'id'])) == 20
 
 
 def test_doc_hash_complicate_content():

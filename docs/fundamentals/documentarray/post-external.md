@@ -68,6 +68,7 @@ scheme://netloc[:port][/path]
 |           | 2. One of `jinahub`, `jinahub+docker`, `jinhub+sandbox` | Jina hub executor in source code, Docker container, sandbox                                                                          |
 | `netloc`  | 1. Host address                                         | `host` of the connected Flow                                                                                                         |
 |   | 2. Hub Executor name                                    | Any Executor [listed here](https://hub.jina.ai)                                                                                      |
+|   | 3. Executor version(optional)                           | Such as v0.1.1, v0.1.1-gpu, by default latest                                                                                        |
 | `:port` | e.g. `:55566`                                           | `port` of the connected Flow. This is required when using `scheme` type (1) ; it is ignored when using hub-related `scheme` type (2) |
 | `/path` | e.g. `/foo`                                             | The endpoint of the Executor you want to call.                                                                                       |
 
@@ -77,6 +78,7 @@ Some examples:
 - `.post('grpc://192.168.12.2:12345/foo')`: call the `/foo` endpoint of the Flow on `192.168.12.2` port `12345` with `grpc` protocol to process the DocumentArray; processing is on remote.
 - `.post('jinahub://Hello/foo')`: call the `/foo` endpoint of the Hub Executor `Hello` to process the DocumentArray; porcessing is on local.
 - `.post('jinahub+sandbox://Hello/foo')`: call the `/foo` endpoint of the Hub Sandbox `Hello` to process the DocumentArray; porcessing is on remote.
+- `.post('jinahub+docker://Hello/v0.5.0/foo')`: call the `/foo` endpoint of the Hub Sandbox `Hello` of version `v0.5.0` to process the DocumentArray; porcessing in container.
 
 ## Read more
 

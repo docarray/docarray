@@ -8,7 +8,6 @@ import pytest
 from docarray import DocumentArray, Document
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
-from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -17,6 +16,8 @@ from docarray.array.storage.annlite import AnnliteConfig
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
 
+@pytest.mark.parametrize('keep_aspect_ratio', [True, False])
+@pytest.mark.parametrize('show_index', [True, False])
 @pytest.mark.parametrize(
     'da_cls,config',
     [
@@ -29,7 +30,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
     ],
 )
 def test_sprite_fail_tensor_success_uri(
-    pytestconfig, tmpdir, da_cls, config, start_storage
+    pytestconfig, tmpdir, da_cls, config, start_storage, keep_aspect_ratio, show_index
 ):
     files = [
         f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
@@ -44,7 +45,13 @@ def test_sprite_fail_tensor_success_uri(
     )
     with pytest.raises(ValueError):
         da.plot_image_sprites()
-    da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source='uri')
+    da.plot_image_sprites(
+        tmpdir / 'sprint_da.png',
+        image_source='uri',
+        keep_aspect_ratio=keep_aspect_ratio,
+        show_index=show_index,
+    )
+    da.save_gif(tmpdir / 'sprint_da.gif', show_index=show_index, channel_axis=0)
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
@@ -60,8 +67,17 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
     ],
 )
+@pytest.mark.parametrize('canvas_size', [50, 512])
+@pytest.mark.parametrize('min_size', [16, 64])
 def test_sprite_image_generator(
-    pytestconfig, tmpdir, image_source, da_cls, config_gen, start_storage
+    pytestconfig,
+    tmpdir,
+    image_source,
+    da_cls,
+    config_gen,
+    canvas_size,
+    min_size,
+    start_storage,
 ):
     files = [
         f'{pytestconfig.rootdir}/tests/image-data/*.jpg',
@@ -72,7 +88,12 @@ def test_sprite_image_generator(
     else:
         da = da_cls.from_files(files)
     da.apply(lambda d: d.load_uri_to_image_tensor())
-    da.plot_image_sprites(tmpdir / 'sprint_da.png', image_source=image_source)
+    da.plot_image_sprites(
+        tmpdir / 'sprint_da.png',
+        image_source=image_source,
+        canvas_size=canvas_size,
+        min_size=min_size,
+    )
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
 
@@ -100,6 +121,13 @@ def da_and_dam(start_storage):
 def test_plot_embeddings(da_and_dam):
     for da in da_and_dam:
         _test_plot_embeddings(da)
+
+
+def test_plot_sprites(tmpdir):
+    da = DocumentArray.empty(5)
+    da.tensors = np.random.random([5, 3, 226, 226])
+    da.plot_image_sprites(tmpdir / 'a.png', channel_axis=0, show_index=True)
+    assert os.path.exists(tmpdir / 'a.png')
 
 
 def _test_plot_embeddings(da):

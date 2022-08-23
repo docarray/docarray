@@ -1,11 +1,11 @@
 import mimetypes
 from typing import TYPE_CHECKING, Optional
 
-from ._property import _PropertyMixin
+from docarray.document.mixins._property import _PropertyMixin
 
 if TYPE_CHECKING:
-    from ...typing import DocumentContentType, ArrayType
-    from ... import DocumentArray
+    from docarray.typing import DocumentContentType, ArrayType
+    from docarray import DocumentArray
 
 _all_mime_types = set(mimetypes.types_map.values())
 
@@ -71,7 +71,7 @@ class PropertyMixin(_PropertyMixin):
 
     @_PropertyMixin.chunks.setter
     def chunks(self, value: 'DocumentArray'):
-        from ...array.chunk import ChunkArray
+        from docarray.array.chunk import ChunkArray
 
         if not isinstance(value, ChunkArray):
             value = ChunkArray(value, reference_doc=self._data._reference_doc)
@@ -80,7 +80,7 @@ class PropertyMixin(_PropertyMixin):
 
     @_PropertyMixin.matches.setter
     def matches(self, value: 'DocumentArray'):
-        from ...array.match import MatchArray
+        from docarray.array.match import MatchArray
 
         if not isinstance(value, MatchArray):
             value = MatchArray(value, reference_doc=self._data._reference_doc)

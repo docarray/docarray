@@ -8,6 +8,23 @@ from docarray.math import ndarray
 import operator
 
 
+def test_customize_metric_fn():
+    N, D = 4, 128
+    da = DocumentArray.empty(N)
+    da.embeddings = np.random.random([N, D])
+
+    q = np.random.random([D])
+    _, r1 = da.find(q)[:, ['scores__cosine__value', 'id']]
+
+    from docarray.math.distance.numpy import cosine
+
+    def inv_cosine(*args):
+        return -cosine(*args)
+
+    _, r2 = da.find(q, metric=inv_cosine)[:, ['scores__inv_cosine__value', 'id']]
+    assert list(reversed(r1)) == r2
+
+
 @pytest.mark.parametrize(
     'storage, config',
     [
@@ -226,6 +243,15 @@ numeric_operators_qdrant = {
 }
 
 
+numeric_operators_elasticsearch = {
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+}
+
+
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
@@ -257,19 +283,26 @@ numeric_operators_qdrant = {
             )
             for operator in ['gte', 'gt', 'lte', 'lt']
         ],
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'value': {operator: threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    operator,
-                ]
-            )
-            for operator in ['eq', 'neq']
-        ],
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'eq',
+            ]
+        ),
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must_not': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'neq',
+            ]
+        ),
         *[
             tuple(
                 [
@@ -281,11 +314,29 @@ numeric_operators_qdrant = {
             )
             for operator in numeric_operators_annlite.keys()
         ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
     ],
 )
 def test_search_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage
 ):
+    np.random.seed(0)
     n_dim = 128
     da = DocumentArray(
         storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
@@ -304,6 +355,88 @@ def test_search_pre_filtering(
         filter = filter_gen(operator, threshold)
 
         results = da.find(np.random.rand(n_dim), filter=filter)
+
+        assert len(results) > 0
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueNumber': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {'match': {'price': threshold}},
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['eq']
+        ],
+        *[
+            tuple(
+                [
+                    'elasticsearch',
+                    lambda operator, threshold: {
+                        'range': {
+                            'price': {
+                                operator: threshold,
+                            }
+                        }
+                    },
+                    numeric_operators_elasticsearch,
+                    operator,
+                ]
+            )
+            for operator in ['gt', 'gte', 'lt', 'lte']
+        ],
+        *[
+            tuple(
+                [
+                    'annlite',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_annlite,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_annlite.keys()
+        ],
+    ],
+)
+def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
+    )
+
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
+    thresholds = [10, 20, 30]
+
+    for threshold in thresholds:
+
+        filter = filter_gen(operator, threshold)
+        results = da.find(filter=filter)
+
+        assert len(results) > 0
 
         assert all(
             [numeric_operators[operator](r.tags['price'], threshold) for r in results]
@@ -326,8 +459,13 @@ def test_weaviate_filter_query(start_storage):
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'wrong': 'filter'})
 
+    with pytest.raises(ValueError):
+        da._filter(filter={'wrong': 'filter'})
 
-@pytest.mark.parametrize('storage', ['memory', 'elasticsearch'])
+    assert isinstance(da._filter(filter={}), type(da))
+
+
+@pytest.mark.parametrize('storage', ['memory'])
 def test_unsupported_pre_filtering(storage, start_storage):
 
     n_dim = 128
@@ -344,3 +482,161 @@ def test_unsupported_pre_filtering(storage, start_storage):
 
     with pytest.raises(ValueError):
         da.find(np.random.rand(n_dim), filter={'price': {'$gte': 2}})
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('elasticsearch', {'n_dim': 32, 'index_text': False}),
+    ],
+)
+@pytest.mark.parametrize('limit', [1, 5, 10])
+def test_elastic_id_filter(storage, config, limit):
+    da = DocumentArray(storage=storage, config=config)
+    da.extend([Document(id=f'{i}', embedding=np.random.rand(32)) for i in range(50)])
+    id_list = [np.random.choice(50, 10, replace=False) for _ in range(3)]
+
+    for id in id_list:
+        id = list(map(lambda x: str(x), id))
+        query = {
+            "bool": {"filter": {"ids": {"values": id}}},
+        }
+        result = da.find(query=query, limit=limit)
+        assert all([r.id in id for r in result])
+        assert len(result) == limit
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_find_subindex(storage, config):
+    n_dim = 3
+    subindex_configs = {'@c': None}
+    if storage == 'sqlite':
+        subindex_configs['@c'] = dict()
+    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch']:
+        subindex_configs['@c'] = {'n_dim': 2}
+
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=str(i),
+                    embedding=i * np.ones(n_dim),
+                    chunks=[
+                        Document(id=str(i) + '_0', embedding=np.array([i, i])),
+                        Document(id=str(i) + '_1', embedding=np.array([i, i])),
+                    ],
+                )
+                for i in range(3)
+            ]
+        )
+
+    if storage in ['sqlite', 'memory']:
+        closest_docs = da.find(query=np.array([3, 3]), on='@c', metric='euclidean')
+    else:
+        closest_docs = da.find(query=np.array([3, 3]), on='@c')
+
+    b = closest_docs[0].embedding == [2, 2]
+    if isinstance(b, bool):
+        assert b
+    else:
+        assert b.all()
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+    ],
+)
+def test_find_subindex_multimodal(storage, config):
+    from docarray import dataclass
+    from docarray.typing import Text
+
+    @dataclass
+    class MMDoc:
+        my_text: Text
+        my_other_text: Text
+        my_third_text: Text
+
+    n_dim = 3
+    subindex_configs = {
+        '@.[my_text, my_other_text]': {'n_dim': 2},
+        '@.[my_third_text]': {'n_dim': 2},
+    }
+
+    if storage in ['sqlite', 'memory']:
+        subindex_configs['@.[my_text, my_other_text]'] = dict()
+        subindex_configs['@.[my_third_text]'] = dict()
+
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    num_docs = 3
+    docs_to_add = DocumentArray(
+        [
+            Document(
+                MMDoc(
+                    my_text='hello', my_other_text='world', my_third_text='hello again'
+                )
+            )
+            for _ in range(num_docs)
+        ]
+    )
+    for i, d in enumerate(docs_to_add):
+        d.id = str(i)
+        d.embedding = i * np.ones(n_dim)
+        d.my_text.id = str(i) + '_0'
+        d.my_text.embedding = np.array([i, i])
+        d.my_other_text.id = str(i) + '_1'
+        d.my_other_text.embedding = np.array([i, i])
+        d.my_third_text.id = str(i) + '_2'
+        d.my_third_text.embedding = np.array([3 * i, 3 * i])
+
+    with da:
+        da.extend(docs_to_add)
+
+    if storage in ['sqlite', 'memory']:
+        closest_docs = da.find(
+            query=np.array([3, 3]), on='@.[my_text, my_other_text]', metric='euclidean'
+        )
+    else:
+        closest_docs = da.find(query=np.array([3, 3]), on='@.[my_text, my_other_text]')
+    assert (closest_docs[0].embedding == np.array([2, 2])).all()
+    for d in closest_docs:
+        assert d.id.endswith('_0') or d.id.endswith('_1')
+
+    if storage in ['sqlite', 'memory']:
+        closest_docs = da.find(
+            query=np.array([3, 3]), on='@.[my_third_text]', metric='euclidean'
+        )
+    else:
+        closest_docs = da.find(query=np.array([3, 3]), on='@.[my_third_text]')
+    assert (closest_docs[0].embedding == np.array([3, 3])).all()
+    for d in closest_docs:
+        assert d.id.endswith('_2')

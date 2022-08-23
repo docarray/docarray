@@ -3,10 +3,10 @@ from typing import (
     Iterable,
 )
 
-from .memory import DocumentArrayInMemory
+from docarray.array.memory import DocumentArrayInMemory
 
 if TYPE_CHECKING:
-    from ..document import Document
+    from docarray.document import Document
 
 
 class MatchArray(DocumentArrayInMemory):
