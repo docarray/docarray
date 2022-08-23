@@ -2,13 +2,14 @@
 set -ex
 
 # Do NOT use this directly, use jinaai/protogen image
-# use jinaai/protogen:3.21 in order to use compiler version == 21 (creates docarray_pb.py)
-# and use jinaai/protogen:latest to use compiler version <= 20 (creates docarray_pb2.py)
+# use jinaai/protogen:3.21 in order to use compiler version == 21 (creates pb/docarray_pb2.py)
+# and use jinaai/protogen:latest to use compiler version <= 20 (creates pb2/docarray_pb2.py)
 # make sure to use jinaai/protogen:3.21 to avoid overriting the module
 #
 # current dir: docarray/docarray
 # run the following in bash:
 # docker run -v $(pwd)/proto:/jina/proto jinaai/protogen
+# finally, set back owner of the generated files using: sudo chown -R $(id -u ${USER}):$(id -g ${USER}) .
 
 SRC_DIR=./
 MODULE=docarray
