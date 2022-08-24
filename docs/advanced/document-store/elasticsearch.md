@@ -18,7 +18,7 @@ To use Elasticsearch as the storage backend, it is required to have the Elastics
 version: "3.3"
 services:
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
