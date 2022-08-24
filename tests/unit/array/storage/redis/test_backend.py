@@ -44,8 +44,6 @@ def da_redis():
 @pytest.mark.parametrize(
     'method,initial_cap,ef_construction,block_size',
     [
-        ('HNSW', None, None, None),
-        ('HNSW', 10, 250, None),
         ('HNSW', 10, 250, 1000000),
         ('FLAT', 10, 250, 1000000),
     ],
