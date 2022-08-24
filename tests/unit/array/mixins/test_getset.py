@@ -560,3 +560,16 @@ def test_set_on_subindex(storage, config):
     matches = da.find(query=np.random.random(2), on='@c')
     assert matches
     assert len(matches[0].embedding) == 2
+
+
+def test_raise_correct_error_subindex_set():
+    da = DocumentArray(
+        [
+            Document(chunks=[Document(text='hello')]),
+            Document(chunks=[Document(text='world')]),
+        ],
+        subindex_configs={'@c': None},
+    )
+
+    with pytest.raises(ValueError):
+        da['@c'] = DocumentArray(Document() for _ in range(2))
