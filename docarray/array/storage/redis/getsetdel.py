@@ -49,7 +49,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         for col, _ in self._config.columns:
             tag = doc.tags.get(col)
             if tag is not None:
-                extra_columns[col] = int(tag) if type(tag) is bool else tag
+                extra_columns[col] = int(tag) if isinstance(tag, bool) else tag
 
         payload = {
             'embedding': self._map_embedding(doc.embedding),
