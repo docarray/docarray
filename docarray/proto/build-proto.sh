@@ -16,7 +16,7 @@ MODULE=docarray
 SRC_NAME="${MODULE}.proto"
 COMP_OUT_NAME="${MODULE}_pb2.py"
 
-OUT_FOLDER=${2:-pb2}
+OUT_FOLDER="${2:-pb2}/"
 
 VER_FILE=../__init__.py
 
@@ -34,5 +34,4 @@ PLUGIN_PATH=${1}  # /Volumes/TOSHIBA-4T/Documents/grpc/bins/opt/grpc_python_plug
 
 printf "\e[1;33mgenerating protobuf and grpc python interface\e[0m\n"
 
-protoc -I ${SRC_DIR} --python_out=${SRC_DIR} ${SRC_DIR}${SRC_NAME}
-mv ${COMP_OUT_NAME} "${OUT_FOLDER}/${COMP_OUT_NAME}"
+protoc -I ${SRC_DIR} --python_out="${SRC_DIR}${OUT_FOLDER}" ${SRC_DIR}${SRC_NAME}
