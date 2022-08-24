@@ -28,10 +28,10 @@ class RedisConfig:
     tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
+    ef_construction: int = field(default=200)
+    m: int = field(default=16)
+    ef_runtime: int = field(default=10)
     initial_cap: Optional[int] = None
-    ef_construction: Optional[int] = None
-    m: Optional[int] = None
-    ef_runtime: Optional[int] = None
     block_size: Optional[int] = None
     columns: Optional[List[Tuple[str, str]]] = None
 
@@ -132,13 +132,11 @@ class BackendMixin(BaseBackendMixin):
             'DISTANCE_METRIC': self._config.distance,
         }
 
-        if self._config.method == 'HNSW' and (
-            self._config.m or self._config.ef_construction or self._config.ef_runtime
-        ):
+        if self._config.method == 'HNSW':
             index_options = {
-                'M': self._config.m or 16,
-                'EF_CONSTRUCTION': self._config.ef_construction or 200,
-                'EF_RUNTIME': self._config.ef_runtime or 10,
+                'M': self._config.m,
+                'EF_CONSTRUCTION': self._config.ef_construction,
+                'EF_RUNTIME': self._config.ef_runtime,
             }
             index_param.update(index_options)
 
