@@ -30,6 +30,7 @@ type_convert = {
     'long': b'NUMERIC',
     'str': b'TEXT',
     'bytes': b'TEXT',
+    'bool': b'NUMERIC',
 }
 
 
@@ -48,15 +49,15 @@ def da_redis():
         ('FLAT', 10, 250, 1000000),
     ],
 )
-@pytest.mark.parametrize('tag_indices', [['attr3'], ['attr3', 'attr4']])
 @pytest.mark.parametrize(
     'columns',
     [
         [('attr1', 'str'), ('attr2', 'bytes')],
         [('attr1', 'int'), ('attr2', 'float')],
-        [('attr1', 'double'), ('attr2', 'long')],
+        [('attr1', 'double'), ('attr2', 'long'), ('attr3', 'bool')],
     ],
 )
+@pytest.mark.parametrize('tag_indices', [['attr4'], ['attr4', 'attr5']])
 @pytest.mark.parametrize('index_text', [True, False])
 @pytest.mark.parametrize(
     'redis_config',
