@@ -29,6 +29,7 @@ class FindMixin(BaseFindMixin):
         query: 'RedisArrayType',
         filter: Optional[Dict] = None,
         limit: Optional[Union[int, float]] = 20,
+        **kwargs,
     ):
 
         query_str = self._build_query_str(filter) if filter else "*"
@@ -68,7 +69,8 @@ class FindMixin(BaseFindMixin):
             query = query.reshape((num_rows, -1))
 
         return [
-            self._find_similar_vectors(q, filter=filter, limit=limit) for q in query
+            self._find_similar_vectors(q, filter=filter, limit=limit, **kwargs)
+            for q in query
         ]
 
     def _find_with_filter(self, filter: Dict, limit: Optional[Union[int, float]] = 20):
