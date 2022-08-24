@@ -11,7 +11,7 @@ from redis.commands.search.field import NumericField, TextField, VectorField
 from redis.commands.search.indexDefinition import IndexDefinition
 
 if TYPE_CHECKING:
-    from ....typing import ArrayType, DocumentArraySourceType
+    from docarray.typing import ArrayType, DocumentArraySourceType
 
 
 @dataclass
@@ -72,10 +72,10 @@ class BackendMixin(BaseBackendMixin):
         if config.redis_config.get('decode_responses'):
             config.redis_config['decode_responses'] = False
 
-        self._offset2id_key = 'offset2id__' + config.index_name
+        self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
         self.n_dim = self._config.n_dim
-        self._doc_prefix = "doc__" + config.index_name + ":"
+        self._doc_prefix = config.index_name + ':'
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._client = self._build_client()
@@ -164,7 +164,7 @@ class BackendMixin(BaseBackendMixin):
 
     def _map_embedding(self, embedding: 'ArrayType') -> bytes:
         if embedding is not None:
-            from ....math.ndarray import to_numpy_array
+            from docarray.math.ndarray import to_numpy_array
 
             embedding = to_numpy_array(embedding)
 
