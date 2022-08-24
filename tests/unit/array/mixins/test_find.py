@@ -515,12 +515,20 @@ def test_redis_category_filter(start_storage):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
-        config={'n_dim': n_dim, 'columns': [('color', 'str')], 'flush': True},
+        config={
+            'n_dim': n_dim,
+            'columns': [('color', 'str'), ('isfake', 'bool')],
+            'flush': True,
+        },
     )
 
     da.extend(
         [
-            Document(id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'red'})
+            Document(
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={'color': 'red', 'isfake': True},
+            )
             for i in range(10)
         ]
     )
@@ -528,7 +536,9 @@ def test_redis_category_filter(start_storage):
     da.extend(
         [
             Document(
-                id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'blue'}
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={'color': 'blue', 'isfake': False},
             )
             for i in range(10, 20)
         ]
@@ -537,7 +547,9 @@ def test_redis_category_filter(start_storage):
     da.extend(
         [
             Document(
-                id=f'r{i}', embedding=np.random.rand(n_dim), tags={'color': 'green'}
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={'color': 'green', 'isfake': False},
             )
             for i in range(20, 30)
         ]
@@ -550,6 +562,14 @@ def test_redis_category_filter(start_storage):
     results = da.find(np.random.rand(n_dim), filter={'color': {'$neq': 'red'}})
     assert len(results) > 0
     assert all([(r.tags['color'] != 'red') for r in results])
+
+    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$eq': True}})
+    assert len(results) > 0
+    assert all([(r.tags['isfake'] == True) for r in results])
+
+    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$neq': True}})
+    assert len(results) > 0
+    assert all([(r.tags['isfake'] == False) for r in results])
 
 
 @pytest.mark.parametrize('storage', ['memory'])

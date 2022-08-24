@@ -46,7 +46,7 @@ class BackendMixin(BaseBackendMixin):
         'float': TypeMap(type='float', converter=NumericField),
         'double': TypeMap(type='double', converter=NumericField),
         'long': TypeMap(type='long', converter=NumericField),
-        # TODO add bool
+        'bool': TypeMap(type='long', converter=NumericField),
     }
 
     def _init_storage(
@@ -152,10 +152,8 @@ class BackendMixin(BaseBackendMixin):
 
         if self._config.tag_indices:
             for index in self._config.tag_indices:
-                # TODO TextField or TagField
                 schema.append(TextField(index))
 
-        # TODO whether to add schema to column (elastic does but qdrant doesn't)
         for col, coltype in self._config.columns:
             schema.append(self._map_column(col, coltype))
 

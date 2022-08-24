@@ -1,3 +1,4 @@
+from codecs import unicode_escape_decode
 from typing import Dict
 
 from docarray import Document
@@ -43,11 +44,13 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._client.delete(self._doc_prefix + _id)
 
     def _document_to_redis(self, doc: 'Document') -> Dict:
-        extra_columns = {
-            col: doc.tags.get(col)
-            for col, _ in self._config.columns
-            if doc.tags.get(col) is not None
-        }
+        extra_columns = {}
+
+        for col, _ in self._config.columns:
+            tag = doc.tags.get(col)
+            if tag is not None:
+                extra_columns[col] = int(tag) if type(tag) is bool else tag
+
         payload = {
             'embedding': self._map_embedding(doc.embedding),
             'blob': doc.to_base64(),

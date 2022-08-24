@@ -109,11 +109,15 @@ class FindMixin(BaseFindMixin):
             elif operator == '$eq':
                 if type(value) is int:
                     s += f"@{key}:[{value} {value}] "
+                elif type(value) is bool:
+                    s += f"@{key}:[{int(value)} {int(value)}] "
                 else:
                     s += f"@{key}:{value} "
             elif operator == '$neq':
                 if type(value) is int:
                     s += f"-@{key}:[{value} {value}] "
+                elif type(value) is bool:
+                    s += f"-@{key}:[{int(value)} {int(value)}] "
                 else:
                     s += f"-@{key}:{value} "
         s += ")"
