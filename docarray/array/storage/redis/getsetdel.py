@@ -30,8 +30,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
+        self._del_doc_by_id(_id)
         if _id != value.id:
-            self._del_doc_by_id(_id)
+            self._del_doc_by_id(value.id)
 
         payload = self._document_to_redis(value)
         self._client.hset(self._doc_prefix + value.id, mapping=payload)
@@ -41,15 +42,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param ids: the ids used for indexing
         """
-        pipe = self._client.pipeline()
-
         for _id, doc in zip(ids, docs):
+            self._del_doc_by_id(_id)
             if _id != doc.id:
-                self._del_doc_by_id(_id)
-            payload = self._document_to_redis(doc)
-            pipe.hset(self._doc_prefix + doc.id, mapping=payload)
+                self._del_doc_by_id(doc.id)
 
-        pipe.execute()
+        self._upload_batch(docs)
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
