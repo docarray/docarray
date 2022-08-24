@@ -4,6 +4,7 @@ from typing import Dict
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
+from typing import Iterable
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -34,6 +35,21 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         payload = self._document_to_redis(value)
         self._client.hset(self._doc_prefix + value.id, mapping=payload)
+
+    def _set_docs_by_ids(self, ids, docs: Iterable['Document'], mismatch_ids: Dict):
+        """Overridden implementation of _set_docs_by_ids in order to add docs in batches and flush at the end
+
+        :param ids: the ids used for indexing
+        """
+        pipe = self._client.pipeline()
+
+        for _id, doc in zip(ids, docs):
+            if _id != doc.id:
+                self._del_doc_by_id(_id)
+            payload = self._document_to_redis(doc)
+            pipe.hset(self._doc_prefix + doc.id, mapping=payload)
+
+        pipe.execute()
 
     def _del_doc_by_id(self, _id: str):
         """Concrete implementation of base class' ``_del_doc_by_id``
