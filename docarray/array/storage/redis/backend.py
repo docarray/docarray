@@ -31,8 +31,8 @@ class RedisConfig:
     ef_construction: int = field(default=200)
     m: int = field(default=16)
     ef_runtime: int = field(default=10)
+    block_size: int = field(default=1048576)
     initial_cap: Optional[int] = None
-    block_size: Optional[int] = None
     columns: Optional[List[Tuple[str, str]]] = None
 
 
@@ -140,7 +140,7 @@ class BackendMixin(BaseBackendMixin):
             }
             index_param.update(index_options)
 
-        if self._config.method == 'FLAT' and self._config.block_size:
+        if self._config.method == 'FLAT':
             index_options = {'BLOCK_SIZE': self._config.block_size}
             index_param.update(index_options)
 
