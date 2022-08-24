@@ -501,11 +501,6 @@ def test_getset_subindex(storage, config):
     assert embeddings_eq(da._subindices['@c']['c_11'].embedding, [-2, -2])
 
 
-@pytest.fixture()
-def ensure_gc():
-    gc.collect()
-
-
 @pytest.mark.parametrize(
     'storage, config',
     [
@@ -520,7 +515,7 @@ def ensure_gc():
 )
 def test_init_subindex(storage, config):
     if storage == 'redis':
-        ensure_gc
+        gc.collect()
 
     num_top_level_docs = 5
     num_chunks_per_doc = 3

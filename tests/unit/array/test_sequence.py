@@ -19,11 +19,6 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 from tests.conftest import tmpfile
 
 
-@pytest.fixture()
-def ensure_gc():
-    gc.collect()
-
-
 @pytest.mark.parametrize(
     'da_cls,config',
     [
@@ -97,7 +92,7 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     update_config_inplace(config, tmpdir, tmpfile)
 
     if storage == 'redis':
-        ensure_gc
+        gc.collect()
 
     da = DocumentArray(storage=storage, config=config)
 

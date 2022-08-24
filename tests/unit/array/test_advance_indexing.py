@@ -600,11 +600,6 @@ def test_single_boolean_and_padding(storage, start_storage):
     assert len(da[True, False, False]) == 1
 
 
-@pytest.fixture()
-def ensure_gc():
-    gc.collect()
-
-
 @pytest.mark.parametrize(
     'storage,config_gen',
     [
@@ -617,7 +612,7 @@ def ensure_gc():
         ('redis', lambda: RedisConfig(n_dim=123, flush=True)),
     ],
 )
-def test_edge_case_two_strings(storage, config_gen, ensure_gc, start_storage):
+def test_edge_case_two_strings(storage, config_gen, start_storage):
     # getitem
     if config_gen:
         da = DocumentArray(storage=storage, config=config_gen())
@@ -684,7 +679,7 @@ def test_edge_case_two_strings(storage, config_gen, ensure_gc, start_storage):
         da['1', 'hellohello'] = 'hello'
 
     if storage == 'redis':
-        ensure_gc
+        gc.collect()
 
 
 @pytest.mark.parametrize(
