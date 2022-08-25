@@ -115,7 +115,7 @@ class FindMixin(BaseFindMixin):
                     s += f"@{key}:[{int(value)} {int(value)}] "
                 else:
                     s += f"@{key}:{value} "
-            elif operator == '$neq':
+            elif operator == '$ne':
                 if type(value) is int:
                     s += f"-@{key}:[{value} {value}] "
                 elif type(value) is bool:

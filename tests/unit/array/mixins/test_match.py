@@ -614,7 +614,7 @@ numeric_operators_redis = {
     '$lte': operator.le,
     '$lt': operator.lt,
     '$eq': operator.eq,
-    '$neq': operator.ne,
+    '$ne': operator.ne,
 }
 
 

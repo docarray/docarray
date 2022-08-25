@@ -258,7 +258,7 @@ numeric_operators_redis = {
     '$lte': operator.le,
     '$lt': operator.lt,
     '$eq': operator.eq,
-    '$neq': operator.ne,
+    '$ne': operator.ne,
 }
 
 
@@ -559,7 +559,7 @@ def test_redis_category_filter(start_storage):
     assert len(results) > 0
     assert all([(r.tags['color'] == 'red') for r in results])
 
-    results = da.find(np.random.rand(n_dim), filter={'color': {'$neq': 'red'}})
+    results = da.find(np.random.rand(n_dim), filter={'color': {'$ne': 'red'}})
     assert len(results) > 0
     assert all([(r.tags['color'] != 'red') for r in results])
 
@@ -567,7 +567,7 @@ def test_redis_category_filter(start_storage):
     assert len(results) > 0
     assert all([(r.tags['isfake'] == True) for r in results])
 
-    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$neq': True}})
+    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$ne': True}})
     assert len(results) > 0
     assert all([(r.tags['isfake'] == False) for r in results])
 
