@@ -148,15 +148,9 @@ class BackendMixin(BaseBackendMixin):
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
 
-        if self._config.tag_indices:
-            for index in self._config.tag_indices:
-                schema.append(TextField(index))
-
         for col, coltype in self._config.columns:
             schema.append(self._map_column(col, coltype))
 
-        if self._config.index_text:
-            schema.append(TextField('text'))
         return schema
 
     def _doc_id_exists(self, doc_id):
