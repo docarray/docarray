@@ -27,7 +27,7 @@ services:
     networks:
       - elastic
   redis:
-    image: redis/redis-stack:6.2.2-v5
+    image: redislabs/redisearch:2.6.0
     ports:
       - "6379:6379"
       

@@ -74,6 +74,9 @@ def test_find(storage, config, limit, query, start_storage):
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
             assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        if storage == 'redis':
+            cosine_distances = [t['score'].value for t in da[:, 'scores']]
+            assert sorted(cosine_distances, reverse=False) == cosine_distances
         elif storage in ['memory', 'annlite', 'elasticsearch']:
             cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
@@ -84,6 +87,10 @@ def test_find(storage, config, limit, query, start_storage):
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
                 assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        if storage == 'redis':
+            for da in result:
+                cosine_distances = [t['score'].value for t in da[:, 'scores']]
+                assert sorted(cosine_distances, reverse=False) == cosine_distances
         elif storage in ['memory', 'annlite', 'elasticsearch']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]

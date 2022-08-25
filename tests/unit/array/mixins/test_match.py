@@ -92,9 +92,14 @@ def test_match(storage, config, doc_lists, limit, exclude_self, start_storage):
     for m in D1[:, 'matches']:
         assert len(m) == limit
 
-    expected_sorted_values = [
-        D1[0].matches[i].scores['cosine'].value for i in range(limit)
-    ]
+    if storage == 'redis':
+        expected_sorted_values = [
+            D1[0].matches[i].scores['score'].value for i in range(limit)
+        ]
+    else:
+        expected_sorted_values = [
+            D1[0].matches[i].scores['cosine'].value for i in range(limit)
+        ]
 
     assert expected_sorted_values == sorted(expected_sorted_values)
 
