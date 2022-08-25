@@ -96,6 +96,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 extra_columns[col] = int(tag) if isinstance(tag, bool) else tag
 
         payload = {
+            'id': doc.id,
             'embedding': self._map_embedding(doc.embedding),
             'blob': doc.to_base64(),
             **extra_columns,
