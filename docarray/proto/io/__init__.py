@@ -5,7 +5,7 @@ from google.protobuf.json_format import MessageToDict
 from google.protobuf.struct_pb2 import Struct
 
 from docarray.proto.io.ndarray import flush_ndarray, read_ndarray
-from docarray.proto import NdArrayProto, DocumentProto
+from docarray.proto.docarray_pb2 import NdArrayProto, DocumentProto
 
 if TYPE_CHECKING:
     from docarray import Document

@@ -6,7 +6,7 @@ from docarray.math.ndarray import get_array_type, to_numpy_array
 
 if TYPE_CHECKING:
     from docarray.typing import ArrayType
-    from docarray.proto import NdArrayProto
+    from docarray.proto.docarray_pb2 import NdArrayProto
 
 
 def read_ndarray(pb_msg: 'NdArrayProto') -> 'ArrayType':

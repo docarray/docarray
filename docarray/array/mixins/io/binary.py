@@ -15,7 +15,7 @@ from docarray.helper import (
 
 if TYPE_CHECKING:
     from docarray.typing import T
-    from docarray.proto import DocumentArrayProto
+    from docarray.proto.docarray_pb2 import DocumentArrayProto
     from docarray import Document, DocumentArray
 
 
@@ -161,7 +161,7 @@ class BinaryIOMixin:
                 compress = None
 
         if protocol == 'protobuf-array':
-            from docarray.proto import DocumentArrayProto
+            from docarray.proto.docarray_pb2 import DocumentArrayProto
 
             dap = DocumentArrayProto()
             dap.ParseFromString(d)
@@ -347,7 +347,7 @@ class BinaryIOMixin:
             Documents to ``List`` or ``numpy.ndarray``.
         :return: the protobuf message
         """
-        from docarray.proto import DocumentArrayProto
+        from docarray.proto.docarray_pb2 import DocumentArrayProto
 
         dap = DocumentArrayProto()
         for d in self:
