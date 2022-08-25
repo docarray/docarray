@@ -102,11 +102,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             **extra_columns,
         }
 
-        if self._config.tag_indices:
-            for index in self._config.tag_indices:
-                if doc.tags.get(index) is not None:
-                    payload[index] = doc.tags.get(index)
-
         if doc.text:
             payload['text'] = doc.text
         return payload
