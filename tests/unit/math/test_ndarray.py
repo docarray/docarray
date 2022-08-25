@@ -6,7 +6,7 @@ import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
 from docarray.math.ndarray import get_array_rows, check_arraylike_equality
-from docarray.proto import NdArrayProto
+from docarray.proto.docarray_pb2 import NdArrayProto
 from docarray.proto.io import flush_ndarray, read_ndarray
 
 
