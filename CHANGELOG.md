@@ -130,6 +130,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3110,4 +3111,28 @@
 ### 🍹 Other Improvements
 
  - [[```0dfb5f2c```](https://github.com/jina-ai/docarray/commit/0dfb5f2ce222892002852601e66fc9d5ec2577ed)] __-__ __version__: the next version will be 0.15.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-4></a>
+## Release Note (`0.15.4`)
+
+> Release time: 2022-08-25 07:34:28
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```51fec4f4```](https://github.com/jina-ai/docarray/commit/51fec4f48b25bf09074c85a0bda019cc1ee4ec94)] __-__ cap annlite version (#497) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```e75ca80d```](https://github.com/jina-ai/docarray/commit/e75ca80d2a38ab81d263f8fceeff83c117c13a23)] __-__ bump es version in documentation to match the tests (#498) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```e52d749a```](https://github.com/jina-ai/docarray/commit/e52d749af200c7ac37c5d485f01846bece534beb)] __-__ Revert &#34;fix: cap annlite version (#497)&#34; (#499) (*AlaeddineAbdessalem*)
+ - [[```37982c6b```](https://github.com/jina-ai/docarray/commit/37982c6b0bfb16820fbaf8b805271421960af9d2)] __-__ __version__: the next version will be 0.15.4 (*Jina Dev Bot*)
 
