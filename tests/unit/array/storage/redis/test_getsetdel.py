@@ -25,12 +25,6 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
 
 
 @pytest.fixture(scope='function')
-def tag_indices():
-    tag_indices = ['tag_1', 'tag_2']
-    return tag_indices
-
-
-@pytest.fixture(scope='function')
 def columns():
     columns = [
         ('col_str', 'str'),
@@ -44,8 +38,8 @@ def columns():
 
 
 @pytest.fixture(scope='function')
-def da_redis(tag_indices, columns):
-    cfg = RedisConfig(n_dim=3, flush=True, tag_indices=tag_indices, columns=columns)
+def da_redis(columns):
+    cfg = RedisConfig(n_dim=3, flush=True, columns=columns)
     da_redis = DocumentArrayDummy(storage='redis', config=cfg)
     return da_redis
 
@@ -73,7 +67,7 @@ def da_redis(tag_indices, columns):
     ],
 )
 def test_document_to_embedding(
-    embedding, text, tag, col, da_redis, columns, tag_indices, start_storage
+    embedding, text, tag, col, da_redis, columns, start_storage
 ):
     tags = {}
     if tag is not None:
@@ -105,15 +99,8 @@ def test_document_to_embedding(
             with pytest.raises(KeyError):
                 payload[col]
 
-    for tag in tag_indices:
-        if tag in tags:
-            assert payload[tag] == tags[tag]
-        else:
-            with pytest.raises(KeyError):
-                payload[tag]
-
     for key in tags:
-        if (key not in tag_indices) and (key not in (col[0] for col in columns)):
+        if key not in (col[0] for col in columns):
             assert key not in payload
 
 
