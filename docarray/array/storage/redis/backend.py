@@ -24,7 +24,6 @@ class RedisConfig:
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
-    index_text: bool = field(default=False)
     tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
@@ -99,7 +98,7 @@ class BackendMixin(BaseBackendMixin):
             client.flushdb()
 
         if self._config.update_schema:
-            if self._config.index_name in client.execute_command('FT._LIST'):
+            if self._config.index_name.encode() in client.execute_command('FT._LIST'):
                 client.ft(index_name=self._config.index_name).dropindex()
 
         if self._config.flush or self._config.update_schema:
