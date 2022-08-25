@@ -7,7 +7,7 @@
 <p align=center>
 <a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
 <a href="https://codecov.io/gh/jina-ai/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/jina-ai/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
-<a href="https://pypi.org/project/docarray/"><img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
+<a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
 <a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.1k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
 </p>
 
