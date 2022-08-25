@@ -24,7 +24,6 @@ class RedisConfig:
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
-    tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
     ef_construction: int = field(default=200)
