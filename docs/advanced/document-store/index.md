@@ -9,6 +9,7 @@ annlite
 qdrant
 elasticsearch
 weaviate
+redis
 extend
 benchmark
 ```
