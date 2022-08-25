@@ -4,7 +4,7 @@ from typing import Dict
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from typing import Iterable
+from typing import Sequence, Iterable
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -23,6 +23,36 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             return doc
         except Exception as ex:
             raise KeyError(_id) from ex
+
+    def _get_docs_by_ids(self, ids: Sequence[str]) -> Iterable['Document']:
+        """Concrete implementation of base class' ``_get_docs_by_ids``
+
+        :param ids:  ids of the document
+        :return: Iterable[Document]
+        """
+
+        accumulated_docs = []
+        accumulated_docs_id_not_found = []
+
+        if not ids:
+            return accumulated_docs
+
+        pipe = self._client.pipeline()
+        for id in ids:
+            pipe.hgetall(self._doc_prefix + id)
+
+        results = pipe.execute()
+
+        for i, result in enumerate(results):
+            if result:
+                accumulated_docs.append(Document.from_base64(result[b'blob']))
+            else:
+                accumulated_docs_id_not_found.append(ids[i])
+
+        if accumulated_docs_id_not_found:
+            raise KeyError(accumulated_docs_id_not_found, accumulated_docs)
+
+        return accumulated_docs
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
         """Concrete implementation of base class' ``_set_doc_by_id``
