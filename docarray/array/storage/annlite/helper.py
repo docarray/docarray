@@ -11,7 +11,7 @@ class OffsetMapping(Table):
         data_path: Optional[Path] = None,
         in_memory: bool = True,
     ):
-        super().__init__(name, data_path, in_memory)
+        super().__init__(name, data_path, in_memory=in_memory)
         self.create_table()
         self._size = None
 
