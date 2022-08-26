@@ -43,7 +43,7 @@ setup(
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
-            'protobuf>=3.13.0,<=3.20.1',
+            'protobuf>=3.13.0',
             'lz4',
             'requests',
             'matplotlib',
@@ -53,7 +53,7 @@ setup(
             'jina-hubble-sdk>=0.11.0',
         ],
         'full': [
-            'protobuf>=3.13.0,<=3.20.1',
+            'protobuf>=3.13.0',
             'lz4',
             'requests',
             'matplotlib',
