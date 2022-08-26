@@ -302,11 +302,11 @@ This will print:
 ```console
 Embeddings Approximate Nearest Neighbours:
 
- embedding=[8. 8. 8.],   score=0
- embedding=[9. 9. 9.],   score=3
- embedding=[7. 7. 7.],   score=3
- embedding=[6. 6. 6.],   score=12
- embedding=[5. 5. 5.],   score=27
+ embedding=[3. 3. 3.],   score=0
+ embedding=[6. 6. 6.],   score=0
+ embedding=[9. 9. 9.],   score=5.96046447754e-08
+ embedding=[8. 8. 8.],   score=5.96046447754e-08
+ embedding=[5. 5. 5.],   score=5.96046447754e-08
 ```
 
 
