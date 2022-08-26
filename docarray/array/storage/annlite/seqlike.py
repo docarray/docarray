@@ -24,11 +24,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def append(self, value: 'Document'):
         self.extend([value])
 
-    def __del__(self) -> None:
-        if not self._persist:
-            self._offset2ids.clear()
-            self._annlite.clear()
-
     def __eq__(self, other):
         """In annlite backend, data are considered as identical if configs point to the same database source"""
         return (
