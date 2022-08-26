@@ -35,7 +35,9 @@ Assuming the service is started using the default configuration (i.e. server add
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='redis', config={'n_dim': 128})
+da = DocumentArray(
+    storage='redis', config={'host': 'localhost', 'port': 6379, 'n_dim': 128}
+)
 ```
 
 The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
