@@ -73,7 +73,7 @@ da2 = DocumentArray(
 da2.summary()
 ```
 
-```text
+```console
 ╭────────────── Documents Summary ──────────────╮
 │                                               │
 │   Type                   DocumentArrayRedis   │
@@ -174,9 +174,9 @@ for embedding, price, color in zip(
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices and color must follow a filter. For example, let's consider that retrieved documents must have `price` value lower then or equal to `max_price` and have `color` equal to `color`. We can encode this information in Redis using `{'price': {'$lte': max_price}, 'color': {'$eq': color}}`.
+prices and color must follow a filter. For example, let's consider that retrieved documents must have a `price` value lower than or equal to `max_price` and have `color` equal to `color`. We can encode this information in Redis using `{'price': {'$lte': max_price}, 'color': {'$eq': color}}`.
 
-Then the search with the proposed filter can be implemented and used with the following code:
+Then the search with the proposed filter can be used as follows:
 ```python
 max_price = 7
 color = 'red'
@@ -204,7 +204,7 @@ for embedding, price, color, score in zip(
 
 This would print:
 
-```text
+```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7 and "color" red:
 
  embedding=[3. 3. 3.],   price=3,        color=red,      score=0
@@ -218,14 +218,14 @@ Embeddings Approximate Nearest Neighbours with "price" at most 7 and "color" red
 
 Redis vector similarity supports two indexing methods:
 
-- FLAT - Brute-force index. 
+- FLAT - Brute-force search. 
 
 - HNSW - Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs.
 
 Both methods have some mandatory parameters and optional parameters.
 
 ```{tip}
-You can read more about HNSW or FLAT parameters and their default values [here](https://redis.io/docs/stack/search/reference/vectors/#querying-vector-fields).
+Read more about HNSW or FLAT parameters and their default values [here](https://redis.io/docs/stack/search/reference/vectors/#querying-vector-fields).
 ```
 
 You can update the search indexing schema on existing DocumentArray by simply set `update_schema` to `True` and change your config parameters.
@@ -263,7 +263,7 @@ for embedding, score in zip(
 
 This would print:
 
-```text
+```console
 Embeddings Approximate Nearest Neighbours:
 
  embedding=[3. 3. 3.],   score=0
@@ -277,7 +277,11 @@ Then you can use a different search indexing schema on current DocumentArray as 
 ```python
 da2 = DocumentArray(
     storage='redis',
-    config={'n_dim': n_dim, 'update_schema': True, 'distance': 'L2'},
+    config={
+        'n_dim': n_dim,
+        'update_schema': True,
+        'distance': 'L2',
+    },
 )
 
 results = da.find(np_query, limit=n_limit)
@@ -292,7 +296,7 @@ for embedding, score in zip(
 
 This would print:
 
-```text
+```console
 Embeddings Approximate Nearest Neighbours:
 
  embedding=[8. 8. 8.],   score=0
@@ -318,7 +322,7 @@ The following configs can be set:
 | `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
 | `distance`        | Similarity distance metric in Redis                                                               | `'COSINE'`                                        |
 | `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
-| `method`          | Vector similarity index algorithm in Redis                                                        | `'HNSW'`                                          |
+| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
 | `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
 | `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
 | `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
@@ -330,5 +334,6 @@ You can check the default values in [the docarray source code](https://github.co
 
 
 ```{note}
-This Document Store will support storing multiple DocumentArrays and full-text search soon.
+The Redis storage backend will support storing multiple DocumentArrays, full-text search, more query conitions and geo-filtering soon.
+The benchmark test is on the way.
 ```
