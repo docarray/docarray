@@ -334,6 +334,6 @@ You can check the default values in [the docarray source code](https://github.co
 
 
 ```{note}
-The Redis storage backend will support storing multiple DocumentArrays, full-text search, more query conitions and geo-filtering soon.
+The DocumentArray Redis storage backend will support storing multiple DocumentArrays, full-text search, more query conitions and geo-filtering soon.
 The benchmark test is on the way.
 ```
