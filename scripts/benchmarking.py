@@ -100,25 +100,25 @@ if args.default_hnsw:
     storage_backends = [
         # ('memory', None),
         # ('sqlite', None),
-        # (
-        #     'annlite',
-        #     {'n_dim': D},
-        # ),
-        # (
-        #     'qdrant',
-        #     {
-        #         'n_dim': D,
-        #         'scroll_batch_size': 8,
-        #         'port': '51233',
-        #     },
-        # ),
-        # (
-        #     'weaviate',
-        #     {
-        #         'n_dim': D,
-        #         'port': '51234',
-        #     },
-        # ),
+        (
+            'annlite',
+            {'n_dim': D},
+        ),
+        (
+            'qdrant',
+            {
+                'n_dim': D,
+                'scroll_batch_size': 8,
+                'port': '51233',
+            },
+        ),
+        (
+            'weaviate',
+            {
+                'n_dim': D,
+                'port': '51234',
+            },
+        ),
         (
             'elasticsearch',
             {
@@ -138,35 +138,35 @@ else:
     storage_backends = [
         # ('memory', None),
         # ('sqlite', None),
-        # (
-        #     'annlite',
-        #     {
-        #         'n_dim': D,
-        #         'ef_construction': 100,
-        #         'ef_search': 100,
-        #         'max_connection': 16,
-        #     },
-        # ),
-        # (
-        #     'qdrant',
-        #     {
-        #         'n_dim': D,
-        #         'scroll_batch_size': 8,
-        #         'ef_construct': 100,
-        #         'm': 16,
-        #         'port': '51233',
-        #     },
-        # ),
-        # (
-        #     'weaviate',
-        #     {
-        #         'n_dim': D,
-        #         'ef': 100,
-        #         'ef_construction': 100,
-        #         'max_connections': 16,
-        #         'port': '51234',
-        #     },
-        # ),
+        (
+            'annlite',
+            {
+                'n_dim': D,
+                'ef_construction': 100,
+                'ef_search': 100,
+                'max_connection': 16,
+            },
+        ),
+        (
+            'qdrant',
+            {
+                'n_dim': D,
+                'scroll_batch_size': 8,
+                'ef_construct': 100,
+                'm': 16,
+                'port': '51233',
+            },
+        ),
+        (
+            'weaviate',
+            {
+                'n_dim': D,
+                'ef': 100,
+                'ef_construction': 100,
+                'max_connections': 16,
+                'port': '51234',
+            },
+        ),
         (
             'elasticsearch',
             {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51235'},
