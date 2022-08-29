@@ -122,13 +122,31 @@ else:
                 'max_connection': 16,
             },
         ),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
+        (
+            'qdrant',
+            {
+                'n_dim': D,
+                'scroll_batch_size': 8,
+                'ef_construct': 100,
+                'm': 16,
+                'port': '6333',
+            },
+        ),
         (
             'weaviate',
-            {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
+            {
+                'n_dim': D,
+                'ef': 100,
+                'ef_construction': 100,
+                'max_connections': 16,
+                'port': '6334',
+            },
         ),
-        ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
-        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
+        (
+            'elasticsearch',
+            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '6335'},
+        ),
+        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '6336'}),
     ]
 
 table = Table(
