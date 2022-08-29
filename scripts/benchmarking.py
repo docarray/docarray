@@ -107,6 +107,7 @@ if args.default_hnsw:
         ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
         ('weaviate', {'n_dim': D}),
         ('elasticsearch', {'n_dim': D}),
+        ('redis', {'n_dim': D}),
     ]
 else:
     storage_backends = [
@@ -127,6 +128,7 @@ else:
             {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
         ),
         ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
+        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
     ]
 
 table = Table(
