@@ -109,28 +109,28 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'scroll_batch_size': 8,
-                'port': '51233',
+                'port': '41233',
             },
         ),
         (
             'weaviate',
             {
                 'n_dim': D,
-                'port': '51234',
+                'port': '41234',
             },
         ),
         (
             'elasticsearch',
             {
                 'n_dim': D,
-                'port': '51235',
+                'port': '41235',
             },
         ),
         (
             'redis',
             {
                 'n_dim': D,
-                'port': '51236',
+                'port': '41236',
             },
         ),
     ]
@@ -154,7 +154,7 @@ else:
                 'scroll_batch_size': 8,
                 'ef_construct': 100,
                 'm': 16,
-                'port': '51233',
+                'port': '41233',
             },
         ),
         (
@@ -164,14 +164,14 @@ else:
                 'ef': 100,
                 'ef_construction': 100,
                 'max_connections': 16,
-                'port': '51234',
+                'port': '41234',
             },
         ),
         (
             'elasticsearch',
-            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51235'},
+            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41235'},
         ),
-        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51236'}),
+        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41236'}),
     ]
 
 table = Table(

@@ -25,6 +25,7 @@ services:
 Then
 
 ```bash
+pip install -U docarray[redis]
 docker-compose up
 ```
 
