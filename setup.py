@@ -65,11 +65,6 @@ setup(
             'fastapi',
             'uvicorn',
             'strawberry-graphql',
-            'weaviate-client~=3.3.0',
-            'annlite>=0.3.2',
-            'qdrant-client~=0.7.3',
-            'elasticsearch>=8.2.0',
-            'redis>=4.3.0',
         ],
         'qdrant': [
             'qdrant-client~=0.7.3',
@@ -85,6 +80,10 @@ setup(
         ],
         'redis': [
             'redis>=4.3.0',
+        ],
+        'benchmark': [
+            'pandas',
+            'seaborn',
         ],
         'test': [
             'pytest',

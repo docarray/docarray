@@ -12,7 +12,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index_values = [10_000, 100_000, 1000_000]
+n_index_values = [1_000_000]
 n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
