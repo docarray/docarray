@@ -100,10 +100,10 @@ if args.default_hnsw:
     storage_backends = [
         # ('memory', None),
         # ('sqlite', None),
-        (
-            'annlite',
-            {'n_dim': D},
-        ),
+        # (
+        #     'annlite',
+        #     {'n_dim': D},
+        # ),
         (
             'qdrant',
             {
@@ -138,15 +138,15 @@ else:
     storage_backends = [
         # ('memory', None),
         # ('sqlite', None),
-        (
-            'annlite',
-            {
-                'n_dim': D,
-                'ef_construction': 100,
-                'ef_search': 100,
-                'max_connection': 16,
-            },
-        ),
+        # (
+        #     'annlite',
+        #     {
+        #         'n_dim': D,
+        #         'ef_construction': 100,
+        #         'ef_search': 100,
+        #         'max_connection': 16,
+        #     },
+        # ),
         (
             'qdrant',
             {
