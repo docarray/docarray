@@ -104,10 +104,35 @@ if args.default_hnsw:
             'annlite',
             {'n_dim': D},
         ),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
-        ('weaviate', {'n_dim': D}),
-        ('elasticsearch', {'n_dim': D}),
-        ('redis', {'n_dim': D}),
+        (
+            'qdrant',
+            {
+                'n_dim': D,
+                'scroll_batch_size': 8,
+                'port': '51233',
+            },
+        ),
+        (
+            'weaviate',
+            {
+                'n_dim': D,
+                'port': '51234',
+            },
+        ),
+        (
+            'elasticsearch',
+            {
+                'n_dim': D,
+                'port': '51235',
+            },
+        ),
+        (
+            'redis',
+            {
+                'n_dim': D,
+                'port': '51236',
+            },
+        ),
     ]
 else:
     storage_backends = [
@@ -129,7 +154,7 @@ else:
                 'scroll_batch_size': 8,
                 'ef_construct': 100,
                 'm': 16,
-                'port': '6333',
+                'port': '51233',
             },
         ),
         (
@@ -139,14 +164,14 @@ else:
                 'ef': 100,
                 'ef_construction': 100,
                 'max_connections': 16,
-                'port': '6334',
+                'port': '51234',
             },
         ),
         (
             'elasticsearch',
-            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '6335'},
+            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51235'},
         ),
-        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '6336'}),
+        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51236'}),
     ]
 
 table = Table(
