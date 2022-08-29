@@ -13,15 +13,15 @@
 We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
 This includes classic database and vector database, all under the same DocumentArray API:
 
-| Name                                                                                        | Usage                                    | Version           |
-|---------------------------------------------------------------------------------------------|------------------------------------------|-------------------|
-| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | DocArray `0.12.8` |
-| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
-| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | `1.11.0`          |
-| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | `0.7.0`           |
-| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | `0.3.1`           |
-| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | `8.1.0`           |
-
+| Name                                | Usage                                    | Version           |
+|-------------------------------------|------------------------------------------|-------------------|
+| In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.16.0` |
+| [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
+| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.0`           |
+| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.7.3`           |
+| [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.2`           |
+| [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.2.0`           |
+| [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.0`           |
 
 We focus on the following tasks:
 

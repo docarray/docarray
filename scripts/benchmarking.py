@@ -98,34 +98,34 @@ def recall(predicted, relevant, eval_at):
 
 if args.default_hnsw:
     storage_backends = [
-        ('memory', None),
-        ('sqlite', None),
-        (
-            'annlite',
-            {'n_dim': D},
-        ),
-        (
-            'qdrant',
-            {
-                'n_dim': D,
-                'scroll_batch_size': 8,
-                'port': '51233',
-            },
-        ),
-        (
-            'weaviate',
-            {
-                'n_dim': D,
-                'port': '51234',
-            },
-        ),
-        (
-            'elasticsearch',
-            {
-                'n_dim': D,
-                'port': '51235',
-            },
-        ),
+        # ('memory', None),
+        # ('sqlite', None),
+        # (
+        #     'annlite',
+        #     {'n_dim': D},
+        # ),
+        # (
+        #     'qdrant',
+        #     {
+        #         'n_dim': D,
+        #         'scroll_batch_size': 8,
+        #         'port': '51233',
+        #     },
+        # ),
+        # (
+        #     'weaviate',
+        #     {
+        #         'n_dim': D,
+        #         'port': '51234',
+        #     },
+        # ),
+        # (
+        #     'elasticsearch',
+        #     {
+        #         'n_dim': D,
+        #         'port': '51235',
+        #     },
+        # ),
         (
             'redis',
             {
@@ -136,41 +136,41 @@ if args.default_hnsw:
     ]
 else:
     storage_backends = [
-        ('memory', None),
-        ('sqlite', None),
-        (
-            'annlite',
-            {
-                'n_dim': D,
-                'ef_construction': 100,
-                'ef_search': 100,
-                'max_connection': 16,
-            },
-        ),
-        (
-            'qdrant',
-            {
-                'n_dim': D,
-                'scroll_batch_size': 8,
-                'ef_construct': 100,
-                'm': 16,
-                'port': '51233',
-            },
-        ),
-        (
-            'weaviate',
-            {
-                'n_dim': D,
-                'ef': 100,
-                'ef_construction': 100,
-                'max_connections': 16,
-                'port': '51234',
-            },
-        ),
-        (
-            'elasticsearch',
-            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51235'},
-        ),
+        # ('memory', None),
+        # ('sqlite', None),
+        # (
+        #     'annlite',
+        #     {
+        #         'n_dim': D,
+        #         'ef_construction': 100,
+        #         'ef_search': 100,
+        #         'max_connection': 16,
+        #     },
+        # ),
+        # (
+        #     'qdrant',
+        #     {
+        #         'n_dim': D,
+        #         'scroll_batch_size': 8,
+        #         'ef_construct': 100,
+        #         'm': 16,
+        #         'port': '51233',
+        #     },
+        # ),
+        # (
+        #     'weaviate',
+        #     {
+        #         'n_dim': D,
+        #         'ef': 100,
+        #         'ef_construction': 100,
+        #         'max_connections': 16,
+        #         'port': '51234',
+        #     },
+        # ),
+        # (
+        #     'elasticsearch',
+        #     {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51235'},
+        # ),
         ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '51236'}),
     ]
 
