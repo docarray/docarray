@@ -33,4 +33,4 @@ services:
       
 networks:
   elastic:
-    name: elastic
+    name: elastic-benchmark
