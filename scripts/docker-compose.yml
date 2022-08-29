@@ -24,13 +24,7 @@ services:
       - discovery.type=single-node
     ports:
       - "41235:41235"
-    networks:
-      - elastic
   redis:
     image: redislabs/redisearch:2.6.0
     ports:
       - "41236:41236"
-      
-networks:
-  elastic:
-    name: elastic-benchmark
