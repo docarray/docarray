@@ -35,6 +35,7 @@ networks:
 Then
 
 ```bash
+pip install -U docarray[elasticsearch]
 docker-compose up
 ```
 

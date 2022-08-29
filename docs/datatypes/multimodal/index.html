@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
 <meta property="og:title" content=" Multi-modal" />
   
@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/datatypes/multimodal/index/" />
   
-<meta property="og:site_name" content="DocArray 0.15.4 Documentation" />
+<meta property="og:site_name" content="DocArray 0.16.0 Documentation" />
   
 <meta property="og:description" content="Multi-modal: This example will walk you through how to use DocArray to process multiple data modalities, jointly. To do this comfortably and cleanly, you will use DocArray’s dataclass feature. Model your data: If you work with multiple modalities at the same time, most likely they stand in some r..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.15.4 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.16.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -35,11 +35,11 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Document Store" href="../../advanced/document-store/" /><link rel="prev" title="Table" href="../tabular/" />
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Document" href="../../fundamentals/document/" /><link rel="prev" title="Table" href="../tabular/" />
         <link rel="canonical" href="https://docarray.jina.ai/datatypes/multimodal/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.06.21"/>
-        <title>Multi-modal - DocArray 0.15.4 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
+        <title>Multi-modal - DocArray 0.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.15.4 documentation</div>
+                <div class="brand">DocArray 0.16.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -221,14 +221,28 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-    <p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+    <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/">What is DocArray?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
 <ul class="current">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/install/">Install</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Multimodal Data</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../audio/"><svg aria-hidden="true" class="sd-octicon sd-octicon-unmute" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.563 2.069A.75.75 0 018 2.75v10.5a.75.75 0 01-1.238.57L3.472 11H1.75A1.75 1.75 0 010 9.25v-2.5C0 5.784.784 5 1.75 5h1.723l3.289-2.82a.75.75 0 01.801-.111zM6.5 4.38L4.238 6.319a.75.75 0 01-.488.181h-2a.25.25 0 00-.25.25v2.5c0 .138.112.25.25.25h2a.75.75 0 01.488.18L6.5 11.62V4.38zm6.096-2.038a.75.75 0 011.06 0 8 8 0 010 11.314.75.75 0 01-1.06-1.06 6.5 6.5 0 000-9.193.75.75 0 010-1.06v-.001zm-1.06 2.121a.75.75 0 10-1.061 1.061 3.5 3.5 0 010 4.95.75.75 0 101.06 1.06 5 5 0 000-7.07l.001-.001z" fill-rule="evenodd"></path></svg> Audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mesh/"><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tabular/"><svg aria-hidden="true" class="sd-octicon sd-octicon-table" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v3.585a.746.746 0 010 .83v8.085A1.75 1.75 0 0114.25 16H6.309a.748.748 0 01-1.118 0H1.75A1.75 1.75 0 010 14.25V6.165a.746.746 0 010-.83V1.75zM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8H1.5zM5 5H1.5V1.75a.25.25 0 01.25-.25H5V5zm1.5 1.5v8h7.75a.25.25 0 00.25-.25V6.5h-8zm8-1.5h-8V1.5h7.75a.25.25 0 01.25.25V5z" fill-rule="evenodd"></path></svg> Table</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><svg aria-hidden="true" class="sd-octicon sd-octicon-stack" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z" fill-rule="evenodd"></path></svg> Multi-modal</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/serialization/">Serialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/attribute/">Access Attributes</a></li>
@@ -238,7 +252,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/fluent-interface/">Fluent Interface</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/serialization/">Serialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/access-elements/">Access Documents</a></li>
@@ -253,36 +267,27 @@
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/dataclass/">Dataclass</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/dataclass/">Dataclass</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/access/">Access Modality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/new-type/">Support New Modality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/example/">Process Modality</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Examples</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../audio/"><svg aria-hidden="true" class="sd-octicon sd-octicon-unmute" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.563 2.069A.75.75 0 018 2.75v10.5a.75.75 0 01-1.238.57L3.472 11H1.75A1.75 1.75 0 010 9.25v-2.5C0 5.784.784 5 1.75 5h1.723l3.289-2.82a.75.75 0 01.801-.111zM6.5 4.38L4.238 6.319a.75.75 0 01-.488.181h-2a.25.25 0 00-.25.25v2.5c0 .138.112.25.25.25h2a.75.75 0 01.488.18L6.5 11.62V4.38zm6.096-2.038a.75.75 0 011.06 0 8 8 0 010 11.314.75.75 0 01-1.06-1.06 6.5 6.5 0 000-9.193.75.75 0 010-1.06v-.001zm-1.06 2.121a.75.75 0 10-1.061 1.061 3.5 3.5 0 010 4.95.75.75 0 101.06 1.06 5 5 0 000-7.07l.001-.001z" fill-rule="evenodd"></path></svg> Audio</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../mesh/"><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tabular/"><svg aria-hidden="true" class="sd-octicon sd-octicon-table" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v3.585a.746.746 0 010 .83v8.085A1.75 1.75 0 0114.25 16H6.309a.748.748 0 01-1.118 0H1.75A1.75 1.75 0 010 14.25V6.165a.746.746 0 010-.83V1.75zM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8H1.5zM5 5H1.5V1.75a.25.25 0 01.25-.25H5V5zm1.5 1.5v8h7.75a.25.25 0 00.25-.25V6.5h-8zm8-1.5h-8V1.5h7.75a.25.25 0 01.25.25V5z" fill-rule="evenodd"></path></svg> Table</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#"><svg aria-hidden="true" class="sd-octicon sd-octicon-stack" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z" fill-rule="evenodd"></path></svg> Multi-modal</a></li>
-</ul>
-</li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
-<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/sqlite/">SQLite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/annlite/">Annlite</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/qdrant/">Qdrant</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/weaviate/">Weaviate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/redis/">Redis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/extend/">Add New Document Store</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
@@ -369,8 +374,8 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section class="tex2jax_ignore mathjax_ignore" id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-stack-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-122-392a1-75-1-75-0-011-756-0l5-003-2-902c-83-481-83-1-68-0-2-162l8-878-8-358a1-75-1-75-0-01-1-756-0l2-119-5-456a1-25-1-25-0-010-2-162l7-122-392zm8-125-1-69a-25-25-0-00-25-0l-4-63-2-685-4-63-2-685a-25-25-0-00-25-0l4-63-2-685-4-63-2-685zm1-601-7-789a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l1-874-8-814a-75-75-0-011-6-7-789zm0-3-5a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l-5-248-3-044a-75-75-0-01-273-1-025z-path-svg-multi-modal">
-<span id="multimodal-example"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-stack" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z"></path></svg> Multi-modal<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-stack-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-122-392a1-75-1-75-0-011-756-0l5-003-2-902c-83-481-83-1-68-0-2-162l8-878-8-358a1-75-1-75-0-01-1-756-0l2-119-5-456a1-25-1-25-0-010-2-162l7-122-392zm8-125-1-69a-25-25-0-00-25-0l-4-63-2-685-4-63-2-685a-25-25-0-00-25-0l4-63-2-685-4-63-2-685zm1-601-7-789a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l1-874-8-814a-75-75-0-011-6-7-789zm0-3-5a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l-5-248-3-044a-75-75-0-01-273-1-025z-path-svg-multi-modal" title="Permalink to this headline">#</a></h1>
+                    <section id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-stack-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-122-392a1-75-1-75-0-011-756-0l5-003-2-902c-83-481-83-1-68-0-2-162l8-878-8-358a1-75-1-75-0-01-1-756-0l2-119-5-456a1-25-1-25-0-010-2-162l7-122-392zm8-125-1-69a-25-25-0-00-25-0l-4-63-2-685-4-63-2-685a-25-25-0-00-25-0l4-63-2-685-4-63-2-685zm1-601-7-789a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l1-874-8-814a-75-75-0-011-6-7-789zm0-3-5a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l-5-248-3-044a-75-75-0-01-273-1-025z-path-svg-multi-modal">
+<span id="multimodal-example"></span><h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-stack" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z"></path></svg> Multi-modal<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-stack-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m7-122-392a1-75-1-75-0-011-756-0l5-003-2-902c-83-481-83-1-68-0-2-162l8-878-8-358a1-75-1-75-0-01-1-756-0l2-119-5-456a1-25-1-25-0-010-2-162l7-122-392zm8-125-1-69a-25-25-0-00-25-0l-4-63-2-685-4-63-2-685a-25-25-0-00-25-0l4-63-2-685-4-63-2-685zm1-601-7-789a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l1-874-8-814a-75-75-0-011-6-7-789zm0-3-5a-75-75-0-011-025-273l5-249-3-044a-25-25-0-00-25-0l5-249-3-044a-75-75-0-01-752-1-298l-5-248-3-044a1-75-1-75-0-01-1-756-0l-5-248-3-044a-75-75-0-01-273-1-025z-path-svg-multi-modal" title="Permalink to this heading">#</a></h1>
 <p>This example will walk you through how to use DocArray to process multiple data modalities, jointly.
 To do this comfortably and cleanly, you will use DocArray’s <a class="reference internal" href="../../fundamentals/dataclass/#dataclass"><span class="std std-ref">dataclass</span></a> feature.</p>
 <div class="admonition seealso">
@@ -380,7 +385,7 @@ If you are not yet familiar with how to process these modalities individually, y
 respective examples first: <a class="reference internal" href="../image/#image-type"><span class="std std-ref">Image</span></a> and <a class="reference internal" href="../text/#text-type"><span class="std std-ref">Text</span></a></p>
 </div>
 <section id="model-your-data">
-<h2>Model your data<a class="headerlink" href="#model-your-data" title="Permalink to this headline">#</a></h2>
+<h2>Model your data<a class="headerlink" href="#model-your-data" title="Permalink to this heading">#</a></h2>
 <p>If you work with multiple modalities at the same time, most likely they stand in some relation with each other.
 DocArray’s dataclass feature allows you to model your data and these relationships, using the language of your domain.</p>
 <p>Suppose you want to model a page of a newspaper that contains a main text, an image, and an image description.
@@ -397,7 +402,7 @@ You can model this example in the following way:</p>
 </pre></div>
 </div>
 <section id="instantiate-a-document">
-<h3>Instantiate a Document<a class="headerlink" href="#instantiate-a-document" title="Permalink to this headline">#</a></h3>
+<h3>Instantiate a Document<a class="headerlink" href="#instantiate-a-document" title="Permalink to this heading">#</a></h3>
 <p>After defining the data model through dataclasses, you can instantiate the dataclasses with your actual data, and cast it to a <a class="reference internal" href="../../api/docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
 
@@ -457,7 +462,7 @@ Output<div class="sd-summary-down docutils">
 </div>
 </details></section>
 <section id="nested-dataclasses-and-list-types">
-<h3>Nested dataclasses and list types<a class="headerlink" href="#nested-dataclasses-and-list-types" title="Permalink to this headline">#</a></h3>
+<h3>Nested dataclasses and list types<a class="headerlink" href="#nested-dataclasses-and-list-types" title="Permalink to this heading">#</a></h3>
 <p>If your domain requires a more complex model, you can use advanced features to represent that accurately.</p>
 <p>For this example, we look at a journal which consists of a cover page and multiple other pages, as well as some metadata.
 Further, each page contains a main text, and can contain and image and an image description.</p>
@@ -616,7 +621,7 @@ Output<div class="sd-summary-down docutils">
 </details></section>
 </section>
 <section id="access-the-data">
-<h2>Access the data<a class="headerlink" href="#access-the-data" title="Permalink to this headline">#</a></h2>
+<h2>Access the data<a class="headerlink" href="#access-the-data" title="Permalink to this heading">#</a></h2>
 <p>After instantiation, each modality can be accessed directly from the Document:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Text</span>
@@ -657,12 +662,12 @@ Hello world
 </div>
 </section>
 <section id="generate-embeddings">
-<h2>Generate embeddings<a class="headerlink" href="#generate-embeddings" title="Permalink to this headline">#</a></h2>
+<h2>Generate embeddings<a class="headerlink" href="#generate-embeddings" title="Permalink to this heading">#</a></h2>
 <p>Common use cases, such as neural search, involve generating embeddings for your data.</p>
 <p>There are two ways of doing this, each of which has its use cases:
 Generating individually embeddings for each modality, and generating an overall embedding for the entire Document.</p>
 <section id="embed-each-modality">
-<h3>Embed each modality<a class="headerlink" href="#embed-each-modality" title="Permalink to this headline">#</a></h3>
+<h3>Embed each modality<a class="headerlink" href="#embed-each-modality" title="Permalink to this heading">#</a></h3>
 <p>If you want to create an embedding for each modality of each page, you can simply access the corresponding Document, and add an embedding vector.</p>
 <p>This can be useful, for example, when you want to compare different Documents based on a specific modality that they store.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchvision.models</span> <span class="kn">import</span> <span class="n">resnet50</span>
@@ -734,7 +739,7 @@ torch.Size([2, 1000])
 </div>
 </section>
 <section id="embed-parent-document">
-<h3>Embed parent Document<a class="headerlink" href="#embed-parent-document" title="Permalink to this headline">#</a></h3>
+<h3>Embed parent Document<a class="headerlink" href="#embed-parent-document" title="Permalink to this heading">#</a></h3>
 <p>From the individual embeddings you can create a combined embedding for the entire Document.
 This can be useful, for example, when you want to compare different Documents based on all the modalities that they store.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -758,10 +763,10 @@ This can be useful, for example, when you want to compare different Documents ba
 </section>
 </section>
 <section id="perform-search">
-<span id="multimodal-search-example"></span><h2>Perform search<a class="headerlink" href="#perform-search" title="Permalink to this headline">#</a></h2>
+<span id="multimodal-search-example"></span><h2>Perform search<a class="headerlink" href="#perform-search" title="Permalink to this heading">#</a></h2>
 <p>With the embeddings from above you can tackle downstream tasks, such as neural search.</p>
 <section id="find-document-by-modality-embedding">
-<h3>Find Document by modality embedding<a class="headerlink" href="#find-document-by-modality-embedding" title="Permalink to this headline">#</a></h3>
+<h3>Find Document by modality embedding<a class="headerlink" href="#find-document-by-modality-embedding" title="Permalink to this heading">#</a></h3>
 <p>Let’s assume you have multiple pages, and you want to find the page that contains a similar image as some other page
 (the query page).</p>
 <div class="seealso admonition">
@@ -898,7 +903,7 @@ PAGE WITH THE CLOSEST IMAGE:
 </div>
 </details></section>
 <section id="find-document-by-combined-embedding">
-<h3>Find Document by combined embedding<a class="headerlink" href="#find-document-by-combined-embedding" title="Permalink to this headline">#</a></h3>
+<h3>Find Document by combined embedding<a class="headerlink" href="#find-document-by-combined-embedding" title="Permalink to this heading">#</a></h3>
 <p>Similarly, you might want to find the page that is <em>overall</em> most similar to the other pages in your dataset.</p>
 <p>To do that, you first have to embed each modality for each Document, and then combine the embeddings to an overall embedding:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torchvision.models</span> <span class="kn">import</span> <span class="n">resnet50</span>
@@ -999,12 +1004,12 @@ Output<div class="sd-summary-down docutils">
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../../advanced/document-store/">
+                    <a class="next-page" href="../../fundamentals/document/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Document Store</div>
+                            <div class="title">Document</div>
                         </div>
                         <svg>
                             <use href="#svg-arrow-right"></use>
@@ -1029,7 +1034,7 @@ Output<div class="sd-summary-down docutils">
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Aug 25, 2022</div>
+                            Last updated on Aug 29, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -1107,6 +1112,7 @@ Output<div class="sd-summary-down docutils">
      src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>

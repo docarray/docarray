@@ -8,6 +8,8 @@ Subpackages
    :maxdepth: 4
 
    docarray.proto.io
+   docarray.proto.pb
+   docarray.proto.pb2
 
 Submodules
 ----------
