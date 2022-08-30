@@ -3,7 +3,7 @@ services:
   weaviate:
     image: semitechnologies/weaviate:1.13.2
     ports:
-      - "41234:41234"
+      - "41234:8080"
     environment:
       CONTEXTIONARY_URL: contextionary:9999
       QUERY_DEFAULTS_LIMIT: 25
@@ -12,7 +12,7 @@ services:
   qdrant:
     image: qdrant/qdrant:v0.7.0
     ports:
-      - "41233:41233"
+      - "41233:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
       nofile:
         soft: 65535
@@ -23,8 +23,12 @@ services:
       - xpack.security.enabled=false
       - discovery.type=single-node
     ports:
-      - "41235:41235"
+      - "41235:9200"
   redis:
     image: redislabs/redisearch:2.6.0
     ports:
-      - "41236:41236"
+      - "41236:6379"
+
+networks:
+  elastic:
+    name: elastic

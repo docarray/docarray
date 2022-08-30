@@ -12,7 +12,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index_values = [1_000_000]
+n_index_values = [1_000]
 n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
@@ -98,12 +98,12 @@ def recall(predicted, relevant, eval_at):
 
 if args.default_hnsw:
     storage_backends = [
-        # ('memory', None),
-        # ('sqlite', None),
-        # (
-        #     'annlite',
-        #     {'n_dim': D},
-        # ),
+        ('memory', None),
+        ('sqlite', None),
+        (
+            'annlite',
+            {'n_dim': D, 'columns': [('i', 'int')]},
+        ),
         (
             'qdrant',
             {
@@ -117,13 +117,15 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'port': '41234',
+                'columns': ('i', 'int'),
             },
         ),
         (
             'elasticsearch',
             {
                 'n_dim': D,
-                'port': '41235',
+                'hosts': 'http://localhost:41235',
+                'columns': [('i', 'int')],
             },
         ),
         (
@@ -131,22 +133,24 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'port': '41236',
+                'columns': [('i', 'int')],
             },
         ),
     ]
 else:
     storage_backends = [
-        # ('memory', None),
-        # ('sqlite', None),
-        # (
-        #     'annlite',
-        #     {
-        #         'n_dim': D,
-        #         'ef_construction': 100,
-        #         'ef_search': 100,
-        #         'max_connection': 16,
-        #     },
-        # ),
+        ('memory', None),
+        ('sqlite', None),
+        (
+            'annlite',
+            {
+                'n_dim': D,
+                'ef_construction': 100,
+                'ef_search': 100,
+                'max_connection': 16,
+                'columns': [('i', 'int')],
+            },
+        ),
         (
             'qdrant',
             {
@@ -165,14 +169,31 @@ else:
                 'ef_construction': 100,
                 'max_connections': 16,
                 'port': '41234',
+                'columns': [('i', 'int')],
             },
         ),
         (
             'elasticsearch',
-            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41235'},
+            {
+                'n_dim': D,
+                'ef_construction': 100,
+                'm': 16,
+                'hosts': 'http://localhost:41235',
+                'columns': [('i', 'int')],
+            },
         ),
         ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41236'}),
     ]
+
+storage_backend_filters = {
+    'memory': {'tags__i': {'$eq': 0}},
+    'sqlite': {'tags__i': {'$eq': 0}},
+    'annlite': {'i': {'$eq': 0}},
+    'qdrant': {'tags__i': {'$eq': 0}},
+    'weaviate': {'path': 'i', 'operator': 'Equal', 'valueInt': 0},
+    'elasticsearch': {'match': {'i': 0}},
+    'redis': {'i': {'$eq': 0}},
+}
 
 table = Table(
     title=f'DocArray Benchmarking n_index={n_index_values[-1]} n_query={n_query} D={D} K={K}'
@@ -236,13 +257,15 @@ for idx, n_index in enumerate(n_index_values):
                 f'finding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
             if backend == 'sqlite':
-                find_by_vector_time, result = find_by_vector(da, vector_queries[0])
+                find_by_vector_time, result = find_by_vector(
+                    da, vector_queries[0].squeeze()
+                )
                 recall_at_k = recall(result, ground_truth[0], K)
             else:
                 recall_at_k_values = []
                 find_by_vector_times = []
                 for i, query in enumerate(vector_queries):
-                    find_by_vector_time, results = find_by_vector(da, query)
+                    find_by_vector_time, results = find_by_vector(da, query.squeeze())
                     find_by_vector_times.append(find_by_vector_time)
                     if backend == 'memory':
                         ground_truth.append(results)
@@ -256,7 +279,9 @@ for idx, n_index in enumerate(n_index_values):
                 )
 
             console.print(f'finding {n_query} docs by condition ...')
-            find_by_condition_time, _ = find_by_condition(da, {'tags__i': {'$eq': 0}})
+            find_by_condition_time, _ = find_by_condition(
+                da, storage_backend_filters[backend]
+            )
 
             if idx == len(n_index_values) - 1:
                 table.add_row(
@@ -290,7 +315,8 @@ for idx, n_index in enumerate(n_index_values):
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
             create_values[str(n_index)].append(create_time)
         except Exception as e:
-            console.print(f'Storage Backend {backend} failed: {e}')
+            console.print(f'Storage Backend {backend} failed')
+            raise e
 
 find_df = pd.DataFrame(find_by_vector_values)
 find_df.index = [backend for backend, _ in storage_backends]
