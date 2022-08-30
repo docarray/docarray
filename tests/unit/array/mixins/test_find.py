@@ -539,7 +539,7 @@ def test_redis_category_filter(start_storage):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'price': i, 'category': "Shoes", 'size': i, 'isfake': True},
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
             )
             for i in range(10)
         ]
@@ -552,7 +552,7 @@ def test_redis_category_filter(start_storage):
                 embedding=np.random.rand(n_dim),
                 tags={
                     'price': i,
-                    'category': "Jeans",
+                    'category': 'Jeans',
                     'size': i,
                     'isfake': False,
                 },
@@ -570,7 +570,7 @@ def test_redis_category_filter(start_storage):
     results = da.find(np.random.rand(n_dim), filter=filter1)
     assert len(results) > 0
     assert all(
-        [(r.tags['price'] > 8 or r.tags['category'] == "Shoes") for r in results]
+        [(r.tags['price'] > 8 or r.tags['category'] == 'Shoes') for r in results]
     )
 
     filter2 = {
@@ -615,7 +615,7 @@ def test_redis_category_filter(start_storage):
     assert all(
         [
             (
-                (r.tags['price'] >= 8 and r.tags['category'] != "Shoes")
+                (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
                 or r.tags['size'] == 3
             )
             for r in results

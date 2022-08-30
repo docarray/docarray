@@ -45,8 +45,6 @@ class FindMixin(BaseFindMixin):
         else:
             query_str = "*"
 
-        print(f'query_str: {query_str}')
-
         q = (
             Query(f'({query_str})=>[KNN {limit} @embedding $vec AS vector_score]')
             .sort_by('vector_score')
@@ -107,16 +105,14 @@ class FindMixin(BaseFindMixin):
         return self._find_with_filter(filter, limit=limit)
 
 
-def _build_query_node(filter):
-    key = list(filter.keys())[0]
-    operator = list(filter[key].keys())[0]
-    value = filter[key][operator]
+def _build_query_node(key, condition):
+    operator = list(condition.keys())[0]
+    value = condition[operator]
 
     query_dict = {}
 
     if operator == '$ne':
-        print(f'value: {value}, type: {isinstance(value, (int, float))}')
-        if isinstance(value, (bool)):
+        if isinstance(value, bool):
             query_dict[key] = equal(int(value))
         elif isinstance(value, (int, float)):
             query_dict[key] = equal(value)
@@ -160,7 +156,7 @@ def _build_query_nodes(filter):
             node = union(*children)
             nodes.append(node)
         else:
-            child = _build_query_node({k: v})
+            child = _build_query_node(k, v)
             nodes.append(child)
 
     return nodes
