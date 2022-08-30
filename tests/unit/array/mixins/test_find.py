@@ -524,7 +524,12 @@ def test_redis_category_filter(start_storage):
         storage='redis',
         config={
             'n_dim': n_dim,
-            'columns': [('color', 'str'), ('isfake', 'bool')],
+            'columns': [
+                ('price', 'int'),
+                ('category', 'str'),
+                ('size', 'int'),
+                ('isfake', 'bool'),
+            ],
             'flush': True,
         },
     )
@@ -534,7 +539,7 @@ def test_redis_category_filter(start_storage):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'color': 'red', 'isfake': True},
+                tags={'price': i, 'category': "Shoes", 'size': i, 'isfake': True},
             )
             for i in range(10)
         ]
@@ -543,40 +548,79 @@ def test_redis_category_filter(start_storage):
     da.extend(
         [
             Document(
-                id=f'r{i}',
+                id=f'r{i+10}',
                 embedding=np.random.rand(n_dim),
-                tags={'color': 'blue', 'isfake': False},
+                tags={
+                    'price': i,
+                    'category': "Jeans",
+                    'size': i,
+                    'isfake': False,
+                },
             )
-            for i in range(10, 20)
+            for i in range(10)
         ]
     )
 
-    da.extend(
+    filter1 = {
+        "$or": {
+            "price": {"$gt": 8},
+            "category": {"$eq": "Shoes"},
+        },
+    }
+    results = da.find(np.random.rand(n_dim), filter=filter1)
+    assert len(results) > 0
+    assert all(
+        [(r.tags['price'] > 8 or r.tags['category'] == "Shoes") for r in results]
+    )
+
+    filter2 = {
+        "$and": {
+            "price": {"$ne": 8},
+            "isfake": {"$eq": True},
+        },
+    }
+    results = da.find(np.random.rand(n_dim), filter=filter2)
+    assert len(results) > 0
+    assert all([(r.tags['price'] != 8 and r.tags['isfake'] == True) for r in results])
+
+    filter3 = {
+        "$or": {
+            "price": {"$lt": 8},
+            "isfake": {"$ne": True},
+        },
+        "size": {"$lte": 3},
+    }
+
+    results = da.find(np.random.rand(n_dim), filter=filter3)
+    assert len(results) > 0
+    assert all(
         [
-            Document(
-                id=f'r{i}',
-                embedding=np.random.rand(n_dim),
-                tags={'color': 'green', 'isfake': False},
-            )
-            for i in range(20, 30)
+            ((r.tags['price'] < 8 or r.tags['isfake'] != True) and r.tags['size'] <= 3)
+            for r in results
         ]
     )
 
-    results = da.find(np.random.rand(n_dim), filter={'color': {'$eq': 'red'}})
-    assert len(results) > 0
-    assert all([(r.tags['color'] == 'red') for r in results])
+    filter4 = {
+        "$or": {
+            "$and": {
+                "price": {"$gte": 8},
+                "category": {"$ne": "Shoes"},
+            },
+            "size": {"$eq": 3},
+        },
+    }
 
-    results = da.find(np.random.rand(n_dim), filter={'color': {'$ne': 'red'}})
+    results = da.find(np.random.rand(n_dim), filter=filter4)
     assert len(results) > 0
-    assert all([(r.tags['color'] != 'red') for r in results])
-
-    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$eq': True}})
-    assert len(results) > 0
-    assert all([(r.tags['isfake'] == True) for r in results])
-
-    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$ne': True}})
-    assert len(results) > 0
-    assert all([(r.tags['isfake'] == False) for r in results])
+    assert all(
+        [
+            (
+                (r.tags['price'] >= 8 and r.tags['category'] != "Shoes")
+                or r.tags['size'] == 3
+            )
+            for r in results
+        ]
+    )
 
 
 @pytest.mark.parametrize('storage', ['memory'])

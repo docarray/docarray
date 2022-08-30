@@ -7,7 +7,14 @@ from docarray.math import ndarray
 from docarray.math.ndarray import to_numpy_array
 from docarray.score import NamedScore
 
-from redis.commands.search.query import NumericFilter, Query
+from redis.commands.search.query import Query
+from redis.commands.search.querystring import lt, le, gt, ge, equal
+from redis.commands.search.querystring import (
+    intersect,
+    union,
+    DistjunctUnion,
+    IntersectNode,
+)
 
 if TYPE_CHECKING:
     import tensorflow
@@ -32,10 +39,16 @@ class FindMixin(BaseFindMixin):
         **kwargs,
     ):
 
-        query_str = self._build_query_str(filter) if filter else "*"
+        if filter:
+            nodes = _build_query_nodes(filter)
+            query_str = intersect(*nodes).to_string()
+        else:
+            query_str = "*"
+
+        print(f'query_str: {query_str}')
 
         q = (
-            Query(f'{query_str}=>[KNN {limit} @embedding $vec AS vector_score]')
+            Query(f'({query_str})=>[KNN {limit} @embedding $vec AS vector_score]')
             .sort_by('vector_score')
             .paging(0, limit)
             .dialect(2)
@@ -74,8 +87,9 @@ class FindMixin(BaseFindMixin):
         ]
 
     def _find_with_filter(self, filter: Dict, limit: Optional[Union[int, float]] = 20):
-        s = self._build_query_str(filter)
-        q = Query(s)
+        nodes = _build_query_nodes(filter)
+        query_str = intersect(*nodes).to_string()
+        q = Query(query_str)
         q.paging(0, limit)
 
         results = self._client.ft(index_name=self._config.index_name).search(q).docs
@@ -92,36 +106,61 @@ class FindMixin(BaseFindMixin):
 
         return self._find_with_filter(filter, limit=limit)
 
-    def _build_query_str(self, filter: Dict) -> str:
-        INF = "+inf"
-        NEG_INF = "-inf"
-        s = "("
 
-        for key in filter:
-            operator = list(filter[key].keys())[0]
-            value = filter[key][operator]
-            if operator == '$gt':
-                s += f"@{key}:[({value} {INF}] "
-            elif operator == '$gte':
-                s += f"@{key}:[{value} {INF}] "
-            elif operator == '$lt':
-                s += f"@{key}:[{NEG_INF} ({value}] "
-            elif operator == '$lte':
-                s += f"@{key}:[{NEG_INF} {value}] "
-            elif operator == '$eq':
-                if type(value) is int:
-                    s += f"@{key}:[{value} {value}] "
-                elif type(value) is bool:
-                    s += f"@{key}:[{int(value)} {int(value)}] "
-                else:
-                    s += f"@{key}:{value} "
-            elif operator == '$ne':
-                if type(value) is int:
-                    s += f"-@{key}:[{value} {value}] "
-                elif type(value) is bool:
-                    s += f"-@{key}:[{int(value)} {int(value)}] "
-                else:
-                    s += f"-@{key}:{value} "
-        s += ")"
+def _build_query_node(filter):
+    key = list(filter.keys())[0]
+    operator = list(filter[key].keys())[0]
+    value = filter[key][operator]
 
-        return s
+    query_dict = {}
+
+    if operator == '$ne':
+        print(f'value: {value}, type: {isinstance(value, (int, float))}')
+        if isinstance(value, (bool)):
+            query_dict[key] = equal(int(value))
+        elif isinstance(value, (int, float)):
+            query_dict[key] = equal(value)
+        else:
+            query_dict[key] = value
+        node = DistjunctUnion(**query_dict)
+    else:
+        if operator == '$gt':
+            query_dict[key] = gt(value)
+        elif operator == '$gte':
+            query_dict[key] = ge(value)
+        elif operator == '$lt':
+            query_dict[key] = lt(value)
+        elif operator == '$lte':
+            query_dict[key] = le(value)
+        elif operator == '$eq':
+            if isinstance(value, (bool)):
+                query_dict[key] = equal(int(value))
+            elif isinstance(value, (int, float)):
+                query_dict[key] = equal(value)
+            else:
+                query_dict[key] = value
+        else:
+            raise ValueError(
+                f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
+            )
+        node = IntersectNode(**query_dict)
+
+    return node
+
+
+def _build_query_nodes(filter):
+    nodes = []
+    for k, v in filter.items():
+        if k == "$and":
+            children = _build_query_nodes(v)
+            node = intersect(*children)
+            nodes.append(node)
+        elif k == "$or":
+            children = _build_query_nodes(v)
+            node = union(*children)
+            nodes.append(node)
+        else:
+            child = _build_query_node({k: v})
+            nodes.append(child)
+
+    return nodes
