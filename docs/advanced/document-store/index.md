@@ -9,6 +9,7 @@ annlite
 qdrant
 elasticsearch
 weaviate
+redis
 extend
 benchmark
 ```
@@ -145,19 +146,20 @@ da = DocumentArray(
 Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
 
 
-## Search summary
+## Feature summary
 
 DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
-| Name                                                           | Construction                             |  vector search | vector search + filter | filter|
-|----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
-| [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
-| [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
-| [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
-| [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
-| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
-| [`ElasticSearch`](./elasticsearch/#elasticsearch)              | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+| Name                                 | Construction                             |  vector search | vector search + filter | filter|
+|--------------------------------------|------------------------------------------|---------------|------------------------|---------------|
+| In memory                            | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
+| [`Sqlite`](./sqlite.md)              | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
+| [`Weaviate`](./weaviate.md)          | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
+| [`Qdrant`](./qdrant.md)              | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
+| [`Annlite`](./annlite.md)            | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
+| [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+| [`Redis`](./redis.md)                | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
 
 
 Here we understand by 

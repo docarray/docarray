@@ -110,7 +110,7 @@ services:
 
 ```bash
 pip install -U docarray[qdrant]
-docker compose up
+docker-compose up
 ```
 
 

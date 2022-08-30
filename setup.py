@@ -43,7 +43,7 @@ setup(
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
-            'protobuf>=3.13.0,<=3.20.1',
+            'protobuf>=3.13.0',
             'lz4',
             'requests',
             'matplotlib',
@@ -53,7 +53,7 @@ setup(
             'jina-hubble-sdk>=0.11.0',
         ],
         'full': [
-            'protobuf>=3.13.0,<=3.20.1',
+            'protobuf>=3.13.0',
             'lz4',
             'requests',
             'matplotlib',
@@ -65,10 +65,6 @@ setup(
             'fastapi',
             'uvicorn',
             'strawberry-graphql',
-            'weaviate-client~=3.3.0',
-            'annlite>=0.3.2',
-            'qdrant-client~=0.7.3',
-            'elasticsearch>=8.2.0',
         ],
         'qdrant': [
             'qdrant-client~=0.7.3',
@@ -81,6 +77,13 @@ setup(
         ],
         'elasticsearch': [
             'elasticsearch>=8.2.0',
+        ],
+        'redis': [
+            'redis>=4.3.0',
+        ],
+        'benchmark': [
+            'pandas',
+            'seaborn',
         ],
         'test': [
             'pytest',
@@ -104,6 +107,7 @@ setup(
             'weaviate-client~=3.3.0',
             'annlite>=0.3.2',
             'elasticsearch>=8.2.0',
+            'redis>=4.3.0',
             'jina',
         ],
     },

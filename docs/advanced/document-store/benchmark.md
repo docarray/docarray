@@ -13,15 +13,15 @@
 We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
 This includes classic database and vector database, all under the same DocumentArray API:
 
-| Name                                                                                        | Usage                                    | Version           |
-|---------------------------------------------------------------------------------------------|------------------------------------------|-------------------|
-| [`"None"`](../../../fundamentals/documentarray/#documentarray), namely an in-memory "store" | `DocumentArray()`                        | DocArray `0.12.8` |
-| [`Sqlite`](../sqlite/#sqlite)                                                               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
-| [`Weaviate`](../weaviate/#weaviate)                                                         | `DocumentArray(storage='weaviate')`      | `1.11.0`          |
-| [`Qdrant`](../qdrant/#qdrant)                                                               | `DocumentArray(storage='qdrant')`        | `0.7.0`           |
-| [`Annlite`](../annlite/#annlite)                                                            | `DocumentArray(storage='anlite')`        | `0.3.1`           |
-| [`ElasticSearch`](../elasticsearch/#elasticsearch)                                          | `DocumentArray(storage='elasticsearch')` | `8.1.0`           |
-
+| Name                                | Usage                                    | Version           |
+|-------------------------------------|------------------------------------------|-------------------|
+| In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.16.0` |
+| [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
+| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.0`           |
+| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.7.3`           |
+| [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.2`           |
+| [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.2.0`           |
+| [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.0`           |
 
 We focus on the following tasks:
 
@@ -52,10 +52,10 @@ The following table summarizes the result. The smaller the values, the better (e
 
 | Store         | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
 |---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| None        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.39 ** |               ** 5 ** |               1.43 |      1.00 |
+| None        |  **0.6** | **0.1** |  **0.01** |  **0.39** |               **5** |               1.43 |      1.00 |
 | Sqlite        |    4,366.8 |       0.3 |        0.35 |        2.62 |                    31 |              23.59 |      1.00 |
 | Annlite       |       72.4 |       0.3 |        6.57 |        4.62 |                    30 |               0.42 |      0.19 |
-| Qdrant        |    2,286.3 |       1.6 |        1.50 |        4.14 |                   605 |         ** 0.01 ** |      0.51 |
+| Qdrant        |    2,286.3 |       1.6 |        1.50 |        4.14 |                   605 |         **0.01** |      0.51 |
 | Weaviate      |    1,612.4 |      33.7 |       27.94 |       13.38 |                 1,242 |               0.02 |      0.11 |
 | ElasticSearch |    1,307.3 |       2.4 |       40.85 |       40.74 |                   656 |               0.23 |  **0.85** |
 
@@ -67,11 +67,11 @@ The following table summarizes the result. The smaller the values, the better (e
 
 | Store       | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
 |---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| None        |  ** 0.6 ** | ** 0.1 ** |  ** 0.01 ** |  ** 0.16 ** |               ** 5 ** |               1.43 |      1.00 |
+| None        |  **0.6** | **0.1** |  **0.01** |  **0.16** |               **5** |               1.43 |      1.00 |
 | Sqlite        |    4,446.6 |       0.3 |        0.35 |       16.77 |                    30 |              24.38 |      1.00 |
 | Annlite       |      114.0 |       0.3 |        9.36 |       20.09 |                    30 |               0.43 |      0.14 |
-| Qdrant        |    2,227.4 |       1.6 |       42.16 |       20.59 |                   608 |         ** 0.01 ** |      0.51 |
-| Weaviate      |    1,612.0 |       2.3 |       44.01 |       22.26 |                 1,208 |         ** 0.01 ** |      0.10 |
+| Qdrant        |    2,227.4 |       1.6 |       42.16 |       20.59 |                   608 |         **0.01** |      0.51 |
+| Weaviate      |    1,612.0 |       2.3 |       44.01 |       22.26 |                 1,208 |         **0.01** |      0.10 |
 | ElasticSearch |      715.2 |       2.1 |       15.58 |       33.26 |                   650 |               0.22 |  **0.83** |
 
 ````
@@ -83,10 +83,10 @@ When we consider each query as a Document, we can convert the above metrics into
 
 | Store         |          Create 1M |        Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| None        | ** 1,610,305 ** | ** 9,345 ** | ** 71,428 ** | ** 2,570 ** |       ** 0.190 ** |           0.70 |      1.00 |
+| None        | **1,610,305** | **9,345** | **71,428** | **2,570** |       **0.190** |           0.70 |      1.00 |
 | Sqlite        |              22 |        3125 |        2,816 |         381 |             0.032 |           0.04 |      1.00 |
 | Annlite       |           1,380 |       4,000 |          152 |         216 |             0.033 |           2.34 |      0.19 |
-| Qdrant        |              43 |         604 |          664 |         241 |             0.002 |    ** 90.90 ** |      0.51 |
+| Qdrant        |              43 |         604 |          664 |         241 |             0.002 |    **90.90** |      0.51 |
 | Weaviate      |              62 |          31 |           35 |          74 |             0.001 |          55.55 |      0.11 |
 | ElasticSearch |              76 |         409 |           24 |          24 |             0.002 |           4.39 |  **0.85** |
 
@@ -97,10 +97,10 @@ When we consider each query as a Document, we can convert the above metrics into
 
 | Store         |          Create 1M |         Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
 |---------------|----------------:|-------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| None        | ** 1,618,122 ** | ** 10,101 ** | ** 71,428 ** | ** 6,211 ** |       ** 0.192 ** |           0.70 |      1.00 |
+| None        | **1,618,122** | **10,101** | **71,428** | **6,211** |       **0.192** |           0.70 |      1.00 |
 | Sqlite        |             224 |        3,125 |        2,824 |          59 |             0.033 |           0.04 |      1.00 |
 | Annlite       |           8,769 |        3,759 |          106 |          49 |             0.033 |           2.34 |      0.14 |
-| Qdrant        |             448 |          615 |           23 |          48 |             0.002 |    ** 111.1 ** |      0.51 |
+| Qdrant        |             448 |          615 |           23 |          48 |             0.002 |    **111.1** |      0.51 |
 | Weaviate      |             620 |          435 |           22 |          44 |             0.001 |          200.0 |      0.10 |
 | ElasticSearch |           1,398 |          481 |           64 |          30 |             0.002 |            4.5 |  **0.83** |
 
