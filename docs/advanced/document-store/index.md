@@ -161,6 +161,7 @@ DocArray supports multiple storage backends with different search features. The 
 | [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
 | [`Redis`](./redis.md)                | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
 
+Detailed information and recommendations on choosing the right storage backend can be found in our [**One Million Scale Benchmark**](./benchmark#conclusion)
 
 Here we understand by 
 
@@ -170,10 +171,9 @@ Here we understand by
 
 - **filter**: perform a filter step over the data. The input of the search function is a filter. 
 
-The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods thorugh a  `DocumentArray`.
+The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods through a  `DocumentArray`.
 The **filter** functionality is available using the `.find` method in a `DocumentArray`. 
-A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/matching) 
-
+A detailed explanation of the differences between `.find` and `.match` can be found [here](./../../../fundamentals/documentarray/matching) 
 
 ### Vector search example
 
