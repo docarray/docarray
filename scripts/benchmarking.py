@@ -12,6 +12,8 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
+np.random.seed(123)
+
 n_index_values = [1_000_000]
 n_query = 1
 D = 128
@@ -25,6 +27,12 @@ parser.add_argument(
     '--default-hnsw',
     help='Whether to use default HNSW configurations',
     action='store_true',
+)
+
+parser.add_argument(
+    '--exclude-backends',
+    help='list of comma separated backends to exclude from the benchmarks',
+    type=str,
 )
 args = parser.parse_args()
 
@@ -184,6 +192,12 @@ else:
         ),
         ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41236'}),
     ]
+
+storage_backends = [
+    (backend, config)
+    for backend, config in storage_backends
+    if backend not in args.exclude_backends.split(',')
+]
 
 storage_backend_filters = {
     'memory': {'tags__i': {'$eq': 0}},
