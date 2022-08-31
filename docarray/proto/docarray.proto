@@ -112,15 +112,16 @@ message DocumentProto {
   // A hexdigest that represents a unique document ID
   string id = 1;
 
-  // the content of the document
+  // the contents of the document
   map<string, DocumentContent> contents = 2;
 
-  // the embedding of this document
+  // the embeddings of this document
   map<string, NdArrayProto> embeddings = 3;
 
-  // Scores performed on the document, each element corresponds to a metric
+  // the old scores and evaluations
   map<string, NamedScoreProto> scores = 4;
 
+  // the old nested chunks and matches
   map<string, DocumentArrayProto> children = 5;
 
   // a structured data value, consisting of field which map to dynamically typed values.
