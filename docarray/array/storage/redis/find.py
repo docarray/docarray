@@ -1,5 +1,4 @@
-from typing import (TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar,
-                    Union)
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar, Union
 
 import numpy as np
 from docarray import Document, DocumentArray
@@ -9,9 +8,17 @@ from docarray.math.ndarray import to_numpy_array
 from docarray.score import NamedScore
 
 from redis.commands.search.query import Query
-from redis.commands.search.querystring import (DistjunctUnion, IntersectNode,
-                                               equal, ge, gt, intersect, le,
-                                               lt, union)
+from redis.commands.search.querystring import (
+    DistjunctUnion,
+    IntersectNode,
+    equal,
+    ge,
+    gt,
+    intersect,
+    le,
+    lt,
+    union,
+)
 
 if TYPE_CHECKING:
     import tensorflow
