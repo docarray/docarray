@@ -151,18 +151,19 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
-| Name                                  | Construction                             |  vector search | vector search + filter | filter|
-|---------------------------------------|------------------------------------------|---------------|------------------------|---------------|
-| In memory                             | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
-| [`Sqlite`](./sqlite.md)               | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
-| [`Weaviate`](./weaviate.md)           | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
-| [`Qdrant`](./qdrant.md)               | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
-| [`AnnLite`](./annlite.md)             | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
-| [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
-| [`Redis`](./redis.md)                 | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+| Name                                  | Construction                             |  vector search | vector search + filter | filter        |
+|---------------------------------------|------------------------------------------|----------------|------------------------|---------------|
+| In memory                             | `DocumentArray()`                        | ✅             | ✅                     | ✅            |
+| [`Sqlite`](./sqlite.md)               | `DocumentArray(storage='sqlite')`        | ❌             | ❌                     | ✅            | 
+| [`Weaviate`](./weaviate.md)           | `DocumentArray(storage='weaviate')`      | ✅             | ✅                     | ✅            |
+| [`Qdrant`](./qdrant.md)               | `DocumentArray(storage='qdrant')`        | ✅             | ✅                     | ❌            |
+| [`AnnLite`](./annlite.md)             | `DocumentArray(storage='annlite')`       | ✅             | ✅                     | ✅            |
+| [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                     | ✅            |
+| [`Redis`](./redis.md)                 | `DocumentArray(storage='redis')`         | ✅             | ✅                     | ✅            |
 
 The right backend choice depends on the scale of your data, the required performance and the desired ease of setup. For most use cases we recommend starting with [`AnnLite`](./annlite.md).
 [**Check our One Million Scale Benchmark for more details**](./benchmark#conclusion).
+
 
 
 Here we understand by 

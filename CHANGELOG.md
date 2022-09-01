@@ -133,6 +133,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3182,4 +3183,25 @@
 ### 🍹 Other Improvements
 
  - [[```68533181```](https://github.com/jina-ai/docarray/commit/68533181c7248fedda7917f824f070a5fca9c947)] __-__ __version__: the next version will be 0.16.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-2></a>
+## Release Note (`0.16.2`)
+
+> Release time: 2022-08-30 19:00:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Halo Master,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```34bf27f3```](https://github.com/jina-ai/docarray/commit/34bf27f36d96a8f54452a6dba95e9c9a3b730b97)] __-__ __find__: make device more generic (#515) (*Han Xiao*)
+ - [[```459703e9```](https://github.com/jina-ai/docarray/commit/459703e9e47b910a87211ce8430aa4c1d68f06ce)] __-__ __sqlite__: change default journal mode to WAL (#506) (*Halo Master*)
+
+### 🍹 Other Improvements
+
+ - [[```2b5fe5ca```](https://github.com/jina-ai/docarray/commit/2b5fe5ca5ed768dfe115436688d570643f1c8c74)] __-__ __docs__: fix benchmark table (*Han Xiao*)
+ - [[```a1c6f30d```](https://github.com/jina-ai/docarray/commit/a1c6f30d4201b036f192ec2c101afde0f1e1878a)] __-__ __version__: the next version will be 0.16.2 (*Jina Dev Bot*)
 
