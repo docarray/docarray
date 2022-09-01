@@ -334,7 +334,7 @@ for idx, n_index in enumerate(n_index_values):
 
 find_df = pd.DataFrame(find_by_vector_values)
 find_df.index = [backend for backend, _ in storage_backends]
-find_df = find_df.drop(['sqlite'])
+find_df = find_df.drop(['sqlite'], errors='ignore')
 print(find_df)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
 
