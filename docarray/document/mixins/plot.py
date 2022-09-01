@@ -70,19 +70,35 @@ class PlotMixin:
                     d._plot_recursion(_match_tree)
         return tree
 
-    def display(self):
-        """Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty ."""
-        from IPython.display import Image, display
+    def display(self, from_: Optional[str] = None):
+        """
+        Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
 
-        if self.uri:
+        :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
+        """
+
+        if not from_:
+            if self.uri:
+                from_ = 'uri'
+            elif self.tensor is not None:
+                from_ = 'tensor'
+            else:
+                self.summary()
+
+        if from_ == 'uri':
             self.display_uri()
-        elif self.tensor is not None:
+        elif from_ == 'tensor':
             self.display_tensor()
         else:
             self.summary()
 
     def display_tensor(self):
         """Plot image data from :attr:`.tensor`"""
+        if not self.tensor:
+            raise ValueError(
+                'Impossible to display with tensor when the tensor is None'
+            )
+
         from IPython.display import display
 
         try:
@@ -99,6 +115,9 @@ class PlotMixin:
 
     def display_uri(self):
         """Plot image data from :attr:`.uri`"""
+
+        if not self.uri:
+            raise ValueError('Impossible to display with uri when the uri is None')
 
         from IPython.display import Image, display
 
