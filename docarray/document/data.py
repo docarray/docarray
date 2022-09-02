@@ -36,22 +36,23 @@ _all_mime_types = set(mimetypes.types_map.values())
 
 
 def _is_not_empty(attribute, value):
-    if attribute not in default_values:
-        return True
-    else:
-        dv = default_values[attribute]
-        if dv in (
-            'ChunkArray',
-            'MatchArray',
-            'DocumentArray',
-            list,
-            dict,
-            'Dict[str, NamedScore]',
-        ):
-            if value:
-                return True
-        elif value != dv:
+    if value is not None:
+        if attribute not in default_values:
             return True
+        else:
+            dv = default_values[attribute]
+            if dv in (
+                'ChunkArray',
+                'MatchArray',
+                'DocumentArray',
+                list,
+                dict,
+                'Dict[str, NamedScore]',
+            ):
+                if value:
+                    return True
+            elif value != dv:
+                return True
     return False
 
 
@@ -87,9 +88,8 @@ class DocumentData:
             f_name = f.name
             if not f_name.startswith('_') or f_name == '_metadata':
                 v = getattr(self, f_name)
-                if v is not None:
-                    if _is_not_empty(f_name, v):
-                        r.append(f_name)
+                if _is_not_empty(f_name, v):
+                    r.append(f_name)
 
         return tuple(r)
 
