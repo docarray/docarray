@@ -259,6 +259,10 @@ def test_convert_uri_to_data_uri(uri, mimetype):
     'uri, chunk_num',
     [
         (os.path.join(cur_dir, 'toydata/test.glb'), 1),
+        (
+            'https://github.com/jina-ai/docarray/raw/main/tests/unit/document/toydata/test.glb',
+            1,
+        ),
     ],
 )
 def test_glb_converters(uri, chunk_num):
