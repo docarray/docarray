@@ -35,6 +35,26 @@ default_values = dict(
 _all_mime_types = set(mimetypes.types_map.values())
 
 
+def _is_not_empty(attribute, value):
+    if attribute not in default_values:
+        return True
+    else:
+        dv = default_values[attribute]
+        if dv in (
+            'ChunkArray',
+            'MatchArray',
+            'DocumentArray',
+            list,
+            dict,
+            'Dict[str, NamedScore]',
+        ):
+            if value:
+                return True
+        elif value != dv:
+            return True
+    return False
+
+
 @dataclass(unsafe_hash=True, eq=False)
 class DocumentData:
     _reference_doc: 'Document' = field(hash=False, compare=False)
@@ -68,22 +88,8 @@ class DocumentData:
             if not f_name.startswith('_') or f_name == '_metadata':
                 v = getattr(self, f_name)
                 if v is not None:
-                    if f_name not in default_values:
+                    if _is_not_empty(f_name, v):
                         r.append(f_name)
-                    else:
-                        dv = default_values[f_name]
-                        if dv in (
-                            'ChunkArray',
-                            'MatchArray',
-                            'DocumentArray',
-                            list,
-                            dict,
-                            'Dict[str, NamedScore]',
-                        ):
-                            if v:
-                                r.append(f_name)
-                        elif v != dv:
-                            r.append(f_name)
 
         return tuple(r)
 
