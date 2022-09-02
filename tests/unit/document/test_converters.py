@@ -259,10 +259,6 @@ def test_convert_uri_to_data_uri(uri, mimetype):
     'uri, chunk_num',
     [
         (os.path.join(cur_dir, 'toydata/test.glb'), 1),
-        (
-            'https://storage.googleapis.com/showcase-3d-models/ShapeNetV2/airplane_aeroplane_plane_0.glb',
-            16,
-        ),
     ],
 )
 def test_glb_converters(uri, chunk_num):
