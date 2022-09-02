@@ -33,7 +33,7 @@ class SqliteConfig:
     table_name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     conn_config: Dict = field(default_factory=dict)
-    journal_mode: str = 'DELETE'
+    journal_mode: str = 'WAL'
     synchronous: str = 'OFF'
 
 
