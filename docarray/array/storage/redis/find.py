@@ -47,7 +47,7 @@ class FindMixin(BaseFindMixin):
             nodes = _build_query_nodes(filter)
             query_str = intersect(*nodes).to_string()
         else:
-            query_str = "*"
+            query_str = '*'
 
         q = (
             Query(f'({query_str})=>[KNN {limit} @embedding $vec AS vector_score]')
@@ -133,7 +133,7 @@ def _build_query_node(key, condition):
         elif operator == '$lte':
             query_dict[key] = le(value)
         elif operator == '$eq':
-            if isinstance(value, (bool)):
+            if isinstance(value, bool):
                 query_dict[key] = equal(int(value))
             elif isinstance(value, (int, float)):
                 query_dict[key] = equal(value)
@@ -151,11 +151,11 @@ def _build_query_node(key, condition):
 def _build_query_nodes(filter):
     nodes = []
     for k, v in filter.items():
-        if k == "$and":
+        if k == '$and':
             children = _build_query_nodes(v)
             node = intersect(*children)
             nodes.append(node)
-        elif k == "$or":
+        elif k == '$or':
             children = _build_query_nodes(v)
             node = union(*children)
             nodes.append(node)

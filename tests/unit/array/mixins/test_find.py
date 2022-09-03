@@ -518,7 +518,54 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-def test_redis_category_filter(start_storage):
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                "$or": {
+                    "price": {"$gt": 8},
+                    "category": {"$eq": "Shoes"},
+                },
+            },
+            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+        ),
+        (
+            {
+                "$and": {
+                    "price": {"$ne": 8},
+                    "isfake": {"$eq": True},
+                },
+            },
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
+        ),
+        (
+            {
+                "$or": {
+                    "price": {"$lt": 8},
+                    "isfake": {"$ne": True},
+                },
+                "size": {"$lte": 3},
+            },
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            and r.tags['size'] <= 3,
+        ),
+        (
+            {
+                "$or": {
+                    "$and": {
+                        "price": {"$gte": 8},
+                        "category": {"$ne": "Shoes"},
+                    },
+                    "size": {"$eq": 3},
+                },
+            },
+            lambda r: (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
+            or r.tags['size'] == 3,
+        ),
+    ],
+)
+def test_redis_category_filter(filter, checker, start_storage):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
@@ -561,66 +608,9 @@ def test_redis_category_filter(start_storage):
         ]
     )
 
-    filter1 = {
-        "$or": {
-            "price": {"$gt": 8},
-            "category": {"$eq": "Shoes"},
-        },
-    }
-    results = da.find(np.random.rand(n_dim), filter=filter1)
+    results = da.find(np.random.rand(n_dim), filter=filter)
     assert len(results) > 0
-    assert all(
-        [(r.tags['price'] > 8 or r.tags['category'] == 'Shoes') for r in results]
-    )
-
-    filter2 = {
-        "$and": {
-            "price": {"$ne": 8},
-            "isfake": {"$eq": True},
-        },
-    }
-    results = da.find(np.random.rand(n_dim), filter=filter2)
-    assert len(results) > 0
-    assert all([(r.tags['price'] != 8 and r.tags['isfake'] == True) for r in results])
-
-    filter3 = {
-        "$or": {
-            "price": {"$lt": 8},
-            "isfake": {"$ne": True},
-        },
-        "size": {"$lte": 3},
-    }
-
-    results = da.find(np.random.rand(n_dim), filter=filter3)
-    assert len(results) > 0
-    assert all(
-        [
-            ((r.tags['price'] < 8 or r.tags['isfake'] != True) and r.tags['size'] <= 3)
-            for r in results
-        ]
-    )
-
-    filter4 = {
-        "$or": {
-            "$and": {
-                "price": {"$gte": 8},
-                "category": {"$ne": "Shoes"},
-            },
-            "size": {"$eq": 3},
-        },
-    }
-
-    results = da.find(np.random.rand(n_dim), filter=filter4)
-    assert len(results) > 0
-    assert all(
-        [
-            (
-                (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
-                or r.tags['size'] == 3
-            )
-            for r in results
-        ]
-    )
+    assert all([checker(r) for r in results])
 
 
 @pytest.mark.parametrize('storage', ['memory'])
