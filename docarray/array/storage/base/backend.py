@@ -80,4 +80,9 @@ class BaseBackendMixin(ABC):
     def _normalize_columns(self, columns):
         if columns is None:
             return []
-        return columns
+        normalized_cols = []
+
+        # should fix https://github.com/jina-ai/docarray/issues/522 making it possible to work with tuples and lists
+        for col_desc in columns:
+            normalized_cols.append((col_desc[0], col_desc[1]))
+        return normalized_cols
