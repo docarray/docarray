@@ -94,7 +94,7 @@ class PlotMixin:
 
     def display_tensor(self):
         """Plot image data from :attr:`.tensor`"""
-        if not self.tensor:
+        if self.tensor is None:
             raise ValueError(
                 'Impossible to display with tensor when the tensor is None'
             )
