@@ -228,7 +228,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     random_texts = [str(uuid.uuid1()) for _ in da1]
     da1[:, 'text'] = random_texts
 
-    name = random_identity()
+    name = f'docarray_ci_{random_identity()}'
 
     da1.push(name, show_progress=show_progress)
 
