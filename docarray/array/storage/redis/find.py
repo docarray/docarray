@@ -39,7 +39,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         filter: Optional[Dict] = None,
-        limit: Optional[Union[int, float]] = 20,
+        limit: int = 20,
         **kwargs,
     ):
 
@@ -73,7 +73,7 @@ class FindMixin(BaseFindMixin):
     def _find(
         self,
         query: 'RedisArrayType',
-        limit: Optional[Union[int, float]] = 20,
+        limit: int = 20,
         filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
@@ -88,7 +88,7 @@ class FindMixin(BaseFindMixin):
             for q in query
         ]
 
-    def _find_with_filter(self, filter: Dict, limit: Optional[Union[int, float]] = 20):
+    def _find_with_filter(self, filter: Dict, limit: int = 20):
         nodes = _build_query_nodes(filter)
         query_str = intersect(*nodes).to_string()
         q = Query(query_str)
@@ -102,9 +102,7 @@ class FindMixin(BaseFindMixin):
             da.append(doc)
         return da
 
-    def _filter(
-        self, filter: Dict, limit: Optional[Union[int, float]] = 20
-    ) -> 'DocumentArray':
+    def _filter(self, filter: Dict, limit: int = 20) -> 'DocumentArray':
 
         return self._find_with_filter(filter, limit=limit)
 
@@ -115,37 +113,29 @@ def _build_query_node(key, condition):
 
     query_dict = {}
 
-    if operator == '$ne':
+    if operator in ['$ne', '$eq']:
         if isinstance(value, bool):
             query_dict[key] = equal(int(value))
         elif isinstance(value, (int, float)):
             query_dict[key] = equal(value)
         else:
             query_dict[key] = value
-        node = DistjunctUnion(**query_dict)
+    elif operator == '$gt':
+        query_dict[key] = gt(value)
+    elif operator == '$gte':
+        query_dict[key] = ge(value)
+    elif operator == '$lt':
+        query_dict[key] = lt(value)
+    elif operator == '$lte':
+        query_dict[key] = le(value)
     else:
-        if operator == '$gt':
-            query_dict[key] = gt(value)
-        elif operator == '$gte':
-            query_dict[key] = ge(value)
-        elif operator == '$lt':
-            query_dict[key] = lt(value)
-        elif operator == '$lte':
-            query_dict[key] = le(value)
-        elif operator == '$eq':
-            if isinstance(value, bool):
-                query_dict[key] = equal(int(value))
-            elif isinstance(value, (int, float)):
-                query_dict[key] = equal(value)
-            else:
-                query_dict[key] = value
-        else:
-            raise ValueError(
-                f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
-            )
-        node = IntersectNode(**query_dict)
+        raise ValueError(
+            f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
+        )
 
-    return node
+    if operator == '$ne':
+        return DistjunctUnion(**query_dict)
+    return IntersectNode(**query_dict)
 
 
 def _build_query_nodes(filter):
@@ -164,3 +154,8 @@ def _build_query_nodes(filter):
             nodes.append(child)
 
     return nodes
+
+
+def _build_query_str(query):
+    query_str = "|".join(query.split(" "))
+    return query_str
