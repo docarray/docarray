@@ -82,8 +82,6 @@ class PlotMixin:
                 from_ = 'uri'
             elif self.tensor is not None:
                 from_ = 'tensor'
-            else:
-                self.summary()
 
         if from_ == 'uri':
             self.display_uri()
