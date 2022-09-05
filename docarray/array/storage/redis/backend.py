@@ -146,7 +146,8 @@ class BackendMixin(BaseBackendMixin):
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
 
-        for col, coltype in self._config.columns:
+        for col_desc in self._config.columns:
+            col, coltype = tuple(col_desc)
             schema.append(self._map_column(col, coltype))
 
         return schema

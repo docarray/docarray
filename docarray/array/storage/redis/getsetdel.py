@@ -90,10 +90,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _document_to_redis(self, doc: 'Document') -> Dict:
         extra_columns = {}
 
-        for col, _ in self._config.columns:
-            tag = doc.tags.get(col)
+        for col_desc in self._config.columns:
+            tag = doc.tags.get(col_desc[0])
             if tag is not None:
-                extra_columns[col] = int(tag) if isinstance(tag, bool) else tag
+                extra_columns[col_desc[0]] = int(tag) if isinstance(tag, bool) else tag
 
         payload = {
             'id': doc.id,

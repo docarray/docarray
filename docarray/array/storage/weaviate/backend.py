@@ -215,7 +215,8 @@ class BackendMixin(BaseBackendMixin):
                 },
             ]
         }
-        for col, coltype in self._config.columns:
+        for col_desc in self._config.columns:
+            col, col_type = tuple(col_desc)
             new_property = {
                 'dataType': [self._map_type(coltype)],
                 'name': col,
@@ -352,10 +353,10 @@ class BackendMixin(BaseBackendMixin):
         :param value: document to create a payload for
         :return: the payload dictionary
         """
-        columns_dict = {key: val for [key, val] in self._config.columns}
+        columns_dict = {col_desc[0]: col_desc[1] for col_desc in self._config.columns}
         extra_columns = {
-            col: self._map_column(value.tags.get(col), columns_dict[col])
-            for col, _ in self._config.columns
+            col_desc[0]: self._map_column(value.tags.get(col_desc[0]), columns_dict[col_desc[0])
+            for col_desc in self._config.columns
         }
 
         return dict(

@@ -150,7 +150,8 @@ class BackendMixin(BaseBackendMixin):
                     'index': True,
                 }
 
-        for col, coltype in self._config.columns:
+        for col_desc in self._config.columns:
+            col, coltype = tuple(col_desc)
             da_schema['mappings']['properties'][col] = {
                 'type': self._map_type(coltype),
                 'index': True,

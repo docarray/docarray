@@ -65,7 +65,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         )
 
     def _document_to_qdrant(self, doc: 'Document') -> 'PointStruct':
-        extra_columns = {col: doc.tags.get(col) for col, _ in self._config.columns}
+        extra_columns = {col_desc[0]: doc.tags.get(col_desc[0]) for col_desc in self._config.columns}
 
         return PointStruct(
             id=self._map_id(doc.id),
