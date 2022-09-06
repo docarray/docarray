@@ -27,7 +27,7 @@ class AnnliteConfig:
     ef_construction: Optional[int] = None
     ef_search: Optional[int] = None
     max_connection: Optional[int] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -53,11 +53,8 @@ class BackendMixin(BaseBackendMixin):
 
     def _normalize_columns(self, columns):
         columns = super()._normalize_columns(columns)
-        for i in range(len(columns)):
-            columns[i] = (
-                columns[i][0],
-                self._map_type(columns[i][1]),
-            )
+        for key in columns.keys():
+            columns[key] = self._map_type(columns[key])
         return columns
 
     def _ensure_unique_config(

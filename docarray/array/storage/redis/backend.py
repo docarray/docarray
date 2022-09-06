@@ -31,7 +31,7 @@ class RedisConfig:
     ef_runtime: int = field(default=10)
     block_size: int = field(default=1048576)
     initial_cap: Optional[int] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -146,7 +146,7 @@ class BackendMixin(BaseBackendMixin):
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
 
-        for col, coltype in self._config.columns:
+        for col, coltype in self._config.columns.items():
             schema.append(self._map_column(col, coltype))
 
         return schema
