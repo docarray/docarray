@@ -155,7 +155,3 @@ def _build_query_nodes(filter):
 
     return nodes
 
-
-def _build_query_str(query):
-    query_str = "|".join(query.split(" "))
-    return query_str
