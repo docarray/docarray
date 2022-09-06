@@ -85,7 +85,7 @@ class BaseBackendMixin(ABC):
             return {}
         if isinstance(columns, list):
             warnings.warn(
-                'Using "columns" as a List of Tuples will be deprecated soon. Please provide a Dictionary'
+                'Using "columns" as a List of Tuples will be deprecated soon. Please provide a Dictionary.'
             )
             columns = {col_desc[0]: col_desc[1] for col_desc in columns}
         return columns
