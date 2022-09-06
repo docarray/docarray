@@ -4,12 +4,15 @@ import pytest
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
 @pytest.mark.parametrize('deleted_elmnts', [[0, 1], ['r0', 'r1']])
-def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_delete_offset_success_sync_es_offset_index(
+    deleted_elmnts, start_storage, columns
+):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [('price', 'int')],
+            'columns': columns,
             'distance': 'l2_norm',
             'index_name': 'test_delete_offset_success_sync_es_offset_index',
         },
@@ -51,12 +54,13 @@ def test_delete_offset_success_sync_es_offset_index(deleted_elmnts, start_storag
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
-def test_success_handle_bulk_delete_not_found(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_success_handle_bulk_delete_not_found(start_storage, columns):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [('price', 'int')],
+            'columns': columns,
             'distance': 'l2_norm',
             'index_name': 'test_bulk_delete_not_found',
         },

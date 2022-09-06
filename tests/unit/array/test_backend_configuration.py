@@ -1,8 +1,5 @@
-from typing import Tuple, Iterator
-
 import pytest
 import requests
-import itertools
 
 from docarray import DocumentArray, Document
 
@@ -51,7 +48,8 @@ def test_weaviate_hnsw(start_storage):
     assert main_class.get('vectorIndexConfig', {}).get('distance') == 'l2-squared'
 
 
-def test_weaviate_da_w_protobuff(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_weaviate_da_w_protobuff(start_storage, columns):
 
     N = 10
 
@@ -59,7 +57,7 @@ def test_weaviate_da_w_protobuff(start_storage):
         storage='weaviate',
         config={
             'name': 'Test',
-            'columns': [('price', 'int')],
+            'columns': columns,
         },
     )
 
@@ -86,7 +84,7 @@ def test_cast_columns_weaviate(start_storage, type_da, type_column, request):
         storage='weaviate',
         config={
             'name': f'Test{test_id}',
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 
@@ -107,7 +105,7 @@ def test_cast_columns_annlite(start_storage, type_da, type_column):
         storage='annlite',
         config={
             'n_dim': 3,
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 
@@ -132,7 +130,7 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
         config={
             'collection_name': f'test{test_id}',
             'n_dim': 3,
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 

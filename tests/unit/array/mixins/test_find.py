@@ -1,5 +1,3 @@
-from itertools import product
-
 import numpy as np
 import pytest
 
@@ -361,8 +359,9 @@ numeric_operators_redis = {
         ],
     ],
 )
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_search_pre_filtering(
-    storage, filter_gen, operator, numeric_operators, start_storage
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):
     np.random.seed(0)
     n_dim = 128
@@ -370,12 +369,10 @@ def test_search_pre_filtering(
     if storage == 'redis':
         da = DocumentArray(
             storage=storage,
-            config={'n_dim': n_dim, 'columns': [('price', 'int')], 'flush': True},
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
         )
     else:
-        da = DocumentArray(
-            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-        )
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -468,18 +465,19 @@ def test_search_pre_filtering(
         ],
     ],
 )
-def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
     n_dim = 128
 
     if storage == 'redis':
         da = DocumentArray(
             storage=storage,
-            config={'n_dim': n_dim, 'columns': [('price', 'float')], 'flush': True},
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
         )
     else:
-        da = DocumentArray(
-            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
-        )
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
     thresholds = [10, 20, 30]
@@ -496,11 +494,10 @@ def test_filtering(storage, filter_gen, operator, numeric_operators, start_stora
         )
 
 
-def test_weaviate_filter_query(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_weaviate_filter_query(start_storage, columns):
     n_dim = 128
-    da = DocumentArray(
-        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+    da = DocumentArray(storage='weaviate', config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -518,13 +515,17 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-def test_redis_category_filter(start_storage):
+@pytest.mark.parametrize(
+    'columns',
+    [[('color', 'str'), ('isfake', 'bool')], {'color': 'str', 'isfake': 'bool'}],
+)
+def test_redis_category_filter(start_storage, columns):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
         config={
             'n_dim': n_dim,
-            'columns': [('color', 'str'), ('isfake', 'bool')],
+            'columns': columns,
             'flush': True,
         },
     )
@@ -580,7 +581,8 @@ def test_redis_category_filter(start_storage):
 
 
 @pytest.mark.parametrize('storage', ['memory'])
-def test_unsupported_pre_filtering(storage, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_unsupported_pre_filtering(storage, start_storage, columns):
 
     n_dim = 128
     da = DocumentArray(
