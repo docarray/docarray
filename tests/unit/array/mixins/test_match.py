@@ -697,9 +697,8 @@ numeric_operators_redis = {
             for operator in numeric_operators_redis.keys()
         ],
     ],
-    'columns',
-    [[('price', 'int')], {'price': 'int'}],
 )
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_match_pre_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):

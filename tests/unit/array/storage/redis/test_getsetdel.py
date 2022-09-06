@@ -93,7 +93,7 @@ def test_document_to_embedding(
     else:
         assert payload['text'] == text
 
-    for col, _ in columns.item():
+    for col, _ in columns.items():
         if col in tags:
             assert payload[col] == tags[col]
         else:
