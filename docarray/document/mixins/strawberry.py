@@ -22,7 +22,8 @@ class StrawberryMixin:
                 _p_dict[f] = v.to_strawberry_type()
             elif f in ('scores', 'evaluations'):
                 _p_dict[f] = [
-                    _NameScoreItem(k, _NamedScore(**v.to_dict())) for k, v in v.items()
+                    _NameScoreItem(name=k, score=_NamedScore(**v.to_dict()))
+                    for k, v in v.items()
                 ]
 
             else:
