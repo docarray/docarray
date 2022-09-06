@@ -353,8 +353,8 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
         extra_columns = {
-            k: self._map_column(value.tags.get(k), v)
-            for k, v in self._config.columns.items()
+            col: self._map_column(value.tags.get(col), col_type)
+            for col, col_type in self._config.columns.items()
         }
 
         return dict(
