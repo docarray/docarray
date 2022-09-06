@@ -244,7 +244,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:
@@ -276,7 +276,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:
@@ -317,7 +317,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:

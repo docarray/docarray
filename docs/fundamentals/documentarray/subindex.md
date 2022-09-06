@@ -71,7 +71,7 @@ da = DocumentArray(
 │   ef_construction    None               │
 │   ef_search          None               │
 │   max_connection     None               │
-│   columns            []                 │
+│   columns            {}                 │
 │                                         │
 ╰─────────────────────────────────────────╯
 ```
@@ -129,7 +129,7 @@ da = DocumentArray(
 │   ef_construction    None               │
 │   ef_search          None               │
 │   max_connection     None               │
-│   columns            []                 │
+│   columns            {}                 │
 │                                         │
 ╰─────────────────────────────────────────╯
 ```
