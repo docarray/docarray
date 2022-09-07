@@ -41,7 +41,7 @@ da = DocumentArray(
 )
 ```
 
-The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
+The usage will be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
 
 ```{caution}
 Currently, one Redis server instance can only store a single DocumentArray.
@@ -184,10 +184,9 @@ for embedding, price, color, stock in zip(
     print(f'\tembedding={embedding},\t color={color},\t stock={stock}')
 ```
 
-Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that
-prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `color` and have `stock` equal to `True`. We can encode this information in Redis using 
+Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `blue` and have `stock` equal to `True`. We can encode this information in Redis using
 
-```JSON
+```text
 {
     "price": {"$lte": max_price},
     "color": {"$gt": color},
@@ -196,7 +195,7 @@ prices, colors and stock must pass a filter. For example, let's consider that re
 ```
 or 
 
-```JSON
+```text
 {
     "$and": {
         "price": {"$lte": max_price},
@@ -238,7 +237,7 @@ for embedding, price, color, stock, score in zip(
     )
 ```
 
-This would print:
+This will print:
 
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" False:
@@ -334,7 +333,7 @@ for embedding, score in zip(
     print(f' embedding={embedding},\t score={score["score"].value}')
 ```
 
-This would print:
+This will print:
 
 ```console
 Embeddings Approximate Nearest Neighbours:
