@@ -154,4 +154,3 @@ def _build_query_nodes(filter):
             nodes.append(child)
 
     return nodes
-
