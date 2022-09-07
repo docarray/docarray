@@ -134,6 +134,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3204,4 +3205,39 @@
 
  - [[```2b5fe5ca```](https://github.com/jina-ai/docarray/commit/2b5fe5ca5ed768dfe115436688d570643f1c8c74)] __-__ __docs__: fix benchmark table (*Han Xiao*)
  - [[```a1c6f30d```](https://github.com/jina-ai/docarray/commit/a1c6f30d4201b036f192ec2c101afde0f1e1878a)] __-__ __version__: the next version will be 0.16.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-3></a>
+## Release Note (`0.16.3`)
+
+> Release time: 2022-09-06 09:46:29
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  AlaeddineAbdessalem,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fa05ec35```](https://github.com/jina-ai/docarray/commit/fa05ec35bb84e807f8b680bb1a8737e436fc20d8)] __-__ allow choose to display from tensor or from uri in document (#518) (*samsja*)
+
+### ⚡ Performance Improvements
+
+ - [[```d6152331```](https://github.com/jina-ai/docarray/commit/d6152331a0a2ab9b9e8f7d15bec5fcf14ea1226b)] __-__ only check if field is set (#519) (*AlaeddineAbdessalem*)
+
+### 🐞 Bug fixes
+
+ - [[```e8cc9c56```](https://github.com/jina-ai/docarray/commit/e8cc9c56d4366eff8d6bf6ea23ac5aa152244559)] __-__ create strawberry types with kwargs (#527) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```0b2326bd```](https://github.com/jina-ai/docarray/commit/0b2326bd6350f889c9ec21e56d29d2bbee43508d)] __-__ update seri (#516) (*samsja*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```b268f6f3```](https://github.com/jina-ai/docarray/commit/b268f6f3a6705f7301201d9d08cc3febda094134)] __-__ ci fix (#520) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```4d4fb504```](https://github.com/jina-ai/docarray/commit/4d4fb504c322d195b196d02d66bc65a6333db81b)] __-__ __version__: the next version will be 0.16.3 (*Jina Dev Bot*)
 
