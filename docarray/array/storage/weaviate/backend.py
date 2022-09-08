@@ -120,7 +120,6 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
 
         self._config.columns = self._normalize_columns(self._config.columns)
-        print(f'WEAVIATE self.config.columns {self._config.columns}')
 
         self._schemas = self._load_or_create_weaviate_schema()
 

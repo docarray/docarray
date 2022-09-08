@@ -87,8 +87,5 @@ class BaseBackendMixin(ABC):
             warnings.warn(
                 'Using "columns" as a List of Tuples will be deprecated soon. Please provide a Dictionary.'
             )
-            warnings.warn(f'Columns before change: {columns}')
             columns = {col_desc[0]: col_desc[1] for col_desc in columns}
-            warnings.warn(f'Columns after change: {columns}')
-        warnings.warn(f'Normalized columns: {columns}')
         return columns

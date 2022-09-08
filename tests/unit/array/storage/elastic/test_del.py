@@ -1,5 +1,8 @@
-from docarray import Document, DocumentArray
 import pytest
+import string
+import random
+
+from docarray import Document, DocumentArray
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
@@ -8,13 +11,15 @@ import pytest
 def test_delete_offset_success_sync_es_offset_index(
     deleted_elmnts, start_storage, columns
 ):
+    letters = string.ascii_lowercase
+    random_name = ''.join(random.choice(letters) for _ in range(5))
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
             'columns': columns,
             'distance': 'l2_norm',
-            'index_name': 'test_delete_offset_success_sync_es_offset_index',
+            'index_name': random_name,
         },
     )
 
@@ -56,13 +61,15 @@ def test_delete_offset_success_sync_es_offset_index(
 @pytest.mark.filterwarnings('ignore::UserWarning')
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_success_handle_bulk_delete_not_found(start_storage, columns):
+    letters = string.ascii_lowercase
+    random_name = ''.join(random.choice(letters) for _ in range(5))
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
             'columns': columns,
             'distance': 'l2_norm',
-            'index_name': 'test_bulk_delete_not_found',
+            'index_name': random_name,
         },
     )
     with elastic_doc:
