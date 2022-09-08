@@ -21,10 +21,19 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
             return_doc = Document(id=resp['properties']['_docarray_id'])
 
-            for prop in resp['properties']:            
+            tags = {}
+
+            for prop in resp['properties']:  
                 if prop[:1] != '_':
                     setattr(return_doc, prop, resp['properties'][prop])
+                elif prop[:5] == '_tag_':
+                    tags[prop[5:]] = resp['properties'][prop]
+            
+            # Set tags if there are any
+            if len(tags) > 0:
+                setattr(return_doc, 'tags', tags)
 
+            # Set vector (i.e., embedding) if any
             if 'vector' in resp and resp['vector'] != None:
                 setattr(return_doc, 'embedding', resp['vector'])
 
