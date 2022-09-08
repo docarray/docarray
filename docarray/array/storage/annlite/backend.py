@@ -34,9 +34,9 @@ class BackendMixin(BaseBackendMixin):
     """Provide necessary functions to enable this storage backend."""
 
     TYPE_MAP = {
-        'str': TypeMap(type='TEXT', converter=str),
+        'str': TypeMap(type='str', converter=str),
         'float': TypeMap(type='float', converter=float),
-        'int': TypeMap(type='integer', converter=_safe_cast_int),
+        'int': TypeMap(type='int', converter=_safe_cast_int),
     }
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
