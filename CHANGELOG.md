@@ -135,6 +135,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3240,4 +3241,28 @@
 ### 🍹 Other Improvements
 
  - [[```4d4fb504```](https://github.com/jina-ai/docarray/commit/4d4fb504c322d195b196d02d66bc65a6333db81b)] __-__ __version__: the next version will be 0.16.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-4></a>
+## Release Note (`0.16.4`)
+
+> Release time: 2022-09-08 15:59:21
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Wang Bo,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fff3ecca```](https://github.com/jina-ai/docarray/commit/fff3ecca704233a40666a42b7ce13869c0796f87)] __-__ columns should be a dictionary not list of tuples (#526) (*Joan Fontanals*)
+
+### 🐞 Bug fixes
+
+ - [[```531bd835```](https://github.com/jina-ai/docarray/commit/531bd835be315435d147f68a5c5216243d51c1e2)] __-__ fix fiinetuner link for totally looks like (#532) (*Wang Bo*)
+ - [[```4526bc7d```](https://github.com/jina-ai/docarray/commit/4526bc7dc9ce8ffa251b16e1c42ab49de1abb5f2)] __-__ fix annlite type map (#533) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```c7105983```](https://github.com/jina-ai/docarray/commit/c71059835b8a9baaeda10c9437b39c904edfcd8e)] __-__ __version__: the next version will be 0.16.4 (*Jina Dev Bot*)
 

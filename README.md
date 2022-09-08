@@ -371,7 +371,7 @@ recall@5 0.0573470744680851
 
 More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
 
-If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) you could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/get-started/totally-looks-like/).
+If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) you could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/tasks/image-to-image/).
 
 
 ### Save results

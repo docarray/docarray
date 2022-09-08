@@ -111,7 +111,7 @@ da2.summary()
 │   ef_runtime        10          │
 │   block_size        1048576     │
 │   initial_cap       None        │
-│   columns           []          │
+│   columns           {}          │
 │                                 │
 ╰─────────────────────────────────╯
 ```
@@ -146,11 +146,7 @@ da = DocumentArray(
     storage='redis',
     config={
         'n_dim': n_dim,
-        'columns': [
-            ('price', 'int'),
-            ('color', 'str'),
-            ('stock', 'bool'),
-        ],
+        'columns': {'price': 'int', 'color': 'str', 'stock': 'bool'},
         'flush': True,
         'distance': 'L2',
     },

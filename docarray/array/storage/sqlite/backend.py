@@ -1,16 +1,8 @@
 import sqlite3
 import warnings
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile
-from typing import (
-    Iterable,
-    Dict,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    List,
-    Tuple,
-)
+from typing import Iterable, Dict, Optional, TYPE_CHECKING, Union
 
 from docarray.array.storage.sqlite.helper import initialize_table
 from docarray.array.storage.base.backend import BaseBackendMixin
