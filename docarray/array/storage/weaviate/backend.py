@@ -449,6 +449,14 @@ class BackendMixin(BaseBackendMixin):
             return None
         return self._schemas['classes'][1]
 
+    def _doc2weaviate_create_tags(self, value):
+        return_obj = {}
+        for k in value.tags:
+            # INFO: Nested dicts are not yet supported
+            if (type(value.tags[k]) is dict) != True:
+                return_obj['_tag_' + k] = value.tags[k]
+        return return_obj
+
     def _doc2weaviate_create_payload(self, value: 'Document'):
         """Return the payload to store :class:`Document` into weaviate
 
@@ -456,7 +464,6 @@ class BackendMixin(BaseBackendMixin):
         :return: the payload dictionary
         """
 
-        columns_dict = {key: val for [key, val] in self._config.columns}
         extra_columns = {
             col: self._map_column(value.tags.get(col), col_type)
             for col, col_type in self._config.columns.items()
@@ -478,8 +485,7 @@ class BackendMixin(BaseBackendMixin):
                     'modality',
                     'mime_type',
                     'offset',
-                    'location',
-                    'tags']
+                    'location']
 
         options_with_cross_refs = ['chunks', 'matches']
 
@@ -510,6 +516,10 @@ class BackendMixin(BaseBackendMixin):
                         # to class name
                         self._config.name
                     ])
+
+        # Create tags
+        if len(getattr(value, 'tags')) > 0:
+            data_object = dict(list(data_object.items()) + list(self._doc2weaviate_create_tags(value).items()))
 
         return [dict(
                 data_object=data_object,
