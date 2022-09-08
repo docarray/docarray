@@ -42,7 +42,7 @@ class QdrantConfig:
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):

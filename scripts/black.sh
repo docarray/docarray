@@ -3,7 +3,8 @@ pip install black==22.3.0
 arrVar=()
 echo we ignore non-*.py files and files generated from protobuf
 excluded_files=(
-   docarray/proto/docarray_pb2.py
+   docarray/proto/pb/docarray_pb2.py
+   docarray/proto/pb2/docarray_pb2.py
    docs/conf.py
 )
 for changed_file in $CHANGED_FILES; do

@@ -27,8 +27,9 @@ The [configurator](https://weaviate.io/developers/weaviate/current/getting-start
 
 After downloading the docker-compose.yml file  you can run it as follows:
 
-```
-$ docker-compose up
+```bash
+pip install -U docarray[weaviate]
+docker-compose up
 ```
 
 #### Weaviate Cloud Service
@@ -167,6 +168,33 @@ import numpy as np
 
 from docarray import Document, DocumentArray
 
+n_dim = 3
+da = DocumentArray(
+    storage='weaviate',
+    config={
+        'n_dim': n_dim,
+        'columns': {'price': 'float'},
+    },
+)
+
+with da:
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
+
+print('\nIndexed Prices:\n')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+Then you can retrieve all documents whose price is lower than or equal to `max_price` by applying the following 
+filter:
+
+```python
+max_price = 3
+n_limit = 4
+
+filter = {'path': 'price', 'operator': 'LessThanEqual', 'valueNumber': max_price}
+results = da.find(filter=filter)
+
 da = DocumentArray(storage='weaviate', config={'name': 'Document'})
 
 # create Documents
@@ -204,6 +232,10 @@ d3 = Document(text='Im the main doc', chunks=[d1, d2], id="d3")
 # add Documents to Weaviate
 da.extend(
     [d1, d2, d3]
+=======
+da = DocumentArray(
+    storage='weaviate',
+    config={'n_dim': n_dim, 'columns': {'price': 'int'}, 'distance': 'l2-squared'},
 )
 
 # Mix the filters
@@ -277,6 +309,44 @@ d3 = Document(text='Im the main doc', chunks=[d1, d2], id="d3")
 da.extend(
     [d1, d2, d3]
 )
+=======
+# make connection and set columns
+da = DocumentArray(
+    storage='weaviate',
+    config={
+        'n_dim': n_dim,
+        'columns': {'price': 'float'},
+        'distance': 'l2-squared',
+        "name": "Persisted",
+        "host": "localhost",
+        "port": 8080,
+    },
+)
+
+# load the dummy data
+with da:
+    da.extend(
+        [
+            Document(
+                text=f'word{i}',
+                id=f'r{i}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i},
+            )
+            for i in range(10)
+        ]
+    )
+
+np_query = np.ones(n_dim) * 8
+sort = sort = [{"path": ["price"], "order": "desc"}]  # or "asc"
+results = da.find(np_query, sort=sort)
+
+print(
+    '\n Returned examples that verify results are in order from highest price to lowest:\n'
+)
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
 
 # filter for text with additional fields
 filter = {'path': 'text', 'operator': 'Equal', 'valueText': 'nested'}
@@ -311,6 +381,29 @@ da.extend(
         Document(text='All while using DocArray API.'),
     ]
 )
+
+tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+model = AutoModel.from_pretrained('bert-base-uncased')
+
+
+def collate_fn(da):
+    return tokenizer(da.texts, return_tensors='pt', truncation=True, padding=True)
+
+
+da.embed(model, collate_fn=collate_fn)
+
+results = da.find(
+    DocumentArray([Document(text='Persist Documents with Weaviate.')]).embed(
+        model,
+        collate_fn=collate_fn,
+    ),
+    query_params={"certainty": 0.9},
+)
+
+print("Only results that have a 'weaviate_certainty' of higher than 0.9 should show:")
+for res in results:
+    print(f"\t text={res[:, 'text']}")
+    print(f"\t scores={res[:, 'scores']}")
 ```
 
 Now, we can generate embeddings inside the database using BERT model:
@@ -348,6 +441,11 @@ results = da.find(
 )
 
 print(results[0].texts)
+=======
+print('\n See when the Document was created and updated:\n')
+for res in results:
+    print(f"\t creationTimeUnix={res[:, 'tags__creationTimeUnix']}")
+    print(f"\t lastUpdateTimeUnix={res[:, 'tags__lastUpdateTimeUnix']}")
 ```
 
 Output:

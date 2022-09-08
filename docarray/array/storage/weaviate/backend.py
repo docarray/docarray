@@ -46,7 +46,7 @@ class WeaviateConfig:
     flat_search_cutoff: Optional[int] = None
     cleanup_interval_seconds: Optional[int] = None
     skip: Optional[bool] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
     distance: Optional[str] = None
 
 
@@ -316,7 +316,7 @@ class BackendMixin(BaseBackendMixin):
                 },
             ]
         }
-        for col, coltype in self._config.columns:
+        for col, coltype in self._config.columns.items():
             new_property = {
                 'dataType': [self._map_type(coltype)],
                 'name': col,
@@ -458,8 +458,8 @@ class BackendMixin(BaseBackendMixin):
 
         columns_dict = {key: val for [key, val] in self._config.columns}
         extra_columns = {
-            col: self._map_column(value.tags.get(col), columns_dict[col])
-            for col, _ in self._config.columns
+            col: self._map_column(value.tags.get(col), col_type)
+            for col, col_type in self._config.columns.items()
         }
 
         data_object = {

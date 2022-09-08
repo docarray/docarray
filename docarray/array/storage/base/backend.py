@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+import warnings
 from collections import namedtuple
 from dataclasses import is_dataclass, asdict
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import Dict, Optional, TYPE_CHECKING, Union, List, Tuple
 
 if TYPE_CHECKING:
     from docarray.typing import DocumentArraySourceType, ArrayType
@@ -77,7 +78,14 @@ class BaseBackendMixin(ABC):
     def _map_type(self, col_type: str) -> str:
         return self.TYPE_MAP[col_type].type
 
-    def _normalize_columns(self, columns):
+    def _normalize_columns(
+        self, columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]]
+    ) -> Dict[str, str]:
         if columns is None:
-            return []
+            return {}
+        if isinstance(columns, list):
+            warnings.warn(
+                'Using "columns" as a List of Tuples will be deprecated soon. Please provide a Dictionary.'
+            )
+            columns = {col_desc[0]: col_desc[1] for col_desc in columns}
         return columns

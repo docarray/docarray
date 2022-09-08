@@ -130,6 +130,12 @@
 
 
 
+
+
+
+
+
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3110,4 +3116,153 @@
 ### 🍹 Other Improvements
 
  - [[```0dfb5f2c```](https://github.com/jina-ai/docarray/commit/0dfb5f2ce222892002852601e66fc9d5ec2577ed)] __-__ __version__: the next version will be 0.15.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-15-4></a>
+## Release Note (`0.15.4`)
+
+> Release time: 2022-08-25 07:34:28
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```51fec4f4```](https://github.com/jina-ai/docarray/commit/51fec4f48b25bf09074c85a0bda019cc1ee4ec94)] __-__ cap annlite version (#497) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```e75ca80d```](https://github.com/jina-ai/docarray/commit/e75ca80d2a38ab81d263f8fceeff83c117c13a23)] __-__ bump es version in documentation to match the tests (#498) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```e52d749a```](https://github.com/jina-ai/docarray/commit/e52d749af200c7ac37c5d485f01846bece534beb)] __-__ Revert &#34;fix: cap annlite version (#497)&#34; (#499) (*AlaeddineAbdessalem*)
+ - [[```37982c6b```](https://github.com/jina-ai/docarray/commit/37982c6b0bfb16820fbaf8b805271421960af9d2)] __-__ __version__: the next version will be 0.15.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-0></a>
+## Release Note (`0.16.0`)
+
+> Release time: 2022-08-29 10:19:26
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  AlaeddineAbdessalem,  Anne Yang,  Joan Fontanals,  felix-wang,  Johannes Messner,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```c2235de1```](https://github.com/jina-ai/docarray/commit/c2235de1fe6438312b251e4cb5cea3bbf4a384e9)] __-__ __redis__: implement Redis storage backend and unit tests (#452) (*Anne Yang*)
+ - [[```24be6ba8```](https://github.com/jina-ai/docarray/commit/24be6ba8481690d449fa16f1ca8fd2f7875ba5b8)] __-__ bump protobuf (#371) (*Joan Fontanals*)
+
+### 🐞 Bug fixes
+
+ - [[```7c91c7bd```](https://github.com/jina-ai/docarray/commit/7c91c7bd51f80a417f10c2018d4e8c237f7d68f5)] __-__ annlite offsetmapping (#504) (*felix-wang*)
+ - [[```be788678```](https://github.com/jina-ai/docarray/commit/be7886780ff1d90f0ddc7a65f498155aa06f0ad8)] __-__ __plot__: be robust against non-existing subindices (#503) (*Johannes Messner*)
+
+### 🍹 Other Improvements
+
+ - [[```2c17d888```](https://github.com/jina-ai/docarray/commit/2c17d888881745430449f68e82a01457b39b59f1)] __-__ __docs__: update docs generation (*Han Xiao*)
+ - [[```615fa85c```](https://github.com/jina-ai/docarray/commit/615fa85cfc1c245bc963fe59a321d08f83e9a5da)] __-__ include redis in benchmarking script (*Han Xiao*)
+ - [[```120135cf```](https://github.com/jina-ai/docarray/commit/120135cf1b2a580f2c7e1bc482a6f601914d0cd1)] __-__ cleanup ci (#505) (*AlaeddineAbdessalem*)
+ - [[```6aaf0e9d```](https://github.com/jina-ai/docarray/commit/6aaf0e9dbc74e52ef2aa4399feffaf6c753c3019)] __-__ update readme (*Han Xiao*)
+ - [[```c5ff8705```](https://github.com/jina-ai/docarray/commit/c5ff870550dd8f26be9c5e42eaca6f990629f65f)] __-__ fix readme (*Han Xiao*)
+ - [[```cc88ec28```](https://github.com/jina-ai/docarray/commit/cc88ec285659e26dd48d29f68a45d9a1c067ebc6)] __-__ __version__: the next version will be 0.15.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-1></a>
+## Release Note (`0.16.1`)
+
+> Release time: 2022-08-29 13:57:21
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Jina Dev Bot,  🙇
+
+
+### 🍹 Other Improvements
+
+ - [[```68533181```](https://github.com/jina-ai/docarray/commit/68533181c7248fedda7917f824f070a5fca9c947)] __-__ __version__: the next version will be 0.16.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-2></a>
+## Release Note (`0.16.2`)
+
+> Release time: 2022-08-30 19:00:32
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Han Xiao,  Halo Master,  Jina Dev Bot,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```34bf27f3```](https://github.com/jina-ai/docarray/commit/34bf27f36d96a8f54452a6dba95e9c9a3b730b97)] __-__ __find__: make device more generic (#515) (*Han Xiao*)
+ - [[```459703e9```](https://github.com/jina-ai/docarray/commit/459703e9e47b910a87211ce8430aa4c1d68f06ce)] __-__ __sqlite__: change default journal mode to WAL (#506) (*Halo Master*)
+
+### 🍹 Other Improvements
+
+ - [[```2b5fe5ca```](https://github.com/jina-ai/docarray/commit/2b5fe5ca5ed768dfe115436688d570643f1c8c74)] __-__ __docs__: fix benchmark table (*Han Xiao*)
+ - [[```a1c6f30d```](https://github.com/jina-ai/docarray/commit/a1c6f30d4201b036f192ec2c101afde0f1e1878a)] __-__ __version__: the next version will be 0.16.2 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-3></a>
+## Release Note (`0.16.3`)
+
+> Release time: 2022-09-06 09:46:29
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  AlaeddineAbdessalem,  samsja,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fa05ec35```](https://github.com/jina-ai/docarray/commit/fa05ec35bb84e807f8b680bb1a8737e436fc20d8)] __-__ allow choose to display from tensor or from uri in document (#518) (*samsja*)
+
+### ⚡ Performance Improvements
+
+ - [[```d6152331```](https://github.com/jina-ai/docarray/commit/d6152331a0a2ab9b9e8f7d15bec5fcf14ea1226b)] __-__ only check if field is set (#519) (*AlaeddineAbdessalem*)
+
+### 🐞 Bug fixes
+
+ - [[```e8cc9c56```](https://github.com/jina-ai/docarray/commit/e8cc9c56d4366eff8d6bf6ea23ac5aa152244559)] __-__ create strawberry types with kwargs (#527) (*Joan Fontanals*)
+
+### 📗 Documentation
+
+ - [[```0b2326bd```](https://github.com/jina-ai/docarray/commit/0b2326bd6350f889c9ec21e56d29d2bbee43508d)] __-__ update seri (#516) (*samsja*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```b268f6f3```](https://github.com/jina-ai/docarray/commit/b268f6f3a6705f7301201d9d08cc3febda094134)] __-__ ci fix (#520) (*AlaeddineAbdessalem*)
+
+### 🍹 Other Improvements
+
+ - [[```4d4fb504```](https://github.com/jina-ai/docarray/commit/4d4fb504c322d195b196d02d66bc65a6333db81b)] __-__ __version__: the next version will be 0.16.3 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-4></a>
+## Release Note (`0.16.4`)
+
+> Release time: 2022-09-08 15:59:21
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Joan Fontanals,  Wang Bo,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```fff3ecca```](https://github.com/jina-ai/docarray/commit/fff3ecca704233a40666a42b7ce13869c0796f87)] __-__ columns should be a dictionary not list of tuples (#526) (*Joan Fontanals*)
+
+### 🐞 Bug fixes
+
+ - [[```531bd835```](https://github.com/jina-ai/docarray/commit/531bd835be315435d147f68a5c5216243d51c1e2)] __-__ fix fiinetuner link for totally looks like (#532) (*Wang Bo*)
+ - [[```4526bc7d```](https://github.com/jina-ai/docarray/commit/4526bc7dc9ce8ffa251b16e1c42ab49de1abb5f2)] __-__ fix annlite type map (#533) (*Joan Fontanals*)
+
+### 🍹 Other Improvements
+
+ - [[```c7105983```](https://github.com/jina-ai/docarray/commit/c71059835b8a9baaeda10c9437b39c904edfcd8e)] __-__ __version__: the next version will be 0.16.4 (*Jina Dev Bot*)
 

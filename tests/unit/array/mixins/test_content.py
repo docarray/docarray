@@ -9,6 +9,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 
 
 @pytest.mark.parametrize(
@@ -20,6 +21,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
         DocumentArrayElastic,
+        DocumentArrayRedis,
     ],
 )
 @pytest.mark.parametrize(
@@ -33,6 +35,8 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayElastic,
     ]:
         da = cls(config={'n_dim': 3})
+    elif cls == DocumentArrayRedis:
+        da = cls(config={'n_dim': 3, 'flush': True})
     else:
         da = cls()
     assert getattr(da, content_attr) is None
@@ -47,6 +51,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
         DocumentArrayElastic,
+        DocumentArrayRedis,
     ],
 )
 @pytest.mark.parametrize(
@@ -67,6 +72,8 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         DocumentArrayElastic,
     ]:
         da = cls(config={'n_dim': 3})
+    elif cls == DocumentArrayRedis:
+        da = cls(config={'n_dim': 3, 'flush': True})
     else:
         da = cls()
     setattr(da, content_attr[0], content_attr[1])
@@ -82,6 +89,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 @pytest.mark.parametrize(
@@ -116,6 +124,7 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_content_empty(da_len, da_cls, config, start_storage):
@@ -153,6 +162,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, ElasticConfig(n_dim=5)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_embeddings_setter(da_len, da_cls, config, start_storage):
