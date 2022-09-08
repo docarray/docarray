@@ -519,7 +519,7 @@ def test_weaviate_filter_query(start_storage, columns):
     'columns',
     [
         [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
-        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'}
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
     ],
 )
 @pytest.mark.parametrize(
