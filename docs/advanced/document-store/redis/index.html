@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/redis/" />
   
-<meta property="og:site_name" content="DocArray 0.16.3 Documentation" />
+<meta property="og:site_name" content="DocArray 0.16.4 Documentation" />
   
 <meta property="og:description" content="You can use Redis as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Redis service: To use Redis as the storage backend, it is required to have the Redis service started. Create docker-compose.yml..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.16.3 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.16.4 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/redis.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>Redis - DocArray 0.16.3 documentation</title>
+        <title>Redis - DocArray 0.16.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.16.3 documentation</div>
+                <div class="brand">DocArray 0.16.4 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -479,7 +479,7 @@ Output<div class="sd-summary-down docutils">
 <span class="go">│   ef_runtime        10          │</span>
 <span class="go">│   block_size        1048576     │</span>
 <span class="go">│   initial_cap       None        │</span>
-<span class="go">│   columns           []          │</span>
+<span class="go">│   columns           {}          │</span>
 <span class="go">│                                 │</span>
 <span class="go">╰─────────────────────────────────╯</span>
 </pre></div>
@@ -509,7 +509,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
     <span class="n">config</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
-        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;str&#39;</span><span class="p">)],</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">},</span>
         <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span>
     <span class="p">},</span>
@@ -787,7 +787,7 @@ The benchmark test is on the way.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 06, 2022</div>
+                            Last updated on Sep 08, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

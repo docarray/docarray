@@ -132,7 +132,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='elasticsearch',
-    config={'n_dim': 3, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+    config={'n_dim': 3, 'columns': {'price': 'int'}, 'distance': 'l2_norm'},
 )
 
 with da:
@@ -172,7 +172,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='elasticsearch',
-    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+    config={'n_dim': n_dim, 'columns': {'price': 'int'}, 'distance': 'l2_norm'},
 )
 
 with da:
@@ -248,7 +248,7 @@ da = DocumentArray(
     storage='elasticsearch',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
     },
 )
 
