@@ -1,7 +1,5 @@
 import pytest
 import requests
-import string
-import random
 
 from docarray import DocumentArray, Document
 
@@ -55,13 +53,9 @@ def test_weaviate_da_w_protobuff(start_storage, columns):
 
     N = 10
 
-    letters = string.ascii_lowercase
-    random_name = ''.join(random.choice(letters) for _ in range(5))
-
     index = DocumentArray(
         storage='weaviate',
         config={
-            'name': random_name.capitalize(),
             'columns': columns,
         },
     )

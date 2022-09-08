@@ -1,7 +1,5 @@
 import numpy as np
 import pytest
-import string
-import random
 
 from docarray import Document, DocumentArray
 
@@ -9,15 +7,12 @@ from docarray import Document, DocumentArray
 @pytest.mark.parametrize('nrof_docs', [10, 100, 10_000, 10_100, 20_000, 20_100])
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_success_get_bulk_data(start_storage, nrof_docs, columns):
-    letters = string.ascii_lowercase
-    random_name = ''.join(random.choice(letters) for _ in range(5))
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
             'columns': columns,
             'distance': 'l2_norm',
-            'index_name': random_name,
         },
     )
 
@@ -36,16 +31,12 @@ def test_success_get_bulk_data(start_storage, nrof_docs, columns):
 def test_error_get_bulk_data_id_not_exist(start_storage, columns):
     nrof_docs = 10
 
-    letters = string.ascii_lowercase
-    random_name = ''.join(random.choice(letters) for _ in range(5))
-
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
             'columns': columns,
             'distance': 'l2_norm',
-            'index_name': random_name,
         },
     )
 
