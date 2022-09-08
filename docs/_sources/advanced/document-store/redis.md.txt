@@ -41,7 +41,7 @@ da = DocumentArray(
 )
 ```
 
-The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
+The usage will be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
 
 ```{caution}
 Currently, one Redis server instance can only store a single DocumentArray.
@@ -123,7 +123,7 @@ Other functions behave the same as in-memory DocumentArray.
 
 ### Vector search with filter query
 
-You can perform Vector Similarity Search based on [FLAT or HNSW algorithm](vector-search-index) and pre-filter results using a filter query that is based on [MongoDB's Query](https://www.mongodb.com/docs/manual/reference/operator/query/). We currently support a subset of those selectors:
+You can perform Vector Similarity Search based on [FLAT or HNSW algorithm](vector-search-index) and pre-filter results using a filter query that is based on [MongoDB's Query](https://www.mongodb.com/docs/manual/reference/operator/query/). The following tags filters can be combine with `$and` and `$or`:
 
 - `$eq` - Equal to (number, string)
 - `$ne` - Not equal to (number, string)
@@ -134,7 +134,7 @@ You can perform Vector Similarity Search based on [FLAT or HNSW algorithm](vecto
 
 
 Consider Documents with embeddings `[0, 0, 0]` up to `[9, 9, 9]` where the Document with embedding `[i, i, i]`
-has tag `price` with a number value, and tag `color` with a string value. You can create such example with the following code:
+has tag `price` with a number value, tag `color` with a string value and tag `stock` with a boolean value. You can create such example with the following code:
 
 ```python
 import numpy as np
@@ -146,7 +146,7 @@ da = DocumentArray(
     storage='redis',
     config={
         'n_dim': n_dim,
-        'columns': {'price': 'int', 'color': 'str'},
+        'columns': {'price': 'int', 'color': 'str', 'stock': 'bool'},
         'flush': True,
         'distance': 'L2',
     },
@@ -155,7 +155,9 @@ da = DocumentArray(
 da.extend(
     [
         Document(
-            id=f'{i}', embedding=i * np.ones(n_dim), tags={'price': i, 'color': 'red'}
+            id=f'{i}',
+            embedding=i * np.ones(n_dim),
+            tags={'price': i, 'color': 'blue', 'stock': i%2==0},
         )
         for i in range(10)
     ]
@@ -165,58 +167,118 @@ da.extend(
         Document(
             id=f'{i+10}',
             embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'blue'},
+            tags={'price': i, 'color': 'red', 'stock': i%2==0},
         )
         for i in range(10)
     ]
 )
 
-print('\nIndexed prices and colors:\n')
-for embedding, price, color in zip(
-    da.embeddings, da[:, 'tags__price'], da[:, 'tags__color']
+print('\nIndexed price, color and stock:\n')
+for embedding, price, color, stock in zip(
+    da.embeddings, da[:, 'tags__price'], da[:, 'tags__color'], da[:, 'tags__stock']
 ):
-    print(f'\tembedding={embedding},\t price={price},\t color={color}')
+    print(f'\tembedding={embedding},\t color={color},\t stock={stock}')
 ```
 
-Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that
-prices and colors must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price` and have `color` equal to `color`. We can encode this information in Redis using `{'price': {'$lte': max_price}, 'color': {'$eq': color}}`.
+Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `blue` and have `stock` equal to `True`. We can encode this information in Redis using
+
+```text
+{
+    "price": {"$lte": max_price},
+    "color": {"$gt": color},
+    "stock": {"$eq": True},
+}
+```
+or 
+
+```text
+{
+    "$and": {
+        "price": {"$lte": max_price},
+        "color": {"$gt": color},
+        "stock": {"$eq": True},
+    }
+}
+```
 
 Then the search with the proposed filter can be used as follows:
 ```python
 max_price = 7
-color = 'red'
+color = "blue"
 n_limit = 5
 
 np_query = np.ones(n_dim) * 8
 print(f'\nQuery vector: \t{np_query}')
 
-filter = {'price': {'$lte': max_price}, 'color': {'$eq': color}}
+filter = {
+    "price": {"$lte": max_price},
+    "color": {"$eq": color},
+    "stock": {"$eq": True},
+}
+
 results = da.find(np_query, filter=filter, limit=n_limit)
 
 print(
-    '\nEmbeddings Approximate Nearest Neighbours with "price" at most 7 and "color" red:\n'
+    '\nEmbeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" False:\n'
 )
-for embedding, price, color, score in zip(
+for embedding, price, color, stock, score in zip(
     results.embeddings,
     results[:, 'tags__price'],
     results[:, 'tags__color'],
+    results[:, 'tags__stock'],
     results[:, 'scores'],
 ):
     print(
-        f' score={score["score"].value},\t embedding={embedding},\t price={price},\t color={color}'
+        f' score={score["score"].value},\t embedding={embedding},\t price={price},\t color={color},\t stock={stock}'
     )
 ```
 
-This would print:
+This will print:
 
 ```console
-Embeddings Approximate Nearest Neighbours with "price" at most 7 and "color" red:
+Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" False:
 
- score=3,        embedding=[7. 7. 7.],   price=7,        color=red
- score=12,       embedding=[6. 6. 6.],   price=6,        color=red
- score=27,       embedding=[5. 5. 5.],   price=5,        color=red
- score=48,       embedding=[4. 4. 4.],   price=4,        color=red
- score=75,       embedding=[3. 3. 3.],   price=3,        color=red
+ score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True
+ score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True
+ score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=True
+ score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=True
+```
+More example filter expresses
+- A Nike shoes or price less than `100`
+
+```JSON
+{
+    "$or": {
+        "brand": {"$eq": "Nike"},
+        "price": {"$lt": 100}
+    }
+}
+```
+
+- A Nike shoes **and** either price is less than `100` or color is `"blue"`
+
+```JSON
+{
+    "brand": {"$eq": "Nike"},
+    "$or": {
+        "price": {"$lt": 100},
+        "color": {"$eq": "blue"},
+    },
+}
+```
+
+- A Nike shoes **or** both price is less than `100` and color is `"blue"`
+
+```JSON
+{
+    "$or": {
+        "brand": {"$eq": "Nike"},
+        "$and": {
+            "price": {"$lt": 100},
+            "color": {"$eq": "blue"},
+        },
+    }
+}
 ```
 
 (vector-search-index)=
@@ -267,7 +329,7 @@ for embedding, score in zip(
     print(f' embedding={embedding},\t score={score["score"].value}')
 ```
 
-This would print:
+This will print:
 
 ```console
 Embeddings Approximate Nearest Neighbours:

@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/redis/" />
   
-<meta property="og:site_name" content="DocArray 0.16.4 Documentation" />
+<meta property="og:site_name" content="DocArray 0.16.5 Documentation" />
   
 <meta property="og:description" content="You can use Redis as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Redis service: To use Redis as the storage backend, it is required to have the Redis service started. Create docker-compose.yml..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.16.4 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.16.5 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/redis.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>Redis - DocArray 0.16.4 documentation</title>
+        <title>Redis - DocArray 0.16.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.16.4 documentation</div>
+                <div class="brand">DocArray 0.16.5 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -410,7 +410,7 @@ docker-compose up
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>The usage would be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.</p>
+<p>The usage will be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.</p>
 <div class="admonition caution">
 <p class="admonition-title">Caution</p>
 <p>Currently, one Redis server instance can only store a single DocumentArray.</p>
@@ -489,7 +489,7 @@ Output<div class="sd-summary-down docutils">
 </section>
 <section id="vector-search-with-filter-query">
 <h3>Vector search with filter query<a class="headerlink" href="#vector-search-with-filter-query" title="Permalink to this heading">#</a></h3>
-<p>You can perform Vector Similarity Search based on <a class="reference internal" href="#vector-search-index"><span class="std std-ref">FLAT or HNSW algorithm</span></a> and pre-filter results using a filter query that is based on <a class="reference external" href="https://www.mongodb.com/docs/manual/reference/operator/query/">MongoDB’s Query</a>. We currently support a subset of those selectors:</p>
+<p>You can perform Vector Similarity Search based on <a class="reference internal" href="#vector-search-index"><span class="std std-ref">FLAT or HNSW algorithm</span></a> and pre-filter results using a filter query that is based on <a class="reference external" href="https://www.mongodb.com/docs/manual/reference/operator/query/">MongoDB’s Query</a>. The following tags filters can be combine with <code class="docutils literal notranslate"><span class="pre">$and</span></code> and <code class="docutils literal notranslate"><span class="pre">$or</span></code>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">$eq</span></code> - Equal to (number, string)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">$ne</span></code> - Not equal to (number, string)</p></li>
@@ -499,7 +499,7 @@ Output<div class="sd-summary-down docutils">
 <li><p><code class="docutils literal notranslate"><span class="pre">$lte</span></code> - Less than or equal to (number)</p></li>
 </ul>
 <p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> up to <code class="docutils literal notranslate"><span class="pre">[9,</span> <span class="pre">9,</span> <span class="pre">9]</span></code> where the Document with embedding <code class="docutils literal notranslate"><span class="pre">[i,</span> <span class="pre">i,</span> <span class="pre">i]</span></code>
-has tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with a number value, and tag <code class="docutils literal notranslate"><span class="pre">color</span></code> with a string value. You can create such example with the following code:</p>
+has tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with a number value, tag <code class="docutils literal notranslate"><span class="pre">color</span></code> with a string value and tag <code class="docutils literal notranslate"><span class="pre">stock</span></code> with a boolean value. You can create such example with the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -509,7 +509,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
     <span class="n">config</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
-        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">},</span>
         <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span>
     <span class="p">},</span>
@@ -518,7 +518,9 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
     <span class="p">[</span>
         <span class="n">Document</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">}</span>
+            <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="p">]</span>
@@ -528,54 +530,113 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
         <span class="n">Document</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">},</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed prices and colors:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-    <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">],</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__color&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed price, color and stock:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">stock</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">],</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__color&#39;</span><span class="p">],</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__stock&#39;</span><span class="p">]</span>
 <span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> stock=</span><span class="si">{</span><span class="n">stock</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Consider the case where you want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.,</span>&#160; <span class="pre">8.,</span>&#160; <span class="pre">8.]</span></code>, with the restriction that
-prices and colors must pass a filter. For example, let’s consider that retrieved Documents must have a <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code> and have <code class="docutils literal notranslate"><span class="pre">color</span></code> equal to <code class="docutils literal notranslate"><span class="pre">color</span></code>. We can encode this information in Redis using <code class="docutils literal notranslate"><span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price},</span> <span class="pre">'color':</span> <span class="pre">{'$eq':</span> <span class="pre">color}}</span></code>.</p>
+<p>Consider the case where you want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.,</span>&#160; <span class="pre">8.,</span>&#160; <span class="pre">8.]</span></code>, with the restriction that prices, colors and stock must pass a filter. For example, let’s consider that retrieved Documents must have a <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>, have <code class="docutils literal notranslate"><span class="pre">color</span></code> equal to <code class="docutils literal notranslate"><span class="pre">blue</span></code> and have <code class="docutils literal notranslate"><span class="pre">stock</span></code> equal to <code class="docutils literal notranslate"><span class="pre">True</span></code>. We can encode this information in Redis using</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+    &quot;price&quot;: {&quot;$lte&quot;: max_price},
+    &quot;color&quot;: {&quot;$gt&quot;: color},
+    &quot;stock&quot;: {&quot;$eq&quot;: True},
+}
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+    &quot;$and&quot;: {
+        &quot;price&quot;: {&quot;$lte&quot;: max_price},
+        &quot;color&quot;: {&quot;$gt&quot;: color},
+        &quot;stock&quot;: {&quot;$eq&quot;: True},
+    }
+}
+</pre></div>
+</div>
 <p>Then the search with the proposed filter can be used as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+<span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">5</span>
 
 <span class="n">np_query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Query vector: </span><span class="se">\t</span><span class="si">{</span><span class="n">np_query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$lte&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">},</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;$eq&#39;</span><span class="p">:</span> <span class="n">color</span><span class="p">}}</span>
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$lte&quot;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">},</span>
+    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$eq&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">},</span>
+    <span class="s2">&quot;stock&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$eq&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+<span class="p">}</span>
+
 <span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
-    <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7 and &quot;color&quot; red:</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7, &quot;color&quot; blue and &quot;stock&quot; False:</span><span class="se">\n</span><span class="s1">&#39;</span>
 <span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">stock</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
     <span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span>
     <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">],</span>
     <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__color&#39;</span><span class="p">],</span>
+    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__stock&#39;</span><span class="p">],</span>
     <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">],</span>
 <span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39; score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="sa">f</span><span class="s1">&#39; score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> stock=</span><span class="si">{</span><span class="n">stock</span><span class="si">}</span><span class="s1">&#39;</span>
     <span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7 and &quot;color&quot; red:</span>
+<p>This will print:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7, &quot;color&quot; blue and &quot;stock&quot; False:</span>
 
-<span class="go"> score=3,        embedding=[7. 7. 7.],   price=7,        color=red</span>
-<span class="go"> score=12,       embedding=[6. 6. 6.],   price=6,        color=red</span>
-<span class="go"> score=27,       embedding=[5. 5. 5.],   price=5,        color=red</span>
-<span class="go"> score=48,       embedding=[4. 4. 4.],   price=4,        color=red</span>
-<span class="go"> score=75,       embedding=[3. 3. 3.],   price=3,        color=red</span>
+<span class="go"> score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True</span>
+<span class="go"> score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True</span>
+<span class="go"> score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=True</span>
+<span class="go"> score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=True</span>
+</pre></div>
+</div>
+<p>More example filter expresses</p>
+<ul class="simple">
+<li><p>A Nike shoes or price less than <code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+</ul>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$or&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$eq&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Nike&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$lt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>A Nike shoes <strong>and</strong> either price is less than <code class="docutils literal notranslate"><span class="pre">100</span></code> or color is <code class="docutils literal notranslate"><span class="pre">&quot;blue&quot;</span></code></p></li>
+</ul>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$eq&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Nike&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$or&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$lt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;color&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$eq&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;blue&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>A Nike shoes <strong>or</strong> both price is less than <code class="docutils literal notranslate"><span class="pre">100</span></code> and color is <code class="docutils literal notranslate"><span class="pre">&quot;blue&quot;</span></code></p></li>
+</ul>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;$or&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$eq&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Nike&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;$and&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$lt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">},</span><span class="w"></span>
+<span class="w">            </span><span class="nt">&quot;color&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;$eq&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;blue&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
@@ -622,7 +683,7 @@ prices and colors must pass a filter. For example, let’s consider that retriev
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This would print:</p>
+<p>This will print:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours:</span>
 
 <span class="go"> embedding=[8. 8. 8.],   score=0</span>
