@@ -455,3 +455,76 @@ def _safe_cast_int(value: Union[str, int, float]) -> int:
     if isinstance(value, float) and not value.is_integer():
         raise ValueError(f"Can't safely cast {value} to an int")
     return int(value)
+
+
+def is_dnn_model(dnn_model) -> (bool, str):
+    import importlib.util
+
+    framework = None
+
+    if importlib.util.find_spec('torch'):
+        import torch
+
+        if isinstance(dnn_model, torch.nn.Module):
+            framework = 'torch'
+
+    if importlib.util.find_spec('paddle'):
+        import paddle
+
+        if isinstance(dnn_model, paddle.nn.Layer):
+            framework = 'paddle'
+
+    if importlib.util.find_spec('tensorflow'):
+        from tensorflow import keras
+
+        if isinstance(dnn_model, keras.layers.Layer):
+            framework = 'keras'
+
+    if importlib.util.find_spec('onnx'):
+        from onnxruntime import InferenceSession
+
+        if isinstance(dnn_model, InferenceSession):
+            framework = 'onnx'
+
+    if framework is None:
+        return False, framework
+    else:
+        return True, framework
+
+
+def get_ml_framework(tensor) -> str:
+    import importlib.util
+
+    framework = None
+
+    if importlib.util.find_spec('torch'):
+        from torch import is_tensor
+
+        if is_tensor(tensor):
+            framework = 'torch'
+
+    if importlib.util.find_spec('paddle'):
+        from paddle import is_tensor
+
+        if is_tensor(tensor):
+            framework = 'paddle'
+
+    if importlib.util.find_spec('tensorflow'):
+        from tensorflow import is_tensor
+
+        if is_tensor(tensor):
+            framework = 'keras'
+
+    if importlib.util.find_spec('onnx'):
+        # TODO(johannes) how do we handle onnx?
+        from onnxruntime import InferenceSession
+
+        if isinstance(tensor, InferenceSession):
+            framework = 'onnx'
+
+    import numpy as np
+
+    if isinstance(tensor, np.ndarray):
+        framework = 'numpy'
+
+    return framework

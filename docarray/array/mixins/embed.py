@@ -1,5 +1,6 @@
 import warnings
-from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping
+from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping, Iterable, Union
+from docarray.helper import is_dnn_model, get_ml_framework
 
 if TYPE_CHECKING:
     from docarray.typing import T, AnyDNN
@@ -31,7 +32,7 @@ class EmbedMixin:
         :param to_numpy: if to store embeddings back to Document in ``numpy.ndarray`` or original framework format.
         :param collate_fn: create a mini-batch of Input(s) from the given `DocumentArray`.  Default built-in collate_fn
                 is to use the `tensors` of the documents.
-        :return: itself after modified.
+        :return: itself with filled :attr:`.embedding` field.
         """
 
         if collate_fn is None:
@@ -46,6 +47,27 @@ class EmbedMixin:
             embed_model, collate_fn, device, batch_size, to_numpy
         )
         return self
+
+    def combine_embeddings(
+        self: 'T',
+        access_path: str,
+        combiner: Union['AnyDNN', str, Callable] = 'concat',
+        to_numpy: bool = False,
+        collate_fn: Optional['CollateFnType'] = None,
+    ):
+        """
+        Combines embeddings across the given access paths and sets them on the top-level Documents.
+
+        :param access_path: Path to the nested Documents whose embeddings should be combined
+        :param combiner: Specifies how embeddings should be combined. Can be either one of 'concat', 'sum', 'mean'; an ML model; or any Callable.
+        :param to_numpy: if to store embeddings back to Document in ``numpy.ndarray`` or original framework format
+        """
+
+        self.apply(
+            lambda d: _combine_embeddings_doc(
+                d, access_path, combiner, to_numpy, collate_fn
+            )
+        )
 
     def _set_embeddings_keras(
         self: 'T',
@@ -81,15 +103,19 @@ class EmbedMixin:
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
+        inputs: Iterable['DocumentArray'] = None,
     ):
         import torch
 
         embed_model = embed_model.to(device)
         is_training_before = embed_model.training
         embed_model.eval()
+        batches_idx = (
+            self.batch_ids(batch_size) if inputs is None else inputs
+        )  # if no inputs, use stored data
         with torch.inference_mode():
-            for b_ids in self.batch_ids(batch_size):
-                batch_inputs = collate_fn(self[b_ids])
+            for i_b, b in enumerate(batches_idx):
+                batch_inputs = collate_fn(self[b]) if inputs is None else collate_fn(b)
 
                 if isinstance(batch_inputs, Mapping):
                     for k, v in batch_inputs.items():
@@ -107,7 +133,9 @@ class EmbedMixin:
 
                     r = r.pooler_output.cpu().detach()  # type: ModelOutput
 
-                self[b_ids, 'embedding'] = r.numpy() if to_numpy else r
+                self[b if inputs is None else i_b, 'embedding'] = (
+                    r.numpy() if to_numpy else r
+                )
 
         if is_training_before:
             embed_model.train()
@@ -166,6 +194,68 @@ class EmbedMixin:
 
             self[b_ids, 'embedding'] = embed_model.run(None, batch_inputs)[0]
 
+    def _combine_embeddings_dnn(
+        self, combiner, inputs, framework, collate_fn, **kwargs
+    ):
+
+        getattr(self, f'_set_embeddings_{framework}')(
+            combiner, collate_fn, inputs=inputs, **kwargs
+        )
+        return self
+
+
+def _combine_embeddings_callable(combiner, inputs, collate_fn):
+    return combiner(collate_fn(inputs))
+
+
+def _combine_embeddings_str(combiner, embeddings, framework, to_numpy):
+    if combiner == 'mean':
+        if framework == 'numpy':
+            import numpy as np
+
+            return np.mean(embeddings, axis=0).flatten()
+        if framework == 'torch':
+            import torch
+
+            return torch.mean(embeddings, dim=0)
+        if framework == 'keras':
+            raise NotImplementedError()
+        if framework == 'onnx':
+            raise NotImplementedError()
+        if framework == 'paddle':
+            raise NotImplementedError()
+    if combiner == 'sum':
+        if framework == 'numpy':
+            import numpy as np
+
+            return np.sum(embeddings, axis=0).flatten()
+        if framework == 'torch':
+            import torch
+
+            return torch.sum(embeddings, dim=0)
+        if framework == 'keras':
+            raise NotImplementedError()
+        if framework == 'onnx':
+            raise NotImplementedError()
+        if framework == 'paddle':
+            raise NotImplementedError()
+    if combiner == 'concat':
+        if framework == 'numpy':
+            import numpy as np
+
+            return np.concatenate(embeddings, axis=0).flatten()
+        if framework == 'torch':
+            import torch
+
+            return torch.cat(embeddings, dim=0)
+        if framework == 'keras':
+            raise NotImplementedError()
+        if framework == 'onnx':
+            raise NotImplementedError()
+        if framework == 'paddle':
+            raise NotImplementedError()
+    _raise_invalid_combiner(combiner)
+
 
 def get_framework(dnn_model) -> str:
     """Return the framework that powers a DNN model.
@@ -179,30 +269,46 @@ def get_framework(dnn_model) -> str:
     :return: `keras`, `torch`, `paddle` or ValueError
 
     """
-    import importlib.util
+    is_dnn, framework = is_dnn_model(dnn_model)
+    if not is_dnn:
+        raise ValueError(f'can not determine the backend of {dnn_model!r}')
+    return framework
 
-    if importlib.util.find_spec('torch'):
-        import torch
 
-        if isinstance(dnn_model, torch.nn.Module):
-            return 'torch'
+def _combine_embeddings_doc(
+    d,
+    access_path: str,
+    combiner: Union['AnyDNN', str, Callable] = 'concat',
+    to_numpy=False,  # TODO implement
+    collate_fn: Callable = None,
+    **kwargs,
+):
+    from docarray import DocumentArray
 
-    if importlib.util.find_spec('paddle'):
-        import paddle
+    da = DocumentArray(d)
+    docs_to_combine = da[access_path]
 
-        if isinstance(dnn_model, paddle.nn.Layer):
-            return 'paddle'
+    def default_collate_fn(da: 'DocumentArray'):
+        return da.tensors
 
-    if importlib.util.find_spec('tensorflow'):
-        from tensorflow import keras
+    coll = collate_fn if collate_fn else default_collate_fn
 
-        if isinstance(dnn_model, keras.layers.Layer):
-            return 'keras'
+    is_dnn, framework = is_dnn_model(combiner)
+    if is_dnn:
+        return da._combine_embeddings_dnn(
+            combiner, docs_to_combine, framework, collate_fn=coll
+        )[0]
+    framework = get_ml_framework(docs_to_combine.embeddings)
+    if isinstance(combiner, str):
+        d.embedding = _combine_embeddings_str(
+            combiner, docs_to_combine.embeddings, framework, to_numpy
+        )
+        return d
+    if isinstance(combiner, Callable):
+        return da._combine_embeddings_callable(combiner, docs_to_combine, collate_fn)[0]
 
-    if importlib.util.find_spec('onnx'):
-        from onnxruntime import InferenceSession
 
-        if isinstance(dnn_model, InferenceSession):
-            return 'onnx'
-
-    raise ValueError(f'can not determine the backend of {dnn_model!r}')
+def _raise_invalid_combiner(combiner):
+    raise ValueError(
+        f'{combiner} is not a valid `combiner`. Use one of "concat", "sum", "mean"; an ML model; or any Callable'
+    )
