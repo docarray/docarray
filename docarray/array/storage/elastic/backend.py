@@ -93,6 +93,7 @@ class BackendMixin(BaseBackendMixin):
         self._config = config
 
         self._config.columns = self._normalize_columns(self._config.columns)
+        print(f' ELASTIC self.config.columns {self._config.columns}')
 
         self.n_dim = self._config.n_dim
         self._client = self._build_client()
