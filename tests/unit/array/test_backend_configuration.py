@@ -61,7 +61,7 @@ def test_weaviate_da_w_protobuff(start_storage, columns):
     index = DocumentArray(
         storage='weaviate',
         config={
-            'name': random_name,
+            'name': random_name.capitalize(),
             'columns': columns,
         },
     )
