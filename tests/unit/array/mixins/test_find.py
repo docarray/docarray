@@ -465,7 +465,7 @@ def test_search_pre_filtering(
         ],
     ],
 )
-@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+@pytest.mark.parametrize('columns', [[('price', 'float')], {'price': 'float'}])
 def test_filtering(
     storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):
@@ -585,9 +585,7 @@ def test_redis_category_filter(start_storage, columns):
 def test_unsupported_pre_filtering(storage, start_storage, columns):
 
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
