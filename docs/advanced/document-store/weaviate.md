@@ -17,28 +17,30 @@ Here is a video tutorial that guides you to build a simple image search using We
 
 There are three ways how you can use Weaviate.
 
-* Docker-compose
 * Weaviate Cloud Service
-* Weaviate Kubernetes set up
+* Docker-compose
+* Kubernetes
+
+#### Weaviate Cloud Service
+
+On the [Weaviate Cloud Service](https://console.semi.technology/), you can create a free sandbox to connect to DocArray. When initiating your Weaviate setup, you'll leave the cloud endpoint (see below).
 
 #### Docker-compose
 
-The [configurator](https://weaviate.io/developers/weaviate/current/getting-started/installation.html#customize-your-weaviate-setup) allows you to get the latest Weaviate version. Make sure to select "Standalone, no modules" in the process.
+The [configurator](https://weaviate.io/developers/weaviate/current/installation/docker-compose.html#configurator) allows you to get the latest Weaviate version. Make sure to select "Standalone, no modules" in the process.
 
-After downloading the docker-compose.yml file  you can run it as follows:
+#### Kubernetes
+
+The Kubernetes setup is a bit more work but comes in handy when scaling your DocArray project to production. All information about running Weaviate with Kubernetes van be found [here](https://weaviate.io/developers/weaviate/current/installation/kubernetes.html).
+
+## Installation
+
+After setting up your Weaviate environment, you can install the dependencies like this:
 
 ```bash
 pip install -U docarray[weaviate]
 docker-compose up
 ```
-
-#### Weaviate Cloud Service
-
-On the [Weaviate Cloud Service](http://console.semi.technology/), you can create a free sandbox to connect to DocArray. When initiating your Weaviate setup, you'll leave the cloud endpoint (see below).
-
-#### Weaviate Kubernetes set up
-
-The Kubernetes setup is a bit more work but comes in handy when scaling your DocArray project to production. All information about running Weaviate with Kubernetes van be found [here](https://weaviate.io/developers/weaviate/current/getting-started/installation.html#kubernetes-k8s).
 
 ### Create DocumentArray with Weaviate backend
 
@@ -47,14 +49,12 @@ Assuming service is started using the default configuration (i.e. server address
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray(storage='weaviate', config={'name': 'Document'})
+da = DocumentArray(storage='weaviate')
 ```
 
 The usage would be the same as the ordinary DocumentArray.
 
-You must set the `config={'name': 'SomeValue' })` because Weaviate's class system creates a vector space per class (i.e., the name). You can store documents with or without vectors, but the length of a vector needs to be the same within the class.
-
-For multiple embedding sizes the following is perfectly valid:
+You can set the `config={'name': 'SomeValue' })` because Weaviate's class system creates a vector space per class (i.e., the name). You can store documents with or without vectors, but the length of a vector needs to be the same within the class. For multiple embedding sizes the following is perfectly valid:
 
 ```
 from docarray import DocumentArray
@@ -80,8 +80,6 @@ da.summary()
 Other functions behave the same as in-memory DocumentArray.
 
 ## Config
-
-The following configs can be set, for detailed and large scale production configuration please see [this](https://weaviate.io/developers/weaviate/current/benchmarks/ann.html) section on the Weaviate website. You can pick a similar dataset as your set up and tweak the configuration accordingly.
 
 | Name                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Default                                            |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------|
