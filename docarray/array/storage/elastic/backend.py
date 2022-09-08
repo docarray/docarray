@@ -44,7 +44,7 @@ class ElasticConfig:
     batch_size: int = 64
     ef_construction: Optional[int] = None
     m: Optional[int] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 _banned_indexname_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
@@ -150,7 +150,7 @@ class BackendMixin(BaseBackendMixin):
                     'index': True,
                 }
 
-        for col, coltype in self._config.columns:
+        for col, coltype in self._config.columns.items():
             da_schema['mappings']['properties'][col] = {
                 'type': self._map_type(coltype),
                 'index': True,

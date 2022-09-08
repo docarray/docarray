@@ -698,20 +698,19 @@ numeric_operators_redis = {
         ],
     ],
 )
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_match_pre_filtering(
-    storage, filter_gen, operator, numeric_operators, start_storage
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):
     n_dim = 128
 
     if storage == 'redis':
         da = DocumentArray(
             storage=storage,
-            config={'n_dim': n_dim, 'columns': [('price', 'int')], 'flush': True},
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
         )
     else:
-        da = DocumentArray(
-            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-        )
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
