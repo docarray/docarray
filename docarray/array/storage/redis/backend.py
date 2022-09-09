@@ -24,6 +24,8 @@ class RedisConfig:
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
+    index_text: bool = field(default=False)
+    tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
     ef_construction: int = field(default=200)
@@ -145,6 +147,13 @@ class BackendMixin(BaseBackendMixin):
         if self._config.initial_cap:
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
+
+        if self._config.index_text:
+            schema.append(TextField('text'))
+        
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                schema.append(TextField(index))
 
         for col, coltype in self._config.columns.items():
             schema.append(self._map_column(col, coltype))
