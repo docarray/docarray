@@ -232,7 +232,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
-        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256, flush=True)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_storage):
@@ -246,7 +246,12 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
 
     da1.push(name, show_progress=show_progress)
 
-    da2 = da_cls.pull(name, show_progress=show_progress, config=config())
+    if da_cls == DocumentArrayRedis:
+        config = config()
+        config.flush = False
+        da2 = da_cls.pull(name, show_progress=show_progress, config=config)
+    else:
+        da2 = da_cls.pull(name, show_progress=show_progress, config=config())
 
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts
