@@ -107,7 +107,10 @@ class FindMixin(BaseFindMixin):
         return self._find_with_filter(filter, limit=limit)
 
     def _find_by_text(
-        self, query: Union[str, List[str]], index: str = 'text', limit: Optional[Union[int, float]] = 20
+        self,
+        query: Union[str, List[str]],
+        index: str = 'text',
+        limit: Optional[Union[int, float]] = 20,
     ):
         if isinstance(query, str):
             query = [query]
@@ -121,16 +124,11 @@ class FindMixin(BaseFindMixin):
             for q in query
         ]
 
-        
     def _find_similar_documents_from_text(
         self, query: str, index: str = 'text', limit: Optional[Union[int, float]] = 20
     ):
         query_str = _build_query_str(query)
-        q = (
-            Query(f'@{index}:{query_str}')
-            .scorer('BM25')
-            .paging(0, limit)
-        )
+        q = Query(f'@{index}:{query_str}').scorer('BM25').paging(0, limit)
 
         results = self._client.ft(index_name=self._config.index_name).search(q).docs
 
@@ -139,7 +137,7 @@ class FindMixin(BaseFindMixin):
             doc = Document.from_base64(res.blob.encode())
             da.append(doc)
         return da
-        
+
 
 def _build_query_node(key, condition):
     operator = list(condition.keys())[0]

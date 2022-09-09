@@ -141,7 +141,10 @@ def test_find_by_text(storage, config, start_storage):
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
-        ('redis', {'n_dim': 32, 'flush': True, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
+        (
+            'redis',
+            {'n_dim': 32, 'flush': True, 'tag_indices': ['attr1', 'attr2', 'attr3']},
+        ),
     ],
 )
 def test_find_by_tag(storage, config, start_storage):
