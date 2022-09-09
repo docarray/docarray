@@ -193,32 +193,45 @@ def _from_np(framework, ndarray):
 
 @pytest.mark.parametrize('combiner', ['concat', 'sum', 'mean'])
 @pytest.mark.parametrize('framework', ['tf', 'np', 'torch', 'paddle'])
-def test_combine_predefined(combiner, framework):
+@pytest.mark.parametrize('uniform_nesting', [True, False])
+def test_combine_predefined(combiner, framework, uniform_nesting):
+    import random
+
     eps = 1e-4
-    num_chunks_per_doc = 5
+    num_parent_docs = 10
+    num_chunks_per_doc = (
+        5
+        if uniform_nesting
+        else [random.randrange(1, 5) for _ in range(num_parent_docs)]
+    )
     n_dim = 8
     da = DocumentArray(
         [
             Document(
                 chunks=[
                     Document(embedding=_from_np(framework, np.random.rand(n_dim)))
-                    for _ in range(num_chunks_per_doc)
+                    for _ in range(
+                        num_chunks_per_doc if uniform_nesting else num_chunks_per_doc[i]
+                    )
                 ]
             )
-            for _ in range(10)
+            for i in range(num_parent_docs)
         ]
     )
 
     da.combine_embeddings(access_path='@c', combiner=combiner)
 
     # assert correct shape
-    for d in da:
+    for i_doc, d in enumerate(da):
+        num_chunks = (
+            num_chunks_per_doc if uniform_nesting else num_chunks_per_doc[i_doc]
+        )
         if combiner == 'concat':
-            assert len(d.embedding) == num_chunks_per_doc * n_dim
+            assert len(d.embedding) == num_chunks * n_dim
         else:
             assert len(d.embedding) == n_dim
     # assert correct content
-    for d in da:
+    for i_doc, d in enumerate(da):
         if combiner == 'concat':
             for i_c, chunk in enumerate(
                 d.chunks
@@ -235,4 +248,9 @@ def test_combine_predefined(combiner, framework):
                 if combiner == 'sum':
                     assert abs(num - sum_from_chunks) < eps
                 elif combiner == 'mean':
-                    assert abs(num - sum_from_chunks / num_chunks_per_doc) < eps
+                    num_chunks = (
+                        num_chunks_per_doc
+                        if uniform_nesting
+                        else num_chunks_per_doc[i_doc]
+                    )
+                    assert abs(num - sum_from_chunks / num_chunks) < eps
