@@ -136,6 +136,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3265,4 +3266,23 @@
 ### 🍹 Other Improvements
 
  - [[```c7105983```](https://github.com/jina-ai/docarray/commit/c71059835b8a9baaeda10c9437b39c904edfcd8e)] __-__ __version__: the next version will be 0.16.4 (*Jina Dev Bot*)
+
+<a name=release-note-0-16-5></a>
+## Release Note (`0.16.5`)
+
+> Release time: 2022-09-08 17:56:12
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Anne Yang,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```cefb66c0```](https://github.com/jina-ai/docarray/commit/cefb66c032ebf0148257f4d2f6e3ed8040f8bb56)] __-__ __redis__: add logic operators $and and $or in redis (#509) (*Anne Yang*)
+
+### 🍹 Other Improvements
+
+ - [[```404b9731```](https://github.com/jina-ai/docarray/commit/404b97312242bb0f34d9b59d9eca6c3bc4a333d7)] __-__ __version__: the next version will be 0.16.5 (*Jina Dev Bot*)
 
