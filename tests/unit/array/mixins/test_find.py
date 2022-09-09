@@ -1,5 +1,3 @@
-from itertools import product
-
 import numpy as np
 import pytest
 
@@ -361,8 +359,9 @@ numeric_operators_redis = {
         ],
     ],
 )
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_search_pre_filtering(
-    storage, filter_gen, operator, numeric_operators, start_storage
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):
     np.random.seed(0)
     n_dim = 128
@@ -370,12 +369,10 @@ def test_search_pre_filtering(
     if storage == 'redis':
         da = DocumentArray(
             storage=storage,
-            config={'n_dim': n_dim, 'columns': [('price', 'int')], 'flush': True},
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
         )
     else:
-        da = DocumentArray(
-            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-        )
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -468,18 +465,19 @@ def test_search_pre_filtering(
         ],
     ],
 )
-def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'float')], {'price': 'float'}])
+def test_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
     n_dim = 128
 
     if storage == 'redis':
         da = DocumentArray(
             storage=storage,
-            config={'n_dim': n_dim, 'columns': [('price', 'float')], 'flush': True},
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
         )
     else:
-        da = DocumentArray(
-            storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
-        )
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
     thresholds = [10, 20, 30]
@@ -496,11 +494,10 @@ def test_filtering(storage, filter_gen, operator, numeric_operators, start_stora
         )
 
 
-def test_weaviate_filter_query(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_weaviate_filter_query(start_storage, columns):
     n_dim = 128
-    da = DocumentArray(
-        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+    da = DocumentArray(storage='weaviate', config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -518,13 +515,67 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-def test_redis_category_filter(start_storage):
+@pytest.mark.parametrize(
+    'columns',
+    [
+        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
+    ],
+)
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                "$or": {
+                    "price": {"$gt": 8},
+                    "category": {"$eq": "Shoes"},
+                },
+            },
+            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+        ),
+        (
+            {
+                "$and": {
+                    "price": {"$ne": 8},
+                    "isfake": {"$eq": True},
+                },
+            },
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
+        ),
+        (
+            {
+                "$or": {
+                    "price": {"$lt": 8},
+                    "isfake": {"$ne": True},
+                },
+                "size": {"$lte": 3},
+            },
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            and r.tags['size'] <= 3,
+        ),
+        (
+            {
+                "$or": {
+                    "$and": {
+                        "price": {"$gte": 8},
+                        "category": {"$ne": "Shoes"},
+                    },
+                    "size": {"$eq": 3},
+                },
+            },
+            lambda r: (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
+            or r.tags['size'] == 3,
+        ),
+    ],
+)
+def test_redis_category_filter(filter, checker, start_storage, columns):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
         config={
             'n_dim': n_dim,
-            'columns': [('color', 'str'), ('isfake', 'bool')],
+            'columns': columns,
             'flush': True,
         },
     )
@@ -534,7 +585,7 @@ def test_redis_category_filter(start_storage):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'color': 'red', 'isfake': True},
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
             )
             for i in range(10)
         ]
@@ -543,49 +594,30 @@ def test_redis_category_filter(start_storage):
     da.extend(
         [
             Document(
-                id=f'r{i}',
+                id=f'r{i+10}',
                 embedding=np.random.rand(n_dim),
-                tags={'color': 'blue', 'isfake': False},
+                tags={
+                    'price': i,
+                    'category': 'Jeans',
+                    'size': i,
+                    'isfake': False,
+                },
             )
-            for i in range(10, 20)
+            for i in range(10)
         ]
     )
 
-    da.extend(
-        [
-            Document(
-                id=f'r{i}',
-                embedding=np.random.rand(n_dim),
-                tags={'color': 'green', 'isfake': False},
-            )
-            for i in range(20, 30)
-        ]
-    )
-
-    results = da.find(np.random.rand(n_dim), filter={'color': {'$eq': 'red'}})
+    results = da.find(np.random.rand(n_dim), filter=filter)
     assert len(results) > 0
-    assert all([(r.tags['color'] == 'red') for r in results])
-
-    results = da.find(np.random.rand(n_dim), filter={'color': {'$ne': 'red'}})
-    assert len(results) > 0
-    assert all([(r.tags['color'] != 'red') for r in results])
-
-    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$eq': True}})
-    assert len(results) > 0
-    assert all([(r.tags['isfake'] == True) for r in results])
-
-    results = da.find(np.random.rand(n_dim), filter={'isfake': {'$ne': True}})
-    assert len(results) > 0
-    assert all([(r.tags['isfake'] == False) for r in results])
+    assert all([checker(r) for r in results])
 
 
 @pytest.mark.parametrize('storage', ['memory'])
-def test_unsupported_pre_filtering(storage, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_unsupported_pre_filtering(storage, start_storage, columns):
 
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
