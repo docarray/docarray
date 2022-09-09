@@ -187,3 +187,16 @@ class BackendMixin(BaseBackendMixin):
             self._client.delete(self._offset2id_key)
         if len(self._offset2ids.ids) > 0:
             self._client.rpush(self._offset2id_key, *self._offset2ids.ids)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_client']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._client = Redis(
+            host=self._config.host,
+            port=self._config.port,
+            **self._config.redis_config,
+        )
