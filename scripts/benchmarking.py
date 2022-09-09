@@ -117,6 +117,7 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'port': '41234',
+                'distance': 'l2-squared'
             },
         ),
         (
@@ -165,6 +166,7 @@ else:
                 'ef_construction': 100,
                 'max_connections': 16,
                 'port': '41234',
+                'distance': 'l2-squared'
             },
         ),
         (
