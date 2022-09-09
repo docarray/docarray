@@ -103,7 +103,7 @@ class EmbedMixin:
         device: str = 'cpu',
         batch_size: int = 256,
         to_numpy: bool = False,
-        inputs: Iterable['DocumentArray'] = None,
+        inputs: 'DocumentArray' = None,
     ):
         import torch
 
@@ -111,7 +111,7 @@ class EmbedMixin:
         is_training_before = embed_model.training
         embed_model.eval()
         batches_idx = (
-            self.batch_ids(batch_size) if inputs is None else inputs
+            self.batch_ids(batch_size) if inputs is None else [inputs]
         )  # if no inputs, use stored data
         with torch.inference_mode():
             for i_b, b in enumerate(batches_idx):
@@ -248,7 +248,11 @@ def _combine_embeddings_str(combiner, docs, framework, to_numpy, collate_fn):
         if framework == 'torch':
             import torch
 
-            return torch.cat(embeddings, dim=0)
+            return (
+                embeddings.flatten()
+                if torch.is_tensor(embeddings)
+                else torch.cat(embeddings, dim=0).flatten()
+            )
         if framework == 'keras':
             raise NotImplementedError()
         if framework == 'onnx':
@@ -281,7 +285,7 @@ def _combine_embeddings_doc(
     access_path: str,
     combiner: Union['AnyDNN', str, Callable] = 'concat',
     to_numpy=False,  # TODO implement
-    collate_fn: Callable = None,
+    collate_fn: Optional['CollateFnType'] = None,
     **kwargs,
 ):
     from docarray import DocumentArray
@@ -296,9 +300,10 @@ def _combine_embeddings_doc(
 
     is_dnn, framework = is_dnn_model(combiner)
     if is_dnn:
-        return da._combine_embeddings_dnn(
+        da._combine_embeddings_dnn(
             combiner, docs_to_combine, framework, collate_fn=coll
-        )[0]
+        )
+        return da[0]
     framework = get_ml_framework(docs_to_combine.embeddings)
     if isinstance(combiner, str):
         d.embedding = _combine_embeddings_str(
