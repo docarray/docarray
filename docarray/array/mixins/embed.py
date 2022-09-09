@@ -208,7 +208,8 @@ def _combine_embeddings_callable(combiner, inputs, collate_fn):
     return combiner(collate_fn(inputs))
 
 
-def _combine_embeddings_str(combiner, embeddings, framework, to_numpy):
+def _combine_embeddings_str(combiner, docs, framework, to_numpy, collate_fn):
+    embeddings = collate_fn(docs)
     if combiner == 'mean':
         if framework == 'numpy':
             import numpy as np
@@ -289,7 +290,7 @@ def _combine_embeddings_doc(
     docs_to_combine = da[access_path]
 
     def default_collate_fn(da: 'DocumentArray'):
-        return da.tensors
+        return da.embeddings
 
     coll = collate_fn if collate_fn else default_collate_fn
 
@@ -301,11 +302,12 @@ def _combine_embeddings_doc(
     framework = get_ml_framework(docs_to_combine.embeddings)
     if isinstance(combiner, str):
         d.embedding = _combine_embeddings_str(
-            combiner, docs_to_combine.embeddings, framework, to_numpy
+            combiner, docs_to_combine, framework, to_numpy, coll
         )
         return d
     if isinstance(combiner, Callable):
-        return da._combine_embeddings_callable(combiner, docs_to_combine, collate_fn)[0]
+        d.embedding = _combine_embeddings_callable(combiner, docs_to_combine, coll)
+        return d
 
 
 def _raise_invalid_combiner(combiner):
