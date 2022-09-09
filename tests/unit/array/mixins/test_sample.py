@@ -8,6 +8,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 
 
 @pytest.mark.parametrize(
@@ -19,6 +20,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_sample(da_cls, config, start_storage):
@@ -44,6 +46,7 @@ def test_sample(da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_sample_with_seed(da_cls, config, start_storage):
@@ -68,6 +71,7 @@ def test_sample_with_seed(da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_shuffle(da_cls, config, start_storage):
@@ -93,6 +97,7 @@ def test_shuffle(da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
     ],
 )
 def test_shuffle_with_seed(da_cls, config, start_storage):

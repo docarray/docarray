@@ -12,7 +12,7 @@ from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
 
-n_index_values = [10_000, 100_000, 1000_000]
+n_index_values = [1_000_000]
 n_query = 1
 D = 128
 TENSOR_SHAPE = (512, 256)
@@ -98,35 +98,80 @@ def recall(predicted, relevant, eval_at):
 
 if args.default_hnsw:
     storage_backends = [
-        ('memory', None),
-        ('sqlite', None),
+        # ('memory', None),
+        # ('sqlite', None),
+        # (
+        #     'annlite',
+        #     {'n_dim': D},
+        # ),
         (
-            'annlite',
-            {'n_dim': D},
+            'qdrant',
+            {
+                'n_dim': D,
+                'scroll_batch_size': 8,
+                'port': '41233',
+            },
         ),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
-        ('weaviate', {'n_dim': D}),
-        ('elasticsearch', {'n_dim': D}),
+        (
+            'weaviate',
+            {
+                'n_dim': D,
+                'port': '41234',
+            },
+        ),
+        (
+            'elasticsearch',
+            {
+                'n_dim': D,
+                'port': '41235',
+            },
+        ),
+        (
+            'redis',
+            {
+                'n_dim': D,
+                'port': '41236',
+            },
+        ),
     ]
 else:
     storage_backends = [
-        ('memory', None),
-        ('sqlite', None),
+        # ('memory', None),
+        # ('sqlite', None),
+        # (
+        #     'annlite',
+        #     {
+        #         'n_dim': D,
+        #         'ef_construction': 100,
+        #         'ef_search': 100,
+        #         'max_connection': 16,
+        #     },
+        # ),
         (
-            'annlite',
+            'qdrant',
             {
                 'n_dim': D,
-                'ef_construction': 100,
-                'ef_search': 100,
-                'max_connection': 16,
+                'scroll_batch_size': 8,
+                'ef_construct': 100,
+                'm': 16,
+                'port': '41233',
             },
         ),
-        ('qdrant', {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16}),
         (
             'weaviate',
-            {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
+            {
+                'n_dim': D,
+                'ef': 100,
+                'ef_construction': 100,
+                'max_connections': 16,
+                'port': '41234',
+            },
         ),
-        ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
+        (
+            'elasticsearch',
+            {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41235'},
+        ),
+        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41236'}),
     ]
 
 table = Table(

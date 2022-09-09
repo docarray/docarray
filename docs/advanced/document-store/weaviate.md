@@ -48,7 +48,8 @@ services:
 Then
 
 ```bash
-docker compose up
+pip install -U docarray[weaviate]
+docker-compose up
 ```
 
 ### Create DocumentArray with Weaviate backend
@@ -190,7 +191,7 @@ da = DocumentArray(
     storage='weaviate',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
     },
 )
 
@@ -242,7 +243,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='weaviate',
-    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2-squared'},
+    config={'n_dim': n_dim, 'columns': {'price': 'int'}, 'distance': 'l2-squared'},
 )
 
 with da:
@@ -316,26 +317,37 @@ da = DocumentArray(
     storage='weaviate',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
         'distance': 'l2-squared',
         "name": "Persisted",
         "host": "localhost",
-        "port": 8080
+        "port": 8080,
     },
 )
 
 # load the dummy data
 with da:
-    da.extend([Document(text=f'word{i}', id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i}) for i in range(10)])
+    da.extend(
+        [
+            Document(
+                text=f'word{i}',
+                id=f'r{i}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i},
+            )
+            for i in range(10)
+        ]
+    )
 
 np_query = np.ones(n_dim) * 8
 sort = sort = [{"path": ["price"], "order": "desc"}]  # or "asc"
 results = da.find(np_query, sort=sort)
 
-print('\n Returned examples that verify results are in order from highest price to lowest:\n')
+print(
+    '\n Returned examples that verify results are in order from highest price to lowest:\n'
+)
 for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
-
 ```
 
 This would print:
@@ -425,8 +437,10 @@ da.extend(
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 model = AutoModel.from_pretrained('bert-base-uncased')
 
+
 def collate_fn(da):
     return tokenizer(da.texts, return_tensors='pt', truncation=True, padding=True)
+
 
 da.embed(model, collate_fn=collate_fn)
 
@@ -512,7 +526,6 @@ print('\n See when the Document was created and updated:\n')
 for res in results:
     print(f"\t creationTimeUnix={res[:, 'tags__creationTimeUnix']}")
     print(f"\t lastUpdateTimeUnix={res[:, 'tags__lastUpdateTimeUnix']}")
-
 ```
 
 This should return:

@@ -9,6 +9,7 @@ annlite
 qdrant
 elasticsearch
 weaviate
+redis
 extend
 benchmark
 ```
@@ -145,19 +146,24 @@ da = DocumentArray(
 Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
 
 
-## Search summary
+## Feature summary
 
 DocArray supports multiple storage backends with different search features. The following table showcases relevant functionalities that are supported (✅) or not supported (❌) in DocArray depending on the backend:
 
 
-| Name                                                           | Construction                             |  vector search | vector search + filter | filter|
-|----------------------------------------------------------------|------------------------------------------|---------------|------------------------|---------------|
-| [`None`](./../../../fundamentals/documentarray/#documentarray) | `DocumentArray()`                        | ✅             | ✅                      | ✅             |
-| [`Sqlite`](./sqlite/#sqlite)                                   | `DocumentArray(storage='sqlite')`        | ❌             | ❌                      | ✅             | 
-| [`Weaviate`](./weaviate/#weaviate)                             | `DocumentArray(storage='weaviate')`      | ✅             | ✅                      | ✅             |
-| [`Qdrant`](./qdrant/#qdrant)                                   | `DocumentArray(storage='qdrant')`        | ✅             | ✅                      | ❌             |
-| [`Annlite`](./annlite/#annlite)                                | `DocumentArray(storage='annlite')`        | ✅             | ✅                      | ✅             |
-| [`ElasticSearch`](./elasticsearch/#elasticsearch)              | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅             |
+| Name                                  | Construction                             |  vector search | vector search + filter | filter        |
+|---------------------------------------|------------------------------------------|----------------|------------------------|---------------|
+| In memory                             | `DocumentArray()`                        | ✅             | ✅                     | ✅            |
+| [`Sqlite`](./sqlite.md)               | `DocumentArray(storage='sqlite')`        | ❌             | ❌                     | ✅            | 
+| [`Weaviate`](./weaviate.md)           | `DocumentArray(storage='weaviate')`      | ✅             | ✅                     | ✅            |
+| [`Qdrant`](./qdrant.md)               | `DocumentArray(storage='qdrant')`        | ✅             | ✅                     | ❌            |
+| [`AnnLite`](./annlite.md)             | `DocumentArray(storage='annlite')`       | ✅             | ✅                     | ✅            |
+| [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                     | ✅            |
+| [`Redis`](./redis.md)                 | `DocumentArray(storage='redis')`         | ✅             | ✅                     | ✅            |
+
+The right backend choice depends on the scale of your data, the required performance and the desired ease of setup. For most use cases we recommend starting with [`AnnLite`](./annlite.md).
+[**Check our One Million Scale Benchmark for more details**](./benchmark#conclusion).
+
 
 
 Here we understand by 
@@ -168,10 +174,9 @@ Here we understand by
 
 - **filter**: perform a filter step over the data. The input of the search function is a filter. 
 
-The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods thorugh a  `DocumentArray`.
+The capabilities of  **vector search**,  **vector search + filter** can be used using the  {meth}`~docarray.array.mixins.find.FindMixin.find` or {func}`~docarray.array.mixins.match.MatchMixin.match` methods through a  `DocumentArray`.
 The **filter** functionality is available using the `.find` method in a `DocumentArray`. 
-A detailed explanation of the differences between `.find` and `.match` can be found [`here`](./../../../fundamentals/documentarray/matching) 
-
+A detailed explanation of the differences between `.find` and `.match` can be found [here](./../../../fundamentals/documentarray/matching) 
 
 ### Vector search example
 
@@ -242,7 +247,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:
@@ -274,7 +279,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:
@@ -315,7 +320,7 @@ metric = 'Euclidean'
 
 da = DocumentArray(
     storage='annlite',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'metric': metric},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'metric': metric},
 )
 
 with da:

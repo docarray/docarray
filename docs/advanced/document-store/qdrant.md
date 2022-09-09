@@ -110,7 +110,7 @@ services:
 
 ```bash
 pip install -U docarray[qdrant]
-docker compose up
+docker-compose up
 ```
 
 
@@ -155,7 +155,7 @@ distance = 'euclidean'
 
 da = DocumentArray(
     storage='qdrant',
-    config={'n_dim': n_dim, 'columns': [('price', 'float')], 'distance': distance},
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}, 'distance': distance},
 )
 
 print(f'\nDocumentArray distance: {distance}')

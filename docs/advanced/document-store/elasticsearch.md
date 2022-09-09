@@ -18,7 +18,7 @@ To use Elasticsearch as the storage backend, it is required to have the Elastics
 version: "3.3"
 services:
   elastic:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
@@ -35,6 +35,7 @@ networks:
 Then
 
 ```bash
+pip install -U docarray[elasticsearch]
 docker-compose up
 ```
 
@@ -131,7 +132,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='elasticsearch',
-    config={'n_dim': 3, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+    config={'n_dim': 3, 'columns': {'price': 'int'}, 'distance': 'l2_norm'},
 )
 
 with da:
@@ -171,7 +172,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='elasticsearch',
-    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2_norm'},
+    config={'n_dim': n_dim, 'columns': {'price': 'int'}, 'distance': 'l2_norm'},
 )
 
 with da:
@@ -247,7 +248,7 @@ da = DocumentArray(
     storage='elasticsearch',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
     },
 )
 

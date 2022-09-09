@@ -6,6 +6,8 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.annlite import AnnliteConfig
 from docarray.array.qdrant import QdrantConfig
 from docarray.array.elastic import ElasticConfig
+from docarray.array.redis import RedisConfig
+import gc
 
 
 @pytest.fixture
@@ -27,6 +29,7 @@ def indices():
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_storage):
@@ -59,6 +62,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_storage):
@@ -88,6 +92,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_del_int_str(docs, storage, config, start_storage, indices):
@@ -122,6 +127,7 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_slice(docs, storage, config, start_storage):
@@ -160,6 +166,7 @@ def test_slice(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_storage):
@@ -206,6 +213,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_storage):
@@ -242,6 +250,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_storage):
@@ -276,6 +285,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_storage):
@@ -296,6 +306,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_storage):
@@ -335,9 +346,11 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
-def test_path_syntax_indexing_set(storage, config, start_storage):
+@pytest.mark.parametrize('use_subindex', [False, True])
+def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     da = DocumentArray.empty(3)
     for i, d in enumerate(da):
         d.chunks = DocumentArray.empty(5)
@@ -348,13 +361,22 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     repeat = lambda s, l: [s] * l
     da['@r,c,m,cc', 'text'] = repeat('a', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    if storage != 'memory':
-        if config:
-            da = DocumentArray(da, storage=storage, config=config)
-        else:
-            da = DocumentArray(da, storage=storage)
+    if config:
+        da = DocumentArray(
+            da,
+            storage=storage,
+            config=config,
+            subindex_configs={'@c': {'n_dim': 123}} if use_subindex else None,
+        )
+    else:
+        da = DocumentArray(
+            da, storage=storage, subindex_configs={'@c': None} if use_subindex else None
+        )
 
+    assert da['@c'].texts == repeat('a', 3 * 5)
     assert da['@c', 'text'] == repeat('a', 3 * 5)
+    if use_subindex:
+        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
     assert da['@c:1', 'text'] == repeat('a', 3)
     assert da['@c-1:', 'text'] == repeat('a', 3)
     assert da['@c1', 'text'] == repeat('a', 3)
@@ -372,6 +394,8 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     da['@m,cc', 'text'] = repeat('b', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
     assert da['@c', 'text'] == repeat('a', 3 * 5)
+    if use_subindex:
+        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
     assert da['@c:1', 'text'] == repeat('a', 3)
     assert da['@c-1:', 'text'] == repeat('a', 3)
     assert da['@c1', 'text'] == repeat('a', 3)
@@ -410,6 +434,50 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
     assert da[2].id == 'new_id'
 
 
+@pytest.mark.parametrize(
+    'storage,config',
+    [
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
+        ('annlite', AnnliteConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123)),
+        ('elasticsearch', ElasticConfig(n_dim=123)),
+    ],
+)
+def test_getset_subindex(storage, config, start_storage):
+    da = DocumentArray(
+        [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
+        config=config,
+        subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
+    )
+    assert len(da['@c']) == 15
+    assert len(da._subindices['@c']) == 15
+    # set entire subindex
+    chunks_ids = [c.id for c in da['@c']]
+    new_chunks = [Document(id=cid, text=f'{i}') for i, cid in enumerate(chunks_ids)]
+    da['@c'] = new_chunks
+    new_chunks = DocumentArray(new_chunks)
+    assert da['@c'] == new_chunks
+    assert da._subindices['@c'] == new_chunks
+    collected_chunks = DocumentArray.empty(0)
+    for d in da:
+        collected_chunks.extend(d.chunks)
+    assert collected_chunks == new_chunks
+    # set part of a subindex
+    chunks_ids = [c.id for c in da['@c:3']]
+    new_chunks = [Document(id=cid, text=f'{2*i}') for i, cid in enumerate(chunks_ids)]
+    da['@c:3'] = new_chunks
+    new_chunks = DocumentArray(new_chunks)
+    assert da['@c:3'] == new_chunks
+    for d in new_chunks:
+        assert d in da._subindices['@c']
+    collected_chunks = DocumentArray.empty(0)
+    for d in da:
+        collected_chunks.extend(d.chunks[:3])
+    assert collected_chunks == new_chunks
+
+
 @pytest.mark.parametrize('size', [1, 5])
 @pytest.mark.parametrize(
     'storage,config_gen',
@@ -420,6 +488,7 @@ def test_path_syntax_indexing_set(storage, config, start_storage):
         ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
+        ('redis', lambda: RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -450,7 +519,8 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
 
 
 @pytest.mark.parametrize(
-    'storage', ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch']
+    'storage',
+    ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis'],
 )
 def test_tensor_attribute_selector(storage, start_storage):
     import scipy.sparse
@@ -461,6 +531,8 @@ def test_tensor_attribute_selector(storage, start_storage):
 
     if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
+    elif storage == 'redis':
+        da = DocumentArray(storage=storage, config={'n_dim': 10, 'flush': True})
     else:
         da = DocumentArray(storage=storage)
 
@@ -502,11 +574,14 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize(
-    'storage', ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch']
+    'storage',
+    ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis'],
 )
 def test_single_boolean_and_padding(storage, start_storage):
     if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
+    elif storage == 'redis':
+        da = DocumentArray(storage=storage, config={'n_dim': 10, 'flush': True})
     else:
         da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
@@ -534,6 +609,7 @@ def test_single_boolean_and_padding(storage, start_storage):
         ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
+        ('redis', lambda: RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_storage):
@@ -602,6 +678,9 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
     with pytest.raises(IndexError):
         da['1', 'hellohello'] = 'hello'
 
+    if storage == 'redis':
+        gc.collect()
+
 
 @pytest.mark.parametrize(
     'storage,config',
@@ -611,6 +690,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123, flush=True)),
     ],
 )
 def test_offset2ids_persistence(storage, config, start_storage):
@@ -632,6 +712,9 @@ def test_offset2ids_persistence(storage, config, start_storage):
     da._persist = True
     da.__del__()
 
+    if storage == 'redis':
+        config.flush = False
+        config.update_schema = False
     da = DocumentArray(storage=storage, config=config)
 
     assert da[:, 'id'] == da_ids

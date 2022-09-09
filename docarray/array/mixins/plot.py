@@ -79,7 +79,7 @@ class PlotMixin:
         is_multimodal = all(d.is_multimodal for d in self)
         table.add_row('Multimodal dataclass', str(is_multimodal))
 
-        if getattr(self, '_subindices'):
+        if getattr(self, '_subindices', None):
             table.add_row(
                 'Subindices', rich.markup.escape(str(tuple(self._subindices.keys())))
             )

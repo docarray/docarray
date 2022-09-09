@@ -26,7 +26,7 @@ If you are building a webservice and want to use JSON for passing DocArray objec
 ```
 
 ```{important}
-Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[common]"` to install it.
 ```
 
 

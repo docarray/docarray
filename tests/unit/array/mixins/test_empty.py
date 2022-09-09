@@ -8,6 +8,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 
 
 @pytest.mark.parametrize(
@@ -19,6 +20,7 @@ from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, ElasticConfig(n_dim=5)),
+        (DocumentArrayRedis, RedisConfig(n_dim=5, flush=True)),
     ],
 )
 def test_empty_non_zero(da_cls, config, start_storage):

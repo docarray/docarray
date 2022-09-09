@@ -1,5 +1,3 @@
-from itertools import product
-
 import numpy as np
 import pytest
 
@@ -33,6 +31,7 @@ def test_customize_metric_fn():
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
+        ('redis', {'n_dim': 32, 'flush': True}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -73,6 +72,9 @@ def test_find(storage, config, limit, query, start_storage):
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
             assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        if storage == 'redis':
+            cosine_distances = [t['score'].value for t in da[:, 'scores']]
+            assert sorted(cosine_distances, reverse=False) == cosine_distances
         elif storage in ['memory', 'annlite', 'elasticsearch']:
             cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
@@ -83,6 +85,10 @@ def test_find(storage, config, limit, query, start_storage):
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
                 assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+        if storage == 'redis':
+            for da in result:
+                cosine_distances = [t['score'].value for t in da[:, 'scores']]
+                assert sorted(cosine_distances, reverse=False) == cosine_distances
         elif storage in ['memory', 'annlite', 'elasticsearch']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
@@ -251,6 +257,15 @@ numeric_operators_elasticsearch = {
     'eq': operator.eq,
 }
 
+numeric_operators_redis = {
+    '$gte': operator.ge,
+    '$gt': operator.gt,
+    '$lte': operator.le,
+    '$lt': operator.lt,
+    '$eq': operator.eq,
+    '$ne': operator.ne,
+}
+
 
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
@@ -331,16 +346,33 @@ numeric_operators_elasticsearch = {
             )
             for operator in ['gt', 'gte', 'lt', 'lte']
         ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_redis,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_redis.keys()
+        ],
     ],
 )
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_search_pre_filtering(
-    storage, filter_gen, operator, numeric_operators, start_storage
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
 ):
     np.random.seed(0)
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+
+    if storage == 'redis':
+        da = DocumentArray(
+            storage=storage,
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
+        )
+    else:
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -420,13 +452,32 @@ def test_search_pre_filtering(
             )
             for operator in numeric_operators_annlite.keys()
         ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_redis,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_redis.keys()
+        ],
     ],
 )
-def test_filtering(storage, filter_gen, operator, numeric_operators, start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'float')], {'price': 'float'}])
+def test_filtering(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
     n_dim = 128
-    da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'float')]}
-    )
+
+    if storage == 'redis':
+        da = DocumentArray(
+            storage=storage,
+            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
+        )
+    else:
+        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
     thresholds = [10, 20, 30]
@@ -443,11 +494,10 @@ def test_filtering(storage, filter_gen, operator, numeric_operators, start_stora
         )
 
 
-def test_weaviate_filter_query(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_weaviate_filter_query(start_storage, columns):
     n_dim = 128
-    da = DocumentArray(
-        storage='weaviate', config={'n_dim': n_dim, 'columns': [('price', 'int')]}
-    )
+    da = DocumentArray(storage='weaviate', config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -465,13 +515,109 @@ def test_weaviate_filter_query(start_storage):
     assert isinstance(da._filter(filter={}), type(da))
 
 
-@pytest.mark.parametrize('storage', ['memory'])
-def test_unsupported_pre_filtering(storage, start_storage):
-
+@pytest.mark.parametrize(
+    'columns',
+    [
+        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
+    ],
+)
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                "$or": {
+                    "price": {"$gt": 8},
+                    "category": {"$eq": "Shoes"},
+                },
+            },
+            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+        ),
+        (
+            {
+                "$and": {
+                    "price": {"$ne": 8},
+                    "isfake": {"$eq": True},
+                },
+            },
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
+        ),
+        (
+            {
+                "$or": {
+                    "price": {"$lt": 8},
+                    "isfake": {"$ne": True},
+                },
+                "size": {"$lte": 3},
+            },
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            and r.tags['size'] <= 3,
+        ),
+        (
+            {
+                "$or": {
+                    "$and": {
+                        "price": {"$gte": 8},
+                        "category": {"$ne": "Shoes"},
+                    },
+                    "size": {"$eq": 3},
+                },
+            },
+            lambda r: (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
+            or r.tags['size'] == 3,
+        ),
+    ],
+)
+def test_redis_category_filter(filter, checker, start_storage, columns):
     n_dim = 128
     da = DocumentArray(
-        storage=storage, config={'n_dim': n_dim, 'columns': [('price', 'int')]}
+        storage='redis',
+        config={
+            'n_dim': n_dim,
+            'columns': columns,
+            'flush': True,
+        },
     )
+
+    da.extend(
+        [
+            Document(
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
+            )
+            for i in range(10)
+        ]
+    )
+
+    da.extend(
+        [
+            Document(
+                id=f'r{i+10}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i,
+                    'category': 'Jeans',
+                    'size': i,
+                    'isfake': False,
+                },
+            )
+            for i in range(10)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+    assert all([checker(r) for r in results])
+
+
+@pytest.mark.parametrize('storage', ['memory'])
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_unsupported_pre_filtering(storage, start_storage, columns):
+
+    n_dim = 128
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -515,6 +661,7 @@ def test_elastic_id_filter(storage, config, limit):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_find_subindex(storage, config):
@@ -522,7 +669,7 @@ def test_find_subindex(storage, config):
     subindex_configs = {'@c': None}
     if storage == 'sqlite':
         subindex_configs['@c'] = dict()
-    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch']:
+    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis']:
         subindex_configs['@c'] = {'n_dim': 2}
 
     da = DocumentArray(
@@ -569,6 +716,7 @@ def test_find_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
     ],
 )
 def test_find_subindex_multimodal(storage, config):
