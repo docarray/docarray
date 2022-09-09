@@ -46,6 +46,10 @@ pip install -U docarray[weaviate]
 docker-compose up
 ```
 
+## Backups
+
+You can create a backup of your DocArray data on cloud blob storages, such as AWS S3 or GCS data following [this process](https://weaviate.io/developers/weaviate/current/configuration/backups.html).
+
 ### Create DocumentArray with Weaviate backend
 
 Assuming service is started using the default configuration (i.e. server address is `http://localhost:8080` or `https://{unique ID}.semi.network`), one can instantiate a DocumentArray with Weaviate storage as such:
