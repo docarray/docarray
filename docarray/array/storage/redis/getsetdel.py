@@ -95,6 +95,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             if tag is not None:
                 extra_columns[col] = int(tag) if isinstance(tag, bool) else tag
 
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                text = doc.tags.get(index)
+                if text is not None:
+                    extra_columns[index] = text
+
         payload = {
             'id': doc.id,
             'embedding': self._map_embedding(doc.embedding),
