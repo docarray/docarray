@@ -15,6 +15,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     @needs_id2offset_rebuild
     def _del_docs_by_mask(self, mask: Sequence[bool]):
+        if len(mask) < len(self._data):
+            mask = mask + [False for _ in range(len(self._data) - len(mask))]
         self._data = list(itertools.compress(self._data, (not _i for _i in mask)))
 
     @needs_id2offset_rebuild
