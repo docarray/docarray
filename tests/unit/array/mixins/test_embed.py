@@ -15,7 +15,7 @@ from transformers import (
     TFBertModel,
 )
 
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.memory import DocumentArrayInMemory
 from docarray.array.qdrant import DocumentArrayQdrant
@@ -178,3 +178,61 @@ def test_embed_bert_model(bert_transformer, bert_tokenizer, return_tensors):
     docs[0].text = 'this is some random text to embed'
     docs.embed(bert_transformer, collate_fn=collate_fn)
     assert list(docs.embeddings.shape) == [1, 768]
+
+
+def _from_np(framework, ndarray):
+    if framework == 'np':
+        return ndarray
+    if framework == 'torch':
+        return torch.from_numpy(ndarray)
+    if framework == 'tf':
+        tf.convert_to_tensor(ndarray)
+    if framework == 'paddle':
+        paddle.to_tensor(ndarray)
+
+
+@pytest.mark.parametrize('combiner', ['concat', 'sum', 'mean'])
+@pytest.mark.parametrize('framework', ['tf', 'np', 'torch', 'paddle'])
+def test_combine_predefined(combiner, framework):
+    eps = 1e-4
+    num_chunks_per_doc = 5
+    n_dim = 8
+    da = DocumentArray(
+        [
+            Document(
+                chunks=[
+                    Document(embedding=_from_np(framework, np.random.rand(n_dim)))
+                    for _ in range(num_chunks_per_doc)
+                ]
+            )
+            for _ in range(10)
+        ]
+    )
+
+    da.combine_embeddings(access_path='@c', combiner=combiner)
+
+    # assert correct shape
+    for d in da:
+        if combiner == 'concat':
+            assert len(d.embedding) == num_chunks_per_doc * n_dim
+        else:
+            assert len(d.embedding) == n_dim
+    # assert correct content
+    for d in da:
+        if combiner == 'concat':
+            for i_c, chunk in enumerate(
+                d.chunks
+            ):  # manual loop so it works with all frameworks
+                for i_pos, num_chunk in enumerate(chunk.embedding):
+                    assert abs(d.embedding[i_c * n_dim + i_pos] - num_chunk) < eps
+        else:
+            for i, num in enumerate(
+                d.embedding
+            ):  # manual loop so it works with all frameworks
+                sum_from_chunks = 0
+                for c in d.chunks:
+                    sum_from_chunks += c.embedding[i]
+                if combiner == 'sum':
+                    assert abs(num - sum_from_chunks) < eps
+                elif combiner == 'mean':
+                    assert abs(num - sum_from_chunks / num_chunks_per_doc) < eps
