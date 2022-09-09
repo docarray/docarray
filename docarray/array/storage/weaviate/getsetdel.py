@@ -26,8 +26,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             for prop in resp['properties']:  
                 if prop[:1] != '_':
                     setattr(return_doc, prop, resp['properties'][prop])
-                elif prop[:5] == '_tag_':
-                    tags[prop[5:]] = resp['properties'][prop]
+                elif prop[:6] == 'tags__':
+                    tags[prop[6:]] = resp['properties'][prop]
             
             # Set tags if there are any
             if len(tags) > 0:

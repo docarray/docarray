@@ -1,6 +1,8 @@
+from ast import Str
 from tokenize import String
 from typing import (
     TYPE_CHECKING,
+    Any,
     TypeVar,
     Sequence,
     List,
@@ -8,6 +10,7 @@ from typing import (
     Optional,
     Union,
 )
+from xmlrpc.client import Boolean
 
 import numpy as np
 
@@ -49,7 +52,11 @@ options_with_cross_refs = ['chunks', 'matches']
 
 class FindMixin:
 
-    def collect_results_from_weaviate(self, result, include_cosine):
+    def collect_results_from_weaviate(
+        self,
+        result: Dict,
+        include_cosine: Boolean,
+    ):
         """Returns a Doc based on Weaviate results
 
         :param result: the result from Weaviate
@@ -86,6 +93,100 @@ class FindMixin:
             setattr(doc, 'embedding', result['_additional']['vector'])
 
         return doc
+
+
+    def _create_weaviate_operator_type(
+        self,
+        operator: Any
+    ):
+        """Return the Weaviate type based on the input value
+
+        :param operator: value of the operator used to find the type
+        :return: an opperator type
+        """
+
+        for clss in self._client.schema.get()['classes']:
+            if clss['class'] == self._class_name:
+                for property in clss['properties']:
+                    if(property['name'] == operator):
+                        if property['dataType'][0] == 'string' or property['dataType'][0] == 'string[]':
+                            return 'valueString'
+                        elif property['dataType'][0] == 'int' or property['dataType'][0] == 'int[]':
+                            return 'valueInt'
+                        elif property['dataType'][0] == 'boolean' or property['dataType'][0] == 'boolean[]':
+                            return 'valueBoolean'
+                        elif property['dataType'][0] == 'number' or property['dataType'][0] == 'number[]':
+                            return 'valueNumber'
+                        elif property['dataType'][0] == 'text' or property['dataType'][0] == 'text[]':
+                            return 'valueText'
+        return ''
+
+
+    def _create_weaviate_operator(
+        self,
+        operator: Str
+    ):
+        """Return a Weaviate operator from a DocArray operator
+        
+        :param operator: docarray type operator
+        :return: A Weaviate type operator
+        """
+
+        if operator == "$and":
+            return 'And'
+        elif operator == "$or":
+            return 'Or'
+        elif operator == "$not":
+            return 'Not'
+        elif operator == "$eq":
+            return 'Equal'
+        elif operator == "$ne":
+            return 'NotEqual'
+        elif operator == "$gt":
+            return 'GreaterThan'
+        elif operator == "$gte":
+            return 'GreaterThanEqual'
+        elif operator == "$lt":
+            return 'LessThan'
+        elif operator == "$lte":
+            return 'LessThanEqual'
+        elif operator == "$in":
+            return ''
+        elif operator == "$nin":
+            return ''
+        elif operator == "$regex":
+            return ''
+        elif operator == "$size":
+            return ''
+        elif operator == "$exists":
+            return ''
+        return ''
+
+
+    def _translate_filter(
+        self,
+        docarray_filters: Optional[Dict] = None,
+    ):
+        """Returns a translated Weaviate filter
+        
+        :param docarray_filters: docarrray type filter
+        :return: a Weaviate filter"""
+
+        weaviate_filters = {}
+
+        for docarray_filter_key, docarray_filter_val in docarray_filters.items():
+            if docarray_filter_key[0] != "$":
+                for docarray_sub_filter_key, docarray_sub_filter_val in docarray_filter_val.items():
+                    weaviate_filters = {    'path': docarray_filter_key,
+                                            'operator': self._create_weaviate_operator(docarray_sub_filter_key),
+                                            self._create_weaviate_operator_type(docarray_filter_key): docarray_sub_filter_val }
+                return weaviate_filters
+            else:
+                weaviate_filters['operator'] = self._create_weaviate_operator(docarray_filter_key)
+                weaviate_filters['operands'] = []
+                for single_docarray_filter in docarray_filter_val:
+                    weaviate_filters['operands'].append(self._translate_filter(single_docarray_filter))
+                return weaviate_filters
         
 
     def _find_similar_vectors(
@@ -170,6 +271,10 @@ class FindMixin:
 
         if not filter:
             return self
+
+        # translate DocArray filter into Weaviate filter
+        if 'operator' not in filter:
+            filter = self._translate_filter(filter)
 
         # if the id is specified, use this
         if 'id' in filter:

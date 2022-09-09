@@ -1,7 +1,7 @@
 (weaviate)=
 # Weaviate
 
-One can use [Weaviate](https://weaviate.io) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`. It can store up to millions of data objects. For large-scale implementations, check out the [Weaviate Kubernetes setup](https://weaviate.io/developers/weaviate/current/getting-started/installation.html#kubernetes-k8s).
+One can use [Weaviate](https://weaviate.io) as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`. It can store up to millions of data objects.
 
 ````{tip}
 This feature requires `weaviate-client`. You can install it via `pip install "docarray[weaviate]".` 
@@ -20,6 +20,10 @@ There are three ways how you can use Weaviate.
 * Weaviate Cloud Service
 * Docker-compose
 * Kubernetes
+
+````{tip}
+Weaviate supports both [authentication](https://weaviate.io/developers/weaviate/current/configuration/authentication.html) and [authorization](https://weaviate.io/developers/weaviate/current/configuration/authorization.html), this can be used directly in your setup.
+````
 
 #### Weaviate Cloud Service
 
@@ -111,7 +115,7 @@ in [Weaviate's Documentation](https://weaviate.io/developers/weaviate/current/gr
 Add the following data objects to Weaviate to experiment with filtering:
 
 ```python
-da = DocumentArray(storage='weaviate', config={'name': 'Document'})
+da = DocumentArray(storage='weaviate', config={'name': 'Document', 'host': 'localhost', 'port': 8080})
 
 d1 = Document(text='Im the nested doc', embedding=[0.1, 0.2, 0.3])
 d2 = Document(text='Im the 2nd nested doc', embedding=[0.1, 0.2, 0.3, 0.4])
@@ -122,7 +126,15 @@ da.extend(
 )
 ```
 
+````{tip}
+You can see how Weaviate stores the chunks as cross-references by directly going to the [objects end-point](https://weaviate.io/developers/weaviate/current/restful-api-references/objects.html)
+````
+
 ### Example of `.find` with a filter
+
+````{tip}
+You can also use standard DocArray filters, they will be converted to Weaviate Filters
+````
 
 Consider you store Documents with a certain `text` into weaviate and you want to retrieve all Documents 
 and you want to retrieve all documents that match the `text` object.

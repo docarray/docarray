@@ -29,7 +29,7 @@ class WeaviateConfig:
     connection to the Weaviate server"""
 
     host: Optional[str] = field(default='localhost')
-    port: Optional[int] = field(default=8080)
+    port: Optional[int] = field(default=80)
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
@@ -335,9 +335,6 @@ class BackendMixin(BaseBackendMixin):
         :return: the schemas of this :class`DocumentArrayWeaviate` object and its meta
         """
         if not self._config.name:
-            warnings.warn("​You didn't set `config.name`, but it's better practice to set it. " + \
-                "​This is because all Documents are stored as Weaviate Classes with their own vector spaces. " + \
-                "For now, the class 'Document' is used.")
             self._config.name = 'Document'
 
         doc_schemas = self._get_schema_by_name(self._config.name)
@@ -454,7 +451,7 @@ class BackendMixin(BaseBackendMixin):
         for k in value.tags:
             # INFO: Nested dicts are not yet supported
             if (type(value.tags[k]) is dict) != True:
-                return_obj['_tag_' + k] = value.tags[k]
+                return_obj['tags__' + k] = value.tags[k]
         return return_obj
 
     def _doc2weaviate_create_payload(self, value: 'Document'):
