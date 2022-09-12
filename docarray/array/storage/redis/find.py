@@ -119,6 +119,7 @@ class FindMixin(BaseFindMixin):
         query: Union[str, List[str]],
         index: str = 'text',
         limit: Union[int, float] = 20,
+        **kwargs,
     ):
         if isinstance(query, str):
             query = [query]
@@ -128,6 +129,7 @@ class FindMixin(BaseFindMixin):
                 q,
                 index=index,
                 limit=limit,
+                **kwargs,
             )
             for q in query
         ]
@@ -137,9 +139,23 @@ class FindMixin(BaseFindMixin):
         query: str,
         index: str = 'text',
         limit: Union[int, float] = 20,
+        **kwargs,
     ):
         query_str = _build_query_str(query)
-        q = Query(f'@{index}:{query_str}').scorer('BM25').paging(0, limit)
+        scorer = kwargs.get('scorer', 'BM25')
+        if scorer not in [
+            'BM25',
+            'TFIDF',
+            'TFIDF.DOCNORM',
+            'DISMAX',
+            'DOCSCORE',
+            'HAMMING',
+        ]:
+            raise ValueError(
+                f'Expecting a valid text similarity ranking algorithm, got {scorer} instead'
+            )
+
+        q = Query(f'@{index}:{query_str}').scorer(scorer).paging(0, limit)
 
         results = self._client.ft(index_name=self._config.index_name).search(q).docs
 

@@ -283,7 +283,7 @@ More example filter expresses
 
 ### Search by `.text` field
 
-You can perform Text search in a `DocumentArray` with `storage='redis'`. The default similarity ranking algorithm is `BM25`.
+You can perform Text search in a `DocumentArray` with `storage='redis'`. 
 To do this, text needs to be indexed using the boolean flag `'index_text'` which is set when the `DocumentArray` is created  with `config={'index_text': True, ...}`.
 The following example builds a `DocumentArray` with several documents containing text and searches for those that have `pizza` in their text description.
 
@@ -295,20 +295,41 @@ da = DocumentArray(
 )
 da.extend(
     [
-        Document(text='Person eating'),
-        Document(text='Person eating pizza'),
-        Document(text='Pizza restaurant'),
+        Document(id='1', text='token1 token2 token3'),
+        Document(id='2', text='token1 token2'),
+        Document(id='3', text='token2 token3 token4'),
     ]
 )
 
-pizza_docs = da.find('pizza')
-print(pizza_docs[:, 'text'])
+results = da.find('token1')
+print(results[:, 'text'])
 ```
 
 This will print:
 
 ```console
-['Person eating pizza', 'Pizza restaurant']
+['token1 token2 token3', 'token1 token2']
+```
+
+The default similarity ranking algorithm is `BM25`. Besides, `TFIDF`, `TFIDF.DOCNORM`, `DISMAX`, `DOCSCORE` and `HAMMING` are also supported by [RediSearch](https://redis.io/docs/stack/search/reference/scoring/). You can change it by specifying `scorer` in function `find`:
+
+```python
+results = da.find('token1 token3', scorer='TFIDF.DOCNORM')
+print('scorer=TFIDF.DOCNORM:')
+print(results[:, 'text'])
+
+results = da.find('token1 token3')
+print('scorer=BM25:')
+print(results[:, 'text'])
+```
+
+This will print:
+
+```console
+scorer=TFIDF.DOCNORM:
+['token1 token2', 'token1 token2 token3', 'token2 token3 token4']
+scorer=BM25:
+['token1 token2 token3', 'token1 token2', 'token2 token3 token4']
 ```
 
 ### Search by `.tags` field
