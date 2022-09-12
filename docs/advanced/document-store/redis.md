@@ -157,7 +157,7 @@ da.extend(
         Document(
             id=f'{i}',
             embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'blue', 'stock': i%2==0},
+            tags={'price': i, 'color': 'blue', 'stock': i % 2 == 0},
         )
         for i in range(10)
     ]
@@ -167,7 +167,7 @@ da.extend(
         Document(
             id=f'{i+10}',
             embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'red', 'stock': i%2==0},
+            tags={'price': i, 'color': 'red', 'stock': i % 2 == 0},
         )
         for i in range(10)
     ]
@@ -283,7 +283,7 @@ More example filter expresses
 
 ### Search by `.text` field
 
-You can perform Text search in a `DocumentArray` with `storage='redis'`.
+You can perform Text search in a `DocumentArray` with `storage='redis'`. The default similarity ranking algorithm is `BM25`.
 To do this, text needs to be indexed using the boolean flag `'index_text'` which is set when the `DocumentArray` is created  with `config={'index_text': True, ...}`.
 The following example builds a `DocumentArray` with several documents containing text and searches for those that have `pizza` in their text description.
 
