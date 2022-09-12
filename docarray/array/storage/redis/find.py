@@ -39,7 +39,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         filter: Optional[Dict] = None,
-        limit: int = 20,
+        limit: Union[int, float] = 20,
         **kwargs,
     ):
 
@@ -73,7 +73,7 @@ class FindMixin(BaseFindMixin):
     def _find(
         self,
         query: 'RedisArrayType',
-        limit: int = 20,
+        limit: Union[int, float] = 20,
         filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
@@ -88,7 +88,11 @@ class FindMixin(BaseFindMixin):
             for q in query
         ]
 
-    def _find_with_filter(self, filter: Dict, limit: int = 20):
+    def _find_with_filter(
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
+    ):
         nodes = _build_query_nodes(filter)
         query_str = intersect(*nodes).to_string()
         q = Query(query_str)
@@ -102,7 +106,11 @@ class FindMixin(BaseFindMixin):
             da.append(doc)
         return da
 
-    def _filter(self, filter: Dict, limit: int = 20) -> 'DocumentArray':
+    def _filter(
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
+    ) -> 'DocumentArray':
 
         return self._find_with_filter(filter, limit=limit)
 
@@ -110,7 +118,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: Union[str, List[str]],
         index: str = 'text',
-        limit: Optional[Union[int, float]] = 20,
+        limit: Union[int, float] = 20,
     ):
         if isinstance(query, str):
             query = [query]
@@ -125,7 +133,10 @@ class FindMixin(BaseFindMixin):
         ]
 
     def _find_similar_documents_from_text(
-        self, query: str, index: str = 'text', limit: Optional[Union[int, float]] = 20
+        self,
+        query: str,
+        index: str = 'text',
+        limit: Union[int, float] = 20,
     ):
         query_str = _build_query_str(query)
         q = Query(f'@{index}:{query_str}').scorer('BM25').paging(0, limit)
@@ -189,5 +200,5 @@ def _build_query_nodes(filter):
 
 
 def _build_query_str(query):
-    query_str = "|".join(query.split(" "))
+    query_str = '|'.join(query.split(' '))
     return query_str

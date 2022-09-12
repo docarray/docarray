@@ -151,9 +151,8 @@ class BackendMixin(BaseBackendMixin):
         if self._config.index_text:
             schema.append(TextField('text'))
 
-        if self._config.tag_indices:
-            for index in self._config.tag_indices:
-                schema.append(TextField(index))
+        for index in self._config.tag_indices:
+            schema.append(TextField(index))
 
         for col, coltype in self._config.columns.items():
             schema.append(self._map_column(col, coltype))
