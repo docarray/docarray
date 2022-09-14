@@ -112,7 +112,10 @@ def test_find_by_text(storage, config, start_storage):
         ]
     )
 
-    results = da.find('token1')
+    if storage == 'redis':
+        results = da.find('token1', scorer='TFIDF')
+    else:
+        results = da.find('token1')
     assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '2'}
