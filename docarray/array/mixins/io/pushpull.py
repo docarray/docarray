@@ -30,6 +30,7 @@ class PushPullMixin:
     _max_bytes = 4 * 1024 * 1024 * 1024
 
     @classmethod
+    @hubble.login_required
     def cloud_list(cls, show_table: bool = False) -> List[str]:
         """List all available arrays in the cloud.
 
@@ -73,6 +74,7 @@ class PushPullMixin:
         return result
 
     @classmethod
+    @hubble.login_required
     def cloud_delete(cls, name: str) -> None:
         """
         Delete a DocumentArray from the cloud.
@@ -169,6 +171,7 @@ class PushPullMixin:
 
         return items
 
+    @hubble.login_required
     def push(
         self,
         name: str,
@@ -271,6 +274,7 @@ class PushPullMixin:
             response.raise_for_status()
 
     @classmethod
+    @hubble.login_required
     def pull(
         cls: Type['T'],
         name: str,
