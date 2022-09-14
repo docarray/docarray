@@ -150,3 +150,6 @@ output/
 # kubernetes testing
 .pytest-kind
 .kube
+
+# Weaviate development
+weaviate-import.py

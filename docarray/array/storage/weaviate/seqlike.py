@@ -15,6 +15,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :param other: the other object to check for equality
         :return: ``True`` if other is equal to self
         """
+
         # two DAW are considered as the same if they have the same client meta data
         return (
             type(self) is type(other)
@@ -27,6 +28,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :return: the length of this :class:`DocumentArrayWeaviate` object
         """
+
         cls_data = (
             self._client.query.aggregate(self._class_name)
             .with_meta_count()
@@ -47,6 +49,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :param x: the id of the document to check or the document object itself
         :return: True if ``x`` is contained in self
         """
+
         if isinstance(x, str):
             return self._client.data_object.exists(self._map_id(x))
         elif isinstance(x, Document):
@@ -56,6 +59,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def __del__(self):
         """Delete this :class:`DocumentArrayWeaviate` object"""
+
         super().__del__()
         if (
             not self._persist
@@ -69,6 +73,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """Return the string representation of :class:`DocumentArrayWeaviate` object
         :return: string representation of this object
         """
+
         return f'<{self.__class__.__name__} (length={len(self)}) at {id(self)}>'
 
     def _extend(self, values: Iterable['Document'], **kwargs) -> None:
@@ -76,7 +81,17 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :param values: Documents to be added
         """
-        with self._client.batch(batch_size=50) as _b:
+
+        with self._client.batch as _b:
             for d in values:
-                _b.add_data_object(**self._doc2weaviate_create_payload(d))
+                payload = self._doc2weaviate_create_payload(d)
+                # First add data without cross references
+                _b.add_data_object(**payload[0])
+                # Check if cross references should be set
+                if len(payload[1]) > 0:
+                    # flush just to be sure that data is added
+                    self._client.batch.flush()
+                    # set refs, for context https://weaviate.io/developers/weaviate/current/restful-api-references/batch.html#batch-references
+                    for ref in payload[1]:
+                        self._client.batch.add_reference(ref[0], ref[1], ref[2], ref[3], ref[4])
                 self._offset2ids.append(d.id)

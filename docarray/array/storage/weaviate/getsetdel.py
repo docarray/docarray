@@ -16,11 +16,28 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :raises KeyError: raise error when weaviate id does not exist in storage
         :return: Document
         """
-        try:
-            resp = self._client.data_object.get_by_id(wid, with_vector=True)
-            return Document.from_base64(
-                resp['properties']['_serialized'], **self._serialize_config
-            )
+        try:   
+            resp = self._client.data_object.get_by_id(wid, class_name=self._config.name ,with_vector=True)
+
+            return_doc = Document(id=resp['properties']['_docarray_id'])
+
+            tags = {}
+
+            for prop in resp['properties']:  
+                if prop[:1] != '_':
+                    setattr(return_doc, prop, resp['properties'][prop])
+                elif prop[:6] == 'tags__':
+                    tags[prop[6:]] = resp['properties'][prop]
+            
+            # Set tags if there are any
+            if len(tags) > 0:
+                setattr(return_doc, 'tags', tags)
+
+            # Set vector (i.e., embedding) if any
+            if 'vector' in resp and resp['vector'] != None:
+                setattr(return_doc, 'embedding', resp['vector'])
+
+            return return_doc
         except Exception as ex:
             raise KeyError(wid) from ex
 
@@ -30,6 +47,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of the document
         :return: the retrieved document from weaviate
         """
+
         return self._getitem(self._map_id(_id))
 
     def _set_doc_by_id(self, _id: str, value: 'Document', flush: bool = True):
@@ -38,11 +56,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of doc to update
         :param value: the document to update to
         """
+
         if _id != value.id:
             self._del_doc_by_id(_id)
 
         payload = self._doc2weaviate_create_payload(value)
-        self._client.batch.add_data_object(**payload)
+
+        # First add data without cross references
+        self._client.batch.add_data_object(**payload[0])
+
         if flush:
             self._client.batch.flush()
 
@@ -51,6 +73,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param ids: the ids used for indexing
         """
+
         for _id, doc in zip(ids, docs):
             self._set_doc_by_id(_id, doc, flush=False)
         self._client.batch.flush()
@@ -60,12 +83,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param _id: the id of the document to delete
         """
+
         wid = self._map_id(_id)
         if self._client.data_object.exists(wid):
             self._client.data_object.delete(wid)
 
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
+
         if self._class_name:
             self._client.schema.delete_class(self._class_name)
             self._client.schema.delete_class(self._meta_name)
