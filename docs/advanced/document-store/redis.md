@@ -283,9 +283,9 @@ More example filter expresses
 
 ### Search by `.text` field
 
-You can perform Text search in a `DocumentArray` with `storage='redis'`. 
+You can perform full-text search in a `DocumentArray` with `storage='redis'`. 
 To do this, text needs to be indexed using the boolean flag `'index_text'` which is set when the `DocumentArray` is created  with `config={'index_text': True, ...}`.
-The following example builds a `DocumentArray` with several documents containing text and searches for those that have `pizza` in their text description.
+The following example builds a `DocumentArray` with several documents containing text and searches for those that have `token1` in their text description.
 
 ```python
 from docarray import Document, DocumentArray
