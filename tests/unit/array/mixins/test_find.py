@@ -99,6 +99,7 @@ def test_find(storage, config, limit, query, start_storage):
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'index_text': True}),
+        ('redis', {'n_dim': 32, 'flush': True, 'index_text': True}),
     ],
 )
 def test_find_by_text(storage, config, start_storage):
@@ -111,7 +112,10 @@ def test_find_by_text(storage, config, start_storage):
         ]
     )
 
-    results = da.find('token1')
+    if storage == 'redis':
+        results = da.find('token1', scorer='TFIDF')
+    else:
+        results = da.find('token1')
     assert isinstance(results, DocumentArray)
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '2'}
@@ -140,6 +144,10 @@ def test_find_by_text(storage, config, start_storage):
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
+        (
+            'redis',
+            {'n_dim': 32, 'flush': True, 'tag_indices': ['attr1', 'attr2', 'attr3']},
+        ),
     ],
 )
 def test_find_by_tag(storage, config, start_storage):
@@ -193,8 +201,7 @@ def test_find_by_tag(storage, config, start_storage):
 
     results = da.find('token6', index='attr3')
     assert len(results) == 2
-    assert results[0].id == '2'
-    assert results[1].id == '1'
+    assert set(results[:, 'id']) == {'1', '2'}
 
     results = da.find('token6', index='attr3', limit=1)
     assert len(results) == 1

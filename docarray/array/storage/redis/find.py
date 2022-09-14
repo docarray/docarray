@@ -39,7 +39,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         filter: Optional[Dict] = None,
-        limit: int = 20,
+        limit: Union[int, float] = 20,
         **kwargs,
     ):
 
@@ -73,7 +73,7 @@ class FindMixin(BaseFindMixin):
     def _find(
         self,
         query: 'RedisArrayType',
-        limit: int = 20,
+        limit: Union[int, float] = 20,
         filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
@@ -88,7 +88,11 @@ class FindMixin(BaseFindMixin):
             for q in query
         ]
 
-    def _find_with_filter(self, filter: Dict, limit: int = 20):
+    def _find_with_filter(
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
+    ):
         nodes = _build_query_nodes(filter)
         query_str = intersect(*nodes).to_string()
         q = Query(query_str)
@@ -102,9 +106,64 @@ class FindMixin(BaseFindMixin):
             da.append(doc)
         return da
 
-    def _filter(self, filter: Dict, limit: int = 20) -> 'DocumentArray':
+    def _filter(
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
+    ) -> 'DocumentArray':
 
         return self._find_with_filter(filter, limit=limit)
+
+    def _find_by_text(
+        self,
+        query: Union[str, List[str]],
+        index: str = 'text',
+        limit: Union[int, float] = 20,
+        **kwargs,
+    ):
+        if isinstance(query, str):
+            query = [query]
+
+        return [
+            self._find_similar_documents_from_text(
+                q,
+                index=index,
+                limit=limit,
+                **kwargs,
+            )
+            for q in query
+        ]
+
+    def _find_similar_documents_from_text(
+        self,
+        query: str,
+        index: str = 'text',
+        limit: Union[int, float] = 20,
+        **kwargs,
+    ):
+        query_str = _build_query_str(query)
+        scorer = kwargs.get('scorer', 'BM25')
+        if scorer not in [
+            'BM25',
+            'TFIDF',
+            'TFIDF.DOCNORM',
+            'DISMAX',
+            'DOCSCORE',
+            'HAMMING',
+        ]:
+            raise ValueError(
+                f'Expecting a valid text similarity ranking algorithm, got {scorer} instead'
+            )
+
+        q = Query(f'@{index}:{query_str}').scorer(scorer).paging(0, limit)
+
+        results = self._client.ft(index_name=self._config.index_name).search(q).docs
+
+        da = DocumentArray()
+        for res in results:
+            doc = Document.from_base64(res.blob.encode())
+            da.append(doc)
+        return da
 
 
 def _build_query_node(key, condition):
@@ -154,3 +213,8 @@ def _build_query_nodes(filter):
             nodes.append(child)
 
     return nodes
+
+
+def _build_query_str(query):
+    query_str = '|'.join(query.split(' '))
+    return query_str
