@@ -11,6 +11,8 @@ from typing import Optional, Tuple
 
 import numpy as np
 
+from docarray.helper import _get_array_info
+
 
 class PlotMixin:
     """Helper functions for plotting the arrays."""
@@ -37,44 +39,28 @@ class PlotMixin:
         tables = []
         console = Console()
 
-        all_attrs = self._get_attributes('non_empty_fields')
-        # remove underscore attribute
-        all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
-        attr_counter = Counter(all_attrs)
+        (
+            is_homo,
+            _nested_in,
+            _nested_items,
+            attr_counter,
+            all_attrs_names,
+        ) = _get_array_info(self)
 
         table = Table(box=box.SIMPLE, highlight=True)
         table.show_header = False
         table.add_row('Type', self.__class__.__name__)
         table.add_row('Length', str(len(self)))
-        is_homo = len(attr_counter) == 1
         table.add_row('Homogenous Documents', str(is_homo))
-
-        all_attrs_names = set(v for k in all_attrs for v in k)
-        _nested_in = []
-        if 'chunks' in all_attrs_names:
-            _nested_in.append('chunks')
-
-        if 'matches' in all_attrs_names:
-            _nested_in.append('matches')
 
         if _nested_in:
             table.add_row('Has nested Documents in', str(tuple(_nested_in)))
 
         if is_homo:
             table.add_row('Common Attributes', str(list(attr_counter.items())[0][0]))
-        else:
-            for _a, _n in attr_counter.most_common():
-                if _n == 1:
-                    _doc_text = f'{_n} Document has'
-                else:
-                    _doc_text = f'{_n} Documents have'
-                if len(_a) == 1:
-                    _text = f'{_doc_text} one attribute'
-                elif len(_a) == 0:
-                    _text = f'{_doc_text} no attribute'
-                else:
-                    _text = f'{_doc_text} attributes'
-                table.add_row(_text, str(_a))
+
+        for item in _nested_items:
+            table.add_row(item['name'], item['value'])
 
         is_multimodal = all(d.is_multimodal for d in self)
         table.add_row('Multimodal dataclass', str(is_multimodal))
