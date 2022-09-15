@@ -75,7 +75,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
         ('annlite', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
         ('weaviate', {'n_dim': 3}),
-        ('redis', {'n_dim': 3, 'flush': True}),
+        ('redis', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
@@ -704,13 +704,7 @@ def test_match_pre_filtering(
 ):
     n_dim = 128
 
-    if storage == 'redis':
-        da = DocumentArray(
-            storage=storage,
-            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
-        )
-    else:
-        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -754,7 +748,7 @@ def embeddings_eq(emb1, emb2):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_match_subindex(storage, config):

@@ -1,10 +1,8 @@
-from codecs import unicode_escape_decode
-from typing import Dict
+from typing import Dict, Iterable, Sequence
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from typing import Sequence, Iterable
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -120,4 +118,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._update_offset2ids_meta()
 
     def _clear_storage(self):
-        self._client.flushdb()
+        for _id in self._offset2ids.ids:
+            self._del_doc_by_id(_id)
+        self._client.delete(self._offset2id_key)

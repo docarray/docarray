@@ -22,7 +22,7 @@ def docs():
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_update_embedding(docs, storage, config, start_storage):
@@ -57,7 +57,7 @@ def test_update_embedding(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_update_doc_embedding(docs, storage, config, start_storage):
@@ -92,7 +92,7 @@ def test_update_doc_embedding(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_batch_update_embedding(docs, storage, config, start_storage):
@@ -125,7 +125,7 @@ def test_batch_update_embedding(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_batch_update_doc_embedding(docs, storage, config, start_storage):
@@ -160,7 +160,7 @@ def test_batch_update_doc_embedding(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_update_id(docs, storage, config, start_storage):
@@ -182,7 +182,7 @@ def test_update_id(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_update_doc_id(docs, storage, config, start_storage):
@@ -203,7 +203,7 @@ def test_update_doc_id(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_batch_update_id(docs, storage, config, start_storage):
@@ -227,7 +227,7 @@ def test_batch_update_id(docs, storage, config, start_storage):
         ('annlite', {'n_dim': 2}),
         ('qdrant', {'n_dim': 2}),
         ('elasticsearch', {'n_dim': 2}),
-        ('redis', {'n_dim': 2, 'flush': True}),
+        ('redis', {'n_dim': 2}),
     ],
 )
 def test_batch_update_doc_id(docs, storage, config, start_storage):
