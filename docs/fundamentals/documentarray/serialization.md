@@ -365,11 +365,6 @@ da = DocumentArray.from_dataframe(df)
 This feature requires `rich` and `requests` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
-```{important}
-As of DocArray 0.16.6, it is required to login to Jina Ecosystem before using cloud resources. Make sure to do 
-`jina auth login` before using {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull`.
-```
-
 {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull` allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.
 
 Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily store it to the cloud via:
