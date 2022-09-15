@@ -365,6 +365,11 @@ da = DocumentArray.from_dataframe(df)
 This feature requires `rich` and `requests` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
+```{important}
+As of DocArray 0.16.6, it is required to login to Jina Ecosystem before using cloud resources. Make sure to do 
+`jina auth login` before using {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull`.
+```
+
 {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull` allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.
 
 Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily store it to the cloud via:
@@ -393,3 +398,26 @@ The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compre
 
 To avoid unnecessary download when upstream DocumentArray is unchanged, you can add `DocumentArray.pull(..., local_cache=True)`.
 
+Furthermore, it is possible to list all `DocumentArray` objects stored on the cloud using:
+```python
+DocumentArray.cloud_list(show_table=True)
+```
+
+```text
+                      You have 1 DocumentArray on the cloud                       
+                                                                                  
+  Name     Length   Access          Created at                 Updated at         
+ ──────────────────────────────────────────────────────────────────────────────── 
+  da123    10       public   2022-09-15T07:14:54.256Z   2022-09-15T07:14:54.256Z  
+                                                                                  
+['da123']
+```
+
+```{tip}
+Use parameter `show_table` to show table summarizing information about DocumentArrays in the cloud.
+```
+
+It is also possible to delete DocumentArray objects in the cloud using:
+```python
+DocumentArray.cloud_delete('da123')
+```
