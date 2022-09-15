@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
 import hubble
-from hubble import Client
+from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
 
@@ -43,7 +43,7 @@ class PushPullMixin:
         from rich.table import Table
         from rich import box
 
-        resp = Client(jsonify=True).list_artifacts(
+        resp = HubbleClient(jsonify=True).list_artifacts(
             filter={'type': 'documentArray'}, sort={'createdAt': 1}
         )
 
@@ -80,7 +80,7 @@ class PushPullMixin:
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
         """
-        Client(jsonify=True).delete_artifact(name=name)
+        HubbleClient(jsonify=True).delete_artifact(name=name)
 
     def _get_raw_summary(self) -> List[Dict[str, Any]]:
         all_attrs = self._get_attributes('non_empty_fields')
@@ -263,7 +263,7 @@ class PushPullMixin:
         with pbar:
 
             response = requests.post(
-                Client()._base_url + EndpointsV2.upload_artifact,
+                HubbleClient()._base_url + EndpointsV2.upload_artifact,
                 data=gen(),
                 headers=headers,
             )
@@ -300,7 +300,7 @@ class PushPullMixin:
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
-        url = Client()._base_url + EndpointsV2.download_artifact + f'?name={name}'
+        url = HubbleClient()._base_url + EndpointsV2.download_artifact + f'?name={name}'
         response = requests.get(url, headers=headers)
 
         if response.ok:
