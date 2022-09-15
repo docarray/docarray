@@ -43,19 +43,7 @@ da = DocumentArray(
 
 The usage will be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.
 
-```{caution}
-Currently, one Redis server instance can only store a single DocumentArray.
-```
-
-To store a new DocumentArray on the current Redis server, you can set `flush` to `True` so that the previous DocumentArray will be cleared:
-
-```python
-from docarray import DocumentArray
-
-da = DocumentArray(storage='redis', config={'n_dim': 128, 'flush': True})
-```
-
-To access a previously stored DocumentArray, you can set `host` and `port` to match with the previuosly stored DocumentArray and make sure `flush` is `False`.
+To access a previously stored DocumentArray, you can specify `index_name` and set `host` and `port` to match with the previuosly stored DocumentArray.
 
 The following example builds a DocumentArray from previously stored data on `localhost:6379`:
 
@@ -64,13 +52,19 @@ from docarray import DocumentArray, Document
 
 with DocumentArray(
     storage='redis',
-    config={'n_dim': 128, 'flush': True},
+    config={
+        'n_dim': 128,
+        'index_name': 'idx',
+    },
 ) as da:
     da.extend([Document() for _ in range(1000)])
 
 da2 = DocumentArray(
     storage='redis',
-    config={'n_dim': 128, 'flush': False},
+    config={
+        'n_dim': 128,
+        'index_name': 'idx',
+    },
 )
 
 da2.summary()
@@ -100,10 +94,11 @@ da2.summary()
 │   host              localhost   │
 │   port              6379        │
 │   index_name        idx         │
-│   flush             False       │
 │   update_schema     True        │
 │   distance          COSINE      │
 │   redis_config      {}          │
+│   index_text        False       │
+│   tag_indices       []          │
 │   batch_size        64          │
 │   method            HNSW        │
 │   ef_construction   200         │
@@ -115,8 +110,6 @@ da2.summary()
 │                                 │
 ╰─────────────────────────────────╯
 ```
-
-
 
 Other functions behave the same as in-memory DocumentArray.
 
@@ -147,7 +140,6 @@ da = DocumentArray(
     config={
         'n_dim': n_dim,
         'columns': {'price': 'int', 'color': 'str', 'stock': 'bool'},
-        'flush': True,
         'distance': 'L2',
     },
 )
@@ -236,7 +228,7 @@ for embedding, price, color, stock, score in zip(
 This will print:
 
 ```console
-Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" False:
+Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
 
  score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True
  score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True
@@ -281,6 +273,102 @@ More example filter expresses
 }
 ```
 
+
+(vector-search-index)=
+### Update Vector Search Indexing Schema
+
+Redis vector similarity supports two indexing methods:
+
+- **FLAT**: Brute-force search. 
+- **HNSW**: Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs.
+
+Both methods have some mandatory parameters and optional parameters.
+
+```{tip}
+Read more about HNSW or FLAT parameters and their default values [here](https://redis.io/docs/stack/search/reference/vectors/#querying-vector-fields).
+```
+
+You can update the search indexing schema on an existing DocumentArray by setting `update_schema` to `True` and changing your configuratoin parameters.
+
+Consider you store Documents with default indexing method `'HNSW'` and distance `'L2'`, and want to find the nearest vectors to the embedding `[8. 8. 8.]`.
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='redis',
+    config={
+        'n_dim': n_dim,
+        'index_name': 'idx',
+        'distance': 'L2',
+    },
+)
+
+da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
+
+np_query = np.ones(n_dim) * 8
+n_limit = 5
+
+results = da.find(np_query, limit=n_limit)
+
+print('\nEmbeddings Approximate Nearest Neighbours:\n')
+for embedding, score in zip(
+    results.embeddings,
+    results[:, 'scores'],
+):
+    print(f' embedding={embedding},\t score={score["score"].value}')
+```
+
+This will print:
+
+```console
+Embeddings Approximate Nearest Neighbours:
+
+ embedding=[8. 8. 8.],   score=0
+ embedding=[7. 7. 7.],   score=3
+ embedding=[9. 9. 9.],   score=3
+ embedding=[6. 6. 6.],   score=12
+ embedding=[5. 5. 5.],   score=27
+```
+
+Then you can use a different search indexing schema on the current DocumentArray as follows:
+```python
+da2 = DocumentArray(
+    storage='redis',
+    config={
+        'n_dim': n_dim,
+        'index_name': 'idx',
+        'update_schema': True,
+        'distance': 'COSINE',
+    },
+)
+
+results = da.find(np_query, limit=n_limit)
+
+print('\nEmbeddings Approximate Nearest Neighbours:\n')
+for embedding, score in zip(
+    results.embeddings,
+    results[:, 'scores'],
+):
+    print(f' embedding={embedding},\t score={score["score"].value}')
+```
+
+This will print:
+
+```console
+Embeddings Approximate Nearest Neighbours:
+
+ embedding=[3. 3. 3.],	 score=0
+ embedding=[6. 6. 6.],	 score=0
+ embedding=[4. 4. 4.],	 score=5.96046447754e-08
+ embedding=[1. 1. 1.],	 score=5.96046447754e-08
+ embedding=[8. 8. 8.],	 score=5.96046447754e-08
+```
+
+
 ### Search by `.text` field
 
 You can perform full-text search in a `DocumentArray` with `storage='redis'`. 
@@ -290,9 +378,7 @@ The following example builds a `DocumentArray` with several documents containing
 ```python
 from docarray import Document, DocumentArray
 
-da = DocumentArray(
-    storage='redis', config={'n_dim': 2, 'index_text': True, 'flush': True}
-)
+da = DocumentArray(storage='redis', config={'n_dim': 2, 'index_text': True})
 da.extend(
     [
         Document(id='1', text='token1 token2 token3'),
@@ -344,7 +430,7 @@ from docarray import Document, DocumentArray
 
 da = DocumentArray(
     storage='redis',
-    config={'n_dim': 32, 'flush': True, 'tag_indices': ['food_type', 'price']},
+    config={'n_dim': 32, 'tag_indices': ['food_type', 'price']},
 )
 da.extend(
     [
@@ -382,7 +468,7 @@ This will print:
 searching "cheap" in <price>:
 	 ['cheap but not that cheap', 'quite cheap for what you get!']
 searching "italian" in <food_type>:
-	 ['French and Italian food', 'Italian and Spanish food']
+	 ['Italian and Spanish food', 'French and Italian food']
 ```
 
 ```{note}
@@ -391,99 +477,6 @@ By default, if you don't specify the parameter `index` in the `find` method, the
 results = da.find('cheap', index='price')
 ```
 
-
-(vector-search-index)=
-### Update Vector Search Indexing Schema
-
-Redis vector similarity supports two indexing methods:
-
-- **FLAT**: Brute-force search. 
-- **HNSW**: Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs.
-
-Both methods have some mandatory parameters and optional parameters.
-
-```{tip}
-Read more about HNSW or FLAT parameters and their default values [here](https://redis.io/docs/stack/search/reference/vectors/#querying-vector-fields).
-```
-
-You can update the search indexing schema on an existing DocumentArray by setting `update_schema` to `True` and changing your configuratoin parameters.
-
-Consider you store Documents with default indexing method `'HNSW'` and distance `'L2'`, and want to find the nearest vectors to the embedding `[8. 8. 8.]`.
-
-```python
-import numpy as np
-from docarray import Document, DocumentArray
-
-n_dim = 3
-
-da = DocumentArray(
-    storage='redis',
-    config={
-        'n_dim': n_dim,
-        'flush': True,
-        'distance': 'L2',
-    },
-)
-
-da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
-
-np_query = np.ones(n_dim) * 8
-n_limit = 5
-
-results = da.find(np_query, limit=n_limit)
-
-print('\nEmbeddings Approximate Nearest Neighbours:\n')
-for embedding, score in zip(
-    results.embeddings,
-    results[:, 'scores'],
-):
-    print(f' embedding={embedding},\t score={score["score"].value}')
-```
-
-This will print:
-
-```console
-Embeddings Approximate Nearest Neighbours:
-
- embedding=[8. 8. 8.],   score=0
- embedding=[7. 7. 7.],   score=3
- embedding=[9. 9. 9.],   score=3
- embedding=[6. 6. 6.],   score=12
- embedding=[5. 5. 5.],   score=27
-```
-
-Then you can use a different search indexing schema on the current DocumentArray as follows:
-```python
-da2 = DocumentArray(
-    storage='redis',
-    config={
-        'n_dim': n_dim,
-        'update_schema': True,
-        'distance': 'COSINE',
-    },
-)
-
-results = da.find(np_query, limit=n_limit)
-
-print('\nEmbeddings Approximate Nearest Neighbours:\n')
-for embedding, score in zip(
-    results.embeddings,
-    results[:, 'scores'],
-):
-    print(f' embedding={embedding},\t score={score["score"].value}')
-```
-
-This will print:
-
-```console
-Embeddings Approximate Nearest Neighbours:
-
- embedding=[3. 3. 3.],   score=0
- embedding=[6. 6. 6.],   score=0
- embedding=[9. 9. 9.],   score=5.96046447754e-08
- embedding=[8. 8. 8.],   score=5.96046447754e-08
- embedding=[5. 5. 5.],   score=5.96046447754e-08
-```
 
 
 ## Configuration
@@ -495,13 +488,14 @@ The following configs can be set:
 | `host`            | Host address of the Redis server                                                                  | `'localhost'`                                     |
 | `port`            | Port of the Redis Server                                                                          | `6379`                                            |
 | `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`| `{}`                                              |
-| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `'idx'`                                           |
+| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `None`                                            |
 | `n_dim`           | Dimensionality of the embeddings                                                                  | `None`                                            |
-| `flush`           | Boolean flag indicating whether to clear previous DocumentArray in Redis                          | `False`                                           |
 | `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
 | `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
 | `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
 | `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
+| `index_text`      | Boolean flag indicating whether to index `.text`                                                  | `None`                                            |
+| `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
 | `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
 | `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
 | `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
@@ -513,6 +507,6 @@ You can check the default values in [the docarray source code](https://github.co
 
 
 ```{note}
-Only 1 DocumentArray is allowed per redis instance (db0). We will support storing multiple DocumentArrays in one redis instance, full-text search, more query conitions and geo-filtering soon.
+We will support geo-filtering soon. 
 The benchmark test is on the way.
 ```
