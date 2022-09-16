@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Un
 import numpy as np
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
-from docarray.helper import dataclass_from_dict
+from docarray.helper import dataclass_from_dict, random_identity
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
@@ -75,8 +75,7 @@ class BackendMixin(BaseBackendMixin):
             config.redis_config['decode_responses'] = False
 
         if config.index_name is None:
-            id = uuid.uuid4().hex
-            config.index_name = 'index_name__' + id
+            config.index_name = 'index_name__' + random_identity()
 
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
