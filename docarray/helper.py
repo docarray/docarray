@@ -479,17 +479,19 @@ def _get_array_info(da: 'DocumentArray'):
 
     _nested_items = []
     if not is_homo:
-        for _a, _n in attr_counter.most_common():
-            if _n == 1:
-                _doc_text = f'{_n} Document has'
+        for n_attributes, n_docs in attr_counter.most_common():
+            if n_docs == 1:
+                _doc_text = f'{n_docs} Document has'
             else:
-                _doc_text = f'{_n} Documents have'
-            if len(_a) == 1:
+                _doc_text = f'{n_docs} Documents have'
+            if len(n_attributes) == 1:
                 _text = f'{_doc_text} one attribute'
-            elif len(_a) == 0:
+            elif len(n_attributes) == 0:
                 _text = f'{_doc_text} no attribute'
             else:
                 _text = f'{_doc_text} attributes'
-            _nested_items.append(dict(name=_text, value=str(_a), description=''))
+            _nested_items.append(
+                dict(name=_text, value=str(n_attributes), description='')
+            )
 
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
