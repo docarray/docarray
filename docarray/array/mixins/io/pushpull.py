@@ -11,7 +11,7 @@ from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
 
-from docarray.helper import get_request_header, __cache_path__
+from docarray.helper import get_request_header, __cache_path__, _get_array_info
 
 if TYPE_CHECKING:
     from docarray.typing import T
@@ -81,20 +81,13 @@ class PushPullMixin:
         HubbleClient(jsonify=True).delete_artifact(name=name)
 
     def _get_raw_summary(self) -> List[Dict[str, Any]]:
-        all_attrs = self._get_attributes('non_empty_fields')
-        # remove underscore attribute
-        all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
-        attr_counter = Counter(all_attrs)
-
-        all_attrs_names = set(v for k in all_attrs for v in k)
-        _nested_in = []
-        if 'chunks' in all_attrs_names:
-            _nested_in.append('chunks')
-
-        if 'matches' in all_attrs_names:
-            _nested_in.append('matches')
-
-        is_homo = len(attr_counter) == 1
+        (
+            is_homo,
+            _nested_in,
+            _nested_items,
+            attr_counter,
+            all_attrs_names,
+        ) = _get_array_info(self)
 
         items = [
             dict(
@@ -132,20 +125,6 @@ class PushPullMixin:
             ),
         ]
 
-        _nested_items = []
-        if not is_homo:
-            for _a, _n in attr_counter.most_common():
-                if _n == 1:
-                    _doc_text = f'{_n} Document has'
-                else:
-                    _doc_text = f'{_n} Documents have'
-                if len(_a) == 1:
-                    _text = f'{_doc_text} one attribute'
-                elif len(_a) == 0:
-                    _text = f'{_doc_text} no attribute'
-                else:
-                    _text = f'{_doc_text} attributes'
-                _nested_items.append(dict(name=_text, value=str(_a), description=''))
         items.append(
             dict(
                 name='Inspect attributes',
