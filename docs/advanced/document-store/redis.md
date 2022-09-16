@@ -166,10 +166,10 @@ da.extend(
 )
 
 print('\nIndexed price, color and stock:\n')
-for embedding, price, color, stock in zip(
-    da.embeddings, da[:, 'tags__price'], da[:, 'tags__color'], da[:, 'tags__stock']
-):
-    print(f'\tembedding={embedding},\t color={color},\t stock={stock}')
+for doc in da:
+    print(
+        f"\tembedding={doc.embedding},\t color={doc.tags['color']},\t stock={doc.tags['stock']}"
+    )
 ```
 
 Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `blue` and have `stock` equal to `True`. We can encode this information in Redis using
@@ -213,15 +213,9 @@ results = da.find(np_query, filter=filter, limit=n_limit)
 print(
     '\nEmbeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" False:\n'
 )
-for embedding, price, color, stock, score in zip(
-    results.embeddings,
-    results[:, 'tags__price'],
-    results[:, 'tags__color'],
-    results[:, 'tags__stock'],
-    results[:, 'scores'],
-):
+for doc in results:
     print(
-        f' score={score["score"].value},\t embedding={embedding},\t price={price},\t color={color},\t stock={stock}'
+        f" score={doc.scores['score'].value},\t embedding={doc.embedding},\t price={doc.tags['price']},\t color={doc.tags['color']},\t stock={doc.tags['stock']}"
     )
 ```
 
@@ -290,7 +284,7 @@ Read more about HNSW or FLAT parameters and their default values [here](https://
 
 You can update the search indexing schema on an existing DocumentArray by setting `update_schema` to `True` and changing your configuratoin parameters.
 
-Consider you store Documents with default indexing method `'HNSW'` and distance `'L2'`, and want to find the nearest vectors to the embedding `[8. 8. 8.]`.
+Consider you store Documents with default indexing method `'HNSW'` and distance `'L2'`, and want to find the nearest vectors to the embedding `[8. 8. 8.]`:
 
 ```python
 import numpy as np
@@ -315,11 +309,8 @@ n_limit = 5
 results = da.find(np_query, limit=n_limit)
 
 print('\nEmbeddings Approximate Nearest Neighbours:\n')
-for embedding, score in zip(
-    results.embeddings,
-    results[:, 'scores'],
-):
-    print(f' embedding={embedding},\t score={score["score"].value}')
+for doc in results:
+    print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
 This will print:
@@ -349,11 +340,8 @@ da2 = DocumentArray(
 results = da.find(np_query, limit=n_limit)
 
 print('\nEmbeddings Approximate Nearest Neighbours:\n')
-for embedding, score in zip(
-    results.embeddings,
-    results[:, 'scores'],
-):
-    print(f' embedding={embedding},\t score={score["score"].value}')
+for doc in results:
+    print(f" embedding={doc.embedding},\t score={doc.scores['score'].value}")
 ```
 
 This will print:
@@ -494,7 +482,7 @@ The following configs can be set:
 | `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
 | `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
 | `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
-| `index_text`      | Boolean flag indicating whether to index `.text`                                                  | `None`                                            |
+| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`  | `None`                                            |
 | `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
 | `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
 | `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
