@@ -193,9 +193,12 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         da = da_cls.empty(100)
     da._get_attributes()
     da.summary()
+    da._get_raw_summary()
 
     da[0].pop('id')
     da.summary()
+
+    da._get_raw_summary()
 
 
 @pytest.mark.parametrize(
