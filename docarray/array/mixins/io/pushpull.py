@@ -1,12 +1,27 @@
+import json
 import os
+import os.path
 import warnings
+from collections import Counter
 from pathlib import Path
-from typing import Dict, Type, TYPE_CHECKING, Optional
+from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
-from docarray.helper import get_request_header, __cache_path__
+import hubble
+from hubble import Client as HubbleClient
+from hubble.client.endpoints import EndpointsV2
+
+
+from docarray.helper import get_request_header, __cache_path__, _get_array_info
 
 if TYPE_CHECKING:
     from docarray.typing import T
+
+
+def _get_length_from_summary(summary: List[Dict]) -> Optional[int]:
+    """Get the length from summary."""
+    for item in summary:
+        if 'Length' == item['name']:
+            return item['value']
 
 
 class PushPullMixin:
@@ -14,11 +29,131 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
+    @staticmethod
+    def cloud_list(show_table: bool = False) -> List[str]:
+        """List all available arrays in the cloud.
+
+        :param show_table: if true, show the table of the arrays.
+        :returns: List of available DocumentArray's names.
+        """
+        from rich import print
+
+        result = []
+        from rich.table import Table
+        from rich import box
+
+        resp = HubbleClient(jsonify=True).list_artifacts(
+            filter={'type': 'documentArray'}, sort={'createdAt': 1}
+        )
+
+        table = Table(
+            title=f'You have {resp["meta"]["total"]} DocumentArray on the cloud',
+            box=box.SIMPLE,
+            highlight=True,
+        )
+        table.add_column('Name')
+        table.add_column('Length')
+        table.add_column('Access')
+        table.add_column('Created at', justify='center')
+        table.add_column('Updated at', justify='center')
+
+        for da in resp['data']:
+            result.append(da['name'])
+
+            table.add_row(
+                da['name'],
+                str(_get_length_from_summary(da['metaData'].get('summary', []))),
+                da['visibility'],
+                da['createdAt'],
+                da['updatedAt'],
+            )
+
+        if show_table:
+            print(table)
+        return result
+
+    @staticmethod
+    def cloud_delete(name: str) -> None:
+        """
+        Delete a DocumentArray from the cloud.
+        :param name: the name of the DocumentArray to delete.
+        """
+        HubbleClient(jsonify=True).delete_artifact(name=name)
+
+    def _get_raw_summary(self) -> List[Dict[str, Any]]:
+        (
+            is_homo,
+            _nested_in,
+            _nested_items,
+            attr_counter,
+            all_attrs_names,
+        ) = _get_array_info(self)
+
+        items = [
+            dict(
+                name='Type',
+                value=self.__class__.__name__,
+                description='The type of the DocumentArray',
+            ),
+            dict(
+                name='Length',
+                value=len(self),
+                description='The length of the DocumentArray',
+            ),
+            dict(
+                name='Homogenous Documents',
+                value=is_homo,
+                description='Whether all documents are of the same structure, attributes',
+            ),
+            dict(
+                name='Common Attributes',
+                value=list(attr_counter.items())[0][0] if attr_counter else None,
+                description='The common attributes of all documents',
+            ),
+            dict(
+                name='Has nested Documents in',
+                value=tuple(_nested_in),
+                description='The field that contains nested Documents',
+            ),
+            dict(
+                name='Multimodal dataclass',
+                value=all(d.is_multimodal for d in self),
+                description='Whether all documents are multimodal',
+            ),
+            dict(
+                name='Subindices', value=tuple(getattr(self, '_subindices', {}).keys())
+            ),
+        ]
+
+        items.append(
+            dict(
+                name='Inspect attributes',
+                value=_nested_items,
+                description='Quick overview of attributes of all documents',
+            )
+        )
+
+        storage_infos = self._get_storage_infos()
+        _nested_items = []
+        if storage_infos:
+            for k, v in storage_infos.items():
+                _nested_items.append(dict(name=k, value=v))
+        items.append(
+            dict(
+                name='Storage backend',
+                value=_nested_items,
+                description='Quick overview of the Document Store',
+            )
+        )
+
+        return items
+
     def push(
         self,
         name: str,
         show_progress: bool = False,
         public: bool = True,
+        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
@@ -33,6 +168,7 @@ class PushPullMixin:
         :param show_progress: if to show a progress bar on pulling
         :param public: by default anyone can pull a DocumentArray if they know its name.
             Setting this to False will allow only the creator to pull it. This feature of course you to login first.
+        :param branding: a dict of branding information to be sent to Jina Cloud. {"icon": "emoji", "background": "#fff"}
         """
         import requests
 
@@ -47,11 +183,14 @@ class PushPullMixin:
                 'name': name,
                 'type': 'documentArray',
                 'public': public,
+                'metaData': json.dumps(
+                    {'summary': self._get_raw_summary(), 'branding': branding},
+                    sort_keys=True,
+                ),
             }
         )
 
         headers = {'Content-Type': ctype, **get_request_header()}
-        import hubble
 
         auth_token = hubble.get_token()
         if auth_token:
@@ -98,11 +237,9 @@ class PushPullMixin:
             yield _tail
 
         with pbar:
-            from hubble import Client
-            from hubble.client.endpoints import EndpointsV2
 
             response = requests.post(
-                Client()._base_url + EndpointsV2.upload_artifact,
+                HubbleClient()._base_url + EndpointsV2.upload_artifact,
                 data=gen(),
                 headers=headers,
             )
@@ -133,17 +270,12 @@ class PushPullMixin:
 
         headers = {}
 
-        import hubble
-
         auth_token = hubble.get_token()
 
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
 
-        from hubble import Client
-        from hubble.client.endpoints import EndpointsV2
-
-        url = Client()._base_url + EndpointsV2.download_artifact + f'?name={name}'
+        url = HubbleClient()._base_url + EndpointsV2.download_artifact + f'?name={name}'
         response = requests.get(url, headers=headers)
 
         if response.ok:
@@ -183,3 +315,6 @@ class PushPullMixin:
                     fp.write(_source.content)
 
             return r
+
+    cloud_push = push
+    cloud_pull = pull

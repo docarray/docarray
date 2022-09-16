@@ -256,6 +256,16 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts
 
+    all_names = DocumentArray.cloud_list()
+
+    assert name in all_names
+
+    DocumentArray.cloud_delete(name)
+
+    all_names = DocumentArray.cloud_list()
+
+    assert name not in all_names
+
 
 @pytest.mark.parametrize(
     'protocol', ['protobuf', 'pickle', 'protobuf-array', 'pickle-array']
