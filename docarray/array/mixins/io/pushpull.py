@@ -29,8 +29,8 @@ class PushPullMixin:
 
     _max_bytes = 4 * 1024 * 1024 * 1024
 
-    @classmethod
-    def cloud_list(cls, show_table: bool = False) -> List[str]:
+    @staticmethod
+    def cloud_list(show_table: bool = False) -> List[str]:
         """List all available arrays in the cloud.
 
         :param show_table: if true, show the table of the arrays.
@@ -72,8 +72,8 @@ class PushPullMixin:
             print(table)
         return result
 
-    @classmethod
-    def cloud_delete(cls, name: str) -> None:
+    @staticmethod
+    def cloud_delete(name: str) -> None:
         """
         Delete a DocumentArray from the cloud.
         :param name: the name of the DocumentArray to delete.
@@ -174,7 +174,7 @@ class PushPullMixin:
         name: str,
         show_progress: bool = False,
         public: bool = True,
-        branding: Dict = None,
+        branding: Optional[Dict] = None,
     ) -> Dict:
         """Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`
 
