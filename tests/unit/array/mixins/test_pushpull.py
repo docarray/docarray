@@ -147,7 +147,7 @@ def test_push_fail(mocker, monkeypatch):
 def set_hubble_registry():
     os.environ['JINA_HUBBLE_REGISTRY'] = 'http://localhost:8080'
     yield
-    os.unsetenv('JINA_HUBBLE_REGISTRY')
+    del os.environ['JINA_HUBBLE_REGISTRY']
 
 
 def test_api_url_change(mocker, monkeypatch, set_hubble_registry):
