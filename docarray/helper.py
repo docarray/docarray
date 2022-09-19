@@ -6,7 +6,11 @@ import sys
 import uuid
 import warnings
 from os.path import expanduser
-from typing import Any, Dict, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
+from collections import Counter
+
+if TYPE_CHECKING:
+    from docarray import DocumentArray
 
 __resources_path__ = os.path.join(
     os.path.dirname(
@@ -455,3 +459,39 @@ def _safe_cast_int(value: Union[str, int, float]) -> int:
     if isinstance(value, float) and not value.is_integer():
         raise ValueError(f"Can't safely cast {value} to an int")
     return int(value)
+
+
+def _get_array_info(da: 'DocumentArray'):
+    all_attrs = da._get_attributes('non_empty_fields')
+    # remove underscore attribute
+    all_attrs = [tuple(vv for vv in v if not vv.startswith('_')) for v in all_attrs]
+    attr_counter = Counter(all_attrs)
+
+    all_attrs_names = set(v for k in all_attrs for v in k)
+    _nested_in = []
+    if 'chunks' in all_attrs_names:
+        _nested_in.append('chunks')
+
+    if 'matches' in all_attrs_names:
+        _nested_in.append('matches')
+
+    is_homo = len(attr_counter) == 1
+
+    _nested_items = []
+    if not is_homo:
+        for n_attributes, n_docs in attr_counter.most_common():
+            if n_docs == 1:
+                _doc_text = f'{n_docs} Document has'
+            else:
+                _doc_text = f'{n_docs} Documents have'
+            if len(n_attributes) == 1:
+                _text = f'{_doc_text} one attribute'
+            elif len(n_attributes) == 0:
+                _text = f'{_doc_text} no attribute'
+            else:
+                _text = f'{_doc_text} attributes'
+            _nested_items.append(
+                dict(name=_text, value=str(n_attributes), description='')
+            )
+
+    return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names

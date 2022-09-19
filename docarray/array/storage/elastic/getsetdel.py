@@ -12,7 +12,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     MAX_ES_RETURNED_DOCS = 10000
 
     def _document_to_elastic(self, doc: 'Document') -> Dict:
-        extra_columns = {col: doc.tags.get(col) for col, _ in self._config.columns}
+        extra_columns = {
+            col: doc.tags.get(col) for col, _ in self._config.columns.items()
+        }
         request = {
             '_op_type': 'index',
             '_id': doc.id,

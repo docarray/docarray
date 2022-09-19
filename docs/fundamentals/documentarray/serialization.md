@@ -26,7 +26,7 @@ If you are building a webservice and want to use JSON for passing DocArray objec
 ```
 
 ```{important}
-Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[full]"` to install it.
+Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[common]"` to install it.
 ```
 
 
@@ -393,3 +393,26 @@ The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compre
 
 To avoid unnecessary download when upstream DocumentArray is unchanged, you can add `DocumentArray.pull(..., local_cache=True)`.
 
+Furthermore, it is possible to list all `DocumentArray` objects stored on the cloud using:
+```python
+DocumentArray.cloud_list(show_table=True)
+```
+
+```text
+                      You have 1 DocumentArray on the cloud                       
+                                                                                  
+  Name     Length   Access          Created at                 Updated at         
+ ──────────────────────────────────────────────────────────────────────────────── 
+  da123    10       public   2022-09-15T07:14:54.256Z   2022-09-15T07:14:54.256Z  
+                                                                                  
+['da123']
+```
+
+```{tip}
+Use parameter `show_table` to show table summarizing information about DocumentArrays in the cloud.
+```
+
+It is also possible to delete DocumentArray objects in the cloud using:
+```python
+DocumentArray.cloud_delete('da123')
+```

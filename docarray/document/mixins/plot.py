@@ -70,37 +70,67 @@ class PlotMixin:
                     d._plot_recursion(_match_tree)
         return tree
 
-    def display(self):
-        """Plot image data from :attr:`.tensor` or :attr:`.uri`."""
-        from IPython.display import Image, display
+    def display(self, from_: Optional[str] = None):
+        """
+        Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
 
-        if self.uri:
-            if self.mime_type.startswith('audio') or self.uri.startswith('data:audio/'):
-                uri = _convert_display_uri(self.uri, self.mime_type)
-                _html5_audio_player(uri)
-            elif self.mime_type.startswith('video') or self.uri.startswith(
-                'data:video/'
-            ):
-                uri = _convert_display_uri(self.uri, self.mime_type)
-                _html5_video_player(uri)
-            elif self.uri.startswith('data:image/'):
-                _html5_image(self.uri)
+        :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
+        """
+
+        if not from_:
+            if self.uri:
+                from_ = 'uri'
+            elif self.tensor is not None:
+                from_ = 'tensor'
             else:
-                display(Image(self.uri))
-        elif self.tensor is not None:
-            try:
-                import PIL.Image
+                self.summary()
 
-                p = PIL.Image.fromarray(self.tensor)
-                if p.mode != 'RGB':
-                    raise
-                display(p)
-            except:
-                import matplotlib.pyplot as plt
-
-                plt.matshow(self.tensor)
+        if from_ == 'uri':
+            self.display_uri()
+        elif from_ == 'tensor':
+            self.display_tensor()
         else:
             self.summary()
+
+    def display_tensor(self):
+        """Plot image data from :attr:`.tensor`"""
+        if self.tensor is None:
+            raise ValueError(
+                'Impossible to display with tensor when the tensor is None'
+            )
+
+        from IPython.display import display
+
+        try:
+            import PIL.Image
+
+            p = PIL.Image.fromarray(self.tensor)
+            if p.mode != 'RGB':
+                raise
+            display(p)
+        except:
+            import matplotlib.pyplot as plt
+
+            plt.matshow(self.tensor)
+
+    def display_uri(self):
+        """Plot image data from :attr:`.uri`"""
+
+        if not self.uri:
+            raise ValueError('Impossible to display with uri when the uri is None')
+
+        from IPython.display import Image, display
+
+        if self.mime_type.startswith('audio') or self.uri.startswith('data:audio/'):
+            uri = _convert_display_uri(self.uri, self.mime_type)
+            _html5_audio_player(uri)
+        elif self.mime_type.startswith('video') or self.uri.startswith('data:video/'):
+            uri = _convert_display_uri(self.uri, self.mime_type)
+            _html5_video_player(uri)
+        elif self.uri.startswith('data:image/'):
+            _html5_image(self.uri)
+        else:
+            display(Image(self.uri))
 
     def plot_matches_sprites(
         self,

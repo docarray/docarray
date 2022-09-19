@@ -28,6 +28,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """
 from typing import TYPE_CHECKING
 
+from docarray.document.data import _is_not_empty
+
 if TYPE_CHECKING:
     from docarray import Document
 import re
@@ -121,7 +123,7 @@ def lookup(key, val, doc: 'Document') -> bool:
 
             return is_empty != val
         else:
-            return (get_key in doc.non_empty_fields) == val
+            return (_is_not_empty(get_key, value)) == val
     else:
         # return value == val
         raise ValueError(
