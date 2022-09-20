@@ -190,7 +190,16 @@ else:
                 'columns': [('i', 'int')],
             },
         ),
-        ('redis', {'n_dim': D, 'ef_construction': 100, 'm': 16, 'port': '41236'}),
+        (
+            'redis',
+            {
+                'n_dim': D,
+                'ef_construction': 100,
+                'm': 16,
+                'ef_runtime': 100,
+                'port': '41236',
+            },
+        ),
     ]
 
 storage_backends = [
