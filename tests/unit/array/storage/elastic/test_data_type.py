@@ -1,16 +1,24 @@
+import pytest
 from docarray import DocumentArray, Document
 
 
-def test_data_type(start_storage):
+@pytest.mark.parametrize(
+    'columns',
+    [
+        [
+            ('is_true', 'bool'),
+            ('test_long', 'long'),
+            ('test_double', 'double'),
+        ],
+        {'is_true': 'bool', 'test_long': 'long', 'test_double': 'double'},
+    ],
+)
+def test_data_type(start_storage, columns):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [
-                ('is_true', 'bool'),
-                ('test_long', 'long'),
-                ('test_double', 'double'),
-            ],
+            'columns': columns,
             'distance': 'l2_norm',
             'index_name': 'test_data_type',
         },

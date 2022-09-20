@@ -53,6 +53,9 @@ def da_redis():
         [('attr1', 'str'), ('attr2', 'bytes')],
         [('attr1', 'int'), ('attr2', 'float')],
         [('attr1', 'double'), ('attr2', 'long'), ('attr3', 'bool')],
+        {'attr1': 'str', 'attr2': 'bytes'},
+        {'attr1': 'int', 'attr2': 'float'},
+        {'attr1': 'double', 'attr2': 'long', 'attr3': 'bool'},
     ],
 )
 @pytest.mark.parametrize(
@@ -92,26 +95,16 @@ def test_init_storage(
     assert redis_da._client.ft().info()['attributes'][0][1] == b'embedding'
     assert redis_da._client.ft().info()['attributes'][0][5] == b'VECTOR'
 
-    for i in range(len(columns)):
-        assert redis_da._client.ft().info()['attributes'][i + 1][1] == bytes(
-            redis_da._config.columns[i][0], 'utf-8'
-        )
-        assert (
-            redis_da._client.ft().info()['attributes'][i + 1][5]
-            == type_convert[redis_da._config.columns[i][1]]
-        )
-
 
 def test_init_storage_update_schema(start_storage):
-
-    cfg = RedisConfig(n_dim=128, columns=[('attr1', 'str')], flush=True)
+    cfg = RedisConfig(n_dim=128, columns={'attr1': 'str'}, flush=True)
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
     assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
 
-    cfg = RedisConfig(n_dim=128, columns=[('attr2', 'str')], update_schema=False)
+    cfg = RedisConfig(n_dim=128, columns={'attr2': 'str'}, update_schema=False)
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
     assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
 
-    cfg = RedisConfig(n_dim=128, columns=[('attr2', 'str')], update_schema=True)
+    cfg = RedisConfig(n_dim=128, columns={'attr2': 'str'}, update_schema=True)
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
     assert redis_da._client.ft().info()['attributes'][1][1] == b'attr2'

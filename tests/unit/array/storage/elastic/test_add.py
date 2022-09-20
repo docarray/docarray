@@ -5,12 +5,13 @@ import pytest
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
-def test_add_ignore_existing_doc_id(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_add_ignore_existing_doc_id(start_storage, columns):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [('price', 'int')],
+            'columns': columns,
             'distance': 'l2_norm',
             'index_name': 'test_add_ignore_existing_doc_id',
         },
@@ -48,12 +49,13 @@ def test_add_ignore_existing_doc_id(start_storage):
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
-def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_add_skip_wrong_data_type_and_fix_offset(start_storage, columns):
     elastic_doc = DocumentArray(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [('price', 'int')],
+            'columns': columns,
             'index_name': 'test_add_skip_wrong_data_type_and_fix_offset',
         },
     )
@@ -91,8 +93,19 @@ def test_add_skip_wrong_data_type_and_fix_offset(start_storage):
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
 @pytest.mark.parametrize("assert_customization_propagation", [True, False])
+@pytest.mark.parametrize(
+    'columns',
+    [
+        [
+            ('is_true', 'bool'),
+            ('test_long', 'long'),
+            ('test_double', 'double'),
+        ],
+        {'is_true': 'bool', 'test_long': 'long', 'test_double': 'double'},
+    ],
+)
 def test_succes_add_bulk_custom_params(
-    monkeypatch, start_storage, assert_customization_propagation
+    monkeypatch, start_storage, assert_customization_propagation, columns
 ):
     bulk_custom_params = {
         'thread_count': 4,
@@ -117,11 +130,7 @@ def test_succes_add_bulk_custom_params(
         storage='elasticsearch',
         config={
             'n_dim': 3,
-            'columns': [
-                ('is_true', 'bool'),
-                ('test_long', 'long'),
-                ('test_double', 'double'),
-            ],
+            'columns': columns,
             'distance': 'l2_norm',
             'index_name': 'test_succes_add_bulk_custom_params',
         },

@@ -26,14 +26,15 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
 
 @pytest.fixture(scope='function')
 def columns():
-    columns = [
-        ('col_str', 'str'),
-        ('col_bytes', 'bytes'),
-        ('col_int', 'int'),
-        ('col_float', 'float'),
-        ('col_long', 'long'),
-        ('col_double', 'double'),
-    ]
+    columns = {
+        'col_str': 'str',
+        'col_bytes': 'bytes',
+        'col_int': 'int',
+        'col_float': 'float',
+        'col_long': 'long',
+        'col_double': 'double',
+    }
+
     return columns
 
 
@@ -92,7 +93,7 @@ def test_document_to_embedding(
     else:
         assert payload['text'] == text
 
-    for col, _ in columns:
+    for col, _ in columns.items():
         if col in tags:
             assert payload[col] == tags[col]
         else:
@@ -100,7 +101,7 @@ def test_document_to_embedding(
                 payload[col]
 
     for key in tags:
-        if key not in (col[0] for col in columns):
+        if key not in (col for col in columns.keys()):
             assert key not in payload
 
 

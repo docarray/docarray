@@ -1,16 +1,8 @@
 import sqlite3
 import warnings
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from tempfile import NamedTemporaryFile
-from typing import (
-    Iterable,
-    Dict,
-    Optional,
-    TYPE_CHECKING,
-    Union,
-    List,
-    Tuple,
-)
+from typing import Iterable, Dict, Optional, TYPE_CHECKING, Union
 
 from docarray.array.storage.sqlite.helper import initialize_table
 from docarray.array.storage.base.backend import BaseBackendMixin
@@ -33,7 +25,7 @@ class SqliteConfig:
     table_name: Optional[str] = None
     serialize_config: Dict = field(default_factory=dict)
     conn_config: Dict = field(default_factory=dict)
-    journal_mode: str = 'DELETE'
+    journal_mode: str = 'WAL'
     synchronous: str = 'OFF'
 
 
