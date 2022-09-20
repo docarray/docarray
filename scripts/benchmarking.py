@@ -105,7 +105,6 @@ def recall(predicted, relevant, eval_at):
 
 
 if args.default_hnsw:
-    print('here')
     storage_backends = [
         ('memory', None),
         ('sqlite', None),
