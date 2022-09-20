@@ -105,6 +105,7 @@ def recall(predicted, relevant, eval_at):
 
 
 if args.default_hnsw:
+    print('here')
     storage_backends = [
         ('memory', None),
         ('sqlite', None),
@@ -205,7 +206,7 @@ else:
 storage_backends = [
     (backend, config)
     for backend, config in storage_backends
-    if backend not in args.exclude_backends.split(',')
+    if backend not in (args.exclude_backends or '').split(',')
 ]
 
 storage_backend_filters = {
