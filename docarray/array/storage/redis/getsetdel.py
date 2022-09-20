@@ -125,5 +125,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             if len(batch) % self._config.batch_size == 0:
                 pipe.delete(*batch)
                 batch = []
-        pipe.delete(*batch)
+        if len(batch) > 0:
+            pipe.delete(*batch)
         pipe.execute()
