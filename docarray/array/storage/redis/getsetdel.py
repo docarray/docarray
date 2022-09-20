@@ -4,8 +4,6 @@ from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
 
-from itertools import zip_longest
-
 
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
