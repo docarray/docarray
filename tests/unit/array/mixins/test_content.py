@@ -87,7 +87,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
-        (DocumentArrayRedis, RedisConfig(n_dim=1)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize(
