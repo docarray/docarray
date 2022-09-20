@@ -4,6 +4,8 @@ from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
 
+from itertools import zip_longest
+
 
 class GetSetDelMixin(BaseGetSetDelMixin):
     """Provide concrete implementation for ``__getitem__``, ``__setitem__``,
@@ -118,13 +120,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._update_offset2ids_meta()
 
     def _clear_storage(self):
-        cursor = 0
-        while True:
-            cursor, keys = self._client.scan(
-                cursor,
-                match=self._config.index_name + '*',
-                count=self._config.batch_size,
-            )
-            self._client.delete(*keys)
-            if cursor == 0:
-                break
+        pipe = self._client.pipeline()
+        batch = []
+        for key in self._client.scan_iter(match=self._config.index_name + '*'):
+            batch.append(key)
+            if len(batch) % self._config.batch_size == 0:
+                pipe.delete(*batch)
+                batch = []
+        pipe.delete(*batch)
+        pipe.execute()
