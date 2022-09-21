@@ -118,13 +118,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._update_offset2ids_meta()
 
     def _clear_storage(self):
-        pipe = self._client.pipeline()
-        batch = []
-        for key in self._client.scan_iter(match=self._config.index_name + '*'):
-            batch.append(key)
-            if len(batch) % self._config.batch_size == 0:
-                pipe.delete(*batch)
-                batch = []
-        if len(batch) > 0:
-            pipe.delete(*batch)
-        pipe.execute()
+        self._client.ft(index_name=self._config.index_name).dropindex(
+            delete_documents=True
+        )
+        self._client.delete(self._offset2id_key)
