@@ -83,6 +83,8 @@ def _mock_get(mock, monkeypatch, status_code=requests.codes.ok):
 
 
 def test_push(mocker, monkeypatch):
+    print(os.environ['JINA_AUTH_TOKEN'])
+    assert os.environ['JINA_AUTH_TOKEN']
     mock = mocker.Mock()
     _mock_post(mock, monkeypatch)
 
