@@ -57,12 +57,12 @@ class ReduceMixin:
         :param doc1: first Document
         :param doc2: second Document
         """
-        _reduce_doc_props(doc1, doc2)
+        #_reduce_doc_props(doc1, doc2)
         if len(doc2.matches) > 0:
             doc1.matches.reduce(doc2.matches)
 
-        if len(doc2.chunks) > 0:
-            doc1.chunks.reduce(doc2.chunks)
+        #if len(doc2.chunks) > 0:
+        #    doc1.chunks.reduce(doc2.chunks)
 
     def reduce_all(self: 'T', others: List['T']) -> 'T':
         """
