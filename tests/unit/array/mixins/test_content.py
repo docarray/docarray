@@ -33,10 +33,9 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
         DocumentArrayElastic,
+        DocumentArrayRedis,
     ]:
         da = cls(config={'n_dim': 3})
-    elif cls == DocumentArrayRedis:
-        da = cls(config={'n_dim': 3, 'flush': True})
     else:
         da = cls()
     assert getattr(da, content_attr) is None
@@ -70,10 +69,9 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         DocumentArrayWeaviate,
         DocumentArrayQdrant,
         DocumentArrayElastic,
+        DocumentArrayRedis,
     ]:
         da = cls(config={'n_dim': 3})
-    elif cls == DocumentArrayRedis:
-        da = cls(config={'n_dim': 3, 'flush': True})
     else:
         da = cls()
     setattr(da, content_attr[0], content_attr[1])
@@ -89,7 +87,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
-        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize(
@@ -124,7 +122,7 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
-        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128)),
     ],
 )
 def test_content_empty(da_len, da_cls, config, start_storage):
@@ -162,7 +160,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, ElasticConfig(n_dim=5)),
-        (DocumentArrayRedis, RedisConfig(n_dim=128, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=128)),
     ],
 )
 def test_embeddings_setter(da_len, da_cls, config, start_storage):

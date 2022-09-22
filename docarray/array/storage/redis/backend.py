@@ -1,10 +1,11 @@
+import copy
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
-from docarray.helper import dataclass_from_dict
+from docarray.helper import dataclass_from_dict, random_identity
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
@@ -19,8 +20,7 @@ class RedisConfig:
     n_dim: int
     host: str = field(default='localhost')
     port: int = field(default=6379)
-    index_name: str = field(default='idx')
-    flush: bool = field(default=False)
+    index_name: Optional[str] = None
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
@@ -55,6 +55,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[RedisConfig, Dict]] = None,
         **kwargs,
     ):
+        config = copy.deepcopy(config)
         if not config:
             raise ValueError('Empty config is not allowed for Redis storage')
         elif isinstance(config, dict):
@@ -71,6 +72,9 @@ class BackendMixin(BaseBackendMixin):
 
         if config.redis_config.get('decode_responses'):
             config.redis_config['decode_responses'] = False
+
+        if config.index_name is None:
+            config.index_name = 'index_name__' + random_identity()
 
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
@@ -95,14 +99,10 @@ class BackendMixin(BaseBackendMixin):
             **self._config.redis_config,
         )
 
-        if self._config.flush:
-            client.flushdb()
-
         if self._config.update_schema:
             if self._config.index_name.encode() in client.execute_command('FT._LIST'):
                 client.ft(index_name=self._config.index_name).dropindex()
 
-        if self._config.flush or self._config.update_schema:
             schema = self._build_schema_from_redis_config()
             idef = IndexDefinition(prefix=[self._doc_prefix])
             client.ft(index_name=self._config.index_name).create_index(
@@ -122,7 +122,6 @@ class BackendMixin(BaseBackendMixin):
             config_joined['index_name'] = (
                 config_joined['index_name'] + '_subindex_' + subindex_name
             )
-        config_joined['flush'] = False
         return config_joined
 
     def _build_schema_from_redis_config(self):
