@@ -4,16 +4,16 @@ import urllib.request
 from contextlib import nullcontext
 
 
-def _uri_to_blob(uri: str) -> bytes:
+def _uri_to_blob(uri: str, **kwargs) -> bytes:
     """Convert uri to blob
     Internally it reads uri into blob.
-
     :param uri: the uri of Document
+    :param kwargs: keyword arguments to pass to `urlopen` such as timeout
     :return: blob bytes.
     """
     if urllib.parse.urlparse(uri).scheme in {'http', 'https', 'data'}:
         req = urllib.request.Request(uri, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req) as fp:
+        with urllib.request.urlopen(req, **kwargs) as fp:
             return fp.read()
     elif os.path.exists(uri):
         with open(uri, 'rb') as fp:

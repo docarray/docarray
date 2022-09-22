@@ -9,13 +9,14 @@ if TYPE_CHECKING:
 class BlobDataMixin:
     """Provide helper functions for :class:`Document` to handle binary data."""
 
-    def load_uri_to_blob(self: 'T') -> 'T':
+    def load_uri_to_blob(self: 'T', **kwargs) -> 'T':
         """Convert :attr:`.uri` to :attr:`.blob` inplace.
         Internally it downloads from the URI and set :attr:`blob`.
 
+        :param kwargs: keyword arguments to pass to `:meth:_uri_to_blob` such as timeout
         :return: itself after processed
         """
-        self.blob = _uri_to_blob(self.uri)
+        self.blob = _uri_to_blob(self.uri, **kwargs)
         return self
 
     def convert_blob_to_datauri(
