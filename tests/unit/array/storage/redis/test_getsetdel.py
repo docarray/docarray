@@ -40,7 +40,7 @@ def columns():
 
 @pytest.fixture(scope='function')
 def da_redis(columns):
-    cfg = RedisConfig(n_dim=3, flush=True, columns=columns)
+    cfg = RedisConfig(n_dim=3, columns=columns)
     da_redis = DocumentArrayDummy(storage='redis', config=cfg)
     return da_redis
 
@@ -129,19 +129,7 @@ def test_setgetdel_doc_by_id(doc, da_redis, start_storage):
         da_redis._get_doc_by_id(doc.id)
 
 
-def test_clear_storage(da_redis, start_storage):
-    for i in range(3):
-        doc = Document(id=str(i))
-    da_redis._set_doc_by_id(str(i), doc)
-
-    da_redis._clear_storage()
-
-    for i in range(3):
-        with pytest.raises(KeyError):
-            da_redis._get_doc_by_id(i)
-
-
-def test_offset2ids(da_redis, start_storage):
+def test_offset2ids_and_clear_storage(da_redis, start_storage):
     ids = [str(i) for i in range(3)]
     for id in ids:
         doc = Document(id=id)
@@ -150,3 +138,9 @@ def test_offset2ids(da_redis, start_storage):
     da_redis._save_offset2ids()
     da_redis._load_offset2ids()
     assert da_redis._offset2ids.ids == ids
+
+    da_redis._clear_storage()
+
+    for i in range(3):
+        with pytest.raises(KeyError):
+            da_redis._get_doc_by_id(i)

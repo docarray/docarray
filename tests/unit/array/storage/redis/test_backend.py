@@ -32,13 +32,6 @@ type_convert = {
 }
 
 
-@pytest.fixture(scope='function')
-def da_redis():
-    cfg = RedisConfig(n_dim=128, flush=True)
-    da_redis = DocumentArrayDummy(storage='redis', config=cfg)
-    return da_redis
-
-
 @pytest.mark.parametrize('distance', ['L2', 'IP', 'COSINE'])
 @pytest.mark.parametrize(
     'method,initial_cap,ef_construction,block_size',
@@ -81,7 +74,6 @@ def test_init_storage(
     cfg = RedisConfig(
         n_dim=128,
         distance=distance,
-        flush=True,
         columns=columns,
         method=method,
         initial_cap=initial_cap,
@@ -92,19 +84,48 @@ def test_init_storage(
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
 
     assert redis_da._client.info()['tcp_port'] == redis_da._config.port
-    assert redis_da._client.ft().info()['attributes'][0][1] == b'embedding'
-    assert redis_da._client.ft().info()['attributes'][0][5] == b'VECTOR'
+    assert (
+        redis_da._client.ft(index_name=redis_da._config.index_name).info()[
+            'attributes'
+        ][0][1]
+        == b'embedding'
+    )
+    assert (
+        redis_da._client.ft(index_name=redis_da._config.index_name).info()[
+            'attributes'
+        ][0][5]
+        == b'VECTOR'
+    )
 
 
 def test_init_storage_update_schema(start_storage):
-    cfg = RedisConfig(n_dim=128, columns={'attr1': 'str'}, flush=True)
+    cfg = RedisConfig(n_dim=128, columns={'attr1': 'str'}, index_name="idx")
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
+    assert (
+        redis_da._client.ft(index_name=redis_da._config.index_name).info()[
+            'attributes'
+        ][1][1]
+        == b'attr1'
+    )
 
-    cfg = RedisConfig(n_dim=128, columns={'attr2': 'str'}, update_schema=False)
+    cfg = RedisConfig(
+        n_dim=128, columns={'attr2': 'str'}, index_name="idx", update_schema=False
+    )
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr1'
+    assert (
+        redis_da._client.ft(index_name=redis_da._config.index_name).info()[
+            'attributes'
+        ][1][1]
+        == b'attr1'
+    )
 
-    cfg = RedisConfig(n_dim=128, columns={'attr2': 'str'}, update_schema=True)
+    cfg = RedisConfig(
+        n_dim=128, columns={'attr2': 'str'}, index_name="idx", update_schema=True
+    )
     redis_da = DocumentArrayDummy(storage='redis', config=cfg)
-    assert redis_da._client.ft().info()['attributes'][1][1] == b'attr2'
+    assert (
+        redis_da._client.ft(index_name=redis_da._config.index_name).info()[
+            'attributes'
+        ][1][1]
+        == b'attr2'
+    )

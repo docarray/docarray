@@ -53,7 +53,7 @@ def test_parallel_map_apply_external_pool(pytestconfig, pool):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
@@ -110,7 +110,7 @@ def test_parallel_map(
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
@@ -182,7 +182,7 @@ def test_parallel_map_batch(
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_storage):
@@ -211,7 +211,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_apply_partial(pytestconfig, da_cls, config, start_storage):
@@ -241,7 +241,7 @@ def test_apply_partial(pytestconfig, da_cls, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=256)),
         ('qdrant', QdrantConfig(n_dim=256)),
         ('elasticsearch', ElasticConfig(n_dim=256)),
-        ('redis', RedisConfig(n_dim=256, flush=True)),
+        ('redis', RedisConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
