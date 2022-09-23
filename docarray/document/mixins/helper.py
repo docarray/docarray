@@ -11,9 +11,11 @@ def _uri_to_blob(uri: str, **kwargs) -> bytes:
     :param kwargs: keyword arguments to pass to `urlopen` such as timeout
     :return: blob bytes.
     """
+    timeout = kwargs.get('timeout', None)
     if urllib.parse.urlparse(uri).scheme in {'http', 'https', 'data'}:
         req = urllib.request.Request(uri, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, **kwargs) as fp:
+        urlopen_kwargs = {'timeout': timeout} if timeout is not None else {}
+        with urllib.request.urlopen(req, **urlopen_kwargs) as fp:
             return fp.read()
     elif os.path.exists(uri):
         with open(uri, 'rb') as fp:
