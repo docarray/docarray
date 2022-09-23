@@ -24,10 +24,9 @@ def test_certainty_filter(start_storage):
             ],
         )
 
-    while True:
+    results = []
+    while len(results) == 0:
         results = find_random(da, target_certainty)
-        if len(results) > 0:
-            break
 
     for res in results:
         assert res.scores["weaviate_certainty"].value >= target_certainty
