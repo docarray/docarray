@@ -31,7 +31,7 @@ def test_customize_metric_fn():
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
-        ('redis', {'n_dim': 32, 'flush': True}),
+        ('redis', {'n_dim': 32}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -99,7 +99,7 @@ def test_find(storage, config, limit, query, start_storage):
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'index_text': True}),
-        ('redis', {'n_dim': 32, 'flush': True, 'index_text': True}),
+        ('redis', {'n_dim': 32, 'index_text': True}),
     ],
 )
 def test_find_by_text(storage, config, start_storage):
@@ -146,7 +146,7 @@ def test_find_by_text(storage, config, start_storage):
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
         (
             'redis',
-            {'n_dim': 32, 'flush': True, 'tag_indices': ['attr1', 'attr2', 'attr3']},
+            {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']},
         ),
     ],
 )
@@ -373,13 +373,7 @@ def test_search_pre_filtering(
     np.random.seed(0)
     n_dim = 128
 
-    if storage == 'redis':
-        da = DocumentArray(
-            storage=storage,
-            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
-        )
-    else:
-        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend(
         [
@@ -478,13 +472,7 @@ def test_filtering(
 ):
     n_dim = 128
 
-    if storage == 'redis':
-        da = DocumentArray(
-            storage=storage,
-            config={'n_dim': n_dim, 'columns': columns, 'flush': True},
-        )
-    else:
-        da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
+    da = DocumentArray(storage=storage, config={'n_dim': n_dim, 'columns': columns})
 
     da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
     thresholds = [10, 20, 30]
@@ -583,7 +571,6 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
         config={
             'n_dim': n_dim,
             'columns': columns,
-            'flush': True,
         },
     )
 
@@ -668,7 +655,7 @@ def test_elastic_id_filter(storage, config, limit):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_find_subindex(storage, config):
@@ -723,7 +710,7 @@ def test_find_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_find_subindex_multimodal(storage, config):
