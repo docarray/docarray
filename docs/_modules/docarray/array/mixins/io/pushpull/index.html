@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/io/pushpull.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>docarray.array.mixins.io.pushpull - DocArray 0.16.5 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
+        <title>docarray.array.mixins.io.pushpull - DocArray 0.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.16.5 documentation</div>
+                <div class="brand">DocArray 0.17.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -342,15 +342,30 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.mixins.io.pushpull</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">docarray.helper</span> <span class="kn">import</span> <span class="n">get_request_header</span><span class="p">,</span> <span class="n">__cache_path__</span>
+<span class="kn">import</span> <span class="nn">hubble</span>
+<span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">Client</span> <span class="k">as</span> <span class="n">HubbleClient</span>
+<span class="kn">from</span> <span class="nn">hubble.client.endpoints</span> <span class="kn">import</span> <span class="n">EndpointsV2</span>
+
+
+<span class="kn">from</span> <span class="nn">docarray.helper</span> <span class="kn">import</span> <span class="n">get_request_header</span><span class="p">,</span> <span class="n">__cache_path__</span><span class="p">,</span> <span class="n">_get_array_info</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">T</span>
+
+
+<span class="k">def</span> <span class="nf">_get_length_from_summary</span><span class="p">(</span><span class="n">summary</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get the length from summary.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">summary</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;Length&#39;</span> <span class="o">==</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="PushPullMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin">[docs]</a><span class="k">class</span> <span class="nc">PushPullMixin</span><span class="p">:</span>
@@ -358,11 +373,134 @@
 
     <span class="n">_max_bytes</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
-<div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span>
+<div class="viewcode-block" id="PushPullMixin.cloud_list"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_list">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
+    <span class="k">def</span> <span class="nf">cloud_list</span><span class="p">(</span><span class="n">show_table</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;List all available arrays in the cloud.</span>
+
+<span class="sd">        :param show_table: if true, show the table of the arrays.</span>
+<span class="sd">        :returns: List of available DocumentArray&#39;s names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="nb">print</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="kn">from</span> <span class="nn">rich.table</span> <span class="kn">import</span> <span class="n">Table</span>
+        <span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="n">box</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">HubbleClient</span><span class="p">(</span><span class="n">jsonify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">list_artifacts</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;documentArray&#39;</span><span class="p">},</span> <span class="n">sort</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;createdAt&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span>
+            <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;You have </span><span class="si">{</span><span class="n">resp</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;total&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> DocumentArray on the cloud&#39;</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">SIMPLE</span><span class="p">,</span>
+            <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Length&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Access&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Created at&#39;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;Updated at&#39;</span><span class="p">,</span> <span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">da</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+            <span class="n">table</span><span class="o">.</span><span class="n">add_row</span><span class="p">(</span>
+                <span class="n">da</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">_get_length_from_summary</span><span class="p">(</span><span class="n">da</span><span class="p">[</span><span class="s1">&#39;metaData&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span> <span class="p">[]))),</span>
+                <span class="n">da</span><span class="p">[</span><span class="s1">&#39;visibility&#39;</span><span class="p">],</span>
+                <span class="n">da</span><span class="p">[</span><span class="s1">&#39;createdAt&#39;</span><span class="p">],</span>
+                <span class="n">da</span><span class="p">[</span><span class="s1">&#39;updatedAt&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show_table</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="PushPullMixin.cloud_delete"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_delete">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
+    <span class="k">def</span> <span class="nf">cloud_delete</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a DocumentArray from the cloud.</span>
+<span class="sd">        :param name: the name of the DocumentArray to delete.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">HubbleClient</span><span class="p">(</span><span class="n">jsonify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">delete_artifact</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_raw_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="p">(</span>
+            <span class="n">is_homo</span><span class="p">,</span>
+            <span class="n">_nested_in</span><span class="p">,</span>
+            <span class="n">_nested_items</span><span class="p">,</span>
+            <span class="n">attr_counter</span><span class="p">,</span>
+            <span class="n">all_attrs_names</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_get_array_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The type of the DocumentArray&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The length of the DocumentArray&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Homogenous Documents&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">is_homo</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Whether all documents are of the same structure, attributes&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Common Attributes&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">attr_counter</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">attr_counter</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The common attributes of all documents&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Has nested Documents in&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">_nested_in</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;The field that contains nested Documents&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Multimodal dataclass&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="nb">all</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">is_multimodal</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">),</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Whether all documents are multimodal&#39;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Subindices&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_subindices&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Inspect attributes&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">_nested_items</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Quick overview of attributes of all documents&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">storage_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_storage_infos</span><span class="p">()</span>
+        <span class="n">_nested_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">storage_infos</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">storage_infos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">_nested_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">v</span><span class="p">))</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Storage backend&#39;</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">_nested_items</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Quick overview of the Document Store&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">items</span>
+
+<div class="viewcode-block" id="PushPullMixin.push"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push">[docs]</a>    <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
+    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">branding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push this DocumentArray object to Jina Cloud which can be later retrieved via :meth:`.push`</span>
 
@@ -377,6 +515,7 @@
 <span class="sd">        :param show_progress: if to show a progress bar on pulling</span>
 <span class="sd">        :param public: by default anyone can pull a DocumentArray if they know its name.</span>
 <span class="sd">            Setting this to False will allow only the creator to pull it. This feature of course you to login first.</span>
+<span class="sd">        :param branding: a dict of branding information to be sent to Jina Cloud. {&quot;icon&quot;: &quot;emoji&quot;, &quot;background&quot;: &quot;#fff&quot;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">requests</span>
 
@@ -391,11 +530,14 @@
                 <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;documentArray&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;public&#39;</span><span class="p">:</span> <span class="n">public</span><span class="p">,</span>
+                <span class="s1">&#39;metaData&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_raw_summary</span><span class="p">(),</span> <span class="s1">&#39;branding&#39;</span><span class="p">:</span> <span class="n">branding</span><span class="p">},</span>
+                    <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">),</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">ctype</span><span class="p">,</span> <span class="o">**</span><span class="n">get_request_header</span><span class="p">()}</span>
-        <span class="kn">import</span> <span class="nn">hubble</span>
 
         <span class="n">auth_token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
@@ -442,11 +584,9 @@
             <span class="k">yield</span> <span class="n">_tail</span>
 
         <span class="k">with</span> <span class="n">pbar</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">Client</span>
-            <span class="kn">from</span> <span class="nn">hubble.client.endpoints</span> <span class="kn">import</span> <span class="n">EndpointsV2</span>
 
             <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">upload_artifact</span><span class="p">,</span>
+                <span class="n">HubbleClient</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">upload_artifact</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">gen</span><span class="p">(),</span>
                 <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
             <span class="p">)</span>
@@ -457,6 +597,7 @@
             <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="PushPullMixin.pull"><a class="viewcode-back" href="../../../../../../api/docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="nd">@hubble</span><span class="o">.</span><span class="n">login_required</span>
     <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;T&#39;</span><span class="p">],</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -477,17 +618,12 @@
 
         <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="kn">import</span> <span class="nn">hubble</span>
-
         <span class="n">auth_token</span> <span class="o">=</span> <span class="n">hubble</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">auth_token</span><span class="p">:</span>
             <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;token </span><span class="si">{</span><span class="n">auth_token</span><span class="si">}</span><span class="s1">&#39;</span>
 
-        <span class="kn">from</span> <span class="nn">hubble</span> <span class="kn">import</span> <span class="n">Client</span>
-        <span class="kn">from</span> <span class="nn">hubble.client.endpoints</span> <span class="kn">import</span> <span class="n">EndpointsV2</span>
-
-        <span class="n">url</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">download_artifact</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">HubbleClient</span><span class="p">()</span><span class="o">.</span><span class="n">_base_url</span> <span class="o">+</span> <span class="n">EndpointsV2</span><span class="o">.</span><span class="n">download_artifact</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;?name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
@@ -526,7 +662,10 @@
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">__cache_path__</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                     <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_source</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">r</span></div></div>
+            <span class="k">return</span> <span class="n">r</span></div>
+
+    <span class="n">cloud_push</span> <span class="o">=</span> <span class="n">push</span>
+    <span class="n">cloud_pull</span> <span class="o">=</span> <span class="n">pull</span></div>
 </pre></div>
                 </article>
             </div>
@@ -541,7 +680,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 08, 2022</div>
+                            Last updated on Sep 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

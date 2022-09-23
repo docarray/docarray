@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/index/" />
   
-<meta property="og:site_name" content="DocArray 0.16.5 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
   
 <meta property="og:description" content="Documents inside a DocumentArray can live in a document store instead of in memory, e.g. in SQLite, Redis. Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. The look-and-feel of a DocumentArray with external store is..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.16.5 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="SQLite" href="sqlite/" /><link rel="prev" title="Process Modality" href="../../fundamentals/dataclass/example/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/index.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>Document Store - DocArray 0.16.5 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
+        <title>Document Store - DocArray 0.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.16.5 documentation</div>
+                <div class="brand">DocArray 0.17.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -522,7 +522,7 @@ To learn how to do that, see <a class="reference internal" href="../../fundament
 <td><p>✅</p></td>
 <td><p>❌</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="annlite/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">Annlite</span></code></span></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="annlite/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">AnnLite</span></code></span></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">DocumentArray(storage='annlite')</span></code></p></td>
 <td><p>✅</p></td>
 <td><p>✅</p></td>
@@ -543,15 +543,17 @@ To learn how to do that, see <a class="reference internal" href="../../fundament
 </tbody>
 </table>
 </div>
+<p>The right backend choice depends on the scale of your data, the required performance and the desired ease of setup. For most use cases we recommend starting with <a class="reference internal" href="annlite/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">AnnLite</span></code></span></a>.
+<span class="xref myst"><strong>Check our One Million Scale Benchmark for more details</strong></span>.</p>
 <p>Here we understand by</p>
 <ul class="simple">
 <li><p><strong>vector search</strong>: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding.</p></li>
 <li><p><strong>vector search + filter</strong>: perform approximate nearest neighbour search (or exact full scan search). The input of the search function is a numpy array or a DocumentArray containing an embedding and a filter.</p></li>
 <li><p><strong>filter</strong>: perform a filter step over the data. The input of the search function is a filter.</p></li>
 </ul>
-<p>The capabilities of  <strong>vector search</strong>,  <strong>vector search + filter</strong> can be used using the  <a class="reference internal" href="../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> or <a class="reference internal" href="../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-func docutils literal notranslate"><span class="pre">match()</span></code></a> methods thorugh a  <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
+<p>The capabilities of  <strong>vector search</strong>,  <strong>vector search + filter</strong> can be used using the  <a class="reference internal" href="../../api/docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin.find" title="docarray.array.mixins.find.FindMixin.find"><code class="xref py py-meth docutils literal notranslate"><span class="pre">find()</span></code></a> or <a class="reference internal" href="../../api/docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin.match" title="docarray.array.mixins.match.MatchMixin.match"><code class="xref py py-func docutils literal notranslate"><span class="pre">match()</span></code></a> methods through a  <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
 The <strong>filter</strong> functionality is available using the <code class="docutils literal notranslate"><span class="pre">.find</span></code> method in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code>.
-A detailed explanation of the differences between <code class="docutils literal notranslate"><span class="pre">.find</span></code> and <code class="docutils literal notranslate"><span class="pre">.match</span></code> can be found <a class="reference internal" href="../../fundamentals/documentarray/matching/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">here</span></code></span></a></p>
+A detailed explanation of the differences between <code class="docutils literal notranslate"><span class="pre">.find</span></code> and <code class="docutils literal notranslate"><span class="pre">.match</span></code> can be found <a class="reference internal" href="../../fundamentals/documentarray/matching/"><span class="doc std std-doc">here</span></a></p>
 <section id="vector-search-example">
 <h3>Vector search example<a class="headerlink" href="#vector-search-example" title="Permalink to this heading">#</a></h3>
 <p>Example of  <strong>vector search</strong></p>
@@ -825,7 +827,7 @@ As a consequence, your multiple references to the same backend  would look diffe
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 08, 2022</div>
+                            Last updated on Sep 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

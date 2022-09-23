@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/redis/" />
   
-<meta property="og:site_name" content="DocArray 0.16.5 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
   
 <meta property="og:description" content="You can use Redis as the document store for DocumentArray. It is useful when you want to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Redis service: To use Redis as the storage backend, it is required to have the Redis service started. Create docker-compose.yml..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.16.5 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Add New Document Store" href="../extend/" /><link rel="prev" title="Weaviate" href="../weaviate/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/redis.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>Redis - DocArray 0.16.5 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
+        <title>Redis - DocArray 0.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.16.5 documentation</div>
+                <div class="brand">DocArray 0.17.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -411,29 +411,25 @@ docker-compose up
 </pre></div>
 </div>
 <p>The usage will be the same as the ordinary DocumentArray, but the dimension of an embedding for a Document must be provided at creation time.</p>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>Currently, one Redis server instance can only store a single DocumentArray.</p>
-</div>
-<p>To store a new DocumentArray on the current Redis server, you can set <code class="docutils literal notranslate"><span class="pre">flush</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> so that the previous DocumentArray will be cleared:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-</pre></div>
-</div>
-<p>To access a previously stored DocumentArray, you can set <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">port</span></code> to match with the previuosly stored DocumentArray and make sure <code class="docutils literal notranslate"><span class="pre">flush</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>To access a previously stored DocumentArray, you can specify <code class="docutils literal notranslate"><span class="pre">index_name</span></code> and set <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">port</span></code> to match with the previuosly stored DocumentArray.</p>
 <p>The following example builds a DocumentArray from previously stored data on <code class="docutils literal notranslate"><span class="pre">localhost:6379</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="k">with</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+        <span class="s1">&#39;index_name&#39;</span><span class="p">:</span> <span class="s1">&#39;idx&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">)</span> <span class="k">as</span> <span class="n">da</span><span class="p">:</span>
     <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span>
 
 <span class="n">da2</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span> <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">,</span>
+        <span class="s1">&#39;index_name&#39;</span><span class="p">:</span> <span class="s1">&#39;idx&#39;</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">da2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
@@ -468,10 +464,11 @@ Output<div class="sd-summary-down docutils">
 <span class="go">│   host              localhost   │</span>
 <span class="go">│   port              6379        │</span>
 <span class="go">│   index_name        idx         │</span>
-<span class="go">│   flush             False       │</span>
 <span class="go">│   update_schema     True        │</span>
 <span class="go">│   distance          COSINE      │</span>
 <span class="go">│   redis_config      {}          │</span>
+<span class="go">│   index_text        False       │</span>
+<span class="go">│   tag_indices       []          │</span>
 <span class="go">│   batch_size        64          │</span>
 <span class="go">│   method            HNSW        │</span>
 <span class="go">│   ef_construction   200         │</span>
@@ -510,7 +507,6 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
     <span class="n">config</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
         <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">},</span>
-        <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
@@ -520,7 +516,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
         <span class="n">Document</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">},</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="p">]</span>
@@ -530,17 +526,17 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
         <span class="n">Document</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
             <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span><span class="o">==</span><span class="mi">0</span><span class="p">},</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;stock&#39;</span><span class="p">:</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">},</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed price, color and stock:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">stock</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-    <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">],</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__color&#39;</span><span class="p">],</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__stock&#39;</span><span class="p">]</span>
-<span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> stock=</span><span class="si">{</span><span class="n">stock</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">da</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">embedding=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> color=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> stock=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;stock&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 <p>Consider the case where you want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.,</span>&#160; <span class="pre">8.,</span>&#160; <span class="pre">8.]</span></code>, with the restriction that prices, colors and stock must pass a filter. For example, let’s consider that retrieved Documents must have a <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>, have <code class="docutils literal notranslate"><span class="pre">color</span></code> equal to <code class="docutils literal notranslate"><span class="pre">blue</span></code> and have <code class="docutils literal notranslate"><span class="pre">stock</span></code> equal to <code class="docutils literal notranslate"><span class="pre">True</span></code>. We can encode this information in Redis using</p>
@@ -580,20 +576,14 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 <span class="nb">print</span><span class="p">(</span>
     <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7, &quot;color&quot; blue and &quot;stock&quot; False:</span><span class="se">\n</span><span class="s1">&#39;</span>
 <span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">stock</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-    <span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">],</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__color&#39;</span><span class="p">],</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__stock&#39;</span><span class="p">],</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">],</span>
-<span class="p">):</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s1">&#39; score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> color=</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> stock=</span><span class="si">{</span><span class="n">stock</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="sa">f</span><span class="s2">&quot; score=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> embedding=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> price=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> color=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> stock=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;stock&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <p>This will print:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7, &quot;color&quot; blue and &quot;stock&quot; False:</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours with &quot;price&quot; at most 7, &quot;color&quot; blue and &quot;stock&quot; True:</span>
 
 <span class="go"> score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True</span>
 <span class="go"> score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True</span>
@@ -653,7 +643,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 <p>Read more about HNSW or FLAT parameters and their default values <a class="reference external" href="https://redis.io/docs/stack/search/reference/vectors/#querying-vector-fields">here</a>.</p>
 </div>
 <p>You can update the search indexing schema on an existing DocumentArray by setting <code class="docutils literal notranslate"><span class="pre">update_schema</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code> and changing your configuratoin parameters.</p>
-<p>Consider you store Documents with default indexing method <code class="docutils literal notranslate"><span class="pre">'HNSW'</span></code> and distance <code class="docutils literal notranslate"><span class="pre">'L2'</span></code>, and want to find the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>.</p>
+<p>Consider you store Documents with default indexing method <code class="docutils literal notranslate"><span class="pre">'HNSW'</span></code> and distance <code class="docutils literal notranslate"><span class="pre">'L2'</span></code>, and want to find the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
@@ -663,7 +653,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
     <span class="n">config</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
-        <span class="s1">&#39;flush&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;index_name&#39;</span><span class="p">:</span> <span class="s1">&#39;idx&#39;</span><span class="p">,</span>
         <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
@@ -676,11 +666,8 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 <span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Approximate Nearest Neighbours:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-    <span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">],</span>
-<span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; embedding=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> score=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will print:</p>
@@ -698,6 +685,7 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
     <span class="n">config</span><span class="o">=</span><span class="p">{</span>
         <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
+        <span class="s1">&#39;index_name&#39;</span><span class="p">:</span> <span class="s1">&#39;idx&#39;</span><span class="p">,</span>
         <span class="s1">&#39;update_schema&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;COSINE&#39;</span><span class="p">,</span>
     <span class="p">},</span>
@@ -706,22 +694,117 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 <span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Approximate Nearest Neighbours:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-    <span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span>
-    <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">],</span>
-<span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> score=</span><span class="si">{</span><span class="n">score</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; embedding=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="si">}</span><span class="s2">,</span><span class="se">\t</span><span class="s2"> score=</span><span class="si">{</span><span class="n">doc</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This will print:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Embeddings Approximate Nearest Neighbours:</span>
 
-<span class="go"> embedding=[3. 3. 3.],   score=0</span>
-<span class="go"> embedding=[6. 6. 6.],   score=0</span>
-<span class="go"> embedding=[9. 9. 9.],   score=5.96046447754e-08</span>
-<span class="go"> embedding=[8. 8. 8.],   score=5.96046447754e-08</span>
-<span class="go"> embedding=[5. 5. 5.],   score=5.96046447754e-08</span>
+<span class="go"> embedding=[3. 3. 3.],	 score=0</span>
+<span class="go"> embedding=[6. 6. 6.],	 score=0</span>
+<span class="go"> embedding=[4. 4. 4.],	 score=5.96046447754e-08</span>
+<span class="go"> embedding=[1. 1. 1.],	 score=5.96046447754e-08</span>
+<span class="go"> embedding=[8. 8. 8.],	 score=5.96046447754e-08</span>
 </pre></div>
+</div>
+</section>
+<section id="search-by-text-field">
+<h3>Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field<a class="headerlink" href="#search-by-text-field" title="Permalink to this heading">#</a></h3>
+<p>You can perform full-text search in a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with <code class="docutils literal notranslate"><span class="pre">storage='redis'</span></code>.
+To do this, text needs to be indexed using the boolean flag <code class="docutils literal notranslate"><span class="pre">'index_text'</span></code> which is set when the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> is created  with <code class="docutils literal notranslate"><span class="pre">config={'index_text':</span> <span class="pre">True,</span> <span class="pre">...}</span></code>.
+The following example builds a <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> with several documents containing text and searches for those that have <code class="docutils literal notranslate"><span class="pre">token1</span></code> in their text description.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;index_text&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;token1 token2 token3&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;token1 token2&#39;</span><span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;token2 token3 token4&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;token1&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will print:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[&#39;token1 token2 token3&#39;, &#39;token1 token2&#39;]</span>
+</pre></div>
+</div>
+<p>The default similarity ranking algorithm is <code class="docutils literal notranslate"><span class="pre">BM25</span></code>. Besides, <code class="docutils literal notranslate"><span class="pre">TFIDF</span></code>, <code class="docutils literal notranslate"><span class="pre">TFIDF.DOCNORM</span></code>, <code class="docutils literal notranslate"><span class="pre">DISMAX</span></code>, <code class="docutils literal notranslate"><span class="pre">DOCSCORE</span></code> and <code class="docutils literal notranslate"><span class="pre">HAMMING</span></code> are also supported by <a class="reference external" href="https://redis.io/docs/stack/search/reference/scoring/">RediSearch</a>. You can change it by specifying <code class="docutils literal notranslate"><span class="pre">scorer</span></code> in function <code class="docutils literal notranslate"><span class="pre">find</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;token1 token3&#39;</span><span class="p">,</span> <span class="n">scorer</span><span class="o">=</span><span class="s1">&#39;TFIDF.DOCNORM&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;scorer=TFIDF.DOCNORM:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">])</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;token1 token3&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;scorer=BM25:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will print:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">scorer=TFIDF.DOCNORM:</span>
+<span class="go">[&#39;token1 token2&#39;, &#39;token1 token2 token3&#39;, &#39;token2 token3 token4&#39;]</span>
+<span class="go">scorer=BM25:</span>
+<span class="go">[&#39;token1 token2 token3&#39;, &#39;token1 token2&#39;, &#39;token2 token3 token4&#39;]</span>
+</pre></div>
+</div>
+</section>
+<section id="search-by-tags-field">
+<h3>Search by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> field<a class="headerlink" href="#search-by-tags-field" title="Permalink to this heading">#</a></h3>
+<p>Text can also be indexed when it is part of <code class="docutils literal notranslate"><span class="pre">tags</span></code>.
+This is mostly useful in applications where text data can be split into groups and applications might require retrieving items based on a text search in an specific tag.</p>
+<p>For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;tag_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;food_type&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]},</span>
+<span class="p">)</span>
+<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">Document</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Italian and Spanish food&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;cheap but not that cheap&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;French and Italian food&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;on the expensive side&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">),</span>
+        <span class="n">Document</span><span class="p">(</span>
+            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;chinese noddles&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;quite cheap for what you get!&#39;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">results_cheap</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;cheap&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;searching &quot;cheap&quot; in &lt;price&gt;:</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">results_cheap</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">])</span>
+
+<span class="n">results_italian</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;italian&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;food_type&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;searching &quot;italian&quot; in &lt;food_type&gt;:</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">results_italian</span><span class="p">[:,</span> <span class="s1">&#39;tags__food_type&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This will print:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">searching &quot;cheap&quot; in &lt;price&gt;:</span>
+<span class="go">	 [&#39;cheap but not that cheap&#39;, &#39;quite cheap for what you get!&#39;]</span>
+<span class="go">searching &quot;italian&quot; in &lt;food_type&gt;:</span>
+<span class="go">	 [&#39;Italian and Spanish food&#39;, &#39;French and Italian food&#39;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, if you don’t specify the parameter <code class="docutils literal notranslate"><span class="pre">index</span></code> in the <code class="docutils literal notranslate"><span class="pre">find</span></code> method, the Document attribute <code class="docutils literal notranslate"><span class="pre">text</span></code> will be used for search. If you want to use a specific tags field, make sure to specify it with parameter <code class="docutils literal notranslate"><span class="pre">index</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;cheap&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>
@@ -751,63 +834,68 @@ has tag <code class="docutils literal notranslate"><span class="pre">price</span
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">index_name</span></code></p></td>
 <td><p>Redis index name; the name of RedisSearch index to set this DocumentArray</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">'idx'</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">n_dim</span></code></p></td>
 <td><p>Dimensionality of the embeddings</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flush</span></code></p></td>
-<td><p>Boolean flag indicating whether to clear previous DocumentArray in Redis</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">update_schema</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">update_schema</span></code></p></td>
 <td><p>Boolean flag indicating whether to update Redis Search schema</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">distance</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">distance</span></code></p></td>
 <td><p>Similarity distance metric in Redis, one of {<code class="docutils literal notranslate"><span class="pre">'L2'</span></code>, <code class="docutils literal notranslate"><span class="pre">'IP'</span></code>, <code class="docutils literal notranslate"><span class="pre">'COSINE'</span></code>}</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'COSINE'</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code></p></td>
 <td><p>Batch size used to handle storage updates</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">64</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">method</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">method</span></code></p></td>
 <td><p>Vector similarity index algorithm in Redis, either <code class="docutils literal notranslate"><span class="pre">FLAT</span></code> or <code class="docutils literal notranslate"><span class="pre">HNSW</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">'HNSW'</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ef_construction</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">index_text</span></code></p></td>
+<td><p>Boolean flag indicating whether to index <code class="docutils literal notranslate"><span class="pre">.text</span></code>. <code class="docutils literal notranslate"><span class="pre">True</span></code> will enable full text search on <code class="docutils literal notranslate"><span class="pre">.text</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tag_indices</span></code></p></td>
+<td><p>List of tags to index as text field</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ef_construction</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">200</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">m</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">16</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ef_runtime</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ef_runtime</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">block_size</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">block_size</span></code></p></td>
 <td><p>Optional parameter for Redis FLAT algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">1048576</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">initial_cap</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">initial_cap</span></code></p></td>
 <td><p>Optional parameter for Redis HNSW and FLAT algorithm</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Redis</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">columns</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">columns</span></code></p></td>
 <td><p>Other fields to store in Document and build schema</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>You can check the default values in <a class="reference external" href="https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py">the docarray source code</a></p>
+<p>You can check the default values in <a class="reference external" href="https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py">the docarray source code</a>
+For vector search configurations, default values are those of the database backend, you can find them in <a class="reference external" href="https://redis.io/docs/stack/search/reference/vectors/">redis documentation</a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Only 1 DocumentArray is allowed per redis instance (db0). We will support storing multiple DocumentArrays in one redis instance, full-text search, more query conitions and geo-filtering soon.
+<p>We will support geo-filtering soon.
 The benchmark test is on the way.</p>
 </div>
 </section>
@@ -848,7 +936,7 @@ The benchmark test is on the way.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 08, 2022</div>
+                            Last updated on Sep 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -886,6 +974,8 @@ The benchmark test is on the way.</p>
 <li><a class="reference internal" href="#create-documentarray-with-redis-backend">Create DocumentArray with Redis backend</a></li>
 <li><a class="reference internal" href="#vector-search-with-filter-query">Vector search with filter query</a></li>
 <li><a class="reference internal" href="#update-vector-search-indexing-schema">Update Vector Search Indexing Schema</a></li>
+<li><a class="reference internal" href="#search-by-text-field">Search by <code class="docutils literal notranslate"><span class="pre">.text</span></code> field</a></li>
+<li><a class="reference internal" href="#search-by-tags-field">Search by <code class="docutils literal notranslate"><span class="pre">.tags</span></code> field</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#configuration">Configuration</a></li>

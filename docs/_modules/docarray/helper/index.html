@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/helper.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>docarray.helper - DocArray 0.16.5 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
+        <title>docarray.helper - DocArray 0.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.16.5 documentation</div>
+                <div class="brand">DocArray 0.17.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -350,7 +350,11 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">expanduser</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="n">__resources_path__</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span>
@@ -799,6 +803,42 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t safely cast </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> to an int&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_array_info</span><span class="p">(</span><span class="n">da</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">):</span>
+    <span class="n">all_attrs</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">_get_attributes</span><span class="p">(</span><span class="s1">&#39;non_empty_fields&#39;</span><span class="p">)</span>
+    <span class="c1"># remove underscore attribute</span>
+    <span class="n">all_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">vv</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">vv</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_attrs</span><span class="p">]</span>
+    <span class="n">attr_counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">all_attrs</span><span class="p">)</span>
+
+    <span class="n">all_attrs_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_attrs</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">k</span><span class="p">)</span>
+    <span class="n">_nested_in</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="s1">&#39;chunks&#39;</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
+        <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;chunks&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;matches&#39;</span> <span class="ow">in</span> <span class="n">all_attrs_names</span><span class="p">:</span>
+        <span class="n">_nested_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;matches&#39;</span><span class="p">)</span>
+
+    <span class="n">is_homo</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr_counter</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+    <span class="n">_nested_items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_homo</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">n_attributes</span><span class="p">,</span> <span class="n">n_docs</span> <span class="ow">in</span> <span class="n">attr_counter</span><span class="o">.</span><span class="n">most_common</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">n_docs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n_docs</span><span class="si">}</span><span class="s1"> Document has&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_doc_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">n_docs</span><span class="si">}</span><span class="s1"> Documents have&#39;</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> one attribute&#39;</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> no attribute&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_doc_text</span><span class="si">}</span><span class="s1"> attributes&#39;</span>
+            <span class="n">_nested_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">_text</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">n_attributes</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">is_homo</span><span class="p">,</span> <span class="n">_nested_in</span><span class="p">,</span> <span class="n">_nested_items</span><span class="p">,</span> <span class="n">attr_counter</span><span class="p">,</span> <span class="n">all_attrs_names</span>
 </pre></div>
                 </article>
             </div>
@@ -813,7 +853,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 08, 2022</div>
+                            Last updated on Sep 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

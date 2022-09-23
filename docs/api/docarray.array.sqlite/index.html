@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.sqlite/" />
   
-<meta property="og:site_name" content="DocArray 0.16.5 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.16.5 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,10 +36,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.sqlite.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>docarray.array.sqlite module - DocArray 0.16.5 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
+        <title>docarray.array.sqlite module - DocArray 0.17.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.16.5 documentation</div>
+                <div class="brand">DocArray 0.17.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -529,6 +529,87 @@ Note, that the last batch might be smaller than <cite>batch_size</cite>.</p>
 <dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.clear" title="Permalink to this definition">#</a></dt>
 <dd><p>Clear the data of <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.cloud_delete">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cloud_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_delete" title="Permalink to this definition">#</a></dt>
+<dd><p>Delete a DocumentArray from the cloud.
+:type name: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:param name: the name of the DocumentArray to delete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.cloud_list">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cloud_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_list" title="Permalink to this definition">#</a></dt>
+<dd><p>List all available arrays in the cloud.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>show_table</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if true, show the table of the arrays.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of available DocumentArray’s names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.cloud_pull">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cloud_pull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_pull" title="Permalink to this definition">#</a></dt>
+<dd><p>Pulling a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> from Jina Cloud Service to local.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the upload name set during <a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.push" title="docarray.array.sqlite.DocumentArraySqlite.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a></p></li>
+<li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar on pulling</p></li>
+<li><p><strong>local_cache</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – store the downloaded DocumentArray to local folder</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.cloud_push">
+<span class="sig-name descname"><span class="pre">cloud_push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_push" title="Permalink to this definition">#</a></dt>
+<dd><p>Push this DocumentArray object to Jina Cloud which can be later retrieved via <a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.push" title="docarray.array.sqlite.DocumentArraySqlite.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>Push with the same <code class="docutils literal notranslate"><span class="pre">name</span></code> will override the existing content.</p></li>
+<li><p>Kinda like a public clipboard where everyone can override anyone’s content.
+So to make your content survive longer, you may want to use longer &amp; more complicated name.</p></li>
+<li><p>The lifetime of the content is not promised atm, could be a day, could be a week. Do not use it for
+persistence. Only use this full temporary transmission/storage/clipboard.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – a name that later can be used for retrieve this <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p></li>
+<li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar on pulling</p></li>
+<li><p><strong>public</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – by default anyone can pull a DocumentArray if they know its name.
+Setting this to False will allow only the creator to pull it. This feature of course you to login first.</p></li>
+<li><p><strong>branding</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – a dict of branding information to be sent to Jina Cloud. {“icon”: “emoji”, “background”: “#fff”}</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1319,7 +1400,7 @@ Each sub-image is also square-sized and equally-sized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.pull">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.pull" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pull</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.pull" title="Permalink to this definition">#</a></dt>
 <dd><p>Pulling a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> from Jina Cloud Service to local.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1340,7 +1421,7 @@ Each sub-image is also square-sized and equally-sized.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.sqlite.DocumentArraySqlite.push">
-<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.push" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">push</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">branding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.sqlite.DocumentArraySqlite.push" title="Permalink to this definition">#</a></dt>
 <dd><p>Push this DocumentArray object to Jina Cloud which can be later retrieved via <a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.push" title="docarray.array.sqlite.DocumentArraySqlite.push"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push()</span></code></a></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1359,6 +1440,7 @@ persistence. Only use this full temporary transmission/storage/clipboard.</p></l
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to show a progress bar on pulling</p></li>
 <li><p><strong>public</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – by default anyone can pull a DocumentArray if they know its name.
 Setting this to False will allow only the creator to pull it. This feature of course you to login first.</p></li>
+<li><p><strong>branding</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – a dict of branding information to be sent to Jina Cloud. {“icon”: “emoji”, “background”: “#fff”}</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1933,7 +2015,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 08, 2022</div>
+                            Last updated on Sep 23, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
