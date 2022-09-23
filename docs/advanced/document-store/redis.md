@@ -492,7 +492,7 @@ The following configs can be set:
 | `columns`         | Other fields to store in Document and build schema                                                | `None`                                            |
 
 You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py)
-
+For vector search configurations, default values are those of the database backend, you can find them in [redis documentation](https://redis.io/docs/stack/search/reference/vectors/)
 
 ```{note}
 We will support geo-filtering soon. 
