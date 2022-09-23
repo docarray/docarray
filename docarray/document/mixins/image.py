@@ -175,17 +175,19 @@ class ImageDataMixin:
         width: Optional[int] = None,
         height: Optional[int] = None,
         channel_axis: int = -1,
+        **kwargs,
     ) -> 'T':
         """Convert the image-like :attr:`.uri` into :attr:`.tensor`
 
         :param width: the width of the image tensor.
         :param height: the height of the tensor.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param kwargs: keyword arguments to pass to `:meth:_uri_to_blob` such as timeout
 
         :return: itself after processed
         """
 
-        buffer = _uri_to_blob(self.uri)
+        buffer = _uri_to_blob(self.uri, **kwargs)
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
         self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
         return self

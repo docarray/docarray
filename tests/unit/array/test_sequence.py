@@ -27,7 +27,7 @@ from tests.conftest import tmpfile
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=1)),
-        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1, flush=True)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1)),
     ],
 )
 def test_insert(da_cls, config, start_storage):
@@ -50,7 +50,7 @@ def test_insert(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=1)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=1)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=1)),
-        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1, flush=True)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=1)),
     ],
 )
 def test_append_extend(da_cls, config, start_storage):
@@ -84,7 +84,7 @@ def update_config_inplace(config, tmpdir, tmpfile):
         ('weaviate', {'n_dim': 3, 'name': 'Weaviate'}),
         ('qdrant', {'n_dim': 3, 'collection_name': 'qdrant'}),
         ('elasticsearch', {'n_dim': 3, 'index_name': 'elasticsearch'}),
-        ('redis', {'n_dim': 3, 'flush': True}),
+        ('redis', {'n_dim': 3, 'index_name': 'redis'}),
     ],
 )
 def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfile):
@@ -103,9 +103,6 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     assert len(da) == 2
     assert len(da._offset2ids.ids) == 2
 
-    if storage == 'redis':
-        config['flush'] = False
-        config['update_schema'] = False
     da2 = DocumentArray(storage=storage, config=config)
 
     assert len(da2) == 2
@@ -124,7 +121,7 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_extend_subindex(storage, config):
@@ -170,7 +167,7 @@ def test_extend_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_append_subindex(storage, config):
@@ -220,7 +217,7 @@ def embeddings_eq(emb1, emb2):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 @pytest.mark.parametrize(
@@ -247,7 +244,7 @@ def test_del_and_append(index, storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 @pytest.mark.parametrize(
