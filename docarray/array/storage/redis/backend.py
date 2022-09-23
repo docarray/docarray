@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Un
 import numpy as np
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
-from docarray.helper import dataclass_from_dict, random_identity
+from docarray.helper import dataclass_from_dict, random_identity, filter_dict
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
@@ -28,10 +28,10 @@ class RedisConfig:
     tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
-    ef_construction: int = field(default=200)
-    m: int = field(default=16)
-    ef_runtime: int = field(default=10)
-    block_size: int = field(default=1048576)
+    ef_construction: Optional[int] = None
+    m: Optional[int] = None
+    ef_runtime: Optional[int] = None
+    block_size: Optional[int] = None
     initial_cap: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
@@ -137,11 +137,11 @@ class BackendMixin(BaseBackendMixin):
                 'EF_CONSTRUCTION': self._config.ef_construction,
                 'EF_RUNTIME': self._config.ef_runtime,
             }
-            index_param.update(index_options)
+            index_param.update(filter_dict(index_options))
 
         if self._config.method == 'FLAT':
             index_options = {'BLOCK_SIZE': self._config.block_size}
-            index_param.update(index_options)
+            index_param.update(filter_dict(index_options))
 
         if self._config.initial_cap:
             index_param['INITIAL_CAP'] = self._config.initial_cap
