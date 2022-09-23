@@ -12,13 +12,14 @@ if TYPE_CHECKING:
 class TextDataMixin:
     """Provide helper functions for :class:`Document` to support text data."""
 
-    def load_uri_to_text(self: 'T', charset: str = 'utf-8') -> 'T':
+    def load_uri_to_text(self: 'T', charset: str = 'utf-8', **kwargs) -> 'T':
         """Convert :attr:`.uri` to :attr`.text` inplace.
 
         :param charset: charset may be any character set registered with IANA
+        :param kwargs: keyword arguments to pass to `:meth:_uri_to_blob` such as timeout
         :return: itself after processed
         """
-        blob = _uri_to_blob(self.uri)
+        blob = _uri_to_blob(self.uri, **kwargs)
         self.text = blob.decode(charset)
         return self
 
