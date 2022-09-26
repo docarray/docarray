@@ -25,5 +25,5 @@ def test_get_additional(start_storage):
     )
 
     for res in results:
-        assert res[:, "tags__creationTimeUnix"][0] is not None
-        assert res[:, "tags__lastUpdateTimeUnix"][0] is not None
+        assert res[:, 'tags__creationTimeUnix'][0] is not None
+        assert res[:, 'tags__lastUpdateTimeUnix'][0] is not None
