@@ -19,7 +19,7 @@ def test_certainty_filter(start_storage):
     with da:
         da.extend(
             [
-                Document(id=f"r{i}", embedding=np.random.randint(10, size=10))
+                Document(embedding=np.random.randint(10, size=10))
                 for i in range(1, nrof_docs)
             ],
         )
