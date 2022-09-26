@@ -13,7 +13,7 @@ def test_certainty_filter(start_storage):
     nrof_docs = 100
     target_certainty = 0.98
     da = DocumentArray(
-        storage="weaviate", config={"name": "Test", "host": "localhost", "port": 8080}
+        storage='weaviate', config={'n_dim': 10}
     )
 
     with da:
