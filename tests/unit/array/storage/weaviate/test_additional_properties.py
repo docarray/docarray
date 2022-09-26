@@ -19,7 +19,7 @@ def test_get_additional(start_storage):
 
     additional = ["creationTimeUnix", "lastUpdateTimeUnix"]
     results = da.find(
-        DocumentArray([Document(text="r5", embedding=[2, 2, 2])]),
+        DocumentArray([Document(embedding=[2, 2, 2])]),
         limit=1,
         additional=additional,
     )
