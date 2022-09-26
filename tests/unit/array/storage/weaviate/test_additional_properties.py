@@ -2,9 +2,7 @@ from docarray import Document, DocumentArray
 
 
 def test_get_additional(start_storage):
-    da = DocumentArray(
-        storage='weaviate', config={'n_dim': 3}
-    )
+    da = DocumentArray(storage="weaviate", config={"n_dim": 3})
 
     with da:
         da.extend(
@@ -17,7 +15,7 @@ def test_get_additional(start_storage):
             ]
         )
 
-    additional = ['creationTimeUnix', 'lastUpdateTimeUnix']
+    additional = ["creationTimeUnix", "lastUpdateTimeUnix"]
     results = da.find(
         DocumentArray([Document(embedding=[2, 2, 2])]),
         limit=1,
@@ -25,5 +23,5 @@ def test_get_additional(start_storage):
     )
 
     for res in results:
-        assert res[:, 'tags__creationTimeUnix'][0] is not None
-        assert res[:, 'tags__lastUpdateTimeUnix'][0] is not None
+        assert res[:, "tags__creationTimeUnix"][0] is not None
+        assert res[:, "tags__lastUpdateTimeUnix"][0] is not None
