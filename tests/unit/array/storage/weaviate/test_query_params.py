@@ -5,7 +5,7 @@ import numpy as np
 def find_random(da, target_certainty):
     return da.find(
         DocumentArray([Document(embedding=np.random.randint(10, size=10))]),
-        query_params={"certainty": target_certainty},
+        query_params={'certainty': target_certainty},
     )[0]
 
 
