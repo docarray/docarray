@@ -3,7 +3,7 @@ from docarray import Document, DocumentArray
 
 def test_get_additional(start_storage):
     da = DocumentArray(
-        storage="weaviate", config={"name": "Test", "host": "localhost", "port": 8080}
+        storage='weaviate', config={'n_dim': 3}
     )
 
     with da:
