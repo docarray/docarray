@@ -29,4 +29,4 @@ def test_certainty_filter(start_storage):
         results = find_random(da, target_certainty)
 
     for res in results:
-        assert res.scores["weaviate_certainty"].value >= target_certainty
+        assert res.scores['weaviate_certainty'].value >= target_certainty
