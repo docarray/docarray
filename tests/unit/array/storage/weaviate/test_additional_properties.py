@@ -9,11 +9,11 @@ def test_get_additional(start_storage):
     with da:
         da.extend(
             [
-                Document(text="r0", embedding=[0, 0, 0]),
-                Document(text="r2", embedding=[2, 2, 2]),
-                Document(text="r4", embedding=[4, 4, 4]),
-                Document(text="r5", embedding=[2, 2, 2]),
-                Document(text="r6", embedding=[4, 4, 4]),
+                Document(embedding=[0, 0, 0]),
+                Document(embedding=[2, 2, 2]),
+                Document(embedding=[4, 4, 4]),
+                Document(embedding=[2, 2, 2]),
+                Document(embedding=[4, 4, 4]),
             ]
         )
 
