@@ -11,7 +11,7 @@
 
 If you are a **data scientist** who works with image, text, video, audio data in Python all day, you should use DocArray: it can greatly accelerate the work on representing, embedding, matching, visualizing, evaluating, sharing data; while staying close to your favorite toolkits, e.g. Torch, TensorFlow, ONNX, PaddlePaddle, JupyterLab, Google Colab.
 
-If you are a **deep learning engineer** who works on scalable deep-learning services, you should use DocArray: it can be the basic building block of your system. Its portable data structure can be wired in Protobuf, compressed bytes, JSON; allowing your engineer friends to happily integrate it into the production system.
+If you are a **deep learning engineer** who works on scalable deep learning services, you should use DocArray: it can be the basic building block of your system. Its portable data structure can be wired in Protobuf, compressed bytes, JSON; allowing your engineer friends to happily integrate it into the production system.
 
 This is DocArray: a unique one, aiming to be *your data structure for unstructured data*.
 
