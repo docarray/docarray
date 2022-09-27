@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
 <meta property="og:title" content="docarray.array.mixins.io package" />
   
@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.io/" />
   
-<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
   
-<meta property="og:description" content="Submodules: docarray.array.mixins.io.binary module, docarray.array.mixins.io.common module, docarray.array.mixins.io.csv module, docarray.array.mixins.io.dataframe module, docarray.array.mixins.io.from_gen module, docarray.array.mixins.io.json module, docarray.array.mixins.io.pbar module, docarra..." />
+<meta property="og:description" content="Submodules: docarray.array.mixins.io.binary module- LazyRequestReader, BinaryIOMixin- BinaryIOMixin.load_binary(), BinaryIOMixin.from_bytes(), BinaryIOMixin.save_binary(), BinaryIOMixin.to_bytes(), BinaryIOMixin.to_protobuf(), BinaryIOMixin.from_protobuf(), BinaryIOMixin.from_base64(), BinaryIOMi..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,8 +38,8 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.io.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
-        <title>docarray.array.mixins.io package - DocArray 0.17.0 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
+        <title>docarray.array.mixins.io package - DocArray 0.17.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.0 documentation</div>
+                <div class="brand">DocArray 0.17.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -380,14 +380,95 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.binary/">docarray.array.mixins.io.binary module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/">docarray.array.mixins.io.dataframe module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.pbar/">docarray.array.mixins.io.pbar module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.binary/">docarray.array.mixins.io.binary module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.LazyRequestReader"><code class="docutils literal notranslate"><span class="pre">LazyRequestReader</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.load_binary"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.load_binary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.from_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.save_binary"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.save_binary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.to_bytes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_protobuf"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.to_protobuf()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_protobuf"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.from_protobuf()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.from_base64"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.from_base64()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin.to_base64"><code class="docutils literal notranslate"><span class="pre">BinaryIOMixin.to_base64()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.common/">docarray.array.mixins.io.common module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin"><code class="docutils literal notranslate"><span class="pre">CommonIOMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin.save"><code class="docutils literal notranslate"><span class="pre">CommonIOMixin.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin.load"><code class="docutils literal notranslate"><span class="pre">CommonIOMixin.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.csv/">docarray.array.mixins.io.csv module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin"><code class="docutils literal notranslate"><span class="pre">CsvIOMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin.save_embeddings_csv"><code class="docutils literal notranslate"><span class="pre">CsvIOMixin.save_embeddings_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin.save_csv"><code class="docutils literal notranslate"><span class="pre">CsvIOMixin.save_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin.load_csv"><code class="docutils literal notranslate"><span class="pre">CsvIOMixin.load_csv()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/">docarray.array.mixins.io.dataframe module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin"><code class="docutils literal notranslate"><span class="pre">DataframeIOMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin.to_dataframe"><code class="docutils literal notranslate"><span class="pre">DataframeIOMixin.to_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin.from_dataframe"><code class="docutils literal notranslate"><span class="pre">DataframeIOMixin.from_dataframe()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/">docarray.array.mixins.io.from_gen module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_ndarray"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_ndarray()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_files"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_csv"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_huggingface_datasets"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_huggingface_datasets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_ndjson"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_ndjson()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin.from_lines"><code class="docutils literal notranslate"><span class="pre">FromGeneratorMixin.from_lines()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.json/">docarray.array.mixins.io.json module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.save_json"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.save_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.load_json"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.load_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.from_json"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.from_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.from_list"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.from_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_list"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.to_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.to_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_dict"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.to_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.from_dict"><code class="docutils literal notranslate"><span class="pre">JsonIOMixin.from_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.pbar/">docarray.array.mixins.io.pbar module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn"><code class="docutils literal notranslate"><span class="pre">QPSColumn</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn.render"><code class="docutils literal notranslate"><span class="pre">QPSColumn.render()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn.get_table_column"><code class="docutils literal notranslate"><span class="pre">QPSColumn.get_table_column()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.QPSColumn.max_refresh"><code class="docutils literal notranslate"><span class="pre">QPSColumn.max_refresh</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.get_pbar"><code class="docutils literal notranslate"><span class="pre">get_pbar()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.pbar/#docarray.array.mixins.io.pbar.get_progressbar"><code class="docutils literal notranslate"><span class="pre">get_progressbar()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/">docarray.array.mixins.io.pushpull module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin"><code class="docutils literal notranslate"><span class="pre">PushPullMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_list"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.cloud_list()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_delete"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.cloud_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.push"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.push()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.pull"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.pull()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_push"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.cloud_push()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin.cloud_pull"><code class="docutils literal notranslate"><span class="pre">PushPullMixin.cloud_pull()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -409,7 +490,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 23, 2022</div>
+                            Last updated on Sep 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -475,6 +556,7 @@
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

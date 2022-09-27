@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
 <meta property="og:title" content="docarray.array.mixins.dataloader package" />
   
@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.dataloader/" />
   
-<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
   
-<meta property="og:description" content="Submodules: docarray.array.mixins.dataloader.helper module. Module contents:" />
+<meta property="og:description" content="Submodules: docarray.array.mixins.dataloader.helper module- DocumentArrayLoader- DocumentArrayLoader.apply(), DocumentArrayLoader.apply_batch(), DocumentArrayLoader.batch(), DocumentArrayLoader.batch_ids(), DocumentArrayLoader.map(), DocumentArrayLoader.map_batch(), DocumentArrayLoader.split_by_t..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,8 +38,8 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.dataloader.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
-        <title>docarray.array.mixins.dataloader package - DocArray 0.17.0 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
+        <title>docarray.array.mixins.dataloader package - DocArray 0.17.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.0 documentation</div>
+                <div class="brand">DocArray 0.17.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -380,7 +380,19 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/">docarray.array.mixins.dataloader.helper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/">docarray.array.mixins.dataloader.helper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.apply()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.apply_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.batch_ids"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.batch_ids()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.map"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.map_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.map_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.array.mixins.dataloader.helper/#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.split_by_tag"><code class="docutils literal notranslate"><span class="pre">DocumentArrayLoader.split_by_tag()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -446,7 +458,7 @@ and the original object do <strong>not</strong> share the same memory.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 23, 2022</div>
+                            Last updated on Sep 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -480,7 +492,13 @@ and the original object do <strong>not</strong> share the same memory.</p>
                         <ul>
 <li><a class="reference internal" href="#">docarray.array.mixins.dataloader package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-docarray.array.mixins.dataloader">Module contents</a></li>
+<li><a class="reference internal" href="#module-docarray.array.mixins.dataloader">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.array.mixins.dataloader.DataLoaderMixin"><code class="docutils literal notranslate"><span class="pre">DataLoaderMixin</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.mixins.dataloader.DataLoaderMixin.dataloader"><code class="docutils literal notranslate"><span class="pre">DataLoaderMixin.dataloader()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -512,6 +530,7 @@ and the original object do <strong>not</strong> share the same memory.</p>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

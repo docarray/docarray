@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
 <meta property="og:title" content="docarray.array.chunk module" />
   
@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.chunk/" />
   
-<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,8 +36,8 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.chunk.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
-        <title>docarray.array.chunk module - DocArray 0.17.0 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
+        <title>docarray.array.chunk module - DocArray 0.17.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.0 documentation</div>
+                <div class="brand">DocArray 0.17.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -188,7 +188,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -361,7 +361,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon no-toc"
+                    <label class="toc-overlay-icon toc-content-icon"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -2018,7 +2018,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 23, 2022</div>
+                            Last updated on Sep 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -2038,8 +2038,114 @@ with all Documents, that are reached by the path.</p>
                 
             </footer>
         </div>
-        <aside class="toc-drawer no-toc">
+        <aside class="toc-drawer">
             
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.chunk module</a><ul>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray"><code class="docutils literal notranslate"><span class="pre">ChunkArray</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.append"><code class="docutils literal notranslate"><span class="pre">ChunkArray.append()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.reference_doc"><code class="docutils literal notranslate"><span class="pre">ChunkArray.reference_doc</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.granularity"><code class="docutils literal notranslate"><span class="pre">ChunkArray.granularity</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.adjacency"><code class="docutils literal notranslate"><span class="pre">ChunkArray.adjacency</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.apply"><code class="docutils literal notranslate"><span class="pre">ChunkArray.apply()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.apply_batch"><code class="docutils literal notranslate"><span class="pre">ChunkArray.apply_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.batch"><code class="docutils literal notranslate"><span class="pre">ChunkArray.batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.batch_ids"><code class="docutils literal notranslate"><span class="pre">ChunkArray.batch_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.blobs"><code class="docutils literal notranslate"><span class="pre">ChunkArray.blobs</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.clear"><code class="docutils literal notranslate"><span class="pre">ChunkArray.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.cloud_delete"><code class="docutils literal notranslate"><span class="pre">ChunkArray.cloud_delete()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.cloud_list"><code class="docutils literal notranslate"><span class="pre">ChunkArray.cloud_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.cloud_pull"><code class="docutils literal notranslate"><span class="pre">ChunkArray.cloud_pull()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.cloud_push"><code class="docutils literal notranslate"><span class="pre">ChunkArray.cloud_push()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.contents"><code class="docutils literal notranslate"><span class="pre">ChunkArray.contents</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.count"><code class="docutils literal notranslate"><span class="pre">ChunkArray.count()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.dataloader"><code class="docutils literal notranslate"><span class="pre">ChunkArray.dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.embed"><code class="docutils literal notranslate"><span class="pre">ChunkArray.embed()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.embeddings"><code class="docutils literal notranslate"><span class="pre">ChunkArray.embeddings</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.empty"><code class="docutils literal notranslate"><span class="pre">ChunkArray.empty()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.evaluate"><code class="docutils literal notranslate"><span class="pre">ChunkArray.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.extend"><code class="docutils literal notranslate"><span class="pre">ChunkArray.extend()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.find"><code class="docutils literal notranslate"><span class="pre">ChunkArray.find()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.flatten"><code class="docutils literal notranslate"><span class="pre">ChunkArray.flatten()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_base64"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_bytes"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_csv"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_dataframe"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_dict"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_files"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_files()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_huggingface_datasets"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_huggingface_datasets()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_json"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_lines"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_lines()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_list"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_ndarray"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_ndarray()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_ndjson"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_ndjson()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_protobuf"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_pydantic_model"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.from_strawberry_type"><code class="docutils literal notranslate"><span class="pre">ChunkArray.from_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.get_json_schema"><code class="docutils literal notranslate"><span class="pre">ChunkArray.get_json_schema()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.get_vocabulary"><code class="docutils literal notranslate"><span class="pre">ChunkArray.get_vocabulary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.index"><code class="docutils literal notranslate"><span class="pre">ChunkArray.index()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.insert"><code class="docutils literal notranslate"><span class="pre">ChunkArray.insert()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.load"><code class="docutils literal notranslate"><span class="pre">ChunkArray.load()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.load_binary"><code class="docutils literal notranslate"><span class="pre">ChunkArray.load_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.load_csv"><code class="docutils literal notranslate"><span class="pre">ChunkArray.load_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.load_json"><code class="docutils literal notranslate"><span class="pre">ChunkArray.load_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.map"><code class="docutils literal notranslate"><span class="pre">ChunkArray.map()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.map_batch"><code class="docutils literal notranslate"><span class="pre">ChunkArray.map_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.match"><code class="docutils literal notranslate"><span class="pre">ChunkArray.match()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.plot_embeddings"><code class="docutils literal notranslate"><span class="pre">ChunkArray.plot_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.plot_image_sprites"><code class="docutils literal notranslate"><span class="pre">ChunkArray.plot_image_sprites()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.pop"><code class="docutils literal notranslate"><span class="pre">ChunkArray.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.post"><code class="docutils literal notranslate"><span class="pre">ChunkArray.post()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.pull"><code class="docutils literal notranslate"><span class="pre">ChunkArray.pull()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.push"><code class="docutils literal notranslate"><span class="pre">ChunkArray.push()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.reduce"><code class="docutils literal notranslate"><span class="pre">ChunkArray.reduce()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.reduce_all"><code class="docutils literal notranslate"><span class="pre">ChunkArray.reduce_all()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.remove"><code class="docutils literal notranslate"><span class="pre">ChunkArray.remove()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.reverse"><code class="docutils literal notranslate"><span class="pre">ChunkArray.reverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.sample"><code class="docutils literal notranslate"><span class="pre">ChunkArray.sample()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save_binary"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save_csv"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save_embeddings_csv"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save_embeddings_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save_gif"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save_gif()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.save_json"><code class="docutils literal notranslate"><span class="pre">ChunkArray.save_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.shuffle"><code class="docutils literal notranslate"><span class="pre">ChunkArray.shuffle()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.split_by_tag"><code class="docutils literal notranslate"><span class="pre">ChunkArray.split_by_tag()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.summary"><code class="docutils literal notranslate"><span class="pre">ChunkArray.summary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.tensors"><code class="docutils literal notranslate"><span class="pre">ChunkArray.tensors</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.texts"><code class="docutils literal notranslate"><span class="pre">ChunkArray.texts</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_base64"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_bytes"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_dataframe"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_dict"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_json"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_list"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_protobuf"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_pydantic_model"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.to_strawberry_type"><code class="docutils literal notranslate"><span class="pre">ChunkArray.to_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.traverse"><code class="docutils literal notranslate"><span class="pre">ChunkArray.traverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.traverse_flat"><code class="docutils literal notranslate"><span class="pre">ChunkArray.traverse_flat()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.traverse_flat_per_path"><code class="docutils literal notranslate"><span class="pre">ChunkArray.traverse_flat_per_path()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.chunk.ChunkArray.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">ChunkArray.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
             
             
         </aside>
@@ -2064,6 +2170,7 @@ with all Documents, that are reached by the path.</p>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>

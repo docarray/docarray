@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
 <meta property="og:title" content="docarray.array.sqlite module" />
   
@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.sqlite/" />
   
-<meta property="og:site_name" content="DocArray 0.17.0 Documentation" />
+<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.0 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,8 +36,8 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.sqlite.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.1.1, furo 2022.09.15"/>
-        <title>docarray.array.sqlite module - DocArray 0.17.0 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
+        <title>docarray.array.sqlite module - DocArray 0.17.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.0 documentation</div>
+                <div class="brand">DocArray 0.17.1 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -188,7 +188,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -361,7 +361,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon no-toc"
+                    <label class="toc-overlay-icon toc-content-icon"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -2015,7 +2015,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 23, 2022</div>
+                            Last updated on Sep 27, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -2035,8 +2035,121 @@ with all Documents, that are reached by the path.</p>
                 
             </footer>
         </div>
-        <aside class="toc-drawer no-toc">
+        <aside class="toc-drawer">
             
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.sqlite module</a><ul>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig"><code class="docutils literal notranslate"><span class="pre">SqliteConfig</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.connection"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.connection</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.table_name"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.table_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.serialize_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.serialize_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.conn_config"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.conn_config</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.journal_mode"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.journal_mode</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.SqliteConfig.synchronous"><code class="docutils literal notranslate"><span class="pre">SqliteConfig.synchronous</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.append"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.append()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.apply"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.apply()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.apply_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.apply_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.batch"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.batch_ids"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.batch_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.blobs"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.blobs</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.clear"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_delete"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.cloud_delete()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_list"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.cloud_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_pull"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.cloud_pull()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.cloud_push"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.cloud_push()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.contents"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.contents</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.count"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.count()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.dataloader"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.dataloader()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.embed"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.embed()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.embeddings"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.embeddings</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.empty"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.empty()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.evaluate"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.evaluate()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.extend"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.extend()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.find"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.find()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.flatten"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.flatten()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_base64"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_bytes"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_dataframe"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_dict"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_files"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_files()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_huggingface_datasets"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_huggingface_datasets()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_json"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_lines"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_lines()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_list"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_ndarray"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_ndarray()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_ndjson"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_ndjson()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_protobuf"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_pydantic_model"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.from_strawberry_type"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.from_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.get_json_schema"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.get_json_schema()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.get_vocabulary"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.get_vocabulary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.index"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.index()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.insert"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.insert()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.load"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.load()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.load_binary"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.load_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.load_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.load_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.load_json"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.load_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.map"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.map()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.map_batch"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.map_batch()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.match"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.match()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.plot_embeddings"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.plot_embeddings()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.plot_image_sprites"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.plot_image_sprites()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.pop"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.post"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.post()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.pull"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.pull()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.push"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.push()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.reduce"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.reduce()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.reduce_all"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.reduce_all()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.remove"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.remove()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.reverse"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.reverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.sample"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.sample()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save_binary"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save_binary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save_embeddings_csv"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save_embeddings_csv()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save_gif"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save_gif()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.save_json"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.save_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.schema_version"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.schema_version</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.shuffle"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.shuffle()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.split_by_tag"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.split_by_tag()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.summary"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.summary()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.tensors"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.tensors</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.texts"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.texts</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_base64"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_base64()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_bytes"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_dataframe"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_dataframe()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_dict"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_json"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_json()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_list"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_list()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_protobuf"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_pydantic_model"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_pydantic_model()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.to_strawberry_type"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.to_strawberry_type()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.traverse"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.traverse()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.traverse_flat"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.traverse_flat()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.traverse_flat_per_path"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.traverse_flat_per_path()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.sqlite.DocumentArraySqlite.TYPE_MAP"><code class="docutils literal notranslate"><span class="pre">DocumentArraySqlite.TYPE_MAP</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
             
             
         </aside>
@@ -2061,6 +2174,7 @@ with all Documents, that are reached by the path.</p>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
