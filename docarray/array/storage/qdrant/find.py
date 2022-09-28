@@ -57,10 +57,9 @@ class FindMixin:
             self.collection_name,
             query_vector=query_vector,
             query_filter=filter,
-            search_params=None
-            if not search_params
-            else rest.SearchParams(**search_params),
+            search_params=None if not search_params else rest.SearchParams(**search_params),
             top=limit,
+            limit=limit,
             append_payload=['_serialized'],
         )
 

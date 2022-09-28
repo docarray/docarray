@@ -64,7 +64,7 @@ setup(
             'strawberry-graphql',
         ],
         'qdrant': [
-            'qdrant-client==0.8.0',
+            'qdrant-client~=0.11.1',
         ],
         'annlite': [
             'annlite',
