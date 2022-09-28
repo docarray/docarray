@@ -93,7 +93,7 @@ setup(
             'pytest-custom_exit_code',
             'black==22.3.0',
             'tensorflow==2.7.0',
-            'paddlepaddle==2.2.0',
+            'paddlepaddle',
             'torch==1.9.0',
             'torchvision==0.10.0',
             'datasets',
