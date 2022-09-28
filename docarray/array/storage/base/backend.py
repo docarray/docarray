@@ -42,7 +42,11 @@ class BaseBackendMixin(ABC):
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
                 if _docs:
-                    self._subindices[name].extend(_docs.traverse_flat(name[1:]))
+                    from docarray import DocumentArray
+
+                    self._subindices[name].extend(
+                        DocumentArray(_docs).traverse_flat(name[1:])
+                    )
 
     @abstractmethod
     def _ensure_unique_config(
