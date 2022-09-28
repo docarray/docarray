@@ -83,6 +83,7 @@ setup(
             'seaborn',
         ],
         'test': [
+            'protobuf>=3.13.0,<=3.20.0',  # pip dependency resolution does not respect this restriction from paddle
             'pytest',
             'pytest-timeout',
             'pytest-mock',
