@@ -17,6 +17,7 @@ from redis.commands.search.querystring import (
     intersect,
     le,
     lt,
+    geo,
     union,
 )
 
@@ -187,6 +188,17 @@ def _build_query_node(key, condition):
         query_dict[key] = lt(value)
     elif operator == '$lte':
         query_dict[key] = le(value)
+    elif operator == '$geo':
+        if value.get('unit') is None:
+            value['unit'] = "km"
+        elif value['unit'] not in ['m', 'km', 'mi', 'ft']:
+            unit = value['unit']
+            raise ValueError(
+                f'Expecting geo unit one of m, km, mi OR ft, got {unit} instead'
+            )
+        query_dict[key] = geo(
+            value['lat'], value['lon'], value['radius'], value['unit']
+        )
     else:
         raise ValueError(
             f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
