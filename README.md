@@ -201,7 +201,7 @@ You will need more than 15GB of RAM if you want to try using the whole dataset i
 
 You will see a running progress bar to indicate the downloading process.
 
-To get a feeling of the data you will handle, plot them in one sprite image, you will need to have matplotlib and torch installed to run this snippet:
+To get a feeling of the data you will handle, plot them in one sprite image. You will need to have matplotlib and torch installed to run this snippet:
 
 ```python
 left_da.plot_image_sprites()
@@ -247,7 +247,7 @@ This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow,
 
 ### Visualize embeddings
 
-You can visualize the embeddings via tSNE in an interactive embedding projector, you will need to have  pydantic, uvicorn and fastapi installed to run this snippet::
+You can visualize the embeddings via tSNE in an interactive embedding projector. You will need to have  pydantic, uvicorn and fastapi installed to run this snippet:
 
 ```python
 left_da.plot_embeddings(image_sprites=True)
