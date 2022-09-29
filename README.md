@@ -196,7 +196,7 @@ left_da = DocumentArray.pull('demo-leftda', show_progress=True)
 ```
 
 **Note**
-You will need more than 15GB of RAM if you want to try using the whole dataset instead of just the first 1000 images, remove [:1000] when loading the files into the DocumentArrays left_da and right_da.
+If you have more than 15GB of RAM and want to try using the whole dataset instead of just the first 1000 images, remove [:1000] when loading the files into the DocumentArrays left_da and right_da.
 
 
 You will see a running progress bar to indicate the downloading process.
