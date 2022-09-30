@@ -22,7 +22,9 @@ class BaseBackendMixin(ABC):
     ):
         self._load_offset2ids()
 
-    def _init_subindices(self, *args, **kwargs):
+    def _init_subindices(
+        self, _docs: Optional['DocumentArraySourceType'] = None, *args, **kwargs
+    ):
         self._subindices = {}
         subindex_configs = kwargs.get('subindex_configs', None)
         if subindex_configs:
@@ -39,7 +41,12 @@ class BaseBackendMixin(ABC):
                     config, config_subindex, config_joined, name
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
-                self._subindices[name].extend(self.traverse_flat(name[1:]))
+                if _docs:
+                    from docarray import DocumentArray
+
+                    self._subindices[name].extend(
+                        DocumentArray(_docs).traverse_flat(name[1:])
+                    )
 
     @abstractmethod
     def _ensure_unique_config(
