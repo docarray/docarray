@@ -195,9 +195,13 @@ Or you can simply pull it from Jina Cloud:
 left_da = DocumentArray.pull('demo-leftda', show_progress=True)
 ```
 
+**Note**
+If you have more than 15GB of RAM and want to try using the whole dataset instead of just the first 1000 images, remove [:1000] when loading the files into the DocumentArrays left_da and right_da.
+
+
 You will see a running progress bar to indicate the downloading process.
 
-To get a feeling of the data you will handle, plot them in one sprite image:
+To get a feeling of the data you will handle, plot them in one sprite image. You will need to have matplotlib and torch installed to run this snippet:
 
 ```python
 left_da.plot_image_sprites()
@@ -243,7 +247,7 @@ This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow,
 
 ### Visualize embeddings
 
-You can visualize the embeddings via tSNE in an interactive embedding projector:
+You can visualize the embeddings via tSNE in an interactive embedding projector. You will need to have  pydantic, uvicorn and fastapi installed to run this snippet:
 
 ```python
 left_da.plot_embeddings(image_sprites=True)
@@ -268,7 +272,7 @@ Fun is fun, but recall our goal is to match left images against right images and
 right_da = (
     DocumentArray.pull('demo-rightda', show_progress=True)
     .apply(preproc)
-    .embed(model, device='cuda')
+    .embed(model, device='cuda')[:1000]
 )
 ```
      
@@ -277,7 +281,7 @@ right_da = (
 
 ```python
 right_da = (
-    DocumentArray.from_files('right/*.jpg').apply(preproc).embed(model, device='cuda')
+    DocumentArray.from_files('right/*.jpg')[:1000].apply(preproc).embed(model, device='cuda')
 )
 ```
 
@@ -296,9 +300,8 @@ left_da.match(right_da, limit=9)
 Let's inspect what's inside `left_da` matches now:
 
 ```python
-for d in left_da:
-    for m in d.matches:
-        print(d.uri, m.uri, m.scores['cosine'].value)
+for m in left_da[0].matches:
+    print(d.uri, m.uri, m.scores['cosine'].value)
 ```
 
 ```text
