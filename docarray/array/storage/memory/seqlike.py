@@ -58,6 +58,12 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def _extend(self, values: Iterable["Document"], **kwargs) -> None:
         values = list(values)  # consume the iterator only once
+
+        if not all(isinstance(x, Document) for x in values):
+            for x in values:
+                if not isinstance(x, Document):
+                    raise AttributeError(f"{x} is not a Document")
+
         last_idx = len(self._id2offset)
         self._data.extend(values)
         self._id_to_index.update({d.id: i + last_idx for i, d in enumerate(values)})
