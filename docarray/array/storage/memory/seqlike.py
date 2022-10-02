@@ -10,7 +10,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
 
     @needs_id2offset_rebuild
-    def insert(self, index: int, value: 'Document'):
+    def insert(self, index: int, value: "Document"):
         """Insert `doc` at `index`.
 
         :param index: Position of the insertion.
@@ -18,7 +18,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         self._data.insert(index, value)
 
-    def _append(self, value: 'Document', **kwargs):
+    def _append(self, value: "Document", **kwargs):
         """Append `doc` to the end of the array.
 
         :param value: The doc needs to be appended.
@@ -37,10 +37,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __len__(self):
         return len(self._data)
 
-    def __iter__(self) -> Iterator['Document']:
+    def __iter__(self) -> Iterator["Document"]:
         yield from self._data
 
-    def __contains__(self, x: Union[str, 'Document']):
+    def __contains__(self, x: Union[str, "Document"]):
         if isinstance(x, str):
             return x in self._id2offset
         elif isinstance(x, Document):
@@ -49,14 +49,14 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             return False
 
     def __repr__(self):
-        return f'<DocumentArray (length={len(self)}) at {id(self)}>'
+        return f"<DocumentArray (length={len(self)}) at {id(self)}>"
 
     def __add__(self, other: Union['Document', Iterable['Document']]):
         v = type(self)(self)
         v.extend(other)
         return v
 
-    def _extend(self, values: Iterable['Document'], **kwargs) -> None:
+    def _extend(self, values: Iterable["Document"], **kwargs) -> None:
         values = list(values)  # consume the iterator only once
         last_idx = len(self._id2offset)
         self._data.extend(values)
