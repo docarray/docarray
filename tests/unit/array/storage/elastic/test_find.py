@@ -95,9 +95,12 @@ def test_filter(start_storage):
     res = elastic_da.find(query=Document(embedding=docs[0].embedding))
     assert len(res) > 0
     assert res[0][0].tags['G'] == 'G0'
-
-    filter_ = {'term': {'G': 'G3'}}
+    filter_ = {'match': {'G': 'G3'}}
 
     res = elastic_da.find(filter=filter_)
     assert len(res) > 0
     assert res[0].tags['G'] == 'G3'
+
+    res = elastic_da.find(query=Document(embedding=docs[0].embedding), filter=filter_)
+    assert len(res) > 0
+    assert res[0][0].tags['G'] == 'G3'
