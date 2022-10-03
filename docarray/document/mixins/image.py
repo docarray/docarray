@@ -229,15 +229,15 @@ class ImageDataMixin:
     ) -> 'T':
         """Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
 
-        Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and
+        Following Pytorch standard, the image will be reshaped to (3 x H x W) and
         will be normalized in to a range of [0, 1] and then
-        normalized using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. These two arrays are computed
-        based on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
+        normalized using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. After normalization, the image will be transformed back into the original shape.
+        These two arrays are computed based on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
         mean and std. Otherwise, using the Imagenet pretrianed model with its own mean and std is recommended.
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-        :param img_mean: the mean of all images
-        :param img_std: the standard deviation of all images
+        :param img_mean: the mean of all images, considering the shape (3 x H x W)
+        :param img_std: the standard deviation of all images, considering the shape (3 x H x W)
         :return: itself after processed
 
         .. warning::
