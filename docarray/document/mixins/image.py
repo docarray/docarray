@@ -229,18 +229,19 @@ class ImageDataMixin:
     ) -> 'T':
         """Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
 
-        Applies normalization to the color channels of the images. By default, the normalization uses mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225], which are standard values computed on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
-                mean and std. Otherwise, using the Imagenet pretrained model with its own mean and std is recommended.
+        Applies normalization to the color channels of the images.
+        By default, the normalization uses mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225], which are standard values computed on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
+        mean and std. Otherwise, using the Imagenet pretrained model with its own mean and std is recommended.
 
-                :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-                :param img_mean: the means of all images: [mean_r, mean_g, mean_b]
-                :param img_std: the standard deviations of all images: [std_r, std_g, std_b]
-                :return: itself after processed
+        :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param img_mean: the means of all images: [mean_r, mean_g, mean_b]
+        :param img_std: the standard deviations of all images: [std_r, std_g, std_b]
+        :return: itself after processed
 
-                .. warning::
-                    Please do NOT generalize this function to gray scale, black/white image, it does not make any sense for
-                    non RGB image. if you look at their MNIST examples, the mean and stddev are 1-dimensional
-                    (since the inputs are greyscale-- no RGB channels).
+        .. warning::
+            Please do NOT generalize this function to gray scale, black/white image, it does not make any sense for
+            non RGB image. if you look at their MNIST examples, the mean and stddev are 1-dimensional
+            (since the inputs are greyscale-- no RGB channels).
 
 
         """
