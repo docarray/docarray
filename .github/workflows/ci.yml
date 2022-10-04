@@ -107,11 +107,11 @@ jobs:
         run: |
           sudo apt-get install jq
           echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
+          echo "::set-output name=matrix-paddle::$(bash scripts/get-all-paddle-test-paths.sh)"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
-
-  core-test:
+  docarray-test:
     needs: prep-testbed
     runs-on: ubuntu-latest
     strategy:
@@ -161,9 +161,56 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
+  docarray-paddle-test:
+    needs: prep-testbed
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7]
+        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix-paddle)}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Prepare enviroment
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install wheel
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install --no-cache-dir ".[test]"
+          pip install --no-cache-dir ".[full]"
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install -no-chache-dir "protobuf<3.20.0" # not sure abt exact version
+          sudo apt-get install libsndfile1
+      - name: Test
+        id: test
+        run: |
+          pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
+            -v -s -m "not gpu" ${{ matrix.test-path }}
+          echo "::set-output name=codecov_flag::docarray"
+        timeout-minutes: 30
+        env:
+          JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
+      - name: Check codecov file
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "coverage.xml"
+      - name: Upload coverage from test to Codecov
+        uses: codecov/codecov-action@v2
+        if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
+        with:
+          file: coverage.xml
+          flags: ${{ steps.test.outputs.codecov_flag }}
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: core-test
+    needs: [docarray-test, docarray-paddle-test]
     if: always()
     runs-on: ubuntu-latest
     steps:
