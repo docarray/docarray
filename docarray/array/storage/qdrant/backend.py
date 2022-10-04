@@ -1,4 +1,5 @@
 import uuid
+from abc import abstractmethod
 from dataclasses import dataclass, field, asdict
 from typing import (
     Optional,
@@ -18,6 +19,7 @@ from qdrant_client.http.models.models import (
     PointsList,
     PointStruct,
     HnswConfigDiff,
+    VectorParams,
 )
 
 from docarray import Document
@@ -37,6 +39,10 @@ class QdrantConfig:
     collection_name: Optional[str] = None
     host: Optional[str] = field(default="localhost")
     port: Optional[int] = field(default=6333)
+    grpc_port: Optional[int] = field(default=6334)
+    prefer_grpc: Optional[bool] = field(default=True)
+    api_key: Optional[str] = field(default=None)
+    https: Optional[bool] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
     scroll_batch_size: int = 64
     ef_construct: Optional[int] = None
@@ -46,6 +52,11 @@ class QdrantConfig:
 
 
 class BackendMixin(BaseBackendMixin):
+    @property
+    @abstractmethod
+    def client(self) -> 'QdrantClient':
+        raise NotImplementedError()
+
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex
@@ -83,7 +94,14 @@ class BackendMixin(BaseBackendMixin):
         self._n_dim = config.n_dim
         self._serialize_config = config.serialize_config
 
-        self._client = QdrantClient(host=config.host, port=config.port)
+        self._client = QdrantClient(
+            host=config.host,
+            port=config.port,
+            prefer_grpc=config.prefer_grpc,
+            grpc_port=config.grpc_port,
+            api_key=config.api_key,
+            https=config.https,
+        )
 
         self._config = config
         self._persist = bool(self._config.collection_name)
@@ -133,18 +151,18 @@ class BackendMixin(BaseBackendMixin):
                 full_scan_threshold=self._config.full_scan_threshold,
                 m=self._config.m,
             )
-            self.client.http.collections_api.create_collection(
-                self.collection_name,
-                CreateCollection(
-                    vector_size=self.n_dim,
+            self.client.recreate_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(
+                    size=self.n_dim,
                     distance=self.distance,
-                    hnsw_config=hnsw_config,
                 ),
+                hnsw_config=hnsw_config,
             )
 
     def _collection_exists(self, collection_name):
-        resp = self.client.http.collections_api.get_collections()
-        collections = [collection.name for collection in resp.result.collections]
+        resp = self.client.get_collections()
+        collections = [collection.name for collection in resp.collections]
         return collection_name in collections
 
     @staticmethod
@@ -164,33 +182,36 @@ class BackendMixin(BaseBackendMixin):
     def __setstate__(self, state):
         self.__dict__ = state
         self._client = QdrantClient(
-            host=state['_config'].host, port=state['_config'].port
+            host=state['_config'].host,
+            port=state['_config'].port,
+            prefer_grpc=state['_config'].prefer_grpc,
+            grpc_port=state['_config'].grpc_port,
+            api_key=state['_config'].api_key,
+            https=state['_config'].https,
         )
 
     def _get_offset2ids_meta(self) -> List[str]:
         if not self._collection_exists(self.collection_name_meta):
             return []
-        return self.client.http.points_api.get_point(
-            self.collection_name_meta, id=1
-        ).result.payload['offset2id']
+        return self.client.retrieve(self.collection_name_meta, ids=[1])[0].payload[
+            'offset2id'
+        ]
 
     def _update_offset2ids_meta(self):
         if not self._collection_exists(self.collection_name_meta):
-            self.client.http.collections_api.create_collection(
-                self.collection_name_meta,
-                CreateCollection(vector_size=1, distance=Distance.COSINE),
+            self.client.recreate_collection(
+                collection_name=self.collection_name_meta,
+                vectors_config={},  # no vectors
             )
 
-        self.client.http.points_api.upsert_points(
+        self.client.upsert(
             collection_name=self.collection_name_meta,
+            points=[
+                PointStruct(
+                    id=1, payload={"offset2id": self._offset2ids.ids}, vector={}
+                )
+            ],
             wait=True,
-            point_insert_operations=PointsList(
-                points=[
-                    PointStruct(
-                        id=1, payload={"offset2id": self._offset2ids.ids}, vector=[1]
-                    )
-                ]
-            ),
         )
 
     def _map_embedding(self, embedding: 'ArrayType') -> List[float]:

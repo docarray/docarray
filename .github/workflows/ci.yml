@@ -110,6 +110,7 @@ jobs:
           echo "::set-output name=matrix-paddle::$(bash scripts/get-all-paddle-test-paths.sh)"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix-paddle: ${{ steps.set-matrix.outputs.matrix-paddle }}
 
   docarray-test:
     needs: prep-testbed
@@ -182,8 +183,7 @@ jobs:
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
           pip install --no-cache-dir ".[test]"
           pip install --no-cache-dir ".[full]"
-          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
-          pip install -no-chache-dir "protobuf<3.20.0" # not sure abt exact version
+          pip install --no-cache-dir "protobuf<3.20.0"
           sudo apt-get install libsndfile1
       - name: Test
         id: test
