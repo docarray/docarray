@@ -52,7 +52,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         return f'<DocumentArray (length={len(self)}) at {id(self)}>'
 
     def __add__(self, other: Union['Document', Iterable['Document']]):
-        v = type(self)(self)
+        v = type(self)(self, copy=True)
         v.extend(other)
         return v
 
