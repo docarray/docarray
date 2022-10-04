@@ -229,7 +229,7 @@ class ImageDataMixin:
     ) -> 'T':
         """Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
 
-        Following Pytorch standard, the image will be reshaped to (3 x H x W) and
+        Following Pytorch standard, the image will be reshaped to (3 x H x W),
         will be normalized in to a range of [0, 1] and then
         normalized using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. After normalization, the image will be transformed back into the original shape.
         These two arrays are computed based on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
