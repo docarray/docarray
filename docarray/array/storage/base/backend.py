@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
+import warnings
 from collections import namedtuple
 from dataclasses import is_dataclass, asdict
-from typing import Dict, Optional, TYPE_CHECKING
+from typing import Dict, Optional, TYPE_CHECKING, Union, List, Tuple
 
 if TYPE_CHECKING:
     from docarray.typing import DocumentArraySourceType, ArrayType
@@ -21,7 +22,9 @@ class BaseBackendMixin(ABC):
     ):
         self._load_offset2ids()
 
-    def _init_subindices(self, *args, **kwargs):
+    def _init_subindices(
+        self, _docs: Optional['DocumentArraySourceType'] = None, *args, **kwargs
+    ):
         self._subindices = {}
         subindex_configs = kwargs.get('subindex_configs', None)
         if subindex_configs:
@@ -38,7 +41,12 @@ class BaseBackendMixin(ABC):
                     config, config_subindex, config_joined, name
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
-                self._subindices[name].extend(self.traverse_flat(name[1:]))
+                if _docs:
+                    from docarray import DocumentArray
+
+                    self._subindices[name].extend(
+                        DocumentArray(_docs).traverse_flat(name[1:])
+                    )
 
     @abstractmethod
     def _ensure_unique_config(
@@ -77,7 +85,14 @@ class BaseBackendMixin(ABC):
     def _map_type(self, col_type: str) -> str:
         return self.TYPE_MAP[col_type].type
 
-    def _normalize_columns(self, columns):
+    def _normalize_columns(
+        self, columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]]
+    ) -> Dict[str, str]:
         if columns is None:
-            return []
+            return {}
+        if isinstance(columns, list):
+            warnings.warn(
+                'Using "columns" as a List of Tuples will be deprecated soon. Please provide a Dictionary.'
+            )
+            columns = {col_desc[0]: col_desc[1] for col_desc in columns}
         return columns

@@ -7,7 +7,18 @@ from docarray.math import ndarray
 from docarray.math.ndarray import to_numpy_array
 from docarray.score import NamedScore
 
-from redis.commands.search.query import NumericFilter, Query
+from redis.commands.search.query import Query
+from redis.commands.search.querystring import (
+    DistjunctUnion,
+    IntersectNode,
+    equal,
+    ge,
+    gt,
+    intersect,
+    le,
+    lt,
+    union,
+)
 
 if TYPE_CHECKING:
     import tensorflow
@@ -28,14 +39,18 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         filter: Optional[Dict] = None,
-        limit: Optional[Union[int, float]] = 20,
+        limit: Union[int, float] = 20,
         **kwargs,
     ):
 
-        query_str = self._build_query_str(filter) if filter else "*"
+        if filter:
+            nodes = _build_query_nodes(filter)
+            query_str = intersect(*nodes).to_string()
+        else:
+            query_str = '*'
 
         q = (
-            Query(f'{query_str}=>[KNN {limit} @embedding $vec AS vector_score]')
+            Query(f'({query_str})=>[KNN {limit} @embedding $vec AS vector_score]')
             .sort_by('vector_score')
             .paging(0, limit)
             .dialect(2)
@@ -58,7 +73,7 @@ class FindMixin(BaseFindMixin):
     def _find(
         self,
         query: 'RedisArrayType',
-        limit: Optional[Union[int, float]] = 20,
+        limit: Union[int, float] = 20,
         filter: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
@@ -73,9 +88,14 @@ class FindMixin(BaseFindMixin):
             for q in query
         ]
 
-    def _find_with_filter(self, filter: Dict, limit: Optional[Union[int, float]] = 20):
-        s = self._build_query_str(filter)
-        q = Query(s)
+    def _find_with_filter(
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
+    ):
+        nodes = _build_query_nodes(filter)
+        query_str = intersect(*nodes).to_string()
+        q = Query(query_str)
         q.paging(0, limit)
 
         results = self._client.ft(index_name=self._config.index_name).search(q).docs
@@ -87,41 +107,114 @@ class FindMixin(BaseFindMixin):
         return da
 
     def _filter(
-        self, filter: Dict, limit: Optional[Union[int, float]] = 20
+        self,
+        filter: Dict,
+        limit: Union[int, float] = 20,
     ) -> 'DocumentArray':
 
         return self._find_with_filter(filter, limit=limit)
 
-    def _build_query_str(self, filter: Dict) -> str:
-        INF = "+inf"
-        NEG_INF = "-inf"
-        s = "("
+    def _find_by_text(
+        self,
+        query: Union[str, List[str]],
+        index: str = 'text',
+        limit: Union[int, float] = 20,
+        **kwargs,
+    ):
+        if isinstance(query, str):
+            query = [query]
 
-        for key in filter:
-            operator = list(filter[key].keys())[0]
-            value = filter[key][operator]
-            if operator == '$gt':
-                s += f"@{key}:[({value} {INF}] "
-            elif operator == '$gte':
-                s += f"@{key}:[{value} {INF}] "
-            elif operator == '$lt':
-                s += f"@{key}:[{NEG_INF} ({value}] "
-            elif operator == '$lte':
-                s += f"@{key}:[{NEG_INF} {value}] "
-            elif operator == '$eq':
-                if type(value) is int:
-                    s += f"@{key}:[{value} {value}] "
-                elif type(value) is bool:
-                    s += f"@{key}:[{int(value)} {int(value)}] "
-                else:
-                    s += f"@{key}:{value} "
-            elif operator == '$ne':
-                if type(value) is int:
-                    s += f"-@{key}:[{value} {value}] "
-                elif type(value) is bool:
-                    s += f"-@{key}:[{int(value)} {int(value)}] "
-                else:
-                    s += f"-@{key}:{value} "
-        s += ")"
+        return [
+            self._find_similar_documents_from_text(
+                q,
+                index=index,
+                limit=limit,
+                **kwargs,
+            )
+            for q in query
+        ]
 
-        return s
+    def _find_similar_documents_from_text(
+        self,
+        query: str,
+        index: str = 'text',
+        limit: Union[int, float] = 20,
+        **kwargs,
+    ):
+        query_str = _build_query_str(query)
+        scorer = kwargs.get('scorer', 'BM25')
+        if scorer not in [
+            'BM25',
+            'TFIDF',
+            'TFIDF.DOCNORM',
+            'DISMAX',
+            'DOCSCORE',
+            'HAMMING',
+        ]:
+            raise ValueError(
+                f'Expecting a valid text similarity ranking algorithm, got {scorer} instead'
+            )
+
+        q = Query(f'@{index}:{query_str}').scorer(scorer).paging(0, limit)
+
+        results = self._client.ft(index_name=self._config.index_name).search(q).docs
+
+        da = DocumentArray()
+        for res in results:
+            doc = Document.from_base64(res.blob.encode())
+            da.append(doc)
+        return da
+
+
+def _build_query_node(key, condition):
+    operator = list(condition.keys())[0]
+    value = condition[operator]
+
+    query_dict = {}
+
+    if operator in ['$ne', '$eq']:
+        if isinstance(value, bool):
+            query_dict[key] = equal(int(value))
+        elif isinstance(value, (int, float)):
+            query_dict[key] = equal(value)
+        else:
+            query_dict[key] = value
+    elif operator == '$gt':
+        query_dict[key] = gt(value)
+    elif operator == '$gte':
+        query_dict[key] = ge(value)
+    elif operator == '$lt':
+        query_dict[key] = lt(value)
+    elif operator == '$lte':
+        query_dict[key] = le(value)
+    else:
+        raise ValueError(
+            f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
+        )
+
+    if operator == '$ne':
+        return DistjunctUnion(**query_dict)
+    return IntersectNode(**query_dict)
+
+
+def _build_query_nodes(filter):
+    nodes = []
+    for k, v in filter.items():
+        if k == '$and':
+            children = _build_query_nodes(v)
+            node = intersect(*children)
+            nodes.append(node)
+        elif k == '$or':
+            children = _build_query_nodes(v)
+            node = union(*children)
+            nodes.append(node)
+        else:
+            child = _build_query_node(k, v)
+            nodes.append(child)
+
+    return nodes
+
+
+def _build_query_str(query):
+    query_str = '|'.join(query.split(' '))
+    return query_str

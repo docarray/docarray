@@ -191,7 +191,7 @@ da = DocumentArray(
     storage='weaviate',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
     },
 )
 
@@ -243,7 +243,7 @@ n_dim = 3
 
 da = DocumentArray(
     storage='weaviate',
-    config={'n_dim': n_dim, 'columns': [('price', 'int')], 'distance': 'l2-squared'},
+    config={'n_dim': n_dim, 'columns': {'price': 'int'}, 'distance': 'l2-squared'},
 )
 
 with da:
@@ -317,7 +317,7 @@ da = DocumentArray(
     storage='weaviate',
     config={
         'n_dim': n_dim,
-        'columns': [('price', 'float')],
+        'columns': {'price': 'float'},
         'distance': 'l2-squared',
         "name": "Persisted",
         "host": "localhost",

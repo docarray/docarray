@@ -42,7 +42,7 @@ def test_del_all(docs, to_delete):
     ],
 )
 def test_del_boolean_mask(docs, to_delete, missing_id):
-
+    all_ids = docs[:, 'id']
     # assert each missing_id is present before deleting
     for m_id in missing_id:
         assert m_id in docs[:, 'id']
@@ -52,6 +52,8 @@ def test_del_boolean_mask(docs, to_delete, missing_id):
     # assert each missing_id is NOT present AFTER deleting
     for m_id in missing_id:
         assert m_id not in docs[:, 'id']
+    for m_id in filter(lambda id: id not in missing_id, all_ids):
+        assert m_id in docs[:, 'id']
 
 
 @pytest.mark.parametrize(
@@ -116,7 +118,7 @@ def test_del_da_attribute():
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_del_subindex(storage, config):

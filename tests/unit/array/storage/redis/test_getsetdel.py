@@ -26,20 +26,21 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
 
 @pytest.fixture(scope='function')
 def columns():
-    columns = [
-        ('col_str', 'str'),
-        ('col_bytes', 'bytes'),
-        ('col_int', 'int'),
-        ('col_float', 'float'),
-        ('col_long', 'long'),
-        ('col_double', 'double'),
-    ]
+    columns = {
+        'col_str': 'str',
+        'col_bytes': 'bytes',
+        'col_int': 'int',
+        'col_float': 'float',
+        'col_long': 'long',
+        'col_double': 'double',
+    }
+
     return columns
 
 
 @pytest.fixture(scope='function')
 def da_redis(columns):
-    cfg = RedisConfig(n_dim=3, flush=True, columns=columns)
+    cfg = RedisConfig(n_dim=3, columns=columns)
     da_redis = DocumentArrayDummy(storage='redis', config=cfg)
     return da_redis
 
@@ -92,7 +93,7 @@ def test_document_to_embedding(
     else:
         assert payload['text'] == text
 
-    for col, _ in columns:
+    for col, _ in columns.items():
         if col in tags:
             assert payload[col] == tags[col]
         else:
@@ -100,7 +101,7 @@ def test_document_to_embedding(
                 payload[col]
 
     for key in tags:
-        if key not in (col[0] for col in columns):
+        if key not in (col for col in columns.keys()):
             assert key not in payload
 
 
@@ -128,19 +129,7 @@ def test_setgetdel_doc_by_id(doc, da_redis, start_storage):
         da_redis._get_doc_by_id(doc.id)
 
 
-def test_clear_storage(da_redis, start_storage):
-    for i in range(3):
-        doc = Document(id=str(i))
-    da_redis._set_doc_by_id(str(i), doc)
-
-    da_redis._clear_storage()
-
-    for i in range(3):
-        with pytest.raises(KeyError):
-            da_redis._get_doc_by_id(i)
-
-
-def test_offset2ids(da_redis, start_storage):
+def test_offset2ids_and_clear_storage(da_redis, start_storage):
     ids = [str(i) for i in range(3)]
     for id in ids:
         doc = Document(id=id)
@@ -149,3 +138,9 @@ def test_offset2ids(da_redis, start_storage):
     da_redis._save_offset2ids()
     da_redis._load_offset2ids()
     assert da_redis._offset2ids.ids == ids
+
+    da_redis._clear_storage()
+
+    for i in range(3):
+        with pytest.raises(KeyError):
+            da_redis._get_doc_by_id(i)

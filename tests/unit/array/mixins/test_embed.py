@@ -96,12 +96,9 @@ def test_embedding_on_random_network(
         DocumentArrayAnnlite,
         DocumentArrayQdrant,
         DocumentArrayElastic,
-    ]:
-        da = da_cls.empty(N, config={'n_dim': embedding_shape})
-    elif da_cls in [
         DocumentArrayRedis,
     ]:
-        da = da_cls.empty(N, config={'n_dim': embedding_shape, 'flush': True})
+        da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)
     da.tensors = np.random.random([N, *input_shape]).astype(np.float32)

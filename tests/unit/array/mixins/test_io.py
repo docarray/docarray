@@ -13,6 +13,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 from docarray.helper import random_identity
 from tests import random_docs
 
@@ -34,6 +35,7 @@ def docs():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
     ],
 )
 def test_document_save_load(
@@ -67,6 +69,7 @@ def test_document_save_load(
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
     ],
 )
 def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storage):
@@ -86,6 +89,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storag
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
     ],
 )
 def test_from_ndarray(da_cls, config, start_storage):
@@ -103,6 +107,7 @@ def test_from_ndarray(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
     ],
 )
 def test_from_files(da_cls, config, start_storage):
@@ -143,6 +148,7 @@ def test_from_files_exclude():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
     ],
 )
 def test_from_ndjson(da_cls, config, start_storage):
@@ -160,6 +166,7 @@ def test_from_ndjson(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=3)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=3)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=3)),
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_storage):
@@ -188,6 +195,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=3)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
         (DocumentArrayElastic, ElasticConfig(n_dim=3)),
+        (DocumentArrayRedis, RedisConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
@@ -219,6 +227,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_storage):
@@ -228,7 +237,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     random_texts = [str(uuid.uuid1()) for _ in da1]
     da1[:, 'text'] = random_texts
 
-    name = random_identity()
+    name = f'docarray_ci_{random_identity()}'
 
     da1.push(name, show_progress=show_progress)
 
@@ -236,6 +245,16 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
 
     assert len(da1) == len(da2) == 10
     assert da1.texts == da2.texts == random_texts
+
+    all_names = DocumentArray.cloud_list()
+
+    assert name in all_names
+
+    DocumentArray.cloud_delete(name)
+
+    all_names = DocumentArray.cloud_list()
+
+    assert name not in all_names
 
 
 @pytest.mark.parametrize(
@@ -251,6 +270,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
         # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)), # TODO: enable this
         # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
         # (DocumentArrayElastic, ElasticConfig(n_dim=3)), # Elastic needs config
+        # (DocumentArrayRedis, RedisConfig(n_dim=3)), # Redis needs config
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):

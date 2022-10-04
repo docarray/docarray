@@ -25,7 +25,10 @@ def embed_docs(pytestconfig):
     dai = DocumentArray.from_files(index_files)
     daq = DocumentArray.from_files(query_file)
 
-    for doc in dai + daq:
+    for doc in daq:
+        doc.embedding = np.random.random(128)
+
+    for doc in dai:
         doc.embedding = np.random.random(128)
 
     return daq, dai

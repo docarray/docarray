@@ -1,13 +1,14 @@
 import cgi
-import json
 import os
-import pytest
-import requests
 from io import BytesIO
 
-from docarray import DocumentArray
-from docarray.helper import random_identity
+import pytest
+import requests
+from hubble import Client
 
+from docarray import DocumentArray, Document, dataclass
+from docarray.helper import random_identity
+from docarray.typing import Image, Text
 from tests import random_docs
 
 
@@ -62,6 +63,13 @@ def _mock_post(mock, monkeypatch, status_code=requests.codes.ok):
         return PushMockResponse(status_code=status_code)
 
     monkeypatch.setattr(requests, 'post', _mocker)
+
+
+def _mock_get_user_info(mock, monkeypatch):
+    def _get_user_info(obj):
+        return {}
+
+    monkeypatch.setattr(Client, 'get_user_info', _get_user_info)
 
 
 def _mock_get(mock, monkeypatch, status_code=requests.codes.ok):
@@ -135,26 +143,67 @@ def test_push_fail(mocker, monkeypatch):
     assert mock.call_count == 1
 
 
-def test_api_url_change(mocker, monkeypatch):
+@pytest.fixture()
+def set_hubble_registry():
+    os.environ['JINA_HUBBLE_REGISTRY'] = 'http://localhost:8080'
+    yield
+    del os.environ['JINA_HUBBLE_REGISTRY']
 
-    test_api_url = 'http://localhost:8080'
-    os.environ['JINA_HUBBLE_REGISTRY'] = test_api_url
+
+def test_api_url_change(mocker, monkeypatch, set_hubble_registry):
 
     mock = mocker.Mock()
     _mock_post(mock, monkeypatch)
     _mock_get(mock, monkeypatch)
+    _mock_get_user_info(mock, monkeypatch)
 
     docs = random_docs(2)
     name = random_identity()
     docs.push(name)
     docs.pull(name)
 
-    del os.environ['JINA_HUBBLE_REGISTRY']
-
-    assert mock.call_count == 3  # 1 for push, 1 for pull, 1 for download
+    assert (
+        mock.call_count >= 3
+    )  # at least 1 for push, 1 for pull, 1 for download + extra for auth
 
     _, push_kwargs = mock.call_args_list[0]
     _, pull_kwargs = mock.call_args_list[1]
 
+    test_api_url = 'http://localhost:8080'
     assert push_kwargs['url'].startswith(test_api_url)
     assert pull_kwargs['url'].startswith(test_api_url)
+
+
+@dataclass
+class MyDocument:
+    image: Image
+    paragraph: Text
+
+
+@pytest.mark.parametrize(
+    'da',
+    [
+        DocumentArray(),
+        DocumentArray.empty(10),
+        DocumentArray.empty(10, storage='annlite', config={'n_dim': 10}),
+        DocumentArray(
+            [
+                Document(
+                    MyDocument(
+                        image='https://docarray.jina.ai/_images/apple.png',
+                        paragraph='hello world',
+                    )
+                )
+                for _ in range(10)
+            ],
+            config={'n_dim': 256},
+            storage='annlite',
+            subindex_configs={
+                '@.[image]': {'n_dim': 512},
+                '@.[paragraph]': {'n_dim': 128},
+            },
+        ),
+    ],
+)
+def test_get_raw_summary(da: DocumentArray):
+    assert da._get_raw_summary()

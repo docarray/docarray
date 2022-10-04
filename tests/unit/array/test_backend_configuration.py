@@ -1,10 +1,20 @@
-from typing import Tuple, Iterator
+import os
+import random
 
 import pytest
 import requests
-import itertools
 
-from docarray import DocumentArray, Document
+from docarray import Document, DocumentArray, dataclass
+from docarray.typing import Image, Text
+
+
+@dataclass
+class MyDocument:
+    image: Image
+    paragraph: Text
+
+
+cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def test_weaviate_hnsw(start_storage):
@@ -51,15 +61,15 @@ def test_weaviate_hnsw(start_storage):
     assert main_class.get('vectorIndexConfig', {}).get('distance') == 'l2-squared'
 
 
-def test_weaviate_da_w_protobuff(start_storage):
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_weaviate_da_w_protobuff(start_storage, columns):
 
     N = 10
 
     index = DocumentArray(
         storage='weaviate',
         config={
-            'name': 'Test',
-            'columns': [('price', 'int')],
+            'columns': columns,
         },
     )
 
@@ -86,7 +96,7 @@ def test_cast_columns_weaviate(start_storage, type_da, type_column, request):
         storage='weaviate',
         config={
             'name': f'Test{test_id}',
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 
@@ -107,7 +117,7 @@ def test_cast_columns_annlite(start_storage, type_da, type_column):
         storage='annlite',
         config={
             'n_dim': 3,
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 
@@ -132,7 +142,7 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
         config={
             'collection_name': f'test{test_id}',
             'n_dim': 3,
-            'columns': [('price', type_column)],
+            'columns': {'price': type_column},
         },
     )
 
@@ -141,3 +151,50 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
     index.extend(docs)
 
     assert len(index) == N
+
+
+def test_random_subindices_config():
+    database_index = random.randint(0, 100)
+    database_name = "jina" + str(database_index) + ".db"
+    table_index = random.randint(0, 100)
+    table_name = "test" + str(table_index)
+    subindice_image_index = random.randint(0, 100)
+    subindice_image_name = "test" + str(subindice_image_index)
+    subindice_paragraph_index = random.randint(0, 100)
+    subindice_paragraph_name = "test" + str(subindice_paragraph_index)
+    sqlite3_config = {'connection': database_name, 'table_name': table_name}
+
+    common_subindex_config = {
+        '@.[image]': {'connection': database_name, 'table_name': subindice_image_name},
+        '@.[paragraph]': {
+            'connection': database_name,
+            'table_name': subindice_paragraph_name,
+        },
+    }
+    # extend with Documents, including embeddings
+    _docs = [
+        (
+            MyDocument(
+                image=os.path.join(cur_dir, '../document/toydata/test.png'),
+                paragraph='hello world',
+            )
+        )
+    ]
+
+    da = DocumentArray(
+        storage='sqlite',  # use SQLite as vector database
+        config=sqlite3_config,
+        subindex_configs=common_subindex_config,  # set up subindices for image and description
+    )
+    da.summary()
+
+    for item in _docs:
+        d = Document(item)
+        da.append(d)
+
+    da = DocumentArray(
+        storage='sqlite',  # use SQLite as vector database
+        config=sqlite3_config,
+        subindex_configs=common_subindex_config,  # set up subindices for image and description
+    )
+    da.summary()

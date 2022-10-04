@@ -1,10 +1,11 @@
+import copy
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 from docarray import Document
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
-from docarray.helper import dataclass_from_dict
+from docarray.helper import dataclass_from_dict, random_identity, filter_dict
 
 from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField
@@ -19,19 +20,20 @@ class RedisConfig:
     n_dim: int
     host: str = field(default='localhost')
     port: int = field(default=6379)
-    index_name: str = field(default='idx')
-    flush: bool = field(default=False)
+    index_name: Optional[str] = None
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
+    index_text: bool = field(default=False)
+    tag_indices: List[str] = field(default_factory=list)
     batch_size: int = field(default=64)
     method: str = field(default='HNSW')
-    ef_construction: int = field(default=200)
-    m: int = field(default=16)
-    ef_runtime: int = field(default=10)
-    block_size: int = field(default=1048576)
+    ef_construction: Optional[int] = None
+    m: Optional[int] = None
+    ef_runtime: Optional[int] = None
+    block_size: Optional[int] = None
     initial_cap: Optional[int] = None
-    columns: Optional[List[Tuple[str, str]]] = None
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
@@ -53,6 +55,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[RedisConfig, Dict]] = None,
         **kwargs,
     ):
+        config = copy.deepcopy(config)
         if not config:
             raise ValueError('Empty config is not allowed for Redis storage')
         elif isinstance(config, dict):
@@ -69,6 +72,9 @@ class BackendMixin(BaseBackendMixin):
 
         if config.redis_config.get('decode_responses'):
             config.redis_config['decode_responses'] = False
+
+        if config.index_name is None:
+            config.index_name = 'index_name__' + random_identity()
 
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
@@ -93,14 +99,10 @@ class BackendMixin(BaseBackendMixin):
             **self._config.redis_config,
         )
 
-        if self._config.flush:
-            client.flushdb()
-
         if self._config.update_schema:
             if self._config.index_name.encode() in client.execute_command('FT._LIST'):
                 client.ft(index_name=self._config.index_name).dropindex()
 
-        if self._config.flush or self._config.update_schema:
             schema = self._build_schema_from_redis_config()
             idef = IndexDefinition(prefix=[self._doc_prefix])
             client.ft(index_name=self._config.index_name).create_index(
@@ -120,7 +122,6 @@ class BackendMixin(BaseBackendMixin):
             config_joined['index_name'] = (
                 config_joined['index_name'] + '_subindex_' + subindex_name
             )
-        config_joined['flush'] = False
         return config_joined
 
     def _build_schema_from_redis_config(self):
@@ -136,17 +137,23 @@ class BackendMixin(BaseBackendMixin):
                 'EF_CONSTRUCTION': self._config.ef_construction,
                 'EF_RUNTIME': self._config.ef_runtime,
             }
-            index_param.update(index_options)
+            index_param.update(filter_dict(index_options))
 
         if self._config.method == 'FLAT':
             index_options = {'BLOCK_SIZE': self._config.block_size}
-            index_param.update(index_options)
+            index_param.update(filter_dict(index_options))
 
         if self._config.initial_cap:
             index_param['INITIAL_CAP'] = self._config.initial_cap
         schema = [VectorField('embedding', self._config.method, index_param)]
 
-        for col, coltype in self._config.columns:
+        if self._config.index_text:
+            schema.append(TextField('text'))
+
+        for index in self._config.tag_indices:
+            schema.append(TextField(index))
+
+        for col, coltype in self._config.columns.items():
             schema.append(self._map_column(col, coltype))
 
         return schema
@@ -178,3 +185,16 @@ class BackendMixin(BaseBackendMixin):
             self._client.delete(self._offset2id_key)
         if len(self._offset2ids.ids) > 0:
             self._client.rpush(self._offset2id_key, *self._offset2ids.ids)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_client']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._client = Redis(
+            host=self._config.host,
+            port=self._config.port,
+            **self._config.redis_config,
+        )

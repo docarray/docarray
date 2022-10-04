@@ -1,10 +1,8 @@
-from codecs import unicode_escape_decode
-from typing import Dict
+from typing import Dict, Iterable, Sequence
 
 from docarray import Document
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from typing import Sequence, Iterable
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
@@ -90,10 +88,16 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _document_to_redis(self, doc: 'Document') -> Dict:
         extra_columns = {}
 
-        for col, _ in self._config.columns:
+        for col, _ in self._config.columns.items():
             tag = doc.tags.get(col)
             if tag is not None:
                 extra_columns[col] = int(tag) if isinstance(tag, bool) else tag
+
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                text = doc.tags.get(index)
+                if text is not None:
+                    extra_columns[index] = text
 
         payload = {
             'id': doc.id,
@@ -114,4 +118,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._update_offset2ids_meta()
 
     def _clear_storage(self):
-        self._client.flushdb()
+        self._client.ft(index_name=self._config.index_name).dropindex(
+            delete_documents=True
+        )
+        self._client.delete(self._offset2id_key)

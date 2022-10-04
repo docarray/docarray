@@ -131,7 +131,6 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
-
         index_da = self._get_index(subindex_name=on)
         if index_da is not self:
             return index_da.find(
@@ -145,7 +144,6 @@ class FindMixin:
                 index,
                 on=None,
             )
-
         from docarray import Document, DocumentArray
 
         if isinstance(query, dict):
