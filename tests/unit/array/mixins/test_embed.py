@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 import onnxruntime
-import paddle
 import pytest
 import tensorflow as tf
 import torch
@@ -30,9 +29,6 @@ random_embed_models = {
     ),
     'pytorch': lambda: torch.nn.Sequential(
         torch.nn.Dropout(0.5), torch.nn.BatchNorm1d(128)
-    ),
-    'paddle': lambda: paddle.nn.Sequential(
-        paddle.nn.Dropout(0.5), paddle.nn.BatchNorm1D(128)
     ),
     'transformers_torch': lambda: ViTModel(ViTConfig()),
     'transformers_tf': lambda: TFViTModel(ViTConfig()),
@@ -127,27 +123,6 @@ def test_embedding_on_random_network(
         da[: int(N / 2)].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
         da[-int(N / 2) :].embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
         np.testing.assert_array_almost_equal(da.embeddings, embed1)
-
-
-@pytest.fixture
-def paddle_model():
-    import paddle.nn as nn
-
-    class DummyPaddleLayer(nn.Layer):
-        def forward(self, x, y):
-            return (x + y) / 2.0
-
-    return DummyPaddleLayer()
-
-
-def test_embeded_paddle_model(paddle_model):
-    def collate_fn(da):
-        return {'x': da.tensors, 'y': da.tensors}
-
-    docs = DocumentArray.empty(3)
-    docs.tensors = np.random.random([3, 5]).astype(np.float32)
-    docs.embed(paddle_model, collate_fn=collate_fn, to_numpy=True)
-    assert (docs.tensors == docs.embeddings).all()
 
 
 @pytest.fixture

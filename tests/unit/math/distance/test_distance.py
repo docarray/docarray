@@ -1,5 +1,4 @@
 import numpy as np
-import paddle
 import pytest
 import tensorflow as tf
 import torch
@@ -43,11 +42,6 @@ def test_not_supported_metric():
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             np.array([[0, 27], [27, 0]]),
         ),
-        (
-            paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
-            paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
-            np.array([[0, 27], [27, 0]]),
-        ),
     ),
 )
 def test_seqeuclidean(x_mat, y_mat, result):
@@ -67,11 +61,6 @@ def test_seqeuclidean(x_mat, y_mat, result):
         (
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            np.array([[0, 5.196], [5.196, 0]]),
-        ),
-        (
-            paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
-            paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
             np.array([[0, 5.196], [5.196, 0]]),
         ),
     ),

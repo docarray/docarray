@@ -1,12 +1,12 @@
 import numpy as np
+import paddle
 import pytest
-import tensorflow as tf
-import torch
-from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
+from scipy.sparse import issparse
 
-from docarray.math.ndarray import get_array_rows, check_arraylike_equality
+from docarray.math.ndarray import get_array_rows
 from docarray.proto.docarray_pb2 import NdArrayProto
 from docarray.proto.io import flush_ndarray, read_ndarray
+from docarray.math.ndarray import get_array_rows, check_arraylike_equality
 
 
 @pytest.mark.parametrize(
@@ -21,14 +21,7 @@ from docarray.proto.io import flush_ndarray, read_ndarray
 @pytest.mark.parametrize(
     'arraytype',
     [
-        list,
-        torch.tensor,
-        tf.constant,
-        torch.tensor,
-        csr_matrix,
-        bsr_matrix,
-        coo_matrix,
-        csc_matrix,
+        paddle.to_tensor,
     ],
 )
 @pytest.mark.parametrize('ndarray_type', ['list', 'numpy'])
@@ -55,15 +48,7 @@ def get_ndarrays():
     a = np.random.random([10, 3])
     a[a > 0.5] = 0
     return [
-        a,
-        a.tolist(),
-        torch.tensor(a),
-        tf.constant(a),
-        torch.tensor(a).to_sparse(),
-        csr_matrix(a),
-        bsr_matrix(a),
-        coo_matrix(a),
-        csc_matrix(a),
+        paddle.to_tensor(a),
     ]
 
 

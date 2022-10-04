@@ -1,7 +1,6 @@
 import copy
 
 import numpy as np
-import paddle
 import pytest
 import scipy.sparse as sp
 import tensorflow as tf
@@ -539,7 +538,6 @@ def get_ndarrays():
         a,
         torch.tensor(a),
         tf.constant(a),
-        paddle.to_tensor(a),
         csr_matrix(a),
         bsr_matrix(a),
         coo_matrix(a),
