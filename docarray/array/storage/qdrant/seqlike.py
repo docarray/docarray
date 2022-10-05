@@ -43,7 +43,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         )
 
     def __len__(self):
-        return self.client.get_collection(self.collection_name).points_count
+        return self.client.http.collections_api.get_collection(
+            self.collection_name
+        ).result.vectors_count
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):

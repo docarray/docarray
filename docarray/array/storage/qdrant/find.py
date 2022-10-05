@@ -60,7 +60,7 @@ class FindMixin:
             query_vector=query_vector,
             query_filter=filter,
             search_params=None,
-            limit=limit,
+            top=limit,
             append_payload=['_serialized'],
         )
 
