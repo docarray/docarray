@@ -1,10 +1,6 @@
-> The best way to know more about contributing and how to get started is to **[join us on Slack](https://slack.jina.ai)** and ask questions in our public channels.
-
 # Contributing to DocArray
 
-Thanks for your interest in contributing to docArray. We're grateful for your initiative! ❤️
-
-I'm Alex C-G, Open Source Evangelist for Jina. I'm all about getting our new contributors up-to-speed, and that's what we'll do below.
+Thanks for your interest in contributing to DocArray. We're grateful for your initiative! ❤️
 
 In this guide, we're going to go through the steps for each kind of contribution, and good and bad examples of what to do. We look forward to your contributions!
 
@@ -129,7 +125,7 @@ Your branch name should follow the format `type-scope(-issue_id)`:
 
 * `type` is one of the [types above](#specify-the-correct-types)
 * `scope` is optional, and represents the module your branch is working on.
-* `issue_id` is [the GitHub issue](https://github.com/jina-ai/jina/issues) number. Having the correct issue number will automatically link the Pull Request on this branch to that issue.
+* `issue_id` is [the GitHub issue](https://github.com/jina-ai/docarray/issues) number. Having the correct issue number will automatically link the Pull Request on this branch to that issue.
 
 > Good examples:
 >
