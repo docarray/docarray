@@ -40,7 +40,7 @@ class QdrantConfig:
     host: Optional[str] = field(default="localhost")
     port: Optional[int] = field(default=6333)
     grpc_port: Optional[int] = field(default=6334)
-    prefer_grpc: Optional[bool] = field(default=True)
+    prefer_grpc: Optional[bool] = field(default=False)
     api_key: Optional[str] = field(default=None)
     https: Optional[bool] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
@@ -62,10 +62,10 @@ class BackendMixin(BaseBackendMixin):
         return uuid.uuid4().hex
 
     def _init_storage(
-            self,
-            docs: Optional['DocumentArraySourceType'] = None,
-            config: Optional[Union[QdrantConfig, Dict]] = None,
-            **kwargs,
+        self,
+        docs: Optional['DocumentArraySourceType'] = None,
+        config: Optional[Union[QdrantConfig, Dict]] = None,
+        **kwargs,
     ):
         """Initialize qdrant storage.
 
@@ -132,15 +132,15 @@ class BackendMixin(BaseBackendMixin):
             self.append(docs)
 
     def _ensure_unique_config(
-            self,
-            config_root: dict,
-            config_subindex: dict,
-            config_joined: dict,
-            subindex_name: str,
+        self,
+        config_root: dict,
+        config_subindex: dict,
+        config_joined: dict,
+        subindex_name: str,
     ) -> dict:
         if 'collection_name' not in config_subindex:
             config_joined['collection_name'] = (
-                    config_joined['collection_name'] + '_subindex_' + subindex_name
+                config_joined['collection_name'] + '_subindex_' + subindex_name
             )
         return config_joined
 

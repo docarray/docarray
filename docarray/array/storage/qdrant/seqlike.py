@@ -36,10 +36,10 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         # two DAW are considered as the same if they have the same client meta data
         return (
-                type(self) is type(other)
-                and self.client.openapi_client.client.host
-                == other.openapi_client.client.host
-                and self.config == other.config
+            type(self) is type(other)
+            and self.client.openapi_client.client.host
+            == other.openapi_client.client.host
+            and self.config == other.config
         )
 
     def __len__(self):
