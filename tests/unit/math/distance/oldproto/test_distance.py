@@ -1,6 +1,7 @@
 import numpy as np
 import paddle
 import pytest
+import tensorflow as tf
 
 from docarray.math.distance import cdist
 
@@ -11,6 +12,11 @@ from docarray.math.distance import cdist
         (
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
+            np.array([[0, 27], [27, 0]]),
+        ),
+        (
+            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
+            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             np.array([[0, 27], [27, 0]]),
         ),
     ),
@@ -27,6 +33,11 @@ def test_seqeuclidean(x_mat, y_mat, result):
         (
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
             paddle.to_tensor([[1, 2, 3], [4, 5, 6]], dtype='float32'),
+            np.array([[0, 5.196], [5.196, 0]]),
+        ),
+        (
+            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
+            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
             np.array([[0, 5.196], [5.196, 0]]),
         ),
     ),

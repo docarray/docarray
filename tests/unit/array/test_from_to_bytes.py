@@ -2,7 +2,6 @@ import types
 
 import numpy as np
 import pytest
-import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
@@ -20,9 +19,7 @@ def get_ndarrays_for_ravel():
     return [
         (a, False),
         (torch.tensor(a), False),
-        (tf.constant(a), False),
         (torch.tensor(a).to_sparse(), True),
-        # (tf.sparse.from_dense(a), True),
         (csr_matrix(a), True),
         (bsr_matrix(a), True),
         (coo_matrix(a), True),
@@ -38,14 +35,12 @@ def get_ndarrays_for_ravel():
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
     bstr = target_da.to_bytes(protocol=protocol, compress=compress)
-    print(protocol, compress, len(bstr))
     da2 = DocumentArray.from_bytes(bstr, protocol=protocol, compress=compress)
     assert len(da2) == len(target_da)
 
     target_da.embeddings = ndarray_val
     target_da.tensors = ndarray_val
     bstr = target_da.to_bytes(protocol=protocol, compress=compress)
-    print(protocol, compress, len(bstr))
     da2 = DocumentArray.from_bytes(bstr, protocol=protocol, compress=compress)
     assert len(da2) == len(target_da)
 
@@ -63,8 +58,6 @@ def test_to_from_bytes(target_da, protocol, compress, ndarray_val, is_sparse):
 )
 @pytest.mark.parametrize('compress', ['lz4', 'bz2', 'lzma', 'zlib', 'gzip', None])
 def test_save_bytes(target_da, protocol, compress, tmpfile):
-
-    # tests .save_binary(file, protocol=protocol, compress=compress)
     target_da.save_binary(tmpfile, protocol=protocol, compress=compress)
     target_da.save_binary(str(tmpfile), protocol=protocol, compress=compress)
 

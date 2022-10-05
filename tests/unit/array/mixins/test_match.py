@@ -3,7 +3,6 @@ import copy
 import numpy as np
 import pytest
 import scipy.sparse as sp
-import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
 from scipy.spatial.distance import cdist as scipy_cdist
@@ -537,7 +536,6 @@ def get_ndarrays():
     return [
         a,
         torch.tensor(a),
-        tf.constant(a),
         csr_matrix(a),
         bsr_matrix(a),
         coo_matrix(a),

@@ -1,6 +1,7 @@
 import numpy as np
 import paddle
 import pytest
+import tensorflow as tf
 
 from docarray import Document
 
@@ -10,6 +11,8 @@ def get_ndarrays():
     a[a > 0.5] = 0
     return [
         (paddle.to_tensor(a), False),
+        (tf.constant(a), False),
+        (tf.sparse.from_dense(a), True),
     ]
 
 

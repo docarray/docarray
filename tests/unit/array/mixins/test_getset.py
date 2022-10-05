@@ -3,7 +3,6 @@ import gc
 import numpy as np
 import pytest
 import scipy.sparse
-import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix
 
@@ -53,7 +52,6 @@ def nested_docs():
     [
         rand_array,
         torch.Tensor(rand_array),
-        tf.constant(rand_array),
         csr_matrix(rand_array),
     ],
 )

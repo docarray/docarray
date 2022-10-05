@@ -1,6 +1,7 @@
 import numpy as np
 import paddle
 import pytest
+import tensorflow as tf
 
 from docarray import DocumentArray, Document
 from docarray.math.ndarray import to_numpy_array
@@ -10,6 +11,7 @@ def get_ndarrays_for_ravel():
     a = np.random.random([10, 3])
     a[a > 0.5] = 0
     return [
+        (tf.constant(a), False),
         (paddle.to_tensor(a), False),
     ]
 
@@ -52,6 +54,8 @@ def get_ndarrays():
     a[a > 0.5] = 0
     return [
         (paddle.to_tensor(a), False),
+        (tf.constant(a), False),
+        (tf.sparse.from_dense(a), True),
     ]
 
 

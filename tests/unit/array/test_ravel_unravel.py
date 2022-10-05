@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix
 
@@ -14,9 +13,7 @@ def get_ndarrays_for_ravel():
     return [
         (a, False),
         (torch.tensor(a), False),
-        (tf.constant(a), False),
         (torch.tensor(a).to_sparse(), True),
-        # (tf.sparse.from_dense(a), True),
         (csr_matrix(a), True),
         (bsr_matrix(a), True),
         (coo_matrix(a), True),
@@ -78,9 +75,7 @@ def get_ndarrays():
     return [
         (a, False),
         (torch.tensor(a), False),
-        (tf.constant(a), False),
         (torch.tensor(a).to_sparse(), True),
-        (tf.sparse.from_dense(a), True),
         (csr_matrix(a), True),
         (bsr_matrix(a), True),
         (coo_matrix(a), True),

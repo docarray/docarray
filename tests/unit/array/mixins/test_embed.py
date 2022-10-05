@@ -3,7 +3,6 @@ import os
 import numpy as np
 import onnxruntime
 import pytest
-import tensorflow as tf
 import torch
 from transformers import (
     TFViTModel,
@@ -24,9 +23,6 @@ from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.redis import DocumentArrayRedis
 
 random_embed_models = {
-    'keras': lambda: tf.keras.Sequential(
-        [tf.keras.layers.Dropout(0.5), tf.keras.layers.BatchNormalization()]
-    ),
     'pytorch': lambda: torch.nn.Sequential(
         torch.nn.Dropout(0.5), torch.nn.BatchNorm1d(128)
     ),

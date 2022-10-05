@@ -1,9 +1,10 @@
 import numpy as np
 import paddle
 import pytest
+import tensorflow as tf
+
 from scipy.sparse import issparse
 
-from docarray.math.ndarray import get_array_rows
 from docarray.proto.docarray_pb2 import NdArrayProto
 from docarray.proto.io import flush_ndarray, read_ndarray
 from docarray.math.ndarray import get_array_rows, check_arraylike_equality
@@ -22,6 +23,7 @@ from docarray.math.ndarray import get_array_rows, check_arraylike_equality
     'arraytype',
     [
         paddle.to_tensor,
+        tf.constant,
     ],
 )
 @pytest.mark.parametrize('ndarray_type', ['list', 'numpy'])
@@ -49,6 +51,7 @@ def get_ndarrays():
     a[a > 0.5] = 0
     return [
         paddle.to_tensor(a),
+        tf.constant(a),
     ]
 
 

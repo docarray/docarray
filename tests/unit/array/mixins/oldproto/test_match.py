@@ -1,6 +1,7 @@
 import numpy as np
 import paddle
 import pytest
+import tensorflow as tf
 
 from docarray import DocumentArray
 
@@ -10,6 +11,7 @@ def get_ndarrays():
     a[a > 0.5] = 0
     return [
         paddle.to_tensor(a),
+        tf.constant(a),
     ]
 
 

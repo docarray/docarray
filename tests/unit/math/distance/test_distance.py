@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-import tensorflow as tf
 import torch
 
 from docarray.math.distance import cdist, pdist
@@ -36,12 +35,7 @@ def test_not_supported_metric():
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             np.array([[0, 27], [27, 0]]),
-        ),
-        (
-            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            np.array([[0, 27], [27, 0]]),
-        ),
+        )
     ),
 )
 def test_seqeuclidean(x_mat, y_mat, result):
@@ -57,12 +51,7 @@ def test_seqeuclidean(x_mat, y_mat, result):
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             np.array([[0, 5.196], [5.196, 0]]),
-        ),
-        (
-            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            tf.constant([[1, 2, 3], [4, 5, 6]], dtype=tf.float32),
-            np.array([[0, 5.196], [5.196, 0]]),
-        ),
+        )
     ),
 )
 def test_euclidean(x_mat, y_mat, result):

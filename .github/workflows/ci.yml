@@ -182,6 +182,11 @@ jobs:
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
           pip install --no-cache-dir ".[test]"
           pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[qdrant]"
+          pip install --no-cache-dir ".[annlite]"
+          pip install --no-cache-dir ".[weaviate]"
+          pip install --no-cache-dir ".[elasticsearch]"
+          pip install --no-cache-dir ".[redis]"
           pip install --no-cache-dir "protobuf<3.20.0"
           sudo apt-get install libsndfile1
       - name: Test

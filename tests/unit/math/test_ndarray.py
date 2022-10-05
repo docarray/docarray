@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, coo_matrix, bsr_matrix, csc_matrix, issparse
 
@@ -23,7 +22,6 @@ from docarray.proto.io import flush_ndarray, read_ndarray
     [
         list,
         torch.tensor,
-        tf.constant,
         torch.tensor,
         csr_matrix,
         bsr_matrix,
@@ -58,7 +56,6 @@ def get_ndarrays():
         a,
         a.tolist(),
         torch.tensor(a),
-        tf.constant(a),
         torch.tensor(a).to_sparse(),
         csr_matrix(a),
         bsr_matrix(a),
