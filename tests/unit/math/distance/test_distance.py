@@ -30,13 +30,13 @@ def test_not_supported_metric():
 
 @pytest.mark.parametrize(
     'x_mat, y_mat, result',
-    (
+    [
         (
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             np.array([[0, 27], [27, 0]]),
         )
-    ),
+    ],
 )
 def test_seqeuclidean(x_mat, y_mat, result):
     np.testing.assert_almost_equal(
@@ -46,13 +46,13 @@ def test_seqeuclidean(x_mat, y_mat, result):
 
 @pytest.mark.parametrize(
     'x_mat, y_mat, result',
-    (
+    [
         (
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             torch.tensor([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]),
             np.array([[0, 5.196], [5.196, 0]]),
         )
-    ),
+    ],
 )
 def test_euclidean(x_mat, y_mat, result):
     np.testing.assert_almost_equal(

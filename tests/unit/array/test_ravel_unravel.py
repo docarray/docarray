@@ -44,9 +44,6 @@ def test_ravel_embeddings_tensors(ndarray_val, attr, is_sparse, da_cls):
         if hasattr(ndav, 'to_dense'):
             ndav = (ndav.to_dense(),)
             ndarray_val = ndarray_val.to_dense()
-        if isinstance(ndav, tf.SparseTensor):
-            ndav = tf.sparse.to_dense(ndav)
-            ndarray_val = tf.sparse.to_dense(ndarray_val)
 
     if isinstance(ndav, tuple):
         ndav = ndav[0]
