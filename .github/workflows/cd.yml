@@ -18,11 +18,11 @@ jobs:
       - id: set-matrix
         run: |
           sudo apt-get install jq
-          echo "::set-output name=matrix-paddle::$(bash scripts/get-all-paddle-test-paths.sh)"
           echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
+          echo "::set-output name=matrix-oldproto::$(bash scripts/get-all-oldproto-test-paths.sh)"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
-      matrix-paddle: ${{ steps.set-matrix.outputs.matrix-paddle }}
+      matrix-oldproto: ${{ steps.set-matrix.outputs.matrix-oldproto }}
 
   docarray-test:
     needs: prep-testbed
@@ -74,14 +74,14 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
-  docarray-paddle-test:
+  docarray-oldproto-test:
     needs: prep-testbed
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.7]
-        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix-paddle)}}
+        test-path: ${{fromJson(needs.prep-testbed.outputs.matrix-oldproto)}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
@@ -121,7 +121,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
   prerelease:
-    needs: [docarray-test, docarray-paddle-test]
+    needs: [docarray-test, docarray-oldproto-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
