@@ -19,9 +19,10 @@ server. Create `docker-compose.yml` as follows:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.7.0
+    image: qdrant/qdrant:v0.10.1
     ports:
       - "6333:6333"
+      - "6334:6334"
     ulimits: # Only required for tests, as there are a lot of collections created
       nofile:
         soft: 65535
@@ -98,9 +99,10 @@ Create `docker-compose.yml`:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.7.0
+    image: qdrant/qdrant:v0.10.1
     ports:
       - "6333:6333"
+      - "6334:6334"
     ulimits: # Only required for tests, as there are a lot of collections created
       nofile:
         soft: 65535

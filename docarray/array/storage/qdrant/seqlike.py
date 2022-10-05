@@ -36,16 +36,14 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         """
         # two DAW are considered as the same if they have the same client meta data
         return (
-            type(self) is type(other)
-            and self.client.openapi_client.client.host
-            == other.openapi_client.client.host
-            and self.config == other.config
+                type(self) is type(other)
+                and self.client.openapi_client.client.host
+                == other.openapi_client.client.host
+                and self.config == other.config
         )
 
     def __len__(self):
-        return self.client.http.collections_api.get_collection(
-            self.collection_name
-        ).result.vectors_count
+        return self.client.get_collection(self.collection_name).points_count
 
     def __contains__(self, x: Union[str, 'Document']):
         if isinstance(x, str):
