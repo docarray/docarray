@@ -1,5 +1,3 @@
-import gc
-
 import numpy as np
 import pytest
 import scipy.sparse
@@ -514,9 +512,6 @@ def test_getset_subindex(storage, config):
     ],
 )
 def test_init_subindex(storage, config):
-    if storage == 'redis':
-        gc.collect()
-
     num_top_level_docs = 5
     num_chunks_per_doc = 3
     subindex_configs = (
