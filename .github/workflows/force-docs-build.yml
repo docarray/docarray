@@ -34,7 +34,7 @@ jobs:
         run: |
           git config --local user.email "dev-bot@jina.ai"
           git config --local user.name "Jina Dev Bot"
-          pip install .
+          pip install ".[test]"
           mkdir gen-html
           cd docs
           pip install -r requirements.txt
