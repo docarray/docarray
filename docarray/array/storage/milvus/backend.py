@@ -1,9 +1,19 @@
 import copy
 import uuid
-from typing import Optional, TYPE_CHECKING, Union, Dict
+from typing import Optional, TYPE_CHECKING, Union, Dict, Iterable
 from dataclasses import dataclass, field
-from pymilvus import connections, Collection, FieldSchema, DataType, CollectionSchema
 
+import numpy as np
+from pymilvus import (
+    connections,
+    Collection,
+    FieldSchema,
+    DataType,
+    CollectionSchema,
+    has_collection,
+)
+
+from docarray import Document, DocumentArray
 from docarray.array.storage.base.backend import BaseBackendMixin
 from docarray.helper import dataclass_from_dict
 
@@ -22,6 +32,11 @@ def always_true_expr(primary_key: str) -> str:
     :return: a Milvus expression that is always true for that primary key
     """
     return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
+
+
+def ids_to_milvus_expr(ids):
+    ids = ['"' + _id + '"' for _id in ids]
+    return '[' + ','.join(ids) + ']'
 
 
 @dataclass
@@ -48,7 +63,7 @@ class BackendMixin(BaseBackendMixin):
     ):
         config = copy.deepcopy(config)
         if not config:
-            raise ValueError('Empty config is not allowed for Elastic storage')
+            raise ValueError('Empty config is not allowed for Milvus storage')
         elif isinstance(config, dict):
             config = dataclass_from_dict(MilvusConfig, config)
 
@@ -57,7 +72,7 @@ class BackendMixin(BaseBackendMixin):
             config.collection_name = 'docarray__' + id
         self._config = config
 
-        self._connection_alias = 'docarray_default_connection'
+        self._connection_alias = f'docarray_{config.host}_{config.port}'
         connections.connect(
             alias=self._connection_alias, host=config.host, port=config.port
         )
@@ -67,8 +82,25 @@ class BackendMixin(BaseBackendMixin):
 
         super()._init_storage(_docs, config, **kwargs)
 
+        # To align with Sqlite behavior; if `docs` is not `None` and table name
+        # is provided, :class:`DocumentArraySqlite` will clear the existing
+        # table and load the given `docs`
+        if _docs is None:
+            return
+        elif isinstance(_docs, Iterable):
+            self.clear()
+            self.extend(_docs)
+        else:
+            self.clear()
+            if isinstance(_docs, Document):
+                self.append(_docs)
+
     def _create_or_reuse_collection(self):
-        # TODO(johannes) add logic to re-use collection if already exists
+        if has_collection(self._config.collection_name, using=self._connection_alias):
+            return Collection(
+                self._config.collection_name, using=self._connection_alias
+            )
+
         document_id = FieldSchema(
             name='document_id', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
         )  # TODO(johannes) this max_length is completely arbitrary
@@ -91,7 +123,14 @@ class BackendMixin(BaseBackendMixin):
         )
 
     def _create_or_reuse_offset2id_collection(self):
-        # TODO(johannes) add logic to re-use collection if already exists
+        if has_collection(
+            self._config.collection_name + '_offset2id', using=self._connection_alias
+        ):
+            return Collection(
+                self._config.collection_name + '_offset2id',
+                using=self._connection_alias,
+            )
+
         document_id = FieldSchema(
             name='document_id', dtype=DataType.VARCHAR, max_length=1024
         )  # TODO(johannes) this max_length is completely arbitrary
@@ -137,9 +176,13 @@ class BackendMixin(BaseBackendMixin):
             [doc.to_base64(**self._config.serialize_config)],
         ]
 
-    def _docs_to_milvus_payload(self, docs):
+    def _docs_to_milvus_payload(self, docs: 'Iterable[Document]'):
         return [
-            docs[:, 'id'],
-            list(docs[:, 'embedding']),
+            [doc.id for doc in docs],
+            [doc.embedding or np.zeros(self._config.n_dim) for doc in docs],
             [doc.to_base64(**self._config.serialize_config) for doc in docs],
         ]
+
+    def _docs_from_milvus_respone(self, response):
+        # [{'serialized': 'blablalba', 'document_id': '4299acbf3c800fa4f6eed919a3e9fe0c'}]
+        return DocumentArray([Document.from_base64(d['serialized']) for d in response])
