@@ -179,6 +179,10 @@ class DocumentArray(AllMixins, BaseDocumentArray):
                 from .redis import DocumentArrayRedis
 
                 instance = super().__new__(DocumentArrayRedis)
+            elif storage == 'milvus':
+                from .milvus import DocumentArrayMilvus
+
+                instance = super().__new__(DocumentArrayMilvus)
 
             else:
                 raise ValueError(f'storage=`{storage}` is not supported.')
