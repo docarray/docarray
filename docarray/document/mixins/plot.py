@@ -165,7 +165,7 @@ class PlotMixin:
             )
 
         if top_k <= 0:
-            raise ValueError(f'`limit` must be larger than 0, receiving {top_k}')
+            raise ValueError(f'`limit` must be larger than 0, receiving `{top_k}`')
 
         import matplotlib.pyplot as plt
 
