@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray import Document
 from docarray.array.storage.base.helper import Offset2ID
