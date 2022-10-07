@@ -227,11 +227,11 @@ pytest -v -s tests
 
 ### Test policy
 
-Every contribution that add or modify the behavior of a features must include a suit of tests that's validate the feature work as excepted 
+Every contribution that adds or modifies the behavior of a feature must include a suit of tests that validates the feature work as excepted.
 
 This allows:
-* reviewer to be very confident that the feature does what it is supposed to do before merging it into the codebase
-* contributors to be sure that they don't break already merged features when doing refactoring/modification on the codebase.
+* the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base
+* the contributors to be sure that they don't break already merged features when doing refactoring/modification on the code base.
 
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing Documentation
