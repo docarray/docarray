@@ -90,14 +90,14 @@ DocArray is compatible with Python 3.7 and above, therefore we can't accept cont
 
 ### Code formatting
 
-All of our Python codebase follow formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
-If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contribution that does not respect this conventions.
+All of our Python codebase follows formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
+If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contributions that do not respect these conventions.
 
 ### Type Hint
 
-Python is not a strongly typed programming language nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
+Python is not a strongly typed programming language, nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
 contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **highly** encourage every contribution
-to fully utilise type hints. In some particular case type hints can be cumbersome, therefore using type hints is not a hard requirement for contribution.
+to fully utilise type hints. In some particular cases type hints can be cumbersome, therefore using type hints is not a hard requirement for contribution.
 
 Contributions are expected to use type hints, especially in function signature, unless there is an arguably good reason not to do it.
 
