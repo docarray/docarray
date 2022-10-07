@@ -84,7 +84,7 @@ def from_files(
     from docarray.document import Document
 
     if read_mode not in {'r', 'rb', None}:
-        raise RuntimeError(f'read_mode should be "r", "rb" or None, got {read_mode}')
+        raise RuntimeError(f'read_mode should be "r", "rb" or None, got `{read_mode}`')
 
     def _iter_file_exts(ps):
         return itertools.chain.from_iterable(

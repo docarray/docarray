@@ -33,6 +33,12 @@ def text_setter(value) -> 'Document':
     return Document(text=value, modality='text')
 
 
+def uri_setter(value) -> 'Document':
+    from docarray import Document
+
+    return Document(uri=value)
+
+
 def audio_setter(value) -> 'Document':
     from docarray import Document
 

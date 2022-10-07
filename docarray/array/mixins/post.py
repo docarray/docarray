@@ -115,4 +115,4 @@ class PostMixin:
                 **kwargs,
             )
         else:
-            raise ValueError(f'unsupported scheme: {scheme}')
+            raise ValueError(f'unsupported scheme: `{scheme}`')

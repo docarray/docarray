@@ -9,6 +9,7 @@ from docarray.dataclasses.getter import (
     image_getter,
     json_getter,
     text_getter,
+    uri_getter,
 )
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,6 +43,17 @@ def test_text_deserializer():
             doc,
         )
         == 'text'
+    )
+
+
+def test_uri_deserializer():
+    doc = Document(uri='https://jina.ai')
+
+    assert (
+        uri_getter(
+            doc,
+        )
+        == 'https://jina.ai'
     )
 
 
