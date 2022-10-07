@@ -1,5 +1,7 @@
 from typing import Iterable
 
+import numpy as np
+
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray import Document
 from docarray.array.storage.base.helper import Offset2ID
@@ -9,7 +11,7 @@ from docarray.array.storage.milvus.backend import always_true_expr, ids_to_milvu
 class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_doc_by_id(self, _id: str) -> 'Document':
         # to be implemented
-        return self._get_docs_by_ids([_id])
+        return self._get_docs_by_ids([_id])[0]
 
     def _del_doc_by_id(self, _id: str):
         # to be implemented
@@ -23,25 +25,30 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         collection = self._offset2id_collection
         collection.load()
         res = collection.query(
-            expr='(document_id in ["1"]) or (document_id not in ["1"])',
-            # output_fields=["book_id", "book_intro"],
-            consistency_level="Strong",
+            expr=always_true_expr('document_id'),
+            output_fields=['offset', 'document_id'],
+            consistency_level='Strong',
         )
         collection.release()
         sorted_res = sorted(res, key=lambda k: int(k['offset']))
         self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
 
-    def _save_offset2ids(self):
-        collection = self._offset2id_collection  # Get an existing collection.
-        # delete old entries
+    def _empty_offset2ids_milvus(self):
+        collection = self._offset2id_collection
         collection.delete(
-            expr=always_true_expr('document_id'),
+            expr=f'document_id in {ids_to_milvus_expr(self._offset2ids.ids)}',
             consistency_level='Strong',
         )
+
+    def _save_offset2ids(self):
+        # delete old entries
+        self._empty_offset2ids_milvus()
         # insert current entries
+        collection = self._offset2id_collection
         ids = self._offset2ids.ids
         offsets = [str(i) for i in range(len(ids))]
-        collection.insert([offsets, ids])
+        dummy_vectors = [np.zeros(1) for _ in range(len(ids))]
+        collection.insert([offsets, ids, dummy_vectors])
 
     def _get_docs_by_ids(self, ids: 'Iterable[str]') -> 'DocumentArray':
         self._collection.load()

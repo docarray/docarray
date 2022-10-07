@@ -179,10 +179,14 @@ class BackendMixin(BaseBackendMixin):
     def _docs_to_milvus_payload(self, docs: 'Iterable[Document]'):
         return [
             [doc.id for doc in docs],
-            [doc.embedding or np.zeros(self._config.n_dim) for doc in docs],
+            [
+                doc.embedding
+                if doc.embedding is not None
+                else np.zeros(self._config.n_dim)
+                for doc in docs
+            ],
             [doc.to_base64(**self._config.serialize_config) for doc in docs],
         ]
 
     def _docs_from_milvus_respone(self, response):
-        # [{'serialized': 'blablalba', 'document_id': '4299acbf3c800fa4f6eed919a3e9fe0c'}]
         return DocumentArray([Document.from_base64(d['serialized']) for d in response])
