@@ -91,7 +91,7 @@ DocArray is compatible with Python 3.7 and above, therefore we can't accept cont
 ### Code formatting
 
 All of our Python codebase follow formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
-If you have installed the `pre-commit hooks` (see above) the formatting should be automatic on every commit. Moreover, our CI will block contribution that does not respect this conventions.
+If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contribution that does not respect this conventions.
 
 ### Type Hint
 
