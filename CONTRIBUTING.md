@@ -80,6 +80,32 @@ Now you will be automatically reminded to add docstrings to your code. `black` w
 
 Run `git config blame.ignoreRevsFile .github/.git-blame-ignore-revs`
 
+## Code style conventions:
+
+Most of our codebase is written in Python. 
+
+### PEP compliance
+
+We comply to the official PEP: E9, F63, F7, F82 code style and required every contribution to follow it. This is enforced by using [flake8](https://github.com/PyCQA/flake8) in our CI and in our [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks).
+
+### Python version
+DocArray is compatible with Python 3.7 and above, therefore we can't accept contribution that used features from the newest Python versions without ensuring compatibility with python 3.7
+
+### Code formatting
+
+All of our Python codebase follows formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
+If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contributions that do not respect these conventions.
+
+### Type Hint
+
+Python is not a strongly typed programming language, nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
+contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **highly** encourage every contribution
+to fully utilise type hints. In some particular cases type hints can be cumbersome, therefore using type hints is not a hard requirement for contribution.
+
+Contributions are expected to use type hints, especially in function signature, unless there is an arguably good reason not to do it.
+
+Note: Example code in the documentation should also follow our code style conventions
+
 
 <a name="-naming-conventions"></a>
 ## ☑️ Naming Conventions
@@ -226,6 +252,9 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
 2. Use the `{admonition}` boxes with care.
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
+
+
+Note: Example code in the documentation should also follow our code style conventions that you can find above
 
 ### Building documentation on your local machine
 
