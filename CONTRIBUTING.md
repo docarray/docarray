@@ -80,6 +80,31 @@ Now you will be automatically reminded to add docstrings to your code. `black` w
 
 Run `git config blame.ignoreRevsFile .github/.git-blame-ignore-revs`
 
+## Code style conventions:
+
+Most of our codebase is written in Python. 
+
+
+### Python version
+We support all the Python version starting with and above 3.7. It means that we require in every contribution that the 
+code is compatible with python 3.7, and therefore we can't accept contribution that used features from the newest python versions.
+
+### Code formatting
+
+All of our Python codebase follow formatting standard. We require that every code contribution is formatted using [black](https://github.com/psf/black)
+We are using the default configuration.
+If you have installed the `pre-commit hooks` (see above) the formatting should be automatic on every commit. Moreover, our CI will block contribution that does not respect this conventions.
+
+### Type Hint
+
+Python is not a strongly typed programming language nevertheless the use of [type hint](https://docs.python.org/3/library/typing.html)  
+contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **highly** encourage every contribution
+to fully utilise type hint. In some particular case type hint can be cumbersome, therefore using type hint is not a hard requirement for contribution.
+
+Contributions are expected to use type hint, especially in function signature, unless there is an arguably good reason not to do it.
+
+Note: Example code in the documentation should also follow our code style conventions
+
 
 <a name="-naming-conventions"></a>
 ## ☑️ Naming Conventions
@@ -226,6 +251,9 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
 2. Use the `{admonition}` boxes with care.
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
+
+
+Note: Example code in the documentation should also follow our code style conventions that you can find above
 
 ### Building documentation on your local machine
 
