@@ -45,8 +45,11 @@ jobs:
       - name: Build and Deploy
         run: |
           npm i -g netlify-cli
+          git fetch origin
           python -m pip install --upgrade pip
+          pip install -r requirements.txt
           python -m pip install wheel
+          cd ..
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
           pip install --no-cache-dir ".[test]"
           pip install --no-cache-dir ".[full]"
@@ -55,7 +58,7 @@ jobs:
           pip install --no-cache-dir ".[weaviate]"
           pip install --no-cache-dir ".[elasticsearch]"
           pip install --no-cache-dir ".[redis]"
-          git fetch origin
+          cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh development
           netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
