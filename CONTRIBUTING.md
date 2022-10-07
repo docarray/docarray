@@ -95,11 +95,11 @@ If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray
 
 ### Type Hint
 
-Python is not a strongly typed programming language nevertheless the use of [type hint](https://docs.python.org/3/library/typing.html)  
+Python is not a strongly typed programming language nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
 contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **highly** encourage every contribution
-to fully utilise type hint. In some particular case type hint can be cumbersome, therefore using type hint is not a hard requirement for contribution.
+to fully utilise type hints. In some particular case type hints can be cumbersome, therefore using type hints is not a hard requirement for contribution.
 
-Contributions are expected to use type hint, especially in function signature, unless there is an arguably good reason not to do it.
+Contributions are expected to use type hints, especially in function signature, unless there is an arguably good reason not to do it.
 
 Note: Example code in the documentation should also follow our code style conventions
 
