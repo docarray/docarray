@@ -34,7 +34,16 @@ jobs:
         run: |
           git config --local user.email "dev-bot@jina.ai"
           git config --local user.name "Jina Dev Bot"
-          pip install ".[test]"
+          python -m pip install --upgrade pip
+          python -m pip install wheel
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install --no-cache-dir ".[test]"
+          pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[qdrant]"
+          pip install --no-cache-dir ".[annlite]"
+          pip install --no-cache-dir ".[weaviate]"
+          pip install --no-cache-dir ".[elasticsearch]"
+          pip install --no-cache-dir ".[redis]"
           mkdir gen-html
           cd docs
           pip install -r requirements.txt

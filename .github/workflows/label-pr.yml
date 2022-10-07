@@ -46,7 +46,15 @@ jobs:
         run: |
           npm i -g netlify-cli
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install wheel
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install --no-cache-dir ".[test]"
+          pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[qdrant]"
+          pip install --no-cache-dir ".[annlite]"
+          pip install --no-cache-dir ".[weaviate]"
+          pip install --no-cache-dir ".[elasticsearch]"
+          pip install --no-cache-dir ".[redis]"
           git fetch origin
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh development
