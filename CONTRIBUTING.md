@@ -86,8 +86,7 @@ Most of our codebase is written in Python.
 
 
 ### Python version
-We support all the Python version starting with and above 3.7. It means that we require in every contribution that the 
-code is compatible with python 3.7, and therefore we can't accept contribution that used features from the newest python versions.
+DocArray is compatible with Python 3.7 and above, therefore we can't accept contribution that used features from the newest Python versions without ensuring compatibility with python 3.7
 
 ### Code formatting
 
