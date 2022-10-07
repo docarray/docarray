@@ -9,6 +9,7 @@ In this guide, we're going to go through the steps for each kind of contribution
 
 - [🐞 Bugs and Issues](#-bugs-and-issues)
 - [🥇 Making Your First Submission](#-making-your-first-submission)
+- [📝 Code style conventions](#-code-style-conventions)
 - [☑️ Naming Conventions](#-naming-conventions)
 - [💥 Testing DocArray Locally and on CI](#-testing-docarray-locally-and-on-ci)
 - [📖 Contributing Documentation](#-contributing-documentation)
@@ -80,7 +81,7 @@ Now you will be automatically reminded to add docstrings to your code. `black` w
 
 Run `git config blame.ignoreRevsFile .github/.git-blame-ignore-revs`
 
-## Code style conventions:
+## 📝 Code style conventions:
 
 Most of our codebase is written in Python. 
 
@@ -223,6 +224,14 @@ Locally you can do unittest via:
 pip install ".[test]"
 pytest -v -s tests
 ```
+
+### Test policy
+
+Every contribution that add or modify the behavior of a features must include a suit of tests that's validate the feature work as excepted 
+
+This allows:
+* reviewer to be very confident that the feature does what it is supposed to do before merging it into the codebase
+* contributors to be sure that they don't break already merged features when doing refactoring/modification on the codebase.
 
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing Documentation
