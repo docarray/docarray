@@ -72,6 +72,7 @@ Image = TypeVar(
     ForwardRef('PILImage'),
 )
 Text = TypeVar('Text', bound=str)
+URI = TypeVar('URI', bound=str)
 Audio = TypeVar('Audio', str, ForwardRef('np.ndarray'))
 Video = TypeVar('Video', str, ForwardRef('np.ndarray'))
 Mesh = TypeVar('Mesh', str, ForwardRef('np.ndarray'))
