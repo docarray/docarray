@@ -103,3 +103,6 @@ class FindMixin:
                 da = self._find_similar_vectors(q, limit=limit, filter=filter)
                 closest_docs.append(da)
             return closest_docs
+
+    def _filter(self):
+        pass
