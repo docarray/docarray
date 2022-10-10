@@ -33,7 +33,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         sorted_res = sorted(res, key=lambda k: int(k['offset']))
         self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
 
-    def _empty_offset2ids_milvus(self):
+    def _clear_offset2ids_milvus(self):
         collection = self._offset2id_collection
         collection.delete(
             expr=f'document_id in {ids_to_milvus_expr(self._offset2ids.ids)}',
@@ -42,7 +42,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _save_offset2ids(self):
         # delete old entries
-        self._empty_offset2ids_milvus()
+        self._clear_offset2ids_milvus()
         # insert current entries
         collection = self._offset2id_collection
         ids = self._offset2ids.ids
@@ -74,3 +74,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         # insert new entries
         payload = self._docs_to_milvus_payload(docs)
         self._collection.insert(payload)
+
+    def _clear_storage(self):
+        collection = self._collection
+        collection.delete(
+            expr=f'document_id in {ids_to_milvus_expr(self._offset2ids.ids)}',
+            consistency_level='Strong',
+        )
+        self._clear_offset2ids_milvus()
+        self._offset2ids = Offset2ID()

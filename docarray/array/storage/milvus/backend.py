@@ -47,7 +47,12 @@ class MilvusConfig:
     port: Optional[Union[str, int]] = 19530  # 19530 for gRPC, 9091 for HTTP
     distance: str = 'IP'  # metric_type in milvus
     index_type: str = 'HNSW'
-    index_config: Dict = None  # passed to milvus at index creation time
+    index_params: Dict = field(
+        default_factory=lambda: {
+            'M': 4,
+            'efConstruction': 200,
+        }  # TODO(johannes) check if these defaults are reasonable
+    )  # passed to milvus at index creation time. The default assumes 'HNSW' index type
     collection_config: Dict = field(
         default_factory=dict
     )  # passed to milvus at collection creation time
@@ -79,6 +84,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._collection = self._create_or_reuse_collection()
         self._offset2id_collection = self._create_or_reuse_offset2id_collection()
+        self._build_index()
 
         super()._init_storage(_docs, config, **kwargs)
 
@@ -121,6 +127,14 @@ class BackendMixin(BaseBackendMixin):
             using=self._connection_alias,
             **self._config.collection_config,
         )
+
+    def _build_index(self):
+        index_params = {
+            'metric_type': self._config.distance,
+            'index_type': self._config.index_type,
+            'params': self._config.index_params,
+        }
+        self._collection.create_index(field_name='embedding', index_params=index_params)
 
     def _create_or_reuse_offset2id_collection(self):
         if has_collection(
@@ -190,3 +204,15 @@ class BackendMixin(BaseBackendMixin):
 
     def _docs_from_milvus_respone(self, response):
         return DocumentArray([Document.from_base64(d['serialized']) for d in response])
+
+    def _docs_from_search_response(
+        self, responses
+    ) -> 'Union[List[DocumentArray], DocumentArray]':
+        das = []
+        for r in responses:
+            das.append(
+                DocumentArray(
+                    [Document.from_base64(hit.entity.get('serialized')) for hit in r]
+                )
+            )
+        return das if len(das) > 0 else das[0]

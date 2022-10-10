@@ -1,38 +1,38 @@
-from typing import Optional, TYPE_CHECKING, Union, Dict
-from dataclasses import dataclass
-
-from docarray.array.storage.base.backend import BaseBackendMixin
+from typing import TYPE_CHECKING, TypeVar, List, Union, Optional, Dict
 
 if TYPE_CHECKING:
-    from docarray.typing import (
-        DocumentArraySourceType,
-    )
+    import numpy as np
+
+    # Define the expected input type that your ANN search supports
+    MilvusArrayType = TypeVar(
+        'MilvusArrayType', np.ndarray, list
+    )  # TODO(johannes) test torch, tf, etc.
 
 
-@dataclass
-class MilvusConfig:
-    config1: str
-    config2: str
-    config3: Dict
-    ...
-
-
-class BackendMixin(BaseBackendMixin):
-    def _init_storage(
+class FindMixin:
+    def _find(
         self,
-        _docs: Optional['DocumentArraySourceType'] = None,
-        config: Optional[Union[MilvusConfig, Dict]] = None,
+        query: 'MilvusArrayType',
+        limit: int = 10,
+        filter: Optional[Dict] = None,
+        param=None,
         **kwargs
-    ):
-        super()._init_storage(_docs, config, **kwargs)
-        ...
-
-    def _ensure_unique_config(
-        self,
-        config_root: dict,
-        config_subindex: dict,
-        config_joined: dict,
-        subindex_name: str,
-    ) -> dict:
-        ...  # ensure unique identifiers here
-        return config_joined
+    ) -> Union['DocumentArray', List['DocumentArray']]:
+        """Returns `limit` approximate nearest neighbors given a batch of input queries.
+        If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing
+        the closest Documents for each query.
+        """
+        if param is None:
+            param = dict()
+        self._collection.load()
+        results = self._collection.search(
+            data=query,
+            anns_field='embedding',
+            limit=limit,
+            expr=None,
+            param=param,
+            output_fields=['serialized'],
+            **kwargs
+        )
+        self._collection.release()
+        return self._docs_from_search_response(results)
