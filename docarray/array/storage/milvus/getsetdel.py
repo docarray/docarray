@@ -82,4 +82,3 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             consistency_level='Strong',
         )
         self._clear_offset2ids_milvus()
-        self._offset2ids = Offset2ID()

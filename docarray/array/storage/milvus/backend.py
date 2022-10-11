@@ -202,11 +202,13 @@ class BackendMixin(BaseBackendMixin):
             [doc.to_base64(**self._config.serialize_config) for doc in docs],
         ]
 
-    def _docs_from_milvus_respone(self, response):
+    @staticmethod
+    def _docs_from_milvus_respone(response):
         return DocumentArray([Document.from_base64(d['serialized']) for d in response])
 
+    @staticmethod
     def _docs_from_search_response(
-        self, responses
+        responses,
     ) -> 'Union[List[DocumentArray], DocumentArray]':
         das = []
         for r in responses:
