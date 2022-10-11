@@ -15,11 +15,11 @@ benchmark
 ```
 
 Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis.
-Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
+The benefit of using an external store over an in-memory store is often about longer persistence and faster retrieval. 
 
 The look-and-feel of a DocumentArray with external store is **almost the same** as a regular in-memory DocumentArray. This allows users to easily switch between backends under the same DocArray idiom.  
 
-Take SQLite as an example, using it as the store backend of a DocumentArray is as simple as follows:
+Take SQLite as an example, using it as the storage backend of a DocumentArray is as simple as follows:
 
 ```python
 from docarray import DocumentArray, Document
@@ -58,19 +58,19 @@ da.summary()
 │                                                                            │
 ╰────────────────────────────────────────────────────────────────────────────╯
 ```
-Note that  `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
+Note that `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
 which allow users to access the  `DocumentArray` by position (allowing statements such as `da[1]`),
 are properly mapped and saved to the storage backend.
 This is the recommended default usage to modify a DocumentArray that lives on a document store to avoid
 unexpected behaviors that can yield to, for example, inaccessible elements by position.
 
 
-Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
+Creating, retrieving, updating, and deleting Documents are identical to that of a regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should also work out of the box.
 
 
 ## Construct
 
-There are two ways for initializing a DocumentArray with a store backend.
+There are two ways for initializing a DocumentArray with an external storage backend.
 
 ````{tab} Specify storage
 
