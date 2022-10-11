@@ -88,6 +88,6 @@ class AudioDataMixin:
         """
         import librosa
 
-        self.tensor, self.tags['sample_rate'] = librosa.load(self.uri, sr=sample_rate)
+        self.tensor, _ = librosa.load(self.uri, sr=sample_rate)
 
         return self
