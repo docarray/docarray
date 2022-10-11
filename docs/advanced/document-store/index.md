@@ -346,6 +346,179 @@ array([[7., 7., 7.],
        [4., 4., 4.]])
 ```
 
+## Persistence, mutations and context manager
+
+Having DocumentArrays that are backed by an external store does however introduce an extra consideration into the way one thinks about DocumentArrays.
+The DocumentArray object created in our Python program is now a view of the underlying implementation in the external store.
+This means that our DocumentArray object in Python can be out of sync with what is persisted to the external store.
+
+**For example**
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+da1.append(Document())
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**Output**
+```console
+Length of da1 is 1
+Length of da2 is 0
+```
+
+Executing this script multiple times yields the same result.
+
+When we ran the line `da1.append(Document())`, we expect the DocumentArray with `index_name="my_index"` to now have a length of `1`.
+However, when we try to create another view of the DocumentArray in `da2`, we get a fresh DocumentArray.
+
+We also expect the script to increment the length of the DocumentArrays every time we run it.
+This is because the previous run should have saved the length of the DocumentArray with `index_name="my_index"` and our most recent run will append a new document, incrementing the length by `+1` each time.
+
+However, it seems like our append operation is also not being persisted.
+
+````{dropdown} What actually happened here?
+The DocumentArray actually did persist.
+But not in the way we might expect.
+Since we did not use the `with` context manager or scope our mutation, the persistence logic is being evaluated when the program exits.
+`da1` is destroyed first, persisting the DocumentArray of length `1`.
+But when `da2` is destroyed, it persists a DocumentArray of length `0` to the same index in Redis as `da1`, overriding it's value.
+
+This means that if we had not created `da2`, the overriding would not have occured and the script will actually increment the length of the DocumentArray correctly.
+You can prove this to yourself by commenting out the last 2 lines of the script and running the script repeatedly.
+
+**Script**
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+da1.append(Document())
+print(f"Length of da1 is {len(da1)}")
+
+# da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+# print(f"Length of da2 is {len(da2)}")
+```
+
+**First run output**
+```console
+Length of da1 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+```
+````
+
+Now that we know the issue, let's explore some idioms we can use to work with DocumentArrays backed by external storage in a more predictable manner
+### Using Context Manager
+The recommended way is to use the DocumentArray as a context manager like so:
+
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+with da1:  # Let's use the context manager to make sure we persist the mutation
+    da1.append(Document())  #
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**First run output**
+```console
+Length of da1 is 1
+Length of da2 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+Length of da2 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+Length of da2 is 3
+```
+
+The append we made to the DocumentArray is now persisted properly. Hurray!
+
+### Using Scope
+Another method that is sometimes useful when multiple DocumentArrays are involed is to perform the mutation in a function scope.
+The DocumentArrays will always persist when they fall out of scope.
+
+```python
+from docarray import DocumentArray, Document
+
+# Let's wrap our mutation logic in a function scope
+def foo():
+    da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+    da1.append(Document())
+    print(f"Length of da1 is {len(da1)}")
+
+
+foo()
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**First run output**
+```console
+Length of da1 is 1
+Length of da2 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+Length of da2 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+Length of da2 is 3
+```
+
+However, one needs to be extra cautious when opting for this method.
+Using scopes in Python can be tricky because it is possible to accidentally promote the scope of a variable by creating a reference to it from an object of higher scope.
+
+**For example**
+```
+from docarray import DocumentArray, Document
+
+list_outside_of_foo_scope = []
+
+def foo():
+    da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+    da1.append(Document())
+    print(f"Length of da1 is {len(da1)}")
+    list_outside_of_foo_scope.append(da1) # Whoopsie!
+
+foo()
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**First run output**
+```console
+Length of da1 is 1
+Length of da2 is 0
+```
+**Subsequent run outputs**
+```console
+Length of da1 is 1
+Length of da2 is 0
+```
+
+The above example is somewhat contrived for simplicity.
+However, when codebases get big and convoluted enough, it can be difficult to notice accidental promotions like this.
+
+It is thus recommended that you use the `with` context manager for most cases and only use the scoped method for quick and simple prototyping code.
+
 ## Known limitations
 
 
