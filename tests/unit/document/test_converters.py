@@ -33,6 +33,18 @@ def test_audio_convert_pipe(pytestconfig, tmpdir):
     assert num_d
 
 
+def test_audio_librosa_convert_pipe(pytestconfig, tmpdir):
+    num_d = 0
+    for d in from_files(f'{cur_dir}/toydata/*.wav'):
+        fname = str(tmpdir / f'tmp{num_d}.wav')
+        d.load_uri_to_audio_tensor_librosa()
+        d.tensor = d.tensor[::-1]
+        d.save_audio_tensor_to_file(fname)
+        assert os.path.exists(fname)
+        num_d += 1
+    assert num_d
+
+
 def test_image_convert_pipe(pytestconfig):
     for d in from_files(f'{pytestconfig.rootdir}/.github/**/*.png'):
         (

@@ -1,5 +1,5 @@
 import wave
-from typing import Union, BinaryIO, TYPE_CHECKING
+from typing import Union, BinaryIO, TYPE_CHECKING, Optional
 
 import numpy as np
 
@@ -38,9 +38,19 @@ class AudioDataMixin:
             f.writeframes(tensor.tobytes())
         return self
 
-    def load_uri_to_audio_tensor(self: 'T') -> 'T':
+    def load_uri_to_audio_tensor(self: 'T', sample_rate: Optional[float] = None) -> 'T':
         """Convert an audio :attr:`.uri` into :attr:`.tensor` inplace
+        :param sample_rate: the audio sample rate to load the files
+        :return: Document itself after processed
+        """
+        if sample_rate:
+            return self._load_uri_to_audio_tensor_librosa(sample_rate)
+        else:
+            return self._load_uri_to_audio_tensor_wave()
 
+    def _load_uri_to_audio_tensor_wave(self: 'T') -> 'T':
+        """Convert an audio :attr:`.uri` into :attr:`.tensor` inplace
+        :param sample_rate: the audio sample rate to load the files
         :return: Document itself after processed
         """
         ifile = wave.open(
@@ -67,4 +77,17 @@ class AudioDataMixin:
             self.tensor = audio_stereo
         else:
             self.tensor = audio_normalised
+        return self
+
+    def _load_uri_to_audio_tensor_librosa(
+        self: 'T', sample_rate: Optional[float] = None
+    ) -> 'T':
+        """Convert an audio :attr:`.uri` into :attr:`.tensor` inplace
+        :param sample_rate: the audio sample rate to load the files
+        :return: Document itself after processed
+        """
+        import librosa
+
+        self.tensor, self.tags['sample_rate'] = librosa.load(self.uri, sr=sample_rate)
+
         return self
