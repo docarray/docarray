@@ -57,6 +57,7 @@ setup(
             'requests',
             'matplotlib',
             'Pillow',
+            'librosa',
             'trimesh',
             'scipy',
             'av',
