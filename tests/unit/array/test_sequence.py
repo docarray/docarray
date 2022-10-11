@@ -1,3 +1,5 @@
+import gc
+import sys
 import tempfile
 import uuid
 
@@ -260,3 +262,37 @@ def test_set_and_append(index, storage, config):
         da.append(Document(id='new_new'))
 
     assert da[:, 'id'] == ['0', 'new', '2', '3', '4', 'new_new']
+
+
+@pytest.mark.parametrize(
+    'da_cls,config',
+    [
+        (DocumentArrayInMemory, lambda: None),
+        (DocumentArraySqlite, lambda: None),
+        # DocArrays backed by Weaviate in 0.17.0 has a refcount bug
+        # Remove this comment when the bug is fixed
+        # (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=3)),
+        (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=3)),
+        (DocumentArrayElastic, lambda: ElasticConfig(n_dim=3)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=3)),
+    ],
+)
+def test_deletion(da_cls, config, start_storage, capsys):
+    # Mock Deletion
+    class MockDA(da_cls):
+        def __del__(self):
+            assert not self._deleted
+            print('Goodbye')
+            self._deleted = True
+
+    da = MockDA(config=config())
+    assert not da._deleted
+    assert (
+        sys.getrefcount(da) == 2
+    ), f'{da_cls.__name__} initialized with {sys.getrefcount(da) - 1} references'
+
+    del da
+    gc.collect()
+    output = capsys.readouterr()
+    assert output.out == "Goodbye\n"
+    assert output.err == ""
