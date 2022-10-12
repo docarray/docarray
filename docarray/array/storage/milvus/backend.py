@@ -1,6 +1,6 @@
 import copy
 import uuid
-from typing import Optional, TYPE_CHECKING, Union, Dict, Iterable
+from typing import Optional, TYPE_CHECKING, Union, Dict, Iterable, List, Tuple
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -14,8 +14,8 @@ from pymilvus import (
 )
 
 from docarray import Document, DocumentArray
-from docarray.array.storage.base.backend import BaseBackendMixin
-from docarray.helper import dataclass_from_dict
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
+from docarray.helper import dataclass_from_dict, _safe_cast_int
 
 if TYPE_CHECKING:
     from docarray.typing import (
@@ -58,9 +58,19 @@ class MilvusConfig:
     )  # passed to milvus at collection creation time
     serialize_config: Dict = field(default_factory=dict)
     consistency_level: str = 'Session'
+    columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
 class BackendMixin(BaseBackendMixin):
+
+    TYPE_MAP = {
+        'str': TypeMap(type=DataType.STRING, converter=str),
+        'float': TypeMap(type=DataType.FLOAT, converter=float),
+        'double': TypeMap(type=DataType.DOUBLE, converter=float),
+        'int': TypeMap(type=DataType.INT64, converter=_safe_cast_int),
+        'bool': TypeMap(type=DataType.BOOL, converter=bool),
+    }
+
     def _init_storage(
         self,
         _docs: Optional['DocumentArraySourceType'] = None,
@@ -77,6 +87,7 @@ class BackendMixin(BaseBackendMixin):
             id = uuid.uuid4().hex
             config.collection_name = 'docarray__' + id
         self._config = config
+        self._config.columns = self._normalize_columns(self._config.columns)
 
         self._connection_alias = f'docarray_{config.host}_{config.port}'
         connections.connect(
@@ -116,10 +127,15 @@ class BackendMixin(BaseBackendMixin):
         )
         serialized = FieldSchema(
             name='serialized', dtype=DataType.VARCHAR, max_length=65_535
-        )  # this is the maximus allowed length in milvus, could be optimized
+        )  # TODO(johannes) this is the maximus allowed length in milvus, could be optimized
+
+        additional_columns = [
+            FieldSchema(name=col, dtype=self._map_type(coltype))
+            for col, coltype in self._config.columns.items()
+        ]
 
         schema = CollectionSchema(
-            fields=[document_id, embedding, serialized],
+            fields=[document_id, embedding, serialized, *additional_columns],
             description='DocumentArray collection',
         )
         return Collection(
@@ -152,9 +168,6 @@ class BackendMixin(BaseBackendMixin):
         offset = FieldSchema(
             name='offset', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
         )  # TODO(johannes) this max_length is completely arbitrary
-        # TODO(johannes)
-        # This is really stupid and hacky, but milvus needs at least one vector field to create a Collection
-        # We probably need a better way to store offset2id, but this should unblock the implementation in the meantime
         dummy_vector = FieldSchema(
             name='dummy_vector', dtype=DataType.FLOAT_VECTOR, dim=1
         )
@@ -185,13 +198,13 @@ class BackendMixin(BaseBackendMixin):
         return config_joined
 
     def _doc_to_milvus_payload(self, doc):
-        return [
-            [doc.id],
-            [doc.embedding],
-            [doc.to_base64(**self._config.serialize_config)],
-        ]
+        return self._docs_to_milvus_payload([doc])
 
     def _docs_to_milvus_payload(self, docs: 'Iterable[Document]'):
+        extra_columns = [
+            [self._map_column(doc.tags.get(col), col_type) for doc in docs]
+            for col, col_type in self._config.columns.items()
+        ]
         return [
             [doc.id for doc in docs],
             [
@@ -201,6 +214,7 @@ class BackendMixin(BaseBackendMixin):
                 for doc in docs
             ],
             [doc.to_base64(**self._config.serialize_config) for doc in docs],
+            *extra_columns,
         ]
 
     @staticmethod
