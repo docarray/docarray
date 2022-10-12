@@ -3,7 +3,7 @@
 After you get `.matches` from the last chapter, you can easily evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
 
 ```python
-da_predict.evaluate(da_groundtruth, metric='...', **kwargs)
+da_predict.evaluate(ground_truth=da_groundtruth, metric='...', **kwargs)
 ```
 
 The results are stored in `.evaluations` field of each Document.
@@ -91,7 +91,7 @@ da2['@m'].summary()
 Now `da2` is our prediction, and `da` is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):
 
 ```python
-da2.evaluate(da, metric='precision_at_k', k=5)
+da2.evaluate(ground_truth=da, metric='precision_at_k', k=5)
 ```
 
 ```text
@@ -142,7 +142,7 @@ for d in g_da:
 Now when you do evaluate, you will receive an error: 
 
 ```python
-p_da.evaluate(g_da, 'average_precision')
+p_da.evaluate('average_precision', groundtruth=g_da)
 ```
 
 ```text
@@ -154,7 +154,7 @@ This basically saying that based on `.id` (default identifier), the given two Do
 If we override the hash function as following the evaluation can be conducted:
 
 ```python
-p_da.evaluate(g_da, 'average_precision', hash_fn=lambda d: d.text[:2])
+p_da.evaluate('average_precision', ground_truth=g_da, hash_fn=lambda d: d.text[:2])
 ```
 
 ```text
