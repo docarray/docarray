@@ -19,7 +19,7 @@ The benefit of using an external store over an in-memory store is often about lo
 
 The look-and-feel of a DocumentArray with external store is **almost the same** as a regular in-memory DocumentArray. This allows users to easily switch between backends under the same DocArray idiom.  
 
-Take SQLite as an example, using it as the storage backend of a DocumentArray is as simple as follows:
+Take SQLite as an example. Using it as the storage backend of a DocumentArray is as simple as follows:
 
 ```python
 from docarray import DocumentArray, Document
@@ -65,7 +65,7 @@ This is the recommended default usage to modify a DocumentArray that lives on a 
 unexpected behaviors that can yield to, for example, inaccessible elements by position.
 
 
-Creating, retrieving, updating, and deleting Documents are identical to that of a regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should also work out of the box.
+The procedures for creating, retrieving, updating, and deleting Documents are identical to those for a regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should also work out of the box.
 
 
 ## Construct
@@ -371,7 +371,7 @@ Length of da2 is 0
 
 Executing this script multiple times yields the same result.
 
-When we ran the line `da1.append(Document())`, we expect the DocumentArray with `index_name="my_index"` to now have a length of `1`.
+When we run the line `da1.append(Document())`, we expect the DocumentArray with `index_name="my_index"` to now have a length of `1`.
 However, when we try to create another view of the DocumentArray in `da2`, we get a fresh DocumentArray.
 
 We also expect the script to increment the length of the DocumentArrays every time we run it.
@@ -381,12 +381,12 @@ However, it seems like our append operation is also not being persisted.
 
 ````{dropdown} What actually happened here?
 The DocumentArray actually did persist.
-But not in the way we might expect.
+but not in the way we might expect.
 Since we did not use the `with` context manager or scope our mutation, the persistence logic is being evaluated when the program exits.
 `da1` is destroyed first, persisting the DocumentArray of length `1`.
-But when `da2` is destroyed, it persists a DocumentArray of length `0` to the same index in Redis as `da1`, overriding it's value.
+But when `da2` is destroyed, it persists a DocumentArray of length `0` to the same index in Redis as `da1`, overriding its value.
 
-This means that if we had not created `da2`, the overriding would not have occured and the script will actually increment the length of the DocumentArray correctly.
+This means that if we had not created `da2`, the overriding would not have occured and the script would actually increment the length of the DocumentArray correctly.
 You can prove this to yourself by commenting out the last 2 lines of the script and running the script repeatedly.
 
 **Script**
@@ -415,7 +415,7 @@ Length of da1 is 3
 ```
 ````
 
-Now that we know the issue, let's explore some idioms we can use to work with DocumentArrays backed by external storage in a more predictable manner
+Now that we know the issue, let's explore some idioms we can use to work with DocumentArrays backed by external storage in a more predictable manner.
 ### Using Context Manager
 The recommended way is to use the DocumentArray as a context manager like so:
 
