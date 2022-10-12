@@ -110,7 +110,10 @@ if args.default_hnsw:
         ('sqlite', None),
         (
             'annlite',
-            {'n_dim': D, 'columns': [('i', 'int')]},
+            {
+                'n_dim': D,
+                'columns': {'i': 'int'},
+            },
         ),
         (
             'qdrant',
@@ -125,7 +128,7 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'port': '41234',
-                'columns': ('i', 'int'),
+                'columns': {'i': 'int'},
             },
         ),
         (
@@ -133,7 +136,7 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'hosts': 'http://localhost:41235',
-                'columns': [('i', 'int')],
+                'columns': {'i': 'int'},
             },
         ),
         (
@@ -141,7 +144,7 @@ if args.default_hnsw:
             {
                 'n_dim': D,
                 'port': '41236',
-                'columns': [('i', 'int')],
+                'columns': {'i': 'int'},
             },
         ),
     ]
@@ -156,7 +159,7 @@ else:
                 'ef_construction': 100,
                 'ef_search': 100,
                 'max_connection': 16,
-                'columns': [('i', 'int')],
+                'columns': {'i': 'int'},
             },
         ),
         (
@@ -177,7 +180,7 @@ else:
                 'ef_construction': 100,
                 'max_connections': 16,
                 'port': '41234',
-                'columns': [('i', 'int')],
+                'columns': {'i': 'int'},
             },
         ),
         (
@@ -187,7 +190,7 @@ else:
                 'ef_construction': 100,
                 'm': 16,
                 'hosts': 'http://localhost:41235',
-                'columns': [('i', 'int')],
+                'columns': {'i': 'int'},
             },
         ),
         (
