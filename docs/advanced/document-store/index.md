@@ -100,7 +100,7 @@ da = DocumentArray()
 
 ````
 
-Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as `DocumentArray.empty(10)`, then explicit importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
+Depending on the context, you can choose the style that fits better. For example, if you want to use a class method such as `DocumentArray.empty(10)`, then explicitly importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
 
 ```{admonition} Subindices
 :class: seealso
@@ -116,7 +116,7 @@ To learn how to do that, see {ref}`here <subindex>`.
 
 The config of a store backend is either store-specific dataclass object or a `dict` that can be parsed into the former.
 
-One can pass the config in the constructor via `config`:
+You can pass the config in the constructor via `config`:
 
 ````{tab} Use dataclass
 
@@ -371,22 +371,21 @@ Length of da2 is 0
 
 Executing this script multiple times yields the same result.
 
-When we run the line `da1.append(Document())`, we expect the DocumentArray with `index_name='my_index'` to now have a length of `1`.
-However, when we try to create another view of the DocumentArray in `da2`, we get a fresh DocumentArray.
+When you run the line `da1.append(Document())`, you expect the DocumentArray with `index_name='my_index'` to now have a length of `1`.
+However, when you try to create another view of the DocumentArray in `da2`, you get a fresh DocumentArray.
 
-We also expect the script to increment the length of the DocumentArrays every time we run it.
-This is because the previous run should have saved the length of the DocumentArray with `index_name="my_index"` and our most recent run will append a new document, incrementing the length by `+1` each time.
+You also expect the script to increment the length of the DocumentArrays every time you run it.
+This is because the previous run should have saved the length of the DocumentArray with `index_name="my_index"` and your most recent run will append a new document, incrementing the length by `+1` each time.
 
-However, it seems like our append operation is also not being persisted.
+However, it seems like your append operation is also not being persisted.
 
 ````{dropdown} What actually happened here?
-The DocumentArray actually did persist.
-but not in the way we might expect.
-Since we did not use the `with` context manager or scope our mutation, the persistence logic is being evaluated when the program exits.
+The DocumentArray actually did persist, but not in the way you might expect.
+Since you did not use the `with` context manager or scope your mutation, the persistence logic is being evaluated when the program exits.
 `da1` is destroyed first, persisting the DocumentArray of length `1`.
 But when `da2` is destroyed, it persists a DocumentArray of length `0` to the same index in Redis as `da1`, overriding its value.
 
-This means that if we had not created `da2`, the overriding would not have occured and the script would actually increment the length of the DocumentArray correctly.
+This means that if you had not created `da2`, the overriding would not have occured and the script would actually increment the length of the DocumentArray correctly.
 You can prove this to yourself by commenting out the last 2 lines of the script and running the script repeatedly.
 
 **Script**
@@ -423,7 +422,7 @@ The recommended way is to use the DocumentArray as a context manager like so:
 from docarray import DocumentArray, Document
 
 da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
-with da1:  # Let's use the context manager to make sure we persist the mutation
+with da1:  # Use the context manager to make sure you persist the mutation
     da1.append(Document())  #
 print(f"Length of da1 is {len(da1)}")
 
@@ -446,7 +445,7 @@ Length of da1 is 3
 Length of da2 is 3
 ```
 
-The append we made to the DocumentArray is now persisted properly. Hurray!
+The append you made to the DocumentArray is now persisted properly. Hurray!
 
 
 ## Known limitations
@@ -516,7 +515,7 @@ Take home message is, use the context manager and put your write operations into
 
 ### Out-of-array modification
 
-One can not take a Document *out* from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.
+You can not take a Document *out* from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.
 
 Specifically, the pattern below is not supported by any external store backend:
 
