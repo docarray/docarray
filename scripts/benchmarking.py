@@ -320,23 +320,16 @@ for idx, n_index in enumerate(n_index_values):
                     '{:.3f}'.format(recall_at_k),
                     fmt(find_by_condition_time, 's'),
                 )
-                benchmark_df.append(
-                    pd.DataFrame(
-                        [
-                            [
-                                backend.title(),
-                                create_time,
-                                read_time,
-                                update_time,
-                                delete_time,
-                                find_by_vector_time,
-                                recall_at_k,
-                                find_by_condition_time,
-                            ]
-                        ],
-                        columns=benchmark_df.columns,
-                    )
-                )
+                benchmark_df.loc[len(benchmark_df.index)] = [
+                    backend.title(),
+                    create_time,
+                    read_time,
+                    update_time,
+                    delete_time,
+                    find_by_vector_time,
+                    recall_at_k,
+                    find_by_condition_time,
+                ]
 
             find_by_vector_values[str(n_index)].append(find_by_vector_time)
             create_values[str(n_index)].append(create_time)
