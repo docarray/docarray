@@ -415,7 +415,7 @@ Length of da1 is 3
 ```
 ````
 
-Now that we know the issue, let's explore some idioms we can use to work with DocumentArrays backed by external storage in a more predictable manner.
+Now that you know the issue, let's explore what you should do to work with DocumentArrays backed by document store in a more predictable manner.
 ### Using Context Manager
 The recommended way is to use the DocumentArray as a context manager like so:
 
@@ -448,76 +448,6 @@ Length of da2 is 3
 
 The append we made to the DocumentArray is now persisted properly. Hurray!
 
-### Using Scope
-Another method that is sometimes useful when multiple DocumentArrays are involed is to perform the mutation in a function scope.
-The DocumentArrays will always persist when they fall out of scope.
-
-```python
-from docarray import DocumentArray, Document
-
-# Let's wrap our mutation logic in a function scope
-def foo():
-    da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
-    da1.append(Document())
-    print(f"Length of da1 is {len(da1)}")
-
-
-foo()
-
-da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
-print(f"Length of da2 is {len(da2)}")
-```
-**First run output**
-```console
-Length of da1 is 1
-Length of da2 is 1
-```
-**Second run output**
-```console
-Length of da1 is 2
-Length of da2 is 2
-```
-**Third run output**
-```console
-Length of da1 is 3
-Length of da2 is 3
-```
-
-However, one needs to be extra cautious when opting for this method.
-Using scopes in Python can be tricky because it is possible to accidentally promote the scope of a variable by creating a reference to it from an object of higher scope.
-
-**For example**
-```
-from docarray import DocumentArray, Document
-
-list_outside_of_foo_scope = []
-
-def foo():
-    da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
-    da1.append(Document())
-    print(f"Length of da1 is {len(da1)}")
-    list_outside_of_foo_scope.append(da1) # Whoopsie!
-
-foo()
-
-da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
-print(f"Length of da2 is {len(da2)}")
-```
-**First run output**
-```console
-Length of da1 is 1
-Length of da2 is 0
-```
-**Subsequent run outputs**
-```console
-Length of da1 is 1
-Length of da2 is 0
-```
-
-The above example is somewhat contrived for simplicity.
-However, when codebases get big and convoluted enough, it can be difficult to notice accidental promotions like this.
-
-It is thus recommended that you use the `with` context manager for most cases and only use the scoped method for quick and simple prototyping code.
 
 ## Known limitations
 
