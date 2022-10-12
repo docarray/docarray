@@ -348,9 +348,9 @@ array([[7., 7., 7.],
 
 ## Persistence, mutations and context manager
 
-Having DocumentArrays that are backed by an external store does however introduce an extra consideration into the way one thinks about DocumentArrays.
-The DocumentArray object created in our Python program is now a view of the underlying implementation in the external store.
-This means that our DocumentArray object in Python can be out of sync with what is persisted to the external store.
+Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.
+The DocumentArray object created in your Python program is now a view of the underlying implementation in the external store.
+This means that your DocumentArray object in Python can be out of sync with what is persisted to the external store.
 
 **For example**
 ```python
@@ -371,7 +371,7 @@ Length of da2 is 0
 
 Executing this script multiple times yields the same result.
 
-When we run the line `da1.append(Document())`, we expect the DocumentArray with `index_name="my_index"` to now have a length of `1`.
+When we run the line `da1.append(Document())`, we expect the DocumentArray with `index_name='my_index'` to now have a length of `1`.
 However, when we try to create another view of the DocumentArray in `da2`, we get a fresh DocumentArray.
 
 We also expect the script to increment the length of the DocumentArrays every time we run it.
