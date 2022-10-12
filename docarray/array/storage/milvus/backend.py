@@ -233,3 +233,12 @@ class BackendMixin(BaseBackendMixin):
                 )
             )
         return das if len(das) > 0 else das[0]
+
+    def _update_consistency_level(self, **kwargs):
+        kwargs_consistency_level = kwargs.get('consistency_level', None)
+        kwargs['consistency_level'] = (
+            kwargs_consistency_level
+            if kwargs_consistency_level
+            else self._config.consistency_level
+        )
+        return kwargs

@@ -17,9 +17,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         # to be implemented
         self._del_docs_by_ids([_id])
 
-    def _set_doc_by_id(self, _id: str, value: 'Document'):
+    def _set_doc_by_id(self, _id: str, value: 'Document', **kwargs):
         # to be implemented
-        self._set_docs_by_ids([_id], [value], None)
+        self._set_docs_by_ids([_id], [value], None, **kwargs)
 
     def _load_offset2ids(self):
         collection = self._offset2id_collection
@@ -43,32 +43,36 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         dummy_vectors = [np.zeros(1) for _ in range(len(ids))]
         collection.insert([offsets, ids, dummy_vectors])
 
-    def _get_docs_by_ids(self, ids: 'Iterable[str]') -> 'DocumentArray':
+    def _get_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
+        kwargs = self._update_consistency_level(**kwargs)
         self._collection.load()
         res = self._collection.query(
             expr=f'document_id in {ids_to_milvus_expr(ids)}',
             output_fields=['serialized'],
-            consistency_level=self._config.consistency_level,
+            **kwargs,
         )
         self._collection.release()
         return self._docs_from_query_respone(res)
 
-    def _del_docs_by_ids(self, ids: 'Iterable[str]') -> 'DocumentArray':
+    def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
+        kwargs = self._update_consistency_level(**kwargs)
         self._collection.delete(
-            expr=f'document_id in {ids_to_milvus_expr(ids)}',
-            consistency_level=self._config.consistency_level,
+            expr=f'document_id in {ids_to_milvus_expr(ids)}', **kwargs
         )
 
-    def _set_docs_by_ids(self, ids, docs: 'Iterable[Document]', mismatch_ids: 'Dict'):
+    def _set_docs_by_ids(
+        self, ids, docs: 'Iterable[Document]', mismatch_ids: 'Dict', **kwargs
+    ):
         # TODO(johannes) check if deletion is necesarry if ids already match
         # delete old entries
+        kwargs = self._update_consistency_level(**kwargs)
         self._collection.delete(
             expr=f'document_id in {ids_to_milvus_expr(ids)}',
-            consistency_level=self._config.consistency_level,
+            **kwargs,
         )
         # insert new entries
         payload = self._docs_to_milvus_payload(docs)
-        self._collection.insert(payload)
+        self._collection.insert(payload, **kwargs)
 
     def _clear_storage(self):
         self._collection.drop()
