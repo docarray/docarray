@@ -208,9 +208,10 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
 )
 def test_diff_len_should_raise(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
-    da2 = DocumentArray.empty(5, storage=storage, config=config)
+    da2 = DocumentArray.empty(5)
     for d in da2:
         d.matches.append(da2[0])
+    da2 = DocumentArray(da2, storage=storage, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(ground_truth=da2, metric='precision_at_k')
 
@@ -229,9 +230,9 @@ def test_diff_len_should_raise(storage, config, start_storage):
 )
 def test_diff_hash_fun_should_raise(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
-    da2 = DocumentArray.empty(10, storage=storage, config=config)
     for d in da2:
         d.matches.append(da2[0])
+    da2 = DocumentArray(da2, storage=storage, config=config)
     with pytest.raises(ValueError):
         da1.evaluate(ground_truth=da2, metric='precision_at_k')
 

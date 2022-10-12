@@ -6,6 +6,21 @@ After you get `.matches` from the last chapter, you can easily evaluate matches 
 da_predict.evaluate(ground_truth=da_groundtruth, metric='...', **kwargs)
 ```
 
+Alternatively, you can add labels to your documents to evaluate them.
+In this case, a match is considered as relevant to its root document, if it has the same label.
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+example_da = DocumentArray([Document(tags={'label': (i % 2)}) for i in range(10)])
+example_da.embeddings = np.random.random([10, 3])
+
+example_da.match(example_da)
+
+example_da.evaluate(metric='precision_at_k')
+```
+
 The results are stored in `.evaluations` field of each Document.
 
 DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. Different metric accepts different arguments as `kwargs`:
