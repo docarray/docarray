@@ -36,22 +36,52 @@ def get_configuration_storage_backends(argparse):
 
     if args.default_hnsw:
         storage_backends = [
-            ('weaviate', {'n_dim': D}),
+            ('memory', None),
+            ('sqlite', None),
             (
                 'annlite',
-                {'n_dim': D},
+                {
+                    'n_dim': D,
+                    'columns': {'i': 'int'},
+                },
             ),
-            ('qdrant', {'n_dim': D, 'scroll_batch_size': 8}),
-            ('elasticsearch', {'n_dim': D}),
-            ('sqlite', None),
-            ('memory', None),
+            (
+                'qdrant',
+                {
+                    'n_dim': D,
+                    'scroll_batch_size': 8,
+                    'port': '41233',
+                },
+            ),
+            (
+                'weaviate',
+                {
+                    'n_dim': D,
+                    'port': '41234',
+                    'columns': {'i': 'int'},
+                },
+            ),
+            (
+                'elasticsearch',
+                {
+                    'n_dim': D,
+                    'hosts': 'http://localhost:41235',
+                    'columns': {'i': 'int'},
+                },
+            ),
+            (
+                'redis',
+                {
+                    'n_dim': D,
+                    'port': '41236',
+                    'columns': {'i': 'int'},
+                },
+            ),
         ]
     else:
         storage_backends = [
-            (
-                'weaviate',
-                {'n_dim': D, 'ef': 100, 'ef_construction': 100, 'max_connections': 16},
-            ),
+            ('memory', None),
+            ('sqlite', None),
             (
                 'annlite',
                 {
@@ -59,17 +89,63 @@ def get_configuration_storage_backends(argparse):
                     'ef_construction': 100,
                     'ef_search': 100,
                     'max_connection': 16,
+                    'columns': {'i': 'int'},
                 },
             ),
             (
                 'qdrant',
-                {'n_dim': D, 'scroll_batch_size': 8, 'ef_construct': 100, 'm': 16},
+                {
+                    'n_dim': D,
+                    'scroll_batch_size': 8,
+                    'ef_construct': 100,
+                    'm': 16,
+                    'port': '41233',
+                },
             ),
-            ('elasticsearch', {'n_dim': D, 'ef_construction': 100, 'm': 16}),
-            ('sqlite', None),
-            ('memory', None),
+            (
+                'weaviate',
+                {
+                    'n_dim': D,
+                    'ef': 100,
+                    'ef_construction': 100,
+                    'max_connections': 16,
+                    'port': '41234',
+                    'columns': {'i': 'int'},
+                },
+            ),
+            (
+                'elasticsearch',
+                {
+                    'n_dim': D,
+                    'ef_construction': 100,
+                    'm': 16,
+                    'hosts': 'http://localhost:41235',
+                    'columns': {'i': 'int'},
+                },
+            ),
+            (
+                'redis',
+                {
+                    'n_dim': D,
+                    'ef_construction': 100,
+                    'm': 16,
+                    'ef_runtime': 100,
+                    'port': '41236',
+                },
+            ),
         ]
     return storage_backends
+
+
+storage_backend_filters = {
+    'memory': {'tags__i': {'$eq': 0}},
+    'sqlite': {'tags__i': {'$eq': 0}},
+    'annlite': {'i': {'$eq': 0}},
+    'qdrant': {'tags__i': {'$eq': 0}},
+    'weaviate': {'path': 'i', 'operator': 'Equal', 'valueInt': 0},
+    'elasticsearch': {'match': {'i': 0}},
+    'redis': {'i': {'$eq': 0}},
+}
 
 
 def run_benchmark(
@@ -166,7 +242,7 @@ def run_benchmark(
 
                 console.print(f'\tfinding {n_query} docs by condition ...')
                 find_by_condition_time, _ = find_by_condition(
-                    da, {'tags__i': {'$eq': 0}}
+                    da, storage_backend_filters[backend]
                 )
                 if idx == len(n_index_values) - 1:
                     table.add_row(
