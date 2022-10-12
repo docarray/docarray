@@ -39,6 +39,7 @@ class AttributeType(str, Enum):
     ITERABLE_DOCUMENT = 'iterable_document'
     NESTED = 'nested'
     ITERABLE_NESTED = 'iterable_nested'
+    OPTIONAL = 'optional'
 
 
 class Field(_Field):

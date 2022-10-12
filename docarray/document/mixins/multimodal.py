@@ -31,8 +31,6 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
-            if attribute is None:
-                continue
 
             if field.type in [str, int, float, bool] and not _is_field(field):
                 tags[key] = attribute
@@ -48,7 +46,7 @@ class MultiModalMixin:
                     'type': field.type.__name__,
                 }
             elif isinstance(field.type, typing._GenericAlias):
-                if field.type._name in ['List', 'Iterable']:
+                if field.type._name in ['List', 'Iterable', 'Optional']:
                     sub_type = field.type.__args__[0]
                     if sub_type in [str, int, float, bool]:
                         tags[key] = attribute
@@ -59,19 +57,22 @@ class MultiModalMixin:
 
                     else:
                         chunk = Document()
-                        for element in attribute:
-                            doc, attribute_type = cls._from_obj(
-                                element, sub_type, field
-                            )
-                            if attribute_type == AttributeType.DOCUMENT:
-                                attribute_type = AttributeType.ITERABLE_DOCUMENT
-                            elif attribute_type == AttributeType.NESTED:
-                                attribute_type = AttributeType.ITERABLE_NESTED
-                            else:
-                                raise TypeError(
-                                    f'Unsupported type annotation inside Iterable: {sub_type}'
+                        if attribute is None and field.type._name == 'Optional':
+                            attribute_type = AttributeType.OPTIONAL
+                        else:
+                            for element in attribute:
+                                doc, attribute_type = cls._from_obj(
+                                    element, sub_type, field
                                 )
-                            chunk.chunks.append(doc)
+                                if attribute_type == AttributeType.DOCUMENT:
+                                    attribute_type = AttributeType.ITERABLE_DOCUMENT
+                                elif attribute_type == AttributeType.NESTED:
+                                    attribute_type = AttributeType.ITERABLE_NESTED
+                                else:
+                                    raise TypeError(
+                                        f'Unsupported type annotation inside Iterable: {sub_type}'
+                                    )
+                                chunk.chunks.append(doc)
                         multi_modal_schema[key] = {
                             'attribute_type': attribute_type,
                             'type': f'{field.type._name}[{sub_type.__name__}]',
@@ -111,7 +112,7 @@ class MultiModalMixin:
         pos = self._metadata['multi_modal_schema'][attr].get('position')
         if pos is None:
             raise ValueError(
-                f'attribute {attr} is not a valid multi modal attribute.'
+                f'attribute `{attr}` is not a valid multimodal attribute.'
                 f' One possible cause is the usage of a non-supported type in the dataclass definition.'
             )
         return int(pos)
@@ -129,11 +130,12 @@ class MultiModalMixin:
         elif attribute_type in [
             AttributeType.ITERABLE_DOCUMENT,
             AttributeType.ITERABLE_NESTED,
+            AttributeType.OPTIONAL,
         ]:
             return self.chunks[position].chunks
         else:
             raise ValueError(
-                f'Invalid attribute {attribute}: must be a Document attribute or nested dataclass'
+                f'Invalid attribute `{attribute}`: must be a Document attribute or nested dataclass, but received `{attribute_type}`'
             )
 
     def set_multi_modal_attribute(
