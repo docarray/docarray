@@ -51,7 +51,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             consistency_level=self._config.consistency_level,
         )
         self._collection.release()
-        return self._docs_from_milvus_respone(res)
+        return self._docs_from_query_respone(res)
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]') -> 'DocumentArray':
         self._collection.delete(

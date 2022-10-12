@@ -13,7 +13,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :param other: the other object to check for equality
         :return: `True` if other is equal to self
         """
-        # two DAW are considered as the same if they have the same client meta data
         return (
             type(self) is type(other)
             and self._collection.name == other._collection.name
@@ -40,23 +39,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             self.extend(other)
         return self
 
-    # def insert(self, index: int, value: 'Document'):
-    #     # Optional. By default, this will add a new item and update offset2id
-    #     # if you want to customize this, make sure to handle offset2id
-    #     ...
-    #
-    # def _append(self, value: 'Document'):
-    #     # Optional. Override this if you have a better implementation than inserting at the last position
-    #     ...
-    #
-    # def _extend(self, values: Iterable['Document']) -> None:
-    #     # Optional. Override this if you have better implementation than appending one by one
-    #     ...
     #
     # def __len__(self):
-    #     # Optional. By default, this will rely on offset2id to get the length
-    #     ...
-    #
-    # def __iter__(self) -> Iterator['Document']:
-    #     # Optional. By default, this will rely on offset2id to iterate
-    #     ...
+    #     return self._collection.num_entities  # This doesn't work for some reason. Currently in contact with Milvus team to resolve.

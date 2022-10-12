@@ -96,7 +96,7 @@ class FindMixin:
         limit: Optional[Union[int, float]] = 20,
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
-        filter: Optional[Dict] = None,
+        filter: Optional[Union[Dict, str]] = None,
         only_id: bool = False,
         index: str = 'text',
         on: Optional[str] = None,
@@ -146,7 +146,9 @@ class FindMixin:
             )
         from docarray import Document, DocumentArray
 
-        if isinstance(query, dict):
+        if isinstance(
+            query, dict
+        ):  # TODO(johannes) since filters in milvus are strings, the can't be passes as `query`, otherwise it will be confused for text matching query
             if filter is None:
                 return self._filter(query, limit=limit)
             else:
@@ -154,7 +156,7 @@ class FindMixin:
                     'filter and query cannot be both dict type, set only one for filtering'
                 )
         elif query is None:
-            if isinstance(filter, dict):
+            if isinstance(filter, dict) or isinstance(filter, str):
                 return self._filter(filter, limit=limit)
             else:
                 raise ValueError('filter must be dict when query is None')
