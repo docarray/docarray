@@ -27,7 +27,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         res = collection.query(
             expr=always_true_expr('document_id'),
             output_fields=['offset', 'document_id'],
-            consistency_level='Strong',
+            consistency_level=self._config.consistency_level,
         )
         collection.release()
         sorted_res = sorted(res, key=lambda k: int(k['offset']))
@@ -37,7 +37,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         collection = self._offset2id_collection
         collection.delete(
             expr=f'document_id in {ids_to_milvus_expr(self._offset2ids.ids)}',
-            consistency_level='Strong',
+            consistency_level=self._config.consistency_level,
         )
 
     def _save_offset2ids(self):
@@ -55,21 +55,23 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         res = self._collection.query(
             expr=f'document_id in {ids_to_milvus_expr(ids)}',
             output_fields=['serialized'],
-            consistency_level='Strong',
+            consistency_level=self._config.consistency_level,
         )
         self._collection.release()
         return self._docs_from_milvus_respone(res)
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]') -> 'DocumentArray':
         self._collection.delete(
-            expr=f'document_id in {ids_to_milvus_expr(ids)}', consistency_level='Strong'
+            expr=f'document_id in {ids_to_milvus_expr(ids)}',
+            consistency_level=self._config.consistency_level,
         )
 
     def _set_docs_by_ids(self, ids, docs: 'Iterable[Document]', mismatch_ids: 'Dict'):
         # TODO(johannes) check if deletion is necesarry if ids already match
         # delete old entries
         self._collection.delete(
-            expr=f'document_id in {ids_to_milvus_expr(ids)}', consistency_level='Strong'
+            expr=f'document_id in {ids_to_milvus_expr(ids)}',
+            consistency_level=self._config.consistency_level,
         )
         # insert new entries
         payload = self._docs_to_milvus_payload(docs)
@@ -79,6 +81,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         collection = self._collection
         collection.delete(
             expr=f'document_id in {ids_to_milvus_expr(self._offset2ids.ids)}',
-            consistency_level='Strong',
+            consistency_level=self._config.consistency_level,
         )
         self._clear_offset2ids_milvus()
