@@ -1,7 +1,15 @@
 import base64
 import typing
+from typing import Optional
 
-from docarray.dataclasses.types import Field, is_multimodal, _is_field
+from docarray.dataclasses.types import (
+    Field,
+    is_multimodal,
+    _is_field,
+    _is_optional,
+    _is_optional_field,
+    _get_optional_subtype,
+)
 from docarray.dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -31,8 +39,6 @@ class MultiModalMixin:
         multi_modal_schema = {}
         for key, field in obj.__dataclass_fields__.items():
             attribute = getattr(obj, key)
-            if attribute is None:
-                continue
 
             if field.type in [str, int, float, bool] and not _is_field(field):
                 tags[key] = attribute
@@ -41,12 +47,41 @@ class MultiModalMixin:
                     'type': field.type.__name__,
                 }
 
+            elif field.type in [
+                Optional[str],
+                Optional[int],
+                Optional[float],
+                Optional[bool],
+            ] and not _is_field(field):
+                tags[key] = attribute
+                multi_modal_schema[key] = {
+                    'attribute_type': AttributeType.PRIMITIVE,
+                    'type': f'Optional[{_get_optional_subtype(field.type).__name__}]',
+                }
+
             elif field.type == bytes and not _is_field(field):
                 tags[key] = base64.b64encode(attribute).decode()
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
                     'type': field.type.__name__,
                 }
+
+            elif field.type == Optional[bytes] and not _is_field(field):
+                tags[key] = attribute
+                multi_modal_schema[key] = {
+                    'attribute_type': AttributeType.PRIMITIVE,
+                    'type': f'Optional[{_get_optional_subtype(field.type).__name__}]',
+                }
+
+            elif _is_field(field):
+                doc, attribute_type = cls._from_obj(attribute, field.type, field)
+                multi_modal_schema[key] = {
+                    'attribute_type': attribute_type,
+                    'type': field.type.__name__,
+                    'position': len(root.chunks),
+                }
+                root.chunks.append(doc)
+
             elif isinstance(field.type, typing._GenericAlias):
                 if field.type._name in ['List', 'Iterable']:
                     sub_type = field.type.__args__[0]
@@ -83,14 +118,7 @@ class MultiModalMixin:
                         f'Unsupported type annotation on field `{field.type._name}`'
                     )
             else:
-                doc, attribute_type = cls._from_obj(attribute, field.type, field)
-                multi_modal_schema[key] = {
-                    'attribute_type': attribute_type,
-                    'type': field.type.__name__,
-                    'position': len(root.chunks),
-                }
-                root.chunks.append(doc)
-
+                raise TypeError(f'Unsupported field `{field}`')
         # TODO: may have to modify this?
         root.tags = tags
         root._metadata['multi_modal_schema'] = multi_modal_schema

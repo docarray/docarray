@@ -297,3 +297,34 @@ def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls: Type['T']) 
     if not is_multimodal(nested_cls):
         raise ValueError(f'Nested attribute `{nested_cls.__name__}` is not a dataclass')
     return nested_cls(**_from_document(nested_cls, attribute_doc))
+
+
+def _is_optional(type_) -> bool:
+    """
+    check if a type is Optional. Optional is a alias for Union[X, None]
+    :param type_: the type to check if it is an Optional or not
+    :return: a boolean saying if the type in Optional
+    """
+    origin = getattr(type_, '__origin__', None)
+
+    if origin != typing.Union:  # Optional is a Union
+        return False
+
+    args = getattr(type_, '__args__', None)
+
+    if args is None:
+        return False
+
+    if not (type(None) in args):  # Optional as the NoneType in its args
+        return False
+
+    if (
+        len(args) > 2
+    ):  # If the Union has more that two options then it is not an Optional
+        return False
+
+    return True
+
+
+def _get_optional_subtype(optional_type):
+    return optional_type.__args__[0]
