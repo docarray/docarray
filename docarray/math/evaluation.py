@@ -12,20 +12,25 @@ def _check_k(k):
 
 
 def r_precision(binary_relevance: List[int], **kwargs) -> float:
-    """R Precision after all relevant documents have been retrieved
-    Relevance is binary (nonzero is relevant).
+    """R-Precision determines the precision in the fist R documents, where R is the
+    number of documents relevant to the query.
+
+    Relevance is considered binary by this function (nonzero is relevant).
+
+    Please note, that it is necessary to provide relevance scores for all documents,
+    i.e., the calculated metric is wrong, if you apply it on the Top-K scores only.
 
     .. seealso::
         https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)#R-precision
 
     :param binary_relevance: binary relevancy in rank order
-    :return: precision
+    :return: R-Precision
     """
     binary_relevance = np.array(binary_relevance) != 0
     z = binary_relevance.nonzero()[0]
     if not z.size:
         return 0.0
-    return float(np.mean(binary_relevance[: z[-1] + 1]))
+    return float(np.mean(binary_relevance[: z.size]))
 
 
 def precision_at_k(
@@ -147,9 +152,12 @@ def dcg_at_k(
 def ndcg_at_k(
     relevance: List[float], method: int = 0, k: Optional[int] = None, **kwargs
 ):
-    """Score is normalized discounted cumulative gain (ndcg)
-    Relevance is positive real values.  Can use binary
-    as the previous methods.
+    """Calculates a normalized discounted cumulative gain (ndcg).
+    Relevance values can be positive real values. However, one can also use binary
+    scores as in other evaluation methods.
+
+    Please note, that it is necessary to provide relevance scores for all documents,
+    i.e., the calculated metric is wrong, if you apply it on the Top-K scores only.
 
     Example from
     http://www.stanford.edu/class/cs276/handouts/EvaluationNew-handout-6-per.pdf

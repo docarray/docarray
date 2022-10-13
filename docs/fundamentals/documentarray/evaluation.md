@@ -22,6 +22,12 @@ DocArray provides some common metrics used in the information retrieval communit
 | `dcg_at_k`          | `method`, `k`    |
 | `ndcg_at_k`         | `method`, `k`    |
 
+```{danger}
+This metric scores might change if the `limit` attribute of the match function is set differently.
+
+**Note:** Not all of these metrics can be applied to a Top-K result, i.e., `ndcg_at_k` and `r_precision` are calculated correctly only if the limit is set equal or higher than the number of documents in the `DocumentArray` provided to the match function.
+```
+
 
 For example, let's create a DocumentArray with random embeddings and matching it to itself:
 
