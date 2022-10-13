@@ -76,7 +76,9 @@ class MultiModalMixin:
                 doc, attribute_type = cls._from_obj(attribute, field.type, field)
                 multi_modal_schema[key] = {
                     'attribute_type': attribute_type,
-                    'type': field.type.__name__,
+                    'type': field.type.__name__
+                    if not (_is_optional(field.type))
+                    else f'Optional[{_get_optional_subtype(field.type).__name__}]',
                     'position': len(root.chunks),
                 }
                 root.chunks.append(doc)

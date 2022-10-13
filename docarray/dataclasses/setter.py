@@ -44,6 +44,8 @@ def audio_setter(value) -> 'Document':
 
     if isinstance(value, np.ndarray):
         return Document(tensor=value, _metadata={'audio_type': 'ndarray'})
+    elif value is None:
+        return Document(_metadata={'audio_type': None})
     else:
         return Document(
             uri=value, modality='audio', _metadata={'audio_type': 'uri'}
@@ -55,6 +57,8 @@ def video_setter(value) -> 'Document':
 
     if isinstance(value, np.ndarray):
         return Document(tensor=value, _metadata={'video_type': 'ndarray'})
+    elif value is None:
+        return Document(_metadata={'video_type': None})
     else:
         return Document(
             uri=value, modality='video', _metadata={'video_type': 'uri'}
@@ -66,6 +70,8 @@ def mesh_setter(value) -> 'Document':
 
     if isinstance(value, np.ndarray):
         return Document(tensor=value, _metadata={'mesh_type': 'ndarray'})
+    elif value is None:
+        return Document(_metadata={'mesh_type': None})
     else:
         return Document(
             uri=value, modality='mesh', _metadata={'mesh_type': 'uri'}
@@ -77,6 +83,8 @@ def blob_setter(value) -> 'Document':
 
     if isinstance(value, bytes):
         return Document(blob=value, _metadata={'blob_type': 'bytes'})
+    elif value is None:
+        return Document(_metadata={'blob_type': None})
     else:
         return Document(uri=value, _metadata={'blob_type': 'uri'}).load_uri_to_blob()
 
@@ -90,4 +98,9 @@ def json_setter(value) -> 'Document':
 def tabular_setter(value) -> 'Document':
     from docarray import Document, DocumentArray
 
-    return Document(uri=value, chunks=DocumentArray.from_csv(value), modality='tabular')
+    if value is None:
+        return Document(modality='tabular')
+    else:
+        return Document(
+            uri=value, chunks=DocumentArray.from_csv(value), modality='tabular'
+        )

@@ -127,6 +127,11 @@ _TYPES_REGISTRY = {
     Blob: lambda x: field(setter=blob_setter, getter=blob_getter, _source_field=x),
     Mesh: lambda x: field(setter=mesh_setter, getter=mesh_getter, _source_field=x),
 }
+_TYPES_REGISTRY_OPTIONAL = dict()
+for type_ in _TYPES_REGISTRY.keys():
+    _TYPES_REGISTRY_OPTIONAL[Optional[type_]] = _TYPES_REGISTRY[type_]
+
+_TYPES_REGISTRY.update(_TYPES_REGISTRY_OPTIONAL)
 
 
 @overload

@@ -3,21 +3,37 @@ from typing import Optional, Union
 import pytest
 
 from docarray import Document
-from docarray.typing import Text, Image, Audio, JSON
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON, URI
 from docarray.dataclasses.types import _is_optional, dataclass
 
 
-def test_dataclass_optional_value():
+@pytest.mark.parametrize(
+    'type_', [Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON, URI]
+)
+def test_dataclass_optional_value(type_):
+    @dataclass
+    class MultiModalDoc:
+        foo: Optional[type_] = None
+
+    d = Document(MultiModalDoc())
+
+    assert len(d.chunks) == 1
+    assert isinstance(d.foo, Document)
+
+
+def test_dataclass_optional_value_text():
     @dataclass
     class MultiModalDoc:
         foo: Optional[Text] = None
 
     d = Document(MultiModalDoc())
-    assert d.foo.text is None
-    d.bar.foo = 'world'  # wont work
+    assert (
+        d.foo.text is Document(text=None).text
+    )  # the None is automatically transform to '' in Document init
+    d.foo.text = 'world'
 
     assert len(d.chunks) == 1
-    assert isinstance(d.bar, Document)
+    assert isinstance(d.foo, Document)
 
 
 def test_dataclass_optional_value_str():
