@@ -58,11 +58,16 @@ class MultiModalMixin:
                     'type': f'Optional[{_get_optional_subtype(field.type).__name__}]',
                 }
 
-            elif field.type == bytes and not _is_field(field):
-                tags[key] = base64.b64encode(attribute).decode()
+            elif field.type in [bytes, Optional[bytes]] and not _is_field(field):
+                tags[key] = (
+                    base64.b64encode(attribute).decode() if attribute else attribute
+                )
                 multi_modal_schema[key] = {
                     'attribute_type': AttributeType.PRIMITIVE,
-                    'type': field.type.__name__,
+                    'type': field.type.__name__
+                    if not (_is_optional(field.type))
+                    else f'Optional[{_get_optional_subtype(field.type).__name__}]',
+                    'position': len(root.chunks),
                 }
 
             elif field.type == Optional[bytes] and not _is_field(field):
