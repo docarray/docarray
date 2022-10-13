@@ -387,7 +387,7 @@ def test_missing_groundtruth_should_raise(storage, config, start_storage):
         ('redis', {'n_dim': 256}),
     ],
 )
-def test_missing_groundtruth_should_raise(storage, config, start_storage):
+def test_useless_groundtruth_warning_should_raise(storage, config, start_storage):
     da1 = DocumentArray.empty(10)
     for d in da1:
         d.tags = {'label': 'A'}
