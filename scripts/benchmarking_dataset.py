@@ -73,6 +73,7 @@ def get_configuration_storage_backends(argparse):
                     'n_dim': D,
                     'hosts': 'http://localhost:41235',
                     'columns': {'i': 'int'},
+                    'es_config': {'timeout': 300},
                 },
             ),
             (
