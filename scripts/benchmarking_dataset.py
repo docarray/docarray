@@ -32,6 +32,12 @@ def get_configuration_storage_backends(argparse):
         action='store_true',
     )
 
+    parser.add_argument(
+        '--exclude-backends',
+        help='list of comma separated backends to exclude from the benchmarks',
+        type=str,
+    )
+
     args = parser.parse_args()
 
     if args.default_hnsw:
@@ -134,6 +140,12 @@ def get_configuration_storage_backends(argparse):
                 },
             ),
         ]
+
+    storage_backends = [
+        (backend, config)
+        for backend, config in storage_backends
+        if backend not in (args.exclude_backends or '').split(',')
+    ]
     return storage_backends
 
 
@@ -198,31 +210,41 @@ def run_benchmark(
                     da = DocumentArray(storage=backend)
                 else:
                     da = DocumentArray(storage=backend, config=config)
+
                 console.print(f'\tindexing {n_index} docs ...')
                 create_time, _ = create(da, docs)
+
                 # for n_q in n_query:
                 console.print(f'\treading {n_query} docs ...')
                 read_time, _ = read(
                     da,
                     random.sample([d.id for d in docs], n_query),
                 )
+
                 console.print(f'\tupdating {n_query} docs ...')
                 update_time, _ = update(da, docs_to_update)
+
                 console.print(f'\tdeleting {n_query} docs ...')
                 delete_time, _ = delete(da, [d.id for d in docs_to_delete])
+
                 console.print(
                     f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
                 )
                 if backend == 'memory':
-                    find_by_vector_time, aux = find_by_vector(
+                    find_by_vector_time, results = find_by_vector(
                         da, vector_queries[0], limit=K
                     )
-                    recall_at_k = 1
+                    recall_at_k = recall_from_numpy(
+                        np.array(results[:, 'tags__i']), ground_truth[0], K
+                    )
                 elif backend == 'sqlite':
                     find_by_vector_time, result = find_by_vector(
                         da, vector_queries[0], limit=K
                     )
-                    recall_at_k = 1
+                    # recall_at_k = 1
+                    recall_at_k = recall_from_numpy(
+                        np.array(results[:, 'tags__i']), ground_truth[0], K
+                    )
                 else:
                     recall_at_k_values = []
                     find_by_vector_times = []
@@ -244,6 +266,7 @@ def run_benchmark(
                 find_by_condition_time, _ = find_by_condition(
                     da, storage_backend_filters[backend]
                 )
+
                 if idx == len(n_index_values) - 1:
                     table.add_row(
                         backend.title(),
@@ -255,28 +278,20 @@ def run_benchmark(
                         '{:.3f}'.format(recall_at_k),
                         fmt(find_by_condition_time, 's'),
                     )
-                    benchmark_df.append(
-                        pd.DataFrame(
-                            [
-                                [
-                                    backend.title(),
-                                    create_time,
-                                    read_time,
-                                    update_time,
-                                    delete_time,
-                                    find_by_vector_time,
-                                    recall_at_k,
-                                    find_by_condition_time,
-                                ]
-                            ],
-                            columns=benchmark_df.columns,
-                        )
-                    )
+                    benchmark_df.loc[len(benchmark_df.index)] = [
+                        backend.title(),
+                        create_time,
+                        read_time,
+                        update_time,
+                        delete_time,
+                        find_by_vector_time,
+                        recall_at_k,
+                        find_by_condition_time,
+                    ]
 
                 # store find_by_vector time
                 find_by_vector_values[str(n_index)].append(find_by_vector_time)
                 create_values[str(n_index)].append(create_time)
-                console.print(table)
                 da.clear()
                 del da
             except Exception as e:
