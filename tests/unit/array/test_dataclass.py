@@ -4,15 +4,7 @@ import pytest
 
 from docarray import Document
 from docarray.typing import Text, Image, Audio, JSON
-from docarray.dataclasses.types import _is_optional, dataclass, _is_optional_field
-
-
-def test_dataclass_opregetional_value():
-    @dataclass
-    class MultiModalDoc:
-        foo: Text
-
-    d = Document(MultiModalDoc(foo='sfdssf'))
+from docarray.dataclasses.types import _is_optional, dataclass
 
 
 def test_dataclass_optional_value():
@@ -21,8 +13,8 @@ def test_dataclass_optional_value():
         foo: Optional[Text] = None
 
     d = Document(MultiModalDoc())
-    assert d.bar.text is None
-    d.bar.text = 'world'  # wont work
+    assert d.foo.text is None
+    d.bar.foo = 'world'  # wont work
 
     assert len(d.chunks) == 1
     assert isinstance(d.bar, Document)

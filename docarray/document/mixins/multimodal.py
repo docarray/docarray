@@ -7,7 +7,6 @@ from docarray.dataclasses.types import (
     is_multimodal,
     _is_field,
     _is_optional,
-    _is_optional_field,
     _get_optional_subtype,
 )
 from docarray.dataclasses.types import AttributeType
