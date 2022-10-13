@@ -122,7 +122,7 @@ def plot_results(
 ):
     find_df = pd.DataFrame(find_by_vector_values)
     find_df.index = [backend for backend, _ in storage_backends]
-    find_df = find_df.drop(['sqlite'])
+    find_df = find_df.drop(['sqlite'], errors='ignore')
     print('\n\nQuery times')
     print(find_df)
 
