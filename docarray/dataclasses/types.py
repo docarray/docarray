@@ -107,7 +107,11 @@ def field(**kwargs) -> Field:
 
 
 def _is_field(f) -> bool:
-    return isinstance(f, Field) and getattr(f, 'setter') and getattr(f, 'getter')
+    return (
+        isinstance(f, Field)
+        and bool(getattr(f, 'setter', None))
+        and bool(getattr(f, 'getter', None))
+    )
 
 
 _TYPES_REGISTRY = {
