@@ -337,3 +337,65 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
         d: Document
         # f1_score does not yield 1 for the first document as one of the match is missing
         assert d.evaluations[metric_fn].value > 0.9
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+    ],
+)
+def test_empty_da_should_raise(storage, config, start_storage):
+    da = DocumentArray([], storage=storage, config=config)
+    with pytest.raises(ValueError):
+        da.evaluate(metric='precision_at_k')
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+    ],
+)
+def test_missing_groundtruth_should_raise(storage, config, start_storage):
+    da = DocumentArray(DocumentArray.empty(10), storage=storage, config=config)
+    with pytest.raises(RuntimeError):
+        da.evaluate(metric='precision_at_k')
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+    ],
+)
+def test_missing_groundtruth_should_raise(storage, config, start_storage):
+    da1 = DocumentArray.empty(10)
+    for d in da1:
+        d.tags = {'label': 'A'}
+    da1.embeddings = np.random.random([10, 256])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    for d in da1_index:
+        d.tags = {'label': 'A'}
+    da1.match(da1_index, exclude_self=True)
+    da2 = DocumentArray.empty(10)
+    with pytest.warns(UserWarning):
+        da1.evaluate(ground_truth=da2, metric='precision_at_k')
