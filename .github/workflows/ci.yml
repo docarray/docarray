@@ -133,7 +133,7 @@ jobs:
           pip install --no-cache-dir ".[test]"
           pip install --no-cache-dir ".[full]"
           pip install --no-cache-dir ".[qdrant]"
-          pip install --no-cache-dir ".[annlite]"
+          pip install --pre annlite
           pip install --no-cache-dir ".[weaviate]"
           pip install --no-cache-dir ".[elasticsearch]"
           pip install --no-cache-dir ".[redis]"

@@ -200,13 +200,23 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 )
 def test_from_to_bytes(da_cls, config, start_storage):
     # simple
-    assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
+    if da_cls == DocumentArrayAnnlite:
+        b = da_cls.empty(2, config=config)
+        b.close()
+
+        d = da_cls.from_bytes(b.to_bytes(), config=config)
+        assert len(d) == 2
+        d.close()
+    else:
+        assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 
     da = da_cls.empty(2, config=config)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
+    if da_cls == DocumentArrayAnnlite:
+        da.close()
     da2 = da_cls.load_binary(bytes(da))
     assert da2.tensors == [[1, 2], [2, 1]]
     import numpy as np
@@ -267,10 +277,10 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
-        # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)), # TODO: enable this
-        # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
-        # (DocumentArrayElastic, ElasticConfig(n_dim=3)), # Elastic needs config
-        # (DocumentArrayRedis, RedisConfig(n_dim=3)), # Redis needs config
+        (DocumentArrayAnnlite, PqliteConfig(n_dim=3)),  # TODO: enable this
+        (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=3)),  # Elastic needs config
+        (DocumentArrayRedis, RedisConfig(n_dim=3)),  # Redis needs config
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):
