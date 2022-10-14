@@ -42,14 +42,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _del_docs_by_ids(self, ids):
         self._annlite.delete(ids)
 
-    def __del__(self) -> None:
+    def sync(self) -> None:
         if not self._persist:
             self._offset2ids.clear()
             self._annlite.clear()
 
         self._annlite.close()
 
-        super().__del__()
+        super().sync()
 
     def _load_offset2ids(self):
         self._offsetmapping = OffsetMapping(
