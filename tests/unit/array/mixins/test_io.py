@@ -277,10 +277,10 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
-        # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)),  # TODO: enable this
+        # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)), # TODO: enable this
         # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
-        # (DocumentArrayElastic, ElasticConfig(n_dim=3)),  # Elastic needs config
-        # (DocumentArrayRedis, RedisConfig(n_dim=3)),  # Redis needs config
+        # (DocumentArrayElastic, ElasticConfig(n_dim=3)), # Elastic needs config
+        # (DocumentArrayRedis, RedisConfig(n_dim=3)), # Redis needs config
     ],
 )
 def test_from_to_base64(protocol, compress, da_cls, config):
