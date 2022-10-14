@@ -144,26 +144,27 @@ da = DocumentArray(
     },
 )
 
-da.extend(
-    [
-        Document(
-            id=f'{i}',
-            embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'blue', 'stock': i % 2 == 0},
-        )
-        for i in range(10)
-    ]
-)
-da.extend(
-    [
-        Document(
-            id=f'{i+10}',
-            embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'red', 'stock': i % 2 == 0},
-        )
-        for i in range(10)
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(
+                id=f'{i}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i, 'color': 'blue', 'stock': i % 2 == 0},
+            )
+            for i in range(10)
+        ]
+    )
+    da.extend(
+        [
+            Document(
+                id=f'{i+10}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i, 'color': 'red', 'stock': i % 2 == 0},
+            )
+            for i in range(10)
+        ]
+    )
 
 print('\nIndexed price, color and stock:\n')
 for doc in da:
@@ -301,7 +302,8 @@ da = DocumentArray(
     },
 )
 
-da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
+with da:
+    da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
 
 np_query = np.ones(n_dim) * 8
 n_limit = 5
@@ -367,13 +369,14 @@ The following example builds a `DocumentArray` with several documents containing
 from docarray import Document, DocumentArray
 
 da = DocumentArray(storage='redis', config={'n_dim': 2, 'index_text': True})
-da.extend(
-    [
-        Document(id='1', text='token1 token2 token3'),
-        Document(id='2', text='token1 token2'),
-        Document(id='3', text='token2 token3 token4'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(id='1', text='token1 token2 token3'),
+            Document(id='2', text='token1 token2'),
+            Document(id='3', text='token2 token3 token4'),
+        ]
+    )
 
 results = da.find('token1')
 print(results[:, 'text'])
@@ -420,28 +423,29 @@ da = DocumentArray(
     storage='redis',
     config={'n_dim': 32, 'tag_indices': ['food_type', 'price']},
 )
-da.extend(
-    [
-        Document(
-            tags={
-                'food_type': 'Italian and Spanish food',
-                'price': 'cheap but not that cheap',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'French and Italian food',
-                'price': 'on the expensive side',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'chinese noddles',
-                'price': 'quite cheap for what you get!',
-            },
-        ),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(
+                tags={
+                    'food_type': 'Italian and Spanish food',
+                    'price': 'cheap but not that cheap',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'French and Italian food',
+                    'price': 'on the expensive side',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'chinese noddles',
+                    'price': 'quite cheap for what you get!',
+                },
+            ),
+        ]
+    )
 
 results_cheap = da.find('cheap', index='price')
 print('searching "cheap" in <price>:\n\t', results_cheap[:, 'tags__price'])
