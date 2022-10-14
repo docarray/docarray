@@ -46,10 +46,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if not self._persist:
             self._offset2ids.clear()
             self._annlite.clear()
-
-        self._annlite.close()
-
         super().sync()
+
+    def __del__(self):
+        self._annlite.close()
 
     def _load_offset2ids(self):
         self._offsetmapping = OffsetMapping(

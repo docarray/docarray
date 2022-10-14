@@ -680,7 +680,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
     [
         ('sqlite', None),
         ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
+        # ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
@@ -689,13 +689,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
 def test_offset2ids_persistence(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
 
-    da.extend(
-        [
-            Document(id='0'),
-            Document(id='2'),
-            Document(id='4'),
-        ]
-    )
+    da.extend([Document(id=i) for i in '024'])
     da.insert(1, Document(id='1'))
     da.insert(3, Document(id='3'))
 
@@ -703,11 +697,19 @@ def test_offset2ids_persistence(storage, config, start_storage):
     da_ids = da[:, 'id']
     assert da_ids == [str(i) for i in range(5)]
     da._persist = True
-    da.__del__()
+    da.sync()
 
     da = DocumentArray(storage=storage, config=config)
 
     assert da[:, 'id'] == da_ids
+
+    with da:
+        da.extend([Document(id=i) for i in 'abc'])
+        da_ids2 = da[:, 'id']
+        assert len(da) == 8
+
+    da2 = DocumentArray(storage=storage, config=config)
+    assert da2[:, 'id'] == da[:, 'id']
 
 
 def test_dam_conflicting_ids():
