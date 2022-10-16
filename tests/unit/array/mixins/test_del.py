@@ -118,7 +118,7 @@ def test_del_da_attribute():
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_del_subindex(storage, config):

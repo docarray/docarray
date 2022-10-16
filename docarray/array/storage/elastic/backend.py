@@ -1,6 +1,6 @@
 import copy
 import uuid
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 import warnings
 
 from typing import (

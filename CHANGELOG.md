@@ -137,6 +137,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3285,4 +3286,38 @@
 ### 🍹 Other Improvements
 
  - [[```404b9731```](https://github.com/jina-ai/docarray/commit/404b97312242bb0f34d9b59d9eca6c3bc4a333d7)] __-__ __version__: the next version will be 0.16.5 (*Jina Dev Bot*)
+
+<a name=release-note-0-17-0></a>
+## Release Note (`0.17.0`)
+
+> Release time: 2022-09-23 16:18:19
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Joan Fontanals,  Anne Yang,  Han Xiao,  Leon Wolf,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```6ee4500e```](https://github.com/jina-ai/docarray/commit/6ee4500e5b08fce54958a3b7c6ca76a523da6360)] __-__ allow pass timeout parameter to load_uri_to* (#556) (*Joan Fontanals*)
+ - [[```4764cc71```](https://github.com/jina-ai/docarray/commit/4764cc71bbc4094610f29da08f27e66ae76a233d)] __-__ redis supports multiple DocumentArrays (#540) (*Anne Yang*)
+ - [[```b2ca490f```](https://github.com/jina-ai/docarray/commit/b2ca490f65b648d13453adb8fdd77007d90e3db4)] __-__ login required push pull (#541) (*AlaeddineAbdessalem*)
+ - [[```14526dbd```](https://github.com/jina-ai/docarray/commit/14526dbde8cb735af05372eba4e1389e85044ff3)] __-__ push meta data along with docarray 0.16 (#490) (*Han Xiao*)
+ - [[```ea2a7a80```](https://github.com/jina-ai/docarray/commit/ea2a7a80024944cc66322daa3eb170db31adabfe)] __-__ __redis__: add full-text search and io (#535) (*Anne Yang*)
+
+### 🐞 Bug fixes
+
+ - [[```45907767```](https://github.com/jina-ai/docarray/commit/45907767447fddde2056c92090223cdc0cc557da)] __-__ keep redis default values for vector similarity parameters (#559) (*AlaeddineAbdessalem*)
+ - [[```5693b3a5```](https://github.com/jina-ai/docarray/commit/5693b3a5fde47c5be1e51792489c4c2d50c50cde)] __-__ adapt to annlite changes (#543) (*AlaeddineAbdessalem*)
+ - [[```638f3621```](https://github.com/jina-ai/docarray/commit/638f3621a93b5fbcfb4387c04b8e00217c891157)] __-__ keep out of mask docs in del by mask (#534) (*AlaeddineAbdessalem*)
+
+### 📗 Documentation
+
+ - [[```b4435838```](https://github.com/jina-ai/docarray/commit/b4435838e3230e8c7334dfee26f4f859e8696225)] __-__ add benchmark reference to feature summary (#510) (*Leon Wolf*)
+
+### 🍹 Other Improvements
+
+ - [[```92680e80```](https://github.com/jina-ai/docarray/commit/92680e8002650ff53d93e3b6a5ce836063877a0f)] __-__ bump minor version (#561) (*AlaeddineAbdessalem*)
+ - [[```ba91a2ee```](https://github.com/jina-ai/docarray/commit/ba91a2ee009ae48ff4f59b35ec41f0c2146808e5)] __-__ __version__: the next version will be 0.16.6 (*Jina Dev Bot*)
 

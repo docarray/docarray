@@ -27,7 +27,7 @@ if TYPE_CHECKING:
     from docarray.typing import T
     from docarray import Document
 
-from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
+from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON, URI
 
 __all__ = ['field', 'dataclass', 'is_multimodal']
 
@@ -113,6 +113,7 @@ def _is_field(f) -> bool:
 _TYPES_REGISTRY = {
     Image: lambda x: field(setter=image_setter, getter=image_getter, _source_field=x),
     Text: lambda x: field(setter=text_setter, getter=text_getter, _source_field=x),
+    URI: lambda x: field(setter=uri_setter, getter=uri_getter, _source_field=x),
     Audio: lambda x: field(setter=audio_setter, getter=audio_getter, _source_field=x),
     JSON: lambda x: field(setter=json_setter, getter=json_getter, _source_field=x),
     Video: lambda x: field(setter=video_setter, getter=video_getter, _source_field=x),
@@ -294,5 +295,5 @@ def _get_doc_attribute(attribute_doc: 'Document', field):
 
 def _get_doc_nested_attribute(attribute_doc: 'Document', nested_cls: Type['T']) -> 'T':
     if not is_multimodal(nested_cls):
-        raise ValueError(f'Nested attribute {nested_cls.__name__} is not a dataclass')
+        raise ValueError(f'Nested attribute `{nested_cls.__name__}` is not a dataclass')
     return nested_cls(**_from_document(nested_cls, attribute_doc))
