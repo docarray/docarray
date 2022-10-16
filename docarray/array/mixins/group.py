@@ -42,7 +42,7 @@ class GroupMixin:
         self,
         batch_size: int,
         shuffle: bool = False,
-        show_progress=False,
+        show_progress = False,
     ) -> Generator['DocumentArray', None, None]:
         """
         Creates a `Generator` that yields `DocumentArray` of size `batch_size` until `docs` is fully traversed along
