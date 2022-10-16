@@ -112,7 +112,7 @@ def cdist(
 
             dists = euclidean(x_mat, y_mat, device=device)
     else:
-        raise NotImplementedError(f'Input metric={metric} is not supported')
+        raise NotImplementedError(f'metric `{metric}` is not supported')
 
     if dists is None:
         raise NotImplementedError(

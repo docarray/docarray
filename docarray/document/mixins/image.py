@@ -175,17 +175,19 @@ class ImageDataMixin:
         width: Optional[int] = None,
         height: Optional[int] = None,
         channel_axis: int = -1,
+        **kwargs,
     ) -> 'T':
         """Convert the image-like :attr:`.uri` into :attr:`.tensor`
 
         :param width: the width of the image tensor.
         :param height: the height of the tensor.
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
+        :param kwargs: keyword arguments to pass to `:meth:_uri_to_blob` such as timeout
 
         :return: itself after processed
         """
 
-        buffer = _uri_to_blob(self.uri)
+        buffer = _uri_to_blob(self.uri, **kwargs)
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
         self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
         return self
@@ -227,15 +229,13 @@ class ImageDataMixin:
     ) -> 'T':
         """Normalize a uint8 image :attr:`.tensor` into a float32 image :attr:`.tensor` inplace.
 
-        Following Pytorch standard, the image must be in the shape of shape (3 x H x W) and
-        will be normalized in to a range of [0, 1] and then
-        normalized using mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225]. These two arrays are computed
-        based on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
-        mean and std. Otherwise, using the Imagenet pretrianed model with its own mean and std is recommended.
+        Applies normalization to the color channels of the images.
+        By default, the normalization uses mean = [0.485, 0.456, 0.406] and std = [0.229, 0.224, 0.225], which are standard values computed on millions of images. If you want to train from scratch on your own dataset, you can calculate the new
+        mean and std. Otherwise, using the Imagenet pretrained model with its own mean and std is recommended.
 
         :param channel_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
-        :param img_mean: the mean of all images
-        :param img_std: the standard deviation of all images
+        :param img_mean: the means of all images: [mean_r, mean_g, mean_b]
+        :param img_std: the standard deviations of all images: [std_r, std_g, std_b]
         :return: itself after processed
 
         .. warning::

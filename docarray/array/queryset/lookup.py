@@ -63,7 +63,7 @@ def lookup(key, val, doc: 'Document') -> bool:
         if r and len(r) == 1:
             val = doc._get_attributes(r[0])
         else:
-            raise ValueError(f'The placeholder "{val}" is illegal')
+            raise ValueError(f'The placeholder `{val}` is illegal')
 
     value = doc._get_attributes(get_key)
 

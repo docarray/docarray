@@ -137,7 +137,7 @@ class PortingMixin:
 
             return MessageToJson(self.to_protobuf(), **kwargs)
         else:
-            raise ValueError(f'protocol={protocol} is not supported.')
+            raise ValueError(f'protocol=`{protocol}` is not supported.')
 
     def to_base64(
         self, protocol: str = 'pickle', compress: Optional[str] = None

@@ -39,7 +39,7 @@ setup(
     long_description_content_type='text/markdown',
     zip_safe=False,
     setup_requires=['setuptools>=18.0', 'wheel'],
-    install_requires=['numpy', 'rich>=12.0.0'],
+    install_requires=['numpy', 'rich>=12.0.0', 'jina-hubble-sdk>=0.13.1'],
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
@@ -50,7 +50,6 @@ setup(
             'Pillow',
             'fastapi',
             'uvicorn',
-            'jina-hubble-sdk>=0.11.0',
         ],
         'full': [
             'protobuf>=3.13.0',
@@ -60,7 +59,6 @@ setup(
             'Pillow',
             'trimesh',
             'scipy',
-            'jina-hubble-sdk>=0.10.0',
             'av',
             'fastapi',
             'uvicorn',
@@ -70,7 +68,7 @@ setup(
             'qdrant-client~=0.7.3',
         ],
         'annlite': [
-            'annlite>=0.3.10',
+            'annlite>=0.3.12',
         ],
         'weaviate': [
             'weaviate-client~=3.3.0',
@@ -105,7 +103,7 @@ setup(
             'jupyterlab',
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
-            'annlite>=0.3.10',
+            'annlite>=0.3.12',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
             'jina',

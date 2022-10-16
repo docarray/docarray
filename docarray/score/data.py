@@ -23,12 +23,7 @@ class NamedScoreData:
             if not f_name.startswith('_'):
                 v = getattr(self, f_name)
                 if v is not None:
-                    if f_name not in default_values:
-                        r.append(f_name)
-                    else:
-                        dv = default_values[f_name]
-                        if v != dv:
-                            r.append(f_name)
+                    r.append(f_name)
 
         return tuple(r)
 

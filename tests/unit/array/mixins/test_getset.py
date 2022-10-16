@@ -1,5 +1,3 @@
-import gc
-
 import numpy as np
 import pytest
 import scipy.sparse
@@ -45,7 +43,7 @@ def nested_docs():
         ('weaviate', {'n_dim': 3}),
         ('qdrant', {'n_dim': 3}),
         ('elasticsearch', {'n_dim': 3}),
-        ('redis', {'n_dim': 3, 'flush': True}),
+        ('redis', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize(
@@ -71,7 +69,7 @@ def test_set_embeddings_multi_kind(array, storage, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_da_get_embeddings(docs, config, da_cls, start_storage):
@@ -93,7 +91,7 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_embeddings_setter_da(docs, config, da_cls, start_storage):
@@ -124,7 +122,7 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
@@ -148,7 +146,7 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_tensors_getter_da(docs, config, da_cls, start_storage):
@@ -175,7 +173,7 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_texts_getter_da(docs, config, da_cls, start_storage):
@@ -211,7 +209,7 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_storage):
@@ -249,7 +247,7 @@ def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_sto
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_texts_wrong_len(docs, config, da_cls, start_storage):
@@ -273,7 +271,7 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_tensors_wrong_len(docs, config, da_cls, start_storage):
@@ -297,7 +295,7 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_blobs_getter_setter(docs, da_cls, config, start_storage):
@@ -330,7 +328,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
@@ -354,7 +352,7 @@ def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
@@ -375,7 +373,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=6)),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
         (DocumentArrayElastic, ElasticConfig(n_dim=6)),
-        (DocumentArrayRedis, RedisConfig(n_dim=10, flush=True)),
+        (DocumentArrayRedis, RedisConfig(n_dim=10)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):
@@ -427,7 +425,7 @@ def embeddings_eq(emb1, emb2):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_getset_subindex(storage, config):
@@ -510,13 +508,10 @@ def test_getset_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_init_subindex(storage, config):
-    if storage == 'redis':
-        gc.collect()
-
     num_top_level_docs = 5
     num_chunks_per_doc = 3
     subindex_configs = (
@@ -553,7 +548,7 @@ def test_init_subindex(storage, config):
         ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
-        ('redis', {'n_dim': 3, 'distance': 'L2', 'flush': True}),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_set_on_subindex(storage, config):
