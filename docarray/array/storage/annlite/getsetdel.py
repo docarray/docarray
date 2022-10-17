@@ -42,9 +42,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _del_docs_by_ids(self, ids):
         self._annlite.delete(ids)
 
-    def sync(self) -> None:
-        super().sync()
-
     def __del__(self) -> None:
         if not self._persist:
             self._offset2ids.clear()
