@@ -36,7 +36,9 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(ground_truth=da1, metric=metric_fn, strict=False, **kwargs)
+    r = da1.evaluate(ground_truth=da1, metric=metric_fn, strict=False, **kwargs)[
+        metric_fn
+    ]
     assert isinstance(r, float)
     assert r == 1.0
     for d in da1:
@@ -79,7 +81,7 @@ def test_eval_mixin_perfect_match_labeled(
     for d in da1_index:
         d.tags = {'label': 'A'}
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(metric=metric_fn, **kwargs)
+    r = da1.evaluate(metric=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 1.0
     for d in da1:
@@ -121,7 +123,7 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
         d.tags = {'label': 'B'}
     da1_index = DocumentArray(da2, storage=storage, config=config)
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(metric_fn, **kwargs)
+    r = da1.evaluate(metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 0.0
     for d in da1:
@@ -146,7 +148,7 @@ def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score):
     da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
     for d in da:
         d.matches = da
-    r = da.evaluate(metric_fn)
+    r = da.evaluate(metric_fn)[metric_fn]
     assert abs(r - metric_score) < 0.001
 
 
@@ -186,7 +188,7 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
     da2_index = DocumentArray(da2, storage=storage, config=config)
     da2.match(da2_index, exclude_self=True)
 
-    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)
+    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 1.0
     for d in da1:
@@ -330,7 +332,7 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
     # pop some matches from first document
     da2[0].matches.pop(8)
 
-    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)
+    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     np.testing.assert_allclose(r, 1.0, rtol=1e-2)  #
     for d in da1:

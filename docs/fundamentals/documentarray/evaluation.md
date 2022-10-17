@@ -116,7 +116,7 @@ da2.evaluate(ground_truth=da, metric='precision_at_k', k=5)
 ```
 
 ```text
-0.48
+{'precision_at_k': 0.48}
 ```
 
 Note that this value is an average number over all Documents of `da2`. If you want to look at the individual evaluation, you can check {attr}`~docarray.Document.evaluations` attribute, e.g.
@@ -179,7 +179,7 @@ p_da.evaluate('average_precision', ground_truth=g_da, hash_fn=lambda d: d.text[:
 ```
 
 ```text
-1.0
+{'average_precision': 1.0}
 ```
 
 It is correct as we define the evaluation as checking if the first two characters in `.text` are the same.
