@@ -52,7 +52,7 @@ class GroupMixin:
 
         :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-        :param show_progress: if to show a progress bar on batching.
+        :param show_progress: if set, show a progress bar when batching documents.
         :yield: a Generator of `DocumentArray`, each in the length of `batch_size`
         """
         from rich.progress import track
@@ -68,7 +68,9 @@ class GroupMixin:
             random.shuffle(ix)
 
         for i in track(
-            range(n_batches), description='Batching', disable=not show_progress
+            range(n_batches),
+            description='Batching documents',
+            disable=not show_progress,
         ):
             yield self[ix[i * batch_size : (i + 1) * batch_size]]
 
