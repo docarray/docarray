@@ -64,8 +64,10 @@ class MilvusConfig:
 class BackendMixin(BaseBackendMixin):
 
     TYPE_MAP = {
-        'str': TypeMap(type=DataType.STRING, converter=str),
-        'float': TypeMap(type=DataType.FLOAT, converter=float),
+        'str': TypeMap(type=DataType.VARCHAR, converter=str),
+        'float': TypeMap(
+            type=DataType.DOUBLE, converter=float
+        ),  # it doesn't like DataType.FLOAT type, perhaps because python floats are double precision?
         'double': TypeMap(type=DataType.DOUBLE, converter=float),
         'int': TypeMap(type=DataType.INT64, converter=_safe_cast_int),
         'bool': TypeMap(type=DataType.BOOL, converter=bool),
@@ -129,10 +131,14 @@ class BackendMixin(BaseBackendMixin):
             name='serialized', dtype=DataType.VARCHAR, max_length=65_535
         )  # TODO(johannes) this is the maximus allowed length in milvus, could be optimized
 
-        additional_columns = [
-            FieldSchema(name=col, dtype=self._map_type(coltype))
-            for col, coltype in self._config.columns.items()
-        ]
+        additional_columns = []
+        for col, coltype in self._config.columns.items():
+            mapped_type = self._map_type(coltype)
+            if mapped_type == DataType.VARCHAR:
+                field_ = FieldSchema(name=col, dtype=mapped_type, max_length=1024)
+            else:
+                field_ = FieldSchema(name=col, dtype=mapped_type)
+            additional_columns.append(field_)
 
         schema = CollectionSchema(
             fields=[document_id, embedding, serialized, *additional_columns],

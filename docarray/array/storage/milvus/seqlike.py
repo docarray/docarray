@@ -39,10 +39,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             self.extend(other)
         return self
 
-    #
-    # def __len__(self):
-    #     return self._collection.num_entities  # This doesn't work for some reason. Currently in contact with Milvus team to resolve.
-
     def insert(self, index: int, value: 'Document', **kwargs):
         self._set_doc_by_id(value.id, value, **kwargs)
         self._offset2ids.insert(index, value.id)
