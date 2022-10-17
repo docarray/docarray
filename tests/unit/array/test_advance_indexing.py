@@ -696,7 +696,6 @@ def test_offset2ids_persistence(storage, config, start_storage):
     config = da._config
     da_ids = da[:, 'id']
     assert da_ids == [str(i) for i in range(5)]
-    da._persist = True
     da.sync()
 
     da = DocumentArray(storage=storage, config=config)

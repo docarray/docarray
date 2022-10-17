@@ -104,8 +104,10 @@ def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfi
     assert len(da2) == 2
     assert len(da2._offset2ids.ids) == 2
 
-    del da
-    del da2
+    # Cleanup modifications made in test
+    with da:
+        del da[0]
+        del da[0]
 
 
 @pytest.mark.parametrize(
