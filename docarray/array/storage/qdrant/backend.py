@@ -18,6 +18,7 @@ from qdrant_client.http.models.models import (
     PointsList,
     PointStruct,
     HnswConfigDiff,
+    VectorParams,
 )
 
 from docarray import Document
@@ -133,11 +134,11 @@ class BackendMixin(BaseBackendMixin):
                 full_scan_threshold=self._config.full_scan_threshold,
                 m=self._config.m,
             )
+            vectors_config = VectorParams(size=self._n_dim, distance=Distance.COSINE)
             self.client.http.collections_api.create_collection(
-                self.collection_name,
-                CreateCollection(
-                    vector_size=self.n_dim,
-                    distance=self.distance,
+                collection_name=self.collection_name,
+                create_collection=CreateCollection(
+                    vectors=vectors_config,
                     hnsw_config=hnsw_config,
                 ),
             )
@@ -175,10 +176,11 @@ class BackendMixin(BaseBackendMixin):
         ).result.payload['offset2id']
 
     def _update_offset2ids_meta(self):
+        vectors_config = VectorParams(size=1, distance=Distance.COSINE)
         if not self._collection_exists(self.collection_name_meta):
             self.client.http.collections_api.create_collection(
                 self.collection_name_meta,
-                CreateCollection(vector_size=1, distance=Distance.COSINE),
+                CreateCollection(vectors=vectors_config),
             )
 
         self.client.http.points_api.upsert_points(
