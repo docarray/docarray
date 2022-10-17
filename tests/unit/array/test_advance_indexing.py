@@ -705,10 +705,6 @@ def test_offset2ids_persistence(storage, config, start_storage):
     assert da_ids == [str(i) for i in range(5)]
     da.sync()
 
-    # Keep the tmp file around
-    if storage == 'annlite':
-        da._persist = True
-
     da1 = DocumentArray(storage=storage, config=config)
 
     assert da1[:, 'id'] == da_ids
