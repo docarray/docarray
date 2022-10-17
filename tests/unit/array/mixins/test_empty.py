@@ -24,7 +24,6 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
     ],
 )
 def test_empty_non_zero(da_cls, config, start_storage):
-
     # Assert .empty provides a da with 0 docs
     if config:
         da = da_cls.empty(config=config)
@@ -32,6 +31,8 @@ def test_empty_non_zero(da_cls, config, start_storage):
         da = da_cls.empty()
 
     assert len(da) == 0
+    if da_cls == DocumentArrayAnnlite:
+        da.close()
 
     # Assert .empty provides a da of the correct length
     if config:

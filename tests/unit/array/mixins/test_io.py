@@ -45,6 +45,13 @@ def test_document_save_load(
     da = da_cls(docs, config=config())
     da.insert(2, Document(id='new'))
     da.save(tmp_file, file_format=method, encoding=encoding)
+    if da_cls == DocumentArrayAnnlite:
+        da_info = [
+            [d.id for d in da],
+            [d.embedding for d in da],
+            [d.content for d in da],
+        ]
+        da.close()
 
     da_r = type(da).load(
         tmp_file, file_format=method, encoding=encoding, config=config()
@@ -53,10 +60,17 @@ def test_document_save_load(
     assert type(da) is type(da_r)
     assert len(da) == len(da_r)
     assert da_r[2].id == 'new'
-    for d, d_r in zip(da, da_r):
-        assert d.id == d_r.id
-        np.testing.assert_equal(d.embedding, d_r.embedding)
-        assert d.content == d_r.content
+
+    if da_cls == DocumentArrayAnnlite:
+        for idx, d_r in enumerate(da_r):
+            assert da_info[0][idx] == d_r.id
+            np.testing.assert_equal(da_info[1][idx], d_r.embedding)
+            assert da_info[2][idx] == d_r.content
+    else:
+        for d, d_r in zip(da, da_r):
+            assert d.id == d_r.id
+            np.testing.assert_equal(d.embedding, d_r.embedding)
+            assert d.content == d_r.content
 
 
 @pytest.mark.parametrize('flatten_tags', [True, False])
