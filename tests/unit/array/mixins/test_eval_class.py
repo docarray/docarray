@@ -132,7 +132,7 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
 @pytest.mark.parametrize(
     'metric_fn, metric_score',
     [
-        ('r_precision', 0.6111111),  # might be changed
+        ('r_precision', 1.0 / 3),  # might be changed
         ('precision_at_k', 1.0 / 3),
         ('hit_at_k', 1.0),
         ('average_precision', (1.0 + 0.5 + (1.0 / 3)) / 3),
