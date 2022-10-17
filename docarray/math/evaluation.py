@@ -37,12 +37,15 @@ def precision_at_k(
     binary_relevance: List[int], k: Optional[int] = None, **kwargs
 ) -> float:
     """Precision @K.
+    If `binary_relevance` is empty, 0.0 is returned.
 
     :param binary_relevance: binary relevancy in rank order
     :param k: measured on top-k
     :return: precision @k
     """
     _check_k(k)
+    if len(binary_relevance) == 0:
+        return 0.0
     binary_relevance = np.array(binary_relevance)[:k] != 0
     return float(np.mean(binary_relevance))
 

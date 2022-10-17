@@ -10,17 +10,17 @@ The results are stored in `.evaluations` field of each Document.
 
 DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. Different metric accepts different arguments as `kwargs`:
 
-| Metric              | Accept `kwargs`  |
-|---------------------|------------------|
-| `r_precision`       | None             |
-| `average_precision` | None             |            
-| `reciprocal_rank`   | None             |
-| `precision_at_k`    | `k`              |
-| `hit_at_k`          | `k`              |
-| `recall_at_k`       | `max_rel`, `k`   |
-| `f1_score_at_k`     | `max_rel`, `k`   |
-| `dcg_at_k`          | `method`, `k`    |
-| `ndcg_at_k`         | `method`, `k`    |
+| Metric                                              | Accept `kwargs`  |
+|-----------------------------------------------------|------------------|
+| {meth}`~docarray.math.evaluation.r_precision`       | None             |
+| {meth}`~docarray.math.evaluation.average_precision` | None             |            
+| {meth}`~docarray.math.evaluation.reciprocal_rank`   | None             |
+| {meth}`~docarray.math.evaluation.precision_at_k`    | `k`              |
+| {meth}`~docarray.math.evaluation.hit_at_k`          | `k`              |
+| {meth}`~docarray.math.evaluation.recall_at_k`       | `max_rel`, `k`   |
+| {meth}`~docarray.math.evaluation.f1_score_at_k`     | `max_rel`, `k`   |
+| {meth}`~docarray.math.evaluation.dcg_at_k`          | `method`, `k`    |
+| {meth}`~docarray.math.evaluation.ndcg_at_k`         | `method`, `k`    |
 
 ```{danger}
 This metric scores might change if the `limit` attribute of the match function is set differently.
