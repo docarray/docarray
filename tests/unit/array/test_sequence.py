@@ -1,4 +1,3 @@
-import gc
 import tempfile
 import uuid
 
@@ -90,9 +89,6 @@ def update_config_inplace(config, tmpdir, tmpfile):
 def test_context_manager_from_disk(storage, config, start_storage, tmpdir, tmpfile):
     config = config
     update_config_inplace(config, tmpdir, tmpfile)
-
-    if storage == 'redis':
-        gc.collect()
 
     da = DocumentArray(storage=storage, config=config)
 

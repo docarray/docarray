@@ -82,7 +82,8 @@ da = DocumentArray(
     config={'index_name': 'old_stuff', 'n_dim': 128},
 )
 
-da.extend([Document() for _ in range(1000)])
+with da:
+    da.extend([Document() for _ in range(1000)])
 
 da2 = DocumentArray(
     storage='elasticsearch',
@@ -304,13 +305,14 @@ for those that have `pizza` in their text description.
 from docarray import DocumentArray, Document
 
 da = DocumentArray(storage='elasticsearch', config={'n_dim': 2, 'index_text': True})
-da.extend(
-    [
-        Document(text='Person eating'),
-        Document(text='Person eating pizza'),
-        Document(text='Pizza restaurant'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(text='Person eating'),
+            Document(text='Person eating pizza'),
+            Document(text='Pizza restaurant'),
+        ]
+    )
 
 pizza_docs = da.find('pizza')
 pizza_docs[:, 'text']
@@ -336,28 +338,29 @@ from docarray import DocumentArray, Document
 da = DocumentArray(
     storage='elasticsearch', config={'n_dim': 32, 'tag_indices': ['food_type', 'price']}
 )
-da.extend(
-    [
-        Document(
-            tags={
-                'food_type': 'Italian and Spanish food',
-                'price': 'cheap but not that cheap',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'French and Italian food',
-                'price': 'on the expensive side',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'chinese noddles',
-                'price': 'quite cheap for what you get!',
-            },
-        ),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(
+                tags={
+                    'food_type': 'Italian and Spanish food',
+                    'price': 'cheap but not that cheap',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'French and Italian food',
+                    'price': 'on the expensive side',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'chinese noddles',
+                    'price': 'quite cheap for what you get!',
+                },
+            ),
+        ]
+    )
 
 results_cheap = da.find('cheap', index='price')
 print('searching "cheap" in <price>:\n\t', results_cheap[:, 'tags__price'])

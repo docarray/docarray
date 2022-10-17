@@ -127,13 +127,14 @@ Then, we can index some Documents:
 ```python
 from docarray import Document
 
-da.extend(
-    [
-        Document(text='Persist Documents with Weaviate.'),
-        Document(text='And enjoy fast nearest neighbor search.'),
-        Document(text='All while using DocArray API.'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(text='Persist Documents with Weaviate.'),
+            Document(text='And enjoy fast nearest neighbor search.'),
+            Document(text='All while using DocArray API.'),
+        ]
+    )
 ```
 
 Now, we can generate embeddings inside the database using BERT model:
@@ -426,13 +427,14 @@ da = DocumentArray(
 )
 
 # load the dummy data
-da.extend(
-    [
-        Document(text='Persist Documents with Weaviate.'),
-        Document(text='And enjoy fast nearest neighbor search.'),
-        Document(text='All while using DocArray API.'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(text='Persist Documents with Weaviate.'),
+            Document(text='And enjoy fast nearest neighbor search.'),
+            Document(text='All while using DocArray API.'),
+        ]
+    )
 
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 model = AutoModel.from_pretrained('bert-base-uncased')
@@ -493,13 +495,14 @@ da = DocumentArray(
 )
 
 # load some dummy data
-da.extend(
-    [
-        Document(text='Persist Documents with Weaviate.'),
-        Document(text='And enjoy fast nearest neighbor search.'),
-        Document(text='All while using DocArray API.'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(text='Persist Documents with Weaviate.'),
+            Document(text='And enjoy fast nearest neighbor search.'),
+            Document(text='All while using DocArray API.'),
+        ]
+    )
 
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 model = AutoModel.from_pretrained('bert-base-uncased')
