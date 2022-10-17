@@ -5,19 +5,19 @@ import numpy as np
 from benchmarking_utils import (
     get_configuration_storage_backends,
     plot_results,
-    run_benchmark2,
+    run_benchmark,
     save_benchmark_df,
 )
 
 if __name__ == "__main__":
 
     # Parameters settable by the user
-    n_index_values = [1000]
+    n_index_values = [1_000_000]
     n_query = 1
     D = 128
     TENSOR_SHAPE = (512, 256)
     K = 10
-    n_vector_queries = 100
+    n_vector_queries = 1000
     np.random.seed(123)
 
     # Benchmark
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         test = [np.random.rand(D) for _ in range(n_vector_queries)]
         ground_truth = []
 
-        find_by_vector_time_all, create_time_all, benchmark_df = run_benchmark2(
+        find_by_vector_time_all, create_time_all, benchmark_df = run_benchmark(
             train,
             test,
             ground_truth,

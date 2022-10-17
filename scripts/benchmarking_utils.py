@@ -1,20 +1,14 @@
 import functools
-from time import perf_counter
-from typing import Iterable
-
 import random
+from time import perf_counter
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-
+import seaborn as sns
+from docarray import Document, DocumentArray
 from rich.console import Console
 from rich.table import Table
-
-from docarray import DocumentArray
-from docarray import Document
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
 
 
 def timer(func):
@@ -57,14 +51,13 @@ def find_by_vector(da, query, limit):
     return da.find(query, limit=limit)
 
 
-def get_docs(X_tr):
+def get_docs(train):
     return [
         Document(
             embedding=x,
-            # tensor=np.random.rand(*tensor_shape),
             tags={'i': int(i)},
         )
-        for i, x in enumerate(X_tr)
+        for i, x in enumerate(train)
     ]
 
 
@@ -214,173 +207,12 @@ def recall(predicted, relevant, eval_at):
         return 0.0
     predicted_at_k = predicted[:eval_at]
     n_predicted_and_relevant = len(
-        set(predicted_at_k[:, 'id']).intersection(set(relevant[:, 'id']))
+        set(predicted_at_k[:, 'id']).intersection(set(relevant))
     )
-    return n_predicted_and_relevant / len(relevant)
-
-
-def recall_from_numpy(predicted, relevant, eval_at: int):
-    """
-    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],5)
-    1.0
-    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],4)
-    0.8
-    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],3)
-    0.3
-    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],2)
-    0.4
-    >>> recall_from_numpy([1,2,3,4,5], [5,4,3,2,1],1)
-    0.2
-    """
-    if eval_at == 0:
-        return 0.0
-    predicted_at_k = predicted[:eval_at]
-    n_predicted_and_relevant = len(set(predicted_at_k).intersection(set(relevant)))
     return n_predicted_and_relevant / len(relevant)
 
 
 def run_benchmark(
-    X_tr,
-    X_te,
-    dataset,
-    n_index_values,
-    n_vector_queries,
-    n_query,
-    storage_backends,
-    K,
-    D,
-):
-    table = Table(
-        title=f'DocArray Benchmarking n_index={n_index_values[-1]} n_query={n_query} D={D} K={K}'
-    )
-    benchmark_df = pd.DataFrame(
-        {
-            'Storage Backend': [],
-            'Indexing time (C)': [],
-            'Query (R)': [],
-            'Update (U)': [],
-            'Delete (D)': [],
-            'Find by vector': [],
-            f'Recall at k={K} for vector search': [],
-            'Find by condition': [],
-        }
-    )
-
-    for col in benchmark_df.columns:
-        table.add_column(col)
-
-    console = Console()
-    find_by_vector_values = {str(n_index): [] for n_index in n_index_values}
-    create_values = {str(n_index): [] for n_index in n_index_values}
-
-    console.print(f'Reading dataset')
-    docs = get_docs(X_tr)
-    docs_to_delete = random.sample(docs, n_query)
-    docs_to_update = random.sample(docs, n_query)
-    vector_queries = [x for x in X_te]
-    ground_truth = [x[0:K] for x in dataset['neighbors'][0 : len(vector_queries)]]
-
-    for idx, n_index in enumerate(n_index_values):
-        for backend, config in storage_backends:
-            try:
-                console.print('\nBackend:', backend.title())
-                # for n_i in n_index:
-                if not config:
-                    da = DocumentArray(storage=backend)
-                else:
-                    da = DocumentArray(storage=backend, config=config)
-
-                console.print(f'\tindexing {n_index} docs ...')
-                create_time, _ = create(da, docs)
-
-                # for n_q in n_query:
-                console.print(f'\treading {n_query} docs ...')
-                read_time, _ = read(
-                    da,
-                    random.sample([d.id for d in docs], n_query),
-                )
-
-                console.print(f'\tupdating {n_query} docs ...')
-                update_time, _ = update(da, docs_to_update)
-
-                console.print(f'\tdeleting {n_query} docs ...')
-                delete_time, _ = delete(da, [d.id for d in docs_to_delete])
-
-                console.print(
-                    f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
-                )
-                if backend == 'memory':
-                    find_by_vector_time, results = find_by_vector(
-                        da, vector_queries[0], limit=K
-                    )
-                    recall_at_k = recall_from_numpy(
-                        np.array(results[:, 'tags__i']), ground_truth[0], K
-                    )
-                elif backend == 'sqlite':
-                    find_by_vector_time, result = find_by_vector(
-                        da, vector_queries[0], limit=K
-                    )
-                    # recall_at_k = 1
-                    recall_at_k = recall_from_numpy(
-                        np.array(results[:, 'tags__i']), ground_truth[0], K
-                    )
-                else:
-                    recall_at_k_values = []
-                    find_by_vector_times = []
-                    for i, query in enumerate(vector_queries):
-                        find_by_vector_time, results = find_by_vector(
-                            da, query, limit=K
-                        )
-                        find_by_vector_times.append(find_by_vector_time)
-                        recall_at_k_values.append(
-                            recall_from_numpy(
-                                np.array(results[:, 'tags__i']), ground_truth[i], K
-                            )
-                        )
-
-                    recall_at_k = np.mean(recall_at_k_values)
-                    find_by_vector_time = np.mean(find_by_vector_times)
-
-                console.print(f'\tfinding {n_query} docs by condition ...')
-                find_by_condition_time, _ = find_by_condition(
-                    da, storage_backend_filters[backend]
-                )
-
-                if idx == len(n_index_values) - 1:
-                    table.add_row(
-                        backend.title(),
-                        fmt(create_time, 's'),
-                        fmt(read_time * 1000, 'ms'),
-                        fmt(update_time * 1000, 'ms'),
-                        fmt(delete_time * 1000, 'ms'),
-                        fmt(find_by_vector_time, 's'),
-                        '{:.3f}'.format(recall_at_k),
-                        fmt(find_by_condition_time, 's'),
-                    )
-                    benchmark_df.loc[len(benchmark_df.index)] = [
-                        backend.title(),
-                        create_time,
-                        read_time,
-                        update_time,
-                        delete_time,
-                        find_by_vector_time,
-                        recall_at_k,
-                        find_by_condition_time,
-                    ]
-
-                # store find_by_vector time
-                find_by_vector_values[str(n_index)].append(find_by_vector_time)
-                create_values[str(n_index)].append(create_time)
-                da.clear()
-                del da
-            except Exception as e:
-                console.print(f'Storage Backend {backend} failed: {e}')
-
-        console.print(table)
-        return find_by_vector_values, create_values, benchmark_df
-
-
-def run_benchmark2(
     train,
     test,
     ground_truth,
@@ -448,7 +280,13 @@ def run_benchmark2(
             console.print(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
-            if backend == 'sqlite':
+
+            if backend == 'memory' and len(ground_truth) == n_vector_queries:
+                find_by_vector_time, results = find_by_vector(
+                    da, vector_queries[0], limit=K
+                )
+                recall_at_k = recall(results, ground_truth[0], K)
+            elif backend == 'sqlite':
                 find_by_vector_time, result = find_by_vector(
                     da, vector_queries[0], limit=K
                 )
@@ -460,7 +298,7 @@ def run_benchmark2(
                     find_by_vector_time, results = find_by_vector(da, query, limit=K)
                     find_by_vector_times.append(find_by_vector_time)
                     if backend == 'memory':
-                        ground_truth.append(results)
+                        ground_truth.append(results[:, 'tags__i'])
                         recall_at_k_values.append(1)
                     else:
                         recall_at_k_values.append(recall(results, ground_truth[i], K))
