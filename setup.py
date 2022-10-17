@@ -63,6 +63,7 @@ setup(
             'fastapi',
             'uvicorn',
             'strawberry-graphql',
+            'jina>=3.10.1',
         ],
         'qdrant': [
             'qdrant-client~=0.7.3',
@@ -106,7 +107,7 @@ setup(
             'annlite>=0.3.12',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
-            'jina',
+            'jina>=3.10.1',
         ],
     },
     classifiers=[
