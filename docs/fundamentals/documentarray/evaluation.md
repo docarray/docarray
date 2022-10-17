@@ -163,7 +163,7 @@ for d in g_da:
 Now when you do evaluate, you will receive an error: 
 
 ```python
-p_da.evaluate('average_precision', groundtruth=g_da)
+p_da.evaluate('average_precision', ground_truth=g_da)
 ```
 
 ```text
