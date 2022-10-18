@@ -57,6 +57,43 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
         ('redis', {'n_dim': 256}),
     ],
 )
+def test_eval_mixin_perfect_match_multiple_metrics(storage, config, start_storage):
+    metric_fns = [
+        'r_precision',
+        'precision_at_k',
+        'hit_at_k',
+        'average_precision',
+        'reciprocal_rank',
+        'recall_at_k',
+        'f1_score_at_k',
+        'ndcg_at_k',
+    ]
+    kwargs = {'max_rel': 9}
+    da1 = DocumentArray.empty(10)
+    da1.embeddings = np.random.random([10, 256])
+    da1_index = DocumentArray(da1, storage=storage, config=config)
+    da1.match(da1_index, exclude_self=True)
+    r = da1.evaluate(ground_truth=da1, metrics=metric_fns, strict=False, **kwargs)
+    for metric_fn in metric_fns:
+        assert metric_fn in r
+        assert isinstance(r[metric_fn], float)
+        assert r[metric_fn] == 1.0
+        for d in da1:
+            assert d.evaluations[metric_fn].value == 1.0
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 256}),
+        ('qdrant', {'n_dim': 256}),
+        ('elasticsearch', {'n_dim': 256}),
+        ('redis', {'n_dim': 256}),
+    ],
+)
 @pytest.mark.parametrize(
     'metric_fn, kwargs',
     [
@@ -291,7 +328,10 @@ def test_adding_noise(storage, config, start_storage):
         d.matches.extend(DocumentArray.empty(10))
         d.matches = d.matches.shuffle()
 
-    assert da2.evaluate(ground_truth=da, metrics='precision_at_k', k=10) < 1.0
+    assert (
+        da2.evaluate(ground_truth=da, metrics='precision_at_k', k=10)['precision_at_k']
+        < 1.0
+    )
 
     for d in da2:
         assert 0.0 < d.evaluations['precision_at_k'].value < 1.0
