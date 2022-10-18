@@ -52,6 +52,21 @@ def test_input_csv_from_file():
     assert result[0].tags['source'] == 'testsrc'
 
 
+def test_input_csv_from_class():
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+        da = DocumentArray.from_csv(fp)
+    assert len(da) == 2
+    assert isinstance(da[0], Document)
+    assert isinstance(da, DocumentArray)
+
+
+def test_input_csv_from_object_fail():
+    da = DocumentArray()
+    with pytest.raises(Exception):
+        with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+            da.from_csv(fp)
+
+
 def test_input_csv_from_lines():
     with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
         result = list(from_lines(fp, line_format='csv'))
