@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     MilvusArrayType = TypeVar(
         'MilvusArrayType', np.ndarray, list
     )  # TODO(johannes) test torch, tf, etc.
+    from docarray import Document, DocumentArray
 
 
 class FindMixin:

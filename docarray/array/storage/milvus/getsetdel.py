@@ -1,11 +1,13 @@
-from typing import Iterable
+from typing import Iterable, Dict, TYPE_CHECKING
 
 import numpy as np
 
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
-from docarray import Document
 from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.milvus.backend import always_true_expr, ids_to_milvus_expr
+
+if TYPE_CHECKING:
+    from docarray import Document, DocumentArray
 
 
 class GetSetDelMixin(BaseGetSetDelMixin):
