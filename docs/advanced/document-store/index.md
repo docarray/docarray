@@ -423,8 +423,10 @@ Length of da1 is 3
 ````
 
 Now that you know the issue, let's explore what you should do to work with DocumentArrays backed by document store in a more predictable manner.
-### Using Context Manager
-The recommended way is to use the DocumentArray as a context manager like so:
+
+````{tab} Use with
+
+The data will be synced when the context manager is exited.
 
 ```python
 from docarray import DocumentArray, Document
@@ -437,38 +439,24 @@ print(f"Length of da1 is {len(da1)}")
 da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
 print(f"Length of da2 is {len(da2)}")
 ```
-**First run output**
-```console
-Length of da1 is 1
-Length of da2 is 1
-```
-**Second run output**
-```console
-Length of da1 is 2
-Length of da2 is 2
-```
-**Third run output**
-```console
-Length of da1 is 3
-Length of da2 is 3
-```
+````
 
-The append you made to the DocumentArray is now persisted properly. Hurray!
+````{tab} Use sync
 
-### Explicitly calling `sync`
-You can explicitly call the `sync` method of the DocumentArray to save the data in the document store.
+Explicitly calling the `sync` method of the DocumentArray will save the data to the document store.
 
 ```python
 from docarray import DocumentArray, Document
 
 da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
 da1.append(Document())
-da.sync()
+da.sync()  # Call the sync method
 print(f"Length of da1 is {len(da1)}")
 
 da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
 print(f"Length of da2 is {len(da2)}")
 ```
+````
 **First run output**
 ```console
 Length of da1 is 1
@@ -487,6 +475,7 @@ Length of da2 is 3
 
 The append you made to the DocumentArray is now persisted properly. Hurray!
 
+The recommended way to sync data to the document store is to use the DocumentArray inside the `with` context manager.
 
 ## Known limitations
 
