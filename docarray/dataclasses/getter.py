@@ -19,6 +19,10 @@ def text_getter(doc: 'Document'):
     return doc.text
 
 
+def uri_getter(doc: 'Document'):
+    return doc.uri
+
+
 def audio_getter(doc: 'Document'):
     return doc.uri or doc.tensor
 

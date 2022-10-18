@@ -121,7 +121,9 @@ class OffsetMapping(Table):
         elif direction == 'right':
             sql = f'UPDATE {self.name} SET offset=offset+{shift_step} WHERE offset > ?'
         else:
-            raise ValueError(f'The shit_offset directory {direction} is not supported!')
+            raise ValueError(
+                f'The shit_offset directory `{direction}` is not supported!'
+            )
 
         self._conn.execute(sql, (shift_from,))
         if commit:
