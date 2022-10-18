@@ -47,8 +47,8 @@ def find_by_condition(da, query):
 
 
 @timer
-def find_by_vector(da, query, limit):
-    return da.find(query, limit=limit)
+def find_by_vector(da, query, limit, **kwargs):
+    return da.find(query, limit=limit, **kwargs)
 
 
 def get_docs(train):
@@ -122,6 +122,7 @@ def get_configuration_storage_backends(argparse, D):
                 {
                     'n_dim': D,
                     'port': '41236',
+                    'distance': 'L2',
                     'columns': {'i': 'int'},
                 },
             ),
@@ -179,6 +180,7 @@ def get_configuration_storage_backends(argparse, D):
                     'm': 16,
                     'ef_runtime': 100,
                     'port': '41236',
+                    'columns': {'i': 'int'},
                 },
             ),
         ]
@@ -207,7 +209,7 @@ def recall(predicted, relevant, eval_at):
         return 0.0
     predicted_at_k = predicted[:eval_at]
     n_predicted_and_relevant = len(
-        set(predicted_at_k[:, 'id']).intersection(set(relevant))
+        set(predicted_at_k[:, 'tags__i']).intersection(set(relevant))
     )
     return n_predicted_and_relevant / len(relevant)
 
@@ -283,12 +285,12 @@ def run_benchmark(
 
             if backend == 'memory' and len(ground_truth) == n_vector_queries:
                 find_by_vector_time, results = find_by_vector(
-                    da, vector_queries[0], limit=K
+                    da=da, query=vector_queries[0], limit=K, metric='euclidean'
                 )
                 recall_at_k = recall(results, ground_truth[0], K)
             elif backend == 'sqlite':
                 find_by_vector_time, result = find_by_vector(
-                    da, vector_queries[0], limit=K
+                    da, vector_queries[0], limit=K, metric='euclidean'
                 )
                 recall_at_k = recall(result, ground_truth[0], K)
             else:
