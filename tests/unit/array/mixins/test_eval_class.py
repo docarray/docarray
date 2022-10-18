@@ -390,8 +390,6 @@ def test_useless_groundtruth_warning_should_raise(storage, config, start_storage
         d.tags = {'label': 'A'}
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
-    for d in da1_index:
-        d.tags = {'label': 'A'}
     da1.match(da1_index, exclude_self=True)
     da2 = DocumentArray.empty(10)
     with pytest.warns(UserWarning):
