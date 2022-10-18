@@ -42,6 +42,7 @@ class GroupMixin:
         self,
         batch_size: int,
         shuffle: bool = False,
+        show_progress: bool = False,
     ) -> Generator['DocumentArray', None, None]:
         """
         Creates a `Generator` that yields `DocumentArray` of size `batch_size` until `docs` is fully traversed along
@@ -51,8 +52,10 @@ class GroupMixin:
 
         :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
+        :param show_progress: if set, show a progress bar when batching documents.
         :yield: a Generator of `DocumentArray`, each in the length of `batch_size`
         """
+        from rich.progress import track
 
         if not (isinstance(batch_size, int) and batch_size > 0):
             raise ValueError('`batch_size` should be a positive integer')
@@ -64,7 +67,11 @@ class GroupMixin:
         if shuffle:
             random.shuffle(ix)
 
-        for i in range(n_batches):
+        for i in track(
+            range(n_batches),
+            description='Batching documents',
+            disable=not show_progress,
+        ):
             yield self[ix[i * batch_size : (i + 1) * batch_size]]
 
     def batch_ids(
