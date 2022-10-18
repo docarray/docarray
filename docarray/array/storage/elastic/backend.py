@@ -83,11 +83,8 @@ class BackendMixin(BaseBackendMixin):
             config = dataclass_from_dict(ElasticConfig, config)
 
         if config.index_name is None:
-            self._persist = False
             id = uuid.uuid4().hex
             config.index_name = 'index_name__' + id
-        else:
-            self._persist = True
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config
