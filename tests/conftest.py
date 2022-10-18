@@ -43,3 +43,13 @@ def set_env_vars(request):
     yield
     os.environ.clear()
     os.environ.update(_old_environ)
+
+
+@pytest.fixture
+def milvus_cleanup():
+    yield
+    from pymilvus import list_collections, drop_collection
+
+    alias = f'docarray_localhost_19530'  # assumes default host and port are used
+    for c in list_collections(using=alias):
+        drop_collection(c, using=alias)
