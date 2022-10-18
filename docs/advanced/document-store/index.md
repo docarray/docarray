@@ -150,7 +150,7 @@ Using dataclass gives you better type-checking in IDE but requires an extra impo
 When you specify an index (table name for SQL stores) in the config, the index will be used to persist the DocumentArray in the document store.
 If you create a DocumentArray but do not specify an index, a randomized placeholder index will be created to persist the data.
 
-Creating DocumentArrays without index is useful during prototyping but should not be used in a production setting as randomized placeholder data will be persisted in the document store unnecessarily.
+Creating DocumentArrays without indexes is useful during prototyping but should not be used in a production setting as randomized placeholder data will be persisted in the document store unnecessarily.
 ```
 
 
