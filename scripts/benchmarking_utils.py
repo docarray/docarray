@@ -342,13 +342,12 @@ def run_benchmark(
         except Exception as e:
             console.print(f'Storage Backend {backend} failed: {e}')
 
-    # print(find_by_vector_time_all)
     console.print(table)
     return find_by_vector_time_all, create_time_all, benchmark_df
 
 
-def save_benchmark_df(benchmark_df, n_index):
-    benchmark_df.to_csv(f'benchmark-seconds-{n_index}.csv')
+def save_benchmark_df(benchmark_df, n):
+    benchmark_df.to_csv(f'benchmark-seconds-{n}.csv')
 
     benchmark_df['Indexing time (C)'] = benchmark_df['Indexing time (C)'].apply(
         lambda value: 1_000_000 / value
@@ -367,7 +366,7 @@ def save_benchmark_df(benchmark_df, n_index):
         lambda value: 1 / value
     )
 
-    benchmark_df.to_csv(f'benchmark-qps-{n_index}.csv')
+    benchmark_df.to_csv(f'benchmark-qps-{n}.csv')
 
 
 def plot_results(
@@ -421,3 +420,138 @@ def plot_results(
     ax1.legend(fontsize=15)
     ax2.legend(fontsize=15)
     plt.savefig('benchmark.svg')
+
+
+def run_benchmark2(
+    train,
+    test,
+    ground_truth,
+    n_index,
+    n_vector_queries,
+    n_query,
+    backend,
+    storage_config,
+    K,
+):
+    table = Table(title=f'DocArray Sift1M Benchmarking backend={backend}')
+    benchmark_df = pd.DataFrame(
+        {
+            'Storage Backend': [],
+            'M': [],
+            'EF_CONSTRUCTION': [],
+            'EF_RUNTIME': [],
+            'Indexing time (C)': [],
+            'Query (R)': [],
+            'Update (U)': [],
+            'Delete (D)': [],
+            'Find by vector': [],
+            f'Recall at k={K} for vector search': [],
+            'Find by condition': [],
+        }
+    )
+
+    for col in benchmark_df.columns:
+        table.add_column(col)
+
+    console = Console()
+
+    console.print(f'Reading dataset')
+    docs = get_docs(train)
+    docs_to_delete = random.sample(docs, n_query)
+    docs_to_update = random.sample(docs, n_query)
+    vector_queries = [x for x in test]
+
+    for config in storage_config:
+        try:
+            console.print('\nBackend:', backend.title())
+            console.print('\nBackend config', str(config))
+
+            if not config:
+                da = DocumentArray(storage=backend)
+            else:
+                da = DocumentArray(storage=backend, config=config)
+
+            console.print(f'\tindexing {n_index} docs ...')
+            create_time, _ = create(da, docs)
+
+            # for n_q in n_query:
+            console.print(f'\treading {n_query} docs ...')
+            read_time, _ = read(
+                da,
+                random.sample([d.id for d in docs], n_query),
+            )
+
+            console.print(f'\tupdating {n_query} docs ...')
+            update_time, _ = update(da, docs_to_update)
+
+            console.print(f'\tdeleting {n_query} docs ...')
+            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
+
+            console.print(
+                f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
+            )
+
+            if backend == 'memory' and len(ground_truth) == n_vector_queries:
+                find_by_vector_time, results = find_by_vector(
+                    da=da, query=vector_queries[0], limit=K, metric='euclidean'
+                )
+                recall_at_k = recall(results, ground_truth[0], K)
+            elif backend == 'sqlite':
+                find_by_vector_time, result = find_by_vector(
+                    da, vector_queries[0], limit=K, metric='euclidean'
+                )
+                recall_at_k = recall(result, ground_truth[0], K)
+            else:
+                recall_at_k_values = []
+                find_by_vector_times = []
+                for i, query in enumerate(vector_queries):
+                    find_by_vector_time, results = find_by_vector(da, query, limit=K)
+                    find_by_vector_times.append(find_by_vector_time)
+                    if backend == 'memory':
+                        ground_truth.append(results[:, 'tags__i'])
+                        recall_at_k_values.append(1)
+                    else:
+                        recall_at_k_values.append(recall(results, ground_truth[i], K))
+
+                recall_at_k = np.mean(recall_at_k_values)
+                find_by_vector_time = np.mean(find_by_vector_times)
+
+            console.print(f'\tfinding {n_query} docs by condition ...')
+            find_by_condition_time, _ = find_by_condition(
+                da, storage_backend_filters[backend]
+            )
+
+            table.add_row(
+                backend.title(),
+                str(config['m']),
+                str(config['ef_construction']),
+                str(config['ef_runtime']),
+                fmt(create_time, 's'),
+                fmt(read_time * 1000, 'ms'),
+                fmt(update_time * 1000, 'ms'),
+                fmt(delete_time * 1000, 'ms'),
+                fmt(find_by_vector_time, 's'),
+                '{:.3f}'.format(recall_at_k),
+                fmt(find_by_condition_time, 's'),
+            )
+            benchmark_df.loc[len(benchmark_df.index)] = [
+                backend.title(),
+                config['m'],
+                config['ef_construction'],
+                config['ef_runtime'],
+                create_time,
+                read_time,
+                update_time,
+                delete_time,
+                find_by_vector_time,
+                recall_at_k,
+                find_by_condition_time,
+            ]
+
+            da.clear()
+            del da
+        except Exception as e:
+            console.print(f'Storage Backend {backend} failed: {e}')
+
+    console.print(table)
+    return benchmark_df
