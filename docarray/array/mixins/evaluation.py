@@ -181,7 +181,9 @@ class EvaluationMixin:
                     'information is provided to evaluate the matches.'
                 )
             for metric_name, metric_fn in zip(metric_names, metric_fns):
-                r = metric_fn(binary_relevance, max_rel=max_rel, **kwargs)
+                if 'max_rel' in metric_fn.__code__.co_varnames:
+                    kwargs['max_rel'] = max_rel
+                r = metric_fn(binary_relevance, **kwargs)
                 d.evaluations[metric_name] = NamedScore(
                     value=r, op_name=str(metric_fn), ref_id=d.id
                 )
