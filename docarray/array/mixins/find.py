@@ -183,7 +183,7 @@ class FindMixin:
 
         if limit is not None:
             if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
+                raise ValueError(f'`limit` must be larger than 0, receiving `{limit}`')
             else:
                 limit = int(limit)
 

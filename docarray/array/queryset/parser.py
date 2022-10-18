@@ -93,7 +93,7 @@ def _parse_lookups(data: Dict = {}, root_node: Optional[LookupNode] = None):
             elif node:
                 root_node = node
     else:
-        raise ValueError(f'The query is illegal: {data}')
+        raise ValueError(f'The query is illegal: `{data}`')
 
     return root_node
 
