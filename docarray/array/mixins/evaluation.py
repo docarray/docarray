@@ -30,7 +30,10 @@ def _evaluate_deprecation(f):
                     'soon.',
                     DeprecationWarning,
                 )
-        for old_key, new_key in zip(['other', 'metric', 'metric_name'], ['ground_truth', 'metrics', 'metric_names']):
+        for old_key, new_key in zip(
+            ['other', 'metric', 'metric_name'],
+            ['ground_truth', 'metrics', 'metric_names'],
+        ):
             if old_key in kwargs:
                 kwargs[new_key] = kwargs[old_key]
                 warnings.warn(
