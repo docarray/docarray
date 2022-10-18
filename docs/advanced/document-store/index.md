@@ -357,8 +357,8 @@ array([[7., 7., 7.],
 ## Persistence, mutations and context manager
 
 Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.
-The DocumentArray object created in your Python program is now a view of the underlying implementation in the external store.
-This means that your DocumentArray object in Python can be out of sync with what is persisted to the external store.
+The DocumentArray object created in your Python program is now a view of the underlying implementation in the document store.
+This means that your DocumentArray object in Python can be out of sync with what is persisted to the document store.
 
 **For example**
 ```python
@@ -435,6 +435,38 @@ with da1:  # Use the context manager to make sure you persist the mutation
 print(f"Length of da1 is {len(da1)}")
 
 da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**First run output**
+```console
+Length of da1 is 1
+Length of da2 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+Length of da2 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+Length of da2 is 3
+```
+
+The append you made to the DocumentArray is now persisted properly. Hurray!
+
+### Explicitly calling `sync`
+You can explicitly call the `sync` method of the DocumentArray to save the data in the document store.
+
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
+da1.append(Document())
+da.sync()
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
 print(f"Length of da2 is {len(da2)}")
 ```
 **First run output**
