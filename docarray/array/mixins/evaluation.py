@@ -48,7 +48,7 @@ class EvaluationMixin:
         hash_fn: Optional[Callable[['Document'], str]] = None,
         metric_name: Optional[str] = None,
         strict: bool = True,
-        label_tag: Optional[str] = 'label',
+        label_tag: str = 'label',
         **kwargs,
     ) -> Optional[float]:
         """
