@@ -36,7 +36,7 @@ def test_eval_mixin_perfect_match(metric_fn, kwargs, storage, config, start_stor
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(ground_truth=da1, metric=metric_fn, strict=False, **kwargs)[
+    r = da1.evaluate(ground_truth=da1, metrics=metric_fn, strict=False, **kwargs)[
         metric_fn
     ]
     assert isinstance(r, float)
@@ -81,7 +81,7 @@ def test_eval_mixin_perfect_match_labeled(
     for d in da1_index:
         d.tags = {'label': 'A'}
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(metric=metric_fn, **kwargs)[metric_fn]
+    r = da1.evaluate(metrics=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 1.0
     for d in da1:
@@ -188,7 +188,7 @@ def test_eval_mixin_zero_match(storage, config, metric_fn, start_storage, kwargs
     da2_index = DocumentArray(da2, storage=storage, config=config)
     da2.match(da2_index, exclude_self=True)
 
-    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)[metric_fn]
+    r = da1.evaluate(ground_truth=da2, metrics=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 1.0
     for d in da1:
@@ -215,7 +215,7 @@ def test_diff_len_should_raise(storage, config, start_storage):
         d.matches.append(da2[0])
     da2 = DocumentArray(da2, storage=storage, config=config)
     with pytest.raises(ValueError):
-        da1.evaluate(ground_truth=da2, metric='precision_at_k')
+        da1.evaluate(ground_truth=da2, metrics='precision_at_k')
 
 
 @pytest.mark.parametrize(
@@ -237,7 +237,7 @@ def test_diff_hash_fun_should_raise(storage, config, start_storage):
         d.matches.append(da2[0])
     da2 = DocumentArray(da2, storage=storage, config=config)
     with pytest.raises(ValueError):
-        da1.evaluate(ground_truth=da2, metric='precision_at_k')
+        da1.evaluate(ground_truth=da2, metrics='precision_at_k')
 
 
 @pytest.mark.parametrize(
@@ -262,11 +262,11 @@ def test_same_hash_same_len_fun_should_work(storage, config, start_storage):
     da2_index = DocumentArray(da1, storage=storage, config=config)
     da2.match(da2_index)
     with pytest.raises(ValueError):
-        da1.evaluate(ground_truth=da2, metric='precision_at_k')
+        da1.evaluate(ground_truth=da2, metrics='precision_at_k')
     for d1, d2 in zip(da1, da2):
         d1.id = d2.id
 
-    da1.evaluate(ground_truth=da2, metric='precision_at_k')
+    da1.evaluate(ground_truth=da2, metrics='precision_at_k')
 
 
 @pytest.mark.parametrize(
@@ -294,7 +294,7 @@ def test_adding_noise(storage, config, start_storage):
         d.matches.extend(DocumentArray.empty(10))
         d.matches = d.matches.shuffle()
 
-    assert da2.evaluate(ground_truth=da, metric='precision_at_k', k=10) < 1.0
+    assert da2.evaluate(ground_truth=da, metrics='precision_at_k', k=10) < 1.0
 
     for d in da2:
         assert 0.0 < d.evaluations['precision_at_k'].value < 1.0
@@ -332,7 +332,7 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
     # pop some matches from first document
     da2[0].matches.pop(8)
 
-    r = da1.evaluate(ground_truth=da2, metric=metric_fn, **kwargs)[metric_fn]
+    r = da1.evaluate(ground_truth=da2, metrics=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
     np.testing.assert_allclose(r, 1.0, rtol=1e-2)  #
     for d in da1:
@@ -356,7 +356,7 @@ def test_diff_match_len_in_gd(storage, config, metric_fn, start_storage, kwargs)
 def test_empty_da_should_raise(storage, config, start_storage):
     da = DocumentArray([], storage=storage, config=config)
     with pytest.raises(ValueError):
-        da.evaluate(metric='precision_at_k')
+        da.evaluate(metrics='precision_at_k')
 
 
 @pytest.mark.parametrize(
@@ -374,7 +374,7 @@ def test_empty_da_should_raise(storage, config, start_storage):
 def test_missing_groundtruth_should_raise(storage, config, start_storage):
     da = DocumentArray(DocumentArray.empty(10), storage=storage, config=config)
     with pytest.raises(RuntimeError):
-        da.evaluate(metric='precision_at_k')
+        da.evaluate(metrics='precision_at_k')
 
 
 @pytest.mark.parametrize(
@@ -400,4 +400,4 @@ def test_useless_groundtruth_warning_should_raise(storage, config, start_storage
     da1.match(da1_index, exclude_self=True)
     da2 = DocumentArray.empty(10)
     with pytest.warns(UserWarning):
-        da1.evaluate(ground_truth=da2, metric='precision_at_k')
+        da1.evaluate(ground_truth=da2, metrics='precision_at_k')
