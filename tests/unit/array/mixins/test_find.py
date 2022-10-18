@@ -567,24 +567,20 @@ def test_weaviate_filter_query(start_storage, columns):
 @pytest.mark.parametrize(
     'columns',
     [
-        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
-        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
+        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'int')],
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'int'},
     ],
 )
 @pytest.mark.parametrize(
     'filter,checker',
     [
         (
-            '(@price: [(8 inf]) | (@category:Shoes)',
-            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+            '(- @price: [8 8]) @isfake:[1 1]',
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == 1,
         ),
         (
-            '(- @price: [8 8]) @isfake:true',
-            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
-        ),
-        (
-            '(@price: [-inf (8] | (- @isfake:true)) @size:[-inf 3]',
-            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            '(@price: [-inf (8] | (- @isfake:[1 1])) @size:[-inf 3]',
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != 1)
             and r.tags['size'] <= 3,
         ),
         (
@@ -609,7 +605,7 @@ def test_redis_category_filter(filter, checker, columns, start_storage):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': 1},
             )
             for i in range(10)
         ]
@@ -624,7 +620,7 @@ def test_redis_category_filter(filter, checker, columns, start_storage):
                     'price': i,
                     'category': 'Jeans',
                     'size': i,
-                    'isfake': False,
+                    'isfake': 0,
                 },
             )
             for i in range(10)

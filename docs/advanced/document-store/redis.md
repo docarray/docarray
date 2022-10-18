@@ -163,7 +163,7 @@ da = DocumentArray(
     storage='redis',
     config={
         'n_dim': n_dim,
-        'columns': {'price': 'int', 'color': 'str', 'stock': 'bool'},
+        'columns': {'price': 'int', 'color': 'str', 'stock': 'int'},
         'distance': 'L2',
     },
 )
@@ -173,7 +173,7 @@ da.extend(
         Document(
             id=f'{i}',
             embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'blue', 'stock': i % 2 == 0},
+            tags={'price': i, 'color': 'blue', 'stock': int(i % 2 == 0)},
         )
         for i in range(10)
     ]
@@ -183,7 +183,7 @@ da.extend(
         Document(
             id=f'{i+10}',
             embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'red', 'stock': i % 2 == 0},
+            tags={'price': i, 'color': 'red', 'stock': int(i % 2 == 0)},
         )
         for i in range(10)
     ]
@@ -199,7 +199,7 @@ for doc in da:
 Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `blue` and have `stock` equal to `True`. We can encode this information in Redis using
 
 ```text
-@price:[-inf {max_price}] @color:{color} @stock:true
+@price:[-inf {max_price}] @color:{color} @stock:[1 1]
 ```
 
 Then the search with the proposed filter can be used as follows:
@@ -211,7 +211,7 @@ n_limit = 5
 np_query = np.ones(n_dim) * 8
 print(f'\nQuery vector: \t{np_query}')
 
-filter = f'@price:[-inf {max_price}] @color:{color} @stock:true'
+filter = f'@price:[-inf {max_price}] @color:{color} @stock:[1 1]'
 
 results = da.find(np_query, filter=filter, limit=n_limit)
 
@@ -229,12 +229,18 @@ This will print:
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
 
- score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True
- score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True
- score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=True
- score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=True
+ score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=1
+ score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=1
+ score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=1
+ score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=1
 ```
 
+````{admonition} Note
+:class: note
+Note that Redis does not support Boolean types in attributes. Therefore, you need to configure your boolean field as 
+integer in `columns` configuration (`'field': 'int'`) and use a filter query that treats the field as an integer
+(`@field: [1 1]`).
+````
 
 ### Search by filter query
 
