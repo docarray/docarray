@@ -30,13 +30,14 @@ def _evaluate_deprecation(f):
                     'soon.',
                     DeprecationWarning,
                 )
-        if 'other' in kwargs:
-            kwargs['ground_truth'] = kwargs['other']
-            warnings.warn(
-                '`other` is renamed to `groundtruth` in `evaluate()`, the usage of `other` is '
-                'deprecated and will be removed soon.',
-                DeprecationWarning,
-            )
+        for old_key, new_key in zip(['other', 'metric', 'metric_name'], ['ground_truth', 'metrics', 'metric_names']):
+            if old_key in kwargs:
+                kwargs[new_key] = kwargs[old_key]
+                warnings.warn(
+                    '`other` is renamed to `groundtruth` in `evaluate()`, the usage of `other` is '
+                    'deprecated and will be removed soon.',
+                    DeprecationWarning,
+                )
         return f(*args, **kwargs)
 
     return func
@@ -55,7 +56,7 @@ class EvaluationMixin:
         hash_fn: Optional[Callable[['Document'], str]] = None,
         metric_names: Optional[Union[str, List[str]]] = None,
         strict: bool = True,
-        label_tag: Optional[str] = 'label',
+        label_tag: str = 'label',
         **kwargs,
     ) -> Dict[str, float]:
         """
