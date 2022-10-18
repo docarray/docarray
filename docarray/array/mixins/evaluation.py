@@ -27,14 +27,14 @@ def _evaluate_deprecation(f):
                     'The `other` attribute in `evaluate()` is transfered from a '
                     'positional attribute into the keyword attribute `ground_truth`.'
                     'Using it as a positional attribute is deprecated and will be removed '
-                    'in the next version.',
+                    'soon.',
                     DeprecationWarning,
                 )
         if 'other' in kwargs:
             kwargs['ground_truth'] = kwargs['other']
             warnings.warn(
                 '`other` is renamed to `groundtruth` in `evaluate()`, the usage of `other` is '
-                'deprecated and will be removed in the next version.',
+                'deprecated and will be removed soon.',
                 DeprecationWarning,
             )
         return f(*args, **kwargs)

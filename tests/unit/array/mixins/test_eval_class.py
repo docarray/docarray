@@ -78,8 +78,6 @@ def test_eval_mixin_perfect_match_labeled(
         d.tags = {'label': 'A'}
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
-    for d in da1_index:
-        d.tags = {'label': 'A'}
     da1.match(da1_index, exclude_self=True)
     r = da1.evaluate(metrics=metric_fn, **kwargs)[metric_fn]
     assert isinstance(r, float)
@@ -127,7 +125,6 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
     assert isinstance(r, float)
     assert r == 0.0
     for d in da1:
-        d: Document
         assert d.evaluations[metric_fn].value == 0.0
 
 
@@ -395,8 +392,6 @@ def test_useless_groundtruth_warning_should_raise(storage, config, start_storage
         d.tags = {'label': 'A'}
     da1.embeddings = np.random.random([10, 256])
     da1_index = DocumentArray(da1, storage=storage, config=config)
-    for d in da1_index:
-        d.tags = {'label': 'A'}
     da1.match(da1_index, exclude_self=True)
     da2 = DocumentArray.empty(10)
     with pytest.warns(UserWarning):
