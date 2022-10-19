@@ -21,17 +21,6 @@ class DocumentArrayDummy(StorageMixins, DocumentArray):
         pass
 
 
-type_convert = {
-    'int': b'NUMERIC',
-    'float': b'NUMERIC',
-    'double': b'NUMERIC',
-    'long': b'NUMERIC',
-    'str': b'TEXT',
-    'bytes': b'TEXT',
-    'bool': b'NUMERIC',
-}
-
-
 @pytest.mark.parametrize('distance', ['L2', 'IP', 'COSINE'])
 @pytest.mark.parametrize(
     'method,initial_cap,ef_construction,block_size',
@@ -43,12 +32,9 @@ type_convert = {
 @pytest.mark.parametrize(
     'columns',
     [
-        [('attr1', 'str'), ('attr2', 'bytes')],
-        [('attr1', 'int'), ('attr2', 'float')],
-        [('attr1', 'double'), ('attr2', 'long'), ('attr3', 'int')],
         {'attr1': 'str', 'attr2': 'bytes'},
         {'attr1': 'int', 'attr2': 'float'},
-        {'attr1': 'double', 'attr2': 'long', 'attr3': 'int'},
+        {'attr1': 'double', 'attr2': 'long', 'attr3': 'geo'},
     ],
 )
 @pytest.mark.parametrize(
