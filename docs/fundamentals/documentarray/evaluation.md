@@ -1,9 +1,9 @@
 # Evaluate Matches
 
-After you get `.matches` from the last chapter, you can easily evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
+After you get `.matches`, you can evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
 
 ```python
-da_predict.evaluate(ground_truth=da_groundtruth, metric='...', **kwargs)
+da_predict.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
 ```
 
 Alternatively, you can add labels to your documents to evaluate them.
@@ -18,7 +18,7 @@ example_da.embeddings = np.random.random([10, 3])
 
 example_da.match(example_da)
 
-example_da.evaluate(metric='precision_at_k')
+example_da.evaluate(metrics=['precision_at_k'])
 ```
 
 The results are stored in `.evaluations` field of each Document.
@@ -109,14 +109,14 @@ da2['@m'].summary()
 
 
 
-Now `da2` is our prediction, and `da` is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):
+Now `da2` is our prediction, and `da` is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.47 (we have 9 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 9/19 real matches):
 
 ```python
-da2.evaluate(ground_truth=da, metric='precision_at_k', k=5)
+da2.evaluate(ground_truth=da, metrics=['precision_at_k'], k=10)
 ```
 
 ```text
-0.48
+{'precision_at_k': 0.48}
 ```
 
 Note that this value is an average number over all Documents of `da2`. If you want to look at the individual evaluation, you can check {attr}`~docarray.Document.evaluations` attribute, e.g.
@@ -127,17 +127,29 @@ for d in da2:
 ```
 
 ```text
+0.5
 0.4
+0.3
+0.6
+0.5
+0.3
 0.4
 0.6
-0.6
-0.2
-0.4
-0.8
-0.8
-0.2
-0.4
+0.5
+0.7
 ```
+
+If you want to evaluate your data with multiple metric functions, you can pass a list of metrics:
+
+```python
+da2.evaluate(ground_truth=da, metrics=['precision_at_k', 'reciprocal_rank'], k=10)
+```
+
+```text
+{'precision_at_k': 0.48, 'reciprocal_rank': 0.6333333333333333}
+```
+
+In this case, the keyword attribute `k` is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.
 
 ## Document identifier
 
@@ -179,7 +191,7 @@ p_da.evaluate('average_precision', ground_truth=g_da, hash_fn=lambda d: d.text[:
 ```
 
 ```text
-1.0
+{'average_precision': 1.0}
 ```
 
 It is correct as we define the evaluation as checking if the first two characters in `.text` are the same.
