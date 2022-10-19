@@ -18,7 +18,6 @@ from redis.commands.search.querystring import (
     intersect,
     le,
     lt,
-    geo,
     union,
 )
 
@@ -75,7 +74,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         limit: Union[int, float] = 20,
-        filter: Optional[Dict] = None,
+        filter: Optional[Union[str, Dict]] = None,
         **kwargs,
     ) -> List['DocumentArray']:
 
@@ -108,7 +107,7 @@ class FindMixin(BaseFindMixin):
 
     def _filter(
         self,
-        filter: Dict,
+        filter: Union[str, Dict],
         limit: Union[int, float] = 20,
     ) -> 'DocumentArray':
 
@@ -187,17 +186,6 @@ def _build_query_node(key, condition):
         query_dict[key] = lt(value)
     elif operator == '$lte':
         query_dict[key] = le(value)
-    elif operator == '$geo':
-        if value.get('unit') is None:
-            value['unit'] = "km"
-        elif value['unit'] not in ['m', 'km', 'mi', 'ft']:
-            unit = value['unit']
-            raise ValueError(
-                f'Expecting geo unit one of m, km, mi OR ft, got {unit} instead'
-            )
-        query_dict[key] = geo(
-            value['lat'], value['lon'], value['radius'], value['unit']
-        )
     else:
         raise ValueError(
             f'Expecting filter operator one of $gt, $gte, $lt, $lte, $eq, $ne, $and OR $or, got {operator} instead'
