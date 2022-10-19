@@ -171,7 +171,13 @@ class BackendMixin(BaseBackendMixin):
     def _get_offset2ids_meta(self) -> List[str]:
         if not self._collection_exists(self.collection_name_meta):
             return []
-        return self.client.retrieve(collection_name=self.collection_name_meta, ids=[1])
+        results = self.client.retrieve(
+            collection_name=self.collection_name_meta, ids=[1]
+        )
+        if len(results) == 0:
+            return []
+        else:
+            return results[0].payload.get('offset2id', [])
 
     def _update_offset2ids_meta(self):
         if not self._collection_exists(self.collection_name_meta):
