@@ -155,7 +155,7 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
 
 @pytest.mark.parametrize('type_da', [int, float, str, bool])
 @pytest.mark.parametrize('type_column', ['int', 'str', 'float', 'double', 'bool'])
-def test_cast_columns_qdrant(
+def test_cast_columns_milvus(
     start_storage, type_da, type_column, request, milvus_cleanup
 ):
     test_id = request.node.callspec.id.replace(

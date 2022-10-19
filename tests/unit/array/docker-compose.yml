@@ -31,7 +31,7 @@ services:
     ports:
       - "6379:6379"
 
-  milvus-etcd:
+  etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.0
     environment:
@@ -43,7 +43,7 @@ services:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
 
-  milvus-minio:
+  minio:
     container_name: milvus-minio
     image: minio/minio:RELEASE.2022-03-17T06-34-49Z
     environment:
@@ -58,7 +58,7 @@ services:
       timeout: 20s
       retries: 3
 
-  milvus-standalone:
+  standalone:
     container_name: milvus-standalone
     image: milvusdb/milvus:v2.1.4
     command: [ "milvus", "run", "standalone" ]
@@ -71,11 +71,10 @@ services:
       - "19530:19530"
       - "9091:9091"
     depends_on:
-      - "milvus-etcd"
-      - "milvus-minio"
+      - "etcd"
+      - "minio"
+
       
 networks:
   elastic:
     name: elastic
-  milvus:
-    name: milvus
