@@ -1,6 +1,8 @@
 import warnings
 from typing import Optional, Union, TYPE_CHECKING, Callable, List, Dict
 
+from functools import wraps
+
 import numpy as np
 from collections import defaultdict
 
@@ -14,6 +16,7 @@ def _evaluate_deprecation(f):
     """Raises a deprecation warning if the user executes the evaluate function with
     the old interface and adjust the input to fit the new interface."""
 
+    @wraps(f)
     def func(*args, **kwargs):
         if len(args) > 1:
             if not (
