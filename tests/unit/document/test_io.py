@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import pytest
 
@@ -65,6 +66,13 @@ def test_input_csv_from_instance_with_warning():
     with pytest.warns(UserWarning):
         with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
             da.from_csv(fp)
+
+
+def test_input_csv_from_class_without_warning():
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+            da = DocumentArray.from_csv(fp)
 
 
 def test_input_csv_from_lines():
