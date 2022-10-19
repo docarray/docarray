@@ -127,17 +127,29 @@ for d in da2:
 ```
 
 ```text
+0.5
 0.4
+0.3
+0.6
+0.5
+0.3
 0.4
 0.6
-0.6
-0.2
-0.4
-0.8
-0.8
-0.2
-0.4
+0.5
+0.7
 ```
+
+If you want to evaluate your data with multiple metric functions, you can pass a list of metrics:
+
+```python
+da2.evaluate(ground_truth=da, metrics=['precision_at_k', 'reciprocal_rank'], k=10)
+```
+
+```text
+{'precision_at_k': 0.48, 'reciprocal_rank': 0.6333333333333333}
+```
+
+In this case, the keyword attribute `k` is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.
 
 ## Document identifier
 
