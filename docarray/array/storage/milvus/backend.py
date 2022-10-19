@@ -254,3 +254,17 @@ class BackendMixin(BaseBackendMixin):
             else self._config.consistency_level
         )
         return kwargs
+
+    def loaded_collection(self, collection=None):
+        class LoadedCollectionMngr:
+            def __init__(self, coll):
+                self._collection = coll
+
+            def __enter__(self):
+                self._collection.load()
+                return self
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                self._collection.release()
+
+        return LoadedCollectionMngr(collection if collection else self._collection)
