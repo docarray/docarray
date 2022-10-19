@@ -230,7 +230,7 @@ class BackendMixin(BaseBackendMixin):
         ]
 
     @staticmethod
-    def _docs_from_query_respone(response):
+    def _docs_from_query_response(response):
         return DocumentArray([Document.from_base64(d['serialized']) for d in response])
 
     @staticmethod

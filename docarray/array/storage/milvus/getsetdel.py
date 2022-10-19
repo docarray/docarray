@@ -2,6 +2,7 @@ from typing import Iterable, Dict, TYPE_CHECKING
 
 import numpy as np
 
+from docarray import DocumentArray
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
 from docarray.array.storage.milvus.backend import always_true_expr, ids_to_milvus_expr
@@ -54,7 +55,10 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             **kwargs,
         )
         self._collection.release()
-        return self._docs_from_query_respone(res)
+        docs = self._docs_from_query_response(res)
+        # sort output docs according to input id sorting
+        ids_list = list(ids)
+        return DocumentArray(sorted(docs, key=lambda d: ids_list.index(d.id)))
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         kwargs = self._update_consistency_level(**kwargs)
