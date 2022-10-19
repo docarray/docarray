@@ -219,12 +219,7 @@ class BackendMixin(BaseBackendMixin):
         ]
         return [
             [doc.id for doc in docs],
-            [
-                doc.embedding
-                if doc.embedding is not None
-                else np.zeros(self._config.n_dim)
-                for doc in docs
-            ],
+            [self._map_embedding(doc.embedding) for doc in docs],
             [doc.to_base64(**self._config.serialize_config) for doc in docs],
             *extra_columns,
         ]
@@ -268,3 +263,15 @@ class BackendMixin(BaseBackendMixin):
                 self._collection.release()
 
         return LoadedCollectionMngr(collection if collection else self._collection)
+
+    def _map_embedding(self, embedding):
+        if embedding is not None:
+            from docarray.math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+        else:
+            embedding = np.zeros(self._config.n_dim)
+        return embedding

@@ -1,8 +1,6 @@
 from typing import Iterable, Iterator, Union, TYPE_CHECKING
 from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
-
-if TYPE_CHECKING:
-    from docarray import Document
+from docarray import Document
 
 
 class SequenceLikeMixin(BaseSequenceLikeMixin):
