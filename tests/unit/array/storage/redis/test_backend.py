@@ -45,10 +45,10 @@ type_convert = {
     [
         [('attr1', 'str'), ('attr2', 'bytes')],
         [('attr1', 'int'), ('attr2', 'float')],
-        [('attr1', 'double'), ('attr2', 'long'), ('attr3', 'bool')],
+        [('attr1', 'double'), ('attr2', 'long'), ('attr3', 'int')],
         {'attr1': 'str', 'attr2': 'bytes'},
         {'attr1': 'int', 'attr2': 'float'},
-        {'attr1': 'double', 'attr2': 'long', 'attr3': 'bool'},
+        {'attr1': 'double', 'attr2': 'long', 'attr3': 'int'},
     ],
 )
 @pytest.mark.parametrize(

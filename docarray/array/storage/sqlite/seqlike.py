@@ -48,16 +48,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         if commit:
             self._commit()
 
-    def __del__(self) -> None:
-        super().__del__()
-        if not self._persist:
-            self._sql(
-                'DELETE FROM metadata WHERE table_name=? AND container_type=?',
-                (self._table_name, self.__class__.__name__),
-            )
-            self._sql(f'DROP TABLE IF EXISTS {self._table_name}')
-            self._commit()
-
     def __contains__(self, item: Union[str, 'Document']):
         if isinstance(item, str):
             r = self._sql(f'SELECT 1 FROM {self._table_name} WHERE doc_id=?', (item,))

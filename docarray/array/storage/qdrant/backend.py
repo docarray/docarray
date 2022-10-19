@@ -86,7 +86,6 @@ class BackendMixin(BaseBackendMixin):
         self._client = QdrantClient(host=config.host, port=config.port)
 
         self._config = config
-        self._persist = bool(self._config.collection_name)
 
         self._config.columns = self._normalize_columns(self._config.columns)
 
@@ -96,7 +95,6 @@ class BackendMixin(BaseBackendMixin):
             else self._config.collection_name
         )
 
-        self._persist = self._config.collection_name
         self._initialize_qdrant_schema()
 
         super()._init_storage()

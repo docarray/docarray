@@ -88,8 +88,7 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(AnnliteConfig, config)
 
-        self._persist = bool(config.data_path)
-        if not self._persist:
+        if config.data_path is None:
             from tempfile import TemporaryDirectory
 
             config.data_path = TemporaryDirectory().name
