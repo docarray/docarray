@@ -60,9 +60,9 @@ def test_input_csv_from_class():
     assert isinstance(da, DocumentArray)
 
 
-def test_input_csv_from_object_fail():
+def test_input_csv_from_instance_with_warning():
     da = DocumentArray()
-    with pytest.raises(Exception):
+    with pytest.warns(UserWarning):
         with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
             da.from_csv(fp)
 
