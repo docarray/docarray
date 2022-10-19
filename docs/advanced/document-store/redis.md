@@ -113,17 +113,41 @@ da2.summary()
 
 Other functions behave the same as in-memory DocumentArray.
 
+## Configuration
+
+The following configs can be set:
+
+| Name              | Description                                                                                       | Default                                           |
+|-------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------- |
+| `host`            | Host address of the Redis server                                                                  | `'localhost'`                                     |
+| `port`            | Port of the Redis Server                                                                          | `6379`                                            |
+| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`| `{}`                                              |
+| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `None`                                            |
+| `n_dim`           | Dimensionality of the embeddings                                                                  | `None`                                            |
+| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
+| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
+| `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
+| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
+| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`  | `None`                                            |
+| `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
+| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
+| `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
+| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
+| `block_size`      | Optional parameter for Redis FLAT algorithm                                                       | `1048576`                                         |
+| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                              | `None`, defaults to the default value in Redis    |
+| `columns`         | Other fields to store in Document and build schema                                                | `None`                                            |
+
+You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py).
+For vector search configurations, default values are those of the database backend, which you can find in the [Redis documentation](https://redis.io/docs/stack/search/reference/vectors/).
+
+```{note}
+We will support geo-filtering soon. 
+The benchmark test is on the way.
+```
 
 ### Vector search with filter query
 
-You can perform Vector Similarity Search based on [FLAT or HNSW algorithm](vector-search-index) and pre-filter results using a filter query that is based on [MongoDB's Query](https://www.mongodb.com/docs/manual/reference/operator/query/). The following tags filters can be combine with `$and` and `$or`:
-
-- `$eq` - Equal to (number, string)
-- `$ne` - Not equal to (number, string)
-- `$gt` - Greater than (number)
-- `$gte` - Greater than or equal to (number)
-- `$lt` - Less than (number)
-- `$lte` - Less than or equal to (number)
+You can perform Vector Similarity Search based on [FLAT or HNSW algorithm](vector-search-index) and pre-filter results using [Redis' Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
 
 Consider Documents with embeddings `[0, 0, 0]` up to `[9, 9, 9]` where the Document with embedding `[i, i, i]`
@@ -139,31 +163,32 @@ da = DocumentArray(
     storage='redis',
     config={
         'n_dim': n_dim,
-        'columns': {'price': 'int', 'color': 'str', 'stock': 'bool'},
+        'columns': {'price': 'int', 'color': 'str', 'stock': 'int'},
         'distance': 'L2',
     },
 )
 
-da.extend(
-    [
-        Document(
-            id=f'{i}',
-            embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'blue', 'stock': i % 2 == 0},
-        )
-        for i in range(10)
-    ]
-)
-da.extend(
-    [
-        Document(
-            id=f'{i+10}',
-            embedding=i * np.ones(n_dim),
-            tags={'price': i, 'color': 'red', 'stock': i % 2 == 0},
-        )
-        for i in range(10)
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(
+                id=f'{i}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i, 'color': 'blue', 'stock': int(i % 2 == 0)},
+            )
+            for i in range(10)
+        ]
+    )
+    da.extend(
+        [
+            Document(
+                id=f'{i+10}',
+                embedding=i * np.ones(n_dim),
+                tags={'price': i, 'color': 'red', 'stock': int(i % 2 == 0)},
+            )
+            for i in range(10)
+        ]
+    )
 
 print('\nIndexed price, color and stock:\n')
 for doc in da:
@@ -175,22 +200,7 @@ for doc in da:
 Consider the case where you want the nearest vectors to the embedding `[8.,  8.,  8.]`, with the restriction that prices, colors and stock must pass a filter. For example, let's consider that retrieved Documents must have a `price` value lower than or equal to `max_price`, have `color` equal to `blue` and have `stock` equal to `True`. We can encode this information in Redis using
 
 ```text
-{
-    "price": {"$lte": max_price},
-    "color": {"$gt": color},
-    "stock": {"$eq": True},
-}
-```
-or 
-
-```text
-{
-    "$and": {
-        "price": {"$lte": max_price},
-        "color": {"$gt": color},
-        "stock": {"$eq": True},
-    }
-}
+@price:[-inf {max_price}] @color:{color} @stock:[1 1]
 ```
 
 Then the search with the proposed filter can be used as follows:
@@ -202,11 +212,7 @@ n_limit = 5
 np_query = np.ones(n_dim) * 8
 print(f'\nQuery vector: \t{np_query}')
 
-filter = {
-    "price": {"$lte": max_price},
-    "color": {"$eq": color},
-    "stock": {"$eq": True},
-}
+filter = f'@price:[-inf {max_price}] @color:{color} @stock:[1 1]'
 
 results = da.find(np_query, filter=filter, limit=n_limit)
 
@@ -224,49 +230,73 @@ This will print:
 ```console
 Embeddings Approximate Nearest Neighbours with "price" at most 7, "color" blue and "stock" True:
 
- score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=True
- score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=True
- score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=True
- score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=True
-```
-More example filter expresses
-- A Nike shoes or price less than `100`
-
-```JSON
-{
-    "$or": {
-        "brand": {"$eq": "Nike"},
-        "price": {"$lt": 100}
-    }
-}
+ score=12,	 embedding=[6. 6. 6.],	 price=6,	 color=blue,	 stock=1
+ score=48,	 embedding=[4. 4. 4.],	 price=4,	 color=blue,	 stock=1
+ score=108,	 embedding=[2. 2. 2.],	 price=2,	 color=blue,	 stock=1
+ score=192,	 embedding=[0. 0. 0.],	 price=0,	 color=blue,	 stock=1
 ```
 
-- A Nike shoes **and** either price is less than `100` or color is `"blue"`
+````{admonition} Note
+:class: note
+Note that Redis does not support Boolean types in attributes. Therefore, you need to configure your boolean field as 
+integer in `columns` configuration (`'field': 'int'`) and use a filter query that treats the field as an integer
+(`@field: [1 1]`).
+````
 
-```JSON
-{
-    "brand": {"$eq": "Nike"},
-    "$or": {
-        "price": {"$lt": 100},
-        "color": {"$eq": "blue"},
+### Search by filter query
+
+One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
+
+Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents
+with `price` less than or equal to  some `max_price` value.
+
+You can index such Documents as follows:
+
+```python
+from docarray import Document, DocumentArray
+
+n_dim = 3
+da = DocumentArray(
+    storage='redis',
+    config={
+        'n_dim': n_dim,
+        'columns': {'price': 'float'},
     },
-}
+)
+
+with da:
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
+
+print('\nIndexed Prices:\n')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
 ```
 
-- A Nike shoes **or** both price is less than `100` and color is `"blue"`
+Then you can retrieve all documents whose price is less than or equal to `max_price` by applying the following
+filter:
 
-```JSON
-{
-    "$or": {
-        "brand": {"$eq": "Nike"},
-        "$and": {
-            "price": {"$lt": 100},
-            "color": {"$eq": "blue"},
-        },
-    }
-}
+```python
+max_price = 3
+n_limit = 4
+
+filter = f'@price:[-inf {max_price}] '
+results = da.find(filter=filter)
+
+print('\n Returned examples that verify filter "price at most 3":\n')
+for price in results[:, 'tags__price']:
+    print(f'\t price={price}')
 ```
 
+This would print
+
+```
+ Returned examples that satisfy condition "price at most 3":
+
+  price=0
+  price=1
+  price=2
+  price=3
+```
 
 (vector-search-index)=
 ### Update Vector Search Indexing Schema
@@ -301,7 +331,8 @@ da = DocumentArray(
     },
 )
 
-da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
+with da:
+    da.extend([Document(id=f'{i}', embedding=i * np.ones(n_dim)) for i in range(10)])
 
 np_query = np.ones(n_dim) * 8
 n_limit = 5
@@ -367,13 +398,14 @@ The following example builds a `DocumentArray` with several documents containing
 from docarray import Document, DocumentArray
 
 da = DocumentArray(storage='redis', config={'n_dim': 2, 'index_text': True})
-da.extend(
-    [
-        Document(id='1', text='token1 token2 token3'),
-        Document(id='2', text='token1 token2'),
-        Document(id='3', text='token2 token3 token4'),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(id='1', text='token1 token2 token3'),
+            Document(id='2', text='token1 token2'),
+            Document(id='3', text='token2 token3 token4'),
+        ]
+    )
 
 results = da.find('token1')
 print(results[:, 'text'])
@@ -420,28 +452,29 @@ da = DocumentArray(
     storage='redis',
     config={'n_dim': 32, 'tag_indices': ['food_type', 'price']},
 )
-da.extend(
-    [
-        Document(
-            tags={
-                'food_type': 'Italian and Spanish food',
-                'price': 'cheap but not that cheap',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'French and Italian food',
-                'price': 'on the expensive side',
-            },
-        ),
-        Document(
-            tags={
-                'food_type': 'chinese noddles',
-                'price': 'quite cheap for what you get!',
-            },
-        ),
-    ]
-)
+with da:
+    da.extend(
+        [
+            Document(
+                tags={
+                    'food_type': 'Italian and Spanish food',
+                    'price': 'cheap but not that cheap',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'French and Italian food',
+                    'price': 'on the expensive side',
+                },
+            ),
+            Document(
+                tags={
+                    'food_type': 'chinese noddles',
+                    'price': 'quite cheap for what you get!',
+                },
+            ),
+        ]
+    )
 
 results_cheap = da.find('cheap', index='price')
 print('searching "cheap" in <price>:\n\t', results_cheap[:, 'tags__price'])
@@ -467,34 +500,3 @@ results = da.find('cheap', index='price')
 
 
 
-## Configuration
-
-The following configs can be set:
-
-| Name              | Description                                                                                       | Default                                           |
-|-------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------- |
-| `host`            | Host address of the Redis server                                                                  | `'localhost'`                                     |
-| `port`            | Port of the Redis Server                                                                          | `6379`                                            |
-| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`| `{}`                                              |
-| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `None`                                            |
-| `n_dim`           | Dimensionality of the embeddings                                                                  | `None`                                            |
-| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
-| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
-| `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
-| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
-| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`  | `None`                                            |
-| `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
-| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
-| `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
-| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
-| `block_size`      | Optional parameter for Redis FLAT algorithm                                                       | `1048576`                                         |
-| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                              | `None`, defaults to the default value in Redis    |
-| `columns`         | Other fields to store in Document and build schema                                                | `None`                                            |
-
-You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py)
-For vector search configurations, default values are those of the database backend, you can find them in [redis documentation](https://redis.io/docs/stack/search/reference/vectors/)
-
-```{note}
-We will support geo-filtering soon. 
-The benchmark test is on the way.
-```

@@ -131,7 +131,6 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
-
         index_da = self._get_index(subindex_name=on)
         if index_da is not self:
             return index_da.find(
@@ -145,7 +144,6 @@ class FindMixin:
                 index,
                 on=None,
             )
-
         from docarray import Document, DocumentArray
 
         if isinstance(query, dict):
@@ -156,10 +154,10 @@ class FindMixin:
                     'filter and query cannot be both dict type, set only one for filtering'
                 )
         elif query is None:
-            if isinstance(filter, dict):
+            if isinstance(filter, (str, dict)):
                 return self._filter(filter, limit=limit)
             else:
-                raise ValueError('filter must be dict when query is None')
+                raise ValueError('filter must be dict or str when query is None')
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
@@ -183,7 +181,7 @@ class FindMixin:
 
         if limit is not None:
             if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
+                raise ValueError(f'`limit` must be larger than 0, receiving `{limit}`')
             else:
                 limit = int(limit)
 

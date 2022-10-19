@@ -49,6 +49,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+tests/unit/array/jina*.db*
 
 # Translations
 *.mo

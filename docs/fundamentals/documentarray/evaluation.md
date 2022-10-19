@@ -3,24 +3,45 @@
 After you get `.matches` from the last chapter, you can easily evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
 
 ```python
-da_predict.evaluate(da_groundtruth, metric='...', **kwargs)
+da_predict.evaluate(ground_truth=da_groundtruth, metric='...', **kwargs)
+```
+
+Alternatively, you can add labels to your documents to evaluate them.
+In this case, a match is considered as relevant to its root document, if it has the same label.
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+example_da = DocumentArray([Document(tags={'label': (i % 2)}) for i in range(10)])
+example_da.embeddings = np.random.random([10, 3])
+
+example_da.match(example_da)
+
+example_da.evaluate(metric='precision_at_k')
 ```
 
 The results are stored in `.evaluations` field of each Document.
 
 DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the nearest-neighbour matches. Different metric accepts different arguments as `kwargs`:
 
-| Metric              | Accept `kwargs`  |
-|---------------------|------------------|
-| `r_precision`       | None             |
-| `average_precision` | None             |            
-| `reciprocal_rank`   | None             |
-| `precision_at_k`    | `k`              |
-| `hit_at_k`          | `k`              |
-| `recall_at_k`       | `max_rel`, `k`   |
-| `f1_score_at_k`     | `max_rel`, `k`   |
-| `dcg_at_k`          | `method`, `k`    |
-| `ndcg_at_k`         | `method`, `k`    |
+| Metric                                              | Accept `kwargs`  |
+|-----------------------------------------------------|------------------|
+| {meth}`~docarray.math.evaluation.r_precision`       | None             |
+| {meth}`~docarray.math.evaluation.average_precision` | None             |            
+| {meth}`~docarray.math.evaluation.reciprocal_rank`   | None             |
+| {meth}`~docarray.math.evaluation.precision_at_k`    | `k`              |
+| {meth}`~docarray.math.evaluation.hit_at_k`          | `k`              |
+| {meth}`~docarray.math.evaluation.recall_at_k`       | `max_rel`, `k`   |
+| {meth}`~docarray.math.evaluation.f1_score_at_k`     | `max_rel`, `k`   |
+| {meth}`~docarray.math.evaluation.dcg_at_k`          | `method`, `k`    |
+| {meth}`~docarray.math.evaluation.ndcg_at_k`         | `method`, `k`    |
+
+```{danger}
+This metric scores might change if the `limit` attribute of the match function is set differently.
+
+**Note:** Not all of these metrics can be applied to a Top-K result, i.e., `ndcg_at_k` and `r_precision` are calculated correctly only if the limit is set equal or higher than the number of documents in the `DocumentArray` provided to the match function.
+```
 
 
 For example, let's create a DocumentArray with random embeddings and matching it to itself:
@@ -91,7 +112,7 @@ da2['@m'].summary()
 Now `da2` is our prediction, and `da` is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):
 
 ```python
-da2.evaluate(da, metric='precision_at_k', k=5)
+da2.evaluate(ground_truth=da, metric='precision_at_k', k=5)
 ```
 
 ```text
@@ -142,7 +163,7 @@ for d in g_da:
 Now when you do evaluate, you will receive an error: 
 
 ```python
-p_da.evaluate(g_da, 'average_precision')
+p_da.evaluate('average_precision', ground_truth=g_da)
 ```
 
 ```text
@@ -154,7 +175,7 @@ This basically saying that based on `.id` (default identifier), the given two Do
 If we override the hash function as following the evaluation can be conducted:
 
 ```python
-p_da.evaluate(g_da, 'average_precision', hash_fn=lambda d: d.text[:2])
+p_da.evaluate('average_precision', ground_truth=g_da, hash_fn=lambda d: d.text[:2])
 ```
 
 ```text

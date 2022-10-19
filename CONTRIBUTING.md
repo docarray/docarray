@@ -1,10 +1,6 @@
-> The best way to know more about contributing and how to get started is to **[join us on Slack](https://slack.jina.ai)** and ask questions in our public channels.
-
 # Contributing to DocArray
 
-Thanks for your interest in contributing to docArray. We're grateful for your initiative! ❤️
-
-I'm Alex C-G, Open Source Evangelist for Jina. I'm all about getting our new contributors up-to-speed, and that's what we'll do below.
+Thanks for your interest in contributing to DocArray. We're grateful for your initiative! ❤️
 
 In this guide, we're going to go through the steps for each kind of contribution, and good and bad examples of what to do. We look forward to your contributions!
 
@@ -13,6 +9,7 @@ In this guide, we're going to go through the steps for each kind of contribution
 
 - [🐞 Bugs and Issues](#-bugs-and-issues)
 - [🥇 Making Your First Submission](#-making-your-first-submission)
+- [📝 Code style conventions](#-code-style-conventions)
 - [☑️ Naming Conventions](#-naming-conventions)
 - [💥 Testing DocArray Locally and on CI](#-testing-docarray-locally-and-on-ci)
 - [📖 Contributing Documentation](#-contributing-documentation)
@@ -34,8 +31,6 @@ There are also a couple of nice to haves:
 
 * **Environment:** Operating system, DocArray version, python version,...
 * **Screenshots:** If they're relevant
-
-To understand how our issues are labeled, check out our [issue label guide](.github/github-issue-label-guide.md).
 
 <a name="-making-your-first-submission"></a>
 ## 🥇 Making Your First Submission
@@ -86,6 +81,32 @@ Now you will be automatically reminded to add docstrings to your code. `black` w
 
 Run `git config blame.ignoreRevsFile .github/.git-blame-ignore-revs`
 
+## 📝 Code style conventions:
+
+Most of our codebase is written in Python. 
+
+### PEP compliance
+
+We comply to the official PEP: E9, F63, F7, F82 code style and required every contribution to follow it. This is enforced by using [flake8](https://github.com/PyCQA/flake8) in our CI and in our [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks).
+
+### Python version
+DocArray is compatible with Python 3.7 and above, therefore we can't accept contribution that used features from the newest Python versions without ensuring compatibility with python 3.7
+
+### Code formatting
+
+All of our Python codebase follows formatting standard. We are following the [PEP8](https://peps.python.org/pep-0008/) standard, and we require that every code contribution is formatted using [black](https://github.com/psf/black) with the default configurations.
+If you have installed the [pre-commit hooks](https://github.com/jina-ai/docarray/blob/main/CONTRIBUTING.md#install-pre-commit-hooks) the formatting should be automatic on every commit. Moreover, our CI will block contributions that do not respect these conventions.
+
+### Type Hint
+
+Python is not a strongly typed programming language, nevertheless the use of [type hints](https://docs.python.org/3/library/typing.html)  
+contribute to a better codebase especially when reading, reviewing and refactoring. Therefore, we **highly** encourage every contribution
+to fully utilise type hints. In some particular cases type hints can be cumbersome, therefore using type hints is not a hard requirement for contribution.
+
+Contributions are expected to use type hints, especially in function signature, unless there is an arguably good reason not to do it.
+
+Note: Example code in the documentation should also follow our code style conventions
+
 
 <a name="-naming-conventions"></a>
 ## ☑️ Naming Conventions
@@ -131,7 +152,7 @@ Your branch name should follow the format `type-scope(-issue_id)`:
 
 * `type` is one of the [types above](#specify-the-correct-types)
 * `scope` is optional, and represents the module your branch is working on.
-* `issue_id` is [the GitHub issue](https://github.com/jina-ai/jina/issues) number. Having the correct issue number will automatically link the Pull Request on this branch to that issue.
+* `issue_id` is [the GitHub issue](https://github.com/jina-ai/docarray/issues) number. Having the correct issue number will automatically link the Pull Request on this branch to that issue.
 
 > Good examples:
 >
@@ -204,6 +225,14 @@ pip install ".[test]"
 pytest -v -s tests
 ```
 
+### Test policy
+
+Every contribution that adds or modifies the behavior of a feature must include a suite of tests that validates that the feature works as expected.
+
+This allows:
+* the reviewer to be very confident that the feature does what it is supposed to do before merging it into the code base
+* the contributors to be sure that they don't break already-merged features when refactoring or modifying the code base.
+
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing Documentation
 
@@ -232,6 +261,9 @@ Bonus: **Know when to break the rules**. Documentation writing is as much art as
 1. Use the `{tab}` element to show multiple ways of doing one thing. [Example](https://docarray.jina.ai/fundamentals/document/#document) 
 2. Use the `{admonition}` boxes with care.
 3. Use `{dropdown}` to hide optional content, such as long code snippets or console output.
+
+
+Note: Example code in the documentation should also follow our code style conventions that you can find above
 
 ### Building documentation on your local machine
 

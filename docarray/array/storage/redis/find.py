@@ -1,3 +1,4 @@
+import warnings
 from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar, Union
 
 import numpy as np
@@ -39,14 +40,13 @@ class FindMixin(BaseFindMixin):
     def _find_similar_vectors(
         self,
         query: 'RedisArrayType',
-        filter: Optional[Dict] = None,
+        filter: Optional[Union[str, Dict]] = None,
         limit: Union[int, float] = 20,
         **kwargs,
     ):
 
         if filter:
-            nodes = _build_query_nodes(filter)
-            query_str = intersect(*nodes).to_string()
+            query_str = _get_redis_filter_query(filter)
         else:
             query_str = '*'
 
@@ -91,11 +91,10 @@ class FindMixin(BaseFindMixin):
 
     def _find_with_filter(
         self,
-        filter: Dict,
+        filter: Union[str, Dict],
         limit: Union[int, float] = 20,
     ):
-        nodes = _build_query_nodes(filter)
-        query_str = intersect(*nodes).to_string()
+        query_str = _get_redis_filter_query(filter)
         q = Query(query_str)
         q.paging(0, limit)
 
@@ -229,4 +228,20 @@ def _build_query_nodes(filter):
 
 def _build_query_str(query):
     query_str = '|'.join(query.split(' '))
+    return query_str
+
+
+def _get_redis_filter_query(filter: Union[str, Dict]):
+    if isinstance(filter, dict):
+        warnings.warn(
+            "Dict syntax for redis filter will be deprecated, use string literals instead",
+            DeprecationWarning,
+        )
+        nodes = _build_query_nodes(filter)
+        query_str = intersect(*nodes).to_string()
+    elif isinstance(filter, str):
+        query_str = filter
+    else:
+        raise ValueError(f'Unexpected type of filter: {type(filter)}, expected str')
+
     return query_str

@@ -46,8 +46,6 @@ class BackendMixin(BaseBackendMixin):
         'float': TypeMap(type='float', converter=NumericField),
         'double': TypeMap(type='double', converter=NumericField),
         'long': TypeMap(type='long', converter=NumericField),
-        'bool': TypeMap(type='bool', converter=NumericField),
-        'geo': TypeMap(type='geo', converter=GeoField),
     }
 
     def _init_storage(

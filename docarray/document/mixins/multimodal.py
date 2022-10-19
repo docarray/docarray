@@ -104,7 +104,9 @@ class MultiModalMixin:
             )
 
         if attr not in self._metadata['multi_modal_schema']:
-            raise ValueError(f'the Document schema does not contain attribute {attr}')
+            raise ValueError(
+                f'the Document schema does not contain attribute `{attr}`, typo?'
+            )
 
         pos = self._metadata['multi_modal_schema'][attr].get('position')
         if pos is None:
@@ -186,7 +188,7 @@ class MultiModalMixin:
             mm_attr_da = self.get_multi_modal_attribute(attr)
             return mm_attr_da if len(mm_attr_da) > 1 else mm_attr_da[0]
         else:
-            raise AttributeError(f'{self.__class__.__name__} has no attribute {attr}')
+            raise AttributeError(f'{self.__class__.__name__} has no attribute `{attr}`')
 
     def __setattr__(self, attr, value):
         if self._has_multimodal_attr(attr):
