@@ -37,8 +37,8 @@ def _evaluate_deprecation(f):
             if old_key in kwargs:
                 kwargs[new_key] = kwargs[old_key]
                 warnings.warn(
-                    '`other` is renamed to `groundtruth` in `evaluate()`, the usage of `other` is '
-                    'deprecated and will be removed soon.',
+                    f'`{old_key}` is renamed to `{new_key}` in `evaluate()`, the '
+                    f'usage of `{old_key}` is deprecated and will be removed soon.',
                     DeprecationWarning,
                 )
         return f(*args, **kwargs)
