@@ -3,6 +3,7 @@ import argparse
 import numpy as np
 
 from benchmarking_utils import (
+    get_docs,
     get_configuration_storage_backends,
     plot_results,
     run_benchmark,
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     np.random.seed(123)
 
     # Benchmark
-    storage_backends = get_configuration_storage_backends(argparse, D)
+    storage_backends = get_configuration_storage_backends(argparse, D, True)
     find_by_vector_values = {str(n_index): [] for n_index in n_index_values}
     create_values = {str(n_index): [] for n_index in n_index_values}
 
@@ -30,8 +31,11 @@ if __name__ == "__main__":
         test = [np.random.rand(D) for _ in range(n_vector_queries)]
         ground_truth = []
 
+        print(f'Reading dataset')
+        docs = get_docs(train)
+
         find_by_vector_time_all, create_time_all, benchmark_df = run_benchmark(
-            train,
+            docs,
             test,
             ground_truth,
             n_index,
@@ -39,7 +43,6 @@ if __name__ == "__main__":
             n_query,
             storage_backends,
             K,
-            D,
         )
 
         # store find_by_vector time

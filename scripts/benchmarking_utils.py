@@ -65,7 +65,7 @@ def fmt(value, unit):
     return '{:.3f} {}'.format(value, unit)
 
 
-def get_configuration_storage_backends(argparse, D):
+def get_configuration_storage_backends(argparse, D, random=True):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--default-hnsw',
@@ -81,115 +81,128 @@ def get_configuration_storage_backends(argparse, D):
 
     args = parser.parse_args()
 
-    if args.default_hnsw:
-        storage_backends = [
-            ('memory', None),
-            ('sqlite', None),
-            (
-                'annlite',
+    storage_backends = {
+        'memory': {
+            'storage_config': None,
+        },
+        'sqlite': {
+            'storage_config': None,
+        },
+        'annlite': {
+            'storage_config': {
+                'n_dim': D,
+                'columns': {'i': 'int'},
+            },
+        },
+        'qdrant': {
+            'storage_config': {
+                'n_dim': D,
+                'port': '41233',
+                'scroll_batch_size': 8,
+            },
+        },
+        'weaviate': {
+            'storage_config': {
+                'n_dim': D,
+                'port': '41234',
+                'columns': {'i': 'int'},
+            },
+        },
+        'elasticsearch': {
+            'storage_config': {
+                'n_dim': D,
+                'hosts': 'http://localhost:41235',
+                'columns': {'i': 'int'},
+                'es_config': {'timeout': 1000},
+            },
+        },
+        'redis': {
+            'storage_config': {
+                'n_dim': D,
+                'port': '41236',
+                'columns': {'i': 'int'},
+            },
+        },
+    }
+
+    if random:
+        if not args.default_hnsw:
+            storage_backends['annlite']['storage_config'].update(
                 {
-                    'n_dim': D,
-                    'columns': {'i': 'int'},
-                },
-            ),
-            (
-                'qdrant',
-                {
-                    'n_dim': D,
-                    'scroll_batch_size': 8,
-                    'port': '41233',
-                },
-            ),
-            (
-                'weaviate',
-                {
-                    'n_dim': D,
-                    'port': '41234',
-                    'columns': {'i': 'int'},
-                },
-            ),
-            (
-                'elasticsearch',
-                {
-                    'n_dim': D,
-                    'hosts': 'http://localhost:41235',
-                    'columns': {'i': 'int'},
-                    'es_config': {'timeout': 1000},
-                },
-            ),
-            (
-                'redis',
-                {
-                    'n_dim': D,
-                    'port': '41236',
-                    'distance': 'L2',
-                    'columns': {'i': 'int'},
-                },
-            ),
-        ]
-    else:
-        storage_backends = [
-            ('memory', None),
-            ('sqlite', None),
-            (
-                'annlite',
-                {
-                    'n_dim': D,
                     'ef_construction': 100,
                     'ef_search': 100,
                     'max_connection': 16,
-                    'columns': {'i': 'int'},
-                },
-            ),
-            (
-                'qdrant',
+                }
+            )
+            storage_backends['qdrant']['storage_config'].update(
                 {
-                    'n_dim': D,
-                    'scroll_batch_size': 8,
                     'ef_construct': 100,
                     'm': 16,
-                    'port': '41233',
-                },
-            ),
-            (
-                'weaviate',
+                }
+            )
+            storage_backends['weaviate']['storage_config'].update(
                 {
-                    'n_dim': D,
                     'ef': 100,
                     'ef_construction': 100,
                     'max_connections': 16,
-                    'port': '41234',
-                    'columns': {'i': 'int'},
-                },
-            ),
-            (
-                'elasticsearch',
+                }
+            )
+            storage_backends['elasticsearch']['storage_config'].update(
                 {
-                    'n_dim': D,
                     'ef_construction': 100,
                     'm': 16,
-                    'hosts': 'http://localhost:41235',
-                    'columns': {'i': 'int'},
-                },
-            ),
-            (
-                'redis',
+                }
+            )
+            storage_backends['redis']['storage_config'].update(
                 {
-                    'n_dim': D,
                     'ef_construction': 100,
                     'm': 16,
                     'ef_runtime': 100,
-                    'port': '41236',
-                    'columns': {'i': 'int'},
-                },
-            ),
-        ]
+                }
+            )
 
-    storage_backends = [
-        (backend, config)
-        for backend, config in storage_backends
-        if backend not in (args.exclude_backends or '').split(',')
-    ]
+        storage_backends = [
+            (storage, configs['storage_config'])
+            for storage, configs in storage_backends.items()
+            if storage not in (args.exclude_backends or '').split(',')
+        ]
+    else:
+        storage_backends['annlite']['storage_config']['metric'] = 'euclidean'
+        storage_backends['annlite']['hnsw_config'] = {
+            'max_connection': [16, 32],
+            'ef_construction': [128, 256],
+            'ef_search': [16, 32],
+        }
+
+        storage_backends['qdrant']['storage_config']['distance'] = 'euclidean'
+        storage_backends['qdrant']['hnsw_config'] = {
+            'm': [16, 32],
+            'ef_construct': [128, 256],
+        }
+
+        storage_backends['weaviate']['storage_config']['distance'] = 'l2-squared'
+        storage_backends['weaviate']['hnsw_config'] = {
+            'max_connections': [16, 32],
+            'ef_construction': [128, 256],
+            'ef': [16, 32],
+        }
+
+        storage_backends['elasticsearch']['storage_config']['distance'] = 'l2_norm'
+        storage_backends['elasticsearch']['hnsw_config'] = {
+            'm': [16, 32],
+            'ef_construction': [128, 256],
+        }
+
+        storage_backends['redis']['storage_config']['distance'] = 'L2'
+        storage_backends['redis']['hnsw_config'] = {
+            'm': [16, 32],
+            'ef_construction': [128, 256],
+            'ef_runtime': [16, 32],
+        }
+
+        for storage in (args.exclude_backends or '').split(','):
+            storage_backends.pop(storage)
+
     return storage_backends
 
 
@@ -215,7 +228,7 @@ def recall(predicted, relevant, eval_at):
 
 
 def run_benchmark(
-    train,
+    docs,
     test,
     ground_truth,
     n_index,
@@ -223,10 +236,9 @@ def run_benchmark(
     n_query,
     storage_backends,
     K,
-    D,
 ):
     table = Table(
-        title=f'DocArray Benchmarking n_index={n_index} n_query={n_query} D={D} K={K}'
+        title=f'DocArray Random Benchmarking n_index={n_index} n_query={n_query} D={test[0].shape[0]} K={K}'
     )
     benchmark_df = pd.DataFrame(
         {
@@ -246,8 +258,6 @@ def run_benchmark(
 
     console = Console()
 
-    console.print(f'Reading dataset')
-    docs = get_docs(train)
     docs_to_delete = random.sample(docs, n_query)
     docs_to_update = random.sample(docs, n_query)
     vector_queries = [x for x in test]
@@ -258,6 +268,8 @@ def run_benchmark(
     for backend, config in storage_backends:
         try:
             console.print('\nBackend:', backend.title())
+            console.print('Backend config', str(config))
+
             if not config:
                 da = DocumentArray(storage=backend)
             else:
@@ -283,14 +295,9 @@ def run_benchmark(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
 
-            if backend == 'memory' and len(ground_truth) == n_vector_queries:
-                find_by_vector_time, results = find_by_vector(
-                    da=da, query=vector_queries[0], limit=K, metric='euclidean'
-                )
-                recall_at_k = recall(results, ground_truth[0], K)
-            elif backend == 'sqlite':
+            if backend == 'sqlite':
                 find_by_vector_time, result = find_by_vector(
-                    da, vector_queries[0], limit=K, metric='euclidean'
+                    da, vector_queries[0], limit=K
                 )
                 recall_at_k = recall(result, ground_truth[0], K)
             else:
@@ -422,18 +429,19 @@ def plot_results(
     plt.savefig('benchmark.svg')
 
 
-def run_benchmark2(
-    train,
+def run_benchmark_sift(
     test,
+    docs,
     ground_truth,
     n_index,
     n_vector_queries,
     n_query,
-    backend,
+    storage,
     storage_config,
+    hnsw_config,
     K,
 ):
-    table = Table(title=f'DocArray Sift1M Benchmarking backend={backend}')
+    table = Table(title=f'DocArray Sift1M Benchmarking storage={storage}')
     benchmark_df = pd.DataFrame(
         {
             'Storage Backend': [],
@@ -455,21 +463,20 @@ def run_benchmark2(
 
     console = Console()
 
-    console.print(f'Reading dataset')
-    docs = get_docs(train)
     docs_to_delete = random.sample(docs, n_query)
     docs_to_update = random.sample(docs, n_query)
     vector_queries = [x for x in test]
 
-    for config in storage_config:
+    for config in hnsw_config:
         try:
-            console.print('\nBackend:', backend.title())
-            console.print('\nBackend config', str(config))
+            console.print('\nBackend:', storage.title())
+            console.print('Backend hnsw config', str(config))
 
-            if not config:
-                da = DocumentArray(storage=backend)
+            if not storage_config:
+                da = DocumentArray(storage=storage)
             else:
-                da = DocumentArray(storage=backend, config=config)
+                config.update(storage_config)
+                da = DocumentArray(storage=storage, config=config)
 
             console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
@@ -491,12 +498,7 @@ def run_benchmark2(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
 
-            if backend == 'memory' and len(ground_truth) == n_vector_queries:
-                find_by_vector_time, results = find_by_vector(
-                    da=da, query=vector_queries[0], limit=K, metric='euclidean'
-                )
-                recall_at_k = recall(results, ground_truth[0], K)
-            elif backend == 'sqlite':
+            if storage == 'memory' or storage == 'sqlite':
                 find_by_vector_time, result = find_by_vector(
                     da, vector_queries[0], limit=K, metric='euclidean'
                 )
@@ -507,25 +509,21 @@ def run_benchmark2(
                 for i, query in enumerate(vector_queries):
                     find_by_vector_time, results = find_by_vector(da, query, limit=K)
                     find_by_vector_times.append(find_by_vector_time)
-                    if backend == 'memory':
-                        ground_truth.append(results[:, 'tags__i'])
-                        recall_at_k_values.append(1)
-                    else:
-                        recall_at_k_values.append(recall(results, ground_truth[i], K))
+                    recall_at_k_values.append(recall(results, ground_truth[i], K))
 
                 recall_at_k = np.mean(recall_at_k_values)
                 find_by_vector_time = np.mean(find_by_vector_times)
 
             console.print(f'\tfinding {n_query} docs by condition ...')
             find_by_condition_time, _ = find_by_condition(
-                da, storage_backend_filters[backend]
+                da, storage_backend_filters[storage]
             )
 
             table.add_row(
-                backend.title(),
-                str(config['m']),
-                str(config['ef_construction']),
-                str(config['ef_runtime']),
+                storage.title(),
+                str(config.get(get_param(storage, 'M'), None)),
+                str(config.get(get_param(storage, 'EF_CONSTRUCTION'), None)),
+                str(config.get(get_param(storage, 'EF_RUNTIME'), None)),
                 fmt(create_time, 's'),
                 fmt(read_time * 1000, 'ms'),
                 fmt(update_time * 1000, 'ms'),
@@ -535,10 +533,10 @@ def run_benchmark2(
                 fmt(find_by_condition_time, 's'),
             )
             benchmark_df.loc[len(benchmark_df.index)] = [
-                backend.title(),
-                config['m'],
-                config['ef_construction'],
-                config['ef_runtime'],
+                storage.title(),
+                config.get(get_param(storage, 'M'), None),
+                config.get(get_param(storage, 'EF_CONSTRUCTION'), None),
+                config.get(get_param(storage, 'EF_RUNTIME'), None),
                 create_time,
                 read_time,
                 update_time,
@@ -548,10 +546,75 @@ def run_benchmark2(
                 find_by_condition_time,
             ]
 
+            console.print(table)
             da.clear()
             del da
         except Exception as e:
-            console.print(f'Storage Backend {backend} failed: {e}')
+            console.print(f'Storage Backend {storage} failed: {e}')
 
     console.print(table)
     return benchmark_df
+
+
+param_dict = {
+    'annlite': {
+        'M': 'max_connection',
+        'EF_CONSTRUCTION': 'ef_construction',
+        'EF_RUNTIME': 'ef_search',
+    },
+    'qdrant': {'M': 'm', 'EF_CONSTRUCTION': 'ef_construct'},
+    'weaviate': {
+        'M': 'max_connections',
+        'EF_CONSTRUCTION': 'ef_construction',
+        'EF_RUNTIME': 'ef',
+    },
+    'elasticsearch': {'M': 'm', 'EF_CONSTRUCTION': 'ef_construction'},
+    'redis': {
+        'M': 'm',
+        'EF_CONSTRUCTION': 'ef_construction',
+        'EF_RUNTIME': 'ef_runtime',
+    },
+}
+
+
+def get_param(storage, param):
+    if storage == 'memory' or storage == 'sqlite':
+        return param
+
+    return param_dict[storage].get(param, param)
+
+
+def plot_results_sift(storages):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
+
+    for storage in storages:
+        df = pd.read_csv(f'benchmark-qps-{storage}.csv')
+        df.rename(columns={'Recall at k=10 for vector search': 'Recall'}, inplace=True)
+        df.sort_values(by=['Recall'], inplace=True)
+        df.plot(
+            style='.-',
+            ax=ax1,
+            x='Recall',
+            y='Query (R)',
+            ylabel='Queries per second (1/s)',
+            label=storage,
+        )
+
+    ax1.set_title('Recall/Queries per second (1/s)', fontsize=18)
+
+    for storage in storages:
+        df = pd.read_csv(f'benchmark-seconds-{storage}.csv')
+        df.rename(columns={'Recall at k=10 for vector search': 'Recall'}, inplace=True)
+        df.sort_values(by=['Recall'], inplace=True)
+        df.plot(
+            style='.-',
+            ax=ax2,
+            x='Recall',
+            y='Indexing time (C)',
+            ylabel='Indexing time (s)',
+            label=storage,
+        )
+
+    ax2.set_title('Recall/Indexing time (s)', fontsize=18)
+
+    plt.savefig('benchmark.png')

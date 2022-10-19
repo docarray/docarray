@@ -1,11 +1,13 @@
 import argparse
+from itertools import product
 
 import h5py
 
 from benchmarking_utils import (
     get_configuration_storage_backends,
-    plot_results,
-    run_benchmark,
+    get_docs,
+    plot_results_sift,
+    run_benchmark_sift,
     save_benchmark_df,
 )
 
@@ -18,32 +20,43 @@ if __name__ == "__main__":
 
     # Variables gathered from the dataset
     dataset = h5py.File(DATASET_PATH, 'r')
-    train = dataset['train']
-    test = dataset['test']
+    train = dataset['train'][:1000]
+    test = dataset['test'][:10]
     D = train.shape[1]
     n_index = len(train)
     n_vector_queries = len(test)
     ground_truth = [x[0:K] for x in dataset['neighbors'][0:n_vector_queries]]
 
-    # Benchmark
-    storage_backends = get_configuration_storage_backends(argparse, D)
-    find_by_vector_time_all, create_time_all, benchmark_df = run_benchmark(
-        train,
-        test,
-        ground_truth,
-        n_index,
-        n_vector_queries,
-        n_query,
-        storage_backends,
-        K,
-        D,
-    )
+    print(f'Reading dataset')
+    docs = get_docs(train)
 
-    # store find_by_vector time
-    find_by_vector_values = {str(n_index): find_by_vector_time_all}
-    create_values = {str(n_index): create_time_all}
-    save_benchmark_df(benchmark_df, n_index)
+    BENCHMARK_CONFIG = get_configuration_storage_backends(argparse, D, False)
 
-    plot_results(
-        find_by_vector_values, storage_backends, create_values, plot_legend=False
-    )
+    for storage, cfg in BENCHMARK_CONFIG.items():
+
+        storage_config = cfg['storage_config']
+        hnsw_config = []
+
+        if storage != 'memory' and storage != 'sqlite':
+            for hnsw_cfg in product(*cfg['hnsw_config'].values()):
+                hnsw_config.append(dict(zip(cfg['hnsw_config'].keys(), hnsw_cfg)))
+        else:
+            hnsw_config.append({})
+
+        benchmark_df = run_benchmark_sift(
+            test,
+            docs,
+            ground_truth,
+            n_index,
+            n_vector_queries,
+            n_query,
+            storage,
+            storage_config,
+            hnsw_config,
+            K,
+        )
+
+        # store benchmark time
+        save_benchmark_df(benchmark_df, storage)
+
+    plot_results_sift(BENCHMARK_CONFIG.keys())
