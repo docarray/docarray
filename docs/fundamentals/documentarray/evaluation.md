@@ -1,6 +1,6 @@
 # Evaluate Matches
 
-After you get `.matches` from the last chapter, you can easily evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
+After you get `.matches`, you can evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
 
 ```python
 da_predict.evaluate(ground_truth=da_groundtruth, metrics='...', **kwargs)
