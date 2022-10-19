@@ -1,3 +1,5 @@
+import inspect
+import warnings
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
 from docarray.array.base import BaseDocumentArray
@@ -184,3 +186,13 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         else:
             instance = super().__new__(cls)
         return instance
+
+    def __getattribute__(self, item: str):
+        obj = super().__getattribute__(item)
+
+        if item == 'from_csv' and inspect.ismethod(obj):
+            warnings.warn(
+                f'Instead of calling from_csv() from a DocumentArray instance, you should probably use `DocumentArray.from_csv(...)`. Calling from_csv() from an DocumentArray instance does not change the instance in-place.'
+            )
+
+        return obj
