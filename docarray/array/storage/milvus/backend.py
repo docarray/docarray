@@ -2,6 +2,7 @@ import copy
 import uuid
 from typing import Optional, TYPE_CHECKING, Union, Dict, Iterable, List, Tuple
 from dataclasses import dataclass, field
+import re
 
 import numpy as np
 from pymilvus import (
@@ -37,6 +38,12 @@ def always_true_expr(primary_key: str) -> str:
 def ids_to_milvus_expr(ids):
     ids = ['"' + _id + '"' for _id in ids]
     return '[' + ','.join(ids) + ']'
+
+
+def _sanitize_collection_name(name):
+    return ''.join(
+        re.findall('[a-zA-Z0-9_]', name)
+    )  # remove everything that is not a letter, number or underscore
 
 
 @dataclass
@@ -197,7 +204,7 @@ class BackendMixin(BaseBackendMixin):
         subindex_name: str,
     ) -> dict:
         if 'collection_name' not in config_subindex:
-            config_joined['collection_name'] = (
+            config_joined['collection_name'] = _sanitize_collection_name(
                 config_joined['collection_name'] + '_subindex_' + subindex_name
             )
         return config_joined
