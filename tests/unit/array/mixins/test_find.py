@@ -1,9 +1,11 @@
+import operator
+from math import radians
+
 import numpy as np
 import pytest
-
-from docarray import DocumentArray, Document
+from docarray import Document, DocumentArray
 from docarray.math import ndarray
-import operator
+from sklearn.metrics.pairwise import haversine_distances
 
 
 def test_customize_metric_fn():
@@ -632,39 +634,7 @@ def test_redis_category_filter(filter, checker, columns, start_storage):
     assert all([checker(r) for r in results])
 
 
-from math import radians, cos, sin, asin, sqrt
-
-
-def haversine(lon1, lat1, lon2, lat2):
-    """
-    Calculate the great circle distance between two points
-    on the earth (specified in decimal degrees)
-    """
-    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-    c = 2 * asin(sqrt(a))
-    r = 6371  # average radius of earth, unit km
-    return c * r  # unit km
-
-
-@pytest.mark.parametrize(
-    'filter,checker',
-    [
-        (
-            '@location:[-98.71 38.71 200 km] ',
-            lambda r: haversine(
-                -98.71,
-                38.71,
-                float(r.tags['location'].split(',')[0]),
-                float(r.tags['location'].split(',')[1]),
-            )
-            < 200,
-        ),
-    ],
-)
-def test_redis_geo_filter(filter, checker, start_storage):
+def test_redis_geo_filter(start_storage):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
@@ -684,9 +654,23 @@ def test_redis_geo_filter(filter, checker, start_storage):
         ]
     )
 
+    filter = '@location:[-98.71 38.71 800 km] '
+
     results = da.find(np.random.rand(n_dim), filter=filter)
     assert len(results) > 0
-    assert all([checker(r) for r in results])
+
+    for r in results:
+        lon1, lat1, lon2, lat2 = map(
+            radians,
+            [
+                -98.71,
+                38.71,
+                float(r.tags['location'].split(',')[0]),
+                float(r.tags['location'].split(',')[1]),
+            ],
+        )
+        distance = haversine_distances([[lon1, lat1], [lon2, lat2]]) * 6371
+        assert distance[0][1] < 800
 
 
 @pytest.mark.parametrize('storage', ['memory'])
