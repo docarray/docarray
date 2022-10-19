@@ -34,5 +34,7 @@ def test_embedding_ops_error():
     with pytest.raises(ValueError, match='Did you forget to set'):
         db.find(da)
     da.embeddings = np.random.random([100, 256])
-    with pytest.raises(ValueError, match='filter must be dict when query is None'):
+    with pytest.raises(
+        ValueError, match='filter must be dict or str when query is None'
+    ):
         da.find(None)

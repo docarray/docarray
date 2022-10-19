@@ -70,7 +70,7 @@ The procedures for creating, retrieving, updating, and deleting Documents are id
 
 ## Construct
 
-There are two ways for initializing a DocumentArray with an external storage backend.
+There are two ways to initialize a DocumentArray with an external storage backend.
 
 ````{tab} Specify storage
 
@@ -144,6 +144,14 @@ da = DocumentArray(
 ````
 
 Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
+
+```{admonition} Creating DocumentArrays without specifying index
+:class: warning
+When you specify an index (table name for SQL stores) in the config, the index will be used to persist the DocumentArray in the document store.
+If you create a DocumentArray but do not specify an index, a randomized placeholder index will be created to persist the data.
+
+Creating DocumentArrays without indexes is useful during prototyping but should not be used in a production setting as randomized placeholder data will be persisted in the document store unnecessarily.
+```
 
 
 ## Feature summary
@@ -349,8 +357,8 @@ array([[7., 7., 7.],
 ## Persistence, mutations and context manager
 
 Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.
-The DocumentArray object created in your Python program is now a view of the underlying implementation in the external store.
-This means that your DocumentArray object in Python can be out of sync with what is persisted to the external store.
+The DocumentArray object created in your Python program is now a view of the underlying implementation in the document store.
+This means that your DocumentArray object in Python can be out of sync with what is persisted to the document store.
 
 **For example**
 ```python
@@ -415,8 +423,10 @@ Length of da1 is 3
 ````
 
 Now that you know the issue, let's explore what you should do to work with DocumentArrays backed by document store in a more predictable manner.
-### Using Context Manager
-The recommended way is to use the DocumentArray as a context manager like so:
+
+````{tab} Use with
+
+The data will be synced when the context manager is exited.
 
 ```python
 from docarray import DocumentArray, Document
@@ -429,6 +439,24 @@ print(f"Length of da1 is {len(da1)}")
 da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
 print(f"Length of da2 is {len(da2)}")
 ```
+````
+
+````{tab} Use sync
+
+Explicitly calling the `sync` method of the DocumentArray will save the data to the document store.
+
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
+da1.append(Document())
+da.sync()  # Call the sync method
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+````
 **First run output**
 ```console
 Length of da1 is 1
@@ -447,6 +475,7 @@ Length of da2 is 3
 
 The append you made to the DocumentArray is now persisted properly. Hurray!
 
+The recommended way to sync data to the document store is to use the DocumentArray inside the `with` context manager.
 
 ## Known limitations
 

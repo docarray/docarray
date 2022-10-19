@@ -265,12 +265,12 @@ numeric_operators_elasticsearch = {
 }
 
 numeric_operators_redis = {
-    '$gte': operator.ge,
-    '$gt': operator.gt,
-    '$lte': operator.le,
-    '$lt': operator.lt,
-    '$eq': operator.eq,
-    '$ne': operator.ne,
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'ne': operator.ne,
 }
 
 
@@ -354,15 +354,42 @@ numeric_operators_redis = {
             for operator in ['gt', 'gte', 'lt', 'lte']
         ],
         *[
-            tuple(
-                [
-                    'redis',
-                    lambda operator, threshold: {'price': {operator: threshold}},
-                    numeric_operators_redis,
-                    operator,
-                ]
-            )
-            for operator in numeric_operators_redis.keys()
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} inf] ',
+                numeric_operators_redis,
+                'gte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[({threshold} inf] ',
+                numeric_operators_redis,
+                'gt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf {threshold}] ',
+                numeric_operators_redis,
+                'lte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf ({threshold}] ',
+                numeric_operators_redis,
+                'lt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} {threshold}] ',
+                numeric_operators_redis,
+                'eq',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'(- @price:[{threshold} {threshold}]) ',
+                numeric_operators_redis,
+                'ne',
+            ),
         ],
     ],
 )
@@ -454,15 +481,42 @@ def test_search_pre_filtering(
             for operator in numeric_operators_annlite.keys()
         ],
         *[
-            tuple(
-                [
-                    'redis',
-                    lambda operator, threshold: {'price': {operator: threshold}},
-                    numeric_operators_redis,
-                    operator,
-                ]
-            )
-            for operator in numeric_operators_redis.keys()
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} inf] ',
+                numeric_operators_redis,
+                'gte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[({threshold} inf] ',
+                numeric_operators_redis,
+                'gt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf {threshold}] ',
+                numeric_operators_redis,
+                'lte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf ({threshold}] ',
+                numeric_operators_redis,
+                'lt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} {threshold}] ',
+                numeric_operators_redis,
+                'eq',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'(- @price:[{threshold} {threshold}]) ',
+                numeric_operators_redis,
+                'ne',
+            ),
         ],
     ],
 )
@@ -513,58 +567,30 @@ def test_weaviate_filter_query(start_storage, columns):
 @pytest.mark.parametrize(
     'columns',
     [
-        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
-        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
+        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'int')],
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'int'},
     ],
 )
 @pytest.mark.parametrize(
     'filter,checker',
     [
         (
-            {
-                "$or": {
-                    "price": {"$gt": 8},
-                    "category": {"$eq": "Shoes"},
-                },
-            },
-            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+            '(- @price: [8 8]) @isfake:[1 1]',
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == 1,
         ),
         (
-            {
-                "$and": {
-                    "price": {"$ne": 8},
-                    "isfake": {"$eq": True},
-                },
-            },
-            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
-        ),
-        (
-            {
-                "$or": {
-                    "price": {"$lt": 8},
-                    "isfake": {"$ne": True},
-                },
-                "size": {"$lte": 3},
-            },
-            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            '(@price: [-inf (8] | (- @isfake:[1 1])) @size:[-inf 3]',
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != 1)
             and r.tags['size'] <= 3,
         ),
         (
-            {
-                "$or": {
-                    "$and": {
-                        "price": {"$gte": 8},
-                        "category": {"$ne": "Shoes"},
-                    },
-                    "size": {"$eq": 3},
-                },
-            },
+            '(@price: [8 inf] (- @category:Shoes)) | (@size:[3 3])',
             lambda r: (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
             or r.tags['size'] == 3,
         ),
     ],
 )
-def test_redis_category_filter(filter, checker, start_storage, columns):
+def test_redis_category_filter(filter, checker, columns, start_storage):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
@@ -579,7 +605,7 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': 1},
             )
             for i in range(10)
         ]
@@ -594,7 +620,7 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
                     'price': i,
                     'category': 'Jeans',
                     'size': i,
-                    'isfake': False,
+                    'isfake': 0,
                 },
             )
             for i in range(10)

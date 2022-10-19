@@ -54,17 +54,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         else:
             return False
 
-    def __del__(self):
-        """Delete this :class:`DocumentArrayWeaviate` object"""
-        super().__del__()
-        if (
-            not self._persist
-            and len(_REGISTRY[self.__class__.__name__][self._class_name]) == 1
-        ):
-            self._client.schema.delete_class(self._class_name)
-            self._client.schema.delete_class(self._meta_name)
-        _REGISTRY[self.__class__.__name__][self._class_name].remove(self)
-
     def __repr__(self):
         """Return the string representation of :class:`DocumentArrayWeaviate` object
         :return: string representation of this object
