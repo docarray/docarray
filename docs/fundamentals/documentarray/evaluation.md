@@ -3,7 +3,7 @@
 After you get `.matches`, you can evaluate matches against the groundtruth via {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate`.
 
 ```python
-da_predict.evaluate(ground_truth=da_groundtruth, metrics='...', **kwargs)
+da_predict.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
 ```
 
 Alternatively, you can add labels to your documents to evaluate them.
@@ -18,7 +18,7 @@ example_da.embeddings = np.random.random([10, 3])
 
 example_da.match(example_da)
 
-example_da.evaluate(metrics='precision_at_k')
+example_da.evaluate(metrics=['precision_at_k'])
 ```
 
 The results are stored in `.evaluations` field of each Document.
@@ -112,7 +112,7 @@ da2['@m'].summary()
 Now `da2` is our prediction, and `da` is our groundtruth. If we evaluate the average Precision@10, we should get something close to 0.47 (we have 9 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 9/19 real matches):
 
 ```python
-da2.evaluate(ground_truth=da, metrics='precision_at_k', k=10)
+da2.evaluate(ground_truth=da, metrics=['precision_at_k'], k=10)
 ```
 
 ```text

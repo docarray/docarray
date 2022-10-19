@@ -41,6 +41,21 @@ def _evaluate_deprecation(f):
                     f'usage of `{old_key}` is deprecated and will be removed soon.',
                     DeprecationWarning,
                 )
+
+        # transfer metrics and metric_names into lists
+        list_warning_msg = (
+            'The attribute `%s` now accepts a list instead of a '
+            'single element. Passing a single element is deprecated and will soon not '
+            'be supported anymore.'
+        )
+        if len(args) > 1:
+            if type(args[1]) is str:
+                args[1] = [args[1]]
+                warnings.warn(list_warning_msg % 'metrics', DeprecationWarning)
+        for key in ['metrics', 'metric_names']:
+            if key in kwargs and type(kwargs[key]) is str:
+                kwargs[key] = [kwargs[key]]
+                warnings.warn(list_warning_msg % key, DeprecationWarning)
         return f(*args, **kwargs)
 
     return func
@@ -52,12 +67,10 @@ class EvaluationMixin:
     @_evaluate_deprecation
     def evaluate(
         self,
-        metrics: Union[
-            Union[str, Callable[..., float]], List[Union[str, Callable[..., float]]]
-        ],
+        metrics: List[Union[str, Callable[..., float]]],
         ground_truth: Optional['DocumentArray'] = None,
         hash_fn: Optional[Callable[['Document'], str]] = None,
-        metric_names: Optional[Union[str, List[str]]] = None,
+        metric_names: Optional[List[str]] = None,
         strict: bool = True,
         label_tag: str = 'label',
         **kwargs,
@@ -77,13 +90,13 @@ class EvaluationMixin:
         This method will fill the `evaluations` field of Documents inside this
         `DocumentArray` and will return the average of the computations
 
-        :param metrics: One or multiple name of the metrics or metric functions to be computed
+        :param metrics: list of metric names or metric functions to be computed
         :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`
             compares to.
         :param hash_fn: The function used for identifying the uniqueness of Documents.
             If not given, then ``Document.id`` is used.
         :param metric_names: If provided, the results of the metrics computation will be
-            stored in the `evaluations` field of each Document with this name. If not
+            stored in the `evaluations` field of each Document with this names. If not
             provided, the names will be derived from the metric function names.
         :param strict: If set, then left and right sides are required to be fully
             aligned: on the length, and on the semantic of length. These are preventing
@@ -119,11 +132,6 @@ class EvaluationMixin:
 
         if hash_fn is None:
             hash_fn = lambda d: d.id
-
-        if type(metrics) is not list:
-            metrics = [metrics]
-            if type(metric_names) is str:
-                metric_names = [metric_names]
 
         metric_fns = []
         for metric in metrics:
