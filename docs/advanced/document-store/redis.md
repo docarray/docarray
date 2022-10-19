@@ -246,10 +246,56 @@ integer in `columns` configuration (`'field': 'int'`) and use a filter query tha
 
 One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
-Consider a case where you store Documents with a tag of `location` into Redis and you want to retrieve all Documents
-with `location` within some `max_distance` value.
+Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents with `price` less than or equal to  some `max_price` value.
 
 You can index such Documents as follows:
+
+```python
+from docarray import Document, DocumentArray
+
+n_dim = 3
+da = DocumentArray(
+    storage='redis',
+    config={
+        'n_dim': n_dim,
+        'columns': {'price': 'float'},
+    },
+)
+
+with da:
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(10)])
+
+print('\nIndexed Prices:\n')
+for price in da[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+Then you can retrieve all documents whose price is less than or equal to `max_price` by applying the following filter:
+
+```python
+max_price = 3
+n_limit = 4
+
+filter = f'@price:[-inf {max_price}] '
+results = da.find(filter=filter)
+
+print('\n Returned examples that verify filter "price at most 3":\n')
+for price in results[:, 'tags__price']:
+    print(f'\t price={price}')
+```
+
+This would print
+
+```
+ Returned examples that satisfy condition "price at most 3":
+
+  price=0
+  price=1
+  price=2
+  price=3
+```
+
+With Redis as storage backend, you can also do geospatial searches. You can index Documents with a tag of `geo` type and retrieve all Documents that are within some `max_distance` from one earth coordinates as follows :
 
 ```python
 from docarray import Document, DocumentArray
@@ -271,38 +317,11 @@ with da:
         ]
     )
 
-print('\nIndexed Prices:\n')
-for price in da[:, 'tags__location']:
-    print(f'\t price={price}')
-```
-
-Then you can retrieve all documents whose location is within `max_distance` from earth coordinates `-98.71,38.71` by applying the following filter:
-
-```python
 max_distance = 1000
-n_limit = 5
-
 filter = f'@location:[-98.71 38.71 {max_distance} km] '
 results = da.find(filter=filter, limit=n_limit)
-
-print(
-    '\n Returned examples that verify filter "distance from -98.71,38.71 at most 1000 km":\n'
-)
-for location in results[:, 'tags__location']:
-    print(f'\t location={location}')
 ```
 
-This would print
-
-```
-Returned examples that verify filter "distance from -98.71,38.71 at most 1000 km":
-
- location=-98.17,38.71
- location=-97.17,39.71
- location=-96.17,40.71
- location=-95.17,41.71
- location=-94.17,42.71
-```
 
 (vector-search-index)=
 ### Update Vector Search Indexing Schema
