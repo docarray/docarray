@@ -20,8 +20,8 @@ if __name__ == "__main__":
 
     # Variables gathered from the dataset
     dataset = h5py.File(DATASET_PATH, 'r')
-    train = dataset['train'][:1000]
-    test = dataset['test'][:10]
+    train = dataset['train']
+    test = dataset['test']
     D = train.shape[1]
     n_index = len(train)
     n_vector_queries = len(test)
