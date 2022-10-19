@@ -10,6 +10,7 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.weaviate import DocumentArrayWeaviate, WeaviateConfig
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 @pytest.mark.parametrize(
@@ -22,6 +23,7 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_construct_docarray(da_cls, config, start_storage):
@@ -71,6 +73,7 @@ def test_construct_docarray(da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
@@ -101,6 +104,7 @@ def test_docarray_copy_singleton(da_cls, config, is_copy, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
@@ -130,6 +134,7 @@ def test_docarray_copy_da(da_cls, config, is_copy, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=1)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('is_copy', [True, False])
