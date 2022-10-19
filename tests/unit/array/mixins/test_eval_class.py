@@ -158,7 +158,7 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
         d.tags = {'label': 'B'}
     da1_index = DocumentArray(da2, storage=storage, config=config)
     da1.match(da1_index, exclude_self=True)
-    r = da1.evaluate(metric_fn, **kwargs)[metric_fn]
+    r = da1.evaluate([metric_fn], **kwargs)[metric_fn]
     assert isinstance(r, float)
     assert r == 0.0
     for d in da1:
@@ -182,7 +182,7 @@ def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score):
     da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
     for d in da:
         d.matches = da
-    r = da.evaluate(metric_fn)[metric_fn]
+    r = da.evaluate([metric_fn])[metric_fn]
     assert abs(r - metric_score) < 0.001
 
 
