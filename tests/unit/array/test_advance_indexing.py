@@ -7,6 +7,7 @@ from docarray.array.annlite import AnnliteConfig
 from docarray.array.qdrant import QdrantConfig
 from docarray.array.elastic import ElasticConfig
 from docarray.array.redis import RedisConfig
+from docarray.array.milvus import MilvusConfig
 
 
 @pytest.fixture
@@ -29,6 +30,7 @@ def indices():
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_storage):
@@ -62,6 +64,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_storage):
@@ -92,6 +95,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_del_int_str(docs, storage, config, start_storage, indices):
@@ -127,6 +131,7 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_slice(docs, storage, config, start_storage):
@@ -166,6 +171,7 @@ def test_slice(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_storage):
@@ -213,6 +219,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_storage):
@@ -250,6 +257,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_storage):
@@ -285,6 +293,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_storage):
@@ -306,6 +315,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_storage):
@@ -346,6 +356,7 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 @pytest.mark.parametrize('use_subindex', [False, True])
@@ -443,6 +454,7 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_getset_subindex(storage, config, start_storage):
@@ -489,6 +501,7 @@ def test_getset_subindex(storage, config, start_storage):
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
+        ('milvus', lambda: MilvusConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -520,7 +533,16 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
 
 @pytest.mark.parametrize(
     'storage',
-    ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis'],
+    [
+        'memory',
+        'sqlite',
+        'weaviate',
+        'annlite',
+        'qdrant',
+        'elasticsearch',
+        'redis',
+        'milvus',
+    ],
 )
 def test_tensor_attribute_selector(storage, start_storage):
     import scipy.sparse
@@ -529,7 +551,7 @@ def test_tensor_attribute_selector(storage, start_storage):
     sp_embed[sp_embed > 0.1] = 0
     sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
-    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis'):
+    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis', 'milvus'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
     else:
         da = DocumentArray(storage=storage)
@@ -573,10 +595,19 @@ def test_advance_selector_mixed(storage):
 
 @pytest.mark.parametrize(
     'storage',
-    ['memory', 'sqlite', 'weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis'],
+    [
+        'memory',
+        'sqlite',
+        'weaviate',
+        'annlite',
+        'qdrant',
+        'elasticsearch',
+        'redis',
+        'milvus',
+    ],
 )
 def test_single_boolean_and_padding(storage, start_storage):
-    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis'):
+    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis', 'milvus'):
         da = DocumentArray(storage=storage, config={'n_dim': 10})
     else:
         da = DocumentArray(storage=storage)
@@ -606,6 +637,7 @@ def test_single_boolean_and_padding(storage, start_storage):
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
+        ('milvus', lambda: MilvusConfig(n_dim=123)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_storage):
@@ -684,6 +716,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_offset2ids_persistence(storage, config, start_storage):
