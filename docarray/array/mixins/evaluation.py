@@ -50,6 +50,7 @@ def _evaluate_deprecation(f):
         )
         if len(args) > 1:
             if type(args[1]) is str:
+                args = list(args)
                 args[1] = [args[1]]
                 warnings.warn(list_warning_msg % 'metrics', DeprecationWarning)
         for key in ['metrics', 'metric_names']:
