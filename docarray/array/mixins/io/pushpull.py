@@ -3,6 +3,7 @@ import os
 import os.path
 import warnings
 from collections import Counter
+from http import HTTPStatus
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
@@ -250,7 +251,7 @@ class PushPullMixin:
         if response.ok:
             return response.json()['data']
         else:
-            if response.status_code == 403:
+            if response.status_code == HTTPStatus.FORBIDDEN:
                 response.reason = response.json()['message']
             response.raise_for_status()
 
