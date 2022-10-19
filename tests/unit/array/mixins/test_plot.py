@@ -58,7 +58,7 @@ def test_sprite_fail_tensor_success_uri(
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
     if da_cls == DocumentArrayAnnlite:
-        da.close()
+        da._annlite.close()
 
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])

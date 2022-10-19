@@ -32,7 +32,7 @@ def test_empty_non_zero(da_cls, config, start_storage):
 
     assert len(da) == 0
     if da_cls == DocumentArrayAnnlite:
-        da.close()
+        da._annlite.close()
 
     # Assert .empty provides a da of the correct length
     if config:

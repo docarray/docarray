@@ -51,7 +51,7 @@ def test_document_save_load(
             [d.embedding for d in da],
             [d.content for d in da],
         ]
-        da.close()
+        da._annlite.close()
 
     da_r = type(da).load(
         tmp_file, file_format=method, encoding=encoding, config=config()
@@ -216,11 +216,11 @@ def test_from_to_bytes(da_cls, config, start_storage):
     # simple
     if da_cls == DocumentArrayAnnlite:
         b = da_cls.empty(2, config=config)
-        b.close()
+        b._annlite.close()
 
         d = da_cls.from_bytes(b.to_bytes(), config=config)
         assert len(d) == 2
-        d.close()
+        d._annlite.close()
     else:
         assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 
@@ -230,7 +230,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
     if da_cls == DocumentArrayAnnlite:
-        da.close()
+        da._annlite.close()
     da2 = da_cls.load_binary(bytes(da))
     assert da2.tensors == [[1, 2], [2, 1]]
     import numpy as np
