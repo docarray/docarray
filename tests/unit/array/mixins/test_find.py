@@ -632,6 +632,63 @@ def test_redis_category_filter(filter, checker, columns, start_storage):
     assert all([checker(r) for r in results])
 
 
+from math import radians, cos, sin, asin, sqrt
+
+
+def haversine(lon1, lat1, lon2, lat2):
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+    """
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+    c = 2 * asin(sqrt(a))
+    r = 6371  # average radius of earth, unit km
+    return c * r  # unit km
+
+
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            '@location:[-98.71 38.71 200 km] ',
+            lambda r: haversine(
+                -98.71,
+                38.71,
+                float(r.tags['location'].split(',')[0]),
+                float(r.tags['location'].split(',')[1]),
+            )
+            < 200,
+        ),
+    ],
+)
+def test_redis_geo_filter(filter, checker, start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='redis',
+        config={
+            'n_dim': n_dim,
+            'columns': {'location': 'geo'},
+        },
+    )
+
+    da.extend(
+        [
+            Document(
+                embedding=np.random.rand(n_dim),
+                tags={'location': f"{-98.17+i},{38.71+i}"},
+            )
+            for i in range(10)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+    assert all([checker(r) for r in results])
+
+
 @pytest.mark.parametrize('storage', ['memory'])
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_unsupported_pre_filtering(storage, start_storage, columns):
