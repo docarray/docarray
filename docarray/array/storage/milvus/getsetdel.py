@@ -55,6 +55,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             **kwargs,
         )
         self._collection.release()
+        if not res:
+            raise KeyError(f'No documents found for ids {ids}')
         docs = self._docs_from_query_response(res)
         # sort output docs according to input id sorting
         ids_list = list(ids)
