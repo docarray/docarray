@@ -81,6 +81,7 @@ class BackendMixin(BaseBackendMixin):
             config.collection_name = self._tmp_collection_name()
 
         self._n_dim = config.n_dim
+        self._distance = config.distance
         self._serialize_config = config.serialize_config
 
         self._client = QdrantClient(host=config.host, port=config.port)
@@ -132,17 +133,17 @@ class BackendMixin(BaseBackendMixin):
                 m=self._config.m,
             )
             self.client.http.collections_api.create_collection(
-                self.collection_name,
-                CreateCollection(
-                    vector_size=self.n_dim,
-                    distance=self.distance,
+                collection_name=self.collection_name,
+                create_collection=CreateCollection(
+                    vector_size=self._n_dim,
+                    distance=DISTANCES[self._distance],
                     hnsw_config=hnsw_config,
                 ),
             )
 
     def _collection_exists(self, collection_name):
-        resp = self.client.http.collections_api.get_collections()
-        collections = [collection.name for collection in resp.result.collections]
+        resp = self.client.get_collections()
+        collections = [collection.name for collection in resp.collections]
         return collection_name in collections
 
     @staticmethod
@@ -168,15 +169,20 @@ class BackendMixin(BaseBackendMixin):
     def _get_offset2ids_meta(self) -> List[str]:
         if not self._collection_exists(self.collection_name_meta):
             return []
-        return self.client.http.points_api.get_point(
-            self.collection_name_meta, id=1
-        ).result.payload['offset2id']
+        results = self.client.retrieve(
+            collection_name=self.collection_name_meta, ids=[1]
+        )
+        if len(results) == 0:
+            return []
+        else:
+            return results[0].payload.get('offset2id', [])
 
     def _update_offset2ids_meta(self):
         if not self._collection_exists(self.collection_name_meta):
-            self.client.http.collections_api.create_collection(
+            self.client.recreate_collection(
                 self.collection_name_meta,
-                CreateCollection(vector_size=1, distance=Distance.COSINE),
+                vector_size=1,
+                distance=Distance.COSINE,
             )
 
         self.client.http.points_api.upsert_points(
