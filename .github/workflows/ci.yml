@@ -25,7 +25,7 @@ jobs:
               repo: context.repo.repo,
               comment_id: ${{ steps.fc.outputs.comment-id }},
             })
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
         with:
           fetch-depth: 0
       - run: 'echo "module.exports = {extends: [''@commitlint/config-conventional'']}" > commitlint.config.js'
@@ -51,7 +51,7 @@ jobs:
   lint-flake-8:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
@@ -67,7 +67,7 @@ jobs:
   check-black:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
         with:
           fetch-depth: 0
       - name: Set up Python 3.7
@@ -84,7 +84,7 @@ jobs:
   import-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [commit-lint, lint-flake-8, check-black, import-test]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - id: set-matrix
         run: |
           sudo apt-get install jq
@@ -121,7 +121,7 @@ jobs:
         python-version: [3.7]
         test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
