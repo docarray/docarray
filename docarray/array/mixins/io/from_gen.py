@@ -20,8 +20,8 @@ if TYPE_CHECKING:
 class FromGeneratorMixin:
     """Provide helper functions filling a :class:`DocumentArray`-like object with a generator."""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.from_csv = self.__from_csv
 
     @classmethod
