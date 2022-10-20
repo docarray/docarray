@@ -134,16 +134,15 @@ class FromGeneratorMixin:
         """
         return cls._from_generator('from_csv', *args, **kwargs)
 
-    def from_csv_called_from_instance(cls: Type['T'], *args, **kwargs) -> 'T':
+    def from_csv_called_from_instance(cls: Type['T'], *args, **kwargs) -> None:
         """
         # noqa: DAR101
         # noqa: DAR102
         # noqa: DAR201
         """
-        warnings.warn(
-            'Calling from_csv() from a DocumentArray instance does not change the instance in-place. Instead of calling from_csv() from a DocumentArray instance, you should probably use `DocumentArray.from_csv(...)`.'
+        raise Exception(
+            'Do not call the classmethod from_csv() from a DocumentArray instance. Instead call it from the class itself: `DocumentArray.from_csv(...)`'
         )
-        return cls._from_generator('from_csv', *args, **kwargs)
 
     @classmethod
     @overload

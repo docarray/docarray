@@ -61,20 +61,11 @@ def test_input_csv_from_class():
     assert isinstance(da, DocumentArray)
 
 
-def test_input_csv_from_instance_with_warning():
+def test_input_csv_from_instance_with_exception():
     da = DocumentArray()
-    with pytest.warns(UserWarning, match='DocumentArray.from_csv(...)'):
+    with pytest.raises(Exception, match='DocumentArray.from_csv(...)'):
         with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
             da.from_csv(fp)
-
-
-def test_input_csv_from_class_without_warning():
-    with warnings.catch_warnings():
-        warnings.simplefilter(
-            'error'
-        )  # converts all warnings to errors to ensure that no warnings are emitted
-        with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
-            da = DocumentArray.from_csv(fp)
 
 
 def test_input_csv_from_lines():
