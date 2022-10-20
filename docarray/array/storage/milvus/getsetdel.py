@@ -48,6 +48,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         collection.insert([offsets, ids, dummy_vectors])
 
     def _get_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
+        if not ids:
+            return DocumentArray()
         kwargs = self._update_consistency_level(**kwargs)
         with self.loaded_collection():
             res = self._collection.query(
