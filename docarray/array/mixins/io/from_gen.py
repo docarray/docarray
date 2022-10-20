@@ -22,7 +22,7 @@ class FromGeneratorMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.from_csv = self.__from_csv
+        self.from_csv = self.from_csv_called_from_instance
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -134,7 +134,7 @@ class FromGeneratorMixin:
         """
         return cls._from_generator('from_csv', *args, **kwargs)
 
-    def __from_csv(cls: Type['T'], *args, **kwargs) -> 'T':
+    def from_csv_called_from_instance(cls: Type['T'], *args, **kwargs) -> 'T':
         """
         # noqa: DAR101
         # noqa: DAR102
