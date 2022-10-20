@@ -140,8 +140,8 @@ class FromGeneratorMixin:
         # noqa: DAR102
         # noqa: DAR201
         """
-        raise Exception(
-            'Do not call the classmethod from_csv() from a DocumentArray instance. Instead call it from the class itself: `DocumentArray.from_csv(...)`'
+        raise AttributeError(
+            'from_csv() can\'t be called from a DocumentArray instance directly but rather from the DocumentArray class.'
         )
 
     @classmethod

@@ -63,7 +63,9 @@ def test_input_csv_from_class():
 
 def test_input_csv_from_instance_with_exception():
     da = DocumentArray()
-    with pytest.raises(Exception, match='DocumentArray.from_csv(...)'):
+    with pytest.raises(
+        AttributeError, match='called from a DocumentArray instance directly'
+    ):
         with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
             da.from_csv(fp)
 
