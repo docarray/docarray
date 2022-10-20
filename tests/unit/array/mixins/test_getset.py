@@ -14,6 +14,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 from tests import random_docs
 
 rand_array = np.random.random([10, 3])
@@ -44,6 +45,7 @@ def nested_docs():
         ('qdrant', {'n_dim': 3}),
         ('elasticsearch', {'n_dim': 3}),
         ('redis', {'n_dim': 3}),
+        ('milvus', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize(
@@ -70,6 +72,7 @@ def test_set_embeddings_multi_kind(array, storage, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_da_get_embeddings(docs, config, da_cls, start_storage):
@@ -92,6 +95,7 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_embeddings_setter_da(docs, config, da_cls, start_storage):
@@ -123,6 +127,7 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
@@ -147,6 +152,7 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_tensors_getter_da(docs, config, da_cls, start_storage):
@@ -174,6 +180,7 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_texts_getter_da(docs, config, da_cls, start_storage):
@@ -210,6 +217,7 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_storage):
@@ -248,6 +256,7 @@ def test_setter_by_sequences_in_selected_docs_da(docs, config, da_cls, start_sto
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_texts_wrong_len(docs, config, da_cls, start_storage):
@@ -272,6 +281,7 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_tensors_wrong_len(docs, config, da_cls, start_storage):
@@ -296,6 +306,7 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_blobs_getter_setter(docs, da_cls, config, start_storage):
@@ -329,6 +340,7 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
@@ -353,6 +365,7 @@ def test_ellipsis_getter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
@@ -374,6 +387,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
         (DocumentArrayElastic, ElasticConfig(n_dim=6)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):
@@ -426,6 +440,7 @@ def embeddings_eq(emb1, emb2):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_getset_subindex(storage, config):
@@ -509,6 +524,7 @@ def test_getset_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_init_subindex(storage, config):
@@ -549,6 +565,7 @@ def test_init_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_set_on_subindex(storage, config):
