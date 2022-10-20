@@ -678,12 +678,12 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
 @pytest.mark.parametrize(
     'storage,config',
     [
-        # ('sqlite', None),
-        # ('weaviate', WeaviateConfig(n_dim=123)),
+        ('sqlite', None),
+        ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
-        # ('qdrant', QdrantConfig(n_dim=123)),
-        # ('elasticsearch', ElasticConfig(n_dim=123)),
-        # ('redis', RedisConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123)),
+        ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123)),
     ],
 )
 def test_offset2ids_persistence(storage, config):

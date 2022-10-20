@@ -45,10 +45,9 @@ def test_document_save_load(
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs, config=config())
 
-    da.insert(2, Document(id='new'))
-    da.save(tmp_file, file_format=method, encoding=encoding)
-
     with da:
+        da.insert(2, Document(id='new'))
+        da.save(tmp_file, file_format=method, encoding=encoding)
         da_info = {
             'id': [d.id for d in da],
             'embedding': [d.embedding for d in da],
@@ -211,12 +210,11 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 def test_from_to_bytes(da_cls, config, start_storage):
     # simple
     if da_cls == DocumentArrayAnnlite:
-        b = da_cls.empty(2, config=config)
-        b._annlite.close()
+        with da_cls.empty(2, config=config) as da:
+            da_bytes = da.to_bytes()
 
-        d = da_cls.from_bytes(b.to_bytes(), config=config)
-        assert len(d) == 2
-        d._annlite.close()
+        with da_cls.from_bytes(da_bytes, config=config) as db:
+            assert len(db) == 2
     else:
         assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 
