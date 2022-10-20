@@ -133,3 +133,7 @@ class BackendMixin(BaseBackendMixin):
 
     def __len__(self):
         return self._annlite.index_size
+
+    def __exit__(self, *args, **kwargs):
+        super().__exit__(*args, **kwargs)
+        self._annlite.close()

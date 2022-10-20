@@ -96,3 +96,16 @@ class BaseBackendMixin(ABC):
             )
             columns = {col_desc[0]: col_desc[1] for col_desc in columns}
         return columns
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        """
+        Ensures that we sync the data to the storage backend when exiting the context manager
+        """
+        self.sync()
+
+    def sync(self):
+        if hasattr(self, '_offset2ids'):
+            self._save_offset2ids()

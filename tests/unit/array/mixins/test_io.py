@@ -13,7 +13,8 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
-from docarray.array.redis import DocumentArrayRedis, RedisConfig
+
+# from docarray.array.redis import DocumentArrayRedis, RedisConfig
 from docarray.helper import random_identity
 from tests import random_docs
 
@@ -35,7 +36,7 @@ def docs():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
-        (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
+        # (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
     ],
 )
 def test_document_save_load(
