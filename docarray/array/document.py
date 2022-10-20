@@ -139,6 +139,15 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         """Create a Redis-powered DocumentArray object."""
         ...
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args, **kwargs):
+        """
+        Ensures that we sync the data to the storage backend when exiting the context manager
+        """
+        self.sync()
+
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
             if storage == 'memory':
