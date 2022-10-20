@@ -39,10 +39,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         # delete old entries
         self._clear_offset2ids_milvus()
         # insert current entries
-        collection = self._offset2id_collection
         ids = self._offset2ids.ids
+        if not ids:
+            return
         offsets = [str(i) for i in range(len(ids))]
         dummy_vectors = [np.zeros(1) for _ in range(len(ids))]
+        collection = self._offset2id_collection
         collection.insert([offsets, ids, dummy_vectors])
 
     def _get_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
