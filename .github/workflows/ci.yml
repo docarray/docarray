@@ -106,7 +106,8 @@ jobs:
       - id: set-matrix
         run: |
           sudo apt-get install jq
-          echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
+          export value=$(bash scripts/get-all-test-paths.sh)
+          echo "matrix=$value" >> $GITHUB_OUTPUT
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
@@ -143,7 +144,7 @@ jobs:
         run: |
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
-          echo "::set-output name=codecov_flag::docarray"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
