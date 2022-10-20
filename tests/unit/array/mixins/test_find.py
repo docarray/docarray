@@ -32,6 +32,7 @@ def test_customize_metric_fn():
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
         ('redis', {'n_dim': 32}),
+        ('milvus', {'n_dim': 32}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 5, 10])
@@ -274,6 +275,16 @@ numeric_operators_redis = {
 }
 
 
+numeric_operators_milvus = {
+    '>=': operator.ge,
+    '>': operator.gt,
+    '<=': operator.le,
+    '<': operator.lt,
+    '==': operator.eq,
+    '!=': operator.ne,
+}
+
+
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
@@ -390,6 +401,15 @@ numeric_operators_redis = {
                 numeric_operators_redis,
                 'ne',
             ),
+        ],
+        *[
+            (
+                'milvus',
+                lambda operator, threshold: f'price {operator} {threshold}',
+                numeric_operators_milvus,
+                operator,
+            )
+            for operator in numeric_operators_milvus.keys()
         ],
     ],
 )
@@ -517,6 +537,15 @@ def test_search_pre_filtering(
                 numeric_operators_redis,
                 'ne',
             ),
+        ],
+        *[
+            (
+                'milvus',
+                lambda operator, threshold: f'price {operator} {threshold}',
+                numeric_operators_milvus,
+                operator,
+            )
+            for operator in numeric_operators_milvus.keys()
         ],
     ],
 )
@@ -682,6 +711,7 @@ def test_elastic_id_filter(storage, config, limit):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_find_subindex(storage, config):
@@ -737,6 +767,7 @@ def test_find_subindex(storage, config):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_find_subindex_multimodal(storage, config):
