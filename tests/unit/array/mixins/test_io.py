@@ -14,7 +14,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 
-# from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.redis import DocumentArrayRedis, RedisConfig
 from docarray.helper import random_identity
 from tests import random_docs
 
@@ -36,7 +36,7 @@ def docs():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
-        # (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
+        (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
     ],
 )
 def test_document_save_load(
@@ -44,34 +44,29 @@ def test_document_save_load(
 ):
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs, config=config())
+
     da.insert(2, Document(id='new'))
     da.save(tmp_file, file_format=method, encoding=encoding)
-    if da_cls == DocumentArrayAnnlite:
-        da_info = [
-            [d.id for d in da],
-            [d.embedding for d in da],
-            [d.content for d in da],
-        ]
-        da._annlite.close()
+
+    with da:
+        da_info = {
+            'id': [d.id for d in da],
+            'embedding': [d.embedding for d in da],
+            'content': [d.content for d in da],
+        }
 
     da_r = type(da).load(
         tmp_file, file_format=method, encoding=encoding, config=config()
     )
 
     assert type(da) is type(da_r)
-    assert len(da) == len(da_r)
+    assert len(da) == len(da_info['id'])
     assert da_r[2].id == 'new'
 
-    if da_cls == DocumentArrayAnnlite:
-        for idx, d_r in enumerate(da_r):
-            assert da_info[0][idx] == d_r.id
-            np.testing.assert_equal(da_info[1][idx], d_r.embedding)
-            assert da_info[2][idx] == d_r.content
-    else:
-        for d, d_r in zip(da, da_r):
-            assert d.id == d_r.id
-            np.testing.assert_equal(d.embedding, d_r.embedding)
-            assert d.content == d_r.content
+    for idx, d_r in enumerate(da_r):
+        assert da_info['id'][idx] == d_r.id
+        np.testing.assert_equal(da_info['embedding'][idx], d_r.embedding)
+        assert da_info['content'][idx] == d_r.content
 
 
 @pytest.mark.parametrize('flatten_tags', [True, False])
