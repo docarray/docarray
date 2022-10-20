@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/sqlite/seqlike.html" />
 
-    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>docarray.array.storage.sqlite.seqlike - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>docarray.array.storage.sqlite.seqlike - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -392,16 +392,6 @@
         <span class="k">if</span> <span class="n">commit</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_persist</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span>
-                <span class="s1">&#39;DELETE FROM metadata WHERE table_name=? AND container_type=?&#39;</span><span class="p">,</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">),</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;DROP TABLE IF EXISTS </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_commit</span><span class="p">()</span>
-
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;Document&#39;</span><span class="p">]):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sql</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT 1 FROM </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_table_name</span><span class="si">}</span><span class="s1"> WHERE doc_id=?&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">item</span><span class="p">,))</span>
@@ -444,7 +434,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

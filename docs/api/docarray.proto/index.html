@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.proto/" />
   
-<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.0 Documentation" />
   
-<meta property="og:description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module., Module contents., docarray.proto.pb package- Submodules- docarray.proto.pb.docarray_pb2 module., Module contents., docarray.proto.pb2 package- Submodules- docarray.proto.pb2.docarray_pb2 module., Module content..." />
+<meta property="og:description" content="Subpackages: docarray.proto.io package- Submodules- docarray.proto.io.ndarray module- read_ndarray(), flush_ndarray().., Module contents- parse_proto(), flush_proto().., docarray.proto.pb package- Submodules- docarray.proto.pb.docarray_pb2 module., Module contents., docarray.proto.pb2 package- Su..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.proto.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>docarray.proto package - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>docarray.proto package - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -382,10 +382,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.proto.io/">docarray.proto.io package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io.ndarray/">docarray.proto.io.ndarray module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.proto.io.ndarray/#docarray.proto.io.ndarray.read_ndarray"><code class="docutils literal notranslate"><span class="pre">read_ndarray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.proto.io.ndarray/#docarray.proto.io.ndarray.flush_ndarray"><code class="docutils literal notranslate"><span class="pre">flush_ndarray()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.proto.io/#module-docarray.proto.io">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io/#docarray.proto.io.parse_proto"><code class="docutils literal notranslate"><span class="pre">parse_proto()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.proto.io/#docarray.proto.io.flush_proto"><code class="docutils literal notranslate"><span class="pre">flush_proto()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../docarray.proto.pb/">docarray.proto.pb package</a><ul>
@@ -433,7 +441,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

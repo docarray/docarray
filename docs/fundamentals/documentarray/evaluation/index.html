@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/documentarray/evaluation/" />
   
-<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.0 Documentation" />
   
-<meta property="og:description" content="After you get.matches from the last chapter, you can easily evaluate matches against the groundtruth via evaluate(). The results are stored in.evaluations field of each Document. DocArray provides some common metrics used in the information retrieval community that allows one to evaluate the near..." />
+<meta property="og:description" content="After you get.matches, you can evaluate matches against the groundtruth via evaluate(). Alternatively, you can add labels to your documents to evaluate them. In this case, a match is considered as relevant to its root document, if it has the same label. The results are stored in.evaluations field..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Dataclass" href="../../dataclass/" /><link rel="prev" title="Search over Nested Structure" href="../subindex/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/documentarray/evaluation.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>Evaluate Matches - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Evaluate Matches - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -376,8 +376,21 @@
                 <article role="main">
                     <section id="evaluate-matches">
 <h1>Evaluate Matches<a class="headerlink" href="#evaluate-matches" title="Permalink to this heading">#</a></h1>
-<p>After you get <code class="docutils literal notranslate"><span class="pre">.matches</span></code> from the last chapter, you can easily evaluate matches against the groundtruth via <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_predict</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;...&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<p>After you get <code class="docutils literal notranslate"><span class="pre">.matches</span></code>, you can evaluate matches against the groundtruth via <a class="reference internal" href="../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da_predict</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da_groundtruth</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;...&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, you can add labels to your documents to evaluate them.
+In this case, a match is considered as relevant to its root document, if it has the same label.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">example_da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)})</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="n">example_da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="n">example_da</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">example_da</span><span class="p">)</span>
+
+<span class="n">example_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The results are stored in <code class="docutils literal notranslate"><span class="pre">.evaluations</span></code> field of each Document.</p>
@@ -390,35 +403,40 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">r_precision</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.r_precision" title="docarray.math.evaluation.r_precision"><code class="xref py py-meth docutils literal notranslate"><span class="pre">r_precision()</span></code></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">average_precision</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.average_precision" title="docarray.math.evaluation.average_precision"><code class="xref py py-meth docutils literal notranslate"><span class="pre">average_precision()</span></code></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reciprocal_rank</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.reciprocal_rank" title="docarray.math.evaluation.reciprocal_rank"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reciprocal_rank()</span></code></a></p></td>
 <td><p>None</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">precision_at_k</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.precision_at_k" title="docarray.math.evaluation.precision_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">precision_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hit_at_k</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.hit_at_k" title="docarray.math.evaluation.hit_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hit_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">recall_at_k</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.recall_at_k" title="docarray.math.evaluation.recall_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">recall_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">max_rel</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f1_score_at_k</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.f1_score_at_k" title="docarray.math.evaluation.f1_score_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">f1_score_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">max_rel</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dcg_at_k</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.dcg_at_k" title="docarray.math.evaluation.dcg_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dcg_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">method</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../../../api/docarray.math.evaluation/#docarray.math.evaluation.ndcg_at_k" title="docarray.math.evaluation.ndcg_at_k"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ndcg_at_k()</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">method</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>This metric scores might change if the <code class="docutils literal notranslate"><span class="pre">limit</span></code> attribute of the match function is set differently.</p>
+<p><strong>Note:</strong> Not all of these metrics can be applied to a Top-K result, i.e., <code class="docutils literal notranslate"><span class="pre">ndcg_at_k</span></code> and <code class="docutils literal notranslate"><span class="pre">r_precision</span></code> are calculated correctly only if the limit is set equal or higher than the number of documents in the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> provided to the match function.</p>
 </div>
 <p>For example, let’s create a DocumentArray with random embeddings and matching it to itself:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -475,11 +493,11 @@
   scores      (&#39;defaultdict&#39;,)          190              False            
 </pre></div>
 </div>
-<p>Now <code class="docutils literal notranslate"><span class="pre">da2</span></code> is our prediction, and <code class="docutils literal notranslate"><span class="pre">da</span></code> is our groundtruth. If we evaluate the average Precision&#64;10, we should get something close to 0.5 (we have 10 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 10/20 real matches):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<p>Now <code class="docutils literal notranslate"><span class="pre">da2</span></code> is our prediction, and <code class="docutils literal notranslate"><span class="pre">da</span></code> is our groundtruth. If we evaluate the average Precision&#64;10, we should get something close to 0.47 (we have 9 real matches, we mixed in 10 fake matches and shuffle it, so top-10 would have approximate 9/19 real matches):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.48
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.48}
 </pre></div>
 </div>
 <p>Note that this value is an average number over all Documents of <code class="docutils literal notranslate"><span class="pre">da2</span></code>. If you want to look at the individual evaluation, you can check <code class="xref py py-attr docutils literal notranslate"><span class="pre">evaluations</span></code> attribute, e.g.</p>
@@ -487,18 +505,26 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.4
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>0.5
+0.4
+0.3
+0.6
+0.5
+0.3
 0.4
 0.6
-0.6
-0.2
-0.4
-0.8
-0.8
-0.2
-0.4
+0.5
+0.7
 </pre></div>
 </div>
+<p>If you want to evaluate your data with multiple metric functions, you can pass a list of metrics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">=</span><span class="n">da</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;precision_at_k&#39;</span><span class="p">,</span> <span class="s1">&#39;reciprocal_rank&#39;</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;precision_at_k&#39;: 0.48, &#39;reciprocal_rank&#39;: 0.6333333333333333}
+</pre></div>
+</div>
+<p>In this case, the keyword attribute <code class="docutils literal notranslate"><span class="pre">k</span></code> is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.</p>
 <section id="document-identifier">
 <h2>Document identifier<a class="headerlink" href="#document-identifier" title="Permalink to this heading">#</a></h2>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">.evaluate()</span></code> works only when two DocumentArray have the same length and their nested structure are same. It makes no sense to evaluate on two completely irrelevant DocumentArrays.</p>
@@ -517,7 +543,7 @@
 </pre></div>
 </div>
 <p>Now when you do evaluate, you will receive an error:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">&#39;average_precision&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">ground_truth</span><span class="o">=</span><span class="n">g_da</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ValueError: Document &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc84b26fab11ecbc181e008a366d49&gt; from the left-hand side and &lt;Document (&#39;id&#39;, &#39;matches&#39;) at 42dc98086fab11ecbc181e008a366d49&gt; from the right-hand are not hashed to the same value. This means your left and right DocumentArray may not be aligned; or it means your `hash_fn` is badly designed.
@@ -525,10 +551,10 @@
 </div>
 <p>This basically saying that based on <code class="docutils literal notranslate"><span class="pre">.id</span></code> (default identifier), the given two DocumentArrays are so different that they can’t be evaluated. It is a valid point because our two DocumentArrays have completely random <code class="docutils literal notranslate"><span class="pre">.id</span></code>.</p>
 <p>If we override the hash function as following the evaluation can be conducted:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">g_da</span><span class="p">,</span> <span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">hash_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">p_da</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="s1">&#39;average_precision&#39;</span><span class="p">,</span> <span class="n">ground_truth</span><span class="o">=</span><span class="n">g_da</span><span class="p">,</span> <span class="n">hash_fn</span><span class="o">=</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>1.0
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;average_precision&#39;: 1.0}
 </pre></div>
 </div>
 <p>It is correct as we define the evaluation as checking if the first two characters in <code class="docutils literal notranslate"><span class="pre">.text</span></code> are the same.</p>
@@ -570,7 +596,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

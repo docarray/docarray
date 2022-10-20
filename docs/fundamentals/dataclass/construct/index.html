@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/fundamentals/dataclass/construct/" />
   
-<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.0 Documentation" />
   
 <meta property="og:description" content="Just like the Python dataclasses module, DocArray provides a decorator dataclass() and a set of type annotations in docarray.typing such as Image, Text, Audio, that allow you to construct multimodal Document in the following way: Each field is a modality. The above example contains two modalities..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Access Modality" href="../access/" /><link rel="prev" title="Dataclass" href="../" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/dataclass/construct.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>Construct - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Construct - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -684,27 +684,31 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.text</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='text'</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Audio</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">URI</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p></td>
+<td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.uri</span></code> by the given value</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Audio</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the audio and sets <code class="docutils literal notranslate"><span class="pre">.modality='audio'</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JSON</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">JSON</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Dict</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by the given value and sets <code class="docutils literal notranslate"><span class="pre">.modality='json'</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Video</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Video</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by reading the video and sets <code class="docutils literal notranslate"><span class="pre">.modality='video'</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Mesh</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Mesh</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.tensor</span></code> by sub-sampling the mesh as point-cloud and sets <code class="docutils literal notranslate"><span class="pre">.modality='mesh'</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Blob</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Blob</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">bytes</span></code></p></td>
 <td><p>Creates a sub-Document, fills in <code class="docutils literal notranslate"><span class="pre">doc.blob</span></code> by the given value or reading from the path</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Tabular</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Tabular</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">str</span></code> (file name)</p></td>
 <td><p>Reads a CSV file, creates a sub-Document for each line and fills in <code class="docutils literal notranslate"><span class="pre">doc.tags</span></code> by considering the first row as the column names and mapping the following lines into the corresponding values.</p></td>
 </tr>
@@ -925,7 +929,7 @@ Nested structure (chunks)<div class="sd-summary-down docutils">
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

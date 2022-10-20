@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/elasticsearch/" />
   
-<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.0 Documentation" />
   
 <meta property="og:description" content="One can use Elasticsearch as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Elastic service: To use Elasticsearch as the storage backend, it is required to have the Elasticsearch service started..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -38,10 +38,10 @@
     <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Weaviate" href="../weaviate/" /><link rel="prev" title="Qdrant" href="../qdrant/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/elasticsearch.html" />
 
-    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>Elasticsearch - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Elasticsearch - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -444,7 +444,8 @@ docker-compose up
     <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;index_name&#39;</span><span class="p">:</span> <span class="s1">&#39;old_stuff&#39;</span><span class="p">,</span> <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">128</span><span class="p">},</span>
 <span class="p">)</span>
 
-<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span>
 
 <span class="n">da2</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span>
@@ -645,13 +646,14 @@ for those that have <code class="docutils literal notranslate"><span class="pre"
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
 
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;index_text&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Person eating&#39;</span><span class="p">),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Person eating pizza&#39;</span><span class="p">),</span>
-        <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Pizza restaurant&#39;</span><span class="p">),</span>
-    <span class="p">]</span>
-<span class="p">)</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Person eating&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Person eating pizza&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Pizza restaurant&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
 <span class="n">pizza_docs</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;pizza&#39;</span><span class="p">)</span>
 <span class="n">pizza_docs</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">]</span>
@@ -673,28 +675,29 @@ retrieving items based on a text search in an specific tag.</p>
 <span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
     <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;elasticsearch&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span> <span class="s1">&#39;tag_indices&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;food_type&#39;</span><span class="p">,</span> <span class="s1">&#39;price&#39;</span><span class="p">]}</span>
 <span class="p">)</span>
-<span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="n">Document</span><span class="p">(</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Italian and Spanish food&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;cheap but not that cheap&#39;</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">),</span>
-        <span class="n">Document</span><span class="p">(</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;French and Italian food&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;on the expensive side&#39;</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">),</span>
-        <span class="n">Document</span><span class="p">(</span>
-            <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;chinese noddles&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;quite cheap for what you get!&#39;</span><span class="p">,</span>
-            <span class="p">},</span>
-        <span class="p">),</span>
-    <span class="p">]</span>
-<span class="p">)</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;Italian and Spanish food&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;cheap but not that cheap&#39;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;French and Italian food&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;on the expensive side&#39;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span>
+                    <span class="s1">&#39;food_type&#39;</span><span class="p">:</span> <span class="s1">&#39;chinese noddles&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;quite cheap for what you get!&#39;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
 <span class="n">results_cheap</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;cheap&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;price&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;searching &quot;cheap&quot; in &lt;price&gt;:</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">results_cheap</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">])</span>
@@ -821,7 +824,7 @@ for search. If you want to use a specific tags field, make sure to specify it wi
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

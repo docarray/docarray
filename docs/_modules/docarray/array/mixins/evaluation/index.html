@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../../genindex/" /><link rel="search" title="Search" href="../../../../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/evaluation.html" />
 
-    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>docarray.array.mixins.evaluation - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>docarray.array.mixins.evaluation - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -343,9 +343,12 @@
                 <article role="main">
                     <h1>Source code for docarray.array.mixins.evaluation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">from</span> <span class="nn">docarray.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 
@@ -353,51 +356,152 @@
     <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 
+<span class="k">def</span> <span class="nf">_evaluate_deprecation</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raises a deprecation warning if the user executes the evaluate function with</span>
+<span class="sd">    the old interface and adjust the input to fit the new interface.&quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Callable</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ground_truth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;The `other` attribute in `evaluate()` is transfered from a &#39;</span>
+                    <span class="s1">&#39;positional attribute into the keyword attribute `ground_truth`.&#39;</span>
+                    <span class="s1">&#39;Using it as a positional attribute is deprecated and will be removed &#39;</span>
+                    <span class="s1">&#39;soon.&#39;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">old_key</span><span class="p">,</span> <span class="n">new_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;other&#39;</span><span class="p">,</span> <span class="s1">&#39;metric&#39;</span><span class="p">,</span> <span class="s1">&#39;metric_name&#39;</span><span class="p">],</span>
+            <span class="p">[</span><span class="s1">&#39;ground_truth&#39;</span><span class="p">,</span> <span class="s1">&#39;metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;metric_names&#39;</span><span class="p">],</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">old_key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">old_key</span><span class="p">]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;`</span><span class="si">{</span><span class="n">old_key</span><span class="si">}</span><span class="s1">` is renamed to `</span><span class="si">{</span><span class="n">new_key</span><span class="si">}</span><span class="s1">` in `evaluate()`, the &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;usage of `</span><span class="si">{</span><span class="n">old_key</span><span class="si">}</span><span class="s1">` is deprecated and will be removed soon.&#39;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="c1"># transfer metrics and metric_names into lists</span>
+        <span class="n">list_warning_msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;The attribute `</span><span class="si">%s</span><span class="s1">` now accepts a list instead of a &#39;</span>
+            <span class="s1">&#39;single element. Passing a single element is deprecated and will soon not &#39;</span>
+            <span class="s1">&#39;be supported anymore.&#39;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">list_warning_msg</span> <span class="o">%</span> <span class="s1">&#39;metrics&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;metrics&#39;</span><span class="p">,</span> <span class="s1">&#39;metric_names&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">list_warning_msg</span> <span class="o">%</span> <span class="n">key</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">func</span>
+
+
 <div class="viewcode-block" id="EvaluationMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin">[docs]</a><span class="k">class</span> <span class="nc">EvaluationMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;A mixin that provides ranking evaluation functionality to DocumentArrayLike objects&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="EvaluationMixin.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
+<div class="viewcode-block" id="EvaluationMixin.evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.evaluate">[docs]</a>    <span class="nd">@_evaluate_deprecation</span>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span>
-        <span class="n">metric</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">hash_fn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metric_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metric_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">label_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Compute ranking evaluation metrics for a given `DocumentArray` when compared with a groundtruth.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute ranking evaluation metrics for a given `DocumentArray` when compared</span>
+<span class="sd">        with a groundtruth.</span>
 
-<span class="sd">        This implementation expects to provide a `groundtruth` DocumentArray that is structurally identical to `self`. It is based</span>
-<span class="sd">        on comparing the `matches` of `documents` inside the `DocumentArray.</span>
+<span class="sd">        If one provides a `ground_truth` DocumentArray that is structurally identical</span>
+<span class="sd">        to `self`, this function compares the `matches` of `documents` inside the</span>
+<span class="sd">        `DocumentArray` to this `ground_truth`.</span>
+<span class="sd">        Alternatively, one can directly annotate the documents by adding labels in the</span>
+<span class="sd">        form of tags with the key specified in the `label_tag` attribute.</span>
+<span class="sd">        Those tags need to be added to `self` as well as to the documents in the</span>
+<span class="sd">        matches properties.</span>
 
-<span class="sd">        This method will fill the `evaluations` field of Documents inside this `DocumentArray` and will return the average of the computations</span>
+<span class="sd">        This method will fill the `evaluations` field of Documents inside this</span>
+<span class="sd">        `DocumentArray` and will return the average of the computations</span>
 
-<span class="sd">        :param other: The groundtruth DocumentArray` that the `DocumentArray` compares to.</span>
-<span class="sd">        :param metric: The name of the metric, or multiple metrics to be computed</span>
-<span class="sd">        :param hash_fn: The function used for identifying the uniqueness of Documents. If not given, then ``Document.id`` is used.</span>
-<span class="sd">        :param metric_name: If provided, the results of the metrics computation will be stored in the `evaluations` field of each Document. If not provided, the name will be computed based on the metrics name.</span>
-<span class="sd">        :param strict: If set, then left and right sides are required to be fully aligned: on the length, and on the semantic of length. These are preventing</span>
+<span class="sd">        :param metrics: list of metric names or metric functions to be computed</span>
+<span class="sd">        :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`</span>
+<span class="sd">            compares to.</span>
+<span class="sd">        :param hash_fn: The function used for identifying the uniqueness of Documents.</span>
+<span class="sd">            If not given, then ``Document.id`` is used.</span>
+<span class="sd">        :param metric_names: If provided, the results of the metrics computation will be</span>
+<span class="sd">            stored in the `evaluations` field of each Document with this names. If not</span>
+<span class="sd">            provided, the names will be derived from the metric function names.</span>
+<span class="sd">        :param strict: If set, then left and right sides are required to be fully</span>
+<span class="sd">            aligned: on the length, and on the semantic of length. These are preventing</span>
 <span class="sd">            you to evaluate on irrelevant matches accidentally.</span>
-<span class="sd">        :param kwargs: Additional keyword arguments to be passed to `metric_fn`</span>
-<span class="sd">        :return: The average evaluation computed or a list of them if multiple metrics are required</span>
+<span class="sd">        :param label_tag: Specifies the tag which contains the labels.</span>
+<span class="sd">        :param kwargs: Additional keyword arguments to be passed to the metric</span>
+<span class="sd">            functions.</span>
+<span class="sd">        :return: A dictionary which stores for each metric name the average evaluation</span>
+<span class="sd">            score.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;It is not possible to evaluate an empty DocumentArray&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ground_truth</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ground_truth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
+            <span class="n">ground_truth_type</span> <span class="o">=</span> <span class="s1">&#39;matches&#39;</span>
+        <span class="k">elif</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ground_truth</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;A ground_truth attribute is provided but does not &#39;</span>
+                    <span class="s1">&#39;contain matches. The labels are used instead and &#39;</span>
+                    <span class="s1">&#39;ground_truth is ignored.&#39;</span>
+                <span class="p">)</span>
+            <span class="n">ground_truth</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">ground_truth_type</span> <span class="o">=</span> <span class="s1">&#39;labels&#39;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s1">&#39;Could not find proper ground truth data. Either labels or the &#39;</span>
+                <span class="s1">&#39;ground_truth attribute with matches is required&#39;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_check_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_length</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">hash_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">hash_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span>
 
-        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
-            <span class="n">metric_fn</span> <span class="o">=</span> <span class="n">metric</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="kn">from</span> <span class="nn">docarray.math</span> <span class="kn">import</span> <span class="n">evaluation</span>
+        <span class="n">metric_fns</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">metric</span><span class="p">):</span>
+                <span class="n">metric_fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="kn">from</span> <span class="nn">docarray.math</span> <span class="kn">import</span> <span class="n">evaluation</span>
 
-            <span class="n">metric_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+                <span class="n">metric_fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">evaluation</span><span class="p">,</span> <span class="n">metric</span><span class="p">))</span>
 
-        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span> <span class="ow">or</span> <span class="n">metric_fn</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">metric_names</span><span class="p">:</span>
+            <span class="n">metric_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">metric_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">for</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="n">metric_fns</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">metric_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">metrics</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Could not match metric names to the metrics since the number of &#39;</span>
+                <span class="s1">&#39;metric names does not match the number of metrics&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="n">caller_max_rel</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_rel&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">gd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">gd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">):</span>
             <span class="n">max_rel</span> <span class="o">=</span> <span class="n">caller_max_rel</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">gd</span><span class="o">.</span><span class="n">matches</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">strict</span> <span class="ow">and</span> <span class="n">hash_fn</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">!=</span> <span class="n">hash_fn</span><span class="p">(</span><span class="n">gd</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -412,22 +516,38 @@
                 <span class="p">)</span>
 
             <span class="n">targets</span> <span class="o">=</span> <span class="n">gd</span><span class="o">.</span><span class="n">matches</span><span class="p">[:</span><span class="n">max_rel</span><span class="p">]</span>
-            <span class="n">desired</span> <span class="o">=</span> <span class="p">{</span><span class="n">hash_fn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">}</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">desired</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hash_fn</span><span class="si">!r}</span><span class="s1"> may not be valid, as it maps multiple Documents into the same hash. &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;Evaluation results may be affected&#39;</span>
+
+            <span class="k">if</span> <span class="n">ground_truth_type</span> <span class="o">==</span> <span class="s1">&#39;matches&#39;</span><span class="p">:</span>
+                <span class="n">desired</span> <span class="o">=</span> <span class="p">{</span><span class="n">hash_fn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">}</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">desired</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">hash_fn</span><span class="si">!r}</span><span class="s1"> may not be valid, as it maps multiple Documents into the same hash. &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;Evaluation results may be affected&#39;</span>
+                    <span class="p">)</span>
+                <span class="n">binary_relevance</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="mi">1</span> <span class="k">if</span> <span class="n">hash_fn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="ow">in</span> <span class="n">desired</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">matches</span>
+                <span class="p">]</span>
+            <span class="k">elif</span> <span class="n">ground_truth_type</span> <span class="o">==</span> <span class="s1">&#39;labels&#39;</span><span class="p">:</span>
+                <span class="n">binary_relevance</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="mi">1</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span> <span class="o">==</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">targets</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s1">&#39;Could not identify which kind of ground truth&#39;</span>
+                    <span class="s1">&#39;information is provided to evaluate the matches.&#39;</span>
                 <span class="p">)</span>
-
-            <span class="n">binary_relevance</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">hash_fn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="ow">in</span> <span class="n">desired</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
-
-            <span class="n">r</span> <span class="o">=</span> <span class="n">metric_fn</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">,</span> <span class="n">max_rel</span><span class="o">=</span><span class="n">max_rel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span>
-                <span class="n">value</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">op_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">metric_fn</span><span class="p">),</span> <span class="n">ref_id</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">id</span>
-            <span class="p">)</span>
-            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">results</span><span class="p">))</span></div></div>
+            <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric_fn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">metric_names</span><span class="p">,</span> <span class="n">metric_fns</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;max_rel&#39;</span> <span class="ow">in</span> <span class="n">metric_fn</span><span class="o">.</span><span class="vm">__code__</span><span class="o">.</span><span class="n">co_varnames</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;max_rel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_rel</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">metric_fn</span><span class="p">(</span><span class="n">binary_relevance</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">evaluations</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">op_name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">metric_fn</span><span class="p">),</span> <span class="n">ref_id</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">id</span>
+                <span class="p">)</span>
+                <span class="n">results</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">metric_name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div></div>
 </pre></div>
                 </article>
             </div>
@@ -442,7 +562,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

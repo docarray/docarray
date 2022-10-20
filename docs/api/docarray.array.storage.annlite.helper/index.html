@@ -10,11 +10,11 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.storage.annlite.helper/" />
   
-<meta property="og:site_name" content="DocArray 0.17.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.0 Documentation" />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.17.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.0 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -36,10 +36,10 @@
     <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.storage.annlite.helper.html" />
 
-    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>docarray.array.storage.annlite.helper module - DocArray 0.17.1 documentation</title>
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>docarray.array.storage.annlite.helper module - DocArray 0.18.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
@@ -170,7 +170,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.17.1 documentation</div>
+                <div class="brand">DocArray 0.18.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -188,7 +188,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -361,7 +361,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon no-toc"
+                    <label class="toc-overlay-icon toc-content-icon"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -372,8 +372,146 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="docarray-array-storage-annlite-helper-module">
-<h1>docarray.array.storage.annlite.helper module<a class="headerlink" href="#docarray-array-storage-annlite-helper-module" title="Permalink to this heading">#</a></h1>
+                    <section id="module-docarray.array.storage.annlite.helper">
+<span id="docarray-array-storage-annlite-helper-module"></span><h1>docarray.array.storage.annlite.helper module<a class="headerlink" href="#module-docarray.array.storage.annlite.helper" title="Permalink to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.storage.annlite.helper.</span></span><span class="sig-name descname"><span class="pre">OffsetMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'offset2ids'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.close" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.create_table">
+<span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.create_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.create_table" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.drop">
+<span class="sig-name descname"><span class="pre">drop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.drop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.drop" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.clear" title="Permalink to this definition">#</a></dt>
+<dd><p>Drop the table and create a new one</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.size" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.extend_doc_ids">
+<span class="sig-name descname"><span class="pre">extend_doc_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.extend_doc_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.extend_doc_ids" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.get_id_by_offset">
+<span class="sig-name descname"><span class="pre">get_id_by_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.get_id_by_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_id_by_offset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.get_ids_by_offsets">
+<span class="sig-name descname"><span class="pre">get_ids_by_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.get_ids_by_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_ids_by_offsets" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.get_offsets_by_ids">
+<span class="sig-name descname"><span class="pre">get_offsets_by_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.get_offsets_by_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_offsets_by_ids" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.get_offset_by_id">
+<span class="sig-name descname"><span class="pre">get_offset_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.get_offset_by_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_offset_by_id" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.get_all_ids">
+<span class="sig-name descname"><span class="pre">get_all_ids</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.get_all_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_all_ids" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.del_at_offset">
+<span class="sig-name descname"><span class="pre">del_at_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.del_at_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.del_at_offset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.del_at_offsets">
+<span class="sig-name descname"><span class="pre">del_at_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.del_at_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.del_at_offsets" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.insert_at_offset">
+<span class="sig-name descname"><span class="pre">insert_at_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.insert_at_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.insert_at_offset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.set_at_offset">
+<span class="sig-name descname"><span class="pre">set_at_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.set_at_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.set_at_offset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.shift_offset">
+<span class="sig-name descname"><span class="pre">shift_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'left'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/annlite/helper/#OffsetMapping.shift_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.shift_offset" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.commit" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.drop_table">
+<span class="sig-name descname"><span class="pre">drop_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.drop_table" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.dump" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.execute" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.execute_many">
+<span class="sig-name descname"><span class="pre">execute_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.execute_many" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.load" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.array.storage.annlite.helper.OffsetMapping.schema">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">schema</span></span><a class="headerlink" href="#docarray.array.storage.annlite.helper.OffsetMapping.schema" title="Permalink to this definition">#</a></dt>
+<dd><p>SQL schema for this database</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
                 </article>
@@ -389,7 +527,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Sep 27, 2022</div>
+                            Last updated on Oct 20, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -409,8 +547,53 @@
                 
             </footer>
         </div>
-        <aside class="toc-drawer no-toc">
+        <aside class="toc-drawer">
             
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.array.storage.annlite.helper module</a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping"><code class="docutils literal notranslate"><span class="pre">OffsetMapping</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.close"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.close()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.create_table"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.create_table()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.drop"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.drop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.clear"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.size"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.size</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.extend_doc_ids"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.extend_doc_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_id_by_offset"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.get_id_by_offset()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_ids_by_offsets"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.get_ids_by_offsets()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_offsets_by_ids"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.get_offsets_by_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_offset_by_id"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.get_offset_by_id()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.get_all_ids"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.get_all_ids()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.del_at_offset"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.del_at_offset()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.del_at_offsets"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.del_at_offsets()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.insert_at_offset"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.insert_at_offset()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.set_at_offset"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.set_at_offset()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.shift_offset"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.shift_offset()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.commit"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.commit()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.drop_table"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.drop_table()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.dump"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.dump()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.execute"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.execute()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.execute_many"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.execute_many()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.load"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.load()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.name"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.storage.annlite.helper.OffsetMapping.schema"><code class="docutils literal notranslate"><span class="pre">OffsetMapping.schema</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
             
             
         </aside>
