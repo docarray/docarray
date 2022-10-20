@@ -689,25 +689,32 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
 def test_offset2ids_persistence(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
 
-    da.extend(
-        [
-            Document(id='0'),
-            Document(id='2'),
-            Document(id='4'),
-        ]
-    )
-    da.insert(1, Document(id='1'))
-    da.insert(3, Document(id='3'))
+    with da:
+        da.extend(
+            [
+                Document(id='0'),
+                Document(id='2'),
+                Document(id='4'),
+            ]
+        )
+        da.insert(1, Document(id='1'))
+        da.insert(3, Document(id='3'))
 
     config = da._config
     da_ids = da[:, 'id']
     assert da_ids == [str(i) for i in range(5)]
-    da._persist = True
-    da.__del__()
+    da.sync()
 
-    da = DocumentArray(storage=storage, config=config)
+    da1 = DocumentArray(storage=storage, config=config)
 
-    assert da[:, 'id'] == da_ids
+    assert da1[:, 'id'] == da_ids
+
+    with da1:
+        da1.extend([Document(id=i) for i in 'abc'])
+        assert len(da1) == 8
+
+    da2 = DocumentArray(storage=storage, config=config)
+    assert da2[:, 'id'] == da1[:, 'id']
 
 
 def test_dam_conflicting_ids():

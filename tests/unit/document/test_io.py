@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import pytest
 
@@ -50,6 +51,23 @@ def test_input_csv_from_file():
     assert len(result) == 2
     assert isinstance(result[0], Document)
     assert result[0].tags['source'] == 'testsrc'
+
+
+def test_input_csv_from_class():
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+        da = DocumentArray.from_csv(fp)
+    assert len(da) == 2
+    assert isinstance(da[0], Document)
+    assert isinstance(da, DocumentArray)
+
+
+def test_input_csv_from_instance_with_exception():
+    da = DocumentArray()
+    with pytest.raises(
+        AttributeError, match='called from a DocumentArray instance directly'
+    ):
+        with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+            da.from_csv(fp)
 
 
 def test_input_csv_from_lines():

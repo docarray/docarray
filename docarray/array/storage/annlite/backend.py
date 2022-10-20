@@ -27,6 +27,7 @@ class AnnliteConfig:
     ef_construction: Optional[int] = None
     ef_search: Optional[int] = None
     max_connection: Optional[int] = None
+    n_components: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
@@ -87,8 +88,7 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(config, dict):
             config = dataclass_from_dict(AnnliteConfig, config)
 
-        self._persist = bool(config.data_path)
-        if not self._persist:
+        if config.data_path is None:
             from tempfile import TemporaryDirectory
 
             config.data_path = TemporaryDirectory().name

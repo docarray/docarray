@@ -8,7 +8,7 @@ from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.helper import dataclass_from_dict, random_identity, filter_dict
 
 from redis import Redis
-from redis.commands.search.field import NumericField, TextField, VectorField
+from redis.commands.search.field import NumericField, TextField, VectorField, GeoField
 from redis.commands.search.indexDefinition import IndexDefinition
 
 if TYPE_CHECKING:
@@ -46,7 +46,7 @@ class BackendMixin(BaseBackendMixin):
         'float': TypeMap(type='float', converter=NumericField),
         'double': TypeMap(type='double', converter=NumericField),
         'long': TypeMap(type='long', converter=NumericField),
-        'bool': TypeMap(type='long', converter=NumericField),
+        'geo': TypeMap(type='geo', converter=GeoField),
     }
 
     def _init_storage(
