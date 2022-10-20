@@ -23,6 +23,7 @@ from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.redis import DocumentArrayRedis
+from docarray.array.milvus import DocumentArrayMilvus
 
 random_embed_models = {
     'keras': lambda: tf.keras.Sequential(
@@ -76,6 +77,7 @@ random_embed_models['onnx'] = lambda: onnxruntime.InferenceSession(
         # DocumentArrayWeaviate, TODO: enable this
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ],
 )
 @pytest.mark.parametrize('N', [2, 10])
@@ -97,10 +99,15 @@ def test_embedding_on_random_network(
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ]:
         da = da_cls.empty(N, config={'n_dim': embedding_shape})
     else:
         da = da_cls.empty(N, config=None)
+
+    if da_cls == DocumentArrayMilvus and len(input_shape) == 3:
+        input_shape = (3, 12, 12)  # Milvus can't handle large tensors
+
     da.tensors = np.random.random([N, *input_shape]).astype(np.float32)
     embed_model = random_embed_models[framework]()
     da.embed(embed_model, batch_size=batch_size, to_numpy=to_numpy)
