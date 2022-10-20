@@ -148,13 +148,13 @@ def test_del_subindex(storage, config):
             ]
         )
 
-    del da['0']
-    assert len(da) == 9
-    assert len(da._subindices['@c']) == 18
+        del da['0']
+        assert len(da) == 9
+        assert len(da._subindices['@c']) == 18
 
-    del da[-2:]
-    assert len(da) == 7
-    assert len(da._subindices['@c']) == 14
+        del da[-2:]
+        assert len(da) == 7
+        assert len(da._subindices['@c']) == 14
 
 
 def test_del_subindex_annlite_multimodal():

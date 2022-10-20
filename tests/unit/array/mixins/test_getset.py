@@ -454,7 +454,7 @@ def test_getset_subindex(storage, config):
                 for i in range(3)
             ]
         )
-    with da:
+
         da[0] = Document(
             embedding=-1 * np.ones(n_dim),
             chunks=[
@@ -463,7 +463,6 @@ def test_getset_subindex(storage, config):
             ],
         )
 
-    with da:
         da[1:] = [
             Document(
                 embedding=-1 * np.ones(n_dim),

@@ -226,11 +226,10 @@ def test_del_and_append(index, storage, config):
 
     with da:
         da.extend([Document(id=str(i)) for i in range(5)])
-    with da:
         del da[index]
         da.append(Document(id='new'))
 
-    assert da[:, 'id'] == ['0', '2', '3', '4', 'new']
+        assert da[:, 'id'] == ['0', '2', '3', '4', 'new']
 
 
 @pytest.mark.parametrize(
