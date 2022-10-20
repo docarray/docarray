@@ -9,6 +9,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 N = 100
 
@@ -34,6 +35,7 @@ def docs():
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=1)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_iter_len_bool(da_cls, config, start_storage):
@@ -61,6 +63,7 @@ def test_iter_len_bool(da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_repr(da_cls, config, start_storage):
@@ -81,6 +84,7 @@ def test_repr(da_cls, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=128)),
         ('elasticsearch', ElasticConfig(n_dim=128)),
         ('redis', RedisConfig(n_dim=128)),
+        ('milvus', MilvusConfig(n_dim=128)),
     ],
 )
 def test_repr_str(docs, storage, config, start_storage):
@@ -105,6 +109,7 @@ def test_repr_str(docs, storage, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_iadd(da_cls, config, start_storage):

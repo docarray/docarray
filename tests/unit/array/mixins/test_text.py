@@ -10,6 +10,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 @pytest.fixture(scope='function')
@@ -32,6 +33,7 @@ def docs():
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_da_vocabulary(da_cls, config, docs, min_freq, start_storage):
@@ -61,6 +63,7 @@ def test_da_vocabulary(da_cls, config, docs, min_freq, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_da_text_to_tensor_non_max_len(docs, da_cls, config, start_storage):
@@ -90,6 +93,7 @@ def test_da_text_to_tensor_non_max_len(docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_da_text_to_tensor_max_len_3(docs, da_cls, config, start_storage):
@@ -121,6 +125,7 @@ def test_da_text_to_tensor_max_len_3(docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_da_text_to_tensor_max_len_1(docs, da_cls, config, start_storage):
@@ -152,6 +157,7 @@ def test_da_text_to_tensor_max_len_1(docs, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_convert_text_tensor_random_text(da_cls, docs, config, start_storage):
