@@ -1,3 +1,4 @@
+import warnings
 from typing import (
     Type,
     TYPE_CHECKING,
@@ -18,6 +19,10 @@ if TYPE_CHECKING:
 
 class FromGeneratorMixin:
     """Provide helper functions filling a :class:`DocumentArray`-like object with a generator."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.from_csv = self.__from_csv
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -127,6 +132,17 @@ class FromGeneratorMixin:
         # noqa: DAR102
         # noqa: DAR201
         """
+        return cls._from_generator('from_csv', *args, **kwargs)
+
+    def __from_csv(cls: Type['T'], *args, **kwargs) -> 'T':
+        """
+        # noqa: DAR101
+        # noqa: DAR102
+        # noqa: DAR201
+        """
+        warnings.warn(
+            'Calling from_csv() from a DocumentArray instance does not change the instance in-place. Instead of calling from_csv() from a DocumentArray instance, you should probably use `DocumentArray.from_csv(...)`.'
+        )
         return cls._from_generator('from_csv', *args, **kwargs)
 
     @classmethod
