@@ -24,14 +24,13 @@ class FromGeneratorMixin:
         super().__init__(*args, **kwargs)
 
         # Let users know that the from_xyz class methods should not be called on instances
-        self.from_csv = _raise_attribute_error('from_csv')
-        self.from_lines = _raise_attribute_error('from_lines')
-        self.from_ndarray = _raise_attribute_error('from_ndarray')
-        self.from_files = _raise_attribute_error('from_files')
-        self.from_huggingface_datasets = _raise_attribute_error(
-            'from_huggingface_datasets'
-        )
-        self.from_ndjson = _raise_attribute_error('from_ndjson')
+        cls_method_names = [
+            attr
+            for attr, obj in vars(FromGeneratorMixin).items()
+            if isinstance(obj, classmethod)
+        ]
+        for cls_meth in cls_method_names:
+            setattr(self, cls_meth, self._raise_attribute_error(cls_meth))
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -249,12 +248,11 @@ class FromGeneratorMixin:
         """
         return cls._from_generator('from_lines', *args, **kwargs)
 
+    def _raise_attribute_error(self, class_method_name: str) -> Callable:
+        def throw(*args, **kwargs) -> None:
+            raise AttributeError(
+                f'Class method `{class_method_name}` can\'t be called from a DocumentArray'
+                f' instance but only from the DocumentArray class.'
+            )
 
-def _raise_attribute_error(class_method_name: str) -> Callable:
-    def throw(*args, **kwargs) -> None:
-        raise AttributeError(
-            f'Class method `{class_method_name}` can\'t be called from a DocumentArray'
-            f' instance but only from the DocumentArray class.'
-        )
-
-    return throw
+        return throw
