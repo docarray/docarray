@@ -55,7 +55,7 @@ def test_input_lines_with_filepath_from_instance_with_exception(filepath):
     da = DocumentArray()
     with pytest.raises(
         AttributeError,
-        match='Class method \`from_lines\` can\'t be called from a DocumentArray instance',
+        match='Class method can\'t be called from a DocumentArray instance',
     ):
         da = da.from_lines(filepath=filepath, size=2)
 
@@ -70,7 +70,7 @@ def test_input_ndarray_from_instance_with_exception(filepath):
     da = DocumentArray()
     with pytest.raises(
         AttributeError,
-        match='Class method \`from_ndarray\` can\'t be called from a DocumentArray instance',
+        match='Class method can\'t be called from a DocumentArray instance',
     ):
         da = da.from_ndarray(array=np.array([1, 2, 3]), axis=0)
 
@@ -95,7 +95,7 @@ def test_input_csv_from_instance_with_exception():
     da = DocumentArray()
     with pytest.raises(
         AttributeError,
-        match='Class method \`from_csv\` can\'t be called from a DocumentArray instance',
+        match='Class method can\'t be called from a DocumentArray instance',
     ):
         with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
             da.from_csv(fp)
@@ -345,7 +345,7 @@ def test_input_huggingface_datasets_from_instance_with_exception():
     field_resolver = {'question': 'text'}
     with pytest.raises(
         AttributeError,
-        match='Class method \`from_huggingface_datasets\` can\'t be called from a DocumentArray instance',
+        match='Class method can\'t be called from a DocumentArray instance',
     ):
         da = da.from_huggingface_datasets(
             'csv',
@@ -363,7 +363,7 @@ def test_input_ndjson_from_instance_with_exception():
     da = DocumentArray()
     with pytest.raises(
         AttributeError,
-        match='Class method \`from_ndjson\` can\'t be called from a DocumentArray instance',
+        match='Class method can\'t be called from a DocumentArray instance',
     ):
         da = da.from_ndjson(fp=[])
 

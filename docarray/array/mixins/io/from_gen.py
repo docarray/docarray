@@ -8,7 +8,6 @@ from typing import (
     TextIO,
     Dict,
     Iterable,
-    Callable,
 )
 
 if TYPE_CHECKING:
@@ -30,7 +29,7 @@ class FromGeneratorMixin:
             if isinstance(obj, classmethod)
         ]
         for cls_meth in cls_method_names:
-            setattr(self, cls_meth, self._raise_attribute_error(cls_meth))
+            setattr(self, cls_meth, _raise_attribute_error)
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -248,11 +247,9 @@ class FromGeneratorMixin:
         """
         return cls._from_generator('from_lines', *args, **kwargs)
 
-    def _raise_attribute_error(self, class_method_name: str) -> Callable:
-        def throw(*args, **kwargs) -> None:
-            raise AttributeError(
-                f'Class method `{class_method_name}` can\'t be called from a DocumentArray'
-                f' instance but only from the DocumentArray class.'
-            )
 
-        return throw
+def _raise_attribute_error(*args, **kwargs) -> None:
+    raise AttributeError(
+        f'Class method can\'t be called from a DocumentArray'
+        f' instance but only from the DocumentArray class.'
+    )
