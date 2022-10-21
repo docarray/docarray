@@ -199,22 +199,24 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 @pytest.mark.parametrize(
     'da_cls, config',
     [
-        (DocumentArrayInMemory, None),
-        (DocumentArraySqlite, None),
+        # (DocumentArrayInMemory, None),
+        # (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=3)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
-        (DocumentArrayElastic, ElasticConfig(n_dim=3)),
-        (DocumentArrayRedis, RedisConfig(n_dim=3)),
+        # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
+        # (DocumentArrayElastic, ElasticConfig(n_dim=3)),
+        # (DocumentArrayRedis, RedisConfig(n_dim=3)),
     ],
 )
-def test_from_to_bytes(da_cls, config, start_storage):
+def test_from_to_bytes(da_cls, config):
     # simple
     if da_cls == DocumentArrayAnnlite:
-        with da_cls.empty(2, config=config) as da:
-            da_bytes = da.to_bytes()
+        da = da_cls.empty(2, config=config)
+        da_bytes = da.to_bytes()
+        da._annlite.close()
 
-        with da_cls.from_bytes(da_bytes, config=config) as db:
-            assert len(db) == 2
+        db = da_cls.from_bytes(da_bytes, config=config)
+        assert len(db) == 2
+        db._annlite.close()
     else:
         assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 

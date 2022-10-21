@@ -14,13 +14,13 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
 @pytest.mark.parametrize(
     'da_cls,config',
     [
-        (DocumentArray, None),
-        (DocumentArraySqlite, None),
+        # (DocumentArray, None),
+        # (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=5)),
-        (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
-        (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
-        (DocumentArrayElastic, ElasticConfig(n_dim=5)),
-        (DocumentArrayRedis, RedisConfig(n_dim=5)),
+        # (DocumentArrayWeaviate, WeaviateConfig(n_dim=5)),
+        # (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
+        # (DocumentArrayElastic, ElasticConfig(n_dim=5)),
+        # (DocumentArrayRedis, RedisConfig(n_dim=5)),
     ],
 )
 def test_empty_non_zero(da_cls, config, start_storage):
@@ -31,8 +31,10 @@ def test_empty_non_zero(da_cls, config, start_storage):
     else:
         da = da_cls.empty()
 
-    with da:
-        assert len(da) == 0
+    assert len(da) == 0
+
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
 
     # Assert .empty provides a da of the correct length
     if config:
@@ -40,5 +42,4 @@ def test_empty_non_zero(da_cls, config, start_storage):
     else:
         da = da_cls.empty(10)
 
-    with da:
-        assert len(da) == 10
+    assert len(da) == 10

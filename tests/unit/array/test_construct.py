@@ -28,33 +28,53 @@ def test_construct_docarray(da_cls, config, start_storage):
     if config:
         da = da_cls(config=config)
         assert len(da) == 0
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls(Document(), config=config)
         assert len(da) == 1
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls([Document(), Document()], config=config)
         assert len(da) == 2
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls((Document(), Document()), config=config)
         assert len(da) == 2
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls((Document() for _ in range(10)), config=config)
         assert len(da) == 10
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
     else:
         da = da_cls()
         assert len(da) == 0
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls(Document())
         assert len(da) == 1
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls([Document(), Document()])
         assert len(da) == 2
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls((Document(), Document()))
         assert len(da) == 2
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         da = da_cls((Document() for _ in range(10)))
         assert len(da) == 10
+        if da_cls == DocumentArrayAnnlite:
+            da._annlite.close()
 
         if da_cls is DocumentArrayInMemory:
             da1 = da_cls(da)

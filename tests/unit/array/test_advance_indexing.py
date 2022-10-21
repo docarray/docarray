@@ -686,7 +686,7 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
         ('redis', RedisConfig(n_dim=123)),
     ],
 )
-def test_offset2ids_persistence(storage, config):
+def test_offset2ids_persistence(storage, config, start_storage):
     da = DocumentArray(storage=storage, config=config)
 
     with da:
@@ -700,23 +700,28 @@ def test_offset2ids_persistence(storage, config):
         da.insert(1, Document(id='1'))
         da.insert(3, Document(id='3'))
 
-        config = da._config
-        da_ids = da[:, 'id']
-        assert da_ids == [str(i) for i in range(5)]
-    # da.sync()
-    #
-    # da1 = DocumentArray(storage=storage, config=config)
-    #
-    # assert da1[:, 'id'] == da_ids
+    config = da._config
+    da_ids = da[:, 'id']
+    assert da_ids == [str(i) for i in range(5)]
+    da.sync()
 
-    with DocumentArray(storage=storage, config=config) as da1:
-        assert da1[:, 'id'] == da_ids
+    if storage == 'annlite':
+        da._annlite.close()
+
+    da1 = DocumentArray(storage=storage, config=config)
+
+    assert da1[:, 'id'] == da_ids
+
+    with da1:
         da1.extend([Document(id=i) for i in 'abc'])
         da1_ids = da1[:, 'id']
         assert len(da1) == 8
 
-    with DocumentArray(storage=storage, config=config) as da2:
-        assert da2[:, 'id'] == da1_ids
+    if storage == 'annlite':
+        da1._annlite.close()
+
+    da2 = DocumentArray(storage=storage, config=config)
+    assert da2[:, 'id'] == da1_ids
 
 
 def test_dam_conflicting_ids():
