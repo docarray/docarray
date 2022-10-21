@@ -40,6 +40,9 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         da = cls()
     assert getattr(da, content_attr) is None
 
+    if cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
 
 @pytest.mark.parametrize(
     'cls',
@@ -77,6 +80,9 @@ def test_content_empty_setter(cls, content_attr, start_storage):
     setattr(da, content_attr[0], content_attr[1])
     assert getattr(da, content_attr[0]) is None
 
+    if cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
 
 @pytest.mark.parametrize(
     'cls,config',
@@ -110,6 +116,9 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
     np.testing.assert_equal(getattr(da, content_attr[0]), content_attr[1])
     da.contents = None
     assert da.contents is None
+
+    if cls == DocumentArrayAnnlite:
+        da._annlite.close()
 
 
 @pytest.mark.parametrize('da_len', [0, 1, 2])
