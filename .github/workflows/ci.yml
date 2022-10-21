@@ -131,7 +131,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install wheel
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
-          pip install --pre annlite
           pip install --no-cache-dir ".[test]"
           pip install --no-cache-dir ".[full]"
           pip install --no-cache-dir ".[qdrant]"
