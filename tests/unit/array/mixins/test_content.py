@@ -149,6 +149,9 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         assert not da.tensors
         assert da.blobs == [b''] * da_len
 
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
 
 @pytest.mark.parametrize('da_len', [0, 1, 2])
 @pytest.mark.parametrize(
@@ -171,3 +174,6 @@ def test_embeddings_setter(da_len, da_cls, config, start_storage):
     da.embeddings = np.random.rand(da_len, 5)
     for doc in da:
         assert doc.embedding.shape == (5,)
+
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()

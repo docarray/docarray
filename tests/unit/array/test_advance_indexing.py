@@ -239,6 +239,9 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
     assert docs[5].text == 'new'
     assert docs[9].text == 'new'
 
+    if storage == 'annlite':
+        docs._annlite.close()
+
 
 @pytest.mark.parametrize(
     'storage,config',

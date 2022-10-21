@@ -53,6 +53,9 @@ def test_document_save_load(
             'content': [d.content for d in da],
         }
 
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
     da_r = type(da).load(
         tmp_file, file_format=method, encoding=encoding, config=config()
     )

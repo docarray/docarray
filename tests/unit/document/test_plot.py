@@ -72,6 +72,9 @@ def test_matches_sprites(
     da[0].plot_matches_sprites(top_k, output=tmpdir / 'sprint_da.png')
     assert os.path.exists(tmpdir / 'sprint_da.png')
 
+    if da_cls == DocumentArrayAnnlite:
+        das._annlite.close()
+
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
 @pytest.mark.parametrize(

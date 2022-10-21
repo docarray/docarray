@@ -50,6 +50,9 @@ def test_da_vocabulary(da_cls, config, docs, min_freq, start_storage):
         assert not vocab.values()
         assert not vocab.keys()
 
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
 
 @pytest.mark.parametrize(
     'da_cls,config',
