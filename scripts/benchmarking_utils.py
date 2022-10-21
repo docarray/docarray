@@ -77,6 +77,7 @@ def get_configuration_storage_backends(argparse, D, random=True):
         '--exclude-backends',
         help='list of comma separated backends to exclude from the benchmarks',
         type=str,
+        default='',
     )
 
     args = parser.parse_args()
@@ -176,8 +177,8 @@ def get_configuration_storage_backends(argparse, D, random=True):
 
         storage_backends['qdrant']['storage_config']['distance'] = 'euclidean'
         storage_backends['qdrant']['hnsw_config'] = {
-            'm': [16, 32],
-            'ef_construct': [128, 256],
+            'm': [8, 12, 16, 32],
+            'ef_construct': [32, 64, 128],
         }
 
         storage_backends['weaviate']['storage_config']['distance'] = 'l2-squared'
@@ -189,8 +190,8 @@ def get_configuration_storage_backends(argparse, D, random=True):
 
         storage_backends['elasticsearch']['storage_config']['distance'] = 'l2_norm'
         storage_backends['elasticsearch']['hnsw_config'] = {
-            'm': [16, 32],
-            'ef_construction': [128, 256],
+            'm': [8, 12, 16],
+            'ef_construction': [16, 32, 64, 128],
         }
 
         storage_backends['redis']['storage_config']['distance'] = 'L2'
@@ -200,8 +201,8 @@ def get_configuration_storage_backends(argparse, D, random=True):
             'ef_runtime': [16, 32],
         }
 
-        for storage in (args.exclude_backends or '').split(','):
-            storage_backends.pop(storage)
+        for storage in args.exclude_backends.split(','):
+            storage_backends.pop(storage, None)
 
     return storage_backends
 
@@ -586,6 +587,8 @@ def get_param(storage, param):
 
 def plot_results_sift(storages):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
+    storages = list(storages)
+    storages.remove('memory')
 
     for storage in storages:
         df = pd.read_csv(f'benchmark-qps-{storage}.csv')
