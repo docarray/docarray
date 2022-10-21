@@ -13,7 +13,6 @@ from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
-
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
 from docarray.helper import random_identity
 from tests import random_docs
