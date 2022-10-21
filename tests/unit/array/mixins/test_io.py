@@ -44,14 +44,14 @@ def test_document_save_load(
     tmp_file = os.path.join(tmp_path, 'test')
     da = da_cls(docs, config=config())
 
-    with da:
-        da.insert(2, Document(id='new'))
-        da.save(tmp_file, file_format=method, encoding=encoding)
-        da_info = {
-            'id': [d.id for d in da],
-            'embedding': [d.embedding for d in da],
-            'content': [d.content for d in da],
-        }
+    da.insert(2, Document(id='new'))
+    da.save(tmp_file, file_format=method, encoding=encoding)
+
+    da_info = {
+        'id': [d.id for d in da],
+        'embedding': [d.embedding for d in da],
+        'content': [d.content for d in da],
+    }
 
     if da_cls == DocumentArrayAnnlite:
         da._annlite.close()
