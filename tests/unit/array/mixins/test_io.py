@@ -199,15 +199,15 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 @pytest.mark.parametrize(
     'da_cls, config',
     [
-        # (DocumentArrayInMemory, None),
-        # (DocumentArraySqlite, None),
+        (DocumentArrayInMemory, None),
+        (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=3)),
-        # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
-        # (DocumentArrayElastic, ElasticConfig(n_dim=3)),
-        # (DocumentArrayRedis, RedisConfig(n_dim=3)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=3)),
+        (DocumentArrayRedis, RedisConfig(n_dim=3)),
     ],
 )
-def test_from_to_bytes(da_cls, config):
+def test_from_to_bytes(da_cls, config, start_storage):
     # simple
     if da_cls == DocumentArrayAnnlite:
         da = da_cls.empty(2, config=config)

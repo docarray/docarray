@@ -419,13 +419,13 @@ def embeddings_eq(emb1, emb2):
 @pytest.mark.parametrize(
     'storage, config',
     [
-        # ('memory', None),
-        # ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
+        ('memory', None),
+        ('weaviate', {'n_dim': 3, 'distance': 'l2-squared'}),
         ('annlite', {'n_dim': 3, 'metric': 'Euclidean'}),
-        # ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
-        # ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
-        # ('sqlite', dict()),
-        # ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('qdrant', {'n_dim': 3, 'distance': 'euclidean'}),
+        ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
+        ('sqlite', dict()),
+        ('redis', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_getset_subindex(storage, config):

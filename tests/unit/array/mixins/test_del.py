@@ -191,6 +191,6 @@ def test_del_subindex_annlite_multimodal():
     with da:
         da.extend(docs_to_add)
 
-        del da['0']
-        assert len(da) == 9
-        assert len(da._subindices['@.[my_text, my_other_text]']) == 18
+    del da['0']
+    assert len(da) == 9
+    assert len(da._subindices['@.[my_text, my_other_text]']) == 18

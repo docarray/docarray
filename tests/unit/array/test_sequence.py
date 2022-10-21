@@ -253,6 +253,7 @@ def test_set_and_append(index, storage, config):
 
     with da:
         da.extend([Document(id=str(i)) for i in range(5)])
+    with da:
         da[index] = (
             Document(id='new')
             if isinstance(index, int) or isinstance(index, str)
