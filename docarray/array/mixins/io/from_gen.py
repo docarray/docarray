@@ -1,4 +1,3 @@
-import warnings
 from typing import (
     Type,
     TYPE_CHECKING,
@@ -9,6 +8,7 @@ from typing import (
     TextIO,
     Dict,
     Iterable,
+    Callable,
 )
 
 if TYPE_CHECKING:
@@ -22,7 +22,16 @@ class FromGeneratorMixin:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.from_csv = self.from_csv_called_from_instance
+
+        # Let users know that the from_xyz class methods should not be called on instances
+        self.from_csv = _raise_attribute_error('from_csv')
+        self.from_lines = _raise_attribute_error('from_lines')
+        self.from_ndarray = _raise_attribute_error('from_ndarray')
+        self.from_files = _raise_attribute_error('from_files')
+        self.from_huggingface_datasets = _raise_attribute_error(
+            'from_huggingface_datasets'
+        )
+        self.from_ndjson = _raise_attribute_error('from_ndjson')
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -134,16 +143,6 @@ class FromGeneratorMixin:
         """
         return cls._from_generator('from_csv', *args, **kwargs)
 
-    def from_csv_called_from_instance(cls: Type['T'], *args, **kwargs) -> None:
-        """
-        # noqa: DAR101
-        # noqa: DAR102
-        # noqa: DAR201
-        """
-        raise AttributeError(
-            'from_csv() can\'t be called from a DocumentArray instance directly but rather from the DocumentArray class.'
-        )
-
     @classmethod
     @overload
     def from_huggingface_datasets(
@@ -249,3 +248,13 @@ class FromGeneratorMixin:
         # noqa: DAR201
         """
         return cls._from_generator('from_lines', *args, **kwargs)
+
+
+def _raise_attribute_error(class_method_name: str) -> Callable:
+    def throw(*args, **kwargs) -> None:
+        raise AttributeError(
+            f'Class method `{class_method_name}` can\'t be called from a DocumentArray'
+            f' instance but only from the DocumentArray class.'
+        )
+
+    return throw
