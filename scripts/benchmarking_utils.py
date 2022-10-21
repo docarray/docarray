@@ -489,12 +489,6 @@ def run_benchmark_sift(
                 random.sample([d.id for d in docs], n_query),
             )
 
-            console.print(f'\tupdating {n_query} docs ...')
-            update_time, _ = update(da, docs_to_update)
-
-            console.print(f'\tdeleting {n_query} docs ...')
-            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
-
             console.print(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
@@ -519,6 +513,12 @@ def run_benchmark_sift(
             find_by_condition_time, _ = find_by_condition(
                 da, storage_backend_filters[storage]
             )
+
+            console.print(f'\tupdating {n_query} docs ...')
+            update_time, _ = update(da, docs_to_update)
+
+            console.print(f'\tdeleting {n_query} docs ...')
+            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
 
             table.add_row(
                 storage.title(),
