@@ -24,8 +24,7 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        # TODO: restore this after annlite issue is fixed in #622
-        # (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
+        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
@@ -56,6 +55,9 @@ def test_sprite_fail_tensor_success_uri(
     )
     da.save_gif(tmpdir / 'sprint_da.gif', show_index=show_index, channel_axis=0)
     assert os.path.exists(tmpdir / 'sprint_da.png')
+
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
 
 
 @pytest.mark.parametrize('image_source', ['tensor', 'uri'])
