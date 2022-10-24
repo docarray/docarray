@@ -22,7 +22,7 @@ from typing import (
 from docarray.dataclasses.getter import *
 from docarray.dataclasses.setter import *
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
     from docarray.typing import T
     from docarray import Document

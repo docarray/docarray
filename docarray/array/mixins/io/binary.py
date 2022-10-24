@@ -13,7 +13,7 @@ from docarray.helper import (
     protocol_and_compress_from_file_path,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from docarray.proto.docarray_pb2 import DocumentArrayProto
     from docarray import Document, DocumentArray

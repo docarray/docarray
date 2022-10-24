@@ -2,7 +2,7 @@ from typing import List, Sequence, TYPE_CHECKING, Optional, Union
 
 from docarray.math.ndarray import ravel, unravel
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType, DocumentContentType
 
 

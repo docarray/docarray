@@ -1,7 +1,7 @@
 import warnings
 from typing import TYPE_CHECKING, Callable, Optional, Any, Mapping
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T, AnyDNN
     from docarray import DocumentArray
 

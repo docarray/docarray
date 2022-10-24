@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union, Optional, Callable, TYPE_CHECKING, Generator
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
     from docarray.typing import T
     from multiprocessing.pool import ThreadPool, Pool

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import torch
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from torch import tensor
     import numpy
 
