@@ -11,7 +11,7 @@ on:
         required: false
         default: MANUAL
       build_old_docs:
-        description: 'TRUE | FALSE'
+        description: 'Whether to build old docs (TRUE | FALSE)'
         type: string
         default: 'FALSE'
       package:
