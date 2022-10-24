@@ -190,8 +190,9 @@ def get_configuration_storage_backends(argparse, D, random=True):
 
         storage_backends['elasticsearch']['storage_config']['distance'] = 'l2_norm'
         storage_backends['elasticsearch']['hnsw_config'] = {
-            'm': [8, 12, 16],
-            'ef_construction': [16, 32, 64, 128],
+            'm': [16, 32],
+            'ef_construction': [128, 256],
+            'num_candidates': [64, 128, 256],
         }
 
         storage_backends['redis']['storage_config']['distance'] = 'L2'
@@ -477,7 +478,11 @@ def run_benchmark_sift(
                 da = DocumentArray(storage=storage)
             else:
                 config.update(storage_config)
+                if storage == 'elasticsearch':
+                    num_candidates = config.pop('num_candidates')
                 da = DocumentArray(storage=storage, config=config)
+                if storage == 'elasticsearch':
+                    config['num_candidates'] = num_candidates
 
             console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
@@ -502,7 +507,14 @@ def run_benchmark_sift(
                 recall_at_k_values = []
                 find_by_vector_times = []
                 for i, query in enumerate(vector_queries):
-                    find_by_vector_time, results = find_by_vector(da, query, limit=K)
+                    if storage == 'elasticsearch':
+                        find_by_vector_time, results = find_by_vector(
+                            da, query, limit=K, num_candidates=config['num_candidates']
+                        )
+                    else:
+                        find_by_vector_time, results = find_by_vector(
+                            da, query, limit=K
+                        )
                     find_by_vector_times.append(find_by_vector_time)
                     recall_at_k_values.append(recall(results, ground_truth[i], K))
 
@@ -572,7 +584,11 @@ param_dict = {
         'EF_CONSTRUCTION': 'ef_construction',
         'EF_RUNTIME': 'ef',
     },
-    'elasticsearch': {'M': 'm', 'EF_CONSTRUCTION': 'ef_construction'},
+    'elasticsearch': {
+        'M': 'm',
+        'EF_CONSTRUCTION': 'ef_construction',
+        'EF_RUNTIME': 'num_candidates',
+    },
     'redis': {
         'M': 'm',
         'EF_CONSTRUCTION': 'ef_construction',
