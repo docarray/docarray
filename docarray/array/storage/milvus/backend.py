@@ -12,6 +12,7 @@ from pymilvus import (
     DataType,
     CollectionSchema,
     has_collection,
+    MilvusException,
 )
 
 from docarray import Document, DocumentArray
@@ -250,7 +251,47 @@ class BackendMixin(BaseBackendMixin):
         )
         return kwargs
 
+    def _map_embedding(self, embedding):
+        if embedding is not None:
+            from docarray.math.ndarray import to_numpy_array
+
+            embedding = to_numpy_array(embedding)
+
+            if embedding.ndim > 1:
+                embedding = np.asarray(embedding).squeeze()
+        else:
+            embedding = np.zeros(self._config.n_dim)
+        return embedding
+
+    def __enter__(self):
+        _ = super().__enter__()
+        self._collection.load()
+        self._offset2id_collection.load()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._collection.release()
+        self._offset2id_collection.release()
+        super().__exit__(exc_type, exc_val, exc_tb)
+
+    def _call_with_loaded_collection(self, fn, *fn_args, collection=None, **fn_kwargs):
+        # workaround since loaded_collection cntx manager cannot currently determine if coll was already loaded before
+        try:
+            return fn(*fn_args, **fn_kwargs)
+        except MilvusException:
+            with self.loaded_collection(collection):
+                return fn(*fn_args, **fn_kwargs)
+
     def loaded_collection(self, collection=None):
+        """
+        Context manager to load a collection and release it after the context is exited.
+        ## TODO 'If the collection is already loaded when entering, it will not be released.' This is not true currently,
+        ## talking to milvus team to enable this.
+
+        :param collection: the collection to load. If None, the collection of this indexer is used.
+        :return: Context manager for the provided collection.
+        """
+
         class LoadedCollectionMngr:
             def __init__(self, coll):
                 self._collection = coll
@@ -263,15 +304,3 @@ class BackendMixin(BaseBackendMixin):
                 self._collection.release()
 
         return LoadedCollectionMngr(collection if collection else self._collection)
-
-    def _map_embedding(self, embedding):
-        if embedding is not None:
-            from docarray.math.ndarray import to_numpy_array
-
-            embedding = to_numpy_array(embedding)
-
-            if embedding.ndim > 1:
-                embedding = np.asarray(embedding).squeeze()
-        else:
-            embedding = np.zeros(self._config.n_dim)
-        return embedding
