@@ -172,12 +172,12 @@ def get_configuration_storage_backends(argparse, D, random=True):
         storage_backends['annlite']['hnsw_config'] = {
             'max_connection': [16, 32],
             'ef_construction': [128, 256],
-            'ef_search': [16, 32],
+            'ef_search': [64, 128, 256],
         }
 
         storage_backends['qdrant']['storage_config']['distance'] = 'euclidean'
         storage_backends['qdrant']['hnsw_config'] = {
-            'm': [8, 12, 16, 32],
+            'm': [12, 16, 32],
             'ef_construct': [32, 64, 128],
         }
 
@@ -185,7 +185,7 @@ def get_configuration_storage_backends(argparse, D, random=True):
         storage_backends['weaviate']['hnsw_config'] = {
             'max_connections': [16, 32],
             'ef_construction': [128, 256],
-            'ef': [16, 32],
+            'ef': [64, 128, 256],
         }
 
         storage_backends['elasticsearch']['storage_config']['distance'] = 'l2_norm'
@@ -198,7 +198,7 @@ def get_configuration_storage_backends(argparse, D, random=True):
         storage_backends['redis']['hnsw_config'] = {
             'm': [16, 32],
             'ef_construction': [128, 256],
-            'ef_runtime': [16, 32],
+            'ef_runtime': [64, 128, 256],
         }
 
         for storage in args.exclude_backends.split(','):
@@ -529,7 +529,7 @@ def run_benchmark_sift(
                 fmt(read_time * 1000, 'ms'),
                 fmt(update_time * 1000, 'ms'),
                 fmt(delete_time * 1000, 'ms'),
-                fmt(find_by_vector_time, 's'),
+                fmt(find_by_vector_time * 1000, 'ms'),
                 '{:.3f}'.format(recall_at_k),
                 fmt(find_by_condition_time, 's'),
             )
@@ -547,7 +547,10 @@ def run_benchmark_sift(
                 find_by_condition_time,
             ]
 
+            # print and store benchmark time
             console.print(table)
+            benchmark_df.to_csv(f'benchmark-seconds-{storage}.csv')
+
             da.clear()
             del da
         except Exception as e:
@@ -586,9 +589,12 @@ def get_param(storage, param):
 
 
 def plot_results_sift(storages):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(17, 5))
+    fig, ax = plt.subplots()
     storages = list(storages)
-    storages.remove('memory')
+    if 'memory' in storages:
+        storages.remove('memory')
+    if 'sqlite' in storages:
+        storages.remove('sqlite')
 
     for storage in storages:
         df = pd.read_csv(f'benchmark-qps-{storage}.csv')
@@ -596,28 +602,13 @@ def plot_results_sift(storages):
         df.sort_values(by=['Recall'], inplace=True)
         df.plot(
             style='.-',
-            ax=ax1,
+            ax=ax,
             x='Recall',
-            y='Query (R)',
+            y='Find by vector',
             ylabel='Queries per second (1/s)',
             label=storage,
         )
 
-    ax1.set_title('Recall/Queries per second (1/s)', fontsize=18)
-
-    for storage in storages:
-        df = pd.read_csv(f'benchmark-seconds-{storage}.csv')
-        df.rename(columns={'Recall at k=10 for vector search': 'Recall'}, inplace=True)
-        df.sort_values(by=['Recall'], inplace=True)
-        df.plot(
-            style='.-',
-            ax=ax2,
-            x='Recall',
-            y='Indexing time (C)',
-            ylabel='Indexing time (s)',
-            label=storage,
-        )
-
-    ax2.set_title('Recall/Indexing time (s)', fontsize=18)
+    ax.set_title('Recall/Queries per second (1/s)', fontsize=18)
 
     plt.savefig('benchmark.png')
