@@ -1,23 +1,16 @@
 from abc import abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    TypeVar,
-    Sequence,
-    List,
-    Union,
-    Optional,
-    Dict,
-)
-from qdrant_client.http.models.models import Distance
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar, Union
 
 from docarray import Document, DocumentArray
 from docarray.math import ndarray
 from docarray.score import NamedScore
+from qdrant_client.http import models as rest
+from qdrant_client.http.models.models import Distance
 
 if TYPE_CHECKING:
+    import numpy as np
     import tensorflow
     import torch
-    import numpy as np
     from qdrant_client import QdrantClient
 
     QdrantArrayType = TypeVar(
@@ -51,7 +44,11 @@ class FindMixin:
         raise NotImplementedError()
 
     def _find_similar_vectors(
-        self, q: 'QdrantArrayType', limit: int = 10, filter: Optional[Dict] = None
+        self,
+        q: 'QdrantArrayType',
+        limit: int = 10,
+        filter: Optional[Dict] = None,
+        **kwargs,
     ):
         query_vector = self._map_embedding(q)
 
@@ -59,7 +56,7 @@ class FindMixin:
             self.collection_name,
             query_vector=query_vector,
             query_filter=filter,
-            search_params=None,
+            search_params=rest.SearchParams(**kwargs.get('search_params', {})),
             top=limit,
             append_payload=['_serialized'],
         )
@@ -96,11 +93,13 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query, limit=limit, filter=filter)]
+            return [
+                self._find_similar_vectors(query, limit=limit, filter=filter, **kwargs)
+            ]
         else:
             closest_docs = []
             for q in query:
-                da = self._find_similar_vectors(q, limit=limit, filter=filter)
+                da = self._find_similar_vectors(q, limit=limit, filter=filter, **kwargs)
                 closest_docs.append(da)
             return closest_docs
 
