@@ -175,9 +175,7 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, retrieved Documents must have `price` value lower than
-or equal to `max_price`. We can encode this information in Qdrant using `filter = {'price': {'$lte': max_price}}`.
+Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that prices must follow a filter. As an example, retrieved Documents must have `price` value lower than or equal to `max_price`. We can encode this information in Qdrant using `filter = {'price': {'$lte': max_price}}`. You can also pass additional `search_params` following [Qdrant's Search API](https://qdrant.tech/documentation/search/#search-api).
 
 Then you can implement and use the search with the proposed filter:
 
@@ -189,7 +187,7 @@ np_query = np.ones(n_dim) * 8
 print(f'\nQuery vector: \t{np_query}')
 
 filter = {'must': [{'key': 'price', 'range': {'lte': max_price}}]}
-results = da.find(np_query, filter=filter, limit=n_limit)
+results = da.find(np_query, filter=filter, limit=n_limit, search_params={"hnsw_ef": 64})
 
 print('\nEmbeddings Nearest Neighbours with "price" at most 7:\n')
 for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
