@@ -98,7 +98,7 @@ Create `docker-compose.yml`:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.7.0
+    image: qdrant/qdrant:v0.8.0
     ports:
       - "6333:6333"
     ulimits: # Only required for tests, as there are a lot of collections created
@@ -121,7 +121,9 @@ from docarray import DocumentArray
 
 N, D = 100, 128
 
-da = DocumentArray.empty(N, storage='qdrant', config={'n_dim': D})  # init
+da = DocumentArray.empty(
+    N, storage='qdrant', config={'n_dim': D, 'distance': 'cosine'}
+)  # init
 
 da.embeddings = np.random.random([N, D])
 
@@ -174,10 +176,10 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
 ```
 
 Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
-prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
-or equal than `max_price`. We can encode this information in annlite using `filter = {'price': {'$lte': max_price}}`.
+prices must follow a filter. As an example, retrieved Documents must have `price` value lower than
+or equal to `max_price`. We can encode this information in Qdrant using `filter = {'price': {'$lte': max_price}}`.
 
-Then the search with the proposed filter can be implemented and used with the following code:
+Then you can implement and use the search with the proposed filter:
 
 ```python
 max_price = 7
@@ -205,4 +207,57 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[6. 6. 6.],	 price=6
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
+```
+### Example of `.filter` with a filter
+The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.
+Consider Documents have the tag `price` with a value of `i`. We can create these with the following code:
+```python
+from docarray import Document, DocumentArray
+import numpy as np
+
+n_dim = 3
+
+da = DocumentArray(
+    storage='qdrant',
+    config={'n_dim': n_dim, 'columns': {'price': 'float'}},
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', embedding=i * np.ones(n_dim), tags={'price': i})
+            for i in range(10)
+        ]
+    )
+
+print('\nIndexed Prices:\n')
+for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+For example, suppose we want to filter results such that
+retrieved documents must have a `price` value less than or equal to `max_price`. We can encode 
+this information in Qdrant using `filter = {'price': {'$lte': max_price}}`.
+
+Then you can implement and use the search with the proposed filter:
+```python
+max_price = 7
+n_limit = 4
+
+filter = {'must': [{'key': 'price', 'range': {'lte': max_price}}]}
+results = da.filter(filter=filter, limit=n_limit)
+
+print('\nPoints with "price" at most 7:\n')
+for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
+    print(f'\tembedding={embedding},\t price={price}')
+```
+This prints:
+
+```
+
+Points with "price" at most 7:
+
+	embedding=[6. 6. 6.],	 price=6
+	embedding=[7. 7. 7.],	 price=7
+	embedding=[1. 1. 1.],	 price=1
+	embedding=[2. 2. 2.],	 price=2
 ```
