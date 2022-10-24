@@ -138,6 +138,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3320,4 +3321,20 @@
 
  - [[```92680e80```](https://github.com/jina-ai/docarray/commit/92680e8002650ff53d93e3b6a5ce836063877a0f)] __-__ bump minor version (#561) (*AlaeddineAbdessalem*)
  - [[```ba91a2ee```](https://github.com/jina-ai/docarray/commit/ba91a2ee009ae48ff4f59b35ec41f0c2146808e5)] __-__ __version__: the next version will be 0.16.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-18-1></a>
+## Release Note (`0.18.1`)
+
+> Release time: 2022-10-24 14:32:46
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Sami Jaghouar,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```b8eefc67```](https://github.com/jina-ai/docarray/commit/b8eefc678de380d6f6f20b90b4f4a66af300ca62)] __-__ bump docarray version (*Sami Jaghouar*)
+ - [[```e56ac6b7```](https://github.com/jina-ai/docarray/commit/e56ac6b704d45e1f7206675753238a1f86944ef7)] __-__ __hot__: patch annlite version (*Sami Jaghouar*)
 
