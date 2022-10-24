@@ -219,7 +219,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
     assert da2.tensors == [[1, 2], [2, 1]]
     import numpy as np
 
-    np.testing.assert_array_equal(da2.embeddings, [[1, 2, 3], [4, 5, 6]])
+    np.testing.assert_array_equal(da2[:, 'embedding'], [[1, 2, 3], [4, 5, 6]])
     # assert da2.embeddings == [[1, 2, 3], [4, 5, 6]]
     assert da2[0].tags == {'hello': 'world'}
     assert da2[1].tags == {}

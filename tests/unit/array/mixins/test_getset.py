@@ -81,8 +81,9 @@ def test_da_get_embeddings(docs, config, da_cls, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
-    np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
+    with da:
+        np.testing.assert_almost_equal(da._get_attributes('embedding'), da.embeddings)
+        np.testing.assert_almost_equal(da[:, 'embedding'], da.embeddings)
 
 
 @pytest.mark.parametrize(
@@ -106,7 +107,8 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
     da.extend(docs)
     emb = np.random.random((100, 10))
     da[:, 'embedding'] = emb
-    np.testing.assert_almost_equal(da.embeddings, emb)
+    with da:
+        np.testing.assert_almost_equal(da.embeddings, emb)
 
     for x, doc in zip(emb, da):
         np.testing.assert_almost_equal(x, doc.embedding)
@@ -114,7 +116,8 @@ def test_embeddings_setter_da(docs, config, da_cls, start_storage):
     da[:, 'embedding'] = None
     if hasattr(da, 'flush'):
         da.flush()
-    assert da.embeddings is None or not np.any(da.embeddings)
+    with da:
+        assert da.embeddings is None or not np.any(da.embeddings)
 
 
 @pytest.mark.parametrize(
@@ -139,7 +142,8 @@ def test_embeddings_wrong_len(docs, config, da_cls, start_storage):
     embeddings = np.ones((2, 10))
 
     with pytest.raises(ValueError):
-        da.embeddings = embeddings
+        with da:
+            da.embeddings = embeddings
 
 
 @pytest.mark.parametrize(
@@ -583,13 +587,15 @@ def test_set_on_subindex(storage, config):
     embeddings_to_assign = np.random.random((5 * 3, 2))
     with da:
         da['@c'].embeddings = embeddings_to_assign
-    assert (da['@c'].embeddings == embeddings_to_assign).all()
-    assert (da._subindices['@c'].embeddings == embeddings_to_assign).all()
+    with da:
+        assert (da['@c'].embeddings == embeddings_to_assign).all()
+        assert (da._subindices['@c'].embeddings == embeddings_to_assign).all()
 
     with da:
         da['@c'].texts = ['hello' for _ in range(5 * 3)]
-    assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
-    assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
+    with da:
+        assert da['@c'].texts == ['hello' for _ in range(5 * 3)]
+        assert da._subindices['@c'].texts == ['hello' for _ in range(5 * 3)]
 
     matches = da.find(query=np.random.random(2), on='@c')
     assert matches
