@@ -1,7 +1,7 @@
 # auto-generated from /Users/hanxiao/Documents/docarray/scripts/gen_doc_property_mixin.py
 from typing import TYPE_CHECKING, Dict, List, Optional
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.score import NamedScore
     from docarray.array.match import MatchArray
     from docarray.array.chunk import ChunkArray

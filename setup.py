@@ -87,7 +87,7 @@ setup(
             'pytest',
             'pytest-timeout',
             'pytest-mock',
-            'pytest-cov',
+            'pytest-cov==3.0.0',
             'pytest-repeat',
             'pytest-reraise',
             'mock',

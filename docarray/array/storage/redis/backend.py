@@ -11,7 +11,7 @@ from redis import Redis
 from redis.commands.search.field import NumericField, TextField, VectorField, GeoField
 from redis.commands.search.indexDefinition import IndexDefinition
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType, DocumentArraySourceType
 
 

@@ -30,7 +30,7 @@ from typing import TYPE_CHECKING
 
 from docarray.document.data import _is_not_empty
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document
 import re
 from functools import partial

@@ -26,7 +26,7 @@ from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType, ArrayType
 
 

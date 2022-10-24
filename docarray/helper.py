@@ -9,7 +9,7 @@ from os.path import expanduser
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from collections import Counter
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
 
 __resources_path__ = os.path.join(
