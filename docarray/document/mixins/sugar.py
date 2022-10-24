@@ -1,6 +1,6 @@
 from typing import overload, TYPE_CHECKING, Union, Callable, Optional, Tuple
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
     from docarray.typing import AnyDNN, T, ArrayType
 

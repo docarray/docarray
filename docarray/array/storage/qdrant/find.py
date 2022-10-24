@@ -7,7 +7,7 @@ from docarray.score import NamedScore
 from qdrant_client.http import models as rest
 from qdrant_client.http.models.models import Distance
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
     import tensorflow
     import torch

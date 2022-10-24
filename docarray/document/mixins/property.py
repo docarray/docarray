@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 
 from docarray.document.mixins._property import _PropertyMixin
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentContentType, ArrayType
     from docarray import DocumentArray
 

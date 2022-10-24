@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from docarray.array.mixins import ParallelMixin, GroupMixin
 from docarray.helper import protocol_and_compress_from_file_path
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document, DocumentArray
 
 

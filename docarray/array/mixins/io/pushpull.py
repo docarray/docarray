@@ -14,7 +14,7 @@ from hubble.client.endpoints import EndpointsV2
 
 from docarray.helper import get_request_header, __cache_path__, _get_array_info
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

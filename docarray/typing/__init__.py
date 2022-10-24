@@ -12,7 +12,7 @@ from typing import (
     ForwardRef,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import scipy.sparse
     import tensorflow
     import torch

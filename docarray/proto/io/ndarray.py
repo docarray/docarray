@@ -4,7 +4,7 @@ import numpy as np
 
 from docarray.math.ndarray import get_array_type, to_numpy_array
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType
     from docarray.proto.docarray_pb2 import NdArrayProto
 

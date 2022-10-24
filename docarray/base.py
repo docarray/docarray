@@ -6,7 +6,7 @@ from docarray.dataclasses import is_multimodal
 
 from docarray.helper import typename
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

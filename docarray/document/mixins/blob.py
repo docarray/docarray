@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Union, BinaryIO
 
 from docarray.document.mixins.helper import _uri_to_blob, _to_datauri, _get_file_context
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 
