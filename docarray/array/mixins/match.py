@@ -1,6 +1,6 @@
 from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING, Dict
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
     from docarray.typing import ArrayType
     from docarray import DocumentArray

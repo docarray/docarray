@@ -14,7 +14,7 @@ from docarray import Document, DocumentArray
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
     import numpy as np

@@ -10,7 +10,7 @@ from typing import (
     Iterable,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     import numpy as np
     import csv

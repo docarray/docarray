@@ -7,7 +7,7 @@ from google.protobuf.struct_pb2 import Struct
 from docarray.proto.io.ndarray import flush_ndarray, read_ndarray
 from docarray.proto.docarray_pb2 import NdArrayProto, DocumentProto
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document
 
 
