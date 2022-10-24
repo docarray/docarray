@@ -10,6 +10,10 @@ on:
         description: 'CD | TAG | MANUAL'
         required: false
         default: MANUAL
+      build_old_docs:
+        description: 'TRUE | FALSE'
+        type: string
+        default: 'FALSE'
       package:
         description: The name of the repo to build documentation for.
         type: string
@@ -96,3 +100,16 @@ jobs:
           git show --summary
           git add ./docs && git commit -m "chore(docs): update docs due to ${{github.event_name}} on ${{github.repository}}"
           git push origin ${{ inputs.pages_branch }}
+
+  build-old-docs:
+    needs: build-and-push-latest-docs
+    runs-on: ubuntu-latest
+    if: inputs.build_old_docs == 'TRUE'
+    steps:
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Build old docs
+          token: ${{ secrets.JINA_DEV_BOT }}
+          inputs: '{ "release_token": "${{ env.release_token }}", "triggered_by": "TAG"}'
+        env:
+          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
