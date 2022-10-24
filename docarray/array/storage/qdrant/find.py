@@ -49,6 +49,7 @@ class FindMixin:
         limit: int = 10,
         filter: Optional[Dict] = None,
         search_params: Optional[Dict] = {},
+        **kwargs,
     ):
         query_vector = self._map_embedding(q)
 
