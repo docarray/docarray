@@ -50,7 +50,16 @@ jobs:
           python-version: '3.7'
       - name: Install Dependencies
         run: |
-          pip install .[devel]
+          python -m pip install --upgrade pip
+          python -m pip install wheel
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install --no-cache-dir ".[test]"
+          pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[qdrant]"
+          pip install --no-cache-dir ".[annlite]"
+          pip install --no-cache-dir ".[weaviate]"
+          pip install --no-cache-dir ".[elasticsearch]"
+          pip install --no-cache-dir ".[redis]"
           cd docs
           pip install -r requirements.txt
           pip install --pre -U furo
