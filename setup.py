@@ -68,7 +68,7 @@ setup(
             'qdrant-client==0.8.0',
         ],
         'annlite': [
-            'annlite>=0.3.12',
+            'annlite==0.3.13',
         ],
         'weaviate': [
             'weaviate-client~=3.3.0',
