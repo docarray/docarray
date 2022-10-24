@@ -36,7 +36,7 @@ jobs:
       - run: echo "Success!"
         if: "${{ github.event.inputs.release_token }} == ${{ env.release_token }}"
         env:
-          release_token: ${{ secrets.JINA_DEV_RELEASE_TOKEN }}
+          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
       - id: get_versions
         run: |
           printf "versions=" >> $GITHUB_OUTPUT
@@ -121,5 +121,5 @@ jobs:
           git config --local user.email "${{ inputs.git_config_email }}"
           git config --local user.name "${{ inputs.git_config_name }}"
           git show --summary
-          git add . && git commit -m "chore(docs): update docs due to ${{github.event_name}} on ${{github.repository}}"
+          git add . && git commit -m "chore(docs): update old docs due to ${{github.event_name}} on ${{github.repository}}"
           git push origin
