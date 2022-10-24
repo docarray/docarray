@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pytest
 
 from docarray import Document, DocumentArray
@@ -44,12 +45,60 @@ def test_input_lines_with_filepath(filepath):
     assert isinstance(result[0], Document)
 
 
+def test_input_lines_with_filepath_from_class(filepath):
+    da = DocumentArray.from_lines(filepath=filepath, size=2)
+    assert len(da) == 2
+    assert isinstance(da[0], Document)
+
+
+def test_input_lines_with_filepath_from_instance_with_exception(filepath):
+    da = DocumentArray()
+    with pytest.raises(
+        AttributeError,
+        match='Class method can\'t be called from a DocumentArray instance',
+    ):
+        da = da.from_lines(filepath=filepath, size=2)
+
+
+def test_input_ndarray_from_class(filepath):
+    da = DocumentArray.from_ndarray(array=np.array([1, 2, 3]), axis=0)
+    assert len(da) == 3
+    assert isinstance(da[0], Document)
+
+
+def test_input_ndarray_from_instance_with_exception(filepath):
+    da = DocumentArray()
+    with pytest.raises(
+        AttributeError,
+        match='Class method can\'t be called from a DocumentArray instance',
+    ):
+        da = da.from_ndarray(array=np.array([1, 2, 3]), axis=0)
+
+
 def test_input_csv_from_file():
     with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
         result = list(from_csv(fp))
     assert len(result) == 2
     assert isinstance(result[0], Document)
     assert result[0].tags['source'] == 'testsrc'
+
+
+def test_input_csv_from_class():
+    with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+        da = DocumentArray.from_csv(fp)
+    assert len(da) == 2
+    assert isinstance(da[0], Document)
+    assert isinstance(da, DocumentArray)
+
+
+def test_input_csv_from_instance_with_exception():
+    da = DocumentArray()
+    with pytest.raises(
+        AttributeError,
+        match='Class method can\'t be called from a DocumentArray instance',
+    ):
+        with open(os.path.join(cur_dir, 'toydata/docs.csv')) as fp:
+            da.from_csv(fp)
 
 
 def test_input_csv_from_lines():
@@ -276,6 +325,49 @@ def test_input_huggingface_datasets_with_filter_fields_and_no_resolver(dataset_c
             pass
 
 
+def test_input_huggingface_datasets_from_class():
+    field_resolver = {'question': 'text'}
+    da = DocumentArray.from_huggingface_datasets(
+        'csv',
+        field_resolver=field_resolver,
+        data_files=os.path.join(cur_dir, 'toydata/docs.csv'),
+        split='train',
+    )
+
+    assert len(da) == 2
+    assert isinstance(da[0], Document)
+    assert da[0].text == 'What are the symptoms?'
+    assert da[0].tags['source'] == 'testsrc'
+
+
+def test_input_huggingface_datasets_from_instance_with_exception():
+    da = DocumentArray()
+    field_resolver = {'question': 'text'}
+    with pytest.raises(
+        AttributeError,
+        match='Class method can\'t be called from a DocumentArray instance',
+    ):
+        da = da.from_huggingface_datasets(
+            'csv',
+            field_resolver=field_resolver,
+            data_files=os.path.join(cur_dir, 'toydata/docs.csv'),
+            split='train',
+        )
+
+
+def test_input_ndjson_from_class():
+    da = DocumentArray.from_ndjson(fp=[])
+
+
+def test_input_ndjson_from_instance_with_exception():
+    da = DocumentArray()
+    with pytest.raises(
+        AttributeError,
+        match='Class method can\'t be called from a DocumentArray instance',
+    ):
+        da = da.from_ndjson(fp=[])
+
+
 @pytest.mark.parametrize(
     'patterns, recursive, size, sampling_rate, read_mode',
     [
@@ -296,6 +388,25 @@ def test_input_files(patterns, recursive, size, sampling_rate, read_mode):
             read_mode=read_mode,
         )
     )
+
+
+def test_input_files_from_class():
+    da = DocumentArray.from_files(
+        patterns='*.*',
+        to_dataturi=False,
+        size=2,
+    )
+    assert len(da) == 2
+
+
+def test_input_files_from_instance_with_exception():
+    da = DocumentArray()
+    with pytest.raises(AttributeError, match='called from a DocumentArray instance'):
+        da = da.from_files(
+            patterns='*.*',
+            to_dataturi=False,
+            size=2,
+        )
 
 
 def test_from_files_with_uri():

@@ -81,7 +81,7 @@ class EvaluationMixin:
     ) -> Dict[str, float]:
         """
         Compute ranking evaluation metrics for a given `DocumentArray` when compared
-        with a groundtruth.
+        with a ground truth.
 
         If one provides a `ground_truth` DocumentArray that is structurally identical
         to `self`, this function compares the `matches` of `documents` inside the
@@ -97,8 +97,9 @@ class EvaluationMixin:
         :param metrics: list of metric names or metric functions to be computed
         :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`
             compares to.
-        :param hash_fn: The function used for identifying the uniqueness of Documents.
-            If not given, then ``Document.id`` is used.
+        :param hash_fn: For the evaluation against a `ground_truth` DocumentArray,
+            this function is used for generating hashes which are used to compare the
+            documents. If not given, ``Document.id`` is used.
         :param metric_names: If provided, the results of the metrics computation will be
             stored in the `evaluations` field of each Document with this names. If not
             provided, the names will be derived from the metric function names.
