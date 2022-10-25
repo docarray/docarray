@@ -1,10 +1,19 @@
-from docarray import Document, DocumentArray
 import numpy as np
+import pytest
+from docarray import Document, DocumentArray
 
 
-def test_success_find_with_added_kwargs(start_storage, monkeypatch):
+@pytest.mark.parametrize(
+    'search_params,expected',
+    [
+        ({'hnsw_ef': 64}, 64),
+        (None, None),
+    ],
+)
+def test_success_find_with_added_kwargs(
+    search_params, expected, start_storage, monkeypatch
+):
     nrof_docs = 10
-    hnsw_ef = 64
 
     qdrant_doc = DocumentArray(
         storage='qdrant',
@@ -22,11 +31,14 @@ def test_success_find_with_added_kwargs(start_storage, monkeypatch):
         )
 
     def _mock_search(*args, **kwargs):
-        assert kwargs['search_params'].hnsw_ef == hnsw_ef
+        if expected:
+            assert kwargs['search_params'].hnsw_ef == expected
+        else:
+            assert kwargs['search_params'] is None
         return []
 
     monkeypatch.setattr(qdrant_doc._client, 'search', _mock_search)
 
     np_query = np.array([2, 1, 3])
 
-    qdrant_doc.find(np_query, limit=10, search_params={"hnsw_ef": hnsw_ef})
+    qdrant_doc.find(np_query, limit=10, search_params=search_params)
