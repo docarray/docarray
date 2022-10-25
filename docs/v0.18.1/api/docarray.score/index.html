@@ -1,0 +1,687 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+<meta property="og:title" content="docarray.score package" />
+  
+<meta property="og:type" content="website" />
+  
+<meta property="og:url" content="https://docarray.jina.ai/api/docarray.score/" />
+  
+<meta property="og:site_name" content="DocArray 0.18.1 Documentation" />
+  
+<meta property="og:description" content="Subpackages: docarray.score.mixins package- Submodules- docarray.score.mixins.property module- PropertyMixin., docarray.score.mixins.representer module- RepresentMixin.., Module contents- AllMixins- AllMixins.description, AllMixins.op_name, AllMixins.ref_id, AllMixins.to_dict(), AllMixins.value....." />
+  
+<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
+  
+<meta property="og:image:alt" content="DocArray 0.18.1 Documentation" />
+  
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh.">
+<meta property="og:description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48WE9V68SD');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+        <link rel="canonical" href="https://docarray.jina.ai/api/docarray.score.html" />
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>docarray.score package - DocArray 0.18.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../">
+                <div class="brand">DocArray 0.18.1 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../_static/logo-light.svg" alt="Light Logo" />
+    <img class="sidebar-logo only-dark" src="../../_static/logo-dark.svg" alt="Dark Logo" />
+  </div>
+  
+  
+</a>
+<script>
+  function setPrefix(prefix){
+    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
+    window.location.href = prefix
+  }
+</script>
+<script defer>
+  fetch(`https://${window.location.host}/_versions.json`)
+  .then((resp) => resp.json())
+  .then((data) => {
+    var versionSelector = document.getElementsByClassName("version-select")[0]
+    for(var i = 0; i < data.length; i++){
+      var option = document.createElement("option");
+      option.innerHTML = data[i].version;
+      option.value = "/" + data[i].version;
+      versionSelector.appendChild(option);
+    }
+
+    if(window.sessionStorage.getItem('version-select-index')){
+      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+    }
+  })
+  .catch((err) => console.log(err));
+</script>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/docarray" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
+  <select onChange="setPrefix(this.value)" class="version-select">
+    <option value="/">latest</option>
+  </select>
+</div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/">What is DocArray?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../get-started/install/">Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../datatypes/">Multimodal Data</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/audio/"><svg aria-hidden="true" class="sd-octicon sd-octicon-unmute" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.563 2.069A.75.75 0 018 2.75v10.5a.75.75 0 01-1.238.57L3.472 11H1.75A1.75 1.75 0 010 9.25v-2.5C0 5.784.784 5 1.75 5h1.723l3.289-2.82a.75.75 0 01.801-.111zM6.5 4.38L4.238 6.319a.75.75 0 01-.488.181h-2a.25.25 0 00-.25.25v2.5c0 .138.112.25.25.25h2a.75.75 0 01.488.18L6.5 11.62V4.38zm6.096-2.038a.75.75 0 011.06 0 8 8 0 010 11.314.75.75 0 01-1.06-1.06 6.5 6.5 0 000-9.193.75.75 0 010-1.06v-.001zm-1.06 2.121a.75.75 0 10-1.061 1.061 3.5 3.5 0 010 4.95.75.75 0 101.06 1.06 5 5 0 000-7.07l.001-.001z" fill-rule="evenodd"></path></svg> Audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/mesh/"><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/tabular/"><svg aria-hidden="true" class="sd-octicon sd-octicon-table" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v3.585a.746.746 0 010 .83v8.085A1.75 1.75 0 0114.25 16H6.309a.748.748 0 01-1.118 0H1.75A1.75 1.75 0 010 14.25V6.165a.746.746 0 010-.83V1.75zM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8H1.5zM5 5H1.5V1.75a.25.25 0 01.25-.25H5V5zm1.5 1.5v8h7.75a.25.25 0 00.25-.25V6.5h-8zm8-1.5h-8V1.5h7.75a.25.25 0 01.25.25V5z" fill-rule="evenodd"></path></svg> Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../datatypes/multimodal/"><svg aria-hidden="true" class="sd-octicon sd-octicon-stack" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z" fill-rule="evenodd"></path></svg> Multi-modal</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/serialization/">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/attribute/">Access Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/embedding/">Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/nested/">Nested Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/visualization/">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/document/fluent-interface/">Fluent Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/serialization/">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/access-elements/">Access Documents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/access-attributes/">Access Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/find/">Query by Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/parallelization/">Parallelization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/visualization/">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/dataclass/">Dataclass</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/access/">Access Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/new-type/">Support New Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/dataclass/example/">Process Modality</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../advanced/document-store/">Document Store</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/sqlite/">SQLite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/annlite/">Annlite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/qdrant/">Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/weaviate/">Weaviate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/redis/">Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/extend/">Add New Document Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/jina-support/">Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/graphql-support/">GraphQL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../"><span class="fab fa-python"></span> Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/">Changelog</a></li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://finetuner.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <article role="main">
+                    <section id="docarray-score-package">
+<h1>docarray.score package<a class="headerlink" href="#docarray-score-package" title="Permalink to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.score.mixins/">docarray.score.mixins package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.score.mixins/#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.property/">docarray.score.mixins.property module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.property/#docarray.score.mixins.property.PropertyMixin"><code class="docutils literal notranslate"><span class="pre">PropertyMixin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins.representer/">docarray.score.mixins.representer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins.representer/#docarray.score.mixins.representer.RepresentMixin"><code class="docutils literal notranslate"><span class="pre">RepresentMixin</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.score.mixins/#module-docarray.score.mixins">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins"><code class="docutils literal notranslate"><span class="pre">AllMixins</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins.description"><code class="docutils literal notranslate"><span class="pre">AllMixins.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins.op_name"><code class="docutils literal notranslate"><span class="pre">AllMixins.op_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins.ref_id"><code class="docutils literal notranslate"><span class="pre">AllMixins.ref_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins.to_dict"><code class="docutils literal notranslate"><span class="pre">AllMixins.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins.value"><code class="docutils literal notranslate"><span class="pre">AllMixins.value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docarray.score.data/">docarray.score.data module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData"><code class="docutils literal notranslate"><span class="pre">NamedScoreData</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.value"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.value</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.op_name"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.op_name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.description"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docarray.score.data/#docarray.score.data.NamedScoreData.ref_id"><code class="docutils literal notranslate"><span class="pre">NamedScoreData.ref_id</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-docarray.score">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.score" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="docarray.score.NamedScore">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.score.</span></span><span class="sig-name descname"><span class="pre">NamedScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_resolver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unknown_fields_handler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'catch'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/score/#NamedScore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.score.NamedScore" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../docarray.score.mixins/#docarray.score.mixins.AllMixins" title="docarray.score.mixins.AllMixins"><code class="xref py py-class docutils literal notranslate"><span class="pre">AllMixins</span></code></a>, <a class="reference internal" href="../docarray.base/#docarray.base.BaseDCType" title="docarray.base.BaseDCType"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDCType</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.score.NamedScore.clear" title="Permalink to this definition">#</a></dt>
+<dd><p>Clear all fields from this <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to their default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.copy_from">
+<span class="sig-name descname"><span class="pre">copy_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.score.NamedScore.copy_from" title="Permalink to this definition">#</a></dt>
+<dd><p>Overwrite self by copying from another <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>other</strong> (<em>T</em>) – the other Document to copy from</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.description">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.score.NamedScore.description" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.nbytes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nbytes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#docarray.score.NamedScore.nbytes" title="Permalink to this definition">#</a></dt>
+<dd><p>Return total bytes consumed by protobuf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>number of bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.non_empty_fields">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_empty_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.score.NamedScore.non_empty_fields" title="Permalink to this definition">#</a></dt>
+<dd><p>Get all non-emtpy fields of this <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p>
+<p>Non-empty fields are the fields with not-<cite>None</cite> and not-default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>field names in a tuple.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.op_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">op_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.score.NamedScore.op_name" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">fields</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.score.NamedScore.pop" title="Permalink to this definition">#</a></dt>
+<dd><p>Clear some fields from this <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> to their default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fields</strong> – field names to clear.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.ref_id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ref_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.score.NamedScore.ref_id" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#docarray.score.NamedScore.to_dict" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="docarray.score.NamedScore.value">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#docarray.score.NamedScore.value" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+                </article>
+            </div>
+            <footer>
+                
+                <div class="related-pages">
+                    
+                    
+                </div>
+                <div class="bottom-of-page">
+                    <div class="left-details">
+                        <div class="copyright">
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Oct 25, 2022</div>
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">docarray.score package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-docarray.score">Module contents</a><ul>
+<li><a class="reference internal" href="#docarray.score.NamedScore"><code class="docutils literal notranslate"><span class="pre">NamedScore</span></code></a><ul>
+<li><a class="reference internal" href="#docarray.score.NamedScore.clear"><code class="docutils literal notranslate"><span class="pre">NamedScore.clear()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.copy_from"><code class="docutils literal notranslate"><span class="pre">NamedScore.copy_from()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.description"><code class="docutils literal notranslate"><span class="pre">NamedScore.description</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.nbytes"><code class="docutils literal notranslate"><span class="pre">NamedScore.nbytes</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.non_empty_fields"><code class="docutils literal notranslate"><span class="pre">NamedScore.non_empty_fields</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.op_name"><code class="docutils literal notranslate"><span class="pre">NamedScore.op_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.pop"><code class="docutils literal notranslate"><span class="pre">NamedScore.pop()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.ref_id"><code class="docutils literal notranslate"><span class="pre">NamedScore.ref_id</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.to_dict"><code class="docutils literal notranslate"><span class="pre">NamedScore.to_dict()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.score.NamedScore.value"><code class="docutils literal notranslate"><span class="pre">NamedScore.value</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </aside>
+    </div>
+    <qa-bot
+            title="DocArray Bot"
+            description="The data structure for unstructured data"
+    >
+        <template>
+            <dl>
+                <dt>You can ask questions about our docs. Try:</dt>
+                <dd>What is a DocumentArray?</dd>
+                <dd>How to use docarray with Jina?</dd>
+                <dd>How to find nearest neighbour of Documents?</dd>
+            </dl>
+        </template>
+    </qa-bot>
+</div>
+<img referrerpolicy="no-referrer-when-downgrade"
+     src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/tabs.js"></script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
+        });
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    </body>
+</html>

@@ -1,0 +1,1081 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+<meta property="og:title" content="Weaviate" />
+  
+<meta property="og:type" content="website" />
+  
+<meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/weaviate/" />
+  
+<meta property="og:site_name" content="DocArray 0.18.1 Documentation" />
+  
+<meta property="og:description" content="One can use Weaviate as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray. Usage: Start Weaviate service: To u..." />
+  
+<meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
+  
+<meta property="og:image:alt" content="DocArray 0.18.1 Documentation" />
+  
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh.">
+<meta property="og:description" content="DocArray is a library for nested, unstructured data such as text, image, audio, video, 3D mesh. It allows deep learning engineers to easily preprocess, embed, search, recommend and transfer the data.">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48WE9V68SD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48WE9V68SD');
+</script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+    <link rel="index" title="Index" href="../../../genindex/" /><link rel="search" title="Search" href="../../../search/" /><link rel="next" title="Redis" href="../redis/" /><link rel="prev" title="Elasticsearch" href="../elasticsearch/" />
+        <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/weaviate.html" />
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
+        <title>Weaviate - DocArray 0.18.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #ffffff;
+  --color-code-foreground: #4d4d4d;
+  --color-brand-primary: #009191;
+  --color-brand-content: #009191;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  --color-brand-primary: #FBCB67;
+  --color-brand-content: #FBCB67;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+    <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+    <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+    <header class="mobile-header">
+        <div class="header-left">
+            <label class="nav-overlay-icon" for="__navigation">
+                <div class="visually-hidden">Toggle site navigation sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-menu"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+        <div class="header-center">
+            <a href="../../../">
+                <div class="brand">DocArray 0.18.1 documentation</div>
+            </a>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle-container theme-toggle-header">
+                <button class="theme-toggle">
+                    <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                    <svg class="theme-icon-when-auto">
+                        <use href="#svg-sun-half"></use>
+                    </svg>
+                    <svg class="theme-icon-when-dark">
+                        <use href="#svg-moon"></use>
+                    </svg>
+                    <svg class="theme-icon-when-light">
+                        <use href="#svg-sun"></use>
+                    </svg>
+                </button>
+            </div>
+            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+                <div class="visually-hidden">Toggle table of contents sidebar</div>
+                <i class="icon">
+                    <svg>
+                        <use href="#svg-toc"></use>
+                    </svg>
+                </i>
+            </label>
+        </div>
+    </header>
+    <aside class="sidebar-drawer">
+        <div class="sidebar-container">
+            
+            <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../_static/logo-light.svg" alt="Light Logo" />
+    <img class="sidebar-logo only-dark" src="../../../_static/logo-dark.svg" alt="Dark Logo" />
+  </div>
+  
+  
+</a>
+<script>
+  function setPrefix(prefix){
+    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
+    window.location.href = prefix
+  }
+</script>
+<script defer>
+  fetch(`https://${window.location.host}/_versions.json`)
+  .then((resp) => resp.json())
+  .then((data) => {
+    var versionSelector = document.getElementsByClassName("version-select")[0]
+    for(var i = 0; i < data.length; i++){
+      var option = document.createElement("option");
+      option.innerHTML = data[i].version;
+      option.value = "/" + data[i].version;
+      versionSelector.appendChild(option);
+    }
+
+    if(window.sessionStorage.getItem('version-select-index')){
+      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+    }
+  })
+  .catch((err) => console.log(err));
+</script>
+<div class="sd-d-flex-row sd-align-major-spaced">
+  <a class="github-button" href="https://github.com/jina-ai/docarray" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
+  <select onChange="setPrefix(this.value)" class="version-select">
+    <option value="/">latest</option>
+  </select>
+</div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+    <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/what-is/">What is DocArray?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/what-is/#comparing-to-alternatives">Comparing to Alternatives</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../get-started/install/">Install</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../datatypes/">Multimodal Data</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/text/"><svg aria-hidden="true" class="sd-octicon sd-octicon-typography" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M6.21 8.5L4.574 3.594 2.857 8.5H6.21zm.5 1.5l.829 2.487a.75.75 0 001.423-.474L5.735 2.332a1.216 1.216 0 00-2.302-.018l-3.39 9.688a.75.75 0 001.415.496L2.332 10H6.71zm3.13-4.358C10.53 4.374 11.87 4 13 4c1.5 0 3 .939 3 2.601v5.649a.75.75 0 01-1.448.275C13.995 12.82 13.3 13 12.5 13c-.77 0-1.514-.231-2.078-.709-.577-.488-.922-1.199-.922-2.041 0-.694.265-1.411.887-1.944C11 7.78 11.88 7.5 13 7.5h1.5v-.899c0-.54-.5-1.101-1.5-1.101-.869 0-1.528.282-1.84.858a.75.75 0 11-1.32-.716zM14.5 9H13c-.881 0-1.375.22-1.637.444-.253.217-.363.5-.363.806 0 .408.155.697.39.896.249.21.63.354 1.11.354.732 0 1.26-.209 1.588-.449.35-.257.412-.495.412-.551V9z" fill-rule="evenodd"></path></svg> Text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/image/"><svg aria-hidden="true" class="sd-octicon sd-octicon-image" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M1.75 2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h.94a.76.76 0 01.03-.03l6.077-6.078a1.75 1.75 0 012.412-.06L14.5 10.31V2.75a.25.25 0 00-.25-.25H1.75zm12.5 11H4.81l5.048-5.047a.25.25 0 01.344-.009l4.298 3.889v.917a.25.25 0 01-.25.25zm1.75-.25V2.75A1.75 1.75 0 0014.25 1H1.75A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25zM5.5 6a.5.5 0 11-1 0 .5.5 0 011 0zM7 6a2 2 0 11-4 0 2 2 0 014 0z" fill-rule="evenodd"></path></svg> Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/video/"><svg aria-hidden="true" class="sd-octicon sd-octicon-device-camera-video" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M16 3.75a.75.75 0 00-1.136-.643L11 5.425V4.75A1.75 1.75 0 009.25 3h-7.5A1.75 1.75 0 000 4.75v6.5C0 12.216.784 13 1.75 13h7.5A1.75 1.75 0 0011 11.25v-.675l3.864 2.318A.75.75 0 0016 12.25v-8.5zm-5 5.075l3.5 2.1v-5.85l-3.5 2.1v1.65zM9.5 6.75v-2a.25.25 0 00-.25-.25h-7.5a.25.25 0 00-.25.25v6.5c0 .138.112.25.25.25h7.5a.25.25 0 00.25-.25v-4.5z" fill-rule="evenodd"></path></svg> Video</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/audio/"><svg aria-hidden="true" class="sd-octicon sd-octicon-unmute" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.563 2.069A.75.75 0 018 2.75v10.5a.75.75 0 01-1.238.57L3.472 11H1.75A1.75 1.75 0 010 9.25v-2.5C0 5.784.784 5 1.75 5h1.723l3.289-2.82a.75.75 0 01.801-.111zM6.5 4.38L4.238 6.319a.75.75 0 01-.488.181h-2a.25.25 0 00-.25.25v2.5c0 .138.112.25.25.25h2a.75.75 0 01.488.18L6.5 11.62V4.38zm6.096-2.038a.75.75 0 011.06 0 8 8 0 010 11.314.75.75 0 01-1.06-1.06 6.5 6.5 0 000-9.193.75.75 0 010-1.06v-.001zm-1.06 2.121a.75.75 0 10-1.061 1.061 3.5 3.5 0 010 4.95.75.75 0 101.06 1.06 5 5 0 000-7.07l.001-.001z" fill-rule="evenodd"></path></svg> Audio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/mesh/"><svg aria-hidden="true" class="sd-octicon sd-octicon-package" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M8.878.392a1.75 1.75 0 00-1.756 0l-5.25 3.045A1.75 1.75 0 001 4.951v6.098c0 .624.332 1.2.872 1.514l5.25 3.045a1.75 1.75 0 001.756 0l5.25-3.045c.54-.313.872-.89.872-1.514V4.951c0-.624-.332-1.2-.872-1.514L8.878.392zM7.875 1.69a.25.25 0 01.25 0l4.63 2.685L8 7.133 3.245 4.375l4.63-2.685zM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432L2.5 5.677zm6.25 8.271l4.625-2.683a.25.25 0 00.125-.216V5.677L8.75 8.432v5.516z" fill-rule="evenodd"></path></svg> 3D Mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/tabular/"><svg aria-hidden="true" class="sd-octicon sd-octicon-table" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v3.585a.746.746 0 010 .83v8.085A1.75 1.75 0 0114.25 16H6.309a.748.748 0 01-1.118 0H1.75A1.75 1.75 0 010 14.25V6.165a.746.746 0 010-.83V1.75zM1.5 6.5v7.75c0 .138.112.25.25.25H5v-8H1.5zM5 5H1.5V1.75a.25.25 0 01.25-.25H5V5zm1.5 1.5v8h7.75a.25.25 0 00.25-.25V6.5h-8zm8-1.5h-8V1.5h7.75a.25.25 0 01.25.25V5z" fill-rule="evenodd"></path></svg> Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../datatypes/multimodal/"><svg aria-hidden="true" class="sd-octicon sd-octicon-stack" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M7.122.392a1.75 1.75 0 011.756 0l5.003 2.902c.83.481.83 1.68 0 2.162L8.878 8.358a1.75 1.75 0 01-1.756 0L2.119 5.456a1.25 1.25 0 010-2.162L7.122.392zM8.125 1.69a.25.25 0 00-.25 0l-4.63 2.685 4.63 2.685a.25.25 0 00.25 0l4.63-2.685-4.63-2.685zM1.601 7.789a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0L1.874 8.814A.75.75 0 011.6 7.789zm0 3.5a.75.75 0 011.025-.273l5.249 3.044a.25.25 0 00.25 0l5.249-3.044a.75.75 0 01.752 1.298l-5.248 3.044a1.75 1.75 0 01-1.756 0l-5.248-3.044a.75.75 0 01-.273-1.025z" fill-rule="evenodd"></path></svg> Multi-modal</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fundamentals/document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/serialization/">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/attribute/">Access Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/embedding/">Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/nested/">Nested Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/visualization/">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/document/fluent-interface/">Fluent Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fundamentals/documentarray/">DocumentArray</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/serialization/">Serialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/access-elements/">Access Documents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/access-attributes/">Access Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/find/">Query by Conditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/parallelization/">Parallelization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/visualization/">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/post-external/">Process via External Flow or Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/embedding/">Embed via Neural Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/matching/">Find Nearest Neighbours</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/subindex/">Search over Nested Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/documentarray/evaluation/">Evaluate Matches</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../fundamentals/dataclass/">Dataclass</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/dataclass/construct/">Construct</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/dataclass/access/">Access Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/dataclass/new-type/">Support New Modality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../fundamentals/dataclass/example/">Process Modality</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../">Document Store</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../sqlite/">SQLite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../annlite/">Annlite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../qdrant/">Qdrant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../elasticsearch/">Elasticsearch</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Weaviate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../redis/">Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extend/">Add New Document Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../benchmark/">One Million Scale Benchmark</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../fundamentals/jina-support/">Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../torch-support/">PyTorch/Deep Learning Frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../graphql-support/">GraphQL</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/"><span class="fab fa-python"></span> Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../proto/">Protocol Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/">Changelog</a></li>
+</ul>
+
+    <p class="caption" role="heading"><span class="caption-text">Ecosystem</span></p>
+    <ul>
+        <li class="toctree-l1">
+            <a class="reference external" href="https://docs.jina.ai">
+                <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
+                <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
+                Jina</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
+            Jina Hub</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://finetuner.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/finetuner-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/finetuner-dark.svg">
+            Finetuner</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="#">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/docarray-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/docarray-dark.svg">
+            DocArray</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://clip-as-service.jina.ai">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/cas-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/cas-dark.svg">
+            CLIP-as-service</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/jcloud">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/JCloud-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/JCloud-dark.svg">
+            JCloud</a></li>
+        <li class="toctree-l1"><a class="reference external" href="https://github.com/jina-ai/now">
+            <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/now-light.svg">
+            <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/now-dark.svg">
+            NOW</a></li>
+    </ul>
+</div>
+</div>
+
+            </div>
+            
+        </div>
+    </aside>
+    <div class="main">
+        <div class="content">
+            <div class="article-container">
+                <a href="#" class="back-to-top muted-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+                    </svg>
+                    <span>Back to top</span>
+                </a>
+                <div class="content-icon-container"><div class="theme-toggle-container theme-toggle-content">
+                        <button class="theme-toggle">
+                            <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+                            <svg class="theme-icon-when-auto">
+                                <use href="#svg-sun-half"></use>
+                            </svg>
+                            <svg class="theme-icon-when-dark">
+                                <use href="#svg-moon"></use>
+                            </svg>
+                            <svg class="theme-icon-when-light">
+                                <use href="#svg-sun"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <label class="toc-overlay-icon toc-content-icon"
+                           for="__toc">
+                        <div class="visually-hidden">Toggle table of contents sidebar</div>
+                        <i class="icon">
+                            <svg>
+                                <use href="#svg-toc"></use>
+                            </svg>
+                        </i>
+                    </label>
+                </div>
+                <article role="main">
+                    <section id="weaviate">
+<span id="id1"></span><h1>Weaviate<a class="headerlink" href="#weaviate" title="Permalink to this heading">#</a></h1>
+<p>One can use <a class="reference external" href="https://weaviate.io">Weaviate</a> as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. <code class="docutils literal notranslate"><span class="pre">.match()</span></code>, <code class="docutils literal notranslate"><span class="pre">.find()</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>This feature requires <code class="docutils literal notranslate"><span class="pre">weaviate-client</span></code>. You can install it via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[weaviate]&quot;.</span></code></p>
+</div>
+<p>Here is a video tutorial that guides you to build a simple image search using Weaviate and Docarray.</p>
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rBKvoIGihnY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
+<section id="start-weaviate-service">
+<h3>Start Weaviate service<a class="headerlink" href="#start-weaviate-service" title="Permalink to this heading">#</a></h3>
+<p>To use Weaviate as the storage backend, it is required to have the Weaviate service started. Create <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">---</span><span class="w"></span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
+<span class="nt">services</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">weaviate</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--host</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0.0.0</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--port</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;8080&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--scheme</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http</span><span class="w"></span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">semitechnologies/weaviate:1.13.2</span><span class="w"></span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;8080:8080&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">on-failure:0</span><span class="w"></span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">QUERY_DEFAULTS_LIMIT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">25</span><span class="w"></span>
+<span class="w">      </span><span class="nt">AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">PERSISTENCE_DATA_PATH</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/var/lib/weaviate&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">DEFAULT_VECTORIZER_MODULE</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;none&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">ENABLE_MODULES</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">CLUSTER_HOSTNAME</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;node1&#39;</span><span class="w"></span>
+<span class="nn">...</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Then</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U docarray<span class="o">[</span>weaviate<span class="o">]</span>
+docker-compose up
+</pre></div>
+</div>
+</section>
+<section id="create-documentarray-with-weaviate-backend">
+<h3>Create DocumentArray with Weaviate backend<a class="headerlink" href="#create-documentarray-with-weaviate-backend" title="Permalink to this heading">#</a></h3>
+<p>Assuming service is started using the default configuration (i.e. server address is <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>), one can instantiate a DocumentArray with Weaviate storage as such:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The usage would be the same as the ordinary DocumentArray.</p>
+<p>To access a DocumentArray formerly persisted, one can specify the name, the host, the port and the protocol to connect to the server. <code class="docutils literal notranslate"><span class="pre">name</span></code> is required in this case but other connection parameters are optional. If they are not provided, then it will connect to the Weaviate service bound to <code class="docutils literal notranslate"><span class="pre">http://localhost:8080</span></code>.</p>
+<p>Note, that the <code class="docutils literal notranslate"><span class="pre">name</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">config</span></code> needs to be capitalized.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Persisted&#39;</span><span class="p">,</span> <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">da</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Other functions behave the same as in-memory DocumentArray.</p>
+</section>
+</section>
+<section id="config">
+<h2>Config<a class="headerlink" href="#config" title="Permalink to this heading">#</a></h2>
+<p>The following configs can be set:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Default</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host</span></code></p></td>
+<td><p>Hostname of the Weaviate server</p></td>
+<td><p>‘localhost’</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">port</span></code></p></td>
+<td><p>port of the Weaviate server</p></td>
+<td><p>8080</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">protocol</span></code></p></td>
+<td><p>protocol to be used. Can be ‘http’ or ‘https’</p></td>
+<td><p>‘http’</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>Weaviate class name; the class name of Weaviate object to presesent this DocumentArray</p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">serialize_config</span></code></p></td>
+<td><p><a class="reference internal" href="../../../fundamentals/document/serialization/"><span class="doc std std-doc">Serialization config of each Document</span></a></p></td>
+<td><p>None</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">distance</span></code></p></td>
+<td><p>The distance metric used to compute the distance between vectors. Must be either <code class="docutils literal notranslate"><span class="pre">cosine</span></code> or <code class="docutils literal notranslate"><span class="pre">l2-squared</span></code>.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ef</span></code></p></td>
+<td><p>The size of the dynamic list for the nearest neighbors (used during the search). The higher ef is chosen, the more accurate, but also slower a search becomes.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ef_construction</span></code></p></td>
+<td><p>The size of the dynamic list for the nearest neighbors (used during the construction). Controls index search speed/build speed tradeoff.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timeout_config</span></code></p></td>
+<td><p>Set the timeout configuration for all requests to the Weaviate server.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max_connections</span></code></p></td>
+<td><p>The maximum number of connections per element in all layers.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_ef_min</span></code></p></td>
+<td><p>If using dynamic ef (set to -1), this value acts as a lower boundary. Even if the limit is small enough to suggest a lower value, ef will never drop below this value. This helps in keeping search accuracy high even when setting very low limits, such as 1, 2, or 3.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_ef_max</span></code></p></td>
+<td><p>If using dynamic ef (set to -1), this value acts as an upper boundary. Even if the limit is large enough to suggest a lower value, ef will be capped at this value. This helps to keep search speed reasonable when retrieving massive search result sets, e.g. 500+.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic_ef_factor</span></code></p></td>
+<td><p>If using dynamic ef (set to -1), this value controls how ef is determined based on the given limit. E.g. with a factor of 8, ef will be set to 8*limit as long as this value is between the lower and upper boundary. It will be capped on either end, otherwise.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vector_cache_max_objects</span></code></p></td>
+<td><p>For optimal search and import performance all previously imported vectors need to be held in memory. However, Weaviate also allows for limiting the number of vectors in memory. By default, when creating a new class, this limit is set to 2M objects. A disk lookup for a vector is orders of magnitudes slower than memory lookup, so the cache should be used sparingly.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">flat_search_cutoff</span></code></p></td>
+<td><p>Absolute number of objects configured as the threshold for a flat-search cutoff. If a filter on a filtered vector search matches fewer than the specified elements, the HNSW index is bypassed entirely and a flat (brute-force) search is performed instead. This can speed up queries with very restrictive filters considerably. Optional, defaults to 40000. Set to 0 to turn off flat-search cutoff entirely.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cleanup_interval_seconds</span></code></p></td>
+<td><p>How often the async process runs that “repairs” the HNSW graph after deletes and updates. (Prior to the repair/cleanup process, deleted objects are simply marked as deleted, but still a fully connected member of the HNSW graph. After the repair has run, the edges are reassigned and the datapoints deleted for good). Typically this value does not need to be adjusted, but if deletes or updates are very frequent it might make sense to adjust the value up or down. (Higher value means it runs less frequently, but cleans up more in a single batch. Lower value means it runs more frequently, but might not be as efficient with each run).</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">skip</span></code></p></td>
+<td><p>There are situations where it doesn’t make sense to vectorize a class. For example if the class is just meant as glue between two other class (consisting only of references) or if the class contains mostly duplicate elements (Note that importing duplicate vectors into HNSW is very expensive as the algorithm uses a check whether a candidate’s distance is higher than the worst candidate’s distance for an early exit condition. With (mostly) identical vectors, this early exit condition is never met leading to an exhaustive search on each import or query). In this case, you can skip indexing a vector all-together. To do so, set “skip” to “true”. skip defaults to false; if not set to true, classes will be indexed normally. This setting is immutable after class initialization.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to the default value in Weaviate*</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>*You can read more about the HNSW parameters and their default values <a class="reference external" href="https://weaviate.io/developers/weaviate/current/vector-index-plugins/hnsw.html#how-to-use-hnsw-and-parameters">here</a></p>
+</section>
+<section id="minimum-example">
+<h2>Minimum example<a class="headerlink" href="#minimum-example" title="Permalink to this heading">#</a></h2>
+<p>The following example shows how to use DocArray with Weaviate Document Store in order to index and search text
+Documents.</p>
+<p>First, let’s run the create the <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> instance (make sure a Weaviate server is up and running):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;weaviate&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, we can index some Documents:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;And enjoy fast nearest neighbor search.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All while using DocArray API.&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, we can generate embeddings inside the database using BERT model:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can query the database and print the results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;How to persist Documents&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span>
+    <span class="p">),</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">texts</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Persist Documents with Weaviate.
+</pre></div>
+</div>
+</section>
+<section id="filtering">
+<h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this heading">#</a></h2>
+<p>Search with <code class="docutils literal notranslate"><span class="pre">.find</span></code> can be restricted by user-defined filters. Such filters can be constructed following the guidelines
+in <a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html">Weaviate’s Documentation</a>.</p>
+<section id="example-of-find-with-a-filter-only">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only<a class="headerlink" href="#example-of-find-with-a-filter-only" title="Permalink to this heading">#</a></h3>
+<p>Consider you store Documents with a certain tag <code class="docutils literal notranslate"><span class="pre">price</span></code> into weaviate and you want to retrieve all Documents
+with <code class="docutils literal notranslate"><span class="pre">price</span></code>  lower or equal to  some <code class="docutils literal notranslate"><span class="pre">max_price</span></code> value.</p>
+<p>You can index such Documents as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed Prices:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then you can retrieve all documents whose price is lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code> by applying the following
+filter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="s1">&#39;LessThanEqual&#39;</span><span class="p">,</span> <span class="s1">&#39;valueNumber&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">}</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Returned examples that verify filter &quot;price at most 3&quot;:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">price</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">Returned</span> <span class="n">examples</span> <span class="n">that</span> <span class="n">satisfy</span> <span class="n">condition</span> <span class="s2">&quot;price at most 3&quot;</span><span class="p">:</span>
+
+	 <span class="n">price</span><span class="o">=</span><span class="mi">0</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">1</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">2</span>
+	 <span class="n">price</span><span class="o">=</span><span class="mi">3</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-find-with-query-vector-and-filter">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter<a class="headerlink" href="#example-of-find-with-query-vector-and-filter" title="Permalink to this heading">#</a></h3>
+<p>Consider Documents with embeddings <code class="docutils literal notranslate"><span class="pre">[0,0,0]</span></code> up to <code class="docutils literal notranslate"> <span class="pre">[9,9,9]</span></code> where the document with embedding <code class="docutils literal notranslate"><span class="pre">[i,i,i]</span></code>
+has as tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with value <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create such example with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">},</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;l2-squared&#39;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed Prices:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that
+prices must follow a filter. As an example, let’s consider that retrieved documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower
+or equal than <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in weaviate using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'path':</span> <span class="pre">['price'],</span> <span class="pre">'operator':</span> <span class="pre">'LowerThanEqual',</span> <span class="pre">'valueInt':</span> <span class="pre">max_price}</span></code>.</p>
+<p>Then the search with the proposed filter can be implemented and used with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">np_query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Query vector: </span><span class="se">\t</span><span class="si">{</span><span class="n">np_query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">],</span> <span class="s1">&#39;operator&#39;</span><span class="p">:</span> <span class="s1">&#39;LessThanEqual&#39;</span><span class="p">,</span> <span class="s1">&#39;valueInt&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">}</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Nearest Neighbours with &quot;price&quot; at most 7:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Embeddings Nearest Neighbours with <span class="s2">&quot;price&quot;</span> at most <span class="m">7</span>:
+
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+	<span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sorting">
+<h2>Sorting<a class="headerlink" href="#sorting" title="Permalink to this heading">#</a></h2>
+<p><em><strong>Note: Support for sorting was added to the weaviate-client v3.5.0. You can upgrade with the following command:
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">weaviate-client</span></code></strong></em></p>
+<p>You can sort results by any primitive property, typically a text, string, number, or int property. When a query has a
+natural order (e.g. because of a near vector search), adding a sort operator will override the order.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/get.html#sorting">Further documentation here.</a></p>
+<section id="example-of-find-with-vector-and-sort">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort<a class="headerlink" href="#example-of-find-with-vector-and-sort" title="Permalink to this heading">#</a></h3>
+<p>Consider Documents with the column ‘price’ and on the return you want to sort these documents by highest price to lowest
+price. You can create an example with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># make connection and set columns</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;weaviate&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span>
+        <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;l2-squared&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># load the dummy data</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span>
+                <span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;word</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">},</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="n">np_query</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span>
+<span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">],</span> <span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="s2">&quot;desc&quot;</span><span class="p">}]</span>  <span class="c1"># or &quot;asc&quot;</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> Returned examples that verify results are in order from highest price to lowest:</span><span class="se">\n</span><span class="s1">&#39;</span>
+<span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Returned examples that verify results are <span class="k">in</span> order from highest price to lowest:
+    
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,	 <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+<p>For ascending the results would be as expected:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>    <span class="nv">embedding</span><span class="o">=[</span><span class="m">0</span>. <span class="m">0</span>. <span class="m">0</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">0</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">1</span>. <span class="m">1</span>. <span class="m">1</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">1</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">2</span>. <span class="m">2</span>. <span class="m">2</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">2</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">3</span>. <span class="m">3</span>. <span class="m">3</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">3</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">4</span>. <span class="m">4</span>. <span class="m">4</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">4</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">5</span>. <span class="m">5</span>. <span class="m">5</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">5</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">6</span>. <span class="m">6</span>. <span class="m">6</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">6</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">7</span>. <span class="m">7</span>. <span class="m">7</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">7</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">8</span>. <span class="m">8</span>. <span class="m">8</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">8</span>
+    <span class="nv">embedding</span><span class="o">=[</span><span class="m">9</span>. <span class="m">9</span>. <span class="m">9</span>.<span class="o">]</span>,    <span class="nv">price</span><span class="o">=</span><span class="m">9</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="set-minimum-certainty-on-query-results">
+<h2>Set minimum certainty on query results<a class="headerlink" href="#set-minimum-certainty-on-query-results" title="Permalink to this heading">#</a></h2>
+<p>The DocArray/Weaviate find class uses the NearVector search argument since Weaviate is only being used in this combination to store
+vectors generated by DocArray. Sometimes you want to set the certainty at a certain level to limit the return results.
+You can do this with the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> argument in the <code class="docutils literal notranslate"><span class="pre">find()</span></code> method.</p>
+<p><code class="docutils literal notranslate"><span class="pre">query_params</span></code> is a Dictionary element that combines itself with the request body. To set you must pass the value as a
+Dict (<code class="docutils literal notranslate"><span class="pre">query_params={&quot;key&quot;:</span> <span class="pre">&quot;value}</span></code>) within the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function</p>
+<p>If you are familiar with Weaviates GraphQL structure then you can see where the <code class="docutils literal notranslate"><span class="pre">query_params</span></code> goes:</p>
+<div class="highlight-grapql notranslate"><div class="highlight"><pre><span></span>{
+  Get{
+    Persisted(
+      nearVector: {
+        vector: [-0.36840257,0.13973749,-0.28994447, ...]
+        # query_params goes here. Example: &quot;certainty&quot;: 0.9
+      }
+    ){
+      name
+      _additional {
+        certainty
+      }
+    }
+  }
+}
+</pre></div>
+</div>
+<p>With that said, theoretically, anything other than Certainty that can be used in this query position can be used with
+<code class="docutils literal notranslate"><span class="pre">query_params</span></code> as well.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/filters.html#nearvector-vector-search-argument">Further documentation Here</a></p>
+<p>Using the above minimum example you can add the minimum certainty score.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># make connection</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;weaviate&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># load the dummy data</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;And enjoy fast nearest neighbor search.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All while using DocArray API.&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">query_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;certainty&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only results that have a &#39;weaviate_certainty&#39; of higher than 0.9 should show:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> text=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> scores=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;scores&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This should return something similar to:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Only results that have a <span class="s1">&#39;weaviate_certainty&#39;</span> of higher than <span class="m">0</span>.9 should show:
+         <span class="nv">text</span><span class="o">=[</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="o">]</span>
+         <span class="nv">scores</span><span class="o">=[{</span><span class="s1">&#39;weaviate_certainty&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000001<span class="o">}</span>, <span class="s1">&#39;cosine_similarity&#39;</span>: <span class="o">{</span><span class="s1">&#39;value&#39;</span>: <span class="m">1</span>.0000002000000001<span class="o">}}]</span>
+</pre></div>
+</div>
+</section>
+<section id="include-additional-properties-in-the-return">
+<h2>Include additional properties in the return<a class="headerlink" href="#include-additional-properties-in-the-return" title="Permalink to this heading">#</a></h2>
+<p>GraphQL additional properties can be used on data objects in Get{} Queries to get additional information about the
+returned data objects. Which additional properties are available depends on the modules that are attached to Weaviate.
+The fields id, certainty, featureProjection and classification are available from Weaviate Core. On nested GraphQL
+fields (references to other data classes), only the id can be returned. Explanation on specific additional properties
+can be found on the module pages, see for example
+<a class="reference external" href="https://weaviate.io/developers/weaviate/current/modules/text2vec-contextionary.html#additional-graphql-api-properties">text2vec-contextionary</a>.</p>
+<p><a class="reference external" href="https://weaviate.io/developers/weaviate/current/graphql-references/additional-properties.html">Further documentation here</a></p>
+<p>In order to include additional properties on the request you can use the <code class="docutils literal notranslate"><span class="pre">additional</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">find()</span></code> function.
+These will be included as Tags on the response.</p>
+<p>Assume you want to know when the document was inserted and last updated in the DB.
+You can run the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># make connection</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s2">&quot;weaviate&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Persisted&quot;</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">8080</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># load some dummy data</span>
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Persist Documents with Weaviate.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;And enjoy fast nearest neighbor search.&#39;</span><span class="p">),</span>
+            <span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;All while using DocArray API.&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s1">&#39;bert-base-uncased&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">collate_fn</span><span class="p">(</span><span class="n">da</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">)</span>
+
+<span class="c1"># set additional params and do a lookup</span>
+<span class="n">additional</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;creationTimeUnix&#39;</span><span class="p">,</span> <span class="s1">&#39;lastUpdateTimeUnix&#39;</span><span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+    <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;How to persist Documents&#39;</span><span class="p">)])</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">additional</span><span class="o">=</span><span class="n">additional</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> See when the Document was created and updated:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> creationTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__creationTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> lastUpdateTimeUnix=</span><span class="si">{</span><span class="n">res</span><span class="p">[:,</span> <span class="s1">&#39;tags__lastUpdateTimeUnix&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This should return:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span> See when the Document was created and updated:
+
+         <span class="nv">creationTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+         <span class="nv">lastUpdateTimeUnix</span><span class="o">=[</span><span class="s1">&#39;1656020204563&#39;</span><span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+                </article>
+            </div>
+            <footer>
+                
+                <div class="related-pages">
+                    <a class="next-page" href="../redis/">
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Next</span>
+                            </div>
+                            <div class="title">Redis</div>
+                        </div>
+                        <svg class="furo-related-icon">
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                    </a>
+                    <a class="prev-page" href="../elasticsearch/">
+                        <svg class="furo-related-icon">
+                            <use href="#svg-arrow-right"></use>
+                        </svg>
+                        <div class="page-info">
+                            <div class="context">
+                                <span>Previous</span>
+                            </div>
+                            
+                            <div class="title">Elasticsearch</div>
+                            
+                        </div>
+                    </a>
+                </div>
+                <div class="bottom-of-page">
+                    <div class="left-details">
+                        <div class="copyright">
+                            Copyright &#169; Jina AI Limited. All rights reserved.
+                        </div><div class="last-updated">
+                            Last updated on Oct 25, 2022</div>
+                    </div>
+                    <div class="right-details">
+                        <div class="social-btns">
+                            <a class='social-btn' href="https://github.com/jina-ai/docarray/" aria-label="GitHub"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-github"></i></a>
+                            <a class='social-btn' href="https://slack.jina.ai" aria-label="Slack" target="_blank"
+                               rel="noreferrer"> <i class="fab fa-slack"></i></a>
+                            <a class='social-btn' href="https://youtube.com/c/jina-ai" aria-label="YouTube"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-youtube"></i></a>
+                            <a class='social-btn' href="https://twitter.com/JinaAI_" aria-label="Twitter"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-twitter"></i></a>
+                            <a class='social-btn' href="https://www.linkedin.com/company/jinaai/" aria-label="LinkedIn"
+                               target="_blank" rel="noreferrer"> <i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+            </footer>
+        </div>
+        <aside class="toc-drawer">
+            
+            
+            <div class="toc-sticky toc-scroll">
+                <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+                </div>
+                <div class="toc-tree-container">
+                    <div class="toc-tree">
+                        <ul>
+<li><a class="reference internal" href="#">Weaviate</a><ul>
+<li><a class="reference internal" href="#usage">Usage</a><ul>
+<li><a class="reference internal" href="#start-weaviate-service">Start Weaviate service</a></li>
+<li><a class="reference internal" href="#create-documentarray-with-weaviate-backend">Create DocumentArray with Weaviate backend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#config">Config</a></li>
+<li><a class="reference internal" href="#minimum-example">Minimum example</a></li>
+<li><a class="reference internal" href="#filtering">Filtering</a><ul>
+<li><a class="reference internal" href="#example-of-find-with-a-filter-only">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter only</a></li>
+<li><a class="reference internal" href="#example-of-find-with-query-vector-and-filter">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with query vector and filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sorting">Sorting</a><ul>
+<li><a class="reference internal" href="#example-of-find-with-vector-and-sort">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with vector and sort</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#set-minimum-certainty-on-query-results">Set minimum certainty on query results</a></li>
+<li><a class="reference internal" href="#include-additional-properties-in-the-return">Include additional properties in the return</a></li>
+</ul>
+</li>
+</ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            
+        </aside>
+    </div>
+    <qa-bot
+            title="DocArray Bot"
+            description="The data structure for unstructured data"
+    >
+        <template>
+            <dl>
+                <dt>You can ask questions about our docs. Try:</dt>
+                <dd>What is a DocumentArray?</dd>
+                <dd>How to use docarray with Jina?</dd>
+                <dd>How to find nearest neighbour of Documents?</dd>
+            </dl>
+        </template>
+    </qa-bot>
+</div>
+<img referrerpolicy="no-referrer-when-downgrade"
+     src="https://static.scarf.sh/a.png?x-pxid=2823e771-0e1e-4320-8fde-48bc48e53262"/><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/tabs.js"></script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() { 
+            document.querySelector('qa-bot').setAttribute('server', 'https://jina-ai-docarray.docsqa.jina.ai');
+        });
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qabot@0.4"></script>
+    </body>
+</html>
