@@ -1,11 +1,14 @@
 import warnings
-from typing import Optional, Union, TYPE_CHECKING, Callable
+from typing import Optional, Union, TYPE_CHECKING, Callable, List, Dict
+
+from functools import wraps
 
 import numpy as np
+from collections import defaultdict
 
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document, DocumentArray
 
 
@@ -13,9 +16,14 @@ def _evaluate_deprecation(f):
     """Raises a deprecation warning if the user executes the evaluate function with
     the old interface and adjust the input to fit the new interface."""
 
+    @wraps(f)
     def func(*args, **kwargs):
         if len(args) > 1:
-            if not (isinstance(args[1], Callable) or isinstance(args[1], str)):
+            if not (
+                isinstance(args[1], Callable)
+                or isinstance(args[1], str)
+                or isinstance(args[1], list)
+            ):
                 kwargs['ground_truth'] = args[1]
                 args = [args[0]] + list(args[2:])
                 warnings.warn(
@@ -25,13 +33,33 @@ def _evaluate_deprecation(f):
                     'soon.',
                     DeprecationWarning,
                 )
-        if 'other' in kwargs:
-            kwargs['ground_truth'] = kwargs['other']
-            warnings.warn(
-                '`other` is renamed to `groundtruth` in `evaluate()`, the usage of `other` is '
-                'deprecated and will be removed soon.',
-                DeprecationWarning,
-            )
+        for old_key, new_key in zip(
+            ['other', 'metric', 'metric_name'],
+            ['ground_truth', 'metrics', 'metric_names'],
+        ):
+            if old_key in kwargs:
+                kwargs[new_key] = kwargs[old_key]
+                warnings.warn(
+                    f'`{old_key}` is renamed to `{new_key}` in `evaluate()`, the '
+                    f'usage of `{old_key}` is deprecated and will be removed soon.',
+                    DeprecationWarning,
+                )
+
+        # transfer metrics and metric_names into lists
+        list_warning_msg = (
+            'The attribute `%s` now accepts a list instead of a '
+            'single element. Passing a single element is deprecated and will soon not '
+            'be supported anymore.'
+        )
+        if len(args) > 1:
+            if type(args[1]) is str:
+                args = list(args)
+                args[1] = [args[1]]
+                warnings.warn(list_warning_msg % 'metrics', DeprecationWarning)
+        for key in ['metrics', 'metric_names']:
+            if key in kwargs and type(kwargs[key]) is str:
+                kwargs[key] = [kwargs[key]]
+                warnings.warn(list_warning_msg % key, DeprecationWarning)
         return f(*args, **kwargs)
 
     return func
@@ -43,17 +71,17 @@ class EvaluationMixin:
     @_evaluate_deprecation
     def evaluate(
         self,
-        metric: Union[str, Callable[..., float]],
+        metrics: List[Union[str, Callable[..., float]]],
         ground_truth: Optional['DocumentArray'] = None,
         hash_fn: Optional[Callable[['Document'], str]] = None,
-        metric_name: Optional[str] = None,
+        metric_names: Optional[List[str]] = None,
         strict: bool = True,
         label_tag: str = 'label',
         **kwargs,
-    ) -> Optional[float]:
+    ) -> Dict[str, float]:
         """
         Compute ranking evaluation metrics for a given `DocumentArray` when compared
-        with a groundtruth.
+        with a ground truth.
 
         If one provides a `ground_truth` DocumentArray that is structurally identical
         to `self`, this function compares the `matches` of `documents` inside the
@@ -66,21 +94,23 @@ class EvaluationMixin:
         This method will fill the `evaluations` field of Documents inside this
         `DocumentArray` and will return the average of the computations
 
-        :param metric: The name of the metric, or multiple metrics to be computed
+        :param metrics: list of metric names or metric functions to be computed
         :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`
             compares to.
-        :param hash_fn: The function used for identifying the uniqueness of Documents.
-            If not given, then ``Document.id`` is used.
-        :param metric_name: If provided, the results of the metrics computation will be
-            stored in the `evaluations` field of each Document. If not provided, the
-            name will be computed based on the metrics name.
+        :param hash_fn: For the evaluation against a `ground_truth` DocumentArray,
+            this function is used for generating hashes which are used to compare the
+            documents. If not given, ``Document.id`` is used.
+        :param metric_names: If provided, the results of the metrics computation will be
+            stored in the `evaluations` field of each Document with this names. If not
+            provided, the names will be derived from the metric function names.
         :param strict: If set, then left and right sides are required to be fully
             aligned: on the length, and on the semantic of length. These are preventing
             you to evaluate on irrelevant matches accidentally.
         :param label_tag: Specifies the tag which contains the labels.
-        :param kwargs: Additional keyword arguments to be passed to `metric_fn`
-        :return: The average evaluation computed or a list of them if multiple metrics
-            are required
+        :param kwargs: Additional keyword arguments to be passed to the metric
+            functions.
+        :return: A dictionary which stores for each metric name the average evaluation
+            score.
         """
         if len(self) == 0:
             raise ValueError('It is not possible to evaluate an empty DocumentArray')
@@ -108,15 +138,25 @@ class EvaluationMixin:
         if hash_fn is None:
             hash_fn = lambda d: d.id
 
-        if callable(metric):
-            metric_fn = metric
-        elif isinstance(metric, str):
-            from docarray.math import evaluation
+        metric_fns = []
+        for metric in metrics:
+            if callable(metric):
+                metric_fns.append(metric)
+            elif isinstance(metric, str):
+                from docarray.math import evaluation
 
-            metric_fn = getattr(evaluation, metric)
+                metric_fns.append(getattr(evaluation, metric))
 
-        metric_name = metric_name or metric_fn.__name__
-        results = []
+        if not metric_names:
+            metric_names = [metric_fn.__name__ for metric_fn in metric_fns]
+
+        if len(metric_names) != len(metrics):
+            raise ValueError(
+                'Could not match metric names to the metrics since the number of '
+                'metric names does not match the number of metrics'
+            )
+
+        results = defaultdict(list)
         caller_max_rel = kwargs.pop('max_rel', None)
         for d, gd in zip(self, ground_truth):
             max_rel = caller_max_rel or len(gd.matches)
@@ -153,11 +193,15 @@ class EvaluationMixin:
                     'Could not identify which kind of ground truth'
                     'information is provided to evaluate the matches.'
                 )
-
-            r = metric_fn(binary_relevance, max_rel=max_rel, **kwargs)
-            d.evaluations[metric_name] = NamedScore(
-                value=r, op_name=str(metric_fn), ref_id=d.id
-            )
-            results.append(r)
-        if results:
-            return float(np.mean(results))
+            for metric_name, metric_fn in zip(metric_names, metric_fns):
+                if 'max_rel' in metric_fn.__code__.co_varnames:
+                    kwargs['max_rel'] = max_rel
+                r = metric_fn(binary_relevance, **kwargs)
+                d.evaluations[metric_name] = NamedScore(
+                    value=r, op_name=str(metric_fn), ref_id=d.id
+                )
+                results[metric_name].append(r)
+        return {
+            metric_name: float(np.mean(values))
+            for metric_name, values in results.items()
+        }

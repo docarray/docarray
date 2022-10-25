@@ -141,7 +141,6 @@ You can check the default values in [the docarray source code](https://github.co
 For vector search configurations, default values are those of the database backend, which you can find in the [Redis documentation](https://redis.io/docs/stack/search/reference/vectors/).
 
 ```{note}
-We will support geo-filtering soon. 
 The benchmark test is on the way.
 ```
 
@@ -247,8 +246,7 @@ integer in `columns` configuration (`'field': 'int'`) and use a filter query tha
 
 One can search with user-defined query filters using the `.find` method. Such queries follow the [Redis Search Query Syntax](https://redis.io/docs/stack/search/reference/query_syntax/).
 
-Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents
-with `price` less than or equal to  some `max_price` value.
+Consider a case where you store Documents with a tag of `price` into Redis and you want to retrieve all Documents with `price` less than or equal to  some `max_price` value.
 
 You can index such Documents as follows:
 
@@ -272,8 +270,7 @@ for price in da[:, 'tags__price']:
     print(f'\t price={price}')
 ```
 
-Then you can retrieve all documents whose price is less than or equal to `max_price` by applying the following
-filter:
+Then you can retrieve all documents whose price is less than or equal to `max_price` by applying the following filter:
 
 ```python
 max_price = 3
@@ -297,6 +294,34 @@ This would print
   price=2
   price=3
 ```
+
+With Redis as storage backend, you can also do geospatial searches. You can index Documents with a tag of `geo` type and retrieve all Documents that are within some `max_distance` from one earth coordinates as follows :
+
+```python
+from docarray import Document, DocumentArray
+
+n_dim = 3
+da = DocumentArray(
+    storage='redis',
+    config={
+        'n_dim': n_dim,
+        'columns': {'location': 'geo'},
+    },
+)
+
+with da:
+    da.extend(
+        [
+            Document(id=f'r{i}', tags={'location': f"{-98.17+i},{38.71+i}"})
+            for i in range(10)
+        ]
+    )
+
+max_distance = 1000
+filter = f'@location:[-98.71 38.71 {max_distance} km] '
+results = da.find(filter=filter, limit=n_limit)
+```
+
 
 (vector-search-index)=
 ### Update Vector Search Indexing Schema

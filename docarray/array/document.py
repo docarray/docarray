@@ -3,7 +3,7 @@ from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 from docarray.array.base import BaseDocumentArray
 from docarray.array.mixins import AllMixins
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType
     from docarray.array.memory import DocumentArrayInMemory
     from docarray.array.sqlite import DocumentArraySqlite

@@ -4,7 +4,7 @@ from pydantic import BaseModel, validator
 
 from docarray.math.ndarray import to_list
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType
 
 # this order must be preserved: https://pydantic-docs.helpmanual.io/usage/types/#unions

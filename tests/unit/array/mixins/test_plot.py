@@ -25,7 +25,8 @@ from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
     [
         (DocumentArray, None),
         (DocumentArraySqlite, None),
-        (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
+        # TODO: restore this after annlite issue is fixed in #622
+        # (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
         # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),

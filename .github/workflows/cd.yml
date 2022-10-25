@@ -14,11 +14,12 @@ jobs:
       !endsWith(github.event.head_commit.message, 'reformatted by jina-dev-bot')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - id: set-matrix
         run: |
           sudo apt-get install jq
-          echo "::set-output name=matrix::$(bash scripts/get-all-test-paths.sh)"
+          export value=$(bash scripts/get-all-test-paths.sh)
+          echo "matrix=$value" >> $GITHUB_OUTPUT
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
 
@@ -31,9 +32,9 @@ jobs:
         python-version: [3.7]
         test-path: ${{fromJson(needs.prep-testbed.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Prepare enviroment
@@ -54,7 +55,7 @@ jobs:
         run: |
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
-          echo "::set-output name=codecov_flag::docarray"
+          echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
         timeout-minutes: 30
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
@@ -64,7 +65,7 @@ jobs:
         with:
           files: "coverage.xml"
       - name: Upload coverage from test to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3.1.1
         if: steps.check_files.outputs.files_exists == 'true' && ${{ matrix.python-version }} == '3.7'
         with:
           file: coverage.xml
@@ -76,7 +77,7 @@ jobs:
     needs: core-test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
         with:
           fetch-depth: 100
       - name: Pre-release (.devN)

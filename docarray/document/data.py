@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from docarray.math.ndarray import check_arraylike_equality
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.score import NamedScore
     from docarray import DocumentArray, Document
     from docarray.typing import ArrayType, StructValueType, DocumentContentType

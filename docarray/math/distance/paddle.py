@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import paddle
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from paddle import tensor
     import numpy
 

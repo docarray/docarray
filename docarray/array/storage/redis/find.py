@@ -21,7 +21,7 @@ from redis.commands.search.querystring import (
     union,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
 
@@ -74,7 +74,7 @@ class FindMixin(BaseFindMixin):
         self,
         query: 'RedisArrayType',
         limit: Union[int, float] = 20,
-        filter: Optional[Dict] = None,
+        filter: Optional[Union[str, Dict]] = None,
         **kwargs,
     ) -> List['DocumentArray']:
 
@@ -107,7 +107,7 @@ class FindMixin(BaseFindMixin):
 
     def _filter(
         self,
-        filter: Dict,
+        filter: Union[str, Dict],
         limit: Union[int, float] = 20,
     ) -> 'DocumentArray':
 

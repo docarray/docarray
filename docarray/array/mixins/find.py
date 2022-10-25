@@ -6,7 +6,7 @@ import numpy as np
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T, ArrayType
 
     from docarray import Document, DocumentArray

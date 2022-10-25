@@ -8,7 +8,7 @@ from docarray.array.storage.sqlite.helper import initialize_table
 from docarray.array.storage.base.backend import BaseBackendMixin
 from docarray.helper import random_identity, dataclass_from_dict
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType
 
 

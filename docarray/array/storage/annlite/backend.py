@@ -14,7 +14,7 @@ import numpy as np
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType, ArrayType
 
 

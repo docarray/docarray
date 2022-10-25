@@ -5,7 +5,7 @@ from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
 
 from docarray.helper import compress_bytes, decompress_bytes
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

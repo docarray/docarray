@@ -1,9 +1,11 @@
+import operator
+from math import radians
+
 import numpy as np
 import pytest
-
-from docarray import DocumentArray, Document
+from docarray import Document, DocumentArray
 from docarray.math import ndarray
-import operator
+from sklearn.metrics.pairwise import haversine_distances
 
 
 def test_customize_metric_fn():
@@ -572,6 +574,42 @@ def test_filtering(
         )
 
 
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'match': {'value': threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    'eq',
+                ]
+            )
+        ],
+    ],
+)
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_qdrant_filter_function(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
+    n_dim = 128
+    da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
+    thresholds = [10, 20, 30]
+    for threshold in thresholds:
+        filter = filter_gen(operator, threshold)
+        results = da._filter(filter=filter)
+
+        assert len(results) > 0
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_weaviate_filter_query(start_storage, columns):
     n_dim = 128
@@ -659,6 +697,45 @@ def test_redis_category_filter(filter, checker, columns, start_storage):
     results = da.find(np.random.rand(n_dim), filter=filter)
     assert len(results) > 0
     assert all([checker(r) for r in results])
+
+
+def test_redis_geo_filter(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='redis',
+        config={
+            'n_dim': n_dim,
+            'columns': {'location': 'geo'},
+        },
+    )
+
+    da.extend(
+        [
+            Document(
+                embedding=np.random.rand(n_dim),
+                tags={'location': f"{-98.17+i},{38.71+i}"},
+            )
+            for i in range(10)
+        ]
+    )
+
+    filter = '@location:[-98.71 38.71 800 km] '
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+
+    for r in results:
+        lon1, lat1, lon2, lat2 = map(
+            radians,
+            [
+                -98.71,
+                38.71,
+                float(r.tags['location'].split(',')[0]),
+                float(r.tags['location'].split(',')[1]),
+            ],
+        )
+        distance = haversine_distances([[lon1, lat1], [lon2, lat2]]) * 6371
+        assert distance[0][1] < 800
 
 
 @pytest.mark.parametrize('storage', ['memory'])

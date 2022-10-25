@@ -2,7 +2,7 @@ from collections import namedtuple
 from typing import TYPE_CHECKING, Dict, NamedTuple, Optional
 from urllib.parse import urlparse
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
 
 

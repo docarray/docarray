@@ -6,7 +6,7 @@ import numpy as np
 
 from docarray.helper import dunder_get
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
 
 
