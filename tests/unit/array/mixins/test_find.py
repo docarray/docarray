@@ -791,12 +791,19 @@ def test_elastic_id_filter(storage, config, limit):
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
-def test_find_subindex(storage, config):
+def test_find_subindex(storage, config, start_storage):
     n_dim = 3
     subindex_configs = {'@c': None}
     if storage == 'sqlite':
         subindex_configs['@c'] = dict()
-    elif storage in ['weaviate', 'annlite', 'qdrant', 'elasticsearch', 'redis']:
+    elif storage in [
+        'weaviate',
+        'annlite',
+        'qdrant',
+        'elasticsearch',
+        'redis',
+        'milvus',
+    ]:
         subindex_configs['@c'] = {'n_dim': 2}
 
     da = DocumentArray(
@@ -847,7 +854,7 @@ def test_find_subindex(storage, config):
         ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
-def test_find_subindex_multimodal(storage, config):
+def test_find_subindex_multimodal(storage, config, start_storage):
     from docarray import dataclass
     from docarray.typing import Text
 
