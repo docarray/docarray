@@ -68,7 +68,7 @@ da_r.summary()
 
 
 ```{seealso}
-To load an arbitrary JSON file, please set `protocol=None` {ref}`as descrbied here<arbitrary-json>`.
+To load an arbitrary JSON file, please set `protocol=None` {ref}`as described here<arbitrary-json>`.
 
 More parameters and usages can be found in the Document-level {ref}`doc-json`.
 ```

@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins/" />
   
-<meta property="og:site_name" content="DocArray 0.18.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
   
 <meta property="og:description" content="Subpackages: docarray.array.mixins.dataloader package- Submodules- docarray.array.mixins.dataloader.helper module- DocumentArrayLoader.., Module contents- DataLoaderMixin- DataLoaderMixin.dataloader()..., docarray.array.mixins.io package- Submodules- docarray.array.mixins.io.binary module- LazyRe..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.18.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.mixins package - DocArray 0.18.1 documentation</title>
+        <title>docarray.array.mixins package - DocArray 0.18.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.18.1 documentation</div>
+                <div class="brand">DocArray 0.18.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -212,9 +212,35 @@
   
   
 </a>
+<script>
+  function setPrefix(prefix){
+    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
+    window.location.href = prefix
+  }
+</script>
+<script defer>
+  fetch(`https://${window.location.host}/_versions.json`)
+  .then((resp) => resp.json())
+  .then((data) => {
+    var versionSelector = document.getElementsByClassName("version-select")[0]
+    for(var i = 0; i < data.length; i++){
+      var option = document.createElement("option");
+      option.innerHTML = data[i].version;
+      option.value = "/" + data[i].version;
+      versionSelector.appendChild(option);
+    }
+
+    if(window.sessionStorage.getItem('version-select-index')){
+      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+    }
+  })
+  .catch((err) => console.log(err));
+</script>
 <div class="sd-d-flex-row sd-align-major-spaced">
   <a class="github-button" href="https://github.com/jina-ai/docarray" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
-  
+  <select onChange="setPrefix(this.value)" class="version-select">
+    <option value="/">latest</option>
+  </select>
 </div><form class="sidebar-search-container" method="get" action="../../search/" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -308,7 +334,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -602,7 +628,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-docarray.array.mixins" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.mixins.AllMixins">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.</span></span><span class="sig-name descname"><span class="pre">AllMixins</span></span><a class="reference internal" href="../../_modules/docarray/array/mixins/#AllMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.AllMixins" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.mixins.</span></span><span class="sig-name descname"><span class="pre">AllMixins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/mixins/#AllMixins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.mixins.AllMixins" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../docarray.array.mixins.getattr/#docarray.array.mixins.getattr.GetAttributeMixin" title="docarray.array.mixins.getattr.GetAttributeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetAttributeMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.getitem/#docarray.array.mixins.getitem.GetItemMixin" title="docarray.array.mixins.getitem.GetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.setitem/#docarray.array.mixins.setitem.SetItemMixin" title="docarray.array.mixins.setitem.SetItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SetItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.delitem/#docarray.array.mixins.delitem.DelItemMixin" title="docarray.array.mixins.delitem.DelItemMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DelItemMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.content/#docarray.array.mixins.content.ContentPropertyMixin" title="docarray.array.mixins.content.ContentPropertyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContentPropertyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin" title="docarray.array.mixins.pydantic.PydanticMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.strawberry/#docarray.array.mixins.strawberry.StrawberryMixin" title="docarray.array.mixins.strawberry.StrawberryMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrawberryMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.group/#docarray.array.mixins.group.GroupMixin" title="docarray.array.mixins.group.GroupMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.empty/#docarray.array.mixins.empty.EmptyMixin" title="docarray.array.mixins.empty.EmptyMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.csv/#docarray.array.mixins.io.csv.CsvIOMixin" title="docarray.array.mixins.io.csv.CsvIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">CsvIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin" title="docarray.array.mixins.io.json.JsonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">JsonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.binary/#docarray.array.mixins.io.binary.BinaryIOMixin" title="docarray.array.mixins.io.binary.BinaryIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">BinaryIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.common/#docarray.array.mixins.io.common.CommonIOMixin" title="docarray.array.mixins.io.common.CommonIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">CommonIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.embed/#docarray.array.mixins.embed.EmbedMixin" title="docarray.array.mixins.embed.EmbedMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmbedMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.pushpull/#docarray.array.mixins.io.pushpull.PushPullMixin" title="docarray.array.mixins.io.pushpull.PushPullMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PushPullMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.from_gen/#docarray.array.mixins.io.from_gen.FromGeneratorMixin" title="docarray.array.mixins.io.from_gen.FromGeneratorMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FromGeneratorMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.find/#docarray.array.mixins.find.FindMixin" title="docarray.array.mixins.find.FindMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">FindMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.match/#docarray.array.mixins.match.MatchMixin" title="docarray.array.mixins.match.MatchMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatchMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.traverse/#docarray.array.mixins.traverse.TraverseMixin" title="docarray.array.mixins.traverse.TraverseMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraverseMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.plot/#docarray.array.mixins.plot.PlotMixin" title="docarray.array.mixins.plot.PlotMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PlotMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.sample/#docarray.array.mixins.sample.SampleMixin" title="docarray.array.mixins.sample.SampleMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">SampleMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.post/#docarray.array.mixins.post.PostMixin" title="docarray.array.mixins.post.PostMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">PostMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.text/#docarray.array.mixins.text.TextToolsMixin" title="docarray.array.mixins.text.TextToolsMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextToolsMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin" title="docarray.array.mixins.evaluation.EvaluationMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.reduce/#docarray.array.mixins.reduce.ReduceMixin" title="docarray.array.mixins.reduce.ReduceMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReduceMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin" title="docarray.array.mixins.parallel.ParallelMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.io.dataframe/#docarray.array.mixins.io.dataframe.DataframeIOMixin" title="docarray.array.mixins.io.dataframe.DataframeIOMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataframeIOMixin</span></code></a>, <a class="reference internal" href="../docarray.array.mixins.dataloader/#docarray.array.mixins.dataloader.DataLoaderMixin" title="docarray.array.mixins.dataloader.DataLoaderMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoaderMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>All plugins that can be used in <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p>
 <dl class="py method">
@@ -878,7 +904,7 @@ is to use the <cite>tensors</cite> of the documents.</p></li>
 <dt class="sig sig-object py" id="docarray.array.mixins.AllMixins.evaluate">
 <span class="sig-name descname"><span class="pre">evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.AllMixins.evaluate" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute ranking evaluation metrics for a given <cite>DocumentArray</cite> when compared
-with a groundtruth.</p>
+with a ground truth.</p>
 <p>If one provides a <cite>ground_truth</cite> DocumentArray that is structurally identical
 to <cite>self</cite>, this function compares the <cite>matches</cite> of <cite>documents</cite> inside the
 <cite>DocumentArray</cite> to this <cite>ground_truth</cite>.
@@ -894,8 +920,9 @@ matches properties.</p>
 <li><p><strong>metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – list of metric names or metric functions to be computed</p></li>
 <li><p><strong>ground_truth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>]) – The ground_truth <cite>DocumentArray</cite> that the <cite>DocumentArray</cite>
 compares to.</p></li>
-<li><p><strong>hash_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The function used for identifying the uniqueness of Documents.
-If not given, then <code class="docutils literal notranslate"><span class="pre">Document.id</span></code> is used.</p></li>
+<li><p><strong>hash_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – For the evaluation against a <cite>ground_truth</cite> DocumentArray,
+this function is used for generating hashes which are used to compare the
+documents. If not given, <code class="docutils literal notranslate"><span class="pre">Document.id</span></code> is used.</p></li>
 <li><p><strong>metric_names</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – If provided, the results of the metrics computation will be
 stored in the <cite>evaluations</cite> field of each Document with this names. If not
 provided, the names will be derived from the metric function names.</p></li>
@@ -2117,7 +2144,7 @@ with all Documents, that are reached by the path.</p>
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 24, 2022</div>
+                            Last updated on Oct 25, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

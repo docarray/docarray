@@ -10,13 +10,13 @@
   
 <meta property="og:url" content="https://docarray.jina.ai/advanced/document-store/qdrant/" />
   
-<meta property="og:site_name" content="DocArray 0.18.1 Documentation" />
+<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
   
 <meta property="og:description" content="One can use Qdrant as the document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e..match(),.find(). Usage: Start Qdrant service: To use Qdrant as the storage backend, you need a running Qdrant server. You can use the Qdrant Docker image t..." />
   
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
   
-<meta property="og:image:alt" content="DocArray 0.18.1 Documentation" />
+<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
   
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -39,7 +39,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/advanced/document-store/qdrant.html" />
 
     <link rel="shortcut icon" href="../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>Qdrant - DocArray 0.18.1 documentation</title>
+        <title>Qdrant - DocArray 0.18.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
@@ -172,7 +172,7 @@
         </div>
         <div class="header-center">
             <a href="../../../">
-                <div class="brand">DocArray 0.18.1 documentation</div>
+                <div class="brand">DocArray 0.18.2 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -212,9 +212,35 @@
   
   
 </a>
+<script>
+  function setPrefix(prefix){
+    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
+    window.location.href = prefix
+  }
+</script>
+<script defer>
+  fetch(`https://${window.location.host}/_versions.json`)
+  .then((resp) => resp.json())
+  .then((data) => {
+    var versionSelector = document.getElementsByClassName("version-select")[0]
+    for(var i = 0; i < data.length; i++){
+      var option = document.createElement("option");
+      option.innerHTML = data[i].version;
+      option.value = "/" + data[i].version;
+      versionSelector.appendChild(option);
+    }
+
+    if(window.sessionStorage.getItem('version-select-index')){
+      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+    }
+  })
+  .catch((err) => console.log(err));
+</script>
 <div class="sd-d-flex-row sd-align-major-spaced">
   <a class="github-button" href="https://github.com/jina-ai/docarray" data-icon="octicon-star" data-show-count="true" aria-label="Star jina-ai/jina on GitHub" style="opacity: 0;">Star</a>
-  
+  <select onChange="setPrefix(this.value)" class="version-select">
+    <option value="/">latest</option>
+  </select>
 </div><form class="sidebar-search-container" method="get" action="../../../search/" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -308,7 +334,7 @@
                 <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/search-light.svg">
                 <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/search-dark.svg">
                 Jina</a></li>
-        <li class="toctree-l1"><a class="reference external" href="https://hub.jina.ai">
+        <li class="toctree-l1"><a class="reference external" href="https://cloud.jina.ai">
             <img class="sidebar-ecosys-logo only-light-line" src="../../../_static/hub-light.svg">
             <img class="sidebar-ecosys-logo only-dark-line" src="../../../_static/hub-dark.svg">
             Jina Hub</a></li>
@@ -496,7 +522,7 @@ instantiate a DocumentArray with Qdrant storage like so:</p>
 <span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.4&#39;</span><span class="w"></span>
 <span class="nt">services</span><span class="p">:</span><span class="w"></span>
 <span class="w">  </span><span class="nt">qdrant</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.7.0</span><span class="w"></span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">qdrant/qdrant:v0.8.0</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;6333:6333&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="nt">ulimits</span><span class="p">:</span><span class="w"> </span><span class="c1"># Only required for tests, as there are a lot of collections created</span><span class="w"></span>
@@ -516,7 +542,9 @@ docker-compose up
 
 <span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">128</span>
 
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;qdrant&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">})</span>  <span class="c1"># init</span>
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+    <span class="n">N</span><span class="p">,</span> <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;qdrant&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s1">&#39;distance&#39;</span><span class="p">:</span> <span class="s1">&#39;cosine&#39;</span><span class="p">}</span>
+<span class="p">)</span>  <span class="c1"># init</span>
 
 <span class="n">da</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="n">D</span><span class="p">])</span>
 
@@ -562,9 +590,9 @@ has as tag <code class="docutils literal notranslate"><span class="pre">price</s
 </pre></div>
 </div>
 <p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that
-prices must follow a filter. As an example, let’s consider that retrieved documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower
-or equal than <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in annlite using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
-<p>Then the search with the proposed filter can be implemented and used with the following code:</p>
+prices must follow a filter. As an example, retrieved Documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than
+or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
+<p>Then you can implement and use the search with the proposed filter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
 
@@ -588,6 +616,59 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">6.</span> <span class="mf">6.</span> <span class="mf">6.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">6</span>
 	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">5.</span> <span class="mf">5.</span> <span class="mf">5.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">5</span>
 	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">4.</span> <span class="mf">4.</span> <span class="mf">4.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">4</span>
+</pre></div>
+</div>
+</section>
+<section id="example-of-filter-with-a-filter">
+<h3>Example of <code class="docutils literal notranslate"><span class="pre">.filter</span></code> with a filter<a class="headerlink" href="#example-of-filter-with-a-filter" title="Permalink to this heading">#</a></h3>
+<p>The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.
+Consider Documents have the tag <code class="docutils literal notranslate"><span class="pre">price</span></code> with a value of <code class="docutils literal notranslate"><span class="pre">i</span></code>. We can create these with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n_dim</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+    <span class="n">storage</span><span class="o">=</span><span class="s1">&#39;qdrant&#39;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_dim&#39;</span><span class="p">:</span> <span class="n">n_dim</span><span class="p">,</span> <span class="s1">&#39;columns&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">}},</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="n">da</span><span class="p">:</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;r</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_dim</span><span class="p">),</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">})</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Indexed Prices:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">da</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For example, suppose we want to filter results such that
+retrieved documents must have a <code class="docutils literal notranslate"><span class="pre">price</span></code> value less than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode
+this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
+<p>Then you can implement and use the search with the proposed filter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;must&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lte&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">}}]}</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Points with &quot;price&quot; at most 7:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This prints:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="n">Points</span> <span class="k">with</span> <span class="s2">&quot;price&quot;</span> <span class="n">at</span> <span class="n">most</span> <span class="mi">7</span><span class="p">:</span>
+
+	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">6.</span> <span class="mf">6.</span> <span class="mf">6.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">6</span>
+	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">7.</span> <span class="mf">7.</span> <span class="mf">7.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">7</span>
+	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">1</span>
+	<span class="n">embedding</span><span class="o">=</span><span class="p">[</span><span class="mf">2.</span> <span class="mf">2.</span> <span class="mf">2.</span><span class="p">],</span>	 <span class="n">price</span><span class="o">=</span><span class="mi">2</span>
 </pre></div>
 </div>
 </section>
@@ -629,7 +710,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 24, 2022</div>
+                            Last updated on Oct 25, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -671,6 +752,7 @@ or equal than <code class="docutils literal notranslate"><span class="pre">max_p
 <li><a class="reference internal" href="#minimum-example">Minimum example</a></li>
 <li><a class="reference internal" href="#vector-search-with-filter">Vector search with filter</a><ul>
 <li><a class="reference internal" href="#example-of-find-with-a-filter">Example of <code class="docutils literal notranslate"><span class="pre">.find</span></code> with a filter</a></li>
+<li><a class="reference internal" href="#example-of-filter-with-a-filter">Example of <code class="docutils literal notranslate"><span class="pre">.filter</span></code> with a filter</a></li>
 </ul>
 </li>
 </ul>
