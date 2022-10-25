@@ -48,7 +48,7 @@ class FindMixin:
         q: 'QdrantArrayType',
         limit: int = 10,
         filter: Optional[Dict] = None,
-        search_params: Optional[Dict] = {},
+        search_params: Optional[Dict] = None,
         **kwargs,
     ):
         query_vector = self._map_embedding(q)
@@ -57,7 +57,9 @@ class FindMixin:
             self.collection_name,
             query_vector=query_vector,
             query_filter=filter,
-            search_params=rest.SearchParams(**search_params),
+            search_params=None
+            if not search_params
+            else rest.SearchParams(**search_params),
             top=limit,
             append_payload=['_serialized'],
         )
@@ -80,7 +82,7 @@ class FindMixin:
         query: 'QdrantArrayType',
         limit: int = 10,
         filter: Optional[Dict] = None,
-        search_params: Optional[Dict] = {},
+        search_params: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
