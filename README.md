@@ -30,11 +30,7 @@ DocArray is a library for nested, unstructured, multimodal data in transit, incl
 
 🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
-Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
-
-<p align="center">
-<a href="#"><img src="https://github.com/jina-ai/jina/blob/master/.github/readme/core-tree-graph.svg?raw=true" alt="Jina in Jina AI neural search ecosystem" width="100%"></a>
-</p>
+Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
 
 <!-- end elevator-pitch -->
 
