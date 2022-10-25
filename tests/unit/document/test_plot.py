@@ -98,7 +98,9 @@ def test_matches_sprite_image_generator(
     start_storage,
 ):
     da, das = embed_docs
-    if image_source == 'tensor':
+    if (
+        image_source == 'tensor' and da_cls != DocumentArrayMilvus
+    ):  # Milvus can't handle large tensors
         da.apply(lambda d: d.load_uri_to_image_tensor())
         das.apply(lambda d: d.load_uri_to_image_tensor())
 
