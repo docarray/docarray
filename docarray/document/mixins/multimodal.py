@@ -1,7 +1,12 @@
 import base64
 import typing
 
-from docarray.dataclasses.types import Field, is_multimodal, _is_field
+from docarray.dataclasses.types import (
+    Field,
+    is_multimodal,
+    _is_field,
+    AttributeTypeError,
+)
 from docarray.dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -58,17 +63,19 @@ class MultiModalMixin:
                         }
 
                     else:
-                        attribute_type = cls._get_attribute_type_from_obj_type(
-                            sub_type, field
-                        )
+                        try:
+                            attribute_type = cls._get_attribute_type_from_obj_type(
+                                sub_type, field
+                            )
+                        except AttributeTypeError:
+                            raise TypeError(
+                                f'Unsupported type annotation inside Iterable: {sub_type}'
+                            )
+
                         if attribute_type == AttributeType.DOCUMENT:
                             attribute_type = AttributeType.ITERABLE_DOCUMENT
                         elif attribute_type == AttributeType.NESTED:
                             attribute_type = AttributeType.ITERABLE_NESTED
-                        else:
-                            raise TypeError(
-                                f'Unsupported type annotation inside Iterable: {sub_type}'
-                            )
 
                         chunk = Document()
                         for element in attribute:
@@ -182,7 +189,7 @@ class MultiModalMixin:
         elif _is_field(field):
             attribute_type = AttributeType.DOCUMENT
         else:
-            raise ValueError(f'Unsupported type annotation')
+            raise AttributeTypeError(f'Unsupported type annotation {obj_type}')
 
         return attribute_type
 
