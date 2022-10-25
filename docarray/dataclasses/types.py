@@ -41,6 +41,10 @@ class AttributeType(str, Enum):
     ITERABLE_NESTED = 'iterable_nested'
 
 
+class AttributeTypeError(TypeError):
+    pass
+
+
 class Field(_Field):
     def __init__(
         self,
