@@ -41,7 +41,7 @@ class AttributeType(str, Enum):
     ITERABLE_NESTED = 'iterable_nested'
 
 
-class AttributeTypeError(ValueError):
+class AttributeTypeError(TypeError):
     pass
 
 

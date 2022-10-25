@@ -178,7 +178,7 @@ class MultiModalMixin:
         elif _is_field(field):
             doc = field.setter(obj)
         else:
-            raise ValueError(f'Unsupported type annotation')
+            raise AttributeTypeError(f'Unsupported type annotation {obj_type}')
         return doc, attribute_type
 
     @staticmethod
