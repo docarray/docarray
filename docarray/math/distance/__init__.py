@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from docarray.math.ndarray import get_array_type
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType
     import numpy as np
 

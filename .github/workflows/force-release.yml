@@ -23,12 +23,12 @@ jobs:
     needs: token-check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.5.0
         with:
           token: ${{ secrets.JINA_DEV_BOT }}
           fetch-depth: 100  # means max contribute history is limited to 100 lines
 #          submodules: true
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - run: |
@@ -47,4 +47,4 @@ jobs:
         with:
           github_token: ${{ secrets.JINA_DEV_BOT }}
           tags: true
-          branch: main
+          branch: ${{ github.ref }}

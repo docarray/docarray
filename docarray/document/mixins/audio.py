@@ -3,7 +3,7 @@ from typing import Union, BinaryIO, TYPE_CHECKING
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 
@@ -43,28 +43,34 @@ class AudioDataMixin:
 
         :return: Document itself after processed
         """
-        ifile = wave.open(
+        with wave.open(
             self.uri
-        )  #: note wave is Python built-in module https://docs.python.org/3/library/wave.html
-        samples = ifile.getnframes()
-        audio = ifile.readframes(samples)
+        ) as ifile:  #: note wave is Python built-in module https://docs.python.org/3/library/wave.html
+            samples = ifile.getnframes()
+            audio = ifile.readframes(samples)
 
-        # Convert buffer to float32 using NumPy
-        audio_as_np_int16 = np.frombuffer(audio, dtype=np.int16)
-        audio_as_np_float32 = audio_as_np_int16.astype(np.float32)
+            # Convert buffer to float32 using NumPy
+            audio_as_np_int16 = np.frombuffer(audio, dtype=np.int16)
+            audio_as_np_float32 = audio_as_np_int16.astype(np.float32)
 
-        # Normalise float32 array so that values are between -1.0 and +1.0
-        max_int16 = 2**15
-        audio_normalised = audio_as_np_float32 / max_int16
+            # Normalise float32 array so that values are between -1.0 and +1.0
+            max_int16 = 2**15
+            audio_normalised = audio_as_np_float32 / max_int16
 
-        channels = ifile.getnchannels()
-        if channels == 2:
-            # 1 for mono, 2 for stereo
-            audio_stereo = np.empty((int(len(audio_normalised) / channels), channels))
-            audio_stereo[:, 0] = audio_normalised[range(0, len(audio_normalised), 2)]
-            audio_stereo[:, 1] = audio_normalised[range(1, len(audio_normalised), 2)]
+            channels = ifile.getnchannels()
+            if channels == 2:
+                # 1 for mono, 2 for stereo
+                audio_stereo = np.empty(
+                    (int(len(audio_normalised) / channels), channels)
+                )
+                audio_stereo[:, 0] = audio_normalised[
+                    range(0, len(audio_normalised), 2)
+                ]
+                audio_stereo[:, 1] = audio_normalised[
+                    range(1, len(audio_normalised), 2)
+                ]
 
-            self.tensor = audio_stereo
-        else:
-            self.tensor = audio_normalised
-        return self
+                self.tensor = audio_stereo
+            else:
+                self.tensor = audio_normalised
+            return self

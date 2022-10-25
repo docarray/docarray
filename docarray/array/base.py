@@ -2,7 +2,7 @@ from typing import MutableSequence, TYPE_CHECKING, Union, Iterable
 
 from docarray import Document
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

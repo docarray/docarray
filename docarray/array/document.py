@@ -3,7 +3,7 @@ from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 from docarray.array.base import BaseDocumentArray
 from docarray.array.mixins import AllMixins
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType
     from docarray.array.memory import DocumentArrayInMemory
     from docarray.array.sqlite import DocumentArraySqlite
@@ -144,10 +144,9 @@ class DocumentArray(AllMixins, BaseDocumentArray):
 
     def __exit__(self, *args, **kwargs):
         """
-        Ensures that offset2ids are stored in the db after
-        operations in the DocumentArray are performed.
+        Ensures that we sync the data to the storage backend when exiting the context manager
         """
-        self._save_offset2ids()
+        self.sync()
 
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Tuple, Sequence, Optional, List, Any
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType
     from docarray import Document, DocumentArray
 

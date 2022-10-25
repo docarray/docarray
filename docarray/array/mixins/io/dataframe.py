@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Type
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame
     from docarray.typing import T
 

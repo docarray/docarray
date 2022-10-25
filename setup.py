@@ -65,10 +65,10 @@ setup(
             'strawberry-graphql',
         ],
         'qdrant': [
-            'qdrant-client~=0.7.3',
+            'qdrant-client==0.8.0',
         ],
         'annlite': [
-            'annlite>=0.3.12',
+            'annlite==0.3.13',
         ],
         'weaviate': [
             'weaviate-client~=3.3.0',
@@ -87,7 +87,7 @@ setup(
             'pytest',
             'pytest-timeout',
             'pytest-mock',
-            'pytest-cov',
+            'pytest-cov==3.0.0',
             'pytest-repeat',
             'pytest-reraise',
             'mock',

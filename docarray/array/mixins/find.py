@@ -6,7 +6,7 @@ import numpy as np
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T, ArrayType
 
     from docarray import Document, DocumentArray
@@ -154,10 +154,10 @@ class FindMixin:
                     'filter and query cannot be both dict type, set only one for filtering'
                 )
         elif query is None:
-            if isinstance(filter, dict):
+            if isinstance(filter, (str, dict)):
                 return self._filter(filter, limit=limit)
             else:
-                raise ValueError('filter must be dict when query is None')
+                raise ValueError('filter must be dict or str when query is None')
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):

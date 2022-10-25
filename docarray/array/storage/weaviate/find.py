@@ -16,7 +16,7 @@ from docarray.math.helper import EPSILON
 from docarray.math.ndarray import to_numpy_array
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
 

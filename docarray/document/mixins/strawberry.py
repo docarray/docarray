@@ -2,7 +2,7 @@ import dataclasses
 from collections import defaultdict
 from typing import TYPE_CHECKING, Type, List
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from docarray.document.strawberry_type import StrawberryDocument
 

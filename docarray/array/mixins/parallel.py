@@ -12,7 +12,7 @@ from typing import (
     Union,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from docarray import Document, DocumentArray
     from multiprocessing.pool import ThreadPool, Pool

@@ -18,7 +18,7 @@ from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.array.storage.registry import _REGISTRY
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType, DocumentArraySourceType
 
 
@@ -110,8 +110,6 @@ class BackendMixin(BaseBackendMixin):
                 'Weaviate class name has to be capitalized. '
                 'Please capitalize when declaring the name field in config.'
             )
-
-        self._persist = bool(config.name)
 
         self._client = weaviate.Client(
             f'{config.protocol}://{config.host}:{config.port}',

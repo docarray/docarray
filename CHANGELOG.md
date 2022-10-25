@@ -138,6 +138,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3320,4 +3321,76 @@
 
  - [[```92680e80```](https://github.com/jina-ai/docarray/commit/92680e8002650ff53d93e3b6a5ce836063877a0f)] __-__ bump minor version (#561) (*AlaeddineAbdessalem*)
  - [[```ba91a2ee```](https://github.com/jina-ai/docarray/commit/ba91a2ee009ae48ff4f59b35ec41f0c2146808e5)] __-__ __version__: the next version will be 0.16.6 (*Jina Dev Bot*)
+
+<a name=release-note-0-18-0></a>
+## Release Note (`0.18.0`)
+
+> Release time: 2022-10-20 14:49:31
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ AlaeddineAbdessalem,  Joan Fontanals,  Anne Yang,  Michael Günther,  dong xiang,  Johannes Messner,  Jackmin801,  Wang Bo,  samsja,  Jie Fu,  Han Xiao,  Jonathan Rowley,  Alex Cureton-Griffiths,  Jina Dev Bot,  🙇
+
+
+### 🆕 New Features
+
+ - [[```5d061330```](https://github.com/jina-ai/docarray/commit/5d0613306b143e5e78a8cd08c47a52a3c55916e5)] __-__ redis supports geo filter (#579) (*Anne Yang*)
+ - [[```135c0071```](https://github.com/jina-ai/docarray/commit/135c00713896a39d81ab794875e432ecd4d40102)] __-__ multiple metrics in evaluate (#643) (*Michael Günther*)
+ - [[```01747385```](https://github.com/jina-ai/docarray/commit/01747385f05acb6ea869e3bc688b261e764bec0c)] __-__ show server error message in push (#647) (*AlaeddineAbdessalem*)
+ - [[```6a532b3f```](https://github.com/jina-ai/docarray/commit/6a532b3fa279bd4cb4d3c7ff4bf75c9d3699b314)] __-__ deprecate mongo db like QL syntax in redis and support native QL (#645) (*AlaeddineAbdessalem*)
+ - [[```ea1ccf2f```](https://github.com/jina-ai/docarray/commit/ea1ccf2fdb84c7cb1231a79a358fe3f7ffff48bc)] __-__ add support for labeled dataset to evaluate function (#617) (*Michael Günther*)
+ - [[```125eb3af```](https://github.com/jina-ai/docarray/commit/125eb3aff00b658f31107afe7df170475763ba69)] __-__ allow progress bar while batching (#628) (*Wang Bo*)
+ - [[```e99cb444```](https://github.com/jina-ai/docarray/commit/e99cb44420a84959b022fee99e693004b243dde1)] __-__ add config for pca in annlite (#606) (*Jie Fu*)
+ - [[```a3d5de15```](https://github.com/jina-ai/docarray/commit/a3d5de156f3a4c5dbfe048d4d6bb75b640023a2f)] __-__ __ci__: add codeql analysis yml (#597) (*samsja*)
+
+### 🐞 Bug fixes
+
+ - [[```5dbf1a33```](https://github.com/jina-ai/docarray/commit/5dbf1a337f2a7d091bf9e1f39a988784b078c61c)] __-__ support qdrant 0.8 (#635) (*dong xiang*)
+ - [[```c962d3ca```](https://github.com/jina-ai/docarray/commit/c962d3ca29e63363cdf326f8685602ea4413a354)] __-__ __array__: make docarrays sync when explicitly synced and when exiting context manager only (#625) (*Jackmin801*)
+ - [[```944b91b3```](https://github.com/jina-ai/docarray/commit/944b91b3f20301ceb5c79690122e9bf292286e3f)] __-__ the file handler is close properly and wrap into a context manager (#609) (*samsja*)
+ - [[```47d73ba1```](https://github.com/jina-ai/docarray/commit/47d73ba1e181c6ad10af86e5f0d79568f980f6a9)] __-__ __array__: fix add not performing deep copy (#582) (*Jackmin801*)
+ - [[```cf980288```](https://github.com/jina-ai/docarray/commit/cf98028833cd89de1dca17a0882028da9e54feff)] __-__ __dataarray__: fix load from a database with subindices (#581) (*dong xiang*)
+ - [[```2fceb674```](https://github.com/jina-ai/docarray/commit/2fceb674e379974f73ddfd988587be008e1843ec)] __-__ remove check of default value in _non_empty_fields (#565) (*Michael Günther*)
+
+### 🧼 Code Refactoring
+
+ - [[```a2e0fe6b```](https://github.com/jina-ai/docarray/commit/a2e0fe6bfaac3aa49388c38d50fae967a1381f94)] __-__ change r precision calculation and documentation (#621) (*Michael Günther*)
+
+### 📗 Documentation
+
+ - [[```5c2915a5```](https://github.com/jina-ai/docarray/commit/5c2915a5ce018cc8066e1c29bd801e884b8de07a)] __-__ __array__: add section on persistence mutation and context manager (#613) (*Jackmin801*)
+ - [[```1e5ff369```](https://github.com/jina-ai/docarray/commit/1e5ff369a4da0a6f1a9e97c27cbca7b76e5f1fad)] __-__ fix convert_uri_to_datauri mention (#608) (*AlaeddineAbdessalem*)
+ - [[```7bf330d6```](https://github.com/jina-ai/docarray/commit/7bf330d6b2bb2e34efa30234ac8b74bc0e8fadad)] __-__ build proper docs section docstores (#594) (*Joan Fontanals*)
+ - [[```25c97837```](https://github.com/jina-ai/docarray/commit/25c97837f73f89f96f2ca3ed08c5d4d21450eeca)] __-__ explain better docstring of set_image_normalization (#585) (*Joan Fontanals*)
+ - [[```3476ce58```](https://github.com/jina-ai/docarray/commit/3476ce588f3a6f8b64ab6b3b8b72ec32d1134f9f)] __-__ add note that query syntax is docstore dependant (#586) (*Joan Fontanals*)
+ - [[```57073c09```](https://github.com/jina-ai/docarray/commit/57073c0921f34da9dadb9b7bd8ceefaa06fd74b8)] __-__ adjust readme according to suggestions (#577) (*Joan Fontanals*)
+ - [[```521864c3```](https://github.com/jina-ai/docarray/commit/521864c3efe24c807216d71518818c0b5ad468f0)] __-__ correct readme plotting (#576) (*Joan Fontanals*)
+ - [[```dbd2bf22```](https://github.com/jina-ai/docarray/commit/dbd2bf22087e2c51a3e781a6f5981741b62b65f0)] __-__ __what-is-docarray__: tidy up grammar, punctuation, wording, spelling (#566) (*Alex Cureton-Griffiths*)
+
+### 🏁 Unit Test and CICD
+
+ - [[```1c966056```](https://github.com/jina-ai/docarray/commit/1c9660565364038e13796910b656ed79f8184616)] __-__ fix deprecation of github actions (#653) (*Joan Fontanals*)
+ - [[```bdba84bf```](https://github.com/jina-ai/docarray/commit/bdba84bf438613ad520202823312a3e3c4000962)] __-__ release from any branch (#636) (*Johannes Messner*)
+ - [[```262b2d1e```](https://github.com/jina-ai/docarray/commit/262b2d1e62c5d37b8597fd3129c28b3ff1d94ab2)] __-__ add files generated by unit tests to gitignore (#599) (*dong xiang*)
+ - [[```376e9fa5```](https://github.com/jina-ai/docarray/commit/376e9fa56c65bccf6fbf524016f021abbec91b22)] __-__ remove call to gc collect (#588) (*Joan Fontanals*)
+ - [[```6e49f52e```](https://github.com/jina-ai/docarray/commit/6e49f52e923909cab3ea76881ccd1958ff43c3c8)] __-__ add tests for filtering in elasticsearch (#584) (*Joan Fontanals*)
+ - [[```aa8d0723```](https://github.com/jina-ai/docarray/commit/aa8d0723a62762369c15620b294937fc56a52e0c)] __-__ __weaviate__: add test cases for weaviate (#570) (*Jonathan Rowley*)
+
+### 🍹 Other Improvements
+
+ - [[```3a888015```](https://github.com/jina-ai/docarray/commit/3a888015277f227c79485dcdf7c5dbe40f9516d2)] __-__ bump minor version (#655) (*AlaeddineAbdessalem*)
+ - [[```e91a268a```](https://github.com/jina-ai/docarray/commit/e91a268a88661ae007863e846c26e9921d113b09)] __-__ disable annlite test (#649) (*AlaeddineAbdessalem*)
+ - [[```734a2109```](https://github.com/jina-ai/docarray/commit/734a210944ece98b6235ae3f4ad06184c4b32d6e)] __-__ add securitiy policy (#595) (*samsja*)
+ - [[```e27a598a```](https://github.com/jina-ai/docarray/commit/e27a598a0fef2996bef30a33ccee95905d25ca95)] __-__ update contribution (#596) (*samsja*)
+ - [[```a11ba60a```](https://github.com/jina-ai/docarray/commit/a11ba60a55e31c69aa10b7c61ebb2e6858d1cff0)] __-__ add flake8 to precommit hook (#593) (*samsja*)
+ - [[```ac847120```](https://github.com/jina-ai/docarray/commit/ac8471205bd47128730ac9e518228a627cee204b)] __-__ add open ssf badge (#598) (*samsja*)
+ - [[```e2aee2dc```](https://github.com/jina-ai/docarray/commit/e2aee2dc79358feffbbdd5532917fe11d38c49e4)] __-__ update contribution guideline by adding code style requirement (#592) (*samsja*)
+ - [[```168dda5c```](https://github.com/jina-ai/docarray/commit/168dda5c863e39e0881e67af0957b46d5ca90819)] __-__ housekeeping (#590) (*Han Xiao*)
+ - [[```7de0794c```](https://github.com/jina-ai/docarray/commit/7de0794c70f018c2c4cffd9ac48f58a225999308)] __-__ fix governance docs (*Han Xiao*)
+ - [[```d1eca7e3```](https://github.com/jina-ai/docarray/commit/d1eca7e39d319ccc39a2bcdfc1db75af57ab9d76)] __-__ fix contributing link (*Han Xiao*)
+ - [[```6144ce6c```](https://github.com/jina-ai/docarray/commit/6144ce6c332fa71ea337512050c2813dadc48ab7)] __-__ add governance and code of conduct files (*Han Xiao*)
+ - [[```524aee18```](https://github.com/jina-ai/docarray/commit/524aee183b6dd244ef555774ea06a16fc22c864e)] __-__ remove label issue link from contributing  (#578) (*Joan Fontanals*)
+ - [[```afb84fb2```](https://github.com/jina-ai/docarray/commit/afb84fb2d4195f04bb97e231a6f9e188f06d2307)] __-__ fix docs website template (*Han Xiao*)
+ - [[```d9af0c23```](https://github.com/jina-ai/docarray/commit/d9af0c235af28bc5724b2e53cbd9801272781fd4)] __-__ __version__: the next version will be 0.17.1 (*Jina Dev Bot*)
 

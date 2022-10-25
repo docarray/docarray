@@ -4,17 +4,17 @@ from typing import (
     TypeVar,
     Sequence,
     List,
-    Dict,
+    Union,
     Optional,
+    Dict,
 )
-
 from qdrant_client.http.models.models import Distance
 
 from docarray import Document, DocumentArray
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
     import numpy as np
@@ -103,3 +103,32 @@ class FindMixin:
                 da = self._find_similar_vectors(q, limit=limit, filter=filter)
                 closest_docs.append(da)
             return closest_docs
+
+    def _find_with_filter(
+        self, filter: Optional[Dict], limit: Optional[Union[int, float]] = 10
+    ):
+        list_of_points, _offset = self.client.scroll(
+            collection_name=self.collection_name,
+            scroll_filter=filter,
+            with_payload=True,
+            limit=limit,
+        )
+        da = DocumentArray()
+        for result in list_of_points[:limit]:
+            doc = Document.from_base64(
+                result.payload['_serialized'], **self.serialize_config
+            )
+            da.append(doc)
+        return da
+
+    def _filter(
+        self, filter: Optional[Dict], limit: Optional[Union[int, float]] = 10
+    ) -> 'DocumentArray':
+        """Returns a subset of documents by filtering by the given filter (`Qdrant` filter)..
+        :param limit: number of retrieved items
+        :param filter: filter query used for filtering.
+        For more information: https://docarray.jina.ai/advanced/document-store/qdrant/#qdrant
+        :return: a `DocumentArray` containing the `Document` objects that verify the filter.
+        """
+
+        return self._find_with_filter(filter, limit=limit)
