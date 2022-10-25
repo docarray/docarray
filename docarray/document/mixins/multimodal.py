@@ -79,9 +79,7 @@ class MultiModalMixin:
 
                         chunk = Document()
                         for element in attribute:
-                            doc, attribute_type = cls._from_obj(
-                                element, sub_type, field
-                            )
+                            doc, _ = cls._from_obj(element, sub_type, field)
                             chunk.chunks.append(doc)
 
                         multi_modal_schema[key] = {

@@ -573,8 +573,8 @@ def test_invalid_type_annotations():
     obj = MMDocument(attr=inp)
     with pytest.raises(Exception) as exc_info:
         Document(obj)
-    assert exc_info.value.args[0] == 'Unsupported type annotation'
-    assert str(exc_info.value) == 'Unsupported type annotation'
+    assert exc_info.value.args[0] == 'Unsupported type annotation typing.List'
+    assert str(exc_info.value) == 'Unsupported type annotation typing.List'
 
 
 def test_not_data_class():
@@ -826,6 +826,6 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
 def test_empty_list_dataclass():
     @dataclass()
     class A:
-        img: List[Text]
+        text: List[Text]
 
-    doc = Document(A(img=[]))
+    doc = Document(A(text=[]))
