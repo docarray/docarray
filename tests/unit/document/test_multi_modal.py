@@ -821,3 +821,11 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
 
     assert d.other_doc_list[1].heading.text == '1 new text list'
     assert new_inner_list_doc in d.other_doc_list['@.[heading]']
+
+
+def test_empty_list_dataclass():
+    @dataclass()
+    class A:
+        img: List[bytes]
+
+    doc = Document(A(img=[]))

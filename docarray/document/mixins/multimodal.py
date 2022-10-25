@@ -58,20 +58,23 @@ class MultiModalMixin:
                         }
 
                     else:
+                        attribute_type = cls._get_attribute_type_from_obj_type(sub_type)
+                        if attribute_type == AttributeType.DOCUMENT:
+                            attribute_type = AttributeType.ITERABLE_DOCUMENT
+                        elif attribute_type == AttributeType.NESTED:
+                            attribute_type = AttributeType.ITERABLE_NESTED
+                        else:
+                            raise TypeError(
+                                f'Unsupported type annotation inside Iterable: {sub_type}'
+                            )
+
                         chunk = Document()
                         for element in attribute:
                             doc, attribute_type = cls._from_obj(
                                 element, sub_type, field
                             )
-                            if attribute_type == AttributeType.DOCUMENT:
-                                attribute_type = AttributeType.ITERABLE_DOCUMENT
-                            elif attribute_type == AttributeType.NESTED:
-                                attribute_type = AttributeType.ITERABLE_NESTED
-                            else:
-                                raise TypeError(
-                                    f'Unsupported type annotation inside Iterable: {sub_type}'
-                                )
                             chunk.chunks.append(doc)
+
                         multi_modal_schema[key] = {
                             'attribute_type': attribute_type,
                             'type': f'{field.type._name}[{sub_type.__name__}]',
@@ -168,6 +171,12 @@ class MultiModalMixin:
         else:
             raise ValueError(f'Unsupported type annotation')
         return doc, attribute_type
+
+    @staticmethod
+    def _get_attribute_type_from_obj_type(obj_type) -> AttributeType:
+        return (
+            AttributeType.NESTED if is_multimodal(obj_type) else AttributeType.DOCUMENT
+        )
 
     def _has_multimodal_attr(self, attr):
         try:
