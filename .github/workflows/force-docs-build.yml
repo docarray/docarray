@@ -73,6 +73,7 @@ jobs:
           cd docs
           bash makedoc.sh
           mv ./_build/dirhtml /tmp/gen-html
+          cd ..
       - name: Checkout to GH pages branch (${{ inputs.pages_branch }})
         run: |
           git fetch origin ${{ inputs.pages_branch }}:${{ inputs.pages_branch }} --depth 1
