@@ -12,6 +12,7 @@ from docarray.array.storage.annlite import AnnliteConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 @pytest.fixture()
@@ -58,6 +59,7 @@ def test_empty_doc(embed_docs):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_matches_sprites(
@@ -83,6 +85,7 @@ def test_matches_sprites(
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=128)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
+        (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=128)),
     ],
 )
 def test_matches_sprite_image_generator(
