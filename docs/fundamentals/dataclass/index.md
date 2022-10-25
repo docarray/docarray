@@ -153,7 +153,7 @@ Having those in mind, to represent a multimodal document it seems that we need t
 Having this representation has many benefits, to name a few:
 - One can process and apply deep learning methods on each Document (aka modality) separately.
 - Or _jointly_, by leveraging the nested relationship at the parent level.
-- One can enjoy all DocArray API, [Jina API](https://github.com/jina-ai/jina), [Hub Executors](https://hub.jina.ai), [CLIP-as-service](https://clip-as-service.jina.ai/) and [Finetuner](https://github.com/jina-ai/finetuner) out of the box, without redesigning the data structure.
+- One can enjoy all DocArray API, [Jina API](https://github.com/jina-ai/jina), [Hub Executors](https://cloud.jina.ai), [CLIP-as-service](https://clip-as-service.jina.ai/) and [Finetuner](https://github.com/jina-ai/finetuner) out of the box, without redesigning the data structure.
 
 ## Understanding the challenges
 
