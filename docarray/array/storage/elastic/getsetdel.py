@@ -118,6 +118,19 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._client.delete(index=self._config.index_name, id=_id)
         self._refresh(self._config.index_name)
 
+    def _del_docs_by_ids(self, ids: Sequence[str]):
+        pass
+
+    def _set_doc_value_pairs(
+        self, docs: Iterable['Document'], values: Sequence['Document']
+    ):
+        pass
+
+    def _set_doc_value_pairs_nested(
+        self, docs: Iterable['Document'], values: Sequence['Document']
+    ):
+        pass
+
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
         self._client.indices.delete(index=self._config.index_name)
