@@ -166,12 +166,13 @@ def test_tensors_getter_da(docs, config, da_cls, start_storage):
         da = da_cls()
     da.extend(docs)
     tensors = np.random.random((100, 10, 10))
-    da.tensors = tensors
-    assert len(da) == 100
-    np.testing.assert_almost_equal(da.tensors, tensors)
+    with da:  # speed up milvus by loading collection
+        da.tensors = tensors
+        assert len(da) == 100
+        np.testing.assert_almost_equal(da.tensors, tensors)
 
-    da.tensors = None
-    assert da.tensors is None
+        da.tensors = None
+        assert da.tensors is None
 
 
 @pytest.mark.parametrize(
@@ -193,22 +194,23 @@ def test_texts_getter_da(docs, config, da_cls, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    assert len(da.texts) == 100
-    assert da.texts == da[:, 'text']
-    texts = ['text' for _ in range(100)]
-    da.texts = texts
-    assert da.texts == texts
+    with da:  # speed up milvus by loading collection
+        assert len(da.texts) == 100
+        assert da.texts == da[:, 'text']
+        texts = ['text' for _ in range(100)]
+        da.texts = texts
+        assert da.texts == texts
 
-    for x, doc in zip(texts, da):
-        assert x == doc.text
+        for x, doc in zip(texts, da):
+            assert x == doc.text
 
-    da.texts = None
-    if hasattr(da, 'flush'):
-        da.flush()
+        da.texts = None
+        if hasattr(da, 'flush'):
+            da.flush()
 
-    # unfortunately protobuf does not distinguish None and '' on string
-    # so non-set str field in Pb is ''
-    assert set(da.texts) == set([''])
+        # unfortunately protobuf does not distinguish None and '' on string
+        # so non-set str field in Pb is ''
+        assert set(da.texts) == set([''])
 
 
 @pytest.mark.parametrize(
@@ -272,7 +274,8 @@ def test_texts_wrong_len(docs, config, da_cls, start_storage):
     texts = ['hello']
 
     with pytest.raises(ValueError):
-        da.texts = texts
+        with da:
+            da.texts = texts
 
 
 @pytest.mark.parametrize(
@@ -297,7 +300,8 @@ def test_tensors_wrong_len(docs, config, da_cls, start_storage):
     tensors = np.ones((2, 10, 10))
 
     with pytest.raises(ValueError):
-        da.tensors = tensors
+        with da:  # speed up milvus by loading collection
+            da.tensors = tensors
 
 
 @pytest.mark.parametrize(
@@ -319,15 +323,16 @@ def test_blobs_getter_setter(docs, da_cls, config, start_storage):
     else:
         da = da_cls()
     da.extend(docs)
-    with pytest.raises(ValueError):
-        da.blobs = [b'cc', b'bb', b'aa', b'dd']
+    with da:  # speed up milvus by loading collection
+        with pytest.raises(ValueError):
+            da.blobs = [b'cc', b'bb', b'aa', b'dd']
 
-    da.blobs = [b'aa'] * len(da)
-    assert da.blobs == [b'aa'] * len(da)
+        da.blobs = [b'aa'] * len(da)
+        assert da.blobs == [b'aa'] * len(da)
 
-    da.blobs = None
-    if hasattr(da, 'flush'):
-        da.flush()
+        da.blobs = None
+        if hasattr(da, 'flush'):
+            da.flush()
 
     # unfortunately protobuf does not distinguish None and '' on string
     # so non-set str field in Pb is ''
@@ -401,29 +406,30 @@ def test_zero_embeddings(da_cls, config, start_storage):
     else:
         da = da_cls.empty(10)
 
-    # all zero, dense
-    da[:, 'embedding'] = a
-    np.testing.assert_almost_equal(da.embeddings, a)
-    for d in da:
-        assert d.embedding.shape == (6,)
+    with da:  # speed up milvus by loading collection
+        # all zero, dense
+        da[:, 'embedding'] = a
+        np.testing.assert_almost_equal(da.embeddings, a)
+        for d in da:
+            assert d.embedding.shape == (6,)
 
-    # all zero, sparse
-    sp_a = scipy.sparse.coo_matrix(a)
-    da[:, 'embedding'] = sp_a
-    np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
-    for d in da:
-        # scipy sparse row-vector can only be a (1, m) not squeezible
-        assert d.embedding.shape == (1, 6)
+        # all zero, sparse
+        sp_a = scipy.sparse.coo_matrix(a)
+        da[:, 'embedding'] = sp_a
+        np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
+        for d in da:
+            # scipy sparse row-vector can only be a (1, m) not squeezible
+            assert d.embedding.shape == (1, 6)
 
-    # near zero, sparse
-    a = np.random.random([10, 6])
-    a[a > 0.1] = 0
-    sp_a = scipy.sparse.coo_matrix(a)
-    da[:, 'embedding'] = sp_a
-    np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
-    for d in da:
-        # scipy sparse row-vector can only be a (1, m) not squeezible
-        assert d.embedding.shape == (1, 6)
+        # near zero, sparse
+        a = np.random.random([10, 6])
+        a[a > 0.1] = 0
+        sp_a = scipy.sparse.coo_matrix(a)
+        da[:, 'embedding'] = sp_a
+        np.testing.assert_almost_equal(da.embeddings.todense(), sp_a.todense())
+        for d in da:
+            # scipy sparse row-vector can only be a (1, m) not squeezible
+            assert d.embedding.shape == (1, 6)
 
 
 def embeddings_eq(emb1, emb2):
