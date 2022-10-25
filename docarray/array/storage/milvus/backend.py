@@ -263,6 +263,17 @@ class BackendMixin(BaseBackendMixin):
             embedding = np.zeros(self._config.n_dim)
         return embedding
 
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        del d['_collection']
+        del d['_offset2id_collection']
+        return d
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self._collection = self._create_or_reuse_collection()
+        self._offset2id_collection = self._create_or_reuse_offset2id_collection()
+
     def __enter__(self):
         _ = super().__enter__()
         self._collection.load()
