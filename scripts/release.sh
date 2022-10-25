@@ -72,15 +72,9 @@ export RELEASE_VER=$(sed -n '/^__version__/p' $INIT_FILE | cut -d \' -f2)
 LAST_VER=$(git tag -l | sort -V | tail -n1)
 printf "last version: \e[1;32m$LAST_VER\e[0m\n"
 
-# Update new _versions.yml and _versions.json if necessary
-if [[ ! $(head -n1 ./docs/_versions.yml) == "- version: v$RELEASE_VER" ]]; then
-    printf -- "- version: v$RELEASE_VER\n" > ./docs/new_versions.yml
-    cat ./docs/_versions.yml >> ./docs/new_versions.yml
-    mv ./docs/new_versions.yml ./docs/_versions.yml
-    python ./scripts/versions_yaml_2_json.py
-    git add ./docs/_versions.yml
-    git add ./docs/_versions.json
-fi
+# Update new _versions.json if necessary
+python ./scripts/prepend_version_json.py --version "v$RELEASE_VER"
+git add ./docs/_versions.json
 
 if [[ $1 == "final" ]]; then
   printf "this will be a final release: \e[1;33m$RELEASE_VER\e[0m\n"
