@@ -274,3 +274,17 @@ def test_glb_converters(uri, chunk_num):
     doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
     assert len(doc.chunks) == chunk_num
     assert doc.chunks[0].tensor.shape == (2000, 3)
+
+
+@pytest.mark.parametrize(
+    'uri',
+    [
+        os.path.join(cur_dir, 'toydata/test.glb'),
+        'https://github.com/jina-ai/docarray/raw/main/tests/unit/document/toydata/test.glb',
+    ],
+)
+def test_glb_not_removing_docs_text_attribute(uri):
+    doc = Document(uri=uri, text='hello')
+    doc.load_uri_to_point_cloud_tensor(2000)
+
+    assert doc.text == 'hello'
