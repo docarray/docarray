@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "success!"
-        if: "${{ github.event.inputs.release_token }} == ${{ env.release_token }}"
+        if: ${{ github.event.inputs.release_token }} == ${{ env.release_token }}
         env:
           release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
 
