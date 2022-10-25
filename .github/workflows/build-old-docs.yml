@@ -115,7 +115,7 @@ jobs:
         run: |
           cd docs
           for i in $(ls /tmp/artifacts); do unzip "/tmp/artifacts/$i/build.zip"; done
-          rm _versions.json
+          rm _versions.json || true
           wget https://raw.githubusercontent.com/${{ inputs.repo_owner }}/${{ inputs.package }}/main/docs/_versions.json
       - name: Push it up!
         run: |
