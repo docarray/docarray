@@ -58,7 +58,9 @@ class MultiModalMixin:
                         }
 
                     else:
-                        attribute_type = cls._get_attribute_type_from_obj_type(sub_type)
+                        attribute_type = cls._get_attribute_type_from_obj_type(
+                            sub_type, field
+                        )
                         if attribute_type == AttributeType.DOCUMENT:
                             attribute_type = AttributeType.ITERABLE_DOCUMENT
                         elif attribute_type == AttributeType.NESTED:
@@ -173,10 +175,16 @@ class MultiModalMixin:
         return doc, attribute_type
 
     @staticmethod
-    def _get_attribute_type_from_obj_type(obj_type) -> AttributeType:
-        return (
-            AttributeType.NESTED if is_multimodal(obj_type) else AttributeType.DOCUMENT
-        )
+    def _get_attribute_type_from_obj_type(obj_type, field) -> AttributeType:
+
+        if is_multimodal(obj_type):
+            attribute_type = AttributeType.NESTED
+        elif _is_field(field):
+            attribute_type = AttributeType.DOCUMENT
+        else:
+            raise ValueError(f'Unsupported type annotation')
+
+        return attribute_type
 
     def _has_multimodal_attr(self, attr):
         try:

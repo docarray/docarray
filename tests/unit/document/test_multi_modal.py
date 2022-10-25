@@ -826,6 +826,6 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
 def test_empty_list_dataclass():
     @dataclass()
     class A:
-        img: List[bytes]
+        img: List[Text]
 
     doc = Document(A(img=[]))
