@@ -22,8 +22,7 @@ def test_success_find_with_added_kwargs(start_storage, monkeypatch):
         )
 
     def _mock_search(*args, **kwargs):
-        if kwargs['search_params']:
-            assert kwargs['search_params'].hnsw_ef == hnsw_ef
+        assert kwargs['search_params'].hnsw_ef == hnsw_ef
         return []
 
     monkeypatch.setattr(qdrant_doc._client, 'search', _mock_search)
@@ -31,4 +30,3 @@ def test_success_find_with_added_kwargs(start_storage, monkeypatch):
     np_query = np.array([2, 1, 3])
 
     qdrant_doc.find(np_query, limit=10, search_params={"hnsw_ef": hnsw_ef})
-    qdrant_doc.find(np_query, limit=10, search_params=None)
