@@ -18,7 +18,7 @@ r = da.post('grpc://192.168.2.3:12345')
 r.summary()
 ```
 
-One can also use any [Executor from Jina Hub](https://hub.jina.ai), e.g.
+One can also use any [Executor from Jina Hub](https://cloud.jina.ai), e.g.
 ```python
 from docarray import DocumentArray, Document
 
@@ -67,7 +67,7 @@ scheme://netloc[:port][/path]
 | `scheme`  | 1. One of `grpc`, `websocket`, `http`                   | `protocol` of the connected Flow                                                                                                     |
 |           | 2. One of `jinahub`, `jinahub+docker`, `jinhub+sandbox` | Jina hub executor in source code, Docker container, sandbox                                                                          |
 | `netloc`  | 1. Host address                                         | `host` of the connected Flow                                                                                                         |
-|   | 2. Hub Executor name                                    | Any Executor [listed here](https://hub.jina.ai)                                                                                      |
+|   | 2. Hub Executor name                                    | Any Executor [listed here](https://cloud.jina.ai)                                                                                      |
 |   | 3. Executor version(optional)                           | Such as v0.1.1, v0.1.1-gpu, by default latest                                                                                        |
 | `:port` | e.g. `:55566`                                           | `port` of the connected Flow. This is required when using `scheme` type (1) ; it is ignored when using hub-related `scheme` type (2) |
 | `/path` | e.g. `/foo`                                             | The endpoint of the Executor you want to call.                                                                                       |
