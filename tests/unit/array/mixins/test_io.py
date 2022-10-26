@@ -46,17 +46,26 @@ def test_document_save_load(
     da.insert(2, Document(id='new'))
     da.save(tmp_file, file_format=method, encoding=encoding)
 
+    da_info = {
+        'id': [d.id for d in da],
+        'embedding': [d.embedding for d in da],
+        'content': [d.content for d in da],
+    }
+
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
+
     da_r = type(da).load(
         tmp_file, file_format=method, encoding=encoding, config=config()
     )
 
     assert type(da) is type(da_r)
-    assert len(da) == len(da_r)
+    assert len(da) == len(da_info['id'])
     assert da_r[2].id == 'new'
-    for d, d_r in zip(da, da_r):
-        assert d.id == d_r.id
-        np.testing.assert_equal(d.embedding, d_r.embedding)
-        assert d.content == d_r.content
+    for idx, d_r in enumerate(da_r):
+        assert da_info['id'][idx] == d_r.id
+        np.testing.assert_equal(da_info['embedding'][idx], d_r.embedding)
+        assert da_info['content'][idx] == d_r.content
 
 
 @pytest.mark.parametrize('flatten_tags', [True, False])
@@ -200,13 +209,24 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
 )
 def test_from_to_bytes(da_cls, config, start_storage):
     # simple
-    assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
+    if da_cls == DocumentArrayAnnlite:
+        da = da_cls.empty(2, config=config)
+        da_bytes = da.to_bytes()
+        da._annlite.close()
+
+        db = da_cls.from_bytes(da_bytes, config=config)
+        assert len(db) == 2
+        db._annlite.close()
+    else:
+        assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
 
     da = da_cls.empty(2, config=config)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
+    if da_cls == DocumentArrayAnnlite:
+        da._annlite.close()
     da2 = da_cls.load_binary(bytes(da))
     assert da2.tensors == [[1, 2], [2, 1]]
     import numpy as np
