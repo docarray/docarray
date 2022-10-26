@@ -329,7 +329,7 @@ def run_benchmark(
                 fmt(read_time * 1000, 'ms'),
                 fmt(update_time * 1000, 'ms'),
                 fmt(delete_time * 1000, 'ms'),
-                fmt(find_by_vector_time, 's'),
+                fmt(find_by_vector_time * 1000, 'ms'),
                 '{:.3f}'.format(recall_at_k),
                 fmt(find_by_condition_time, 's'),
             )
@@ -483,15 +483,14 @@ def run_benchmark_sift(
                 da = DocumentArray(storage=storage)
             else:
                 config.update(storage_config)
-                if storage == 'elasticsearch':
-                    num_candidates = config.pop('num_candidates')
-                if storage == 'qdrant':
-                    hnsw_ef = config.pop('hnsw_ef')
-                da = DocumentArray(storage=storage, config=config)
-                if storage == 'elasticsearch':
-                    config['num_candidates'] = num_candidates
-                if storage == 'qdrant':
-                    config['hnsw_ef'] = hnsw_ef
+                da = DocumentArray(
+                    storage=storage,
+                    config={
+                        k: v
+                        for k, v in config.items()
+                        if k not in {'num_candidates', 'hnsw_ef'}
+                    },
+                )
 
             console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
