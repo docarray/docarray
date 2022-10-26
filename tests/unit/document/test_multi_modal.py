@@ -829,9 +829,22 @@ def test_initialize_document_with_dataclass_and_additional_text_attr():
         chunk_text: Text
 
     d = Document(MyDoc(chunk_text='chunk level text'), text='top level text')
-    d.summary()
 
     assert d.text == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
+
+
+def test_initialize_document_with_dataclass_and_additional_unknown_attributes():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(
+        MyDoc(chunk_text='chunk level text'),
+        hello='top level text',
+    )
+
+    assert d.tags['hello'] == 'top level text'
     assert d.chunk_text.text == 'chunk level text'
 
 
