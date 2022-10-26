@@ -59,7 +59,7 @@ class MilvusConfig:
         default_factory=lambda: {
             'M': 4,
             'efConstruction': 200,
-        }  # TODO(johannes) check if these defaults are reasonable
+        }
     )  # passed to milvus at index creation time. The default assumes 'HNSW' index type
     collection_config: Dict = field(
         default_factory=dict
@@ -130,13 +130,13 @@ class BackendMixin(BaseBackendMixin):
 
         document_id = FieldSchema(
             name='document_id', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
-        )  # TODO(johannes) this max_length is completely arbitrary
+        )
         embedding = FieldSchema(
             name='embedding', dtype=DataType.FLOAT_VECTOR, dim=self._config.n_dim
         )
         serialized = FieldSchema(
             name='serialized', dtype=DataType.VARCHAR, max_length=65_535
-        )  # TODO(johannes) this is the maximus allowed length in milvus, could be optimized
+        )
 
         additional_columns = []
         for col, coltype in self._config.columns.items():
@@ -177,10 +177,10 @@ class BackendMixin(BaseBackendMixin):
 
         document_id = FieldSchema(
             name='document_id', dtype=DataType.VARCHAR, max_length=1024
-        )  # TODO(johannes) this max_length is completely arbitrary
+        )
         offset = FieldSchema(
             name='offset', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
-        )  # TODO(johannes) this max_length is completely arbitrary
+        )
         dummy_vector = FieldSchema(
             name='dummy_vector', dtype=DataType.FLOAT_VECTOR, dim=1
         )

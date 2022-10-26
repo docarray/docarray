@@ -24,7 +24,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         try:
             self._get_doc_by_id(x)
             return True
-        except:  # TODO(johannes) make exception more specific
+        except:
             return False
 
     def __repr__(self):
