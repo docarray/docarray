@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import tensorflow as tf
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from tensorflow import Tensor
     import numpy
 

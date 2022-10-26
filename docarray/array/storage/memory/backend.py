@@ -10,7 +10,7 @@ from typing import (
 from docarray.array.storage.base.backend import BaseBackendMixin
 from docarray import Document
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import (
         DocumentArraySourceType,
     )

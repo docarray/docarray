@@ -5,7 +5,7 @@ import numpy as np
 from docarray.math import ndarray
 from docarray.math.helper import top_k, minmax_normalize, update_rows_x_mat_best
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T, ArrayType
 
     from docarray import DocumentArray

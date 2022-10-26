@@ -45,13 +45,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         else:
             return False
 
-    def __del__(self):
-        """Delete this :class:`DocumentArrayElastic` object"""
-        self._save_offset2ids()
-
-        # if not self._persist:
-        #    self._offset2ids.clear()
-
     def __repr__(self):
         """Return the string representation of :class:`DocumentArrayElastic` object
         :return: string representation of this object

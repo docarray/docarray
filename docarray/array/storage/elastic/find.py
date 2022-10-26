@@ -18,7 +18,7 @@ from docarray.score import NamedScore
 from docarray.array.mixins.find import FindMixin as BaseFindMixin
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
 

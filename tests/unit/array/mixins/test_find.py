@@ -1,9 +1,11 @@
+import operator
+from math import radians
+
 import numpy as np
 import pytest
-
-from docarray import DocumentArray, Document
+from docarray import Document, DocumentArray
 from docarray.math import ndarray
-import operator
+from sklearn.metrics.pairwise import haversine_distances
 
 
 def test_customize_metric_fn():
@@ -265,12 +267,12 @@ numeric_operators_elasticsearch = {
 }
 
 numeric_operators_redis = {
-    '$gte': operator.ge,
-    '$gt': operator.gt,
-    '$lte': operator.le,
-    '$lt': operator.lt,
-    '$eq': operator.eq,
-    '$ne': operator.ne,
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'ne': operator.ne,
 }
 
 
@@ -354,15 +356,42 @@ numeric_operators_redis = {
             for operator in ['gt', 'gte', 'lt', 'lte']
         ],
         *[
-            tuple(
-                [
-                    'redis',
-                    lambda operator, threshold: {'price': {operator: threshold}},
-                    numeric_operators_redis,
-                    operator,
-                ]
-            )
-            for operator in numeric_operators_redis.keys()
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} inf] ',
+                numeric_operators_redis,
+                'gte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[({threshold} inf] ',
+                numeric_operators_redis,
+                'gt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf {threshold}] ',
+                numeric_operators_redis,
+                'lte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf ({threshold}] ',
+                numeric_operators_redis,
+                'lt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} {threshold}] ',
+                numeric_operators_redis,
+                'eq',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'(- @price:[{threshold} {threshold}]) ',
+                numeric_operators_redis,
+                'ne',
+            ),
         ],
     ],
 )
@@ -454,15 +483,42 @@ def test_search_pre_filtering(
             for operator in numeric_operators_annlite.keys()
         ],
         *[
-            tuple(
-                [
-                    'redis',
-                    lambda operator, threshold: {'price': {operator: threshold}},
-                    numeric_operators_redis,
-                    operator,
-                ]
-            )
-            for operator in numeric_operators_redis.keys()
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} inf] ',
+                numeric_operators_redis,
+                'gte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[({threshold} inf] ',
+                numeric_operators_redis,
+                'gt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf {threshold}] ',
+                numeric_operators_redis,
+                'lte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf ({threshold}] ',
+                numeric_operators_redis,
+                'lt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} {threshold}] ',
+                numeric_operators_redis,
+                'eq',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'(- @price:[{threshold} {threshold}]) ',
+                numeric_operators_redis,
+                'ne',
+            ),
         ],
     ],
 )
@@ -481,6 +537,42 @@ def test_filtering(
 
         filter = filter_gen(operator, threshold)
         results = da.find(filter=filter)
+
+        assert len(results) > 0
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'match': {'value': threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    'eq',
+                ]
+            )
+        ],
+    ],
+)
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_qdrant_filter_function(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
+    n_dim = 128
+    da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
+    thresholds = [10, 20, 30]
+    for threshold in thresholds:
+        filter = filter_gen(operator, threshold)
+        results = da._filter(filter=filter)
 
         assert len(results) > 0
 
@@ -513,58 +605,30 @@ def test_weaviate_filter_query(start_storage, columns):
 @pytest.mark.parametrize(
     'columns',
     [
-        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'bool')],
-        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'bool'},
+        [('price', 'int'), ('category', 'str'), ('size', 'int'), ('isfake', 'int')],
+        {'price': 'int', 'category': 'str', 'size': 'int', 'isfake': 'int'},
     ],
 )
 @pytest.mark.parametrize(
     'filter,checker',
     [
         (
-            {
-                "$or": {
-                    "price": {"$gt": 8},
-                    "category": {"$eq": "Shoes"},
-                },
-            },
-            lambda r: r.tags['price'] > 8 or r.tags['category'] == 'Shoes',
+            '(- @price: [8 8]) @isfake:[1 1]',
+            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == 1,
         ),
         (
-            {
-                "$and": {
-                    "price": {"$ne": 8},
-                    "isfake": {"$eq": True},
-                },
-            },
-            lambda r: r.tags['price'] != 8 and r.tags['isfake'] == True,
-        ),
-        (
-            {
-                "$or": {
-                    "price": {"$lt": 8},
-                    "isfake": {"$ne": True},
-                },
-                "size": {"$lte": 3},
-            },
-            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != True)
+            '(@price: [-inf (8] | (- @isfake:[1 1])) @size:[-inf 3]',
+            lambda r: (r.tags['price'] < 8 or r.tags['isfake'] != 1)
             and r.tags['size'] <= 3,
         ),
         (
-            {
-                "$or": {
-                    "$and": {
-                        "price": {"$gte": 8},
-                        "category": {"$ne": "Shoes"},
-                    },
-                    "size": {"$eq": 3},
-                },
-            },
+            '(@price: [8 inf] (- @category:Shoes)) | (@size:[3 3])',
             lambda r: (r.tags['price'] >= 8 and r.tags['category'] != 'Shoes')
             or r.tags['size'] == 3,
         ),
     ],
 )
-def test_redis_category_filter(filter, checker, start_storage, columns):
+def test_redis_category_filter(filter, checker, columns, start_storage):
     n_dim = 128
     da = DocumentArray(
         storage='redis',
@@ -579,7 +643,7 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
             Document(
                 id=f'r{i}',
                 embedding=np.random.rand(n_dim),
-                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': True},
+                tags={'price': i, 'category': 'Shoes', 'size': i, 'isfake': 1},
             )
             for i in range(10)
         ]
@@ -594,7 +658,7 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
                     'price': i,
                     'category': 'Jeans',
                     'size': i,
-                    'isfake': False,
+                    'isfake': 0,
                 },
             )
             for i in range(10)
@@ -604,6 +668,45 @@ def test_redis_category_filter(filter, checker, start_storage, columns):
     results = da.find(np.random.rand(n_dim), filter=filter)
     assert len(results) > 0
     assert all([checker(r) for r in results])
+
+
+def test_redis_geo_filter(start_storage):
+    n_dim = 128
+    da = DocumentArray(
+        storage='redis',
+        config={
+            'n_dim': n_dim,
+            'columns': {'location': 'geo'},
+        },
+    )
+
+    da.extend(
+        [
+            Document(
+                embedding=np.random.rand(n_dim),
+                tags={'location': f"{-98.17+i},{38.71+i}"},
+            )
+            for i in range(10)
+        ]
+    )
+
+    filter = '@location:[-98.71 38.71 800 km] '
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    assert len(results) > 0
+
+    for r in results:
+        lon1, lat1, lon2, lat2 = map(
+            radians,
+            [
+                -98.71,
+                38.71,
+                float(r.tags['location'].split(',')[0]),
+                float(r.tags['location'].split(',')[1]),
+            ],
+        )
+        distance = haversine_distances([[lon1, lat1], [lon2, lat2]]) * 6371
+        assert distance[0][1] < 800
 
 
 @pytest.mark.parametrize('storage', ['memory'])

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Type
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pydantic import BaseModel
     from docarray.typing import T
     from docarray.document.pydantic_model import PydanticDocument

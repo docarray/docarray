@@ -23,7 +23,7 @@ from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray import Document
 from docarray.helper import dataclass_from_dict, _safe_cast_int
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import (
         DocumentArraySourceType,
     )
@@ -83,11 +83,8 @@ class BackendMixin(BaseBackendMixin):
             config = dataclass_from_dict(ElasticConfig, config)
 
         if config.index_name is None:
-            self._persist = False
             id = uuid.uuid4().hex
             config.index_name = 'index_name__' + id
-        else:
-            self._persist = True
 
         self._index_name_offset2id = 'offset2id__' + config.index_name
         self._config = config

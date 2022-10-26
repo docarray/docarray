@@ -3,6 +3,7 @@ import os
 import os.path
 import warnings
 from collections import Counter
+from http import HTTPStatus
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
@@ -13,7 +14,7 @@ from hubble.client.endpoints import EndpointsV2
 
 from docarray.helper import get_request_header, __cache_path__, _get_array_info
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 
@@ -250,6 +251,8 @@ class PushPullMixin:
         if response.ok:
             return response.json()['data']
         else:
+            if response.status_code >= 400 and 'readableMessage' in response.json():
+                response.reason = response.json()['readableMessage']
             response.raise_for_status()
 
     @classmethod

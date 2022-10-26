@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Type, Optional
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from docarray.proto.docarray_pb2 import DocumentProto
 

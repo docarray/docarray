@@ -5,7 +5,7 @@ from docarray.document.mixins import AllMixins
 from docarray.base import BaseDCType
 from docarray.math.ndarray import detach_tensor_if_present
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType, StructValueType, DocumentContentType
 
 

@@ -9,7 +9,7 @@ from typing import (
     List,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray, Document
     from docarray.typing import T
 

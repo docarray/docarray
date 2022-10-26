@@ -10,7 +10,7 @@ from typing import (
     Iterable,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     import numpy as np
     import csv
@@ -18,6 +18,18 @@ if TYPE_CHECKING:
 
 class FromGeneratorMixin:
     """Provide helper functions filling a :class:`DocumentArray`-like object with a generator."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Let users know that the from_xyz class methods should not be called on instances
+        cls_method_names = [
+            attr
+            for attr, obj in vars(FromGeneratorMixin).items()
+            if isinstance(obj, classmethod)
+        ]
+        for cls_meth in cls_method_names:
+            setattr(self, cls_meth, _raise_attribute_error)
 
     @classmethod
     def _from_generator(cls: Type['T'], meth: str, *args, **kwargs) -> 'T':
@@ -234,3 +246,10 @@ class FromGeneratorMixin:
         # noqa: DAR201
         """
         return cls._from_generator('from_lines', *args, **kwargs)
+
+
+def _raise_attribute_error(*args, **kwargs) -> None:
+    raise AttributeError(
+        f'Class method can\'t be called from a DocumentArray'
+        f' instance but only from the DocumentArray class.'
+    )
