@@ -1,7 +1,12 @@
 import base64
 import typing
 
-from docarray.dataclasses.types import Field, is_multimodal, _is_field
+from docarray.dataclasses.types import (
+    Field,
+    is_multimodal,
+    _is_field,
+    AttributeTypeError,
+)
 from docarray.dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -58,20 +63,25 @@ class MultiModalMixin:
                         }
 
                     else:
+                        try:
+                            attribute_type = cls._get_attribute_type_from_obj_type(
+                                sub_type, field
+                            )
+                        except AttributeTypeError:
+                            raise TypeError(
+                                f'Unsupported type annotation inside Iterable: {sub_type}'
+                            )
+
+                        if attribute_type == AttributeType.DOCUMENT:
+                            attribute_type = AttributeType.ITERABLE_DOCUMENT
+                        elif attribute_type == AttributeType.NESTED:
+                            attribute_type = AttributeType.ITERABLE_NESTED
+
                         chunk = Document()
                         for element in attribute:
-                            doc, attribute_type = cls._from_obj(
-                                element, sub_type, field
-                            )
-                            if attribute_type == AttributeType.DOCUMENT:
-                                attribute_type = AttributeType.ITERABLE_DOCUMENT
-                            elif attribute_type == AttributeType.NESTED:
-                                attribute_type = AttributeType.ITERABLE_NESTED
-                            else:
-                                raise TypeError(
-                                    f'Unsupported type annotation inside Iterable: {sub_type}'
-                                )
+                            doc, _ = cls._from_obj(element, sub_type, field)
                             chunk.chunks.append(doc)
+
                         multi_modal_schema[key] = {
                             'attribute_type': attribute_type,
                             'type': f'{field.type._name}[{sub_type.__name__}]',
@@ -166,8 +176,20 @@ class MultiModalMixin:
         elif _is_field(field):
             doc = field.setter(obj)
         else:
-            raise ValueError(f'Unsupported type annotation')
+            raise AttributeTypeError(f'Unsupported type annotation {obj_type}')
         return doc, attribute_type
+
+    @staticmethod
+    def _get_attribute_type_from_obj_type(obj_type, field) -> AttributeType:
+
+        if is_multimodal(obj_type):
+            attribute_type = AttributeType.NESTED
+        elif _is_field(field):
+            attribute_type = AttributeType.DOCUMENT
+        else:
+            raise AttributeTypeError(f'Unsupported type annotation {obj_type}')
+
+        return attribute_type
 
     def _has_multimodal_attr(self, attr):
         try:

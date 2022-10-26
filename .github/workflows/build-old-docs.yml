@@ -33,11 +33,18 @@ jobs:
   token-check:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Success!"
-        if: "${{ github.event.inputs.release_token }} == ${{ env.release_token }}"
+      - name: Check release token
+        id: token-check
+        run: | 
+          touch SUCCESS
+        if: inputs.release_token == env.release_token
         env:
           release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
-      - id: get_versions
+      - name: Fail release token
+        run: |
+          [[ -f SUCCESS ]]
+      - name: Get versions
+        id: get_versions
         run: |
           printf "versions=" >> $GITHUB_OUTPUT
           curl https://raw.githubusercontent.com/${{ inputs.repo_owner }}/${{ inputs.package }}/main/docs/_versions.json >> $GITHUB_OUTPUT
