@@ -55,9 +55,9 @@ def test_empty_doc(embed_docs):
         (DocumentArray, None),
         (DocumentArraySqlite, None),
         (DocumentArrayAnnlite, AnnliteConfig(n_dim=128)),
-        # (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
-        # (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
-        # (DocumentArrayElastic, ElasticConfig(n_dim=128)),
+        (DocumentArrayWeaviate, WeaviateConfig(n_dim=128)),
+        (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
+        (DocumentArrayElastic, ElasticConfig(n_dim=128)),
     ],
 )
 def test_matches_sprites(

@@ -5,7 +5,7 @@ import paddle
 import pytest
 import scipy.sparse as sp
 
-# import tensorflow as tf
+import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
 from scipy.spatial.distance import cdist as scipy_cdist
@@ -539,7 +539,7 @@ def get_ndarrays():
     return [
         a,
         torch.tensor(a),
-        # tf.constant(a),
+        tf.constant(a),
         paddle.to_tensor(a),
         csr_matrix(a),
         bsr_matrix(a),
@@ -627,54 +627,54 @@ numeric_operators_redis = {
 @pytest.mark.parametrize(
     'storage,filter_gen,numeric_operators,operator',
     [
-        # *[
-        #     tuple(
-        #         [
-        #             'weaviate',
-        #             lambda operator, threshold: {
-        #                 'path': ['price'],
-        #                 'operator': operator,
-        #                 'valueInt': threshold,
-        #             },
-        #             numeric_operators_weaviate,
-        #             operator,
-        #         ]
-        #     )
-        #     for operator in numeric_operators_weaviate.keys()
-        # ],
-        # *[
-        #     tuple(
-        #         [
-        #             'qdrant',
-        #             lambda operator, threshold: {
-        #                 'must': [{'key': 'price', 'range': {operator: threshold}}]
-        #             },
-        #             numeric_operators_qdrant,
-        #             operator,
-        #         ]
-        #     )
-        #     for operator in ['gte', 'gt', 'lte', 'lt']
-        # ],
-        # tuple(
-        #     [
-        #         'qdrant',
-        #         lambda operator, threshold: {
-        #             'must': [{'key': 'price', 'match': {'value': threshold}}]
-        #         },
-        #         numeric_operators_qdrant,
-        #         'eq',
-        #     ]
-        # ),
-        # tuple(
-        #     [
-        #         'qdrant',
-        #         lambda operator, threshold: {
-        #             'must_not': [{'key': 'price', 'match': {'value': threshold}}]
-        #         },
-        #         numeric_operators_qdrant,
-        #         'neq',
-        #     ]
-        # ),
+        *[
+            tuple(
+                [
+                    'weaviate',
+                    lambda operator, threshold: {
+                        'path': ['price'],
+                        'operator': operator,
+                        'valueInt': threshold,
+                    },
+                    numeric_operators_weaviate,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_weaviate.keys()
+        ],
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'range': {operator: threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    operator,
+                ]
+            )
+            for operator in ['gte', 'gt', 'lte', 'lt']
+        ],
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'eq',
+            ]
+        ),
+        tuple(
+            [
+                'qdrant',
+                lambda operator, threshold: {
+                    'must_not': [{'key': 'price', 'match': {'value': threshold}}]
+                },
+                numeric_operators_qdrant,
+                'neq',
+            ]
+        ),
         *[
             tuple(
                 [
@@ -686,17 +686,17 @@ numeric_operators_redis = {
             )
             for operator in numeric_operators_annlite.keys()
         ],
-        # *[
-        #     tuple(
-        #         [
-        #             'redis',
-        #             lambda operator, threshold: {'price': {operator: threshold}},
-        #             numeric_operators_redis,
-        #             operator,
-        #         ]
-        #     )
-        #     for operator in numeric_operators_redis.keys()
-        # ],
+        *[
+            tuple(
+                [
+                    'redis',
+                    lambda operator, threshold: {'price': {operator: threshold}},
+                    numeric_operators_redis,
+                    operator,
+                ]
+            )
+            for operator in numeric_operators_redis.keys()
+        ],
     ],
 )
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
