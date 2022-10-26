@@ -821,3 +821,15 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
 
     assert d.other_doc_list[1].heading.text == '1 new text list'
     assert new_inner_list_doc in d.other_doc_list['@.[heading]']
+
+
+def test_initialize_document_with_dataclass_and_additional_text_attr():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(MyDoc(chunk_text='chunk level text'), text='top level text')
+    d.summary()
+
+    assert d.text == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
