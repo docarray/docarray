@@ -203,7 +203,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
         (DocumentArrayElastic, ElasticConfig(n_dim=3)),
         (DocumentArrayRedis, RedisConfig(n_dim=3)),
-        (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=3)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
