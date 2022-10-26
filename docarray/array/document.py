@@ -11,11 +11,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray.array.weaviate import DocumentArrayWeaviate
     from docarray.array.elastic import DocumentArrayElastic
     from docarray.array.redis import DocumentArrayRedis
+    from docarray.array.milvus import DocumentArrayMilvus
     from docarray.array.storage.sqlite import SqliteConfig
     from docarray.array.storage.annlite import AnnliteConfig
     from docarray.array.storage.weaviate import WeaviateConfig
     from docarray.array.storage.elastic import ElasticConfig
     from docarray.array.storage.redis import RedisConfig
+    from docarray.array.storage.milvus import MilvusConfig
 
 
 class DocumentArray(AllMixins, BaseDocumentArray):
@@ -136,6 +138,16 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         storage: str = 'redis',
         config: Optional[Union['RedisConfig', Dict]] = None,
     ) -> 'DocumentArrayRedis':
+        """Create a Redis-powered DocumentArray object."""
+        ...
+
+    @overload
+    def __new__(
+        cls,
+        _docs: Optional['DocumentArraySourceType'] = None,
+        storage: str = 'milvus',
+        config: Optional[Union['MilvusConfig', Dict]] = None,
+    ) -> 'DocumentArrayMilvus':
         """Create a Redis-powered DocumentArray object."""
         ...
 
