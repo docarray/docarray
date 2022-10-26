@@ -167,7 +167,7 @@ This will start three parallels can improve the overall throughput. [More detail
 
 ### Share and reuse it
 
-One can share and reuse it via [Hub](https://hub.jina.ai). Save your Executor in a folder say `foo` and then:
+One can share and reuse it via [Hub](https://cloud.jina.ai). Save your Executor in a folder say `foo` and then:
 
 ```bash
 jina hub push foo
