@@ -396,7 +396,7 @@ def test_ellipsis_attribute_setter(nested_docs, da_cls, config, start_storage):
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=6)),
         (DocumentArrayElastic, ElasticConfig(n_dim=6)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
-        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=6)),
     ],
 )
 def test_zero_embeddings(da_cls, config, start_storage):
