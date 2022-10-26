@@ -68,7 +68,7 @@ def fmt(value, unit):
 def get_configuration_storage_backends(argparse, D, random=True):
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--default-hnsw',
+        '--fixed-hnsw',
         help='Whether to use default HNSW configurations',
         action='store_true',
     )
@@ -127,7 +127,7 @@ def get_configuration_storage_backends(argparse, D, random=True):
     }
 
     if random:
-        if not args.default_hnsw:
+        if args.fixed_hnsw:
             storage_backends['annlite']['storage_config'].update(
                 {
                     'ef_construction': 100,
@@ -138,27 +138,29 @@ def get_configuration_storage_backends(argparse, D, random=True):
             storage_backends['qdrant']['storage_config'].update(
                 {
                     'ef_construct': 100,
+                    'hnsw_ef': 100,
                     'm': 16,
                 }
             )
             storage_backends['weaviate']['storage_config'].update(
                 {
-                    'ef': 100,
                     'ef_construction': 100,
+                    'ef': 100,
                     'max_connections': 16,
                 }
             )
             storage_backends['elasticsearch']['storage_config'].update(
                 {
                     'ef_construction': 100,
+                    'num_candidates': 100,
                     'm': 16,
                 }
             )
             storage_backends['redis']['storage_config'].update(
                 {
                     'ef_construction': 100,
-                    'm': 16,
                     'ef_runtime': 100,
+                    'm': 16,
                 }
             )
 
@@ -268,15 +270,22 @@ def run_benchmark(
     find_by_vector_time_all = []
     create_time_all = []
 
-    for backend, config in storage_backends:
+    for storage, config in storage_backends:
         try:
-            console.print('\nBackend:', backend.title())
+            console.print('\nBackend:', storage.title())
             console.print('Backend config', str(config))
 
             if not config:
-                da = DocumentArray(storage=backend)
+                da = DocumentArray(storage=storage)
             else:
-                da = DocumentArray(storage=backend, config=config)
+                da = DocumentArray(
+                    storage=storage,
+                    config={
+                        k: v
+                        for k, v in config.items()
+                        if k not in {'num_candidates', 'hnsw_ef'}
+                    },
+                )
 
             console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
@@ -298,7 +307,7 @@ def run_benchmark(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
             )
 
-            if backend == 'sqlite':
+            if storage == 'sqlite':
                 find_by_vector_time, result = find_by_vector(
                     da, vector_queries[0], limit=K
                 )
@@ -307,9 +316,26 @@ def run_benchmark(
                 recall_at_k_values = []
                 find_by_vector_times = []
                 for i, query in enumerate(vector_queries):
-                    find_by_vector_time, results = find_by_vector(da, query, limit=K)
-                    find_by_vector_times.append(find_by_vector_time)
-                    if backend == 'memory':
+                    if storage == 'elasticsearch' and config.get(
+                        'num_candidates', None
+                    ):
+                        find_by_vector_time, results = find_by_vector(
+                            da, query, limit=K, num_candidates=config['num_candidates']
+                        )
+                    elif storage == 'qdrant' and config.get('hnsw_ef', None):
+                        find_by_vector_time, results = find_by_vector(
+                            da,
+                            query,
+                            limit=K,
+                            search_params={"hnsw_ef": config['hnsw_ef']},
+                        )
+                    else:
+                        find_by_vector_time, results = find_by_vector(
+                            da, query, limit=K
+                        )
+                        find_by_vector_times.append(find_by_vector_time)
+
+                    if storage == 'memory':
                         ground_truth.append(results[:, 'tags__i'])
                         recall_at_k_values.append(1)
                     else:
@@ -320,11 +346,11 @@ def run_benchmark(
 
             console.print(f'\tfinding {n_query} docs by condition ...')
             find_by_condition_time, _ = find_by_condition(
-                da, storage_backend_filters[backend]
+                da, storage_backend_filters[storage]
             )
 
             table.add_row(
-                backend.title(),
+                storage.title(),
                 fmt(create_time, 's'),
                 fmt(read_time * 1000, 'ms'),
                 fmt(update_time * 1000, 'ms'),
@@ -334,7 +360,7 @@ def run_benchmark(
                 fmt(find_by_condition_time, 's'),
             )
             benchmark_df.loc[len(benchmark_df.index)] = [
-                backend.title(),
+                storage.title(),
                 create_time,
                 read_time,
                 update_time,
@@ -354,7 +380,7 @@ def run_benchmark(
             da.clear()
             del da
         except Exception as e:
-            console.print(f'Storage Backend {backend} failed: {e}')
+            console.print(f'Storage Backend {storage} failed: {e}')
 
     console.print(table)
     return find_by_vector_time_all, create_time_all, benchmark_df
@@ -617,10 +643,7 @@ param_dict = {
 
 
 def get_param(storage, param):
-    if storage == 'memory' or storage == 'sqlite':
-        return param
-
-    return param_dict[storage].get(param, param)
+    return param_dict.get(storage, {}).get(param, param)
 
 
 def plot_results_sift(storages):
