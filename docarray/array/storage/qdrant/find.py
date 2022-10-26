@@ -1,23 +1,16 @@
 from abc import abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    TypeVar,
-    Sequence,
-    List,
-    Union,
-    Optional,
-    Dict,
-)
-from qdrant_client.http.models.models import Distance
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar, Union
 
 from docarray import Document, DocumentArray
 from docarray.math import ndarray
 from docarray.score import NamedScore
+from qdrant_client.http import models as rest
+from qdrant_client.http.models.models import Distance
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
+    import numpy as np
     import tensorflow
     import torch
-    import numpy as np
     from qdrant_client import QdrantClient
 
     QdrantArrayType = TypeVar(
@@ -51,7 +44,12 @@ class FindMixin:
         raise NotImplementedError()
 
     def _find_similar_vectors(
-        self, q: 'QdrantArrayType', limit: int = 10, filter: Optional[Dict] = None
+        self,
+        q: 'QdrantArrayType',
+        limit: int = 10,
+        filter: Optional[Dict] = None,
+        search_params: Optional[Dict] = None,
+        **kwargs,
     ):
         query_vector = self._map_embedding(q)
 
@@ -59,7 +57,9 @@ class FindMixin:
             self.collection_name,
             query_vector=query_vector,
             query_filter=filter,
-            search_params=None,
+            search_params=None
+            if not search_params
+            else rest.SearchParams(**search_params),
             top=limit,
             append_payload=['_serialized'],
         )
@@ -82,12 +82,14 @@ class FindMixin:
         query: 'QdrantArrayType',
         limit: int = 10,
         filter: Optional[Dict] = None,
+        search_params: Optional[Dict] = None,
         **kwargs,
     ) -> List['DocumentArray']:
         """Returns approximate nearest neighbors given a batch of input queries.
         :param query: input supported to be used in Qdrant.
         :param limit: number of retrieved items
         :param filter: filter query used for pre-filtering
+        :param search_params: additional parameters of the search
 
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
@@ -96,11 +98,17 @@ class FindMixin:
         num_rows, _ = ndarray.get_array_rows(query)
 
         if num_rows == 1:
-            return [self._find_similar_vectors(query, limit=limit, filter=filter)]
+            return [
+                self._find_similar_vectors(
+                    query, limit=limit, filter=filter, search_params=search_params
+                )
+            ]
         else:
             closest_docs = []
             for q in query:
-                da = self._find_similar_vectors(q, limit=limit, filter=filter)
+                da = self._find_similar_vectors(
+                    q, limit=limit, filter=filter, search_params=search_params
+                )
                 closest_docs.append(da)
             return closest_docs
 

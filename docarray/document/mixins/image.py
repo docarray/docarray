@@ -9,7 +9,7 @@ import numpy as np
 
 from docarray.document.mixins.helper import _get_file_context, _uri_to_blob
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from PIL.Image import Image as PILImage
 

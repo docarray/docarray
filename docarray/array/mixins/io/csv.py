@@ -4,7 +4,7 @@ from typing import Union, TextIO, Optional, Dict, TYPE_CHECKING, Type, Sequence
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

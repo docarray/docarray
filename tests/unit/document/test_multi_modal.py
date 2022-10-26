@@ -573,8 +573,8 @@ def test_invalid_type_annotations():
     obj = MMDocument(attr=inp)
     with pytest.raises(Exception) as exc_info:
         Document(obj)
-    assert exc_info.value.args[0] == 'Unsupported type annotation'
-    assert str(exc_info.value) == 'Unsupported type annotation'
+    assert 'Unsupported type annotation' in exc_info.value.args[0]
+    assert 'Unsupported type annotation' in str(exc_info.value)
 
 
 def test_not_data_class():
@@ -833,3 +833,11 @@ def test_initialize_document_with_dataclass_and_additional_text_attr():
 
     assert d.text == 'top level text'
     assert d.chunk_text.text == 'chunk level text'
+
+
+def test_empty_list_dataclass():
+    @dataclass()
+    class A:
+        text: List[Text]
+
+    doc = Document(A(text=[]))

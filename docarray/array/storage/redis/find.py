@@ -21,7 +21,7 @@ from redis.commands.search.querystring import (
     union,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
 

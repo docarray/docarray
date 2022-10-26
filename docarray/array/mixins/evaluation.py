@@ -8,7 +8,7 @@ from collections import defaultdict
 
 from docarray.score import NamedScore
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document, DocumentArray
 
 

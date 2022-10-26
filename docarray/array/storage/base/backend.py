@@ -4,7 +4,7 @@ from collections import namedtuple
 from dataclasses import is_dataclass, asdict
 from typing import Dict, Optional, TYPE_CHECKING, Union, List, Tuple
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType, ArrayType
 
 TypeMap = namedtuple('TypeMap', ['type', 'converter'])

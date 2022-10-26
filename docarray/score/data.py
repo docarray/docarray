@@ -1,7 +1,7 @@
 from dataclasses import dataclass, fields, field
 from typing import Optional, Tuple, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.score import NamedScore
 
 default_values = dict(value=0.0, op_name='', description='', ref_id='')

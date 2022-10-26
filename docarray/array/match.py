@@ -5,7 +5,7 @@ from typing import (
 
 from docarray.array.memory import DocumentArrayInMemory
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.document import Document
 
 
