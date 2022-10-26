@@ -43,7 +43,7 @@ def delete(da, ids):
 
 @timer
 def find_by_condition(da, query):
-    da.find(query)
+    da.find(filter=query)
 
 
 @timer
@@ -216,7 +216,7 @@ storage_backend_filters = {
     'qdrant': {'tags__i': {'$eq': 0}},
     'weaviate': {'path': 'i', 'operator': 'Equal', 'valueInt': 0},
     'elasticsearch': {'match': {'i': 0}},
-    'redis': {'i': {'$eq': 0}},
+    'redis': '@i:[0 0] ',
 }
 
 
@@ -346,6 +346,10 @@ def run_benchmark(
 
             find_by_vector_time_all.append(find_by_vector_time)
             create_time_all.append(create_time)
+
+            # print and store benchmark time
+            console.print(table)
+            benchmark_df.to_csv(f'benchmark-seconds-{n_index}.csv')
 
             da.clear()
             del da
