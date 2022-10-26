@@ -75,7 +75,10 @@ class BaseBackendMixin(ABC):
         return _id
 
     def _map_column(self, value, col_type) -> str:
-        return self.TYPE_MAP[col_type].converter(value)
+        if value is not None:
+            return self.TYPE_MAP[col_type].converter(value)
+        else:
+            raise ValueError('Column values should not be None.')
 
     def _map_embedding(self, embedding: 'ArrayType') -> 'ArrayType':
         from docarray.math.ndarray import to_numpy_array
