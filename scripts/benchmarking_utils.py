@@ -177,8 +177,9 @@ def get_configuration_storage_backends(argparse, D, random=True):
 
         storage_backends['qdrant']['storage_config']['distance'] = 'euclidean'
         storage_backends['qdrant']['hnsw_config'] = {
-            'm': [12, 16, 32],
-            'ef_construct': [32, 64, 128],
+            'm': [16, 32],
+            'ef_construct': [64, 128],
+            'hnsw_ef': [32, 64, 128],
         }
 
         storage_backends['weaviate']['storage_config']['distance'] = 'l2-squared'
@@ -480,9 +481,13 @@ def run_benchmark_sift(
                 config.update(storage_config)
                 if storage == 'elasticsearch':
                     num_candidates = config.pop('num_candidates')
+                if storage == 'qdrant':
+                    hnsw_ef = config.pop('hnsw_ef')
                 da = DocumentArray(storage=storage, config=config)
                 if storage == 'elasticsearch':
                     config['num_candidates'] = num_candidates
+                if storage == 'qdrant':
+                    config['hnsw_ef'] = hnsw_ef
 
             console.print(f'\tindexing {n_index} docs ...')
             create_time, _ = create(da, docs)
@@ -510,6 +515,13 @@ def run_benchmark_sift(
                     if storage == 'elasticsearch':
                         find_by_vector_time, results = find_by_vector(
                             da, query, limit=K, num_candidates=config['num_candidates']
+                        )
+                    elif storage == 'qdrant':
+                        find_by_vector_time, results = find_by_vector(
+                            da,
+                            query,
+                            limit=K,
+                            search_params={"hnsw_ef": config['hnsw_ef']},
                         )
                     else:
                         find_by_vector_time, results = find_by_vector(
@@ -578,7 +590,11 @@ param_dict = {
         'EF_CONSTRUCTION': 'ef_construction',
         'EF_RUNTIME': 'ef_search',
     },
-    'qdrant': {'M': 'm', 'EF_CONSTRUCTION': 'ef_construct'},
+    'qdrant': {
+        'M': 'm',
+        'EF_CONSTRUCTION': 'ef_construct',
+        'EF_RUNTIME': 'hnsw_ef',
+    },
     'weaviate': {
         'M': 'max_connections',
         'EF_CONSTRUCTION': 'ef_construction',
@@ -621,10 +637,11 @@ def plot_results_sift(storages):
             ax=ax,
             x='Recall',
             y='Find by vector',
+            xlabel='Recall @ 10',
             ylabel='Queries per second (1/s)',
             label=storage,
         )
 
-    ax.set_title('Recall/Queries per second (1/s)', fontsize=18)
+    ax.set_title('Recall/QPS', fontsize=18)
 
     plt.savefig('benchmark.png')
