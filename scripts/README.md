@@ -19,7 +19,7 @@ docker-compose up -d
 Install dependencies:
 
 ```
-pip install "docarray[common,benchmark]"
+pip install "docarray[common,benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
 ```
 
 Run the benchmark:
