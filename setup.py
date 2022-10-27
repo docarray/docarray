@@ -82,6 +82,7 @@ setup(
         'benchmark': [
             'pandas',
             'seaborn',
+            'h5py',
         ],
         'test': [
             'pytest',
