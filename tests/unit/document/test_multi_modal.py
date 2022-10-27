@@ -848,6 +848,33 @@ def test_initialize_document_with_dataclass_and_additional_unknown_attributes():
     assert d.chunk_text.text == 'chunk level text'
 
 
+def test_doc_with_dataclass_and_additional_tags_arg():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(MyDoc(name_mydoc='mydoc'), name_doc='doc')
+    d.summary()
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+
+
+def test_doc_with_dataclass_and_additional_tags_arg_and_unknown_attribute():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(
+        MyDoc(name_mydoc='mydoc'), tags={"name_doc": "doc"}, something_else='hello'
+    )
+    d.summary()
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+    assert d.tags['something_else'] == 'hello'
+
+
 def test_empty_list_dataclass():
     @dataclass()
     class A:
