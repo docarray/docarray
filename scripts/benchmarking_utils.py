@@ -333,7 +333,8 @@ def run_benchmark(
                         find_by_vector_time, results = find_by_vector(
                             da, query, limit=K
                         )
-                        find_by_vector_times.append(find_by_vector_time)
+
+                    find_by_vector_times.append(find_by_vector_time)
 
                     if storage == 'memory':
                         ground_truth.append(results[:, 'tags__i'])
