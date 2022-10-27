@@ -16,6 +16,12 @@ docker-compose up -d
 
 ### Run benchmarking script
 
+Install dependencies:
+
+```
+pip install "docarray[common,benchmark]"
+```
+
 Run the benchmark:
 
 ```
