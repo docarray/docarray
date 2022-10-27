@@ -57,6 +57,34 @@ class SingletonSugarMixin:
         ...
 
     def match(self: 'T', *args, **kwargs) -> 'T':
+        """Matching the current Document against a set of Documents.
+
+        The result will be stored in :attr:`.matches`.
+
+        .. note::
+            When you want to match a set Documents (let's call it set `A`) against another set of Documents (set `B`),
+            where you want to find for each element in `A` what are its nearest neighbours in `B`.
+            Then you need :meth:`DocumentArray.match`
+
+        :param darray: the other DocumentArray to match against
+        :param metric: the distance metric
+        :param limit: the maximum number of matches, when not given defaults to 20.
+        :param normalization: a tuple [a, b] to be used with min-max normalization,
+                                the min distance will be rescaled to `a`, the max distance will be rescaled to `b`
+                                all values will be rescaled into range `[a, b]`.
+        :param metric_name: if provided, then match result will be marked with this string.
+        :param batch_size: if provided, then ``darray`` is loaded in batches, where each of them is at most ``batch_size``
+            elements. When `darray` is big, this can significantly speedup the computation.
+        :param exclude_self: if set, Documents in ``darray`` with same ``id`` as the left-hand values will not be
+                        considered as matches.
+        :param only_id: if set, then returning matches will only contain ``id``
+        :param use_scipy: if set, use ``scipy`` as the computation backend. Note, ``scipy`` does not support distance
+            on sparse matrix.
+        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
+
+                .. note::
+                    This argument is only effective when ``batch_size`` is set.
+        """
         from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
@@ -79,6 +107,13 @@ class SingletonSugarMixin:
         """
 
     def embed(self: 'T', *args, **kwargs) -> 'T':
+        """Fill the embedding of Documents inplace by using `embed_model`
+
+        :param embed_model: the embedding model written in Keras/Pytorch/Paddle
+        :param device: the computational device for `embed_model`, can be either
+            `cpu` or `cuda`.
+        :param batch_size: number of Documents in a batch for embedding
+        """
         from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
@@ -86,6 +121,23 @@ class SingletonSugarMixin:
         return self
 
     def post(self: 'T', *args, **kwargs) -> 'T':
+        """Posting itself to a remote Flow/Sandbox and get the modified DocumentArray back
+
+        :param host: a host string. Can be one of the following:
+            - `grpc://192.168.0.123:8080/endpoint`
+            - `ws://192.168.0.123:8080/endpoint`
+            - `http://192.168.0.123:8080/endpoint`
+            - `jinahub://Hello/endpoint`
+            - `jinahub+docker://Hello/endpoint`
+            - `jinahub+docker://Hello/v0.0.1/endpoint`
+            - `jinahub+docker://Hello/latest/endpoint`
+            - `jinahub+sandbox://Hello/endpoint`
+
+        :param show_progress: if to show a progressbar
+        :param batch_size: number of Document on each request
+        :param parameters: parameters to send in the request
+        :return: the new DocumentArray returned from remote
+        """
         from docarray import DocumentArray
 
         _tmp = DocumentArray(self)
