@@ -9,6 +9,8 @@ from os.path import expanduser
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from collections import Counter
 
+import hubble
+
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
 
@@ -495,3 +497,23 @@ def _get_array_info(da: 'DocumentArray'):
             )
 
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
+
+
+def login(force: bool = False):
+    """Login to Hubble account.
+    :param force: If set to true, overwrite token and re-login.
+    """
+    hubble.login(force=force)
+
+
+def logout():
+    """Logout Hubble account."""
+    hubble.logout()
+
+
+def notebook_login(force: bool = False):
+    """Log in to Hubble account.
+    :param force: If set to true, overwrite token and re-login.
+    Note: This works for Jupyter notebook, Google Colab..
+    """
+    hubble.notebook_login(force=force)
