@@ -394,7 +394,7 @@ The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compre
 To avoid unnecessary download when upstream DocumentArray is unchanged, you can add `DocumentArray.pull(..., local_cache=True)`.
 
 ```{seealso}
-DocArray allows pushing/pulling and managing your DocumentArrays in Jina AI Cloud.
-Read more about how to manage your data in Jina AI Cloud, either using the console or DocArray Python API in the 
+DocArray allows pushing, pulling, and managing your DocumentArrays in Jina AI Cloud.
+Read more about how to manage your data in Jina AI Cloud, using either the console or the DocArray Python API, in the 
 {ref}`Data Management section <data-management>`.
 ```

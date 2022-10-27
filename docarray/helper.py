@@ -500,14 +500,14 @@ def _get_array_info(da: 'DocumentArray'):
 
 
 def login(force: bool = False):
-    """Login to Hubble account.
+    """Log in to Hubble account.
     :param force: If set to true, overwrite token and re-login.
     """
     hubble.login(force=force)
 
 
 def logout():
-    """Logout Hubble account."""
+    """Log out of Hubble account."""
     hubble.logout()
 
 
