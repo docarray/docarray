@@ -876,12 +876,22 @@ def test_doc_with_dataclass_with_str_and_additional_tags_arg_and_unknown_attribu
         name_mydoc: str
 
     d = Document(
-        MyDoc(name_mydoc='mydoc'), tags={"name_doc": "doc"}, something_else='hello'
+        MyDoc(name_mydoc='mydoc'), tags={'name_doc': 'doc'}, something_else='hello'
     )
 
     assert d.tags['name_mydoc'] == 'mydoc'
     assert d.tags['name_doc'] == 'doc'
     assert d.tags['something_else'] == 'hello'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_unknown_attr_with_same_name():
+    @dataclass
+    class MyDoc:
+        name: str
+
+    d = Document(MyDoc(name='mydoc'), name='doc')
+
+    assert d.tags['name'] == 'doc'
 
 
 def test_empty_list_dataclass():
