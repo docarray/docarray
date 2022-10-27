@@ -41,6 +41,11 @@ class BaseDCType:
         if kwargs:
             try:
                 if self._data is not None:
+                    if self._unresolved_fields_dest in kwargs.keys():
+                        getattr(self, self._unresolved_fields_dest).update(
+                            kwargs[self._unresolved_fields_dest]
+                        )
+                        kwargs.pop(self._unresolved_fields_dest)
                     self._data = dataclasses.replace(self._data, **kwargs)
                 else:
                     self._data = self._data_class(self, **kwargs)
