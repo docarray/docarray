@@ -41,6 +41,7 @@ fundamentals/document/index
 fundamentals/documentarray/index
 fundamentals/dataclass/index
 advanced/document-store/index
+fundamentals/jina-ai-cloud/index
 ```
 
 ```{toctree}
