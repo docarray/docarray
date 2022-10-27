@@ -69,13 +69,13 @@ def get_configuration_storage_backends(argparse, D, random=True):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--fixed-hnsw',
-        help='Whether to use default HNSW configurations',
+        help='Whether to use default HNSW configurations for random dataset',
         action='store_true',
     )
 
     parser.add_argument(
         '--exclude-backends',
-        help='list of comma separated backends to exclude from the benchmarks',
+        help='List of comma-separated backends to exclude from the benchmarks',
         type=str,
         default='',
     )
@@ -669,6 +669,6 @@ def plot_results_sift(storages):
             label=storage,
         )
 
-    ax.set_title('Recall/QPS', fontsize=18)
+    ax.set_title('Recall@10/QPS', fontsize=18)
 
     plt.savefig('benchmark.png')
