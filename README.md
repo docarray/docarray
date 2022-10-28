@@ -43,7 +43,7 @@ Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/
 
 ## Install 
 
-Requires Python 3.7+ and `numpy` only:
+Requires Python 3.7+, `numpy` and `rich` only:
 ```shell
 pip install docarray
 ```
