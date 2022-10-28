@@ -58,12 +58,10 @@ class ParallelMixin:
 
     def apply(self: 'T', *args, **kwargs) -> 'T':
         # implementation_stub_inject_start_apply
-    
+
         """Apply ``func`` to every Document in itself, return itself after modification.
 
-        func: a function that takes :class:`Document` as input and outputs :class:`Document`.
-
-        func: a function that takes :class:`Document` as input and outputs :class:`Document`.
+        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.
         :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.
             In general, if your
             ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.
@@ -85,7 +83,7 @@ class ParallelMixin:
         .. # noqa: DAR101
         .. # noqa: DAR003
         """
-    # implementation_stub_inject_end_apply
+        # implementation_stub_inject_end_apply
         for doc in self.map(*args, **kwargs):
             self[doc.id] = doc
         return self
@@ -193,34 +191,16 @@ class ParallelMixin:
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: show a progress bar
         :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.
-
         """
 
     # overload_inject_end_apply_batch
 
     def apply_batch(self: 'T', *args, **kwargs) -> 'T':
         # implementation_stub_inject_start_apply_batch
-    
+
         """Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.
 
-        .. code-block:: python
-
-            from docarray import Document, DocumentArray
-
-            da = DocumentArray([Document(text='The cake is a lie') for _ in range(100)])
-
-
-            def func(doc):
-                da.texts = [t.upper() for t in da.texts]
-                return da
-
-
-            da.apply_batch(func, batch_size=10)
-            print(da.texts[:3])
-
-        .. code-block:: text
-
-            ['THE CAKE IS A LIE', 'THE CAKE IS A LIE', 'THE CAKE IS A LIE']
+        EXAMPLE USAGE
 
         .. code-block:: python
 
@@ -265,7 +245,7 @@ class ParallelMixin:
         .. # noqa: DAR101
         .. # noqa: DAR003
         """
-    # implementation_stub_inject_end_apply_batch
+        # implementation_stub_inject_end_apply_batch
         for _b in self.map_batch(*args, **kwargs):
             self[[doc.id for doc in _b]] = _b
         return self
