@@ -15,3 +15,9 @@ class AttributeType(str, Enum):
     ITERABLE_DOCUMENT = 'iterable_document'
     NESTED = 'nested'
     ITERABLE_NESTED = 'iterable_nested'
+
+
+class ImageType(str, Enum):
+    PIL = 'PIL'
+    URI = 'uri'
+    NDARRAY = 'ndarray'
