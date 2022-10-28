@@ -24,6 +24,7 @@ T_DA = TypeVar('T_DA')
 class ParallelMixin:
     """Helper functions that provide parallel map to :class:`DocumentArray`"""
 
+    # overload_inject_start_apply
     @overload
     def apply(
         self: 'T',
@@ -52,56 +53,13 @@ class ParallelMixin:
         :param show_progress: show a progress bar
 
         """
-        ...
+
+    # overload_inject_end_apply
 
     def apply(self: 'T', *args, **kwargs) -> 'T':
-        """Apply ``func`` to every Document in itself, return itself after modification.
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            from docarray import Document, DocumentArray
-
-            da = DocumentArray(
-                [Document(text='The cake is a lie'), Document(text='Do a barrel roll!')]
-            )
-
-
-            def func(doc):
-                doc.text = doc.text.upper()
-                return doc
-
-
-            da.apply(func, backend='thread', num_worker=2)
-            print(da.texts)
-
-        .. code-block:: text
-
-            ['THE CAKE IS A LIE', 'DO A BARREL ROLL!']
-
-        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.
-        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.
-            In general, if your
-            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.
-            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
-            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.
-
-            .. warning::
-                When using `process` backend, you should not expect ``func`` to modify elements in-place. This is because
-                the multiprocessing backend passes the variable via pickle and works in another process. The passed object
-                and the original object do **not** share the same memory.
-
-        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
-        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.
-        :param show_progress: show a progress bar
-
-        # noqa: DAR102
-        # noqa: DAR101
-        # noqa: DAR201
-        :return: a new :class:`DocumentArray`
-
-        """
+        # implementation_stub_inject_start_apply
+        """Apply ``func`` to every Document in itself, return itself after modification."""
+        # implementation_stub_inject_end_apply
         for doc in self.map(*args, **kwargs):
             self[doc.id] = doc
         return self
@@ -157,6 +115,7 @@ class ParallelMixin:
             ):
                 yield x
 
+    # overload_inject_start_apply_batch
     @overload
     def apply_batch(
         self: 'T',
@@ -210,55 +169,13 @@ class ParallelMixin:
         :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.
 
         """
-        ...
+
+    # overload_inject_end_apply_batch
 
     def apply_batch(self: 'T', *args, **kwargs) -> 'T':
-        """Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.
-
-        EXAMPLE USAGE
-
-        .. code-block:: python
-
-            from docarray import Document, DocumentArray
-
-            da = DocumentArray([Document(text='The cake is a lie') for _ in range(100)])
-
-
-            def func(doc):
-                da.texts = [t.upper() for t in da.texts]
-                return da
-
-
-            da.apply_batch(func, batch_size=10)
-            print(da.texts[:3])
-
-        .. code-block:: text
-
-            ['THE CAKE IS A LIE', 'THE CAKE IS A LIE', 'THE CAKE IS A LIE']
-
-        :param func: a function that takes :class:`DocumentArray` as input and outputs :class:`DocumentArray`.
-        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.
-            In general, if your
-            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.
-            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
-            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.
-
-            .. warning::
-                When using `process` backend, you should not expect ``func`` to modify elements in-place. This is because
-                the multiprocessing backend passes the variable via pickle and works in another process. The passed object
-                and the original object do **not** share the same memory.
-
-        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.
-        :param batch_size: Size of each generated batch (except the last batch, which might be smaller). Default: 32
-        :param shuffle: If set, shuffle the Documents before dividing into minibatches.
-        :param show_progress: show a progress bar
-        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.
-
-        # noqa: DAR102
-        # noqa: DAR101
-        # noqa: DAR201
-        :return: a new :class:`DocumentArray`
-        """
+        # implementation_stub_inject_start_apply_batch
+        """Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications."""
+        # implementation_stub_inject_end_apply_batch
         for _b in self.map_batch(*args, **kwargs):
             self[[doc.id for doc in _b]] = _b
         return self
