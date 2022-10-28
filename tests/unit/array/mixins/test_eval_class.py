@@ -7,6 +7,8 @@ from datasets import load_dataset
 from string import printable
 from collections import Counter
 
+from transformers import BertModel, BertConfig, BertTokenizer
+
 from docarray import DocumentArray, Document
 
 
@@ -592,3 +594,36 @@ def test_embed_and_evaluate_on_real_data():
     for key in res:
         assert key in res2
         assert abs(res[key] - res2[key]) < 1e-3
+
+
+@pytest.fixture(scope='session')
+def bert_tokenizer():
+    return BertTokenizer.from_pretrained('bert-base-uncased')
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 768}),
+        ('qdrant', {'n_dim': 768}),
+        ('elasticsearch', {'n_dim': 768}),
+        ('redis', {'n_dim': 768}),
+    ],
+)
+def test_embed_and_evaluate_with_embed_model(
+    storage, config, bert_tokenizer, start_storage
+):
+    model = BertModel(BertConfig())
+    collate_fn = lambda da: bert_tokenizer(da.texts, return_tensors='pt')
+    da = DocumentArray(
+        [Document(text=f'some text {i}', tags={'label': str(i)}) for i in range(5)]
+    )
+    da = DocumentArray(da, storage=storage, config=config)
+    res = da.embed_and_evaluate(
+        metrics=['precision_at_k'], embed_models=model, collate_fns=collate_fn
+    )
+    assert res
+    assert res['precision_at_k'] == 0.2

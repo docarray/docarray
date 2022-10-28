@@ -279,9 +279,11 @@ class EvaluationMixin:
             rescaled to `b` all values will be rescaled into range `[a, b]`.
         :param exclude_self: If set, Documents in ``index_data`` with same ``id``
             as the left-hand values will not be considered as matches.
-        :param filter: Filter query used for pre-filtering
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note,
             ``scipy`` does not support distance on sparse matrix.
+        :parma match_batch_size: The number of documents which are embedded and
+            matched at once. Set this value to a lower value, if you experience high
+            memory consumption.
         :param kwargs: Additional keyword arguments to be passed to the metric
             functions.
         :return: A dictionary which stores for each metric name the average evaluation
@@ -295,10 +297,22 @@ class EvaluationMixin:
         if only_one_dataset:
             # if the user does not provide a separate set of documents for indexing,
             # the matching is done on the documents itself
-            index_data = DocumentArray(self, copy=True)
+            copy_flag = (type(embed_funcs) is tuple) or (
+                (embed_funcs is None) and (type(embed_models) is tuple)
+            )
+            index_data = DocumentArray(self, copy=copy_flag)
 
         index_data_labels = None
         if not ground_truth:
+            if not label_tag in self[0].tags:
+                raise ValueError(
+                    'Either a ground_truth `DocumentArray` or labels are '
+                    'required for the evaluation.'
+                )
+            if not label_tag in index_data[0].tags:
+                raise ValueError(
+                    'The `DocumentArray` provided in `index_data` misses ' 'labels.'
+                )
             index_data_labels = dict()
             for id_value, tags in zip(index_data[:, 'id'], index_data[:, 'tags']):
                 index_data_labels[id_value] = tags[label_tag]
@@ -322,7 +336,7 @@ class EvaluationMixin:
                         if type(collate_fns) is tuple
                         else collate_fns,
                     }
-                    for i, model, docs in enumerate(
+                    for i, (model, docs) in enumerate(
                         zip(embed_models, (self, index_data))
                     )
                 ]
@@ -355,10 +369,11 @@ class EvaluationMixin:
             return DocumentArray(global_matches)
 
         for batch in index_data.batch(match_batch_size):
-            if embed_funcs:
-                embed_funcs[1](batch)
-            else:
-                batch.embed(**embed_args[1])
+            if (batch.embeddings is None) or (batch[0].embedding[0] == 0):
+                if embed_funcs:
+                    embed_funcs[1](batch)
+                else:
+                    batch.embed(**embed_args[1])
 
             self._local.match(
                 batch,
@@ -366,7 +381,6 @@ class EvaluationMixin:
                 metric=distance,
                 normalization=normalization,
                 exclude_self=exclude_self,
-                filter=filter,
                 use_scipy=use_scipy,
                 only_id=True,
             )
