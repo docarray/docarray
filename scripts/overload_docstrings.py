@@ -20,9 +20,6 @@ def _get_overload_params_docstring(file_str, tag, class_method=True, indent=' ' 
     # trim off start and end patterns
     params_str = re.sub('"""', '', params_str, 0, re.DOTALL)  # delete """
     params_str = re.sub(
-        rf'{params_start_regex}', '', params_str, 1, re.DOTALL
-    )  # delete start regex
-    params_str = re.sub(
         rf'{docstring_end_regex}', '', params_str, 1, re.DOTALL
     )  # delete end regex
     params_str = re.sub(
