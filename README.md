@@ -43,7 +43,7 @@ Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/
 
 ## Install 
 
-Requires Python 3.7+ and `numpy` only:
+Requires Python 3.7+
 ```shell
 pip install docarray
 ```
@@ -282,7 +282,9 @@ right_da = (
 
 ```python
 right_da = (
-    DocumentArray.from_files('right/*.jpg')[:1000].apply(preproc).embed(model, device='cuda')
+    DocumentArray.from_files('right/*.jpg')[:1000]
+    .apply(preproc)
+    .embed(model, device='cuda')
 )
 ```
 
