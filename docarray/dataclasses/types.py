@@ -33,15 +33,6 @@ from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 __all__ = ['field', 'dataclass', 'is_multimodal']
 
 
-class AttributeType(str, Enum):
-    DOCUMENT = 'document'
-    PRIMITIVE = 'primitive'
-    ITERABLE_PRIMITIVE = 'iterable_primitive'
-    ITERABLE_DOCUMENT = 'iterable_document'
-    NESTED = 'nested'
-    ITERABLE_NESTED = 'iterable_nested'
-
-
 class AttributeTypeError(TypeError):
     pass
 

@@ -6,3 +6,12 @@ class DocumentMetadata(str, Enum):
     IMAGE_URI = 'image_uri'
     MULTI_MODAL_SCHEMA = 'multi_modal_schema'
     JSON_TYPE = 'json_type'
+
+
+class AttributeType(str, Enum):
+    DOCUMENT = 'document'
+    PRIMITIVE = 'primitive'
+    ITERABLE_PRIMITIVE = 'iterable_primitive'
+    ITERABLE_DOCUMENT = 'iterable_document'
+    NESTED = 'nested'
+    ITERABLE_NESTED = 'iterable_nested'

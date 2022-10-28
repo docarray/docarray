@@ -10,8 +10,7 @@ from docarray import Document, DocumentArray
 from docarray.dataclasses import dataclass, field
 from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
-from docarray.dataclasses.enums import DocumentMetadata
-from docarray.document.mixins.multimodal import AttributeType
+from docarray.dataclasses.enums import DocumentMetadata, AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 

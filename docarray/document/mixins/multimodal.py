@@ -7,8 +7,7 @@ from docarray.dataclasses.types import (
     _is_field,
     AttributeTypeError,
 )
-from docarray.dataclasses.enums import DocumentMetadata
-from docarray.dataclasses.types import AttributeType
+from docarray.dataclasses.enums import DocumentMetadata, AttributeType
 
 if typing.TYPE_CHECKING:
     from docarray import Document, DocumentArray
