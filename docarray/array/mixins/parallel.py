@@ -191,6 +191,7 @@ class ParallelMixin:
         :param shuffle: If set, shuffle the Documents before dividing into minibatches.
         :param show_progress: show a progress bar
         :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.
+
         """
 
     # overload_inject_end_apply_batch
