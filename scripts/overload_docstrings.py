@@ -17,7 +17,6 @@ def _get_overload_params_docstring(file_str, tag, class_method=True, indent=' ' 
     params_str = stub_str[params_match.span()[0] : params_match.span()[1]]
 
     #### cleanup ####
-    # trim off start and end patterns
     params_str = re.sub('"""', '', params_str, 0, re.DOTALL)  # delete """
     params_str = re.sub(
         rf'{docstring_end_regex}', '', params_str, 1, re.DOTALL
@@ -41,9 +40,7 @@ def _get_overload_params_docstring(file_str, tag, class_method=True, indent=' ' 
 def _get_docstring_title(file_str, tag):
     # extracts the description ('title') of a docstring, i.e. the initial part that has no :param:, :return: etc.
     title_start_regex = f'# implementation_stub_inject_start_{tag}'
-    title_end_regex = (
-        f':param|:return:|# implementation_stub_inject_end_{tag}|.. # noqa:'
-    )
+    title_end_regex = f':param|EXAMPLE USAGE|.. code-block::|:return:|# implementation_stub_inject_end_{tag}|.. # noqa:'
     doc_str_title_match = re.search(
         rf'({title_start_regex}).*?({title_end_regex})', file_str, flags=re.DOTALL
     )
