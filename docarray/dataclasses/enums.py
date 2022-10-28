@@ -2,10 +2,14 @@ from enum import Enum
 
 
 class DocumentMetadata(str, Enum):
+    MULTI_MODAL_SCHEMA = 'multi_modal_schema'
     IMAGE_TYPE = 'image_type'
     IMAGE_URI = 'image_uri'
-    MULTI_MODAL_SCHEMA = 'multi_modal_schema'
+    AUDIO_TYPE = 'audio_type'
+    VIDEO_TYPE = 'video_type'
+    MESH_TYPE = 'mesh_type'
     JSON_TYPE = 'json_type'
+    BLOB_TYPE = 'blob_type'
 
 
 class AttributeType(str, Enum):
