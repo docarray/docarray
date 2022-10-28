@@ -45,7 +45,9 @@ def audio_setter(value) -> 'Document':
     from docarray import Document
 
     if isinstance(value, np.ndarray):
-        return Document(tensor=value, _metadata={DocumentMetadata.AUDIO_TYPE: 'ndarray'})
+        return Document(
+            tensor=value, _metadata={DocumentMetadata.AUDIO_TYPE: 'ndarray'}
+        )
     else:
         return Document(
             uri=value, modality='audio', _metadata={DocumentMetadata.AUDIO_TYPE: 'uri'}
@@ -56,7 +58,9 @@ def video_setter(value) -> 'Document':
     from docarray import Document
 
     if isinstance(value, np.ndarray):
-        return Document(tensor=value, _metadata={DocumentMetadata.VIDEO_TYPE: 'ndarray'})
+        return Document(
+            tensor=value, _metadata={DocumentMetadata.VIDEO_TYPE: 'ndarray'}
+        )
     else:
         return Document(
             uri=value, modality='video', _metadata={DocumentMetadata.VIDEO_TYPE: 'uri'}
@@ -80,7 +84,9 @@ def blob_setter(value) -> 'Document':
     if isinstance(value, bytes):
         return Document(blob=value, _metadata={DocumentMetadata.BLOB_TYPE: 'bytes'})
     else:
-        return Document(uri=value, _metadata={DocumentMetadata.BLOB_TYPE: 'uri'}).load_uri_to_blob()
+        return Document(
+            uri=value, _metadata={DocumentMetadata.BLOB_TYPE: 'uri'}
+        ).load_uri_to_blob()
 
 
 def json_setter(value) -> 'Document':

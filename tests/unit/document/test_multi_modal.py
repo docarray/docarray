@@ -23,12 +23,23 @@ TABULAR_URI = os.path.join(cur_dir, 'toydata/docs.csv')
 
 def _assert_doc_schema(doc, schema):
     for field, attr_type, _type, position in schema:
-        assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['attribute_type'] == attr_type
-        assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['type'] == _type
+        assert (
+            doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['attribute_type']
+            == attr_type
+        )
+        assert (
+            doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['type'] == _type
+        )
         if position is not None:
-            assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['position'] == position
+            assert (
+                doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['position']
+                == position
+            )
         else:
-            assert 'position' not in doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]
+            assert (
+                'position'
+                not in doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]
+            )
 
 
 def test_type_annotation():

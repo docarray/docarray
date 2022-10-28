@@ -243,9 +243,13 @@ def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
         )
 
     attributes = {}
-    for key, attribute_info in doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA].items():
+    for key, attribute_info in doc._metadata[
+        DocumentMetadata.MULTI_MODAL_SCHEMA
+    ].items():
         field = cls.__dataclass_fields__[key]
-        position = doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][key].get('position')
+        position = doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][key].get(
+            'position'
+        )
         if (
             attribute_info['type'] == 'bytes'
             and attribute_info['attribute_type'] == AttributeType.PRIMITIVE
