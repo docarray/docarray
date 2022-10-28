@@ -214,7 +214,6 @@
 </a>
 <script>
   function setPrefix(prefix){
-    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
     window.location.href = prefix
   }
 </script>
@@ -222,16 +221,17 @@
   fetch(`https://${window.location.host}/_versions.json`)
   .then((resp) => resp.json())
   .then((data) => {
-    var versionSelector = document.getElementsByClassName("version-select")[0]
+    var versionSelector = document.getElementsByClassName("version-select")[0];
+    var currentPrefix = window.location.href.toString().split(window.location.host)[1].split('/')[1];
+
     for(var i = 0; i < data.length; i++){
       var option = document.createElement("option");
       option.innerHTML = data[i].version;
       option.value = "/" + data[i].version;
       versionSelector.appendChild(option);
-    }
-
-    if(window.sessionStorage.getItem('version-select-index')){
-      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+      if(currentPrefix === data[i].version){
+        versionSelector.selectedIndex = i + 1;
+      }
     }
   })
   .catch((err) => console.log(err));
@@ -589,9 +589,7 @@ has as tag <code class="docutils literal notranslate"><span class="pre">price</s
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">embedding=</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">,</span><span class="se">\t</span><span class="s1"> price=</span><span class="si">{</span><span class="n">price</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that
-prices must follow a filter. As an example, retrieved Documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than
-or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'price':</span> <span class="pre">{'$lte':</span> <span class="pre">max_price}}</span></code>.</p>
+<p>Consider we want the nearest vectors to the embedding <code class="docutils literal notranslate"><span class="pre">[8.</span> <span class="pre">8.</span> <span class="pre">8.]</span></code>, with the restriction that prices must follow a filter. As an example, retrieved Documents must have <code class="docutils literal notranslate"><span class="pre">price</span></code> value lower than or equal to <code class="docutils literal notranslate"><span class="pre">max_price</span></code>. We can encode this information in Qdrant using <code class="docutils literal notranslate"><span class="pre">filter</span> <span class="pre">=</span> <span class="pre">{'must':</span> <span class="pre">[{'key':</span> <span class="pre">'price',</span> <span class="pre">'range':</span> <span class="pre">{'lte':</span> <span class="pre">max_price}}]}</span></code>. You can also pass additional <code class="docutils literal notranslate"><span class="pre">search_params</span></code> following <a class="reference external" href="https://qdrant.tech/documentation/search/#search-api">Qdrant’s Search API</a>.</p>
 <p>Then you can implement and use the search with the proposed filter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">max_price</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">n_limit</span> <span class="o">=</span> <span class="mi">4</span>
@@ -600,7 +598,7 @@ or equal to <code class="docutils literal notranslate"><span class="pre">max_pri
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Query vector: </span><span class="se">\t</span><span class="si">{</span><span class="n">np_query</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <span class="nb">filter</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;must&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lte&#39;</span><span class="p">:</span> <span class="n">max_price</span><span class="p">}}]}</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">np_query</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">n_limit</span><span class="p">,</span> <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hnsw_ef&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">})</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Embeddings Nearest Neighbours with &quot;price&quot; at most 7:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">price</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">results</span><span class="p">[:,</span> <span class="s1">&#39;tags__price&#39;</span><span class="p">]):</span>
@@ -710,7 +708,7 @@ this information in Qdrant using <code class="docutils literal notranslate"><spa
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 25, 2022</div>
+                            Last updated on Oct 28, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

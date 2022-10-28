@@ -14,7 +14,7 @@
   
 <meta property="og:description" content="If you have an image Document (with possible image data in.uri/.tensor), you can directly visualize it via display(). To better see the Document’s nested structure, you can use summary(). When using Notebook/Colab, this is auto-rendered." />
   
-<meta property="og:image" content="https://docarray.jina.ai/_images/doc-plot-in-jupyter.png" />
+<meta property="og:image" content="https://docarray.jina.ai/_images/doc-plot-in-jupyter.jpg" />
   
 <meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
   
@@ -214,7 +214,6 @@
 </a>
 <script>
   function setPrefix(prefix){
-    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
     window.location.href = prefix
   }
 </script>
@@ -222,16 +221,17 @@
   fetch(`https://${window.location.host}/_versions.json`)
   .then((resp) => resp.json())
   .then((data) => {
-    var versionSelector = document.getElementsByClassName("version-select")[0]
+    var versionSelector = document.getElementsByClassName("version-select")[0];
+    var currentPrefix = window.location.href.toString().split(window.location.host)[1].split('/')[1];
+
     for(var i = 0; i < data.length; i++){
       var option = document.createElement("option");
       option.innerHTML = data[i].version;
       option.value = "/" + data[i].version;
       versionSelector.appendChild(option);
-    }
-
-    if(window.sessionStorage.getItem('version-select-index')){
-      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+      if(currentPrefix === data[i].version){
+        versionSelector.selectedIndex = i + 1;
+      }
     }
   })
   .catch((err) => console.log(err));
@@ -404,7 +404,7 @@
 <h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading">#</a></h1>
 <p>If you have an image Document (with possible image data in <code class="docutils literal notranslate"><span class="pre">.uri</span></code>/<code class="docutils literal notranslate"><span class="pre">.tensor</span></code>), you can directly visualize it via <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.display" title="docarray.document.mixins.plot.PlotMixin.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">display()</span></code></a>.</p>
 <figure class="align-default">
-<img alt="../../../_images/doc-plot-in-jupyter.png" src="../../../_images/doc-plot-in-jupyter.png" />
+<img alt="../../../_images/doc-plot-in-jupyter.jpg" src="../../../_images/doc-plot-in-jupyter.jpg" />
 </figure>
 <p>To better see the Document’s nested structure, you can use <a class="reference internal" href="../../../api/docarray.document.mixins.plot/#docarray.document.mixins.plot.PlotMixin.summary" title="docarray.document.mixins.plot.PlotMixin.summary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">summary()</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -472,7 +472,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 25, 2022</div>
+                            Last updated on Oct 28, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

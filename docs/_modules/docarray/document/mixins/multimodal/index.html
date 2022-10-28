@@ -181,7 +181,6 @@
 </a>
 <script>
   function setPrefix(prefix){
-    window.sessionStorage.setItem("version-select-index", document.getElementsByClassName("version-select")[0].selectedIndex);
     window.location.href = prefix
   }
 </script>
@@ -189,16 +188,17 @@
   fetch(`https://${window.location.host}/_versions.json`)
   .then((resp) => resp.json())
   .then((data) => {
-    var versionSelector = document.getElementsByClassName("version-select")[0]
+    var versionSelector = document.getElementsByClassName("version-select")[0];
+    var currentPrefix = window.location.href.toString().split(window.location.host)[1].split('/')[1];
+
     for(var i = 0; i < data.length; i++){
       var option = document.createElement("option");
       option.innerHTML = data[i].version;
       option.value = "/" + data[i].version;
       versionSelector.appendChild(option);
-    }
-
-    if(window.sessionStorage.getItem('version-select-index')){
-      versionSelector.selectedIndex = window.sessionStorage.getItem('version-select-index');
+      if(currentPrefix === data[i].version){
+        versionSelector.selectedIndex = i + 1;
+      }
     }
   })
   .catch((err) => console.log(err));
@@ -371,7 +371,12 @@
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
-<span class="kn">from</span> <span class="nn">docarray.dataclasses.types</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">is_multimodal</span><span class="p">,</span> <span class="n">_is_field</span>
+<span class="kn">from</span> <span class="nn">docarray.dataclasses.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Field</span><span class="p">,</span>
+    <span class="n">is_multimodal</span><span class="p">,</span>
+    <span class="n">_is_field</span><span class="p">,</span>
+    <span class="n">AttributeTypeError</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">docarray.dataclasses.types</span> <span class="kn">import</span> <span class="n">AttributeType</span>
 
 <span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -428,20 +433,25 @@
                         <span class="p">}</span>
 
                     <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">attribute_type</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_attribute_type_from_obj_type</span><span class="p">(</span>
+                                <span class="n">sub_type</span><span class="p">,</span> <span class="n">field</span>
+                            <span class="p">)</span>
+                        <span class="k">except</span> <span class="n">AttributeTypeError</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s1">&#39;Unsupported type annotation inside Iterable: </span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">DOCUMENT</span><span class="p">:</span>
+                            <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_DOCUMENT</span>
+                        <span class="k">elif</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">NESTED</span><span class="p">:</span>
+                            <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_NESTED</span>
+
                         <span class="n">chunk</span> <span class="o">=</span> <span class="n">Document</span><span class="p">()</span>
                         <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">attribute</span><span class="p">:</span>
-                            <span class="n">doc</span><span class="p">,</span> <span class="n">attribute_type</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_from_obj</span><span class="p">(</span>
-                                <span class="n">element</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">field</span>
-                            <span class="p">)</span>
-                            <span class="k">if</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">DOCUMENT</span><span class="p">:</span>
-                                <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_DOCUMENT</span>
-                            <span class="k">elif</span> <span class="n">attribute_type</span> <span class="o">==</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">NESTED</span><span class="p">:</span>
-                                <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">ITERABLE_NESTED</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                                    <span class="sa">f</span><span class="s1">&#39;Unsupported type annotation inside Iterable: </span><span class="si">{</span><span class="n">sub_type</span><span class="si">}</span><span class="s1">&#39;</span>
-                                <span class="p">)</span>
+                            <span class="n">doc</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_from_obj</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">sub_type</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
                             <span class="n">chunk</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+
                         <span class="n">multi_modal_schema</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                             <span class="s1">&#39;attribute_type&#39;</span><span class="p">:</span> <span class="n">attribute_type</span><span class="p">,</span>
                             <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="n">sub_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">]&#39;</span><span class="p">,</span>
@@ -536,8 +546,20 @@
         <span class="k">elif</span> <span class="n">_is_field</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">setter</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported type annotation&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">AttributeTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported type annotation </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">doc</span><span class="p">,</span> <span class="n">attribute_type</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_attribute_type_from_obj_type</span><span class="p">(</span><span class="n">obj_type</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeType</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">is_multimodal</span><span class="p">(</span><span class="n">obj_type</span><span class="p">):</span>
+            <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">NESTED</span>
+        <span class="k">elif</span> <span class="n">_is_field</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+            <span class="n">attribute_type</span> <span class="o">=</span> <span class="n">AttributeType</span><span class="o">.</span><span class="n">DOCUMENT</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">AttributeTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported type annotation </span><span class="si">{</span><span class="n">obj_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">attribute_type</span>
 
     <span class="k">def</span> <span class="nf">_has_multimodal_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -579,7 +601,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 25, 2022</div>
+                            Last updated on Oct 28, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
