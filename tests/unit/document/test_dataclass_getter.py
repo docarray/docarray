@@ -11,6 +11,7 @@ from docarray.dataclasses.getter import (
     text_getter,
     uri_getter,
 )
+from docarray.dataclasses.enums import DocumentMetadata
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,18 +20,18 @@ IMAGE_URI = os.path.join(cur_dir, 'toydata/test.png')
 
 def test_image_deserializer():
     doc = Document()
-    doc._metadata['image_type'] = 'uri'
+    doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'uri'
     doc.uri = 'image_uri'
 
     assert image_getter(doc) == 'image_uri'
 
-    doc._metadata['image_type'] = 'ndarray'
+    doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'ndarray'
     im = Image.open(IMAGE_URI)
     doc.tensor = np.asarray(im)
 
     assert np.all(image_getter(doc) == np.asarray(im))
 
-    doc._metadata['image_type'] = 'PIL'
+    doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'PIL'
 
     assert np.all(image_getter(doc) == Image.fromarray(np.asarray(im)))
 
@@ -59,7 +60,7 @@ def test_uri_deserializer():
 
 def test_json_deserializer():
     doc = Document()
-    doc._metadata['json_type'] = ''
+    doc._metadata[DocumentMetadata.JSON_TYPE] = ''
     doc.tags = 'attribute'
     assert json_getter(doc) == 'attribute'
 

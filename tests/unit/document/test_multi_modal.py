@@ -10,6 +10,7 @@ from docarray import Document, DocumentArray
 from docarray.dataclasses import dataclass, field
 from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
+from docarray.dataclasses.enums import DocumentMetadata
 from docarray.document.mixins.multimodal import AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,12 +24,12 @@ TABULAR_URI = os.path.join(cur_dir, 'toydata/docs.csv')
 
 def _assert_doc_schema(doc, schema):
     for field, attr_type, _type, position in schema:
-        assert doc._metadata['multi_modal_schema'][field]['attribute_type'] == attr_type
-        assert doc._metadata['multi_modal_schema'][field]['type'] == _type
+        assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['attribute_type'] == attr_type
+        assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['type'] == _type
         if position is not None:
-            assert doc._metadata['multi_modal_schema'][field]['position'] == position
+            assert doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['position'] == position
         else:
-            assert 'position' not in doc._metadata['multi_modal_schema'][field]
+            assert 'position' not in doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]
 
 
 def test_type_annotation():
@@ -474,7 +475,7 @@ def test_proto_serialization():
 
     proto = doc.to_protobuf()
     assert proto._metadata is not None
-    assert proto._metadata['multi_modal_schema']
+    assert proto._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA]
 
     deserialized_doc = Document.from_protobuf(proto)
 
@@ -488,7 +489,7 @@ def test_proto_serialization():
     assert images[0].tensor.shape == (10, 10, 3)
     assert titles[0].text == 'hello world'
 
-    assert 'multi_modal_schema' in deserialized_doc._metadata
+    assert DocumentMetadata.MULTI_MODAL_SCHEMA in deserialized_doc._metadata
 
     expected_schema = [
         ('title', AttributeType.DOCUMENT, 'Text', 0),
@@ -596,8 +597,8 @@ def test_not_data_class():
 def test_data_class_customized_typevar_map():
     def sette2(value):
         doc = Document(uri=value)
-        doc._metadata['image_type'] = 'uri'
-        doc._metadata['image_uri'] = value
+        doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'uri'
+        doc._metadata[DocumentMetadata.IMAGE_URI] = value
         doc.load_uri_to_blob()
         doc.modality = 'image'
         return doc

@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
-
 import numpy as np
+
+from docarray.dataclasses.enums import DocumentMetadata
+
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document
@@ -13,17 +15,17 @@ def image_setter(value) -> 'Document':
 
     if isinstance(value, str):
         doc.uri = value
-        doc._metadata['image_type'] = 'uri'
+        doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'uri'
         doc.load_uri_to_image_tensor()
     elif isinstance(value, np.ndarray):
         doc.tensor = value
-        doc._metadata['image_type'] = 'ndarray'
+        doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'ndarray'
     else:
         from PIL.Image import Image
 
         if isinstance(value, Image):
             doc.tensor = np.array(value)
-            doc._metadata['image_type'] = 'PIL'
+            doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'PIL'
     return doc
 
 

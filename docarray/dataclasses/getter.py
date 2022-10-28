@@ -1,17 +1,18 @@
 from typing import TYPE_CHECKING
+from docarray.dataclasses.enums import DocumentMetadata
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import Document
 
 
 def image_getter(doc: 'Document'):
-    if doc._metadata['image_type'] == 'uri':
+    if doc._metadata[DocumentMetadata.IMAGE_TYPE] == 'uri':
         return doc.uri
-    elif doc._metadata['image_type'] == 'PIL':
+    elif doc._metadata[DocumentMetadata.IMAGE_TYPE] == 'PIL':
         from PIL import Image
 
         return Image.fromarray(doc.tensor)
-    elif doc._metadata['image_type'] == 'ndarray':
+    elif doc._metadata[DocumentMetadata.IMAGE_TYPE] == 'ndarray':
         return doc.tensor
 
 

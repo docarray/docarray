@@ -7,6 +7,7 @@ from docarray.dataclasses.types import (
     _is_field,
     AttributeTypeError,
 )
+from docarray.dataclasses.enums import DocumentMetadata
 from docarray.dataclasses.types import AttributeType
 
 if typing.TYPE_CHECKING:
@@ -20,7 +21,7 @@ class MultiModalMixin:
         Return true if this Document can be represented by a class wrapped
         by :meth:`docarray.dataclasses.types.dataclass`.
         """
-        return 'multi_modal_schema' in self._metadata
+        return DocumentMetadata.MULTI_MODAL_SCHEMA in self._metadata
 
     @classmethod
     def _from_dataclass(cls, obj) -> 'Document':
@@ -103,7 +104,7 @@ class MultiModalMixin:
 
         # TODO: may have to modify this?
         root.tags = tags
-        root._metadata['multi_modal_schema'] = multi_modal_schema
+        root._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA] = multi_modal_schema
 
         return root
 
@@ -113,12 +114,12 @@ class MultiModalMixin:
                 'the Document does not correspond to a Multi Modal Document'
             )
 
-        if attr not in self._metadata['multi_modal_schema']:
+        if attr not in self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA]:
             raise ValueError(
                 f'the Document schema does not contain attribute `{attr}`, typo?'
             )
 
-        pos = self._metadata['multi_modal_schema'][attr].get('position')
+        pos = self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][attr].get('position')
         if pos is None:
             raise ValueError(
                 f'attribute {attr} is not a valid multi modal attribute.'
@@ -130,7 +131,7 @@ class MultiModalMixin:
         from docarray import DocumentArray
 
         position = self._get_mm_attr_postion(attribute)
-        attribute_type = self._metadata['multi_modal_schema'][attribute][
+        attribute_type = self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][attribute][
             'attribute_type'
         ]
 
@@ -150,7 +151,7 @@ class MultiModalMixin:
         self, attribute: str, value: typing.Union['Document', 'DocumentArray']
     ):
         position = self._get_mm_attr_postion(attribute)
-        attribute_type = self._metadata['multi_modal_schema'][attribute][
+        attribute_type = self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][attribute][
             'attribute_type'
         ]
 
@@ -202,7 +203,7 @@ class MultiModalMixin:
         return (
             has_metadata
             and self.is_multimodal
-            and attr in self._metadata['multi_modal_schema']
+            and attr in self._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA]
         )
 
     def __getattr__(self, attr):
