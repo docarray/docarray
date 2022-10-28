@@ -102,7 +102,7 @@ jobs:
           git config --local user.name "Jina Dev Bot"
           pip install ".[devel,black]"
           pip install setuptools
-          cd scripts && python3 overload_docstrings.py
+          cd scripts && bash overload_docstrings.sh && cd -
           if [[ -z $(git status -s) ]]
           then
             echo "tree is clean"
