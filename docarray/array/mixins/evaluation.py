@@ -237,7 +237,7 @@ class EvaluationMixin:
         **kwargs,
     ) -> Optional[Union[float, List[float]]]:  # average for each metric
         """
-        Computes ranking evaluation metrics for a given `DocumentArray`. Moreover, this
+        Computes ranking evaluation metrics for a given `DocumentArray`. This
         function does embedding and matching in the same turn. Thus, you don't need to
         call ``embed`` and ``match`` before it. Instead, it embeds the documents in
         `self` (and `index_data` when provided`) and compute the nearest neighbour
@@ -248,7 +248,9 @@ class EvaluationMixin:
 
         :param metrics: List of metric names or metric functions to be computed
         :param index_data: The other DocumentArray  to match against, if not given,
-            `self` will be matched against itself.
+            `self` will be matched against itself. This means that every document in
+            will be compared to all other documents in `self` to determine the nearest
+            neighbors.
         :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`
             compares to.
         :param hash_fn: For the evaluation against a `ground_truth` DocumentArray,
