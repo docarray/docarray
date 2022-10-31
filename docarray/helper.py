@@ -508,5 +508,5 @@ def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
 
 
 def logout():
-    """Logout Hubble account."""
+    """Log out of Hubble account."""
     hubble.logout()

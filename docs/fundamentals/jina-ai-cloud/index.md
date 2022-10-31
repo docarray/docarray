@@ -6,12 +6,12 @@
 :gutter: 3
 
 
-::::{grid-item-card} {octicon}`person;1.5em` Login to Jina AI Cloud using DocArray
+::::{grid-item-card} {octicon}`person;1.5em` Log in to Jina AI Cloud using DocArray
 :link: login
 :link-type: doc
 
 
-Login to Jina AI Cloud in order to be able to use and manage your cloud resources using DocArray. 
+Log in to Jina AI Cloud to use and manage your cloud resources using DocArray. 
 
 ::::
 
@@ -20,7 +20,7 @@ Login to Jina AI Cloud in order to be able to use and manage your cloud resource
 :link: data
 :link-type: doc
 
-Push, Pull and Manage DocumentArrays objects on Jina AI Cloud.
+Push, pull, and manage DocumentArrays objects on Jina AI Cloud.
 ::::
 
 
