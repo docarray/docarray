@@ -58,7 +58,7 @@ class ParallelMixin:
 
     def apply(self: 'T', *args, **kwargs) -> 'T':
         # implementation_stub_inject_start_apply
-    
+
         """Apply ``func`` to every Document in itself, return itself after modification.
 
         :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.
@@ -83,7 +83,7 @@ class ParallelMixin:
         .. # noqa: DAR101
         .. # noqa: DAR003
         """
-    # implementation_stub_inject_end_apply
+        # implementation_stub_inject_end_apply
         for doc in self.map(*args, **kwargs):
             self[doc.id] = doc
         return self
@@ -198,7 +198,7 @@ class ParallelMixin:
 
     def apply_batch(self: 'T', *args, **kwargs) -> 'T':
         # implementation_stub_inject_start_apply_batch
-    
+
         """Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.
 
         EXAMPLE USAGE
@@ -246,7 +246,7 @@ class ParallelMixin:
         .. # noqa: DAR101
         .. # noqa: DAR003
         """
-    # implementation_stub_inject_end_apply_batch
+        # implementation_stub_inject_end_apply_batch
         for _b in self.map_batch(*args, **kwargs):
             self[[doc.id for doc in _b]] = _b
         return self
