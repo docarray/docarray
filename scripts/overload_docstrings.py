@@ -10,9 +10,6 @@ def _get_overload_params_docstring(file_str, tag, class_method=True, indent=' ' 
         rf'({method_start_regex}).*?({docstring_end_regex})', file_str, flags=re.DOTALL
     )
     stub_str = file_str[stub_match.span()[0] : stub_match.span()[1]]
-    if tag == 'match':
-        print('STUB')
-        print(stub_str)
     # match only the params section in the docstring of the stub
     params_match = re.search(
         rf'({params_start_regex}).*?({docstring_end_regex})', stub_str, flags=re.DOTALL
@@ -36,10 +33,6 @@ def _get_overload_params_docstring(file_str, tag, class_method=True, indent=' ' 
     params_str = (
         f'{indent}{indent}{params_str}' if class_method else f'{indent}{params_str}'
     )
-
-    if tag == 'match':
-        print('PARAMS')
-        print(params_str)
 
     return params_str
 
