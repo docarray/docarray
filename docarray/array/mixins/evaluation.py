@@ -231,9 +231,9 @@ class EvaluationMixin:
         limit: Optional[Union[int, float]] = 20,
         normalization: Optional[Tuple[float, float]] = None,
         exclude_self: bool = False,
-        filter: Optional[Dict] = None,
         use_scipy: bool = False,
         match_batch_size: int = 100_000,
+        query_sample_size: int = 1_000,
         **kwargs,
     ) -> Optional[Union[float, List[float]]]:  # average for each metric
         """
@@ -294,19 +294,33 @@ class EvaluationMixin:
 
         from docarray import Document, DocumentArray
 
+        if not query_sample_size:
+            query_sample_size = len(self)
+
+        query_data = self
         only_one_dataset = not index_data
+        apply_sampling = only_one_dataset and len(self) > query_sample_size
 
         if only_one_dataset:
             # if the user does not provide a separate set of documents for indexing,
             # the matching is done on the documents itself
-            copy_flag = (type(embed_funcs) is tuple) or (
-                (embed_funcs is None) and (type(embed_models) is tuple)
-            )
-            index_data = DocumentArray(self, copy=True) if copy_flag else self
+
+            if apply_sampling:
+                rng = np.random.default_rng()
+                query_data = DocumentArray(
+                    rng.choice(self, size=query_sample_size, replace=True)
+                )
+                index_data = DocumentArray(self, copy=True)
+            else:
+                copy_flag = (type(embed_funcs) is tuple) or (
+                    (embed_funcs is None) and (type(embed_models) is tuple)
+                )
+                query_data = self
+                index_data = DocumentArray(self, copy=True) if copy_flag else self
 
         index_data_labels = None
         if not ground_truth:
-            if not label_tag in self[0].tags:
+            if not label_tag in query_data[0].tags:
                 raise ValueError(
                     'Either a ground_truth `DocumentArray` or labels are '
                     'required for the evaluation.'
@@ -339,7 +353,7 @@ class EvaluationMixin:
                         else collate_fns,
                     }
                     for i, (model, docs) in enumerate(
-                        zip(embed_models, (self, index_data))
+                        zip(embed_models, (query_data, index_data))
                     )
                 ]
         else:
@@ -351,15 +365,15 @@ class EvaluationMixin:
 
         # embed queries:
         if embed_funcs:
-            embed_funcs[0](self)
+            embed_funcs[0](query_data)
         else:
-            self.embed(**embed_args[0])
+            query_data.embed(**embed_args[0])
 
-        for doc in self:
+        for doc in query_data:
             doc.matches.clear()
 
-        self._local = DocumentArray(
-            [Document(id=doc.id, embedding=doc.embedding) for doc in self]
+        query_data._local = DocumentArray(
+            [Document(id=doc.id, embedding=doc.embedding) for doc in query_data]
         )
 
         def fuse_matches(global_matches: DocumentArray, local_matches: DocumentArray):
@@ -371,13 +385,17 @@ class EvaluationMixin:
             return DocumentArray(global_matches)
 
         for batch in index_data.batch(match_batch_size):
-            if (batch.embeddings is None) or (batch[0].embedding[0] == 0):
+            if (
+                apply_sampling
+                or (batch.embeddings is None)
+                or (batch[0].embedding[0] == 0)
+            ):
                 if embed_funcs:
                     embed_funcs[1](batch)
                 else:
                     batch.embed(**embed_args[1])
 
-            self._local.match(
+            query_data._local.match(
                 batch,
                 limit=limit,
                 metric=distance,
@@ -387,9 +405,9 @@ class EvaluationMixin:
                 only_id=True,
             )
 
-            for doc in self._local:
-                self[doc.id, 'matches'] = fuse_matches(
-                    self[doc.id].matches,
+            for doc in query_data._local:
+                query_data[doc.id, 'matches'] = fuse_matches(
+                    query_data[doc.id].matches,
                     doc.matches,
                 )
 
@@ -397,14 +415,14 @@ class EvaluationMixin:
 
         # set labels if necessary
         if not ground_truth:
-            for i, doc in enumerate(self):
+            for i, doc in enumerate(query_data):
                 new_matches = DocumentArray()
                 for m in doc.matches:
                     m.tags = {label_tag: index_data_labels[m.id]}
                     new_matches.append(m)
-                self[doc.id, 'matches'] = new_matches
+                query_data[doc.id, 'matches'] = new_matches
 
-        metrics_resp = self.evaluate(
+        metrics_resp = query_data.evaluate(
             ground_truth=ground_truth,
             metrics=metrics,
             metric_names=metric_names,
