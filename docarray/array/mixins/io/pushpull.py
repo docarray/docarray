@@ -2,8 +2,6 @@ import json
 import os
 import os.path
 import warnings
-from collections import Counter
-from http import HTTPStatus
 from pathlib import Path
 from typing import Dict, Type, TYPE_CHECKING, List, Optional, Any
 
@@ -11,8 +9,11 @@ import hubble
 from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
-
-from docarray.helper import get_request_header, __cache_path__, _get_array_info
+from docarray.helper import (
+    __cache_path__,
+    _get_array_info,
+    get_full_version,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
@@ -188,22 +189,23 @@ class PushPullMixin:
                 'type': 'documentArray',
                 'public': public,
                 'metaData': json.dumps(
-                    {'summary': self._get_raw_summary(), 'branding': branding},
+                    {
+                        'summary': self._get_raw_summary(),
+                        'branding': branding,
+                        'version': get_full_version(),
+                    },
                     sort_keys=True,
                 ),
             }
         )
 
-        headers = {'Content-Type': ctype, **get_request_header()}
+        headers = {
+            'Content-Type': ctype,
+        }
 
         auth_token = hubble.get_token()
         if auth_token:
             headers['Authorization'] = f'token {auth_token}'
-
-        if not public and not auth_token:
-            warnings.warn(
-                'You are not logged in, and `public=False` if only for logged in users. To login, use `jina auth login`.'
-            )
 
         _head, _tail = data.split(delimiter)
         _head += self._stream_header
@@ -293,7 +295,6 @@ class PushPullMixin:
         with requests.get(
             url,
             stream=True,
-            headers=get_request_header(),
         ) as r:
             r.raise_for_status()
 
