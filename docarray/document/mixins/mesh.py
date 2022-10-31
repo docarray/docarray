@@ -40,3 +40,28 @@ class MeshDataMixin:
             self.tensor = np.array(mesh.sample(samples))
 
         return self
+
+    def load_uri_to_vertices_and_faces_chunk_tensors(self: 'T') -> 'T':
+        """Convert a 3d mesh-like :attr:`.uri` into :attr:`.chunks` as vertices and faces
+
+        :return: itself after processed
+        """
+
+        import trimesh
+        import urllib.parse
+        from docarray.document import Document
+
+        scheme = urllib.parse.urlparse(self.uri).scheme
+        loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
+
+        mesh = loader(self.uri, force='mesh')
+
+        vertices = mesh.vertices.view(np.ndarray)
+        faces = mesh.faces.view(np.ndarray)
+
+        self.chunks = [
+            Document(name='vertices', tensor=vertices),
+            Document(name='faces', tensor=faces),
+        ]
+
+        return self
