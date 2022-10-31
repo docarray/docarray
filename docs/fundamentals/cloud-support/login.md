@@ -30,4 +30,4 @@ from docarray import logout
 logout()
 ```
 
-For more logout methods (CLI), check [this page](https://docs.jina.ai/jina-ai-cloud/login/).
+For more logout methods (CLI), see [Login & Token Management](https://docs.jina.ai/jina-ai-cloud/login/).
