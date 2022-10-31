@@ -17,7 +17,7 @@ services:
       nofile:
         soft: 65535
         hard: 65535
-  elastic:
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
     environment:
       - xpack.security.enabled=false
@@ -28,7 +28,3 @@ services:
     image: redislabs/redisearch:2.6.0
     ports:
       - "41236:6379"
-
-networks:
-  elastic:
-    name: elastic

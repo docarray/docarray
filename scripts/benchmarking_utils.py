@@ -1,6 +1,7 @@
 import functools
 import random
-from time import perf_counter
+import subprocess
+from time import perf_counter, sleep
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -503,6 +504,11 @@ def run_benchmark_sift(
 
     for config in hnsw_config:
         try:
+
+            if storage != 'memory' and storage != 'sqlite' and storage != 'annlite':
+                subprocess.run(["sudo", "docker-compose", "up", "-d", storage])
+                sleep(20)
+
             console.print('\nBackend:', storage.title())
             console.print('Backend hnsw config', str(config))
 
@@ -607,6 +613,9 @@ def run_benchmark_sift(
 
             da.clear()
             del da
+
+            if storage != 'memory' and storage != 'sqlite' and storage != 'annlite':
+                subprocess.run(["sudo", "docker-compose", "down", "--remove-orphans"])
         except Exception as e:
             console.print(f'Storage Backend {storage} failed: {e}')
 
