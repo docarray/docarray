@@ -100,7 +100,8 @@ jobs:
         run: |
           git config --local user.email "dev-bot@jina.ai"
           git config --local user.name "Jina Dev Bot"
-          pip install ".[devel,black]"
+          pip install ".[devel]"
+          pip install black
           pip install setuptools
           cd scripts && bash overload_docstrings.sh && cd -
           if [[ -z $(git status -s) ]]
