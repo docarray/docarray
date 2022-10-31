@@ -391,6 +391,8 @@ class EvaluationMixin:
                     doc.matches,
                 )
 
+            batch.embeddings = None
+
         # set labels if necessary
         if not ground_truth:
             for i, doc in enumerate(self):
