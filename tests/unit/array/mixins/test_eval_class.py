@@ -569,7 +569,15 @@ def test_embed_and_evaluate_labeled_dataset(
         assert abs(res[key] - expected[key]) < 1e-4
 
 
-def test_embed_and_evaluate_on_real_data():
+@pytest.mark.parametrize(
+    'two_embed_funcs, kwargs',
+    [
+        (False, {}),
+        (True, {'match_batch_size': 100}),
+        (False, {'match_batch_size': 100}),
+    ],
+)
+def test_embed_and_evaluate_on_real_data(two_embed_funcs, kwargs):
     metric_names = ['precision_at_k', 'reciprocal_rank']
 
     labels = ['18828_alt.atheism', '18828_comp.graphics']
@@ -598,9 +606,9 @@ def test_embed_and_evaluate_on_real_data():
 
     res = query_docs.embed_and_evaluate(
         index_data=index_docs,
-        embed_funcs=emb_func,
+        embed_funcs=(emb_func, emb_func) if two_embed_funcs else emb_func,
         metrics=metric_names,
-        match_batch_size=100,
+        **kwargs,
     )
 
     # re-calculate manually
