@@ -645,3 +645,45 @@ def test_embed_and_evaluate_with_embed_model(
     )
     assert res
     assert res['precision_at_k'] == 0.2
+
+
+@pytest.mark.parametrize(
+    'queries, kwargs, exception',
+    [
+        (DocumentArray.empty(4), {}, ValueError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray.empty(4)},
+            ValueError,
+        ),
+        (DocumentArray([Document(tags={'label': 0})]), {}, RuntimeError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray([Document(tags={'label': 0})])},
+            RuntimeError,
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_invalid_input_should_raise(
+    storage, config, queries, kwargs, exception, start_storage
+):
+    kwargs.update({'metrics': ['precision_at_k']})
+    if 'index_data' in kwargs:
+        kwargs['index_data'] = DocumentArray(
+            kwargs['index_data'], storage=storage, config=config
+        )
+
+    with pytest.raises(exception):
+        queries.embed_and_evaluate(**kwargs)
