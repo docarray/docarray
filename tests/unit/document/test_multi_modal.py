@@ -823,6 +823,77 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
     assert new_inner_list_doc in d.other_doc_list['@.[heading]']
 
 
+def test_initialize_document_with_dataclass_and_additional_text_attr():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(MyDoc(chunk_text='chunk level text'), text='top level text')
+
+    assert d.text == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
+
+
+def test_initialize_document_with_dataclass_and_additional_unknown_attributes():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(
+        MyDoc(chunk_text='chunk level text'),
+        hello='top level text',
+    )
+
+    assert d.tags['hello'] == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_unknown_attribute():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(MyDoc(name_mydoc='mydoc'), name_doc='doc')
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_tags_arg():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(MyDoc(name_mydoc='mydoc'), tags={'name_doc': 'doc'})
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+
+
+def test_doc_with_dataclass_with_str_and_additional_tags_arg_and_unknown_attribute():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(
+        MyDoc(name_mydoc='mydoc'), tags={'name_doc': 'doc'}, something_else='hello'
+    )
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+    assert d.tags['something_else'] == 'hello'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_unknown_attr_with_same_name():
+    @dataclass
+    class MyDoc:
+        name: str
+
+    d = Document(MyDoc(name='mydoc'), name='doc')
+
+    assert d.tags['name'] == 'doc'
+
+
 def test_empty_list_dataclass():
     @dataclass()
     class A:
