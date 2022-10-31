@@ -500,7 +500,7 @@ def _get_array_info(da: 'DocumentArray'):
 
 
 def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
-    """Login to Hubble account.
+    """Login to Jina AI Cloud account.
     :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.
     :param force: If set to true, overwrite token and re-login.
     """

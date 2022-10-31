@@ -1,4 +1,4 @@
-# {octicon}`flame` Jina AI Cloud
+# {octicon}`flame` Cloud Support
 
 
 
@@ -16,7 +16,7 @@ Log in to Jina AI Cloud to use and manage your cloud resources using DocArray.
 ::::
 
 
-::::{grid-item-card} {octicon}`fold-up;1.5em` Manage Data on Jina Cloud
+::::{grid-item-card} {octicon}`fold-up;1.5em` Manage Data on Jina AI Cloud
 :link: data
 :link-type: doc
 
