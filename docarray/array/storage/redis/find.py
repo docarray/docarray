@@ -66,7 +66,7 @@ class FindMixin(BaseFindMixin):
         da = DocumentArray()
         for res in results:
             doc = Document.from_base64(res.blob.encode())
-            doc.scores['score'] = NamedScore(value=res.vector_score)
+            doc.scores['score'] = NamedScore(float(value=res.vector_score))
             da.append(doc)
         return da
 
