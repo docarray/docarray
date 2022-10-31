@@ -18,6 +18,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray.array.storage.redis import RedisConfig
 
 
+class DocumentStore(AllMixins, BaseDocumentArray):
+    """
+    DocumentStore is a list-like container of :class:`~docarray.Document` objects.
+    A DocumentStore has all the functionalities of a DocumentArray excluding the offset2id method.
+    """
+
+
 class DocumentArray(AllMixins, BaseDocumentArray):
     """
     DocumentArray is a list-like container of :class:`~docarray.Document` objects.
