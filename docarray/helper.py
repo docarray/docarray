@@ -152,14 +152,6 @@ def download_mermaid_url(mermaid_url, output) -> None:
         raise RuntimeError('Invalid or too-complicated graph')
 
 
-def get_request_header() -> Dict:
-    """Return the header of request.
-
-    :return: request header
-    """
-    return {k: str(v) for k, v in get_full_version().items()}
-
-
 def get_full_version() -> Dict:
     """
     Get the version of libraries used in Jina and environment variables.
