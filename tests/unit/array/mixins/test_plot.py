@@ -71,7 +71,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=128)),
-        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
+        (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('canvas_size', [50, 512])
