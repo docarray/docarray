@@ -15,7 +15,13 @@ login()
 The method {meth}`~docarray.helper.login` is interactive, meaning that it will prompt you to login in browser. Non-interactive login options are 
 available in [this page](https://docs.jina.ai/jina-ai-cloud/login/).
 
+{meth}`~docarray.helper.login` supports notebook environments as well, but it's recommended to use parameter `interactive` 
+in that case:
+```python
+from docarray import login
 
+login(interactive=True)
+```
 ## Logout
 To logout, you can use the method {meth}`~docarray.helper.logout`:
 ```python
