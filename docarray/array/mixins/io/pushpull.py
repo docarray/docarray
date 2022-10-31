@@ -10,7 +10,6 @@ from hubble import Client as HubbleClient
 from hubble.client.endpoints import EndpointsV2
 
 from docarray.helper import (
-    get_request_header,
     __cache_path__,
     _get_array_info,
     get_full_version,
@@ -200,7 +199,9 @@ class PushPullMixin:
             }
         )
 
-        headers = {'Content-Type': ctype, **get_request_header()}
+        headers = {
+            'Content-Type': ctype,
+        }
 
         auth_token = hubble.get_token()
         if auth_token:
@@ -294,7 +295,6 @@ class PushPullMixin:
         with requests.get(
             url,
             stream=True,
-            headers=get_request_header(),
         ) as r:
             r.raise_for_status()
 
