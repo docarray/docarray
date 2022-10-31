@@ -499,21 +499,14 @@ def _get_array_info(da: 'DocumentArray'):
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
 
 
-def login(force: bool = False):
+def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
     """Login to Hubble account.
+    :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.
     :param force: If set to true, overwrite token and re-login.
     """
-    hubble.login(force=force)
+    hubble.login(interactive=interactive, force=force)
 
 
 def logout():
     """Logout Hubble account."""
     hubble.logout()
-
-
-def notebook_login(force: bool = False):
-    """Log in to Hubble account.
-    :param force: If set to true, overwrite token and re-login.
-    Note: This works for Jupyter notebook, Google Colab..
-    """
-    hubble.notebook_login(force=force)
