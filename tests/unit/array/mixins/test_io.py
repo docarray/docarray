@@ -253,7 +253,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
     da2 = da_cls.pull(name, show_progress=show_progress, config=config())
 
     assert len(da1) == len(da2) == 10
-    assert da1.texts == da2.texts == random_texts
+    assert da1[:, 'text'] == da2[:, 'text'] == random_texts
 
     all_names = DocumentArray.cloud_list()
 

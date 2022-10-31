@@ -169,11 +169,11 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
     else:
         da1 = da_cls.empty(100)
         da2 = da_cls.empty(768)
-    da1.embeddings = np.random.random([100, 5])
     with da1:
+        da1.embeddings = np.random.random([100, 5])
         p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
-    da2.embeddings = np.random.random([768, 5])
     with da2:
+        da2.embeddings = np.random.random([768, 5])
         p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
     assert p1 == p2
     assert os.path.exists(p1)
