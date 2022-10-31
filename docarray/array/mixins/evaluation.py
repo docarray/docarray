@@ -300,7 +300,7 @@ class EvaluationMixin:
             copy_flag = (type(embed_funcs) is tuple) or (
                 (embed_funcs is None) and (type(embed_models) is tuple)
             )
-            index_data = DocumentArray(self, copy=copy_flag)
+            index_data = DocumentArray(self, copy=True) if copy_flag else self
 
         index_data_labels = None
         if not ground_truth:

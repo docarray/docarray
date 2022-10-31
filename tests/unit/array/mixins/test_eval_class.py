@@ -448,7 +448,7 @@ def test_useless_groundtruth_warning_should_raise(storage, config, start_storage
 
 def dummy_embed_function(da):
     for i in range(len(da)):
-        np.random.seed(int(da[i].id))
+        np.random.seed(int(da[i].text))
         da[i, 'embedding'] = np.random.random(5)
 
 
@@ -466,7 +466,7 @@ def dummy_embed_function(da):
 )
 def test_embed_and_evaluate_single_da(storage, config, start_storage):
 
-    gt = DocumentArray([Document(id=str(i)) for i in range(10)])
+    gt = DocumentArray([Document(text=str(i)) for i in range(10)])
     queries_da = DocumentArray(gt, copy=True)
     queries_da = DocumentArray(queries_da, storage=storage, config=config)
     dummy_embed_function(gt)
@@ -496,8 +496,8 @@ def test_embed_and_evaluate_single_da(storage, config, start_storage):
 )
 def test_embed_and_evaluate_two_das(storage, config, start_storage):
 
-    gt_queries = DocumentArray([Document(id=str(i)) for i in range(10)])
-    gt_index = DocumentArray([Document(id=str(i)) for i in range(10, 20)])
+    gt_queries = DocumentArray([Document(text=str(i)) for i in range(10)])
+    gt_index = DocumentArray([Document(text=str(i)) for i in range(10, 20)])
     queries_da = DocumentArray(gt_queries, copy=True)
     index_da = DocumentArray(gt_index, copy=True)
     index_da = DocumentArray(index_da, storage=storage, config=config)
@@ -517,7 +517,11 @@ def test_embed_and_evaluate_two_das(storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
-    'expected', [{'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18}]
+    'use_index, expected',
+    [
+        (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}),
+        (True, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0}),
+    ],
 )
 @pytest.mark.parametrize(
     'storage, config',
@@ -531,21 +535,35 @@ def test_embed_and_evaluate_two_das(storage, config, start_storage):
         ('redis', {'n_dim': 5}),
     ],
 )
-def test_embed_and_evaluate_labeled_dataset(storage, config, start_storage, expected):
+def test_embed_and_evaluate_labeled_dataset(
+    storage, config, start_storage, use_index, expected
+):
     metric_fns = list(expected.keys())
 
     def emb_func(da):
         np.random.seed(0)  # makes sure that embeddings are always equal
         da[:, 'embedding'] = np.random.random((len(da), 5))
 
-    da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
-    da = DocumentArray(da, storage=storage, config=config)
-    res = da.embed_and_evaluate(
-        metrics=metric_fns,
-        embed_funcs=emb_func,
-        match_batch_size=1,
-        limit=3,
-    )
+    da1 = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+
+    if (
+        use_index
+    ):  # query and index da are distinct # (different embeddings are generated)
+        res = da1.embed_and_evaluate(
+            index_data=da2,
+            metrics=metric_fns,
+            embed_funcs=emb_func,
+            match_batch_size=1,
+            limit=3,
+        )
+    else:  # query and index are the same (embeddings of both das are equal)
+        res = da2.embed_and_evaluate(
+            metrics=metric_fns,
+            embed_funcs=emb_func,
+            match_batch_size=1,
+            limit=3,
+        )
     for key in metric_fns:
         assert key in res
         assert abs(res[key] - expected[key]) < 1e-4
