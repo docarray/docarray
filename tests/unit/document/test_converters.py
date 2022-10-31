@@ -274,3 +274,15 @@ def test_glb_converters(uri, chunk_num):
     doc.load_uri_to_point_cloud_tensor(2000, as_chunks=True)
     assert len(doc.chunks) == chunk_num
     assert doc.chunks[0].tensor.shape == (2000, 3)
+
+
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+def test_load_uri_to_vertices_and_faces(uri):
+    doc = Document(uri=uri)
+    doc.load_uri_to_vertices_and_faces_chunk_tensors()
+
+    assert len(doc.chunks) == 2
+    assert doc.chunks[0].tags['name'] == 'vertices'
+    assert doc.chunks[0].tensor.shape[1] == 3
+    assert doc.chunks[1].tags['name'] == 'faces'
+    assert doc.chunks[1].tensor.shape[1] == 3
