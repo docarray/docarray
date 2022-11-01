@@ -42,7 +42,7 @@ class MeshDataMixin:
 
         return self
 
-    def load_uri_to_vertices_and_faces_chunk_tensors(self: 'T') -> 'T':
+    def load_uri_to_vertices_and_faces(self: 'T') -> 'T':
         """Convert a 3d mesh-like :attr:`.uri` into :attr:`.chunks` as vertices and faces
 
         :return: itself after processed
@@ -67,9 +67,7 @@ class MeshDataMixin:
 
         return self
 
-    def load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(
-        self: 'T', samples: int
-    ) -> 'T':
+    def load_vertices_and_faces_to_point_cloud(self: 'T', samples: int) -> 'T':
         """Convert a 3d mesh of vertices and faces from :attr:`.chunks` into point cloud :attr:`.tensor`
 
         :param samples: number of points to sample from the mesh

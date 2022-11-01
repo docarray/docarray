@@ -279,7 +279,7 @@ def test_glb_converters(uri, chunk_num):
 @pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
 def test_load_uri_to_vertices_and_faces(uri):
     doc = Document(uri=uri)
-    doc.load_uri_to_vertices_and_faces_chunk_tensors()
+    doc.load_uri_to_vertices_and_faces()
 
     assert len(doc.chunks) == 2
     assert doc.chunks[0].tags['name'] == 'vertices'
@@ -289,10 +289,10 @@ def test_load_uri_to_vertices_and_faces(uri):
 
 
 @pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
-def test_load_vertices_and_faces_chunk_tensor_to_point_cloud(uri):
+def test_load_vertices_and_faces_to_point_cloud(uri):
     doc = Document(uri=uri)
-    doc.load_uri_to_vertices_and_faces_chunk_tensors()
-    doc.load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(100)
+    doc.load_uri_to_vertices_and_faces()
+    doc.load_vertices_and_faces_to_point_cloud(100)
 
     assert doc.tensor.shape == (100, 3)
     assert isinstance(doc.tensor, np.ndarray)
@@ -305,4 +305,4 @@ def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
     with pytest.raises(
         AttributeError, match='vertices and faces chunk tensor have not been set'
     ):
-        doc.load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(100)
+        doc.load_vertices_and_faces_to_point_cloud(100)
