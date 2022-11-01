@@ -13,6 +13,7 @@ Point cloud is a representation of a 3D mesh. It is made by repeated and uniform
 
 ```python
 from docarray import Document
+
 doc = Document(uri='viking.glb').load_uri_to_point_cloud_tensor(1000)
 
 print(doc.tensor.shape)
@@ -29,5 +30,43 @@ The following pictures depict a 3D mesh and a point cloud with 1000 samples from
 ```
 
 ```{figure} pointcloud-man.gif
+:width: 50%
+```
+
+## Mesh
+
+A mesh is a representation of a 3D object and consists of vertices and faces. Vertices are points in a 3D space, represented as a tensor of shape (n_points, 3). Faces are triangular surfaces that can be defined by three points in 3D space, corresponding to the three vertices of a triangle. Faces can be represented as a tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a vertex in the tensor of vertices.
+
+In DocArray, you can load a mesh and save its vertices and faces to a Documents `.chunks` as follows:
+
+```python
+from docarray import Document
+
+doc = Document(uri='viking.glb').load_uri_to_vertices_and_faces()
+
+doc.summary()
+```
+
+```text
+ <Document ('id', 'chunks') at 7f907d786d6c11ec840a1e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907ab26d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907c106d6c11ec840a1e008a366d49>
+```
+
+This stores the vertices and faces in `.tensor` of two separate sub-Documents in a Documents `.chunks`. Both sub-Documents have a name assigned to them ('vertices' or 'faces''), which is saved in `.tags`:
+
+```python
+for chunk in doc.chunks:
+    print(f'chunk.tags = {chunk.tags}')
+```
+
+```text
+chunk.tags = {'name': 'vertices'}
+chunk.tags = {'name': 'faces'}
+```
+The following pictures depict a 3D mesh. 
+
+```{figure} 3dmesh-man.gif
 :width: 50%
 ```
