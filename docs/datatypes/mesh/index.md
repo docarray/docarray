@@ -65,8 +65,3 @@ for chunk in doc.chunks:
 chunk.tags = {'name': 'vertices'}
 chunk.tags = {'name': 'faces'}
 ```
-The following pictures depict a 3D mesh. 
-
-```{figure} 3dmesh-man.gif
-:width: 50%
-```
