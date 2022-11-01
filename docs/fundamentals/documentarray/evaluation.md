@@ -282,8 +282,55 @@ print(result)
 {'reciprocal_rank': 0.7583333333333333}
 ```
 
+### Batch-wise matching
+
 The ``embed_and_evaluate`` function is especially useful, when you need to evaluate the queries on a very large document collection (`example_index` in the code snippet above), which is too large to store the embeddings of all documents in main-memory.
 In this case, ``embed_and_evaluate`` matches the queries to batches of the document collection.
 After the batch is processed all embeddings are deleted.
 By default, the batch size for the matching (`match_batch_size`) is set to `100_000`.
 If you want to reduce the memory footprint, you can set it to a lower value.
+
+### Sampling Queries
+
+If you want to evaluate a large dataset, it might be useful to sample query documents.
+Since the metric values returned by the `embed_and_evaluate` are mean values, sampling should not change the result significantly if the sample is large enough.
+By default, sampling is applied for `DocumentArray` objects with more than 1,000 documents.
+However, it is only applied on the `DocumentArray` itself and not on the document provided in `index_data`.
+If you want to change the number of samples, you can ajust the `query_sample_size` argument.
+In the following code block an evaluation is done with 100 samples:
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+
+def emb_func(da):
+    for d in da:
+        np.random.seed(int(d.text))
+        d.embedding = np.random.random(5)
+
+
+da = DocumentArray(
+    [Document(text=str(i), tags={'label': i % 10}) for i in range(1_000)]
+)
+
+da.embed_and_evaluate(
+    metrics=['precision_at_k'], embed_funcs=emb_func, query_sample_size=100
+)
+```
+
+```text
+{'precision_at_k': 0.13649999999999998}
+```
+
+To test how close it is to the exact result, we execute the function again with `query_sample_size` set to 1,000:
+
+```python
+da.embed_and_evaluate(
+    metrics=['precision_at_k'], embed_funcs=emb_func, query_sample_size=1_000
+)
+```
+
+```text
+{'precision_at_k': 0.14245}
+```

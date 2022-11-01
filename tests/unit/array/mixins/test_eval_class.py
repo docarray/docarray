@@ -483,21 +483,25 @@ def test_embed_and_evaluate_single_da(storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
+    'sample_size',
+    [None, 10],
+)
+@pytest.mark.parametrize(
     'storage, config',
     [
         ('memory', {}),
         ('weaviate', {}),
         ('sqlite', {}),
         ('annlite', {'n_dim': 5}),
-        # ('qdrant', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
         ('elasticsearch', {'n_dim': 5}),
         ('redis', {'n_dim': 5}),
     ],
 )
-def test_embed_and_evaluate_two_das(storage, config, start_storage):
+def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage):
 
-    gt_queries = DocumentArray([Document(text=str(i)) for i in range(10)])
-    gt_index = DocumentArray([Document(text=str(i)) for i in range(10, 20)])
+    gt_queries = DocumentArray([Document(text=str(i)) for i in range(100)])
+    gt_index = DocumentArray([Document(text=str(i)) for i in range(100, 200)])
     queries_da = DocumentArray(gt_queries, copy=True)
     index_da = DocumentArray(gt_index, copy=True)
     index_da = DocumentArray(index_da, storage=storage, config=config)
@@ -512,6 +516,7 @@ def test_embed_and_evaluate_two_das(storage, config, start_storage):
         embed_funcs=dummy_embed_function,
         match_batch_size=1,
         limit=3,
+        query_sample_size=sample_size,
     )
     assert all([v == 1.0 for v in res.values()])
 
@@ -695,3 +700,44 @@ def test_embed_and_evaluate_invalid_input_should_raise(
 
     with pytest.raises(exception):
         queries.embed_and_evaluate(**kwargs)
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+@pytest.mark.parametrize('sample_size', [100, 1_000, 10_000])
+def test_embed_and_evaluate_sampling(storage, config, sample_size, start_storage):
+    metric_fns = ['precision_at_k', 'reciprocal_rank']
+
+    def emb_func(da):
+        np.random.seed(0)  # makes sure that embeddings are always equal
+        da[:, 'embedding'] = np.random.random((len(da), 5))
+
+    da1 = DocumentArray(
+        [Document(text=str(i), tags={'label': i % 20}) for i in range(2_000)]
+    )
+    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+
+    res = da1.embed_and_evaluate(
+        index_data=da2,
+        metrics=metric_fns,
+        embed_funcs=emb_func,
+        query_sample_size=sample_size,
+    )
+    expected_size = (
+        sample_size if sample_size and (sample_size < len(da1)) else len(da1)
+    )
+    eval_res = [d.evaluations for d in da1 if len(d.evaluations.keys()) > 0]
+
+    assert len(eval_res) == expected_size
+    for key in res:
+        assert res[key] == np.mean([x[key].value for x in eval_res])

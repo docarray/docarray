@@ -213,7 +213,6 @@ class EvaluationMixin:
         metrics: List[Union[str, Callable[..., float]]],
         index_data: Optional['DocumentArray'] = None,
         ground_truth: Optional['DocumentArray'] = None,
-        hash_fn: Optional[Callable[['Document'], str]] = None,
         metric_names: Optional[str] = None,
         strict: bool = True,
         label_tag: str = 'label',
@@ -253,9 +252,6 @@ class EvaluationMixin:
             neighbors.
         :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`
             compares to.
-        :param hash_fn: For the evaluation against a `ground_truth` DocumentArray,
-            this function is used for generating hashes which are used to compare the
-            documents. If not given, ``Document.id`` is used.
         :param metric_names: If provided, the results of the metrics computation will be
             stored in the `evaluations` field of each Document with this names. If not
             provided, the names will be derived from the metric function names.
@@ -288,6 +284,12 @@ class EvaluationMixin:
             memory consumption.
         :param kwargs: Additional keyword arguments to be passed to the metric
             functions.
+        :param query_sample_size: For a large number of documents in `self` the
+            evaluation becomes infeasible, especially, if `index_data` is large.
+            Therefore, queries are sampled if the number of documents in `self` exceeds
+            `query_sample_size`. Usually, this has only small impact on the mean metric
+            values returned by this function. To prevent sampling, you can set
+            `query_sample_size` to None.
         :return: A dictionary which stores for each metric name the average evaluation
             score.
         """
@@ -299,24 +301,33 @@ class EvaluationMixin:
 
         query_data = self
         only_one_dataset = not index_data
-        apply_sampling = only_one_dataset and len(self) > query_sample_size
+        apply_sampling = len(self) > query_sample_size
 
         if only_one_dataset:
             # if the user does not provide a separate set of documents for indexing,
             # the matching is done on the documents itself
+            copy_flag = (
+                apply_sampling
+                or (type(embed_funcs) is tuple)
+                or ((embed_funcs is None) and (type(embed_models) is tuple))
+            )
+            index_data = DocumentArray(self, copy=True) if copy_flag else self
 
-            if apply_sampling:
-                rng = np.random.default_rng()
-                query_data = DocumentArray(
-                    rng.choice(self, size=query_sample_size, replace=True)
+        if apply_sampling:
+            rng = np.random.default_rng()
+            query_data = DocumentArray(
+                rng.choice(self, size=query_sample_size, replace=False)
+            )
+
+        if ground_truth and apply_sampling:
+            ground_truth = DocumentArray(
+                [ground_truth[d.id] for d in query_data if d.id in ground_truth]
+            )
+            if len(ground_truth) != len(query_data):
+                raise ValueError(
+                    'The DocumentArray provided in the ground_truth attribute does '
+                    'not contain all the documents in self.'
                 )
-                index_data = DocumentArray(self, copy=True)
-            else:
-                copy_flag = (type(embed_funcs) is tuple) or (
-                    (embed_funcs is None) and (type(embed_models) is tuple)
-                )
-                query_data = self
-                index_data = DocumentArray(self, copy=True) if copy_flag else self
 
         index_data_labels = None
         if not ground_truth:
@@ -372,7 +383,7 @@ class EvaluationMixin:
         for doc in query_data:
             doc.matches.clear()
 
-        query_data._local = DocumentArray(
+        local_queries = DocumentArray(
             [Document(id=doc.id, embedding=doc.embedding) for doc in query_data]
         )
 
@@ -395,7 +406,7 @@ class EvaluationMixin:
                 else:
                     batch.embed(**embed_args[1])
 
-            query_data._local.match(
+            local_queries.match(
                 batch,
                 limit=limit,
                 metric=distance,
@@ -405,14 +416,13 @@ class EvaluationMixin:
                 only_id=True,
             )
 
-            for doc in query_data._local:
+            for doc in local_queries:
                 query_data[doc.id, 'matches'] = fuse_matches(
                     query_data[doc.id].matches,
                     doc.matches,
                 )
 
             batch.embeddings = None
-
         # set labels if necessary
         if not ground_truth:
             for i, doc in enumerate(query_data):
@@ -427,7 +437,6 @@ class EvaluationMixin:
             metrics=metrics,
             metric_names=metric_names,
             strict=strict,
-            hash_fn=hash_fn,
             **kwargs,
         )
 
