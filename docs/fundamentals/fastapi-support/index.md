@@ -4,7 +4,7 @@
 DocArray supports the [pydantic data model](https://pydantic-docs.helpmanual.io/) via {class}`~docarray.document.pydantic_model.PydanticDocument` and {class}`~docarray.document.pydantic_model.PydanticDocumentArray`.
 Let's take a look at what this means.
 
-When you want to send or receive Document or DocumentArray objects via the REST API, you can use `.from_json`/`.to_json` to convert the Document or DocumentArray object into JSON. This has been introduced in the {ref}`docarray-serialization` section.
+When you want to send or receive Document or DocumentArray objects via the REST API, you can use {meth}`~docarray.array.mixins.io.json.JsonIOMixin.from_json`/{meth}`~docarray.array.mixins.io.json.JsonIOMixin.to_json` to convert the Document or DocumentArray object into JSON. This has been introduced in the {ref}`Serialization<docarray-serialization>` section.
 
 This method, although quite intuitive to many data scientists, is *not* the modern way of building API services. Your engineer friends won't be happy if you give them a service like this. The main problem is **data validation**.
 
