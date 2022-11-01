@@ -740,4 +740,4 @@ def test_embed_and_evaluate_sampling(storage, config, sample_size, start_storage
 
     assert len(eval_res) == expected_size
     for key in res:
-        assert res[key] == np.mean([x[key].value for x in eval_res])
+        assert abs(res[key] - np.mean([x[key].value for x in eval_res])) < 1e-5
