@@ -208,26 +208,26 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
-    # simple
+    da = da_cls.empty(2, config=config)
+    bytes_data = bytes(da)
+
     if da_cls == DocumentArrayAnnlite:
-        da = da_cls.empty(2, config=config)
-        da_bytes = da.to_bytes()
         da._annlite.close()
 
-        db = da_cls.from_bytes(da_bytes, config=config)
-        assert len(db) == 2
-        db._annlite.close()
-    else:
-        assert len(da_cls.load_binary(bytes(da_cls.empty(2, config=config)))) == 2
+    assert len(da_cls.load_binary(bytes_data)) == 2
 
     da = da_cls.empty(2, config=config)
 
     da[:, 'embedding'] = [[1, 2, 3], [4, 5, 6]]
     da[:, 'tensor'] = [[1, 2], [2, 1]]
     da[0, 'tags'] = {'hello': 'world'}
+
+    bytes_data = bytes(da)
+
     if da_cls == DocumentArrayAnnlite:
         da._annlite.close()
-    da2 = da_cls.load_binary(bytes(da))
+
+    da2 = da_cls.load_binary(bytes_data)
     assert da2.tensors == [[1, 2], [2, 1]]
     import numpy as np
 

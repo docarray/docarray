@@ -700,13 +700,9 @@ def test_offset2ids_persistence(storage, config, start_storage):
         da.insert(1, Document(id='1'))
         da.insert(3, Document(id='3'))
 
-    config = da._config
-    da_ids = da[:, 'id']
+        config = da._config
+        da_ids = da[:, 'id']
     assert da_ids == [str(i) for i in range(5)]
-    da.sync()
-
-    if storage == 'annlite':
-        da._annlite.close()
 
     da1 = DocumentArray(storage=storage, config=config)
 
@@ -716,9 +712,6 @@ def test_offset2ids_persistence(storage, config, start_storage):
         da1.extend([Document(id=i) for i in 'abc'])
         da1_ids = da1[:, 'id']
         assert len(da1) == 8
-
-    if storage == 'annlite':
-        da1._annlite.close()
 
     da2 = DocumentArray(storage=storage, config=config)
     assert da2[:, 'id'] == da1_ids
