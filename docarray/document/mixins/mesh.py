@@ -1,3 +1,4 @@
+import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -63,5 +64,34 @@ class MeshDataMixin:
             Document(name='vertices', tensor=vertices),
             Document(name='faces', tensor=faces),
         ]
+
+        return self
+
+    def load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(
+        self: 'T', samples: int
+    ) -> 'T':
+        """Convert a 3d mesh of vertices and faces from :attr:`.chunks` into point cloud :attr:`.tensor`
+
+        :param samples: number of points to sample from the mesh
+        :return: itself after processed
+        """
+        import trimesh
+
+        vertices = None
+        faces = None
+
+        for chunk in self.chunks:
+            if chunk.tags['name'] == 'vertices':
+                vertices = chunk.tensor
+            if chunk.tags['name'] == 'faces':
+                faces = chunk.tensor
+
+        if vertices is not None and faces is not None:
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+            self.tensor = np.array(mesh.sample(samples))
+        else:
+            warnings.warn(
+                'Point cloud tensor can not be set, since vertices and faces chunk tensor have not been set.'
+            )
 
         return self
