@@ -302,7 +302,7 @@ def test_load_vertices_and_faces_chunk_tensor_to_point_cloud(uri):
 def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
     doc = Document(uri=uri)
 
-    with pytest.warns(
-        UserWarning, match='vertices and faces chunk tensor have not been set'
+    with pytest.raises(
+        AttributeError, match='vertices and faces chunk tensor have not been set'
     ):
         doc.load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(100)

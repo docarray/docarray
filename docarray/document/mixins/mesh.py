@@ -90,7 +90,7 @@ class MeshDataMixin:
             mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
             self.tensor = np.array(mesh.sample(samples))
         else:
-            warnings.warn(
+            raise AttributeError(
                 'Point cloud tensor can not be set, since vertices and faces chunk tensor have not been set.'
             )
 
