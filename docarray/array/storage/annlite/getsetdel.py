@@ -58,3 +58,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._offsetmapping._insert(
             [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.ids)]
         )
+
+    def sync(self):
+        super().sync()
+        self._annlite.close()
