@@ -286,3 +286,23 @@ def test_load_uri_to_vertices_and_faces(uri):
     assert doc.chunks[0].tensor.shape[1] == 3
     assert doc.chunks[1].tags['name'] == 'faces'
     assert doc.chunks[1].tensor.shape[1] == 3
+
+
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+def test_load_vertices_and_faces_chunk_tensor_to_point_cloud(uri):
+    doc = Document(uri=uri)
+    doc.load_uri_to_vertices_and_faces_chunk_tensors()
+    doc.load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(100)
+
+    assert doc.tensor.shape == (100, 3)
+    assert isinstance(doc.tensor, np.ndarray)
+
+
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
+    doc = Document(uri=uri)
+
+    with pytest.warns(
+        UserWarning, match='vertices and faces chunk tensor have not been set'
+    ):
+        doc.load_vertices_and_faces_chunk_tensors_to_point_cloud_tensor(100)
