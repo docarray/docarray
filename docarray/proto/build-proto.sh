@@ -8,7 +8,7 @@ set -ex
 #
 # current dir: docarray/docarray
 # run the following in bash:
-# docker run -v $(pwd)/proto:/jina/proto jinaai/protogen
+# docker run -v $(pwd)/proto:/docarray/proto jinaai/protogen
 # finally, set back owner of the generated files using: sudo chown -R $(id -u ${USER}):$(id -g ${USER}) .
 
 SRC_DIR=./
