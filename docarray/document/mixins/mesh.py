@@ -1,7 +1,7 @@
-import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
+from trimesh.visual.material import PBRMaterial
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
@@ -60,9 +60,23 @@ class MeshDataMixin:
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)
 
+        # load visuals if available
+        uv_img = None
+        uv_mapping = None
+
+        if mesh.visual is not None:
+            material = mesh.visual.material
+            if isinstance(material, PBRMaterial):
+                material: trimesh.visual.material.SimpleMaterial = material.to_simple()
+
+            uv_img = np.array(material.image)
+            uv_mapping = mesh.visual.uv.view(np.ndarray)
+
         self.chunks = [
             Document(name='vertices', tensor=vertices),
             Document(name='faces', tensor=faces),
+            Document(name='uv_image', tensor=uv_img),
+            Document(name='uv_mapping', tensor=uv_mapping),
         ]
 
         return self
