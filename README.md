@@ -282,7 +282,9 @@ right_da = (
 
 ```python
 right_da = (
-    DocumentArray.from_files('right/*.jpg')[:1000].apply(preproc).embed(model, device='cuda')
+    DocumentArray.from_files('right/*.jpg')[:1000]
+    .apply(preproc)
+    .embed(model, device='cuda')
 )
 ```
 
