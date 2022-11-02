@@ -10,6 +10,7 @@ qdrant
 elasticsearch
 weaviate
 redis
+milvus
 extend
 benchmark
 ```
