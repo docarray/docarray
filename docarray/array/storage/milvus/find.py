@@ -26,25 +26,25 @@ class FindMixin:
         if param is None:
             param = dict()
         kwargs = self._update_consistency_level(**kwargs)
-        results = self._call_with_loaded_collection(
-            fn=self._collection.search,
-            data=query,
-            anns_field='embedding',
-            limit=limit,
-            expr=filter,
-            param=param,
-            output_fields=['serialized'],
-            **kwargs
-        )
+        with self.loaded_collection():
+            results = self._collection.search(
+                data=query,
+                anns_field='embedding',
+                limit=limit,
+                expr=filter,
+                param=param,
+                output_fields=['serialized'],
+                **kwargs,
+            )
         return self._docs_from_search_response(results)
 
     def _filter(self, filter, limit=10, **kwargs):
         kwargs = self._update_consistency_level(**kwargs)
-        results = self._call_with_loaded_collection(
-            fn=self._collection.query,
-            expr=filter,
-            limit=limit,
-            output_fields=['serialized'],
-            **kwargs
-        )
-        return self._docs_from_query_response(results)[:limit]
+        with self.loaded_collection():
+            results = self._collection.query(
+                expr=filter,
+                limit=limit,
+                output_fields=['serialized'],
+                **kwargs,
+            )
+        return self._docs_from_query_response(results)

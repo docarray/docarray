@@ -13,6 +13,7 @@ from pymilvus import (
     CollectionSchema,
     has_collection,
     MilvusException,
+    loading_progress,
 )
 
 from docarray import Document, DocumentArray
@@ -285,33 +286,35 @@ class BackendMixin(BaseBackendMixin):
         self._offset2id_collection.release()
         super().__exit__(exc_type, exc_val, exc_tb)
 
-    def _call_with_loaded_collection(self, fn, *fn_args, collection=None, **fn_kwargs):
-        # workaround since loaded_collection cntx manager cannot currently determine if coll was already loaded before
-        try:
-            return fn(*fn_args, **fn_kwargs)
-        except MilvusException:
-            with self.loaded_collection(collection):
-                return fn(*fn_args, **fn_kwargs)
-
     def loaded_collection(self, collection=None):
         """
         Context manager to load a collection and release it after the context is exited.
-        ## TODO 'If the collection is already loaded when entering, it will not be released.' This is not true currently,
-        ## talking to milvus team to enable this.
+        If the collection is already loaded when entering, it will not be released while exiting.
 
         :param collection: the collection to load. If None, the collection of this indexer is used.
         :return: Context manager for the provided collection.
         """
 
         class LoadedCollectionMngr:
-            def __init__(self, coll):
+            def __init__(self, coll, connection_alias):
                 self._collection = coll
+                self._loaded_when_enter = False
+                self._connection_alias = connection_alias
 
             def __enter__(self):
+                self._loaded_when_enter = (
+                    loading_progress(
+                        self._collection.name, using=self._connection_alias
+                    )['loading_progress']
+                    != '0%'
+                )
                 self._collection.load()
                 return self
 
             def __exit__(self, exc_type, exc_val, exc_tb):
-                self._collection.release()
+                if not self._loaded_when_enter:
+                    self._collection.release()
 
-        return LoadedCollectionMngr(collection if collection else self._collection)
+        return LoadedCollectionMngr(
+            collection if collection else self._collection, self._connection_alias
+        )

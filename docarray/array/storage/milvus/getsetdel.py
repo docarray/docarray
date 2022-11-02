@@ -26,13 +26,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _load_offset2ids(self):
         collection = self._offset2id_collection
-        res = self._call_with_loaded_collection(
-            fn=collection.query,
-            collection=collection,
-            expr=always_true_expr('document_id'),
-            output_fields=['offset', 'document_id'],
-            consistency_level=self._config.consistency_level,
-        )
+        with self.loaded_collection(collection):
+            res = collection.query(
+                expr=always_true_expr('document_id'),
+                output_fields=['offset', 'document_id'],
+                consistency_level=self._config.consistency_level,
+            )
         sorted_res = sorted(res, key=lambda k: int(k['offset']))
         self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
 
@@ -52,12 +51,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if not ids:
             return DocumentArray()
         kwargs = self._update_consistency_level(**kwargs)
-        res = self._call_with_loaded_collection(
-            fn=self._collection.query,
-            expr=f'document_id in {ids_to_milvus_expr(ids)}',
-            output_fields=['serialized'],
-            **kwargs,
-        )
+        with self.loaded_collection():
+            res = self._collection.query(
+                expr=f'document_id in {ids_to_milvus_expr(ids)}',
+                output_fields=['serialized'],
+                **kwargs,
+            )
         if not res:
             raise KeyError(f'No documents found for ids {ids}')
         docs = self._docs_from_query_response(res)
