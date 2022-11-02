@@ -26,7 +26,4 @@ fig = px.line(
     hover_data=['Max_Connections', 'EF_Construct', 'EF'],
 )
 
-json_str = fig.to_json()
-
-with open('benchmark.json', 'wb') as f:
-    f.write(json_str.encode())
+fig.write_html('benchmark.html', include_plotlyjs='cdn', full_html=False)
