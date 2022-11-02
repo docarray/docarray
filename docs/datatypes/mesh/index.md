@@ -48,12 +48,12 @@ The following picture depicts a 3D mesh:
 
 ## Point cloud representation
 
-A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a 3D mesh and convert it into a point cloud via:
+A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a 3D mesh and convert it into a point cloud of size `samples` via:
 
 ```python
 from docarray import Document
 
-doc = Document(uri='viking.glb').load_uri_to_point_cloud_tensor(1000)
+doc = Document(uri='viking.glb').load_uri_to_point_cloud_tensor(samples=1000)
 
 print(doc.tensor.shape)
 ```
