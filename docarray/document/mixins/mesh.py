@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
-from trimesh.visual.material import PBRMaterial
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
@@ -66,7 +65,7 @@ class MeshDataMixin:
 
         if mesh.visual is not None:
             material = mesh.visual.material
-            if isinstance(material, PBRMaterial):
+            if isinstance(material, trimesh.visual.material.PBRMaterial):
                 material: trimesh.visual.material.SimpleMaterial = material.to_simple()
 
             uv_img = np.array(material.image)
