@@ -51,8 +51,7 @@ The following chart and table summarize the result. The smaller the values, the 
 
 ## Charts
 
-```{chart} advanced/document-store/benchmark.json
-  QPS(Find by vector) vs Recall@10
+```{include} benchmark.html
 ```
 
 

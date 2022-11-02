@@ -111,7 +111,6 @@ extensions = [
     'myst_parser',
     'sphinx_design',
     'sphinx_inline_tabs',
-    'sphinx_charts.charts',
 ]
 
 myst_enable_extensions = ['colon_fence', 'substitution']

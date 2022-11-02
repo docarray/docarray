@@ -3,7 +3,6 @@ sphinx
 sphinx-argparse==0.3.1
 sphinxcontrib-apidoc==0.3.0
 sphinx-autodoc-typehints==1.18.3
-sphinx_charts
 sphinx_copybutton
 sphinx-notfound-page==0.7.1
 gitpython==3.1.13
