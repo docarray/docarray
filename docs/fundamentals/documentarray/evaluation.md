@@ -323,6 +323,8 @@ da.embed_and_evaluate(
 {'precision_at_k': 0.13649999999999998}
 ```
 
+Please note that in this way only documents which are actually evaluated obtain an `.evaluations` attribute.
+
 To test how close it is to the exact result, we execute the function again with `query_sample_size` set to 1,000:
 
 ```python
