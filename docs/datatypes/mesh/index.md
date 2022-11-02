@@ -11,7 +11,7 @@ A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D 
 
 A 3D mesh can be represented by its vertices and faces. Vertices are points in a 3D space, represented as a tensor of shape (n_points, 3). Faces are triangular surfaces that can be defined by three points in 3D space, corresponding to the three vertices of a triangle. Faces can be represented as a tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a vertex in the tensor of vertices.
 
-In DocArray, you can load a mesh and save its vertices and faces to a Documents `.chunks` as follows:
+In DocArray, you can load a mesh and save its vertices and faces to a Document's `.chunks` as follows:
 
 ```python
 from docarray import Document
@@ -28,7 +28,7 @@ doc.summary()
           └─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907c106d6c11ec840a1e008a366d49>
 ```
 
-This stores the vertices and faces in `.tensor` of two separate sub-Documents in a Documents `.chunks`. Both sub-Documents have a name assigned to them ('vertices' or 'faces''), which is saved in `.tags`:
+This stores the vertices and faces in `.tensor` of two separate sub-Documents in a Document's `.chunks`. Each sub-Document has a name assigned to it ('vertices' or 'faces'), which is saved in `.tags`:
 
 ```python
 for chunk in doc.chunks:
@@ -48,7 +48,7 @@ The following picture depicts a 3D mesh:
 
 ## Point cloud representation
 
-Point cloud is a representation of a 3D mesh. It is made by repeated and uniformly sampling points within the 3D body. Comparing to the mesh representation, point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a 3D mesh and convert it into a point cloud via:
+A point cloud is a representation of a 3D mesh. It is made by repeatedly and uniformly sampling points within the 3D body. Compared to the mesh representation, the point cloud is a fixed size ndarray and hence easier for deep learning algorithms to handle. In DocArray, you can simply load a 3D mesh and convert it into a point cloud via:
 
 ```python
 from docarray import Document
