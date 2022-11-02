@@ -250,7 +250,7 @@ def run_benchmark(
         {
             'Storage Backend': [],
             'Indexing time (C)': [],
-            'Query (R)': [],
+            'Read (R)': [],
             'Update (U)': [],
             'Delete (D)': [],
             'Find by vector': [],
@@ -297,12 +297,6 @@ def run_benchmark(
                 da,
                 random.sample([d.id for d in docs], n_query),
             )
-
-            console.print(f'\tupdating {n_query} docs ...')
-            update_time, _ = update(da, docs_to_update)
-
-            console.print(f'\tdeleting {n_query} docs ...')
-            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
 
             console.print(
                 f'\tfinding {n_query} docs by vector averaged {n_vector_queries} times ...'
@@ -351,6 +345,12 @@ def run_benchmark(
                 da, storage_backend_filters[storage]
             )
 
+            console.print(f'\tupdating {n_query} docs ...')
+            update_time, _ = update(da, docs_to_update)
+
+            console.print(f'\tdeleting {n_query} docs ...')
+            delete_time, _ = delete(da, [d.id for d in docs_to_delete])
+
             table.add_row(
                 storage.title(),
                 fmt(create_time, 's'),
@@ -394,7 +394,7 @@ def save_benchmark_df(benchmark_df, n):
     benchmark_df['Indexing time (C)'] = benchmark_df['Indexing time (C)'].apply(
         lambda value: 1_000_000 / value
     )
-    benchmark_df['Query (R)'] = benchmark_df['Query (R)'].apply(lambda value: 1 / value)
+    benchmark_df['Read (R)'] = benchmark_df['Read (R)'].apply(lambda value: 1 / value)
     benchmark_df['Update (U)'] = benchmark_df['Update (U)'].apply(
         lambda value: 1 / value
     )
@@ -480,11 +480,11 @@ def run_benchmark_sift(
     benchmark_df = pd.DataFrame(
         {
             'Storage Backend': [],
-            'M': [],
-            'EF_CONSTRUCTION': [],
-            'EF_RUNTIME': [],
+            'Max_Connections': [],
+            'EF_Construct': [],
+            'EF': [],
             'Indexing time (C)': [],
-            'Query (R)': [],
+            'Read (R)': [],
             'Update (U)': [],
             'Delete (D)': [],
             'Find by vector': [],
@@ -582,9 +582,9 @@ def run_benchmark_sift(
 
             table.add_row(
                 storage.title(),
-                str(config.get(get_param(storage, 'M'), None)),
-                str(config.get(get_param(storage, 'EF_CONSTRUCTION'), None)),
-                str(config.get(get_param(storage, 'EF_RUNTIME'), None)),
+                str(config.get(get_param(storage, 'Max_Connections'), None)),
+                str(config.get(get_param(storage, 'EF_Construct'), None)),
+                str(config.get(get_param(storage, 'EF'), None)),
                 fmt(create_time, 's'),
                 fmt(read_time * 1000, 'ms'),
                 fmt(update_time * 1000, 'ms'),
@@ -595,9 +595,9 @@ def run_benchmark_sift(
             )
             benchmark_df.loc[len(benchmark_df.index)] = [
                 storage.title(),
-                config.get(get_param(storage, 'M'), None),
-                config.get(get_param(storage, 'EF_CONSTRUCTION'), None),
-                config.get(get_param(storage, 'EF_RUNTIME'), None),
+                config.get(get_param(storage, 'Max_Connections'), None),
+                config.get(get_param(storage, 'EF_Construct'), None),
+                config.get(get_param(storage, 'EF'), None),
                 create_time,
                 read_time,
                 update_time,
@@ -625,29 +625,29 @@ def run_benchmark_sift(
 
 param_dict = {
     'annlite': {
-        'M': 'max_connection',
-        'EF_CONSTRUCTION': 'ef_construction',
-        'EF_RUNTIME': 'ef_search',
+        'Max_Connections': 'max_connection',
+        'EF_Construct': 'ef_construction',
+        'EF': 'ef_search',
     },
     'qdrant': {
-        'M': 'm',
-        'EF_CONSTRUCTION': 'ef_construct',
-        'EF_RUNTIME': 'hnsw_ef',
+        'Max_Connections': 'm',
+        'EF_Construct': 'ef_construct',
+        'EF': 'hnsw_ef',
     },
     'weaviate': {
-        'M': 'max_connections',
-        'EF_CONSTRUCTION': 'ef_construction',
-        'EF_RUNTIME': 'ef',
+        'Max_Connections': 'max_connections',
+        'EF_Construct': 'ef_construction',
+        'EF': 'ef',
     },
     'elasticsearch': {
-        'M': 'm',
-        'EF_CONSTRUCTION': 'ef_construction',
-        'EF_RUNTIME': 'num_candidates',
+        'Max_Connections': 'm',
+        'EF_Construct': 'ef_construction',
+        'EF': 'num_candidates',
     },
     'redis': {
-        'M': 'm',
-        'EF_CONSTRUCTION': 'ef_construction',
-        'EF_RUNTIME': 'ef_runtime',
+        'Max_Connections': 'm',
+        'EF_Construct': 'ef_construction',
+        'EF': 'ef_runtime',
     },
 }
 
