@@ -47,4 +47,4 @@ class FindMixin:
                 output_fields=['serialized'],
                 **kwargs,
             )
-        return self._docs_from_query_response(results)
+        return self._docs_from_query_response(results)[:limit]
