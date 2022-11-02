@@ -6,7 +6,7 @@ __all__ = ['DocumentArrayQdrant', 'QdrantConfig']
 
 class DocumentArrayQdrant(StorageMixins, DocumentArray):
     """
-    DocumentArray that stores Documents in a `Qdrant <https://weaviate.io/>`_ vector search engine.
+    DocumentArray that stores Documents in a `Qdrant <https://qdrant.tech/>`_ vector search engine.
 
     .. note::
         This DocumentArray requires `qdrant-client`. You can install it via `pip install "docarray[qdrant]"`.
@@ -25,7 +25,7 @@ class DocumentArrayQdrant(StorageMixins, DocumentArray):
         # connect to running Qdrant service with default configuration (address: http://localhost:6333)
         da = DocumentArray(storage='qdrant', config={'n_dim': 10})
 
-        # connect to a previously persisted DocumentArrayWeaviate by specifying collection_name, host, and port
+        # connect to a previously persisted DocumentArrayQdrant by specifying collection_name, host, and port
         da = DocumentArray(
             storage='qdrant',
             config={

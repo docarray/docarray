@@ -169,6 +169,7 @@ DocArray supports multiple storage backends with different search features. The 
 | [`AnnLite`](./annlite.md)             | `DocumentArray(storage='annlite')`       | ✅             | ✅                      | ✅      |
 | [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅      |
 | [`Redis`](./redis.md)                 | `DocumentArray(storage='redis')`         | ✅             | ✅                      | ✅      |
+| [`Milvus`](./milvus.md)               | `DocumentArray(storage='milvus')`        | ✅             | ✅                      | ✅      |
 
 The right backend choice depends on the scale of your data, the required performance and the desired ease of setup. For most use cases we recommend starting with [`AnnLite`](./annlite.md).
 [**Check our One Million Scale Benchmark for more details**](./benchmark#conclusion).
