@@ -73,7 +73,6 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _set_docs_by_ids(
         self, ids, docs: 'Iterable[Document]', mismatch_ids: 'Dict', **kwargs
     ):
-        # TODO(johannes) check if deletion is necesarry if ids already match
         # delete old entries
         kwargs = self._update_consistency_level(**kwargs)
         self._collection.delete(
