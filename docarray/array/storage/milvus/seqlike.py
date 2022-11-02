@@ -44,3 +44,12 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def _append(self, value: 'Document', **kwargs):
         self._set_doc_by_id(value.id, value, **kwargs)
         self._offset2ids.append(value.id)
+
+    def _extend(self, values: Iterable['Document'], **kwargs):
+        docs = list(values)
+        if not docs:
+            return
+        kwargs = self._update_consistency_level(**kwargs)
+        payload = self._docs_to_milvus_payload(docs)
+        self._collection.insert(payload, **kwargs)
+        self._offset2ids.extend([doc.id for doc in docs])
