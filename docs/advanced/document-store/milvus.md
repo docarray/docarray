@@ -358,6 +358,62 @@ Points with "price" at most 7:
 	embedding=[2. 2. 2.],	 price=2
 ```
 
+## Advancded options
+
+The Milvus Document Store allows the user to pass additional parameters to the Milvus server for all main operations.
+
+Currently, the main use cases for this are dynamic setting of a consistency level, and passing of search parameters.
+
+### Setting a consistency level
+
+By default, every operation on the Milvus Document Store is performed with a consistency level passed during intialization
+as part of the {ref}`config <milvus-config>`.
+
+When performing a specific operation, you can override this default consistency level by passing a `consistency_level` parameter:
+
+```python
+from docarray import DocumentArray, Document
+import numpy as np
+
+da = DocumentArray(
+    storage='milvus',
+    config={'consistency_level': 'Session', 'n_dim': 3},
+)
+
+da.append(Document(tensor=np.random.rand(3)))  # consistency level is 'Session'
+da.append(
+    Document(tensor=np.random.rand(3)), consistency_level='Strong'
+)  # consistency level is 'Strong'
+```
+
+Currently, dynamically setting a consistency level is supported for the following operations:
+`.append()`, `.extend()`, `.find()`, and `.insert()`.
+
+### Passing search parameters
+
+In Milvus you can [pass parameters to the search operation](https://milvus.io/docs/v2.1.x/search.md#Conduct-a-vector-search) which [depend on the used index type](https://milvus.io/docs/v2.1.x/index.md).
+
+In DocumentArray, this ability is exposed through the `param` argument in the `.find()` method:
+
+```python
+import numpy as np
+
+from docarray import DocumentArray
+
+N, D = 5, 128
+
+da = DocumentArray.empty(
+    N, storage='milvus', config={'n_dim': D, 'distance': 'IP'}
+)  # init
+with da:
+    da.embeddings = np.random.random([N, D])
+
+da.find(
+    np.random.random(D), limit=10, param={"metric_type": "L2", "params": {"nprobe": 10}}
+)
+```
+
+
 (milvus-limitations)=
 ## Known limitations of the Milvus Document Store
 
