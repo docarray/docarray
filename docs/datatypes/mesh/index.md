@@ -11,7 +11,9 @@ A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D 
 
 A 3D mesh can be represented by its vertices and faces. Vertices are points in a 3D space, represented as a tensor of shape (n_points, 3). Faces are triangular surfaces that can be defined by three points in 3D space, corresponding to the three vertices of a triangle. Faces can be represented as a tensor of shape (n_faces, 3). Each number in that tensor refers to an index of a vertex in the tensor of vertices.
 
-In DocArray, you can load a mesh and save its vertices and faces to a Document's `.chunks` as follows:
+Additionally, a 3D mesh can contain textural information. One option to represent the texture is with an image and the corresponding uv-mapping. The uv-mapping is a tensor of shape (n_vertices, 2). Each row describes the mapping of a corresponding vertex onto the uv-image.
+
+In DocArray, you can load a mesh and save its vertices, faces and textural information to a Document's `.chunks` as follows:
 
 ```python
 from docarray import Document
@@ -26,9 +28,11 @@ doc.summary()
     └─ chunks
           ├─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907ab26d6c11ec840a1e008a366d49>
           └─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907c106d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907f106d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity', 'tensor', 'tags') at 7f907k106d6c11ec840a1e008a366d49>
 ```
 
-This stores the vertices and faces in `.tensor` of two separate sub-Documents in a Document's `.chunks`. Each sub-Document has a name assigned to it ('vertices' or 'faces'), which is saved in `.tags`:
+This stores the vertices, faces, uv-image and uv-mapping in `.tensor` of four separate sub-Documents in a Document's `.chunks`. Each sub-Document has a name assigned to it ('vertices', 'faces', 'uv_image' or 'uv_mapping'), which is saved in `.tags`:
 
 ```python
 for chunk in doc.chunks:
@@ -38,6 +42,8 @@ for chunk in doc.chunks:
 ```text
 chunk.tags = {'name': 'vertices'}
 chunk.tags = {'name': 'faces'}
+chunk.tags = {'name': 'uv_image'}
+chunk.tags = {'name': 'uv_mapping'}
 ```
 
 The following picture depicts a 3D mesh:
