@@ -276,13 +276,7 @@ def test_glb_converters(uri, chunk_num):
     assert doc.chunks[0].tensor.shape == (2000, 3)
 
 
-@pytest.mark.parametrize(
-    'uri',
-    [
-        (os.path.join(cur_dir, 'toydata/test.glb')),
-        (os.path.join(cur_dir, 'toydata/mesh.obj')),
-    ],
-)
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
 def test_load_uri_to_vertices_and_faces(uri):
     doc = Document(uri=uri)
     doc.load_uri_to_vertices_and_faces()
@@ -294,13 +288,7 @@ def test_load_uri_to_vertices_and_faces(uri):
     assert doc.chunks[1].tensor.shape[1] == 3
 
 
-@pytest.mark.parametrize(
-    'uri',
-    [
-        (os.path.join(cur_dir, 'toydata/test.glb')),
-        (os.path.join(cur_dir, 'toydata/mesh.obj')),
-    ],
-)
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
 def test_load_uri_to_vertices_and_faces_textures(uri):
     doc = Document(uri=uri)
     doc.load_uri_to_vertices_and_faces()
