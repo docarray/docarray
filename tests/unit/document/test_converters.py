@@ -281,11 +281,23 @@ def test_load_uri_to_vertices_and_faces(uri):
     doc = Document(uri=uri)
     doc.load_uri_to_vertices_and_faces()
 
-    assert len(doc.chunks) == 2
+    assert len(doc.chunks) == 4
     assert doc.chunks[0].tags['name'] == 'vertices'
     assert doc.chunks[0].tensor.shape[1] == 3
     assert doc.chunks[1].tags['name'] == 'faces'
     assert doc.chunks[1].tensor.shape[1] == 3
+
+
+@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+def test_load_uri_to_vertices_and_faces_textures(uri):
+    doc = Document(uri=uri)
+    doc.load_uri_to_vertices_and_faces()
+
+    assert doc.chunks[2].tags['name'] == 'uv_image'
+    assert doc.chunks[2].tensor.shape == (1, 1, 4)
+
+    assert doc.chunks[3].tags['name'] == 'uv_mapping'
+    assert doc.chunks[3].tensor.shape == (doc.chunks[0].tensor.shape[0], 2)
 
 
 @pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
