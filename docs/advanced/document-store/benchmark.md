@@ -1,6 +1,5 @@
 # One Million Scale Benchmark
 
-
 ```{figure} https://docarray.jina.ai/_images/benchmark-banner.gif
 :width: 0 %
 :scale: 0 %
@@ -10,18 +9,18 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents using randomly generated data from a uniform distribution and benchmark all supported document stores.
+We create a DocumentArray with one million Documents based on [SIFT1M](https://www.tensorflow.org/datasets/catalog/sift1m), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
+
 This includes classic database and vector database, all under the same DocumentArray API:
 
 | Name                                | Usage                                    | Version           |
 |-------------------------------------|------------------------------------------|-------------------|
-| In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.16.0` |
-| [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
-| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.0`           |
-| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.7.3`           |
-| [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.2`           |
-| [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.2.0`           |
-| [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.0`           |
+| In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.18.2` |
+| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.3`           |
+| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.8.0`           |
+| [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          |
+| [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.4.3`           |
+| [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.4`           |
 
 We focus on the following tasks:
 
@@ -44,65 +43,226 @@ We are interested in the single query performance on the above tasks, which mean
 * **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
 ```
 
+
 ## Benchmark result
 
-The following table summarizes the result. The smaller the values, the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
+The following chart and table summarize the result. The smaller the values, the better (except for `Recall@10`).
 
-````{tab} Same HNSW parameters (ef, ef_construct, max_connections)
 
-| Store         | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
-|---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| None        |  **0.6** | **0.1** |  **0.01** |  **0.39** |               **5** |               1.43 |      1.00 |
-| Sqlite        |    4,366.8 |       0.3 |        0.35 |        2.62 |                    31 |              23.59 |      1.00 |
-| Annlite       |       72.4 |       0.3 |        6.57 |        4.62 |                    30 |               0.42 |      0.19 |
-| Qdrant        |    2,286.3 |       1.6 |        1.50 |        4.14 |                   605 |         **0.01** |      0.51 |
-| Weaviate      |    1,612.4 |      33.7 |       27.94 |       13.38 |                 1,242 |               0.02 |      0.11 |
-| ElasticSearch |    1,307.3 |       2.4 |       40.85 |       40.74 |                   656 |               0.23 |  **0.85** |
+## Charts
+
+```{chart} advanced/document-store/benchmark.json
+  QPS(Find by vector) vs Recall@10
+```
+
+
+````{tab} None
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|             N/A |          N/A |  N/A |     1.000 |               2.37 |                 11.17 |          1.06 |      0.17 |       0.05  |        0.14 |
+
+````
+
+````{tab} Annlite
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|              16 |          128 |   64 |     0.960 |               1.53 |                  0.38 |        148.67 |      0.36 |       24.42 |       46.17 |
+|              16 |          128 |  128 |     0.988 |               1.72 |                  0.36 |        130.47 |      0.34 |      210.10 |      227.95 |
+|              16 |          128 |  256 |     0.996 |               1.99 |                  0.37 |        141.49 |      0.35 |      117.17 |      164.43 |
+|              16 |          256 |   64 |     0.965 |               1.54 |                  0.37 |        186.36 |      0.36 |       32.40 |       45.42 |
+|              16 |          256 |  128 |     0.990 |               1.69 |                  0.36 |        188.02 |      0.35 |       93.48 |      168.10 |
+|              16 |          256 |  256 |     0.997 |               2.07 |                  0.36 |        183.66 |      0.36 |       18.86 |       35.82 |
+|              32 |          128 |   64 |     0.975 |               1.58 |                  0.40 |        156.41 |      0.34 |       16.17 |       31.42 |
+|              32 |          128 |  128 |     0.993 |               1.81 |                  0.37 |        147.05 |      0.35 |       19.81 |       39.87 |
+|              32 |          128 |  256 |     0.998 |               2.15 |                  0.38 |        144.64 |      0.34 |       29.62 |       40.21 |
+|              32 |          256 |   64 |     0.984 |               1.62 |                  0.37 |        211.81 |      0.35 |       32.65 |       35.15 |
+|              32 |          256 |  128 |     0.996 |               1.84 |                  0.37 |        210.85 |      0.35 |      141.31 |      175.80 |
+|              32 |          256 |  256 |     0.999 |               2.25 |                  0.37 |        204.65 |      0.35 |       22.13 |       31.54 |
+
+````
+
+````{tab} Qdrant
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|              16 |           64 |   32 |     0.968 |              47.80 |                 44.96 |       5889.66 |      5.70 |       46.11 |       47.24 |
+|              16 |           64 |   64 |     0.990 |              47.88 |                 44.72 |       5892.35 |      2.72 |       46.61 |       47.30 |
+|              16 |           64 |  128 |     0.997 |              47.80 |                 44.95 |       5881.15 |      2.84 |       45.34 |       47.36 |
+|              16 |          128 |   32 |     0.979 |              47.69 |                 44.67 |       5867.41 |      2.83 |       45.72 |       47.15 |
+|              16 |          128 |   64 |     0.995 |              47.75 |                 44.68 |       5908.85 |      5.96 |       45.67 |       67.36 |
+|              16 |          128 |  128 |     0.998 |              47.86 |                 43.96 |       6128.75 |      2.88 |       46.65 |       67.40 |
+|              32 |           64 |   32 |     0.974 |              47.80 |                 44.76 |       5861.24 |      5.86 |       46.11 |       47.29 |
+|              32 |           64 |   64 |     0.991 |              47.87 |                 43.90 |       5860.92 |      2.84 |       46.28 |       47.37 |
+|              32 |           64 |  128 |     0.997 |              47.78 |                 43.51 |       5864.11 |      2.76 |       46.25 |       47.40 |
+|              32 |          128 |   32 |     0.986 |              47.74 |                 44.59 |       5855.59 |      2.77 |       46.65 |       47.25 |
+|              32 |          128 |   64 |     0.996 |              47.79 |                 43.75 |       5850.02 |      2.88 |       46.80 |       47.12 |
+|              32 |          128 |  128 |     0.999 |              47.79 |                 43.77 |       5850.69 |      2.76 |       47.99 |       45.39 |
+
+````
+
+````{tab} Weaviate
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|              16 |          128 |   64 |     0.959 |               5.29 |                  2.37 |       4847.50 |      4.96 |       27.86 |       17.70 |
+|              16 |          128 |  128 |     0.988 |               5.84 |                  2.40 |       4647.66 |      2.99 |       16.32 |       18.06 |
+|              16 |          128 |  256 |     0.996 |               6.91 |                  2.47 |       4551.60 |      2.77 |       27.50 |       18.22 |
+|              16 |          256 |   64 |     0.965 |               5.31 |                  2.39 |       4794.40 |      2.84 |       17.99 |       18.18 |
+|              16 |          256 |  128 |     0.990 |               5.89 |                  2.46 |       4600.66 |      2.86 |       18.03 |       18.14 |
+|              16 |          256 |  256 |     0.998 |               6.85 |                  2.46 |       4511.55 |      2.93 |       17.58 |       17.69 |
+|              32 |          128 |   64 |     0.975 |               5.52 |                  2.41 |       4520.41 |      2.86 |       16.56 |       17.85 |
+|              32 |          128 |  128 |     0.993 |               6.16 |                  2.54 |       4453.26 |      2.85 |       26.57 |       18.18 |
+|              32 |          128 |  256 |     0.998 |               7.45 |                  2.43 |       4406.78 |      2.86 |       28.64 |       18.31 |
+|              32 |          256 |   64 |     0.984 |               5.62 |                  2.46 |       5060.14 |      2.93 |       18.97 |       17.82 |
+|              32 |          256 |  128 |     0.996 |               6.34 |                  2.39 |       4846.96 |      5.00 |       21.84 |       26.85 |
+|              32 |          256 |  256 |     0.999 |               8.17 |                  2.64 |       5019.82 |      2.84 |       22.97 |       29.82 |
+
+````
+
+````{tab} ElasticSearch
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|              16 |          128 |   64 |     0.953 |               5.10 |                  6.64 |        678.95 |     15.25 |       47.03 |       43.08 |
+|              16 |          128 |  128 |     0.981 |               6.43 |                  7.11 |        719.78 |     12.25 |       55.61 |       46.85 |
+|              16 |          128 |  256 |     0.993 |               8.59 |                  7.01 |        720.77 |     16.59 |       64.65 |       58.07 |
+|              16 |          256 |   64 |     0.958 |               5.43 |                  7.19 |       1138.32 |     18.90 |       73.47 |       62.13 |
+|              16 |          256 |  128 |     0.983 |               6.60 |                  6.54 |       1078.97 |     11.58 |       73.65 |       56.86 |
+|              16 |          256 |  256 |     0.993 |               8.80 |                  6.80 |       1108.34 |     12.93 |       60.73 |       47.59 |
+|              32 |          128 |   64 |     0.984 |               5.72 |                  7.00 |        812.03 |     12.65 |       48.82 |       42.13 |
+|              32 |          128 |  128 |     0.996 |               7.65 |                  7.46 |        861.62 |     12.32 |       61.79 |       57.73 |
+|              32 |          128 |  256 |     0.999 |              10.44 |                  6.61 |        840.29 |     14.27 |       67.59 |       58.75 |
+|              32 |          256 |   64 |     0.987 |               6.08 |                  7.51 |       1506.04 |     15.66 |       66.59 |       55.46 |
+|              32 |          256 |  128 |     0.997 |               8.02 |                  6.63 |       1408.87 |     11.89 |       72.99 |       65.46 |
+|              32 |          256 |  256 |     0.999 |              11.55 |                  7.69 |       1487.95 |     13.37 |       50.19 |       58.59 |
+
+````
+
+````{tab} Redis
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
+|-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
+|              16 |          128 |   64 |     0.959 |               1.78 |                  0.51 |        721.33 |      0.89 |        2.31 |       23.23 |
+|              16 |          128 |  128 |     0.988 |               2.37 |                  0.70 |        775.26 |      1.24 |        4.25 |       28.60 |
+|              16 |          128 |  256 |     0.997 |               2.63 |                  0.64 |        799.26 |      1.06 |        2.72 |       27.36 |
+|              16 |          256 |   64 |     0.965 |               2.06 |                  0.66 |       1196.05 |      1.03 |        5.24 |       28.84 |
+|              16 |          256 |  128 |     0.990 |               2.33 |                  0.62 |       1232.47 |      1.02 |        3.67 |       27.35 |
+|              16 |          256 |  256 |     0.998 |               2.80 |                  0.67 |       1203.37 |      1.05 |        4.44 |       27.85 |
+|              32 |          128 |   64 |     0.975 |               2.10 |                  0.67 |        953.10 |      1.06 |        2.35 |       27.11 |
+|              32 |          128 |  128 |     0.993 |               2.49 |                  0.69 |        921.87 |      1.03 |        3.06 |       27.58 |
+|              32 |          128 |  256 |     0.998 |               3.06 |                  0.64 |        926.96 |      1.06 |        2.45 |       27.27 |
+|              32 |          256 |   64 |     0.984 |               2.28 |                  0.79 |       1489.83 |      1.05 |        4.92 |       29.27 |
+|              32 |          256 |  128 |     0.996 |               2.75 |                  0.79 |       1511.17 |      1.05 |        4.03 |       28.48 |
+|              32 |          256 |  256 |     0.999 |               3.15 |                  0.63 |       1534.68 |      1.03 |        3.26 |       28.19 |
 
 ````
 
 
+When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for `Recall@10`). 
 
-````{tab} Default HNSW parameters
+````{tab} None in QPS
 
-| Store       | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) | Find by condition (s) | Find by vector (s) | Recall@10 |
-|---------------|-----------:|----------:|------------:|------------:|----------------------:|-------------------:|----------:|
-| None        |  **0.6** | **0.1** |  **0.01** |  **0.16** |               **5** |               1.43 |      1.00 |
-| Sqlite        |    4,446.6 |       0.3 |        0.35 |       16.77 |                    30 |              24.38 |      1.00 |
-| Annlite       |      114.0 |       0.3 |        9.36 |       20.09 |                    30 |               0.43 |      0.14 |
-| Qdrant        |    2,227.4 |       1.6 |       42.16 |       20.59 |                   608 |         **0.01** |      0.51 |
-| Weaviate      |    1,612.0 |       2.3 |       44.01 |       22.26 |                 1,208 |         **0.01** |      0.10 |
-| ElasticSearch |      715.2 |       2.1 |       15.58 |       33.26 |                   650 |               0.22 |  **0.83** |
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|             N/A |          N/A |  N/A |     1.000 |           0.42 |              0.09 |   947,284 |  6,061 | 21,505 |  7,246 |
 
 ````
 
-When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for `Recall@10`). The best performer of each task is highlighted in **bold**:
+````{tab} Annlite in QPS
 
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|              16 |          128 |   64 |     0.960 |            652 |             2,611 |     6,726 |  2,786 |     41 |     22 |
+|              16 |          128 |  128 |     0.988 |            583 |             2,793 |     7,665 |  2,976 |      5 |      4 |
+|              16 |          128 |  256 |     0.996 |            502 |             2,710 |     7,068 |  2,882 |      9 |      6 |
+|              16 |          256 |   64 |     0.965 |            648 |             2,695 |     5,366 |  2,762 |     31 |     22 |
+|              16 |          256 |  128 |     0.990 |            590 |             2,747 |     5,319 |  2,833 |     11 |      6 |
+|              16 |          256 |  256 |     0.997 |            483 |             2,786 |     5,445 |  2,786 |     53 |     28 |
+|              32 |          128 |   64 |     0.975 |            632 |             2,500 |     6,394 |  2,959 |     62 |     32 |
+|              32 |          128 |  128 |     0.993 |            553 |             2,703 |     6,800 |  2,825 |     50 |     25 |
+|              32 |          128 |  256 |     0.998 |            465 |             2,660 |     6,914 |  2,985 |     34 |     25 |
+|              32 |          256 |   64 |     0.984 |            618 |             2,703 |     4,721 |  2,874 |     31 |     28 |
+|              32 |          256 |  128 |     0.996 |            542 |             2,710 |     4,743 |  2,833 |      7 |      6 |
+|              32 |          256 |  256 |     0.999 |            445 |             2,740 |     4,886 |  2,874 |     45 |     32 |
 
-````{tab} Same HNSW parameters (ef, ef_construct, max_connections) in QPS
+````
 
-| Store         |          Create 1M |        Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
-|---------------|----------------:|------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| None        | **1,610,305** | **9,345** | **71,428** | **2,570** |       **0.190** |           0.70 |      1.00 |
-| Sqlite        |              22 |        3125 |        2,816 |         381 |             0.032 |           0.04 |      1.00 |
-| Annlite       |           1,380 |       4,000 |          152 |         216 |             0.033 |           2.34 |      0.19 |
-| Qdrant        |              43 |         604 |          664 |         241 |             0.002 |    **90.90** |      0.51 |
-| Weaviate      |              62 |          31 |           35 |          74 |             0.001 |          55.55 |      0.11 |
-| ElasticSearch |              76 |         409 |           24 |          24 |             0.002 |           4.39 |  **0.85** |
+````{tab} Qdrant in QPS
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|              16 |           64 |   32 |     0.968 |             21 |                22 |       170 |    176 |     22 |     21 |
+|              16 |           64 |   64 |     0.990 |             21 |                22 |       170 |    367 |     21 |     21 |
+|              16 |           64 |  128 |     0.997 |             21 |                22 |       170 |    352 |     22 |     21 |
+|              16 |          128 |   32 |     0.979 |             21 |                22 |       170 |    353 |     22 |     21 |
+|              16 |          128 |   64 |     0.995 |             21 |                22 |       169 |    168 |     22 |     15 |
+|              16 |          128 |  128 |     0.998 |             21 |                23 |       163 |    347 |     21 |     15 |
+|              32 |           64 |   32 |     0.974 |             21 |                22 |       171 |    171 |     22 |     21 |
+|              32 |           64 |   64 |     0.991 |             21 |                23 |       171 |    353 |     22 |     21 |
+|              32 |           64 |  128 |     0.997 |             21 |                23 |       171 |    363 |     22 |     21 |
+|              32 |          128 |   32 |     0.986 |             21 |                22 |       171 |    361 |     21 |     21 |
+|              32 |          128 |   64 |     0.996 |             21 |                23 |       171 |    348 |     21 |     21 |
+|              32 |          128 |  128 |     0.999 |             21 |                23 |       171 |    362 |     21 |     22 |
+
+````
+
+````{tab} Weaviate in QPS
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|              16 |          128 |   64 |     0.959 |            189 |               421 |       206 |    202 |     36 |     56 |
+|              16 |          128 |  128 |     0.988 |            171 |               417 |       215 |    334 |     61 |     55 |
+|              16 |          128 |  256 |     0.996 |            145 |               405 |       220 |    361 |     36 |     55 |
+|              16 |          256 |   64 |     0.965 |            189 |               419 |       209 |    352 |     56 |     55 |
+|              16 |          256 |  128 |     0.990 |            170 |               406 |       217 |    349 |     55 |     55 |
+|              16 |          256 |  256 |     0.998 |            146 |               406 |       222 |    342 |     57 |     57 |
+|              32 |          128 |   64 |     0.975 |            181 |               415 |       221 |    350 |     60 |     56 |
+|              32 |          128 |  128 |     0.993 |            162 |               394 |       225 |    351 |     38 |     55 |
+|              32 |          128 |  256 |     0.998 |            134 |               412 |       227 |    350 |     35 |     55 |
+|              32 |          256 |   64 |     0.984 |            178 |               407 |       198 |    341 |     53 |     56 |
+|              32 |          256 |  128 |     0.996 |            158 |               418 |       206 |    200 |     46 |     37 |
+|              32 |          256 |  256 |     0.999 |            122 |               379 |       199 |    353 |     44 |     34 |
+
+````
+
+````{tab} ElasticSearch in QPS
+
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|              16 |          128 |   64 |     0.953 |            196 |               151 |     1,473 |     66 |     21 |     23 |
+|              16 |          128 |  128 |     0.981 |            155 |               141 |     1,389 |     82 |     18 |     21 |
+|              16 |          128 |  256 |     0.993 |            116 |               143 |     1,387 |     60 |     15 |     17 |
+|              16 |          256 |   64 |     0.958 |            184 |               139 |       878 |     53 |     14 |     16 |
+|              16 |          256 |  128 |     0.983 |            151 |               153 |       928 |     86 |     14 |     18 |
+|              16 |          256 |  256 |     0.993 |            114 |               147 |       902 |     77 |     16 |     21 |
+|              32 |          128 |   64 |     0.984 |            175 |               143 |     1,231 |     79 |     20 |     24 |
+|              32 |          128 |  128 |     0.996 |            131 |               134 |     1,161 |     81 |     16 |     17 |
+|              32 |          128 |  256 |     0.999 |             96 |               151 |     1,190 |     70 |     15 |     17 |
+|              32 |          256 |   64 |     0.987 |            165 |               133 |       664 |     64 |     15 |     18 |
+|              32 |          256 |  128 |     0.997 |            125 |               151 |       710 |     84 |     14 |     15 |
+|              32 |          256 |  256 |     0.999 |             87 |               130 |       672 |     75 |     20 |     17 |
 
 ````
 
 
-````{tab} Default HNSW parameters in QPS
+````{tab} Redis in QPS
 
-| Store         |          Create 1M |         Read |       Update |      Delete | Find by condition | Find by vector | Recall@10 |
-|---------------|----------------:|-------------:|-------------:|------------:|------------------:|---------------:|----------:|
-| None        | **1,618,122** | **10,101** | **71,428** | **6,211** |       **0.192** |           0.70 |      1.00 |
-| Sqlite        |             224 |        3,125 |        2,824 |          59 |             0.033 |           0.04 |      1.00 |
-| Annlite       |           8,769 |        3,759 |          106 |          49 |             0.033 |           2.34 |      0.14 |
-| Qdrant        |             448 |          615 |           23 |          48 |             0.002 |    **111.1** |      0.51 |
-| Weaviate      |             620 |          435 |           22 |          44 |             0.001 |          200.0 |      0.10 |
-| ElasticSearch |           1,398 |          481 |           64 |          30 |             0.002 |            4.5 |  **0.83** |
+| max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+|              16 |          128 |   64 |     0.959 |            562 |             1,961 |     1,386 |  1,125 |    432 |     43 |
+|              16 |          128 |  128 |     0.988 |            422 |             1,420 |     1,290 |    804 |    235 |     35 |
+|              16 |          128 |  256 |     0.997 |            380 |             1,567 |     1,251 |    943 |    368 |     37 |
+|              16 |          256 |   64 |     0.965 |            485 |             1,527 |       836 |    971 |    191 |     35 |
+|              16 |          256 |  128 |     0.990 |            429 |             1,616 |       811 |    978 |    273 |     37 |
+|              16 |          256 |  256 |     0.998 |            357 |             1,493 |       831 |    951 |    225 |     36 |
+|              32 |          128 |   64 |     0.975 |            476 |             1,490 |     1,049 |    948 |    425 |     37 |
+|              32 |          128 |  128 |     0.993 |            402 |             1,456 |     1,085 |    970 |    327 |     36 |
+|              32 |          128 |  256 |     0.998 |            326 |             1,570 |     1,079 |    943 |    408 |     37 |
+|              32 |          256 |   64 |     0.984 |            438 |             1,266 |       671 |    951 |    203 |     34 |
+|              32 |          256 |  128 |     0.996 |            364 |             1,263 |       662 |    952 |    248 |     35 |
+|              32 |          256 |  256 |     0.999 |            318 |             1,600 |       652 |    971 |    306 |     35 |
 
 ````
 
@@ -115,7 +275,7 @@ We now elaborate the setup of our benchmark. First the following parameters are 
 | Number of created Documents                     | 1,000,000 |
 | Number of Document on task 2,3,4,5,6            | 1         |
 | The dimension of `.embedding`                   | 128       |
-| Number of results for the task "Find by vector" | 10        |
+| Number of results for the task "Find by vector" | 10,000    |
 
 We choose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it is a performance-wise breaking point for a production system.
 
@@ -211,3 +371,6 @@ slow and the in-memory is too fast to fit into the figure.
 AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolithic package that does not follow a client-server design, so it avoids all network overhead.
 
 Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best in terms of quality of ANN, as we observed with highest Recall@K.
+
+
+
