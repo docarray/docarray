@@ -235,7 +235,7 @@ Such filters can be constructed using the [filter expression language defined by
 Filters operate on the `tags` of a Document, which are stored as `columns` in the Milvus database.
 
 
-### Example of `.find` with a filter
+### Example of `.find` with filtered vector search
 
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the Document with embedding `[i,i,i]`
@@ -301,7 +301,7 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
 ```
-### Example of `.filter` with a filter
+### Example of `.find` with only a filter
 
 The following example shows how to use DocArray with Milvus Document Store in order to filter text documents.
 Consider Documents have the tag `price` with a value of `i`. We can create these with the following code:
