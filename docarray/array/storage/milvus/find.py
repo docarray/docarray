@@ -1,12 +1,18 @@
-from typing import TYPE_CHECKING, TypeVar, List, Union, Optional, Dict
+from typing import TYPE_CHECKING, TypeVar, List, Union, Optional, Dict, Sequence
 
 if TYPE_CHECKING:
     import numpy as np
+    import tensorflow
+    import torch
 
     # Define the expected input type that your ANN search supports
     MilvusArrayType = TypeVar(
-        'MilvusArrayType', np.ndarray, list
-    )  # TODO(johannes) test torch, tf, etc.
+        'MilvusArrayType',
+        np.ndarray,
+        tensorflow.Tensor,
+        torch.Tensor,
+        Sequence[float],
+    )
     from docarray import Document, DocumentArray
 
 
