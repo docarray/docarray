@@ -146,9 +146,7 @@ class FindMixin:
             )
         from docarray import Document, DocumentArray
 
-        if isinstance(
-            query, dict
-        ):  # TODO(johannes) since filters in milvus are strings, the can't be passes as `query`, otherwise it will be confused for text matching query
+        if isinstance(query, dict):
             if filter is None:
                 return self._filter(query, limit=limit)
             else:
