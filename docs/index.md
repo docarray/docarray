@@ -47,6 +47,7 @@ advanced/document-store/index
 :caption: Integrations
 :hidden:
 
+fundamentals/jina-support/index
 fundamentals/notebook-support/index
 advanced/torch-support/index
 fundamentals/fastapi-support/index
