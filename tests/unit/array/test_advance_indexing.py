@@ -712,7 +712,6 @@ def test_offset2ids_persistence(storage, config):
         da1_ids = da1[:, 'id']
         assert len(da1) == 8
 
-
     if isinstance(da, DocumentArrayAnnlite):
         da1._annlite.close()
 
