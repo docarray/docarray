@@ -81,6 +81,7 @@ setup(
         ],
         'benchmark': [
             'pandas',
+            'matplotlib',
             'seaborn',
             'h5py',
         ],

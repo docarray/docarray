@@ -19,7 +19,7 @@ docker-compose up -d
 Install dependencies:
 
 ```
-pip install "docarray[common,benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
+pip install "docarray[benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
 ```
 
 Run the benchmark on [sift1m](https://www.tensorflow.org/datasets/catalog/sift1m) or random dataset:
