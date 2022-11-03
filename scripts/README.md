@@ -1,6 +1,6 @@
 # Scripts
 
-## Benchmarking on sift1M
+## Benchmarking on sift1m
 
 ### Download dataset
 
@@ -22,7 +22,7 @@ Install dependencies:
 pip install "docarray[common,benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
 ```
 
-Run the benchmark on [SIFT1M](https://www.tensorflow.org/datasets/catalog/sift1m) or random dataset:
+Run the benchmark on [sift1m](https://www.tensorflow.org/datasets/catalog/sift1m) or random dataset:
 
 ```
 # sif1M
@@ -40,12 +40,15 @@ options:
 
 Available storage backends include: `memory`, `sqlite`, `annlite`, `qdrant`, `weaviate`, `elasticsearch`, and `redis`.
 
-Results of the benchmarks are stored in current directory. Results are csv files `benchmark-seconds-{storage}.csv` and `benchmark-qps-{n}.csv` and a figure `benchmark.png` of `Recall@10/QPS` for all storage backends.
+The results of the benchmarks are stored in the current directory:
+- `benchmark-seconds-{storage}.csv`
+- `benchmark-qps-{n}.csv` 
+- `benchmark.png`, a figure of of `Recall@10/QPS` for all storage backends
 
 
 ### Benchmark HNSW parameters
 
-Current HNSW parameters are written in function `get_configuration_storage_backends` of `benchmarking_utils.py`. Parameters include:
+Current HNSW parameters are written in the function `get_configuration_storage_backends` of `benchmarking_utils.py`. Parameters include:
 
 - **ef_construction/ef_construct**: Number of maximum allowed potential outgoing edges candidates for each node in the graph, during the graph building. 
 - **max_connection/max_connections/m**: Number of maximum allowed outgoing edges for each node in the graph in each layer.
