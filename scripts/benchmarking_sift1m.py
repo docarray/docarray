@@ -27,10 +27,10 @@ if __name__ == "__main__":
     n_vector_queries = len(test)
     ground_truth = [x[0:K] for x in dataset['neighbors'][0:n_vector_queries]]
 
+    BENCHMARK_CONFIG = get_configuration_storage_backends(argparse, D, False)
+
     print(f'Reading dataset')
     docs = get_docs(train)
-
-    BENCHMARK_CONFIG = get_configuration_storage_backends(argparse, D, False)
 
     for storage, cfg in BENCHMARK_CONFIG.items():
 
