@@ -22,10 +22,14 @@ Install dependencies:
 pip install "docarray[common,benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
 ```
 
-Run the benchmark:
+Run the benchmark on [SIFT1M](https://www.tensorflow.org/datasets/catalog/sift1m) or random dataset:
 
 ```
-python benchmarking_sift1m.py [-h] [--fixed-hnsw] [--exclude-backends EXCLUDE_BACKENDS]
+# sif1M
+python benchmarking_sift1m.py [-h] [--exclude-backends EXCLUDE_BACKENDS] 
+
+# random
+python benchmarking.py [-h] [--fixed-hnsw] [--exclude-backends EXCLUDE_BACKENDS] 
 
 options:
   -h, --help            show this help message and exit
