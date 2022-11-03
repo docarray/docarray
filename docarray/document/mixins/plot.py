@@ -76,9 +76,10 @@ class PlotMixin:
 
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
-
         if not from_:
-            if self.uri:
+            if len(self.chunks) >= 6 and 'vertices' in self.chunks[0].tags.values():
+                from_ = 'chunks'
+            elif self.uri:
                 from_ = 'uri'
             elif self.tensor is not None:
                 from_ = 'tensor'
@@ -89,10 +90,57 @@ class PlotMixin:
             self.display_uri()
         elif from_ == 'tensor':
             self.display_tensor()
+        elif from_ == 'chunks':
+            self.display_chunks()
         else:
             self.summary()
 
-    def display_tensor(self):
+    def display_chunks(self) -> None:
+        """Plot 3d mesh data from :attr:`.chunks`"""
+        import trimesh
+        from PIL import Image
+
+        vertices = None
+        faces = None
+        uv_mapping = None
+        uv_image = None
+        face_colors = None
+        vertex_colors = None
+
+        for chunk in self.chunks:
+            if 'vertices' in chunk.tags.values():
+                vertices = chunk.tensor
+            elif 'faces' in chunk.tags.values():
+                faces = chunk.tensor
+            elif 'uv_mapping' in chunk.tags.values():
+                uv_mapping = chunk.tensor
+            elif 'uv_image' in chunk.tags.values():
+                uv_image = chunk.tensor
+                if uv_image is not None:
+                    mode = 'RGBA' if uv_image.shape[-1] == 4 else 'RGB'
+                    uv_image = Image.fromarray(uv_image, mode=mode)
+            elif 'face_colors' in chunk.tags.values():
+                face_colors = chunk.tensor
+            elif 'vertex_colors' in chunk.tags.values():
+                vertex_colors = chunk.tensor
+
+        visual = None
+        if uv_image is not None:
+            visual = trimesh.visual.texture.TextureVisuals(
+                uv=uv_mapping, image=uv_image
+            )
+        elif face_colors is not None:
+            visual = trimesh.visual.color.ColorVisuals(
+                face_colors=face_colors, vertex_colors=vertex_colors
+            )
+
+        mesh = trimesh.Trimesh(vertices=vertices, faces=faces, visual=visual)
+
+        from IPython.core.display import display
+
+        display(mesh.show())
+
+    def display_tensor(self) -> None:
         """Plot image data from :attr:`.tensor`"""
         if self.tensor is None:
             raise ValueError(
