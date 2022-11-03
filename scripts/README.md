@@ -22,7 +22,7 @@ Install dependencies:
 pip install "docarray[benchmark,qdrant,annlite,weaviate,elasticsearch,redis]"
 ```
 
-Run the benchmark on [sift1m](https://www.tensorflow.org/datasets/catalog/sift1m) or random dataset:
+Run the benchmark on [sift1m](http://corpus-texmex.irisa.fr/) or random dataset:
 
 ```
 # sif1M

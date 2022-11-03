@@ -9,7 +9,7 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents based on [sift1m](https://www.tensorflow.org/datasets/catalog/sift1m), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
+We create a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
 
 This includes classic database and vector database, all under the same DocumentArray API:
 
