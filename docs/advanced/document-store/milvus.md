@@ -80,7 +80,7 @@ You can find more installation guidance in the [Milvus documentation](https://mi
 
 ### Create DocumentArray with Milvus backend
 
-Assuming service is started using the default configuration (i.e. the server's gRPC address `http://localhost:19530`), you can 
+Assuming the service is started using the default configuration (i.e. the server's gRPC address is `http://localhost:19530`), you can 
 instantiate a DocumentArray with Milvus storage like so:
 
 ```python
@@ -89,11 +89,11 @@ from docarray import DocumentArray
 da = DocumentArray(storage='milvus', config={'n_dim': 10})
 ```
 
-Here, `config` is configuration for the created Milvus collection,
-and `n_dim` is a mandatory field that specified the dimensionality of stored embeddings.
-You can find a complete specification of the Milvus `config` {ref}`here <milvus-config>`.
+Here, `config` is configuration for the new Milvus collection,
+and `n_dim` is a mandatory field that specifies the dimensionality of stored embeddings.
+For more information about the Milvus `config`, refer to the {ref}`specification <milvus-config>`.
 
-To access a previously persisted DocumentArray, you can specify the `collection_name`, the `host`  and the `port`. 
+To access a previously persisted DocumentArray, specify the `collection_name`, the `host`,  and the `port`. 
 
 
 ```python
@@ -122,10 +122,10 @@ The following configs can be set:
 | `n_dim`             | Number of dimensions of embeddings to be stored and retrieved                                                                                                                                                                                 | **This is always required**                          |
 | `collection_name`   | Qdrant collection name client                                                                                                                                                                                                                 | **Random collection name generated**                 |
 | `host`              | Hostname of the Milvus server                                                                                                                                                                                                                 | 'localhost'                                          |
-| `port`              | port of the Milvus server                                                                                                                                                                                                                     | 6333                                                 |
+| `port`              | Port of the Milvus server                                                                                                                                                                                                                     | 6333                                                 |
 | `distance`          | Distance metric to be used during search. Can be 'IP', 'L2', 'JACCARD', 'TANIMOTO', 'HAMMING', 'SUPERSTRUCTURE' or 'SUBSTRUCTURE'.                                                                                                            | 'IP' (inner product)                                 |
-| `index_type`        | Type of the (ANN) search index. Can be 'HNSW', 'FLAT', 'ANNOY', or one of multiple variants of IVF and RHNSW. A full list of supported index types can be found [here](https://milvus.io/docs/v2.1.x/build_index.md#Prepare-index-parameter). | 'HNSW                                                |
-| `index_params`      | A dictionary of parameters used for index building. The allowed parameters depend on the index type, and can be found [here](https://milvus.io/docs/v2.1.x/index.md).                                                                         | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
+| `index_type`        | Type of the (ANN) search index. Can be 'HNSW', 'FLAT', 'ANNOY', or one of multiple variants of IVF and RHNSW. Refer to the [list of supported index types](https://milvus.io/docs/v2.1.x/build_index.md#Prepare-index-parameter). | 'HNSW'                                               |
+| `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                         | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
 | `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                                   | {}                                                   |
 | `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                                      | {}                                                   |
  | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | 'Session'                                            |
@@ -239,7 +239,7 @@ Filters operate on the `tags` of a Document, which are stored as `columns` in th
 
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the Document with embedding `[i,i,i]`
-has as tag `price` with value `i`. We can create such example with the following code:
+has as tag `price` with value `i`. We can create such an example with the following code:
 
 ```python
 from docarray import Document, DocumentArray
@@ -358,7 +358,7 @@ Points with "price" at most 7:
 	embedding=[2. 2. 2.],	 price=2
 ```
 
-## Advancded options
+## Advanced options
 
 The Milvus Document Store allows the user to pass additional parameters to the Milvus server for all main operations.
 
@@ -423,7 +423,7 @@ The Milvus Document Store implements the entire DocumentArray API, but there are
 ### Collection loading
 
 In Milvus, every search or query operation requires the index to be loaded into memory.
-This includes simple Document access through DocArray, 
+This includes simple Document access through DocArray.
 
 This loading operation can be costly, especially when performing multiple search or query operations in a row.
 
@@ -498,10 +498,10 @@ da.append(doc)
 ```
 
 ````{dropdown} Why does this limitation exist?
-By default, DocArray stores three columns in any Document Store: The Document id's, the Document embeddings and
+By default, DocArray stores three columns in any Document Store: The Document ids, the Document embeddings and
 a serialized (Base64 encoded) representation of the Document itself.
 
-In Milvus, the the serialized Document are stored in a column of type 'VARCHAR', which imposes a limit of allowed length
+In Milvus, the the serialized Documents are stored in a column of type 'VARCHAR', which imposes a limit of allowed length
 per entry.
 If the Base64 encoded Document exceeds this limit - which is usually the case for Documents with large tensors - the
 Document cannot be stored.
