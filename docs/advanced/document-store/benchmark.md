@@ -9,7 +9,7 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents based on [SIFT1M](https://www.tensorflow.org/datasets/catalog/sift1m), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
+We create a DocumentArray with one million Documents based on [sift1m](https://www.tensorflow.org/datasets/catalog/sift1m), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
 
 This includes classic database and vector database, all under the same DocumentArray API:
 
@@ -55,7 +55,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ```
 
 
-````{tab} None
+````{tab} In-Memory
 
 | max connections | ef construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----------------|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
@@ -161,7 +161,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Values are higher the better (except for `Recall@10`). 
 
-````{tab} None in QPS
+````{tab} In-Memory in QPS
 
 | max connections | ef construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----------------|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
@@ -276,7 +276,7 @@ We now elaborate the setup of our benchmark. First the following parameters are 
 | The dimension of `.embedding`                   | 128       |
 | Number of results for the task "Find by vector" | 10,000    |
 
-We choose 1 million Documents for two reasons: (1) it is the most common data scale for SME. (2) we expect it is a performance-wise breaking point for a production system.
+We choose sift1m dataset, which has been commonly used for evaluating the approximate nearest neighbour search methods.
 
 Each Document follows the structure: 
 
@@ -332,12 +332,10 @@ updating the benchmarks accordingly. If you believe we missed an optimization (e
 
 ### Incompleteness on the stores
 
-We do not yet cover the following backends for various reasons:
-* **Milvus**: currently DocArray does not integrate with Milvus. We're open for contributions to DocArray's repository to 
-support it.
-* **Pinecone**: Pinecone support is coming soon. We'll add it to these benchmarks once available.
-* **Faiss, Annoy, Scann**: We do not benchmark algorithms or ANN libraries. We only benchmark backends that can be used as 
+We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, Scann**. We only benchmark backends that can be used as 
 Document stores. Actually we do not benchmark HNSW itself, but it is used by some backends internally.
+
+Other storage backends that support vector search are not integrated with DocArray yet. We're open for contributions to DocArray's repository to support them.
 
 ## Conclusion
 
@@ -347,10 +345,8 @@ If you're experimenting on a dataset with fewer than 10,000 Documents, you can u
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
 
-
 ```{tip}
-SQLite store is omitted from the left plot and the in-memory store is omitted from the right plot; because SQLite is too 
-slow and the in-memory is too fast to fit into the figure.
+SQLite store is omitted because SQLite is too slow to fit into the figure chart.
 ```
 
 AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolithic package that does not follow a client-server design, so it avoids all network overhead.
