@@ -239,7 +239,7 @@ Filters operate on the `tags` of a Document, which are stored as `columns` in th
 
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the Document with embedding `[i,i,i]`
-has as tag `price` with value `i`. We can create such an example with the following code:
+has a tag `price` with value `i`. We can create such an example with the following code:
 
 ```python
 from docarray import Document, DocumentArray
