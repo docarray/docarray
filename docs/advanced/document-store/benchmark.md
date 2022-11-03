@@ -46,7 +46,7 @@ We are interested in the single query performance on the above tasks, which mean
 
 ## Benchmark result
 
-The following chart and table summarize the result. The smaller the values, the better (except for `Recall@10`).
+The following chart and table summarize the result. The chart depicts Recall@10 (the fraction of true nearest neighbors found, on average over all queries) against QPS (find by vecotr queries per second). The smaller the time values and the more upper-right in the chart, the better.
 
 
 ## Charts
@@ -291,29 +291,20 @@ Each Document follows the structure:
 
 We use `Recall@K` value as an indicator of the search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
-The experiments were conducted on a 4.5 Ghz AMD Ryzen Threadripper 3960X 24-Core Processor with Python 3.8.5 and DocArray 0.12.8.
+The experiments were conducted on a AWS EC2 t2.2xlarge instance (Intel Xeon CPU E5-2676 v3 @ 2.40GHz) with Python 3.10.6 and DocArray 0.18.2.
 
-Besides, as Weaviate, Qdrant and ElasticSearch follow a client/server pattern, we set up them with their official 
-docker images in a **single node** configuration, with 40 GB of RAM allocated. That is, only 1 replica and shard are 
-operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the 
-capabilities of a single instance of the server.
+Besides, as Weaviate, Qdrant, ElasticSearch and Redis follow a client/server pattern, we set up them with their official docker images in a **single node** configuration, with 32 GB of RAM allocated. That is, only 1 replica and shard are operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the capabilities of a single instance of the server.
 
-Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific 
-backend provides a more efficient implementation.
+Results might include overhead coming from DocArray side which applies equally for all backends, unless a specific backend provides a more efficient implementation.
 
 ### Settings of the nearest neighbour search
 
-As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters, we conducted two sets of experiment for the "Find By Vector" task:
-1. Set up HNSW with the same set of parameters; 
-2. Set up HNSW with the default parameters specified by each vendor;
+As most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
+1. ef_construct - The HNSW build parameter that controls the index time/index accuracy. Bigger `ef_construct` leads to longer construction, but better index quality.
+2. max_connections - The number of bi-directional links created for every new element during construction. Higher `max_connections` work better on datasets with high intrinsic dimensionality and/or high recall, while low `max_connections` work better for datasets with low intrinsic dimensionality and/or low recall.
+3. ef - The size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accurate but slower search.
 
-For the first experiment, the following HNSW parameters were fixed for all Document Stores that support ANN:
-* **`ef=100` at construction**: `ef` at construction controls the index time/index accuracy. Bigger `ef` construction leads to longer construction, but better index quality.
-* **`ef=100` at search**: the size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accurate but slower search.
-* **`m=16`**: max connections, the number of bi-directional links created for every new element during construction. Reasonable range for `m` is 2-100. Higher `m` work better on datasets with high intrinsic dimensionality and/or high recall, while low `m` work better for datasets with low intrinsic dimensionality and/or low recall.
-
-
-Finally, the full benchmark script is [available here](https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking.py).
+Finally, the full benchmark script is [available here](https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking_sift1m.py).
 
 ### Rationale on the experiment design
 
@@ -328,7 +319,7 @@ and report quality measurement (`Recall@K`).
 * **Not just speed, but also quality**: Since some backends offer better performance and some offer better quality, we make sure to report the quality measurement for the approximate nearest neighbor search. This will allow users to 
 choose the backend that best suits their cases.
 * **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the 
-same benchmarking experiment. Furthermore, we made sure to fix the same HNSW parameters for backends that support 
+same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support 
 approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client 
 which allows having similar network overhead. We also allocate the same resources for those Docker containers and all 
 servers are run in a single node setup.
@@ -356,11 +347,6 @@ If you're experimenting on a dataset with fewer than 10,000 Documents, you can u
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
 
-When it comes to finding by vectors, the following figure shows the variation of latency w.r.t. different backend according to the dataset size. The red dashed line represents a time threshold of 0.3s, i.e. 300 ms:
-
-```{figure} benchmark.svg
-:scale: 125%
-```
 
 ```{tip}
 SQLite store is omitted from the left plot and the in-memory store is omitted from the right plot; because SQLite is too 
@@ -368,8 +354,4 @@ slow and the in-memory is too fast to fit into the figure.
 ```
 
 AnnLite is a good choice when indexing/appending/inserting speed matters more than the speed of finding. Moreover, AnnLite is a local monolithic package that does not follow a client-server design, so it avoids all network overhead.
-
-Weaviate and Qdrant offer the fastest approximate nearest neighbor search, while ElasticSearch offers a good trade-off between speed and quality. ElasticSearch performs the best in terms of quality of ANN, as we observed with highest Recall@K.
-
-
 
