@@ -34,6 +34,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class QdrantConfig:
     n_dim: int
     distance: str = 'cosine'
+    enable_offset2id: bool = True
     collection_name: Optional[str] = None
     host: Optional[str] = field(default="localhost")
     port: Optional[int] = field(default=6333)
@@ -83,7 +84,7 @@ class BackendMixin(BaseBackendMixin):
         self._n_dim = config.n_dim
         self._distance = config.distance
         self._serialize_config = config.serialize_config
-
+        self._enable_offset2id = config.enable_offset2id
         self._client = QdrantClient(host=config.host, port=config.port)
 
         self._config = config

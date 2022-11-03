@@ -14,7 +14,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
             (doc.id, doc, idx),
         )
-        self._offset2ids.insert(idx, doc.id)
+        if self._enable_offset2id:
+            self._offset2ids.insert(idx, doc.id)
 
     def _shift_index_right_backward(self, start: int):
         idx = len(self) - 1
@@ -44,7 +45,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             f'INSERT INTO {self._table_name} (doc_id, serialized_value, item_order) VALUES (?, ?, ?)',
             (doc.id, doc, len(self)),
         )
-        self._offset2ids.append(doc.id)
+        if self._enable_offset2id:
+            self._offset2ids.append(doc.id)
         if commit:
             self._commit()
 

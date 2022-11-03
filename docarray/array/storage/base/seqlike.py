@@ -21,7 +21,8 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         :param value: The doc needs to be inserted.
         """
         self._set_doc_by_id(value.id, value)
-        self._offset2ids.insert(index, value.id)
+        if self._enable_offset2id:
+            self._offset2ids.insert(index, value.id)
 
     def append(self, value: 'Document', **kwargs):
         """Append `doc` to the end of the array.
@@ -33,7 +34,8 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
     def _append(self, value, **kwargs):
         self._set_doc_by_id(value.id, value)
-        self._offset2ids.append(value.id)
+        if self._enable_offset2id:
+            self._offset2ids.append(value.id)
 
     @abstractmethod
     def __eq__(self, other):

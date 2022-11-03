@@ -68,4 +68,5 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
         self._upload_batch(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        if self._enable_offset2id:
+            self._offset2ids.extend([doc.id for doc in docs])

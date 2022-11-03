@@ -34,6 +34,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class ElasticConfig:
     n_dim: int  # dims  in elastic
     distance: str = 'cosine'  # similarity in elastic
+    enable_offset2id: bool = True
     hosts: Union[
         str, List[Union[str, Mapping[str, Union[str, int]]]], None
     ] = 'http://localhost:9200'
@@ -92,8 +93,10 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self.n_dim = self._config.n_dim
+        self._enable_offset2id = self._config.enable_offset2id
         self._client = self._build_client()
-        self._build_offset2id_index()
+        if self._enable_offset2id:
+            self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
         super()._init_storage()
@@ -211,6 +214,8 @@ class BackendMixin(BaseBackendMixin):
 
     def _update_offset2ids_meta(self):
         """Update the offset2ids in elastic"""
+        if not self._enable_offset2id:
+            return
         if self._client.indices.exists(index=self._index_name_offset2id):
             requests = [
                 {
@@ -247,6 +252,8 @@ class BackendMixin(BaseBackendMixin):
 
         :raises ValueError: error is raised if index _client is not found or no offsets are found
         """
+        if not self._enable_offset2id:
+            return []
         if not self._client:
             raise ValueError('Elastic client does not exist')
 

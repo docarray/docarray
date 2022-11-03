@@ -31,6 +31,7 @@ class WeaviateConfig:
     port: Optional[int] = field(default=8080)
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
+    enable_offset2id: bool = True
     serialize_config: Dict = field(default_factory=dict)
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
     # vectorIndexConfig parameters
@@ -120,6 +121,7 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._schemas = self._load_or_create_weaviate_schema()
+        self._enable_offset2id = config.enable_offset2id
 
         _REGISTRY[self.__class__.__name__][self._class_name].append(self)
 
@@ -250,6 +252,9 @@ class BackendMixin(BaseBackendMixin):
 
     def _update_offset2ids_meta(self):
         """Update the offset2ids in weaviate the the current local version"""
+        if not self._enable_offset2id:
+            raise ValueError('Offset2id is disabled')
+
         if self._offset2ids_wid is not None and self._client.data_object.exists(
             self._offset2ids_wid
         ):
@@ -275,6 +280,9 @@ class BackendMixin(BaseBackendMixin):
 
         :raises ValueError: error is raised if meta class name is not defined
         """
+
+        if not self._enable_offset2id:
+            raise ValueError('Offset2id is disabled')
         if not self._meta_name:
             raise ValueError('meta object is not defined')
 

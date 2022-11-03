@@ -46,15 +46,21 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._annlite.close()
 
     def _load_offset2ids(self):
-        self._offsetmapping = OffsetMapping(
-            data_path=self._config.data_path, in_memory=False
-        )
-        self._offsetmapping.create_table()
-        self._offset2ids = Offset2ID(self._offsetmapping.get_all_ids())
+        if self._enable_offset2id:
+            self._offsetmapping = OffsetMapping(
+                data_path=self._config.data_path, in_memory=False
+            )
+            self._offsetmapping.create_table()
+            self._offset2ids = Offset2ID(self._offsetmapping.get_all_ids())
+        else:
+            raise ValueError("offset2id is disabled.")
 
     def _save_offset2ids(self):
-        self._offsetmapping.drop()
-        self._offsetmapping.create_table()
-        self._offsetmapping._insert(
-            [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.ids)]
-        )
+        if self._enable_offset2id:
+            self._offsetmapping.drop()
+            self._offsetmapping.create_table()
+            self._offsetmapping._insert(
+                [(i, doc_id) for i, doc_id in enumerate(self._offset2ids.ids)]
+            )
+        else:
+            raise ValueError("offset2id is disabled.")

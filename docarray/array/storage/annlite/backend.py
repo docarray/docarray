@@ -22,6 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class AnnliteConfig:
     n_dim: int
     metric: str = 'cosine'
+    enable_offset2id: bool = True
     serialize_config: Dict = field(default_factory=dict)
     data_path: Optional[str] = None
     ef_construction: Optional[int] = None
@@ -97,6 +98,7 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
         config = asdict(config)
         self.n_dim = config.pop('n_dim')
+        self._enable_offset2id = config.pop("enable_offset2id")
 
         from annlite import AnnLite
 

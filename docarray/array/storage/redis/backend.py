@@ -18,9 +18,11 @@ if TYPE_CHECKING:  # pragma: no cover
 @dataclass
 class RedisConfig:
     n_dim: int
+    offset2id: bool = True
     host: str = field(default='localhost')
     port: int = field(default=6379)
     index_name: Optional[str] = None
+    enable_offset2id: bool = True
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
@@ -79,6 +81,7 @@ class BackendMixin(BaseBackendMixin):
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
         self.n_dim = self._config.n_dim
+        self._enable_offset2id = self._config.enable_offset2id
         self._doc_prefix = config.index_name + ':'
         self._config.columns = self._normalize_columns(self._config.columns)
 
@@ -174,17 +177,23 @@ class BackendMixin(BaseBackendMixin):
         return embedding.astype(np.float32).tobytes()
 
     def _get_offset2ids_meta(self) -> List[str]:
-        if not self._client.exists(self._offset2id_key):
-            return []
-        ids = self._client.lrange(self._offset2id_key, 0, -1)
-        return [id.decode() for id in ids]
+        if self._enable_offset2id:
+            if not self._client.exists(self._offset2id_key):
+                return []
+            ids = self._client.lrange(self._offset2id_key, 0, -1)
+            return [id.decode() for id in ids]
+        else:
+            raise ValueError("offset2id is disabled.")
 
     def _update_offset2ids_meta(self):
-        """Update the offset2ids in redis"""
-        if self._client.exists(self._offset2id_key):
-            self._client.delete(self._offset2id_key)
-        if len(self._offset2ids.ids) > 0:
-            self._client.rpush(self._offset2id_key, *self._offset2ids.ids)
+        if self._enable_offset2id:
+            """Update the offset2ids in redis"""
+            if self._client.exists(self._offset2id_key):
+                self._client.delete(self._offset2id_key)
+            if len(self._offset2ids.ids) > 0:
+                self._client.rpush(self._offset2id_key, *self._offset2ids.ids)
+        else:
+            raise ValueError("Offset2id is disabled.")
 
     def __getstate__(self):
         d = dict(self.__dict__)

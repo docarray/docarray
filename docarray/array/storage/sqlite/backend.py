@@ -23,6 +23,7 @@ def _sanitize_table_name(table_name: str, raise_warning=True) -> str:
 class SqliteConfig:
     connection: Optional[Union[str, 'sqlite3.Connection']] = None
     table_name: Optional[str] = None
+    enable_offset2id: bool = True
     serialize_config: Dict = field(default_factory=dict)
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'WAL'
@@ -97,7 +98,7 @@ class BackendMixin(BaseBackendMixin):
         )
         self._connection.commit()
         self._config = config
-
+        self._enable_offset2id = config.enable_offset2id
         super()._init_storage()
 
         if _docs is None:

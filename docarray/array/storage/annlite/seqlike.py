@@ -17,7 +17,8 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             doc.embedding = self._map_embedding(doc.embedding)
 
         self._annlite.index(docs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        if self._enable_offset2id:
+            self._offset2ids.extend([doc.id for doc in docs])
 
         self._update_subindices_append_extend(docs)
 

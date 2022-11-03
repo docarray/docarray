@@ -61,4 +61,5 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         da = DocumentArray(docs)
         for batch_of_docs in da.batch(self._config.batch_size):
             self._upload_batch(batch_of_docs)
-            self._offset2ids.extend(batch_of_docs[:, 'id'])
+            if self._enable_offset2id:
+                self._offset2ids.extend(batch_of_docs[:, 'id'])

@@ -72,8 +72,14 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._load_or_create_weaviate_schema()
 
     def _load_offset2ids(self):
-        ids, self._offset2ids_wid = self._get_offset2ids_meta()
-        self._offset2ids = Offset2ID(ids)
+        if self._enable_offset2id:
+            ids, self._offset2ids_wid = self._get_offset2ids_meta()
+            self._offset2ids = Offset2ID(ids)
+        else:
+            raise ValueError("Offset2id is disabled")
 
     def _save_offset2ids(self):
-        self._update_offset2ids_meta()
+        if self._enable_offset2id:
+            self._update_offset2ids_meta()
+        else:
+            raise ValueError("Offset2id is disabled")

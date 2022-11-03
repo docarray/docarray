@@ -13,7 +13,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _del_doc_by_id(self, _id: str):
         self._sql(f'DELETE FROM {self._table_name} WHERE doc_id=?', (_id,))
-        self._save_offset2ids()
+        if self._enable_offset2id:
+            self._save_offset2ids()
         self._commit()
 
     def _set_doc_by_id(self, _id: str, value: 'Document'):
@@ -36,8 +37,11 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     # now start the optimized bulk methods
     def _get_docs_by_offsets(self, offsets: Sequence[int]) -> Iterable['Document']:
-        ids = [self._offset2ids.get_id(offset) for offset in offsets]
-        return self._get_docs_by_ids(ids)
+        if self._enable_offset2id:
+            ids = [self._offset2ids.get_id(offset) for offset in offsets]
+            return self._get_docs_by_ids(ids)
+        else:
+            raise ValueError("Offset2id is disabled")
 
     def _clear_storage(self):
         self._sql(f'DELETE FROM {self._table_name}')
@@ -48,29 +52,40 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             f"DELETE FROM {self._table_name} WHERE doc_id in ({','.join(['?'] * len(ids))})",
             ids,
         )
-        self._save_offset2ids()
+        if self._enable_offset2id:
+            self._save_offset2ids()
         self._commit()
 
     def _load_offset2ids(self):
-        r = self._sql(
-            f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
-        )
-        self._offset2ids = Offset2ID(list(map(itemgetter(0), r)))
+        if self._enable_offset2id:
+            r = self._sql(
+                f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
+            )
+            self._offset2ids = Offset2ID(list(map(itemgetter(0), r)))
+        else:
+            raise ValueError("Offset2id is disabled")
 
     def _save_offset2ids(self):
-        for offset, doc_id in enumerate(self._offset2ids):
-            self._sql(
-                f"""
-                    UPDATE {self._table_name} SET item_order = ? WHERE {self._table_name}.doc_id = ?
-                """,
-                (offset, doc_id),
-            )
-        self._commit()
+        if self._enable_offset2id:
+            for offset, doc_id in enumerate(self._offset2ids):
+                self._sql(
+                    f"""
+                        UPDATE {self._table_name} SET item_order = ? WHERE {self._table_name}.doc_id = ?
+                    """,
+                    (offset, doc_id),
+                )
+            self._commit()
+        else:
+            raise ValueError("Offset2id is disabled")
 
     def _del_docs(self, ids):
         super()._del_docs(ids)
-        self._save_offset2ids()
+        if self._enable_offset2id:
+            self._save_offset2ids()
 
     def _del_doc_by_offset(self, offset: int):
-        super()._del_doc_by_offset(offset)
-        self._save_offset2ids()
+        if self._enable_offset2id:
+            super()._del_doc_by_offset(offset)
+            self._save_offset2ids()
+        else:
+            raise ValueError("Offset2id is disabled")

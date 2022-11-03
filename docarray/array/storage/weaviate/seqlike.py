@@ -68,4 +68,5 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         with self._client.batch(batch_size=50) as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
-                self._offset2ids.append(d.id)
+                if self._enable_offset2id:
+                    self._offset2ids.append(d.id)
