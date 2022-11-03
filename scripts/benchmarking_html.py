@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 
-storages = ['annlite', 'elasticsearch', 'qdrant', 'weaviate', 'redis']
+storages = ['memory', 'annlite', 'elasticsearch', 'qdrant', 'weaviate', 'redis']
 
 df = pd.DataFrame()
 
