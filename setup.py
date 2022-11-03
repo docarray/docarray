@@ -111,6 +111,7 @@ setup(
             'redis>=4.3.0',
             'pymilvus>=2.1.0',
             'jina',
+            'pytest-mock',
         ],
     },
     classifiers=[
