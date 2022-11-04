@@ -45,6 +45,12 @@ The results of the benchmarks are stored in the current directory:
 - `benchmark-qps-{n}.csv` 
 - `benchmark.png`, a figure of of `Recall@10/QPS` for all storage backends
 
+Generate the chart of `Recall/QPS` on sift1m dataset benchmarking results:
+
+```
+python benchmarking_html.py
+```
+
 
 ### Benchmark HNSW parameters
 
