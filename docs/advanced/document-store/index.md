@@ -15,11 +15,11 @@ benchmark
 ```
 
 Documents inside a DocumentArray can live in a [document store](https://en.wikipedia.org/wiki/Document-oriented_database) instead of in memory, e.g. in SQLite, Redis.
-Comparing to the in-memory storage, the benefit of using an external store is often about longer persistence and faster retrieval. 
+The benefit of using an external store over an in-memory store is often about longer persistence and faster retrieval. 
 
 The look-and-feel of a DocumentArray with external store is **almost the same** as a regular in-memory DocumentArray. This allows users to easily switch between backends under the same DocArray idiom.  
 
-Take SQLite as an example, using it as the store backend of a DocumentArray is as simple as follows:
+Take SQLite as an example. Using it as the storage backend of a DocumentArray is as simple as follows:
 
 ```python
 from docarray import DocumentArray, Document
@@ -58,19 +58,19 @@ da.summary()
 │                                                                            │
 ╰────────────────────────────────────────────────────────────────────────────╯
 ```
-Note that  `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
+Note that `da` was modified inside a `with` statement. This context manager ensures that the the `DocumentArray` indices,
 which allow users to access the  `DocumentArray` by position (allowing statements such as `da[1]`),
 are properly mapped and saved to the storage backend.
 This is the recommended default usage to modify a DocumentArray that lives on a document store to avoid
 unexpected behaviors that can yield to, for example, inaccessible elements by position.
 
 
-Creating, retrieving, updating, deleting Documents are identical to the regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should work out of the box.
+The procedures for creating, retrieving, updating, and deleting Documents are identical to those for a regular {ref}`DocumentArray<documentarray>`. All DocumentArray methods such as `.summary()`, `.embed()`, `.plot_embeddings()` should also work out of the box.
 
 
 ## Construct
 
-There are two ways for initializing a DocumentArray with a store backend.
+There are two ways to initialize a DocumentArray with an external storage backend.
 
 ````{tab} Specify storage
 
@@ -100,7 +100,7 @@ da = DocumentArray()
 
 ````
 
-Depending on the context, you can choose the style that fits better. For example, if one wants to use class method such as `DocumentArray.empty(10)`, then explicit importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
+Depending on the context, you can choose the style that fits better. For example, if you want to use a class method such as `DocumentArray.empty(10)`, then explicitly importing `DocumentArraySqlite` is the way to go. Of course, you can choose not to alias the imported class to make the code even more explicit.
 
 ```{admonition} Subindices
 :class: seealso
@@ -116,7 +116,7 @@ To learn how to do that, see {ref}`here <subindex>`.
 
 The config of a store backend is either store-specific dataclass object or a `dict` that can be parsed into the former.
 
-One can pass the config in the constructor via `config`:
+You can pass the config in the constructor via `config`:
 
 ````{tab} Use dataclass
 
@@ -144,6 +144,14 @@ da = DocumentArray(
 ````
 
 Using dataclass gives you better type-checking in IDE but requires an extra import; using dict is more flexible but can be error-prone. You can choose the style that fits best to your context.
+
+```{admonition} Creating DocumentArrays without specifying index
+:class: warning
+When you specify an index (table name for SQL stores) in the config, the index will be used to persist the DocumentArray in the document store.
+If you create a DocumentArray but do not specify an index, a randomized placeholder index will be created to persist the data.
+
+Creating DocumentArrays without indexes is useful during prototyping but should not be used in a production setting as randomized placeholder data will be persisted in the document store unnecessarily.
+```
 
 
 ## Feature summary
@@ -346,6 +354,129 @@ array([[7., 7., 7.],
        [4., 4., 4.]])
 ```
 
+## Persistence, mutations and context manager
+
+Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.
+The DocumentArray object created in your Python program is now a view of the underlying implementation in the document store.
+This means that your DocumentArray object in Python can be out of sync with what is persisted to the document store.
+
+**For example**
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+da1.append(Document())
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+**Output**
+```console
+Length of da1 is 1
+Length of da2 is 0
+```
+
+Executing this script multiple times yields the same result.
+
+When you run the line `da1.append(Document())`, you expect the DocumentArray with `index_name='my_index'` to now have a length of `1`.
+However, when you try to create another view of the DocumentArray in `da2`, you get a fresh DocumentArray.
+
+You also expect the script to increment the length of the DocumentArrays every time you run it.
+This is because the previous run should have saved the length of the DocumentArray with `index_name="my_index"` and your most recent run will append a new document, incrementing the length by `+1` each time.
+
+However, it seems like your append operation is also not being persisted.
+
+````{dropdown} What actually happened here?
+The DocumentArray actually did persist, but not in the way you might expect.
+Since you did not use the `with` context manager or scope your mutation, the persistence logic is being evaluated when the program exits.
+`da1` is destroyed first, persisting the DocumentArray of length `1`.
+But when `da2` is destroyed, it persists a DocumentArray of length `0` to the same index in Redis as `da1`, overriding its value.
+
+This means that if you had not created `da2`, the overriding would not have occured and the script would actually increment the length of the DocumentArray correctly.
+You can prove this to yourself by commenting out the last 2 lines of the script and running the script repeatedly.
+
+**Script**
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+da1.append(Document())
+print(f"Length of da1 is {len(da1)}")
+
+# da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+# print(f"Length of da2 is {len(da2)}")
+```
+
+**First run output**
+```console
+Length of da1 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+```
+````
+
+Now that you know the issue, let's explore what you should do to work with DocumentArrays backed by document store in a more predictable manner.
+
+````{tab} Use with
+
+The data will be synced when the context manager is exited.
+
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+with da1:  # Use the context manager to make sure you persist the mutation
+    da1.append(Document())  #
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="my_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+````
+
+````{tab} Use sync
+
+Explicitly calling the `sync` method of the DocumentArray will save the data to the document store.
+
+```python
+from docarray import DocumentArray, Document
+
+da1 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
+da1.append(Document())
+da.sync()  # Call the sync method
+print(f"Length of da1 is {len(da1)}")
+
+da2 = DocumentArray(storage='redis', config=dict(n_dim=3, index_name="another_index"))
+print(f"Length of da2 is {len(da2)}")
+```
+````
+**First run output**
+```console
+Length of da1 is 1
+Length of da2 is 1
+```
+**Second run output**
+```console
+Length of da1 is 2
+Length of da2 is 2
+```
+**Third run output**
+```console
+Length of da1 is 3
+Length of da2 is 3
+```
+
+The append you made to the DocumentArray is now persisted properly. Hurray!
+
+The recommended way to sync data to the document store is to use the DocumentArray inside the `with` context manager.
+
 ## Known limitations
 
 
@@ -413,7 +544,7 @@ Take home message is, use the context manager and put your write operations into
 
 ### Out-of-array modification
 
-One can not take a Document *out* from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.
+You can not take a Document *out* from a DocumentArray and modify it, then expect its modification to be committed back to the DocumentArray.
 
 Specifically, the pattern below is not supported by any external store backend:
 

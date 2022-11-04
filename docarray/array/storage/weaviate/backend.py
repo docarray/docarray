@@ -111,8 +111,6 @@ class BackendMixin(BaseBackendMixin):
                 'Please capitalize when declaring the name field in config.'
             )
 
-        self._persist = bool(config.name)
-
         self._client = weaviate.Client(
             f'{config.protocol}://{config.host}:{config.port}',
             timeout_config=config.timeout_config,

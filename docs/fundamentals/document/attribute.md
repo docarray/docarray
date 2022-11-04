@@ -190,5 +190,5 @@ There are more `.load_uri_to_*` functions that allow you to read {ref}`text<text
 :class: tip
 Inline data URI is helpful when you need a quick visualization in HTML, as it embeds all resources directly into that HTML. 
 
-You can convert a URI to a data URI using `doc.load_uri_to_datauri()`. This will fetch the resource and make it inline.
+You can convert a URI to a data URI using `doc.convert_uri_to_datauri()`. This will fetch the resource and make it inline.
 ```

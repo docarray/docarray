@@ -92,6 +92,7 @@ class BackendMixin(BaseBackendMixin):
             config.collection_name = self._tmp_collection_name()
 
         self._n_dim = config.n_dim
+        self._distance = config.distance
         self._serialize_config = config.serialize_config
 
         self._client = QdrantClient(
@@ -104,7 +105,6 @@ class BackendMixin(BaseBackendMixin):
         )
 
         self._config = config
-        self._persist = bool(self._config.collection_name)
 
         self._config.columns = self._normalize_columns(self._config.columns)
 
@@ -114,7 +114,6 @@ class BackendMixin(BaseBackendMixin):
             else self._config.collection_name
         )
 
-        self._persist = self._config.collection_name
         self._initialize_qdrant_schema()
 
         super()._init_storage()
@@ -151,11 +150,12 @@ class BackendMixin(BaseBackendMixin):
                 full_scan_threshold=self._config.full_scan_threshold,
                 m=self._config.m,
             )
-            self.client.recreate_collection(
+            self.client.http.collections_api.create_collection(
                 collection_name=self.collection_name,
-                vectors_config=VectorParams(
-                    size=self.n_dim,
-                    distance=self.distance,
+                create_collection=CreateCollection(
+                    vector_size=self._n_dim,
+                    distance=DISTANCES[self._distance],
+                    hnsw_config=hnsw_config,
                 ),
                 hnsw_config=hnsw_config,
             )

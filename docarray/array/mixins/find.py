@@ -154,10 +154,10 @@ class FindMixin:
                     'filter and query cannot be both dict type, set only one for filtering'
                 )
         elif query is None:
-            if isinstance(filter, dict):
+            if isinstance(filter, (str, dict)):
                 return self._filter(filter, limit=limit)
             else:
-                raise ValueError('filter must be dict when query is None')
+                raise ValueError('filter must be dict or str when query is None')
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
@@ -181,7 +181,7 @@ class FindMixin:
 
         if limit is not None:
             if limit <= 0:
-                raise ValueError(f'`limit` must be larger than 0, receiving {limit}')
+                raise ValueError(f'`limit` must be larger than 0, receiving `{limit}`')
             else:
                 limit = int(limit)
 

@@ -325,6 +325,6 @@ class BaseGetSetDelMixin(ABC):
     def _save_offset2ids(self):
         ...
 
-    def __del__(self):
+    def sync(self):
         if hasattr(self, '_offset2ids'):
             self._save_offset2ids()

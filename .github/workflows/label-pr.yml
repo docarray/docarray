@@ -21,7 +21,7 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
       - id: docs_updated
         if: contains( github.event.pull_request.labels.*.name, 'area/docs')
-        run: echo '::set-output name=docs::true'
+        run: echo "docs=true" >> $GITHUB_OUTPUT
     outputs:
       docs: ${{ steps.docs_updated.outputs.docs }}
 
@@ -36,7 +36,7 @@ jobs:
         with:
           repository: jina-ai/docarray
           ref: ${{ env.BRANCH_NAME }}
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.7
       - uses: actions/setup-node@v2
@@ -45,9 +45,21 @@ jobs:
       - name: Build and Deploy
         run: |
           npm i -g netlify-cli
+          git fetch origin
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          python -m pip install wheel
+          cd ..
+          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
+          pip install --no-cache-dir ".[test]"
+          pip install --no-cache-dir ".[full]"
+          pip install --no-cache-dir ".[qdrant]"
+          pip install --no-cache-dir ".[annlite]"
+          pip install --no-cache-dir ".[weaviate]"
+          pip install --no-cache-dir ".[elasticsearch]"
+          pip install --no-cache-dir ".[redis]"
           git fetch origin
+          cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh development
           netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
