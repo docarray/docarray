@@ -100,7 +100,6 @@ def get_configuration_storage_backends(argparse, D, random=True):
             'storage_config': {
                 'n_dim': D,
                 'port': '41233',
-                'scroll_batch_size': 8,
             },
         },
         'weaviate': {
