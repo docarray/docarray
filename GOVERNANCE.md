@@ -28,9 +28,9 @@ Project releases will occur on a scheduled basis as agreed to by the committers.
 
 # Communication
 
-This project, just like all of open source, is a global community. In addition to the [Code of Conduct](./.github/CODE_OF_CONDUCT.md), this project will:
+This project, just like all open source, is a global community. In addition to the [Code of Conduct](./.github/CODE_OF_CONDUCT.md), this project will:
 
-* Keep all communucation on open channels ( mailing list, forums, chat ).
+* Keep all communication on open channels ( mailing list, forums, chat ).
 * Be respectful of time and language differences between community members ( such as scheduling meetings, email/issue responsiveness, etc ).
 * Ensure tools are able to be used by community members regardless of their region.
 
