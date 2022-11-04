@@ -106,7 +106,6 @@ setup(
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
             'jina',
-            'rocksdict<=0.2.16',
         ],
     },
     classifiers=[
