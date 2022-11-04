@@ -1,6 +1,6 @@
 from typing import Union, TextIO, BinaryIO, TYPE_CHECKING, Type
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

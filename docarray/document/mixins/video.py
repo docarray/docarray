@@ -13,7 +13,7 @@ from typing import (
 
 import numpy as np
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
     from docarray import Document
 
@@ -97,15 +97,19 @@ class VideoDataMixin:
             if show_window:
                 cv2.destroyWindow(window_title)
 
-    def load_uri_to_video_tensor(self: 'T', only_keyframes: bool = False) -> 'T':
+    def load_uri_to_video_tensor(
+        self: 'T', only_keyframes: bool = False, **kwargs
+    ) -> 'T':
         """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.
 
         :param only_keyframes: only keep the keyframes in the video
+        :param kwargs: supports all keyword arguments that are being supported by av.open() as
+            described in: https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
         :return: Document itself after processed
         """
         import av
 
-        with av.open(self.uri) as container:
+        with av.open(self.uri, **kwargs) as container:
             if only_keyframes:
                 stream = container.streams.video[0]
                 stream.codec_context.skip_frame = 'NONKEY'

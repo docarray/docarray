@@ -1,6 +1,6 @@
 from typing import Optional, Union, Callable, Tuple, TYPE_CHECKING, Dict
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
     from docarray.typing import ArrayType
     from docarray import DocumentArray
@@ -30,6 +30,9 @@ class MatchMixin:
     ) -> None:
         """Compute embedding based nearest neighbour in `another` for each Document in `self`,
         and store results in `matches`.
+        For the purpose of evaluation, one can also directly use the
+        :meth:`~docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate`
+        function.
         .. note::
             'cosine', 'euclidean', 'sqeuclidean' are supported natively without extra dependency.
             You can use other distance metric provided by ``scipy``, such as `braycurtis`, `canberra`, `chebyshev`,

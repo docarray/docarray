@@ -1,3 +1,4 @@
+import copy
 import uuid
 from dataclasses import dataclass, field, asdict
 from typing import (
@@ -18,7 +19,7 @@ from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.array.storage.registry import _REGISTRY
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import ArrayType, DocumentArraySourceType
 
 
@@ -98,6 +99,7 @@ class BackendMixin(BaseBackendMixin):
             raise an error if both are provided
         """
 
+        config = copy.deepcopy(config)
         if not config:
             config = WeaviateConfig()
         elif isinstance(config, dict):

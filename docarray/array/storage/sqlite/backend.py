@@ -1,3 +1,4 @@
+import copy
 import sqlite3
 import warnings
 from dataclasses import dataclass, field
@@ -8,7 +9,7 @@ from docarray.array.storage.sqlite.helper import initialize_table
 from docarray.array.storage.base.backend import BaseBackendMixin
 from docarray.helper import random_identity, dataclass_from_dict
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType
 
 
@@ -50,6 +51,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[SqliteConfig, Dict]] = None,
         **kwargs,
     ):
+        config = copy.deepcopy(config)
         if not config:
             config = SqliteConfig()
 
