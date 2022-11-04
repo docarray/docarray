@@ -313,7 +313,7 @@ class BackendMixin(BaseBackendMixin):
         Context manager to load a collection and release it after the context is exited.
         If the collection is already loaded when entering, it will not be released while exiting.
 
-        :param collection: the collection to load. If None, the collection of this indexer is used.
+        :param collection: the collection to load. If None, the main collection of this indexer is used.
         :return: Context manager for the provided collection.
         """
 
