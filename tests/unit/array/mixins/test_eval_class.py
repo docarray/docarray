@@ -3,6 +3,12 @@ import copy
 import numpy as np
 import pytest
 
+from datasets import load_dataset
+from string import printable
+from collections import Counter
+
+from transformers import BertModel, BertConfig, BertTokenizer
+
 from docarray import DocumentArray, Document
 
 
@@ -450,3 +456,300 @@ def test_useless_groundtruth_warning_should_raise(storage, config, start_storage
     da2 = DocumentArray.empty(10)
     with pytest.warns(UserWarning):
         da1.evaluate(ground_truth=da2, metrics=['precision_at_k'])
+
+
+def dummy_embed_function(da):
+    for i in range(len(da)):
+        np.random.seed(int(da[i].text))
+        da[i, 'embedding'] = np.random.random(5)
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_single_da(storage, config, start_storage):
+
+    gt = DocumentArray([Document(text=str(i)) for i in range(10)])
+    queries_da = DocumentArray(gt, copy=True)
+    queries_da = DocumentArray(queries_da, storage=storage, config=config)
+    dummy_embed_function(gt)
+    gt.match(gt, limit=3)
+
+    res = queries_da.embed_and_evaluate(
+        ground_truth=gt,
+        metrics=['precision_at_k', 'reciprocal_rank'],
+        embed_funcs=dummy_embed_function,
+        match_batch_size=1,
+        limit=3,
+    )
+    assert all([v == 1.0 for v in res.values()])
+
+
+@pytest.mark.parametrize(
+    'sample_size',
+    [None, 10],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage):
+
+    gt_queries = DocumentArray([Document(text=str(i)) for i in range(100)])
+    gt_index = DocumentArray([Document(text=str(i)) for i in range(100, 200)])
+    queries_da = DocumentArray(gt_queries, copy=True)
+    index_da = DocumentArray(gt_index, copy=True)
+    index_da = DocumentArray(index_da, storage=storage, config=config)
+    dummy_embed_function(gt_queries)
+    dummy_embed_function(gt_index)
+    gt_queries.match(gt_index, limit=3)
+
+    res = queries_da.embed_and_evaluate(
+        ground_truth=gt_queries,
+        index_data=index_da,
+        metrics=['precision_at_k', 'reciprocal_rank'],
+        embed_funcs=dummy_embed_function,
+        match_batch_size=1,
+        limit=3,
+        query_sample_size=sample_size,
+    )
+    assert all([v == 1.0 for v in res.values()])
+
+
+@pytest.mark.parametrize(
+    'use_index, expected',
+    [
+        (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}),
+        (True, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0}),
+    ],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_labeled_dataset(
+    storage, config, start_storage, use_index, expected
+):
+    metric_fns = list(expected.keys())
+
+    def emb_func(da):
+        np.random.seed(0)  # makes sure that embeddings are always equal
+        da[:, 'embedding'] = np.random.random((len(da), 5))
+
+    da1 = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+
+    if (
+        use_index
+    ):  # query and index da are distinct # (different embeddings are generated)
+        res = da1.embed_and_evaluate(
+            index_data=da2,
+            metrics=metric_fns,
+            embed_funcs=emb_func,
+            match_batch_size=1,
+            limit=3,
+        )
+    else:  # query and index are the same (embeddings of both das are equal)
+        res = da2.embed_and_evaluate(
+            metrics=metric_fns,
+            embed_funcs=emb_func,
+            match_batch_size=1,
+            limit=3,
+        )
+    for key in metric_fns:
+        assert key in res
+        assert abs(res[key] - expected[key]) < 1e-4
+
+
+@pytest.mark.parametrize(
+    'two_embed_funcs, kwargs',
+    [
+        (False, {}),
+        (True, {'match_batch_size': 100}),
+        (False, {'match_batch_size': 100}),
+    ],
+)
+def test_embed_and_evaluate_on_real_data(two_embed_funcs, kwargs):
+    metric_names = ['precision_at_k', 'reciprocal_rank']
+
+    labels = ['18828_alt.atheism', '18828_comp.graphics']
+    news = [load_dataset('newsgroup', label) for label in labels]
+    features = [
+        (data['train'][j]['text'], i)
+        for i, data in enumerate(news)
+        for j in range(len(data['train']))
+    ]
+    char_ids = {c: i for i, c in enumerate(printable)}
+    np.random.shuffle(features)
+    X, y = zip(*features)
+    queries_x, queries_y = X[:100], y[:100]
+    index_x, index_y = X[100:], y[100:]
+    query_docs = DocumentArray(
+        [Document(text=t, tags={'label': l}) for t, l in zip(queries_x, queries_y)]
+    )
+    index_docs = DocumentArray(
+        [Document(text=t, tags={'label': l}) for t, l in zip(index_x, index_y)]
+    )
+
+    def emb_func(da):
+        da[:, 'embedding'] = np.array(
+            [[Counter(d.text)[c] for c in char_ids] for d in da], dtype='float32'
+        )
+
+    res = query_docs.embed_and_evaluate(
+        index_data=index_docs,
+        embed_funcs=(emb_func, emb_func) if two_embed_funcs else emb_func,
+        metrics=metric_names,
+        **kwargs,
+    )
+
+    # re-calculate manually
+    emb_func(query_docs)
+    emb_func(index_docs)
+    query_docs.match(index_docs)
+    res2 = query_docs.evaluate(metrics=metric_names)
+
+    for key in res:
+        assert key in res2
+        assert abs(res[key] - res2[key]) < 1e-3
+
+
+@pytest.fixture(scope='session')
+def bert_tokenizer():
+    return BertTokenizer.from_pretrained('bert-base-uncased')
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 768}),
+        ('qdrant', {'n_dim': 768}),
+        ('elasticsearch', {'n_dim': 768}),
+        ('redis', {'n_dim': 768}),
+    ],
+)
+def test_embed_and_evaluate_with_embed_model(
+    storage, config, bert_tokenizer, start_storage
+):
+    model = BertModel(BertConfig())
+    collate_fn = lambda da: bert_tokenizer(da.texts, return_tensors='pt')
+    da = DocumentArray(
+        [Document(text=f'some text {i}', tags={'label': str(i)}) for i in range(5)]
+    )
+    da = DocumentArray(da, storage=storage, config=config)
+    res = da.embed_and_evaluate(
+        metrics=['precision_at_k'], embed_models=model, collate_fns=collate_fn
+    )
+    assert res
+    assert res['precision_at_k'] == 0.2
+
+
+@pytest.mark.parametrize(
+    'queries, kwargs, exception',
+    [
+        (DocumentArray.empty(4), {}, ValueError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray.empty(4)},
+            ValueError,
+        ),
+        (DocumentArray([Document(tags={'label': 0})]), {}, RuntimeError),
+        (
+            DocumentArray([Document(tags={'label': 0})]),
+            {'index_data': DocumentArray([Document(tags={'label': 0})])},
+            RuntimeError,
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+def test_embed_and_evaluate_invalid_input_should_raise(
+    storage, config, queries, kwargs, exception, start_storage
+):
+    kwargs.update({'metrics': ['precision_at_k']})
+    if 'index_data' in kwargs:
+        kwargs['index_data'] = DocumentArray(
+            kwargs['index_data'], storage=storage, config=config
+        )
+
+    with pytest.raises(exception):
+        queries.embed_and_evaluate(**kwargs)
+
+
+@pytest.mark.parametrize(
+    'storage, config',
+    [
+        ('memory', {}),
+        ('weaviate', {}),
+        ('sqlite', {}),
+        ('annlite', {'n_dim': 5}),
+        ('qdrant', {'n_dim': 5}),
+        ('elasticsearch', {'n_dim': 5}),
+        ('redis', {'n_dim': 5}),
+    ],
+)
+@pytest.mark.parametrize('sample_size', [100, 1_000, 10_000])
+def test_embed_and_evaluate_sampling(storage, config, sample_size, start_storage):
+    metric_fns = ['precision_at_k', 'reciprocal_rank']
+
+    def emb_func(da):
+        np.random.seed(0)  # makes sure that embeddings are always equal
+        da[:, 'embedding'] = np.random.random((len(da), 5))
+
+    da1 = DocumentArray(
+        [Document(text=str(i), tags={'label': i % 20}) for i in range(2_000)]
+    )
+    da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
+
+    res = da1.embed_and_evaluate(
+        index_data=da2,
+        metrics=metric_fns,
+        embed_funcs=emb_func,
+        query_sample_size=sample_size,
+    )
+    expected_size = (
+        sample_size if sample_size and (sample_size < len(da1)) else len(da1)
+    )
+    eval_res = [d.evaluations for d in da1 if len(d.evaluations.keys()) > 0]
+
+    assert len(eval_res) == expected_size
+    for key in res:
+        assert abs(res[key] - np.mean([x[key].value for x in eval_res])) < 1e-5

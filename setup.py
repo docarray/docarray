@@ -38,7 +38,6 @@ setup(
     long_description=_long_description,
     long_description_content_type='text/markdown',
     zip_safe=False,
-    setup_requires=['setuptools>=18.0', 'wheel'],
     install_requires=['numpy', 'rich>=12.0.0', 'jina-hubble-sdk>=0.13.1'],
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
@@ -68,7 +67,7 @@ setup(
             'qdrant-client==0.8.0',
         ],
         'annlite': [
-            'annlite==0.3.13',
+            'annlite',
         ],
         'weaviate': [
             'weaviate-client~=3.3.0',
@@ -106,7 +105,7 @@ setup(
             'jupyterlab',
             'transformers>=4.16.2',
             'weaviate-client~=3.3.0',
-            'annlite>=0.3.12',
+            'annlite',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',
             'pymilvus>=2.1.0',

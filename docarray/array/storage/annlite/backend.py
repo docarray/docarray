@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
@@ -80,7 +81,7 @@ class BackendMixin(BaseBackendMixin):
         subindex_configs: Optional[Dict] = None,
         **kwargs,
     ):
-
+        config = copy.deepcopy(config)
         from docarray import Document
 
         if not config:
