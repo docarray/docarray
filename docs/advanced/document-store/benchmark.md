@@ -16,6 +16,7 @@ This includes classic database and vector database, all under the same DocumentA
 | Name                                | Usage                                    | Version           |
 |-------------------------------------|------------------------------------------|-------------------|
 | In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.18.2` |
+| [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           |
 | [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.3`           |
 | [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.8.0`           |
 | [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          |
@@ -158,6 +159,14 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 
 ````
 
+````{tab} Sqlite
+
+|  m  | ef_construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (s) |
+|-----|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|-----------:|
+| N/A |          N/A |  N/A |     1.000 |              54.32 |                 78.63 |     16,421.51 |      1.09 |       0.40  |      28.87 |
+
+````
+
 
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better (except for `Recall@10`). 
 
@@ -262,6 +271,14 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.984 |            438 |             1,266 |       671 |    951 |    203 |     34 |
 |  32 |          256 |  128 |     0.996 |            364 |             1,263 |       662 |    952 |    248 |     35 |
 |  32 |          256 |  256 |     0.999 |            318 |             1,600 |       652 |    971 |    306 |     35 |
+
+````
+
+````{tab} Sqlite in QPS
+
+|  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
+|-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
+| N/A |          N/A |  N/A |     1.000 |           0.02 |              0.01 |        61 |    915 |  2,476 |   0.03 |
 
 ````
 
