@@ -80,7 +80,7 @@ class MilvusConfig:
         default_factory=dict
     )  # passed to milvus at collection creation time
     serialize_config: Dict = field(default_factory=dict)
-    consistency_level: str = 'Session'
+    consistency_level: str = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
@@ -129,11 +129,11 @@ class BackendMixin(BaseBackendMixin):
         # table and load the given `docs`
         if _docs is None:
             return
-        elif isinstance(_docs, Iterable):
-            self.clear()
+
+        self.clear()
+        if isinstance(_docs, Iterable):
             self.extend(_docs)
         else:
-            self.clear()
             if isinstance(_docs, Document):
                 self.append(_docs)
 
@@ -169,7 +169,7 @@ class BackendMixin(BaseBackendMixin):
 
         schema = CollectionSchema(
             fields=[document_id, embedding, serialized, *additional_columns],
-            description='DocumentArray collection',
+            description='DocumentArray collection schema',
         )
         return Collection(
             name=self._config.collection_name,
@@ -267,11 +267,14 @@ class BackendMixin(BaseBackendMixin):
 
     def _update_consistency_level(self, **kwargs):
         kwargs_consistency_level = kwargs.get('consistency_level', None)
-        kwargs['consistency_level'] = (
-            kwargs_consistency_level
-            if kwargs_consistency_level
-            else self._config.consistency_level
-        )
+        config_consistency_level = self._config.consistency_level
+
+        if (
+            kwargs_consistency_level or not config_consistency_level
+        ):  # no need to update
+            return kwargs
+
+        kwargs['consistency_level'] = config_consistency_level
         return kwargs
 
     def _map_embedding(self, embedding):
@@ -294,6 +297,9 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
+        connections.connect(
+            alias=self._connection_alias, host=self._config.host, port=self._config.port
+        )
         self._collection = self._create_or_reuse_collection()
         self._offset2id_collection = self._create_or_reuse_offset2id_collection()
 
@@ -317,7 +323,7 @@ class BackendMixin(BaseBackendMixin):
         :return: Context manager for the provided collection.
         """
 
-        class LoadedCollectionMngr:
+        class LoadedCollectionManager:
             def __init__(self, coll, connection_alias):
                 self._collection = coll
                 self._loaded_when_enter = False
@@ -337,6 +343,6 @@ class BackendMixin(BaseBackendMixin):
                 if not self._loaded_when_enter:
                     self._collection.release()
 
-        return LoadedCollectionMngr(
+        return LoadedCollectionManager(
             collection if collection else self._collection, self._connection_alias
         )

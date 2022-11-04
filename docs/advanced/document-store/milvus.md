@@ -123,73 +123,22 @@ The following configs can be set:
 | `collection_name`   | Qdrant collection name client                                                                                                                                                                                                                 | **Random collection name generated**                 |
 | `host`              | Hostname of the Milvus server                                                                                                                                                                                                                 | 'localhost'                                          |
 | `port`              | Port of the Milvus server                                                                                                                                                                                                                     | 6333                                                 |
-| `distance`          | Distance metric to be used during search. Can be 'IP', 'L2', 'JACCARD', 'TANIMOTO', 'HAMMING', 'SUPERSTRUCTURE' or 'SUBSTRUCTURE'.                                                                                                            | 'IP' (inner product)                                 |
+| `distance`          | [Distance metric](https://milvus.io/docs/v2.1.x/metric.md) to be used during search. Can be 'IP', 'L2', 'JACCARD', 'TANIMOTO', 'HAMMING', 'SUPERSTRUCTURE' or 'SUBSTRUCTURE'.                                                                                                            | 'IP' (inner product)                                 |
 | `index_type`        | Type of the (ANN) search index. Can be 'HNSW', 'FLAT', 'ANNOY', or one of multiple variants of IVF and RHNSW. Refer to the [list of supported index types](https://milvus.io/docs/v2.1.x/build_index.md#Prepare-index-parameter). | 'HNSW'                                               |
 | `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                         | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
 | `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                                   | {}                                                   |
 | `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                                      | {}                                                   |
- | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | 'Session'                                            |
+ | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | Default defined by Milvus                            |
 | `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                                   | None                                                 |
 
 ## Minimal example
 
-Create `docker-compose.yml`:
+Download `docker-compose.yml`:
 
-`````{dropdown} docker-compose.yml
 
-```yaml
-version: '3.5'
-
-services:
-  etcd:
-    container_name: milvus-etcd
-    image: quay.io/coreos/etcd:v3.5.0
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
-    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
-
-  minio:
-    container_name: milvus-minio
-    image: minio/minio:RELEASE.2022-03-17T06-34-49Z
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
-    command: minio server /minio_data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-
-  standalone:
-    container_name: milvus-standalone
-    image: milvusdb/milvus:v2.1.4
-    command: ["milvus", "run", "standalone"]
-    environment:
-      ETCD_ENDPOINTS: etcd:2379
-      MINIO_ADDRESS: minio:9000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
-    ports:
-      - "19530:19530"
-      - "9091:9091"
-    depends_on:
-      - "etcd"
-      - "minio"
-
-networks:
-  default:
-    name: milvus
+```text
+wget https://github.com/milvus-io/milvus/releases/download/v2.1.4/milvus-standalone-docker-compose.yml -O docker-compose.yml
 ```
-
-`````
 
 Install DocArray with Milvus and launch the Milvus server:
 
@@ -239,7 +188,7 @@ Filters operate on the `tags` of a Document, which are stored as `columns` in th
 
 
 Consider Documents with embeddings `[0,0,0]` up to ` [9,9,9]` where the Document with embedding `[i,i,i]`
-has a tag `price` with value `i`. We can create such an example with the following code:
+has a tag `price` with value `i`. You can create such an example with the following code:
 
 ```python
 from docarray import Document, DocumentArray
@@ -268,9 +217,9 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
     print(f'\tembedding={embedding},\t price={price}')
 ```
 
-Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
+Consider you want the nearest vectors to the embedding `[8. 8. 8.]`, with the restriction that
 prices must follow a filter. As an example, retrieved Documents must have `price` value lower than
-or equal to `max_price`. We can encode this information in Milvus using `filter = f'price <= {max_price}'`.
+or equal to `max_price`. You can express this information in Milvus using `filter = f'price <= {max_price}'`.
 
 Then you can implement and use the search with the proposed filter:
 
@@ -304,7 +253,7 @@ Embeddings Nearest Neighbours with "price" at most 7:
 ### Example of `.find` with only a filter
 
 The following example shows how to use DocArray with Milvus Document Store in order to filter text documents.
-Consider Documents have the tag `price` with a value of `i`. We can create these with the following code:
+Consider Documents have the tag `price` with a value of `i`. You can create these with the following code:
 
 ```python
 from docarray import Document, DocumentArray
@@ -331,7 +280,7 @@ for embedding, price in zip(da.embeddings, da[:, 'tags__price']):
 ```
 
 Suppose you want to filter results such that
-retrieved Documents must have a `price` value less than or equal to `max_price`. You can encode 
+retrieved Documents must have a `price` value less than or equal to `max_price`. You can express 
 this information in Milvus using `filter = f'price <= {max_price}'`.
 
 Then you can implement and use the search with the proposed filter:
@@ -422,7 +371,7 @@ The Milvus Document Store implements the entire DocumentArray API, but there are
 (milvus-collection-loading)=
 ### Collection loading
 
-In Milvus, every search or query operation requires the index to be loaded into memory.
+In Milvus, every search or query operation requires the index to be [loaded into memory](https://milvus.io/api-reference/pymilvus/v2.1.3/Collection/load().md).
 This includes simple Document access through DocArray.
 
 This loading operation can be costly, especially when performing multiple search or query operations in a row.
