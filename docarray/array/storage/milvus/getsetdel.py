@@ -26,11 +26,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _load_offset2ids(self):
         collection = self._offset2id_collection
+        kwargs = self._update_consistency_level(**dict())
         with self.loaded_collection(collection):
             res = collection.query(
                 expr=_always_true_expr('document_id'),
                 output_fields=['offset', 'document_id'],
-                consistency_level=self._config.consistency_level,
+                **kwargs,
             )
         sorted_res = sorted(res, key=lambda k: int(k['offset']))
         self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
