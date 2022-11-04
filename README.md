@@ -30,11 +30,7 @@ DocArray is a library for nested, unstructured, multimodal data in transit, incl
 
 🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
 
-Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives). 
-
-<p align="center">
-<a href="#"><img src="https://github.com/jina-ai/jina/blob/master/.github/readme/core-tree-graph.svg?raw=true" alt="Jina in Jina AI neural search ecosystem" width="100%"></a>
-</p>
+Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
 
 <!-- end elevator-pitch -->
 
@@ -282,7 +278,9 @@ right_da = (
 
 ```python
 right_da = (
-    DocumentArray.from_files('right/*.jpg')[:1000].apply(preproc).embed(model, device='cuda')
+    DocumentArray.from_files('right/*.jpg')[:1000]
+    .apply(preproc)
+    .embed(model, device='cuda')
 )
 ```
 
@@ -407,18 +405,5 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 
 <!-- start support-pitch -->
 ## Support
-
-- Check out the [Learning Bootcamp](https://learn.jina.ai) to get started with DocArray.
 - Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
-- Join our [Engineering All Hands](https://youtube.com/playlist?list=PL3UBBWOUVhFYRUa_gpYYKBqEAkO4sxmne) meet-up to discuss your use case and learn Jina's new features.
-    - **When?** The second Tuesday of every month
-    - **Where?**
-      Zoom ([see our public events calendar](https://calendar.google.com/calendar/embed?src=c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com&ctz=Europe%2FBerlin)/[.ical](https://calendar.google.com/calendar/ical/c_1t5ogfp2d45v8fit981j08mcm4%40group.calendar.google.com/public/basic.ics))
-      and [live stream on YouTube](https://youtube.com/c/jina-ai)
-- Subscribe to the latest video tutorials on our [YouTube channel](https://youtube.com/c/jina-ai)
 
-## Join Us
-
-DocArray is backed by [Jina AI](https://jina.ai) and licensed under [Apache-2.0](./LICENSE). [We are actively hiring](https://jobs.jina.ai) AI engineers, solution engineers to build the next neural search ecosystem in open-source.
-
-<!-- end support-pitch -->

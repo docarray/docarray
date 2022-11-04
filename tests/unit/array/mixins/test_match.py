@@ -4,6 +4,7 @@ import numpy as np
 import paddle
 import pytest
 import scipy.sparse as sp
+
 import tensorflow as tf
 import torch
 from scipy.sparse import csr_matrix, bsr_matrix, coo_matrix, csc_matrix
@@ -614,12 +615,12 @@ numeric_operators_qdrant = {
 }
 
 numeric_operators_redis = {
-    '$gte': operator.ge,
-    '$gt': operator.gt,
-    '$lte': operator.le,
-    '$lt': operator.lt,
-    '$eq': operator.eq,
-    '$ne': operator.ne,
+    'gte': operator.ge,
+    'gt': operator.gt,
+    'lte': operator.le,
+    'lt': operator.lt,
+    'eq': operator.eq,
+    'ne': operator.ne,
 }
 
 
@@ -686,15 +687,42 @@ numeric_operators_redis = {
             for operator in numeric_operators_annlite.keys()
         ],
         *[
-            tuple(
-                [
-                    'redis',
-                    lambda operator, threshold: {'price': {operator: threshold}},
-                    numeric_operators_redis,
-                    operator,
-                ]
-            )
-            for operator in numeric_operators_redis.keys()
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} inf] ',
+                numeric_operators_redis,
+                'gte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[({threshold} inf] ',
+                numeric_operators_redis,
+                'gt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf {threshold}] ',
+                numeric_operators_redis,
+                'lte',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[-inf ({threshold}] ',
+                numeric_operators_redis,
+                'lt',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'@price:[{threshold} {threshold}] ',
+                numeric_operators_redis,
+                'eq',
+            ),
+            (
+                'redis',
+                lambda operator, threshold: f'(- @price:[{threshold} {threshold}]) ',
+                numeric_operators_redis,
+                'ne',
+            ),
         ],
     ],
 )
