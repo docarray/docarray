@@ -10,7 +10,7 @@ from docarray import Document, DocumentArray
 from docarray.dataclasses import dataclass, field
 from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 from docarray.dataclasses.getter import image_getter
-from docarray.document.mixins.multimodal import AttributeType
+from docarray.dataclasses.enums import DocumentMetadata, AttributeType
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,12 +23,23 @@ TABULAR_URI = os.path.join(cur_dir, 'toydata/docs.csv')
 
 def _assert_doc_schema(doc, schema):
     for field, attr_type, _type, position in schema:
-        assert doc._metadata['multi_modal_schema'][field]['attribute_type'] == attr_type
-        assert doc._metadata['multi_modal_schema'][field]['type'] == _type
+        assert (
+            doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['attribute_type']
+            == attr_type
+        )
+        assert (
+            doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['type'] == _type
+        )
         if position is not None:
-            assert doc._metadata['multi_modal_schema'][field]['position'] == position
+            assert (
+                doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]['position']
+                == position
+            )
         else:
-            assert 'position' not in doc._metadata['multi_modal_schema'][field]
+            assert (
+                'position'
+                not in doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][field]
+            )
 
 
 def test_type_annotation():
@@ -474,7 +485,7 @@ def test_proto_serialization():
 
     proto = doc.to_protobuf()
     assert proto._metadata is not None
-    assert proto._metadata['multi_modal_schema']
+    assert proto._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA]
 
     deserialized_doc = Document.from_protobuf(proto)
 
@@ -488,7 +499,7 @@ def test_proto_serialization():
     assert images[0].tensor.shape == (10, 10, 3)
     assert titles[0].text == 'hello world'
 
-    assert 'multi_modal_schema' in deserialized_doc._metadata
+    assert DocumentMetadata.MULTI_MODAL_SCHEMA in deserialized_doc._metadata
 
     expected_schema = [
         ('title', AttributeType.DOCUMENT, 'Text', 0),
@@ -573,8 +584,8 @@ def test_invalid_type_annotations():
     obj = MMDocument(attr=inp)
     with pytest.raises(Exception) as exc_info:
         Document(obj)
-    assert exc_info.value.args[0] == 'Unsupported type annotation'
-    assert str(exc_info.value) == 'Unsupported type annotation'
+    assert 'Unsupported type annotation' in exc_info.value.args[0]
+    assert 'Unsupported type annotation' in str(exc_info.value)
 
 
 def test_not_data_class():
@@ -596,8 +607,8 @@ def test_not_data_class():
 def test_data_class_customized_typevar_map():
     def sette2(value):
         doc = Document(uri=value)
-        doc._metadata['image_type'] = 'uri'
-        doc._metadata['image_uri'] = value
+        doc._metadata[DocumentMetadata.IMAGE_TYPE] = 'uri'
+        doc._metadata[DocumentMetadata.IMAGE_URI] = value
         doc.load_uri_to_blob()
         doc.modality = 'image'
         return doc
@@ -821,3 +832,82 @@ def test_set_multimodal_nested(serialization, nested_mmdoc):
 
     assert d.other_doc_list[1].heading.text == '1 new text list'
     assert new_inner_list_doc in d.other_doc_list['@.[heading]']
+
+
+def test_initialize_document_with_dataclass_and_additional_text_attr():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(MyDoc(chunk_text='chunk level text'), text='top level text')
+
+    assert d.text == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
+
+
+def test_initialize_document_with_dataclass_and_additional_unknown_attributes():
+    @dataclass
+    class MyDoc:
+        chunk_text: Text
+
+    d = Document(
+        MyDoc(chunk_text='chunk level text'),
+        hello='top level text',
+    )
+
+    assert d.tags['hello'] == 'top level text'
+    assert d.chunk_text.text == 'chunk level text'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_unknown_attribute():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(MyDoc(name_mydoc='mydoc'), name_doc='doc')
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_tags_arg():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(MyDoc(name_mydoc='mydoc'), tags={'name_doc': 'doc'})
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+
+
+def test_doc_with_dataclass_with_str_and_additional_tags_arg_and_unknown_attribute():
+    @dataclass
+    class MyDoc:
+        name_mydoc: str
+
+    d = Document(
+        MyDoc(name_mydoc='mydoc'), tags={'name_doc': 'doc'}, something_else='hello'
+    )
+
+    assert d.tags['name_mydoc'] == 'mydoc'
+    assert d.tags['name_doc'] == 'doc'
+    assert d.tags['something_else'] == 'hello'
+
+
+def test_doc_with_dataclass_with_str_attr_and_additional_unknown_attr_with_same_name():
+    @dataclass
+    class MyDoc:
+        name: str
+
+    d = Document(MyDoc(name='mydoc'), name='doc')
+
+    assert d.tags['name'] == 'doc'
+
+
+def test_empty_list_dataclass():
+    @dataclass()
+    class A:
+        text: List[Text]
+
+    doc = Document(A(text=[]))

@@ -21,6 +21,7 @@ from typing import (
 
 from docarray.dataclasses.getter import *
 from docarray.dataclasses.setter import *
+from docarray.dataclasses.enums import *
 
 if TYPE_CHECKING:  # pragma: no cover
     import numpy as np
@@ -32,13 +33,8 @@ from docarray.typing import Image, Text, Audio, Video, Mesh, Tabular, Blob, JSON
 __all__ = ['field', 'dataclass', 'is_multimodal']
 
 
-class AttributeType(str, Enum):
-    DOCUMENT = 'document'
-    PRIMITIVE = 'primitive'
-    ITERABLE_PRIMITIVE = 'iterable_primitive'
-    ITERABLE_DOCUMENT = 'iterable_document'
-    NESTED = 'nested'
-    ITERABLE_NESTED = 'iterable_nested'
+class AttributeTypeError(TypeError):
+    pass
 
 
 class Field(_Field):
@@ -247,9 +243,13 @@ def _from_document(cls: Type['T'], doc: 'Document') -> 'T':
         )
 
     attributes = {}
-    for key, attribute_info in doc._metadata['multi_modal_schema'].items():
+    for key, attribute_info in doc._metadata[
+        DocumentMetadata.MULTI_MODAL_SCHEMA
+    ].items():
         field = cls.__dataclass_fields__[key]
-        position = doc._metadata['multi_modal_schema'][key].get('position')
+        position = doc._metadata[DocumentMetadata.MULTI_MODAL_SCHEMA][key].get(
+            'position'
+        )
         if (
             attribute_info['type'] == 'bytes'
             and attribute_info['attribute_type'] == AttributeType.PRIMITIVE

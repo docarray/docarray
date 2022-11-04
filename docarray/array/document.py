@@ -148,7 +148,7 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         storage: str = 'milvus',
         config: Optional[Union['MilvusConfig', Dict]] = None,
     ) -> 'DocumentArrayMilvus':
-        """Create a Redis-powered DocumentArray object."""
+        """Create a Milvus-powered DocumentArray object."""
         ...
 
     def __enter__(self):

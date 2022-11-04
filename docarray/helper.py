@@ -9,6 +9,8 @@ from os.path import expanduser
 from typing import Any, Dict, Optional, Sequence, Tuple, Union, TYPE_CHECKING
 from collections import Counter
 
+import hubble
+
 if TYPE_CHECKING:  # pragma: no cover
     from docarray import DocumentArray
 
@@ -148,14 +150,6 @@ def download_mermaid_url(mermaid_url, output) -> None:
             fp.write(urlopen(req).read())
     except:
         raise RuntimeError('Invalid or too-complicated graph')
-
-
-def get_request_header() -> Dict:
-    """Return the header of request.
-
-    :return: request header
-    """
-    return {k: str(v) for k, v in get_full_version().items()}
 
 
 def get_full_version() -> Dict:
@@ -495,3 +489,16 @@ def _get_array_info(da: 'DocumentArray'):
             )
 
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
+
+
+def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
+    """Login to Jina AI Cloud account.
+    :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.
+    :param force: If set to true, overwrite token and re-login.
+    """
+    hubble.login(interactive=interactive, force=force)
+
+
+def logout():
+    """Log out of Hubble account."""
+    hubble.logout()
