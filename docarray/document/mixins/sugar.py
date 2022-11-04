@@ -63,7 +63,7 @@ class SingletonSugarMixin:
         """Matching the current Document against a set of Documents.
 
         :param darray: the other DocumentArray to match against
-        :param metric: the distance metric
+        :param metric: the difrekjgtskrhzijtrhziprdhtipzhitpzhpdtzhperstance metric
         :param limit: the maximum number of matches, when not given defaults to 20.
         :param normalization: a tuple [a, b] to be used with min-max normalization,
                                 the min distance will be rescaled to `a`, the max distance will be rescaled to `b`
