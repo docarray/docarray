@@ -26,7 +26,15 @@ if TYPE_CHECKING:
     )
 
 
-def always_true_expr(primary_key: str) -> str:
+ID_VARCHAR_LEN = 1024
+SERIALIZED_VARCHAR_LEN = (
+    65_535  # 65_535 is the maximum that Milvus allows for a VARCHAR field
+)
+COLUMN_VARCHAR_LEN = 1024
+OFFSET_VARCHAR_LEN = 1024
+
+
+def _always_true_expr(primary_key: str) -> str:
     """
     Returns a Milvus expression that is always true, thus allowing for the retrieval of all entries in a Collection
     Assumes that the primary key is of type DataType.VARCHAR
@@ -37,12 +45,18 @@ def always_true_expr(primary_key: str) -> str:
     return f'({primary_key} in ["1"]) or ({primary_key} not in ["1"])'
 
 
-def ids_to_milvus_expr(ids):
+def _ids_to_milvus_expr(ids):
     ids = ['"' + _id + '"' for _id in ids]
     return '[' + ','.join(ids) + ']'
 
 
 def _sanitize_collection_name(name):
+    """Removes all chars that are not allowed in a Milvus collection name.
+    Thus, it removes all chars that are not alphanumeric or an underscore.
+
+    :param name: the collection name to sanitize
+    :return: the sanitized collection name.
+    """
     return ''.join(
         re.findall('[a-zA-Z0-9_]', name)
     )  # remove everything that is not a letter, number or underscore
@@ -130,20 +144,25 @@ class BackendMixin(BaseBackendMixin):
             )
 
         document_id = FieldSchema(
-            name='document_id', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
+            name='document_id',
+            dtype=DataType.VARCHAR,
+            max_length=ID_VARCHAR_LEN,
+            is_primary=True,
         )
         embedding = FieldSchema(
             name='embedding', dtype=DataType.FLOAT_VECTOR, dim=self._config.n_dim
         )
         serialized = FieldSchema(
-            name='serialized', dtype=DataType.VARCHAR, max_length=65_535
+            name='serialized', dtype=DataType.VARCHAR, max_length=SERIALIZED_VARCHAR_LEN
         )
 
         additional_columns = []
         for col, coltype in self._config.columns.items():
             mapped_type = self._map_type(coltype)
             if mapped_type == DataType.VARCHAR:
-                field_ = FieldSchema(name=col, dtype=mapped_type, max_length=1024)
+                field_ = FieldSchema(
+                    name=col, dtype=mapped_type, max_length=COLUMN_VARCHAR_LEN
+                )
             else:
                 field_ = FieldSchema(name=col, dtype=mapped_type)
             additional_columns.append(field_)
@@ -177,10 +196,13 @@ class BackendMixin(BaseBackendMixin):
             )
 
         document_id = FieldSchema(
-            name='document_id', dtype=DataType.VARCHAR, max_length=1024
+            name='document_id', dtype=DataType.VARCHAR, max_length=ID_VARCHAR_LEN
         )
         offset = FieldSchema(
-            name='offset', dtype=DataType.VARCHAR, max_length=1024, is_primary=True
+            name='offset',
+            dtype=DataType.VARCHAR,
+            max_length=OFFSET_VARCHAR_LEN,
+            is_primary=True,
         )
         dummy_vector = FieldSchema(
             name='dummy_vector', dtype=DataType.FLOAT_VECTOR, dim=1

@@ -5,7 +5,7 @@ import numpy as np
 from docarray import DocumentArray
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from docarray.array.storage.milvus.backend import always_true_expr, ids_to_milvus_expr
+from docarray.array.storage.milvus.backend import _always_true_expr, _ids_to_milvus_expr
 
 if TYPE_CHECKING:
     from docarray import Document, DocumentArray
@@ -28,7 +28,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         collection = self._offset2id_collection
         with self.loaded_collection(collection):
             res = collection.query(
-                expr=always_true_expr('document_id'),
+                expr=_always_true_expr('document_id'),
                 output_fields=['offset', 'document_id'],
                 consistency_level=self._config.consistency_level,
             )
@@ -53,7 +53,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         kwargs = self._update_consistency_level(**kwargs)
         with self.loaded_collection():
             res = self._collection.query(
-                expr=f'document_id in {ids_to_milvus_expr(ids)}',
+                expr=f'document_id in {_ids_to_milvus_expr(ids)}',
                 output_fields=['serialized'],
                 **kwargs,
             )
@@ -67,7 +67,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         kwargs = self._update_consistency_level(**kwargs)
         self._collection.delete(
-            expr=f'document_id in {ids_to_milvus_expr(ids)}', **kwargs
+            expr=f'document_id in {_ids_to_milvus_expr(ids)}', **kwargs
         )
 
     def _set_docs_by_ids(
@@ -76,7 +76,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         # delete old entries
         kwargs = self._update_consistency_level(**kwargs)
         self._collection.delete(
-            expr=f'document_id in {ids_to_milvus_expr(ids)}',
+            expr=f'document_id in {_ids_to_milvus_expr(ids)}',
             **kwargs,
         )
         # insert new entries

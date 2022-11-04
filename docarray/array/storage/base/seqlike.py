@@ -19,6 +19,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
         :param index: Position of the insertion.
         :param value: The doc needs to be inserted.
+        :param kwargs: Additional Arguments that are passed to the Document Store. This has no effect for in-memory DocumentArray.
         """
         self._set_doc_by_id(value.id, value, **kwargs)
         self._offset2ids.insert(index, value.id)
