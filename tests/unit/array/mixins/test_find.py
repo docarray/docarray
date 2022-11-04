@@ -545,6 +545,42 @@ def test_filtering(
         )
 
 
+@pytest.mark.parametrize(
+    'storage,filter_gen,numeric_operators,operator',
+    [
+        *[
+            tuple(
+                [
+                    'qdrant',
+                    lambda operator, threshold: {
+                        'must': [{'key': 'price', 'match': {'value': threshold}}]
+                    },
+                    numeric_operators_qdrant,
+                    'eq',
+                ]
+            )
+        ],
+    ],
+)
+@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
+def test_qdrant_filter_function(
+    storage, filter_gen, operator, numeric_operators, start_storage, columns
+):
+    n_dim = 128
+    da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
+    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
+    thresholds = [10, 20, 30]
+    for threshold in thresholds:
+        filter = filter_gen(operator, threshold)
+        results = da._filter(filter=filter)
+
+        assert len(results) > 0
+
+        assert all(
+            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
+        )
+
+
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
 def test_weaviate_filter_query(start_storage, columns):
     n_dim = 128

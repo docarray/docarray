@@ -1,3 +1,4 @@
+import copy
 import uuid
 from dataclasses import dataclass, field, asdict
 from typing import (
@@ -26,7 +27,7 @@ from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType, ArrayType
 
 
@@ -64,7 +65,7 @@ class BackendMixin(BaseBackendMixin):
         :raises ValueError: only one of name or docs can be used for initialization,
             raise an error if both are provided
         """
-
+        config = copy.deepcopy(config)
         self._schemas = None
 
         if not config:

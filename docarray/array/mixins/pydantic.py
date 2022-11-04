@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Type, List
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.document.pydantic_model import PydanticDocumentArray
 
     from docarray.typing import T

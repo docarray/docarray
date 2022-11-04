@@ -21,7 +21,7 @@ from redis.commands.search.querystring import (
     union,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import tensorflow
     import torch
 
@@ -66,7 +66,7 @@ class FindMixin(BaseFindMixin):
         da = DocumentArray()
         for res in results:
             doc = Document.from_base64(res.blob.encode())
-            doc.scores['score'] = NamedScore(value=res.vector_score)
+            doc.scores['score'] = NamedScore(value=float(res.vector_score))
             da.append(doc)
         return da
 

@@ -8,7 +8,7 @@ from docarray.array.storage.qdrant.seqlike import SequenceLikeMixin
 
 __all__ = ['StorageMixins', 'QdrantConfig']
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from qdrant_client import QdrantClient
     from qdrant_client.http.models.models import Distance
 

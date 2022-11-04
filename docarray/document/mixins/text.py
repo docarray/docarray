@@ -5,7 +5,7 @@ import numpy as np
 
 from docarray.document.mixins.helper import _uri_to_blob, _to_datauri
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 

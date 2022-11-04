@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass, asdict, field
 from typing import (
     Union,
@@ -14,7 +15,7 @@ import numpy as np
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.helper import dataclass_from_dict, filter_dict, _safe_cast_int
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import DocumentArraySourceType, ArrayType
 
 
@@ -80,7 +81,7 @@ class BackendMixin(BaseBackendMixin):
         subindex_configs: Optional[Dict] = None,
         **kwargs,
     ):
-
+        config = copy.deepcopy(config)
         from docarray import Document
 
         if not config:

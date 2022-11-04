@@ -1,4 +1,5 @@
 import copy as cp
+import dataclasses
 from dataclasses import fields
 from functools import lru_cache
 from typing import TYPE_CHECKING, Optional, Tuple, Dict
@@ -6,7 +7,7 @@ from docarray.dataclasses import is_multimodal
 
 from docarray.helper import typename
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 
@@ -39,7 +40,15 @@ class BaseDCType:
 
         if kwargs:
             try:
-                self._data = self._data_class(self, **kwargs)
+                if self._data is not None:
+                    if self._unresolved_fields_dest in kwargs.keys():
+                        getattr(self, self._unresolved_fields_dest).update(
+                            kwargs[self._unresolved_fields_dest]
+                        )
+                        kwargs.pop(self._unresolved_fields_dest)
+                    self._data = dataclasses.replace(self._data, **kwargs)
+                else:
+                    self._data = self._data_class(self, **kwargs)
             except TypeError as ex:
                 if unknown_fields_handler == 'raise':
                     raise AttributeError(f'unknown attributes') from ex
@@ -58,7 +67,10 @@ class BaseDCType:
                         for k in _unresolved:
                             kwargs.pop(k)
 
-                    self._data = self._data_class(self, **kwargs)
+                    if self._data is not None:
+                        self._data = dataclasses.replace(self._data, **kwargs)
+                    else:
+                        self._data = self._data_class(self, **kwargs)
 
                     if _unknown_kwargs and unknown_fields_handler == 'catch':
                         getattr(self, self._unresolved_fields_dest).update(
