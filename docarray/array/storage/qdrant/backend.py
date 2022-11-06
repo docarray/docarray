@@ -151,12 +151,11 @@ class BackendMixin(BaseBackendMixin):
                 full_scan_threshold=self._config.full_scan_threshold,
                 m=self._config.m,
             )
-            self.client.http.collections_api.create_collection(
+            self.client.recreate_collection(
                 collection_name=self.collection_name,
-                create_collection=CreateCollection(
-                    vector_size=self._n_dim,
-                    distance=DISTANCES[self._distance],
-                    hnsw_config=hnsw_config,
+                vectors_config=VectorParams(
+                    size=self.n_dim,
+                    distance=self.distance,
                 ),
                 hnsw_config=hnsw_config,
             )
