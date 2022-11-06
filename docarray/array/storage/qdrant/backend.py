@@ -230,4 +230,5 @@ class BackendMixin(BaseBackendMixin):
 
         if np.all(embedding == 0):
             embedding = embedding + EPSILON
-        return embedding.tolist()
+
+        return embedding.astype(float).tolist()
