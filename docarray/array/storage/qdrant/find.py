@@ -60,7 +60,7 @@ class FindMixin:
             search_params=None
             if not search_params
             else rest.SearchParams(**search_params),
-            top=limit,
+            limit=limit,
             append_payload=['_serialized'],
         )
 
