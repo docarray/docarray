@@ -50,9 +50,6 @@ class MeshDataMixin:
         import trimesh
         import urllib.parse
         from docarray.document import Document
-        from trimesh.visual.color import ColorVisuals
-        from trimesh.visual.material import PBRMaterial, SimpleMaterial
-        from trimesh.visual.texture import TextureVisuals
 
         scheme = urllib.parse.urlparse(self.uri).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
@@ -62,31 +59,9 @@ class MeshDataMixin:
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)
 
-        # load visuals if available
-        uv_img = None
-        uv_mapping = None
-        face_colors = None
-        vertex_colors = None
-
-        if isinstance(mesh.visual, TextureVisuals):
-            material = mesh.visual.material
-            if isinstance(material, PBRMaterial):
-                material: SimpleMaterial = material.to_simple()
-
-            uv_img = np.array(material.image)
-            uv_mapping = mesh.visual.uv.view(np.ndarray)
-
-        elif isinstance(mesh.visual, ColorVisuals):
-            face_colors = mesh.visual.face_colors.view(np.ndarray)
-            vertex_colors = mesh.visual.vertex_colors.view(np.ndarray)
-
         self.chunks = [
             Document(name='vertices', tensor=vertices),
             Document(name='faces', tensor=faces),
-            Document(name='uv_image', tensor=uv_img),
-            Document(name='uv_mapping', tensor=uv_mapping),
-            Document(name='face_colors', tensor=face_colors),
-            Document(name='vertex_colors', tensor=vertex_colors),
         ]
 
         return self
