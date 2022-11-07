@@ -107,6 +107,9 @@ def get_configuration_storage_backends(argparse, D, random=True):
                 'n_dim': D,
                 'port': '41234',
                 'columns': {'i': 'int'},
+                'timeout_config': 60,
+                'dynamic_batching': True,
+                'number_workers': 4,
             },
         },
         'elasticsearch': {

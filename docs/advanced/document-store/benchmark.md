@@ -17,7 +17,7 @@ This includes classic database and vector database, all under the same DocumentA
 |-------------------------------------|------------------------------------------|-------------------|------------------|
 | In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.18.2` | N/A              |
 | [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           | N/A              |
-| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.3`           | `1.13.2`         |
+| [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.9.0`           | `1.16.0`         |
 | [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.8.0`           | `0.8.0`          |
 | [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          | N/A              |
 | [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.4.3`           | `8.2.0`          |

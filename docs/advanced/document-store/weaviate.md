@@ -31,7 +31,7 @@ services:
       - '8080'
       - --scheme
       - http
-    image: semitechnologies/weaviate:1.13.2
+    image: semitechnologies/weaviate:1.16.0
     ports:
       - "8080:8080"
     restart: on-failure:0

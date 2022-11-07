@@ -65,7 +65,11 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :param values: Documents to be added
         """
-        with self._client.batch(batch_size=50) as _b:
+        with self._client.batch(
+            batch_size=self._config.batch_size,
+            dynamic=self._config.dynamic_batching,
+            num_workers=self._config.number_workers,
+        ) as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
                 self._offset2ids.append(d.id)
