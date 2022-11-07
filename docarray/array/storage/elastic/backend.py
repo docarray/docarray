@@ -38,6 +38,7 @@ class ElasticConfig:
         str, List[Union[str, Mapping[str, Union[str, int]]]], None
     ] = 'http://localhost:9200'
     index_name: Optional[str] = None
+    list_like: bool = True
     es_config: Dict[str, Any] = field(default_factory=dict)
     index_text: bool = False
     tag_indices: List[str] = field(default_factory=list)
@@ -93,6 +94,7 @@ class BackendMixin(BaseBackendMixin):
 
         self.n_dim = self._config.n_dim
         self._client = self._build_client()
+        self._list_like = self._config.list_like
         self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta

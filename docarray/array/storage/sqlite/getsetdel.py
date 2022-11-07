@@ -52,20 +52,26 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._commit()
 
     def _load_offset2ids(self):
-        r = self._sql(
-            f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
-        )
-        self._offset2ids = Offset2ID(list(map(itemgetter(0), r)))
+        if self._list_like:
+            r = self._sql(
+                f"SELECT doc_id FROM {self._table_name} ORDER BY item_order",
+            )
+            self._offset2ids = Offset2ID(
+                list(map(itemgetter(0), r)), list_like=self._list_like
+            )
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
-        for offset, doc_id in enumerate(self._offset2ids):
-            self._sql(
-                f"""
-                    UPDATE {self._table_name} SET item_order = ? WHERE {self._table_name}.doc_id = ?
-                """,
-                (offset, doc_id),
-            )
-        self._commit()
+        if self._list_like:
+            for offset, doc_id in enumerate(self._offset2ids):
+                self._sql(
+                    f"""
+                        UPDATE {self._table_name} SET item_order = ? WHERE {self._table_name}.doc_id = ?
+                    """,
+                    (offset, doc_id),
+                )
+            self._commit()
 
     def _del_docs(self, ids):
         super()._del_docs(ids)
