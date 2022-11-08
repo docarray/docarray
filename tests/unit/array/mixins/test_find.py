@@ -29,7 +29,7 @@ def test_customize_metric_fn():
     'storage, config',
     [
         ('memory', None),
-        ('weaviate', {'n_dim': 32, "distance": "cosine"}),
+        ('weaviate', {'n_dim': 32, 'distance': 'cosine'}),
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
@@ -51,8 +51,8 @@ def test_find(storage, config, limit, query, start_storage):
 
     da.extend([Document(embedding=v) for v in embeddings])
 
-    if storage == "weaviate":
-        result = da.find(query, limit=limit, additional=["certainty"])
+    if storage == 'weaviate':
+        result = da.find(query, limit=limit, additional=['certainty'])
     else:
         result = da.find(query, limit=limit)
     n_rows_query, n_dim = ndarray.get_array_rows(query)
