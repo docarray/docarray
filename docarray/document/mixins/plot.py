@@ -135,7 +135,7 @@ class PlotMixin:
 
         elif self.uri:
             # mesh from uri
-            mesh = self.load_mesh(self.uri)
+            mesh = self.load_mesh()
             display(mesh.show())
 
         elif self.chunks is not None:

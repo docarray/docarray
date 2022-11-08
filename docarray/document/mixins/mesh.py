@@ -20,14 +20,17 @@ class Mesh:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
-    def load_mesh(uri, force: str = None) -> Union[trimesh.Trimesh, trimesh.Scene]:
-        """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`."""
+    def load_mesh(self, force: str = None) -> Union[trimesh.Trimesh, trimesh.Scene]:
+        """
+        Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`.
+
+        """
         import urllib.parse
 
-        scheme = urllib.parse.urlparse(uri).scheme
+        scheme = urllib.parse.urlparse(self.uri).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
-        mesh = loader(uri, force=force)
+        mesh = loader(self.uri, force=force)
 
         return mesh
 
