@@ -28,6 +28,7 @@ def indices():
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -63,6 +64,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
     ],
@@ -93,6 +95,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -129,6 +132,7 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -169,6 +173,7 @@ def test_slice(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -217,6 +222,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -255,6 +261,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -291,6 +298,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -313,6 +321,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -354,6 +363,7 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -457,6 +467,7 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
         ('weaviate', WeaviateConfig(n_dim=123)),
         ('annlite', AnnliteConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
         ('milvus', MilvusConfig(n_dim=123)),
@@ -507,6 +518,7 @@ def test_getset_subindex(storage, config, start_storage):
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
         ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
+        ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
         ('milvus', lambda: MilvusConfig(n_dim=123)),
@@ -540,27 +552,28 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
 
 
 @pytest.mark.parametrize(
-    'storage',
+    'storage,config_gen',
     [
-        'memory',
-        'sqlite',
-        'weaviate',
-        'annlite',
-        'qdrant',
-        'elasticsearch',
-        'redis',
-        'milvus',
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', lambda: WeaviateConfig(n_dim=10)),
+        ('annlite', lambda: AnnliteConfig(n_dim=10)),
+        ('qdrant', lambda: QdrantConfig(n_dim=10)),
+        ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
+        ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
+        ('redis', lambda: RedisConfig(n_dim=10)),
+        ('milvus', lambda: MilvusConfig(n_dim=10)),
     ],
 )
-def test_tensor_attribute_selector(storage, start_storage):
+def test_tensor_attribute_selector(storage, config_gen, start_storage):
     import scipy.sparse
 
     sp_embed = np.random.random([3, 10])
     sp_embed[sp_embed > 0.1] = 0
     sp_embed = scipy.sparse.coo_matrix(sp_embed)
 
-    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis', 'milvus'):
-        da = DocumentArray(storage=storage, config={'n_dim': 10})
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
 
@@ -602,21 +615,22 @@ def test_advance_selector_mixed(storage):
 
 
 @pytest.mark.parametrize(
-    'storage',
+    'storage,config_gen',
     [
-        'memory',
-        'sqlite',
-        'weaviate',
-        'annlite',
-        'qdrant',
-        'elasticsearch',
-        'redis',
-        'milvus',
+        ('memory', None),
+        ('sqlite', None),
+        ('weaviate', lambda: WeaviateConfig(n_dim=10)),
+        ('annlite', lambda: AnnliteConfig(n_dim=10)),
+        ('qdrant', lambda: QdrantConfig(n_dim=10)),
+        ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
+        ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
+        ('redis', lambda: RedisConfig(n_dim=10)),
+        ('milvus', lambda: MilvusConfig(n_dim=10)),
     ],
 )
-def test_single_boolean_and_padding(storage, start_storage):
-    if storage in ('annlite', 'weaviate', 'qdrant', 'elasticsearch', 'redis', 'milvus'):
-        da = DocumentArray(storage=storage, config={'n_dim': 10})
+def test_single_boolean_and_padding(storage, config_gen, start_storage):
+    if config_gen:
+        da = DocumentArray(storage=storage, config=config_gen())
     else:
         da = DocumentArray(storage=storage)
     da.extend(DocumentArray.empty(3))
@@ -643,6 +657,7 @@ def test_single_boolean_and_padding(storage, start_storage):
         ('weaviate', lambda: WeaviateConfig(n_dim=123)),
         ('annlite', lambda: AnnliteConfig(n_dim=123)),
         ('qdrant', lambda: QdrantConfig(n_dim=123)),
+        ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
         ('milvus', lambda: MilvusConfig(n_dim=123)),

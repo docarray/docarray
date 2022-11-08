@@ -130,7 +130,8 @@ def test_cast_columns_annlite(start_storage, type_da, type_column):
 
 @pytest.mark.parametrize('type_da', [int, float, str])
 @pytest.mark.parametrize('type_column', ['int', 'float', 'str'])
-def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
+@pytest.mark.parametrize('prefer_grpc', [False, True])
+def test_cast_columns_qdrant(start_storage, type_da, type_column, prefer_grpc, request):
 
     test_id = request.node.callspec.id.replace(
         '-', ''
@@ -143,6 +144,7 @@ def test_cast_columns_qdrant(start_storage, type_da, type_column, request):
             'collection_name': f'test{test_id}',
             'n_dim': 3,
             'columns': {'price': type_column},
+            'prefer_grpc': prefer_grpc,
         },
     )
 
