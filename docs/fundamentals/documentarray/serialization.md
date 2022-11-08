@@ -1,9 +1,9 @@
 (docarray-serialization)=
 # Serialization
 
-DocArray is designed to be "ready-to-wire" at anytime. Serialization is important.
-DocumentArray provides multiple serialization methods that allows one transfer DocumentArray object over network and across different microservices.
-Moreover, there is the ability to store/load `DocumentArray` objects to/from disk.
+DocArray is designed to be "ready-to-wire" at any time. Serialization is important.
+DocumentArray provides multiple serialization methods that allow one to transfer DocumentArray objects over the network and across different microservices.
+Moreover, it provides the ability to store/load `DocumentArray` objects to/from disk.
 
 - JSON string: `.from_json()`/`.to_json()`
   - Pydantic model: `.from_pydantic_model()`/`.to_pydantic_model()`
@@ -13,7 +13,6 @@ Moreover, there is the ability to store/load `DocumentArray` objects to/from dis
 - Protobuf Message: `.from_protobuf()`/`.to_protobuf()`
 - Python List: `.from_list()`/`.to_list()`
 - Pandas Dataframe: `.from_dataframe()`/`.to_dataframe()`
-- Cloud: `.push()`/`.pull()`
 
 
 
@@ -22,11 +21,11 @@ Moreover, there is the ability to store/load `DocumentArray` objects to/from dis
 
 
 ```{tip}
-If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, it is highly recommended to check out {ref}`fastapi-support` and follow the methods there.   
+If you are building a webservice and want to use JSON for passing DocArray objects, then data validation and field-filtering can be crucial. In this case, we highly recommend checking out {ref}`fastapi-support` and following the methods there.   
 ```
 
 ```{important}
-Depending on which protocol you use, this feature requires `pydantic` or `protobuf` dependency. You can do `pip install "docarray[common]"` to install it.
+Depending on which protocol you use, this feature requires the `pydantic` or `protobuf` dependency. You can do `pip install "docarray[common]"` to install both.
 ```
 
 
@@ -77,10 +76,10 @@ More parameters and usages can be found in the Document-level {ref}`doc-json`.
 ## From/to bytes
 
 ```{important}
-Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
+Depending on the values of your `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install them.
 ```
 
-Serialization into bytes often yield more compact representation than in JSON. Similar to {ref}`the Document serialization<doc-in-bytes>`, DocumentArray can be serialized with different `protocol` and `compress` combinations. In its most simple form,
+Serialization into bytes often yields more compact representation than JSON. Similar to {ref}`the Document serialization<doc-in-bytes>`, DocumentArray can be serialized with different `protocol` and `compress` combinations. In its most simple form,
 
 ```python
 from docarray import DocumentArray, Document
@@ -116,23 +115,23 @@ da_r.summary()
 ```
 
 ```{tip}
-If you go with default `protcol` and `compress` settings, you can simply use `bytes(da)`, which is more Pythonic.
+If you go with the default `protcol` and `compress` settings, you can simply use `bytes(da)`, which is more Pythonic.
 ```
 
 The table below summarize the supported serialization protocols and compressions:
 
 | `protocol=...`           | Description                                                                                          | Remarks                                                                                                                     |
 |--------------------------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| `pickle-array` (default) | Serialize the whole array in one-shot using Python `pickle`                                          | Often fastest. Not portable to other languages. Insecure in production.                                                     |
-| `protobuf-array`         | Serialize the whole array using [`DocumentArrayProto`](../../../proto/#docarray.DocumentArrayProto). | Portable to other languages if they implement `DocumentArrayProto`. 2GB max-size (pre-compression) restriction by Protobuf. |
-| `pickle`                 | Serialize elements one-by-one using Python `pickle`.                                                 | Allow streaming. Not portable to other languages. Insecure in production.                                                   |
-| `protobuf`               | Serialize elements one-by-one using [`DocumentProto`](../../../proto/#docarray.DocumentProto).       | Allow streaming. Portable to other languages if they implement `DocumentProto`. No max-size restriction                     |
+| `pickle-array` (default) | Serialize the whole array in one shot using Python `pickle`                                          | Often fastest. Not portable to other languages. Insecure in production.                                                     |
+| `protobuf-array`         | Serialize the whole array using [`DocumentArrayProto`](../../../proto/#docarray.DocumentArrayProto). | Portable to other languages if they implement `DocumentArrayProto`. 2GB max size (pre-compression) restriction by Protobuf. |
+| `pickle`                 | Serialize elements one-by-one using Python `pickle`.                                                 | Allows streaming. Not portable to other languages. Insecure in production.                                                   |
+| `protobuf`               | Serialize elements one-by-one using [`DocumentProto`](../../../proto/#docarray.DocumentProto).       | Allows streaming. Portable to other languages if they implement `DocumentProto`. No max size restriction                     |
 
-For compressions, the following algorithms are supported: `lz4`, `bz2`, `lzma`, `zlib`, `gzip`. The most frequently used ones are `lz4` (fastest) and `gzip` (most widely used).
+For compression, the following algorithms are supported: `lz4`, `bz2`, `lzma`, `zlib`, `gzip`. The most frequently used ones are `lz4` (fastest) and `gzip` (most widely used).
 
-If you specified non-default `protocol` and `compress` in {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes`, you will need to specify the same in {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes`.
+If you specified non-default `protocol` and `compress` settings in {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_bytes`, you will need to specify the same in {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.from_bytes`.
 
-Depending on the use cases, you can choose the one works best for you. Here is a benchmark on serializing a DocumentArray with one million near-empty Documents (i.e. init with `DocumentArray.empty(...)` where each Document has only `id`).
+Depending on your use case, you can choose the one that works best for you. Here is a benchmark on serializing a DocumentArray with one million near-empty Documents (i.e. init with `DocumentArray.empty(...)` where each Document has only `id`).
 
 ```{figure} images/benchmark-size.svg
 ```
@@ -142,12 +141,12 @@ Depending on the use cases, you can choose the one works best for you. Here is a
 
 The benchmark was conducted [on the codebase of Jan. 5, 2022](https://github.com/jina-ai/docarray/tree/a56067e486d2318e05bcf6088bd1436040107ad2).  
 
-Depending on how you want to interpret the results, the figures above can be an over-estimation/under-estimation of the serialization latency: one may argue that near-empty Documents are not realistic, but serializing a DocumentArray with one million Documents is also unreal. In practice, DocumentArray passing across microservices are relatively small, say at thousands, for better overlapping the network latency and computational overhead.
+Depending on how you want to interpret the results, the figures above can be an over-estimation/under-estimation of the serialization latency: one may argue that near-empty Documents are not realistic, but serializing a DocumentArray with one million Documents is also unreal. In practice, DocumentArrays passing across microservices are relatively small, say in the thousands of Documents, for better overlapping the network latency and computational overhead.
 
 (wire-format)=
 ### Wire format of `pickle` and `protobuf`
 
-When set `protocol=pickle` or `protobuf`, the resulting bytes look like the following:
+When you set `protocol=pickle` or `protobuf`, the resulting bytes look like the following:
 
 ```text
 --------------------------------------------------------------------------------------------------------
@@ -167,7 +166,7 @@ The pattern `dock_bytes` and `dock.to_bytes` is repeated `len(docs)` times.
 
 ### From/to disk
 
-If you want to store a `DocumentArray` to disk you can use `.save_binary(filename, protocol, compress)` where `protocol` and `compress` refer to the protocol and compression methods used to serialize the data.
+If you want to store a `DocumentArray` to disk you can use `.save_binary(filename, protocol, compress)`, where `protocol` and `compress` refer to the protocol and compression methods used to serialize the data.
 If you want to load a `DocumentArray` from disk you can use `.load_binary(filename, protocol, compress)`.
 
 For example, the following snippet shows how to save/load a `DocumentArray` in `my_docarray.bin`.
@@ -202,7 +201,7 @@ da_rec.summary()
 ```
 
 
-User do not need  to remember the protocol and compression methods on loading. You can simply specify `protocol` and `compress` in the file extension via:
+You do not need  to remember the protocol and compression methods on loading. You can simply specify `protocol` and `compress` in the file extension via:
 
 ```text
 filename.protobuf.gzip
@@ -214,7 +213,7 @@ filename.protobuf.gzip
 ```
 
 
-When a filename is given as the above format in `.save_binary`, you can simply load it back with `.load_binary` without specifying the protocol and compress method again.
+When a filename is given in the above format in `.save_binary`, you can simply load it back with `.load_binary` without specifying the protocol and compression methods again.
 
 
 The previous code snippet can be simplified to 
@@ -245,10 +244,10 @@ for d in da_generator:
 ## From/to base64
 
 ```{important}
-Depending on your values of `protocol` and `compress` arguments, this feature may require `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install it.
+Depending on the values of your `protocol` and `compress` arguments, this feature may require the `protobuf` and `lz4` dependencies. You can do `pip install "docarray[full]"` to install them.
 ```
 
-Serialize into base64 can be useful when binary string is not allowed, e.g. in REST API. This can be easily done via {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_base64` and {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.from_base64`. Like in binary serialization, one can specify `protocol` and `compress`:
+Serialization into base64 can be useful when a binary string is not allowed, e.g. in a REST API. This can be easily done via {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.to_base64` and {meth}`~docarray.array.mixins.io.binary.BinaryIOMixin.from_base64`. Like in binary serialization, one can specify `protocol` and `compress`:
 
 ```python
 from docarray import DocumentArray
@@ -334,7 +333,7 @@ More parameters and usages can be found in the Document-level {ref}`doc-dict`.
 ## From/to dataframe
 
 ```{important}
-This feature requires `pandas` dependency. You can do `pip install "docarray[full]"` to install it.
+This feature requires the `pandas` dependency. You can do `pip install "docarray[full]"` to install it.
 ```
 
 One can convert between a DocumentArray object and a `pandas.dataframe` object.
@@ -357,44 +356,4 @@ To build a DocumentArray from dataframe,
 ```python
 df = ...
 da = DocumentArray.from_dataframe(df)
-```
-
-## From/to cloud
-
-```{important}
-This feature requires `rich` and `requests` dependency. You can do `pip install "docarray[full]"` to install it.
-```
-
-{meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.push` and {meth}`~docarray.array.mixins.io.pushpull.PushPullMixin.pull` allows you to serialize a DocumentArray object to Jina Cloud and share it across machines.
-
-Considering you are working on a GPU machine via Google Colab/Jupyter. After preprocessing and embedding, you got everything you need in a DocumentArray. You can easily store it to the cloud via:
-
-```python
-from docarray import DocumentArray
-
-da = DocumentArray(...)  # heavylifting, processing, GPU task, ...
-da.push('myda123', show_progress=True)
-```
-
-```{figure} images/da-push.png
-```
-
-Then on your local laptop, simply pull it:
-
-```python
-from docarray import DocumentArray
-
-da = DocumentArray.pull('myda123', show_progress=True)
-```
-
-Now you can continue the work at local, analyzing `da` or visualizing it. Your friends & colleagues who know the token `myda123` can also pull that DocumentArray. It's useful when you want to quickly share the results with your colleagues & friends.
-
-The maximum size of an upload is 4GB under the `protocol='protobuf'` and `compress='gzip'` setting. The lifetime of an upload is one week after its creation.
-
-To avoid unnecessary download when upstream DocumentArray is unchanged, you can add `DocumentArray.pull(..., local_cache=True)`.
-
-```{seealso}
-DocArray allows pushing, pulling, and managing your DocumentArrays in Jina AI Cloud.
-Read more about how to manage your data in Jina AI Cloud, using either the console or the DocArray Python API, in the 
-{ref}`Data Management section <data-management>`.
 ```

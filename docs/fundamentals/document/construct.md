@@ -1,7 +1,7 @@
 (construct-doc)=
 # Construct
 
-Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Document, filled Document. One can also construct Document from bytes, JSON, Protobuf message as introduced {ref}`in the next chapter<serialize>`.
+Initializing a Document object is super easy. This chapter introduces the ways of constructing empty Documents and filled Documents. One can also construct Documents from bytes, JSON, and Protobuf messages, as introduced {ref}`in the next chapter<serialize>`.
 
 ## Construct an empty Document
 
@@ -15,7 +15,7 @@ d = Document()
 <Document ('id',) at 5dd542406d3f11eca3241e008a366d49>
 ```
 
-Every Document will have a unique random `id` that helps you identify this Document. It can be used to {ref}`access this Document inside a DocumentArray<access-elements>`.
+Every Document has a unique random `id` that helps you identify the Document. It can be used to {ref}`access this Document inside a DocumentArray<access-elements>`.
 
 ````{tip}
 The random `id` is the hex value of [UUID1](https://docs.python.org/3/library/uuid.html#uuid.uuid1). To convert it into the string of UUID:
@@ -230,4 +230,4 @@ world
 
 ## What's next?
 
-One can also construct Document from bytes, JSON, Protobuf message. These methods are introduced {ref}`in the next chapter<serialize>`.
+You can also construct Documents from bytes, JSON, and Protobuf messages. These methods are introduced {ref}`in the next chapter<serialize>`.

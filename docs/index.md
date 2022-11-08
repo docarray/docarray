@@ -30,7 +30,7 @@ get-started/what-is
 :hidden:
 
 get-started/install
-datatypes/index
+get-started/first-steps
 ```
 
 ```{toctree}
@@ -39,6 +39,7 @@ datatypes/index
 
 fundamentals/document/index
 fundamentals/documentarray/index
+datatypes/index
 fundamentals/dataclass/index
 advanced/document-store/index
 fundamentals/cloud-support/index

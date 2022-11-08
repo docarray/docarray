@@ -1,6 +1,6 @@
-# Multimodal Data
+# Multimodal data
 
-Whether you’re working with text, image, video, audio, 3D meshes or the nested or the combined of them, you can always represent them as Documents and process them as DocumentArray. Here are some motivate examples:
+Whether you’re working with text, image, video, audio, 3D meshes, nested data, or some combination of these, you can always represent them as Documents and process them as DocumentArrays. Here are some motivating examples:
 
 
 ```{toctree}

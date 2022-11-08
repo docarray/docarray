@@ -11,7 +11,7 @@ Make sure you have Python 3.7+ and `numpy` installed on Linux/Mac/Windows:
 pip install docarray
 ```
 
-No extra dependency will be installed.
+No extra dependencies will be installed.
 ````
 
 ````{tab} Basic install via Conda
@@ -20,7 +20,7 @@ No extra dependency will be installed.
 conda install -c conda-forge docarray
 ```
 
-No extra dependency will be installed.
+No extra dependencies will be installed.
 ````
 
 ````{tab} Common install
@@ -84,7 +84,7 @@ This will install all requirements for reproducing tests on your local dev envir
 
 ## On Apple Silicon
 
-If you own a MacOS device with an Apple Silicon M1/M2 chip, you can run DocArray **natively** on it (instead of running under Rosetta) and enjoy much better performance. This section summarizes how to install DocArray on Apple Silicon device.
+If you own a MacOS device with an Apple silicon M1/M2 chip, you can run DocArray **natively** on it (instead of running under Rosetta) and enjoy much better performance. This section summarizes how to install DocArray on Apple Silicon devices.
 
 ### Check terminal and device
 
@@ -103,7 +103,7 @@ arm64
 
 ### Install Homebrew
 
-`brew` is a package manager for macOS. If you already install it you need to confirm it is actually installed for Apple Silicon not for Rosetta. To check that, run
+`brew` is a package manager for macOS. If you've already installed it you need to confirm it is correctly installed for Apple silicon, not for Rosetta. To check that, run
 
 ```bash
 which brew
@@ -113,7 +113,7 @@ which brew
 /opt/homebrew/bin/brew
 ```
 
-If you find it is installed under `/usr/local/` instead of `/opt/homebrew/`, it means your `brew` is installed for Rosetta not for Apple Silicon. You need to reinstall it. [Here is an article on how to do it](https://apple.stackexchange.com/a/410829).
+If you find it is installed under `/usr/local/` instead of `/opt/homebrew/`, it means your `brew` is installed for Rosetta, not for Apple Silicon. You need to reinstall it. [Here is an article on how to do it](https://apple.stackexchange.com/a/410829).
 
 ```{danger}
 Reinstalling `brew` can be a destructive operation. Please make sure you have backed up your data before proceeding.
@@ -125,7 +125,7 @@ To (re)install brew, run
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-You may want to observe the output to check if it contains `/opt/homebrew` to make sure you are installing for Apple Silicon.
+You may want to observe the output to make sure it contains `/opt/homebrew`.
 
 ### Install Python
 
@@ -152,7 +152,7 @@ brew install python3
 
 As of Aug 2022, this will install Python 3.10 natively for Apple Silicon.
 
-Make sure to note down where `python` and `pip` are installed to. In this example, they are installed to `/opt/homebrew/bin/python3` and `/opt/homebrew/opt/python@3.10/libexec/bin/pip` respectively.
+Make sure to note down where `python` and `pip` are installed to. In this example, they are installed to `/opt/homebrew/bin/python3` and `/opt/homebrew/opt/python@3.10/libexec/bin/pip`, respectively.
 
 ### Install dependencies wheels
 
@@ -171,7 +171,7 @@ Now we can install Jina via `pip`. Note you need to use the right one:
 ```
 
 
-Congratulations! You have successfully installed Jina on Apple Silicon.
+Congratulations! You have successfully installed Jina on Apple silicon.
 
 
 ````{tip}
