@@ -176,36 +176,36 @@ def get_configuration_storage_backends(argparse, D, random=True):
         storage_backends['annlite']['storage_config']['metric'] = 'euclidean'
         storage_backends['annlite']['hnsw_config'] = {
             'max_connection': [16, 32],
-            'ef_construction': [128, 256],
-            'ef_search': [64, 128, 256],
+            'ef_construction': [64, 128, 256],
+            'ef_search': [32, 64, 128, 256],
         }
 
         storage_backends['qdrant']['storage_config']['distance'] = 'euclidean'
         storage_backends['qdrant']['hnsw_config'] = {
             'm': [16, 32],
-            'ef_construct': [64, 128],
-            'hnsw_ef': [32, 64, 128],
+            'ef_construct': [64, 128, 256],
+            'hnsw_ef': [32, 64, 128, 256],
         }
 
         storage_backends['weaviate']['storage_config']['distance'] = 'l2-squared'
         storage_backends['weaviate']['hnsw_config'] = {
             'max_connections': [16, 32],
-            'ef_construction': [128, 256],
-            'ef': [64, 128, 256],
+            'ef_construction': [64, 128, 256],
+            'ef': [32, 64, 128, 256],
         }
 
         storage_backends['elasticsearch']['storage_config']['distance'] = 'l2_norm'
         storage_backends['elasticsearch']['hnsw_config'] = {
             'm': [16, 32],
-            'ef_construction': [128, 256],
-            'num_candidates': [64, 128, 256],
+            'ef_construction': [64, 128, 256],
+            'num_candidates': [32, 64, 128, 256],
         }
 
         storage_backends['redis']['storage_config']['distance'] = 'L2'
         storage_backends['redis']['hnsw_config'] = {
             'm': [16, 32],
-            'ef_construction': [128, 256],
-            'ef_runtime': [64, 128, 256],
+            'ef_construction': [64, 128, 256],
+            'ef_runtime': [32, 64, 128, 256],
         }
 
         for storage in args.exclude_backends.split(','):
