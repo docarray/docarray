@@ -121,7 +121,9 @@ class PlotMixin:
 
         if self.tensor is not None:
             # point cloud from tensor
-            if in_notebook():
+            from hubble.utils.notebook import is_notebook
+
+            if is_notebook():
                 pc = trimesh.points.PointCloud(
                     vertices=self.tensor,
                     colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
