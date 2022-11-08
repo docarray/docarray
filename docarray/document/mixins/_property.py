@@ -1,12 +1,12 @@
-# auto-generated from /Users/hanxiao/Documents/docarray/scripts/gen_doc_property_mixin.py
-from typing import TYPE_CHECKING, Dict, List, Optional
+# auto-generated from /Users/marco/code/opensource/docarray/scripts/gen_doc_property_mixin.py
+from typing import TYPE_CHECKING, Dict, List, Optional, Union, Any
 
-if TYPE_CHECKING:  # pragma: no cover
-    from docarray.score import NamedScore
-    from docarray.array.match import MatchArray
-    from docarray.array.chunk import ChunkArray
-    from docarray import DocumentArray
-    from docarray.typing import ArrayType, StructValueType, DocumentContentType
+if TYPE_CHECKING:
+    from ...score import NamedScore
+    from ...array.match import MatchArray
+    from ...array.chunk import ChunkArray
+    from ... import DocumentArray
+    from ...typing import ArrayType, StructValueType, DocumentContentType
 
 
 class _PropertyMixin:
@@ -110,22 +110,13 @@ class _PropertyMixin:
         self._data.uri = value
 
     @property
-    def tags(self) -> Optional[Dict[str, 'StructValueType']]:
+    def tags(self) -> Optional[Dict[str, Any]]:
         self._data._set_default_value_if_none('tags')
         return self._data.tags
 
     @tags.setter
-    def tags(self, value: Dict[str, 'StructValueType']):
+    def tags(self, value: Dict[str, Any]):
         self._data.tags = value
-
-    @property
-    def _metadata(self) -> Optional[Dict[str, 'StructValueType']]:
-        self._data._set_default_value_if_none('_metadata')
-        return self._data._metadata
-
-    @_metadata.setter
-    def _metadata(self, value: Dict[str, 'StructValueType']):
-        self._data._metadata = value
 
     @property
     def offset(self) -> Optional[float]:
@@ -164,21 +155,21 @@ class _PropertyMixin:
         self._data.modality = value
 
     @property
-    def evaluations(self) -> Optional[Dict[str, 'NamedScore']]:
+    def evaluations(self) -> Optional[Dict[str, Union['NamedScore', Dict]]]:
         self._data._set_default_value_if_none('evaluations')
         return self._data.evaluations
 
     @evaluations.setter
-    def evaluations(self, value: Dict[str, 'NamedScore']):
+    def evaluations(self, value: Dict[str, Union['NamedScore', Dict]]):
         self._data.evaluations = value
 
     @property
-    def scores(self) -> Optional[Dict[str, 'NamedScore']]:
+    def scores(self) -> Optional[Dict[str, Union['NamedScore', Dict]]]:
         self._data._set_default_value_if_none('scores')
         return self._data.scores
 
     @scores.setter
-    def scores(self, value: Dict[str, 'NamedScore']):
+    def scores(self, value: Dict[str, Union['NamedScore', Dict]]):
         self._data.scores = value
 
     @property

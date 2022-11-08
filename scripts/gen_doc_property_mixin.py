@@ -5,7 +5,7 @@ from docarray.document.data import DocumentData
 with open('../docarray/document/mixins/_property.py', 'w') as fp:
     fp.write(
         f'''# auto-generated from {__file__}
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Union, Any
 
 if TYPE_CHECKING:
     from ...score import NamedScore
@@ -23,11 +23,10 @@ class _PropertyMixin:
             continue
         ftype = (
             str(f.type)
-            .replace('typing.Dict', 'Dict')
-            .replace('typing.List', 'List')
+            .replace('typing.', '')
             .replace('datetime.datetime', '\'datetime\'')
         )
-        ftype = re.sub(r'typing.Union\[(.*), NoneType]', r'Optional[\g<1>]', ftype)
+        ftype = re.sub(r'Union\[(.*), NoneType]', r'Optional[\g<1>]', ftype)
         ftype = re.sub(r'ForwardRef\((\'.*\')\)', r'\g<1>', ftype)
         ftype = re.sub(r'<class \'(.*)\'>', r'\g<1>', ftype)
 
