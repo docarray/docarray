@@ -128,9 +128,9 @@ The following configs can be set:
 | `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                         | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
 | `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                                   | {}                                                   |
 | `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                                      | {}                                                   |
- | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | Default defined by Milvus                            |
+ | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | 'Session'                                            |
 | `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                                   | None                                                 |
-
+l
 ## Minimal example
 
 Download `docker-compose.yml`:

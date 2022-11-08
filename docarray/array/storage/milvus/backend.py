@@ -80,7 +80,7 @@ class MilvusConfig:
         default_factory=dict
     )  # passed to milvus at collection creation time
     serialize_config: Dict = field(default_factory=dict)
-    consistency_level: str = None
+    consistency_level: str = 'Session'
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
