@@ -231,6 +231,7 @@ class EvaluationMixin:
         normalization: Optional[Tuple[float, float]] = None,
         exclude_self: bool = False,
         use_scipy: bool = False,
+        num_worker: Optional[int] = 1,
         match_batch_size: int = 100_000,
         query_sample_size: int = 1_000,
         **kwargs,
@@ -279,6 +280,8 @@ class EvaluationMixin:
             as the left-hand values will not be considered as matches.
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note,
             ``scipy`` does not support distance on sparse matrix.
+        :param num_worker: Specifies the number of workers for the execution of the
+            match function.
         :parma match_batch_size: The number of documents which are embedded and
             matched at once. Set this value to a lower value, if you experience high
             memory consumption.
@@ -413,6 +416,8 @@ class EvaluationMixin:
                 normalization=normalization,
                 exclude_self=exclude_self,
                 use_scipy=use_scipy,
+                num_worker=num_worker,
+                batch_size=int(len(batch) / num_worker) if num_worker > 1 else None,
                 only_id=True,
             )
 
@@ -437,6 +442,7 @@ class EvaluationMixin:
             metrics=metrics,
             metric_names=metric_names,
             strict=strict,
+            label_tag=label_tag,
             **kwargs,
         )
 
