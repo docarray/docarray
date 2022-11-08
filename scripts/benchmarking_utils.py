@@ -99,7 +99,10 @@ def get_configuration_storage_backends(argparse, D, random=True):
         'qdrant': {
             'storage_config': {
                 'n_dim': D,
-                'port': '41233',
+                'port': '41237',
+                'grpc_port': '41238',
+                'columns': {'i': 'int'},
+                'prefer_grpc': True,
             },
         },
         'weaviate': {
@@ -114,7 +117,7 @@ def get_configuration_storage_backends(argparse, D, random=True):
                 'n_dim': D,
                 'hosts': 'http://localhost:41235',
                 'columns': {'i': 'int'},
-                'es_config': {'timeout': 1000},
+                'es_config': {'timeout': 10000},
             },
         },
         'redis': {
@@ -215,7 +218,7 @@ storage_backend_filters = {
     'memory': {'tags__i': {'$eq': 0}},
     'sqlite': {'tags__i': {'$eq': 0}},
     'annlite': {'i': {'$eq': 0}},
-    'qdrant': {'tags__i': {'$eq': 0}},
+    'qdrant': {'must': [{'key': 'i', 'match': {'value': 0}}]},
     'weaviate': {'path': 'i', 'operator': 'Equal', 'valueInt': 0},
     'elasticsearch': {'match': {'i': 0}},
     'redis': '@i:[0 0] ',
@@ -506,7 +509,7 @@ def run_benchmark_sift(
 
             if storage != 'memory' and storage != 'sqlite' and storage != 'annlite':
                 subprocess.run(["sudo", "docker-compose", "up", "-d", storage])
-                sleep(20)
+                sleep(60)
 
             console.print('\nBackend:', storage.title())
             console.print('Backend hnsw config', str(config))
