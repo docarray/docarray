@@ -117,7 +117,7 @@ class FindMixin:
     ):
         list_of_points, _offset = self.client.scroll(
             collection_name=self.collection_name,
-            scroll_filter=filter,
+            scroll_filter=rest.Filter(**filter),
             with_payload=True,
             limit=limit,
         )
