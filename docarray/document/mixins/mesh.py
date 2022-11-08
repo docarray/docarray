@@ -6,6 +6,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
 
 
+MESH_FILE_EXTENSIONS = [
+    'glb',
+    'obj',
+    'ply',
+]
+
+
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 

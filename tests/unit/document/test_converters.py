@@ -258,6 +258,7 @@ def test_convert_uri_to_data_uri(uri, mimetype):
 @pytest.mark.parametrize(
     'uri, chunk_num',
     [
+        (os.path.join(cur_dir, 'toydata/cube.ply'), 1),
         (os.path.join(cur_dir, 'toydata/test.glb'), 1),
         (
             'https://github.com/jina-ai/docarray/raw/main/tests/unit/document/toydata/test.glb',
@@ -279,6 +280,7 @@ def test_glb_converters(uri, chunk_num):
 @pytest.mark.parametrize(
     'uri',
     [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
         (os.path.join(cur_dir, 'toydata/test.glb')),
         (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
     ],
@@ -297,6 +299,7 @@ def test_load_uri_to_vertices_and_faces(uri):
 @pytest.mark.parametrize(
     'uri',
     [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
         (os.path.join(cur_dir, 'toydata/test.glb')),
         (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
     ],
@@ -310,7 +313,14 @@ def test_load_vertices_and_faces_to_point_cloud(uri):
     assert isinstance(doc.tensor, np.ndarray)
 
 
-@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+@pytest.mark.parametrize(
+    'uri',
+    [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
+        (os.path.join(cur_dir, 'toydata/test.glb')),
+        (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
+    ],
+)
 def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
     doc = Document(uri=uri)
 
