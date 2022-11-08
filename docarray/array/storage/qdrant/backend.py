@@ -58,6 +58,16 @@ class BackendMixin(BaseBackendMixin):
     def client(self) -> 'QdrantClient':
         raise NotImplementedError()
 
+    @property
+    @abstractmethod
+    def collection_name(self) -> str:
+        raise NotImplementedError()
+
+    @property
+    @abstractmethod
+    def distance(self) -> 'Distance':
+        raise NotImplementedError()
+
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex
