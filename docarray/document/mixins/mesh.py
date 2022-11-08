@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Union, Literal
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
 import trimesh
@@ -20,9 +20,7 @@ class Mesh:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
-    def load_mesh(
-        uri, force: Literal['mesh', 'force'] = None
-    ) -> Union[trimesh.Trimesh, trimesh.Scene]:
+    def load_mesh(uri, force: str = None) -> Union[trimesh.Trimesh, trimesh.Scene]:
         """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`."""
         import urllib.parse
 
