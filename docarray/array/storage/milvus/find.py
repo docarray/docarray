@@ -24,7 +24,7 @@ class FindMixin:
         filter: Optional[Dict] = None,
         param=None,
         **kwargs
-    ) -> Union['DocumentArray', List['DocumentArray']]:
+    ) -> List['DocumentArray']:
         """Returns `limit` approximate nearest neighbors given a batch of input queries.
         If the query is a single query, should return a DocumentArray, otherwise a list of DocumentArrays containing
         the closest Documents for each query.

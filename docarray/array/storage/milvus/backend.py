@@ -255,7 +255,7 @@ class BackendMixin(BaseBackendMixin):
     @staticmethod
     def _docs_from_search_response(
         responses,
-    ) -> 'Union[List[DocumentArray], DocumentArray]':
+    ) -> 'List[DocumentArray]':
         das = []
         for r in responses:
             das.append(
@@ -263,7 +263,7 @@ class BackendMixin(BaseBackendMixin):
                     [Document.from_base64(hit.entity.get('serialized')) for hit in r]
                 )
             )
-        return das if len(das) > 0 else das[0]
+        return das
 
     def _update_consistency_level(self, **kwargs):
         kwargs_consistency_level = kwargs.get('consistency_level', None)
