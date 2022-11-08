@@ -231,7 +231,7 @@ class EvaluationMixin:
         normalization: Optional[Tuple[float, float]] = None,
         exclude_self: bool = False,
         use_scipy: bool = False,
-        num_worker: Optional[int] = 1,
+        num_worker: int = 1,
         match_batch_size: int = 100_000,
         query_sample_size: int = 1_000,
         **kwargs,
