@@ -52,6 +52,9 @@ setup(
         ],
         'full': [
             'protobuf>=3.13.0',
+            'grpcio>=1.46.0,<1.48.1',
+            'grpcio-reflection>=1.46.0,<1.48.1',
+            'grpcio-health-checking>=1.46.0,<1.48.1',
             'lz4',
             'requests',
             'matplotlib',
