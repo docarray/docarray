@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, Union
 
 import numpy as np
-import trimesh
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
+    import trimesh
 
 
 class Mesh:
@@ -20,7 +20,7 @@ class Mesh:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
-    def load_mesh(self, force: str = None) -> Union[trimesh.Trimesh, trimesh.Scene]:
+    def load_mesh(self, force: str = None) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`.
 
         :param force: str or None. For 'mesh' try to coerce scenes into a single mesh. For 'scene'
@@ -28,6 +28,7 @@ class MeshDataMixin:
         :return: trimesh.Mesh or trimesh.Scene object
         """
         import urllib.parse
+        import trimesh
 
         scheme = urllib.parse.urlparse(self.uri).scheme
         loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
@@ -49,6 +50,7 @@ class MeshDataMixin:
         """
 
         if as_chunks:
+            import trimesh
             from docarray.document import Document
 
             # try to coerce everything into a scene
@@ -98,6 +100,8 @@ class MeshDataMixin:
                 faces = chunk.tensor
 
         if vertices is not None and faces is not None:
+            import trimesh
+
             mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
             self.tensor = np.array(mesh.sample(samples))
         else:
