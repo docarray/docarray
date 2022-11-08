@@ -103,7 +103,11 @@ class PlotMixin:
         """
         if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
             return True
-        elif self.tensor is not None and self.tensor.shape[1] == 3:
+        elif (
+            self.tensor is not None
+            and self.tensor.shape[1] == 3
+            and self.tensor.ndim == 2
+        ):
             return True
         elif self.chunks is not None:
             name_tags = [c.tags['name'] for c in self.chunks]
