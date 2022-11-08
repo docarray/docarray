@@ -6,8 +6,10 @@ import pytest
 
 from docarray import Document
 from docarray.document.generators import from_files
+from docarray.document.mixins.mesh import Mesh
 
 __windows__ = sys.platform == 'win32'
+
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -290,9 +292,9 @@ def test_load_uri_to_vertices_and_faces(uri):
     doc.load_uri_to_vertices_and_faces()
 
     assert len(doc.chunks) == 2
-    assert doc.chunks[0].tags['name'] == 'vertices'
+    assert doc.chunks[0].tags['name'] == Mesh.VERTICES
     assert doc.chunks[0].tensor.shape[1] == 3
-    assert doc.chunks[1].tags['name'] == 'faces'
+    assert doc.chunks[1].tags['name'] == Mesh.FACES
     assert doc.chunks[1].tensor.shape[1] == 3
 
 

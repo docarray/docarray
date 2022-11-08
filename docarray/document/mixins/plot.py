@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.document.mixins.mesh import MESH_FILE_EXTENSIONS
+from docarray.document.mixins.mesh import Mesh
 
 
 class PlotMixin:
@@ -101,13 +101,13 @@ class PlotMixin:
         Tells if Document stores a 3D object saved as point cloud or vertices and face.
         :return: bool.
         """
-        if self.uri and self.uri.endswith(tuple(MESH_FILE_EXTENSIONS)):
+        if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
             return True
         elif self.tensor is not None and self.tensor.shape[1] == 3:
             return True
         elif self.chunks is not None:
             name_tags = [c.tags['name'] for c in self.chunks]
-            if 'vertices' in name_tags and 'faces' in name_tags:
+            if Mesh.VERTICES in name_tags and Mesh.FACES in name_tags:
                 return True
         else:
             return False
@@ -147,10 +147,10 @@ class PlotMixin:
 
         elif self.chunks is not None:
             # mesh from chunks
-            vertices = [c.tensor for c in self.chunks if c.tags['name'] == 'vertices'][
-                -1
-            ]
-            faces = [c.tensor for c in self.chunks if c.tags['name'] == 'faces'][-1]
+            vertices = [
+                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
+            ][-1]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
             mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
             display(mesh.show())
 
