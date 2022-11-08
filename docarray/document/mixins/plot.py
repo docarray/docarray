@@ -73,28 +73,25 @@ class PlotMixin:
     def display(self, from_: Optional[str] = None):
         """
         Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
-
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
-
         if self._is_3d():
             self.display_3d()
-            return
+        else:
+            if not from_:
+                if self.uri:
+                    from_ = 'uri'
+                elif self.tensor is not None:
+                    from_ = 'tensor'
+                else:
+                    self.summary()
 
-        if not from_:
-            if self.uri:
-                from_ = 'uri'
-            elif self.tensor is not None:
-                from_ = 'tensor'
+            if from_ == 'uri':
+                self.display_uri()
+            elif from_ == 'tensor':
+                self.display_tensor()
             else:
                 self.summary()
-
-        if from_ == 'uri':
-            self.display_uri()
-        elif from_ == 'tensor':
-            self.display_tensor()
-        else:
-            self.summary()
 
     def _is_3d(self) -> bool:
         """
