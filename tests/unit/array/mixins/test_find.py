@@ -29,7 +29,7 @@ def test_customize_metric_fn():
     'storage, config',
     [
         ('memory', None),
-        ('weaviate', {'n_dim': 32}),
+        ('weaviate', {'n_dim': 32, "distance": "cosine"}),
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
@@ -51,7 +51,10 @@ def test_find(storage, config, limit, query, start_storage):
 
     da.extend([Document(embedding=v) for v in embeddings])
 
-    result = da.find(query, limit=limit)
+    if storage == "weaviate":
+        result = da.find(query, limit=limit, additional=["certainty"])
+    else:
+        result = da.find(query, limit=limit)
     n_rows_query, n_dim = ndarray.get_array_rows(query)
 
     if n_rows_query == 1 and n_dim == 1:
@@ -66,14 +69,14 @@ def test_find(storage, config, limit, query, start_storage):
         assert len(result) == n_rows_query
 
     # check returned objects are sorted according to the storage backend metric
-    # weaviate uses cosine similarity by default
+    # weaviate uses distance by default
     # annlite uses cosine distance by default
     if n_dim == 1:
         if storage == 'weaviate':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
-            assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+            assert sorted(cosine_similarities, reverse=False) == cosine_similarities
         if storage == 'redis':
             cosine_distances = [t['score'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
@@ -86,7 +89,7 @@ def test_find(storage, config, limit, query, start_storage):
                 cosine_similarities = [
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
-                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+                assert sorted(cosine_similarities, reverse=False) == cosine_similarities
         if storage == 'redis':
             for da in result:
                 cosine_distances = [t['score'].value for t in da[:, 'scores']]
