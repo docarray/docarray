@@ -34,6 +34,7 @@ Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/
 
 <!-- end elevator-pitch -->
 
+DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
 
 ## [Documentation](https://docarray.jina.ai)
 
