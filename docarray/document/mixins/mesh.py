@@ -21,9 +21,11 @@ class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
     def load_mesh(self, force: str = None) -> Union[trimesh.Trimesh, trimesh.Scene]:
-        """
-        Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`.
+        """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`.
 
+        :param force: str or None. For 'mesh' try to coerce scenes into a single mesh. For 'scene'
+            try to coerce everything into a scene.
+        :return: trimesh.Mesh or trimesh.Scene object
         """
         import urllib.parse
 
