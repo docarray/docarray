@@ -12,20 +12,20 @@ services:
   qdrant:
     image: qdrant/qdrant:v0.10.1
     ports:
-      - "41237:41237"
-      - "41238:41238"
+      - "41237:6333"
+      - "41238:6334"
     ulimits: # Only required for tests, as there are a lot of collections created
       nofile:
         soft: 65535
         hard: 65535
-  elastic:
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.2.0
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
     ports:
-      - "41235:41235"
+      - "41235:9200"
   redis:
     image: redislabs/redisearch:2.6.0
     ports:
-      - "41236:41236"
+      - "41236:6379"
