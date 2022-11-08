@@ -407,3 +407,6 @@ Intrigued? That's only scratching the surface of what DocArray is capable of. [R
 ## Support
 - Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
 
+## LF AI & DATA
+
+DocArray is a trademark of LF AI Projects, LLC

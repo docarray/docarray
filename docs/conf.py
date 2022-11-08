@@ -8,7 +8,7 @@ sys.path.insert(0, path.abspath('..'))
 project = 'DocArray'
 slug = re.sub(r'\W+', '-', project.lower())
 author = 'Jina AI'
-copyright = 'Jina AI Limited. All rights reserved.'
+copyright = 'DocArray is a trademark of LF Projects, LLC.'
 source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
