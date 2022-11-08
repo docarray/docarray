@@ -199,15 +199,13 @@ class BaseGetSetDelMixin(ABC):
             _check_valid_values_nested_set(self[set_index], docs)
             if set_index in subindices:
                 subindex_da = subindices[set_index]
-                with subindex_da:
-                    subindex_da.clear()
-                    subindex_da.extend(docs)
+                subindex_da.clear()
+                subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
-                with subindex_da:
-                    del subindex_da[old_ids]
-                    subindex_da.extend(DocumentArray(docs)[subindex_selector])
+                del subindex_da[old_ids]
+                subindex_da.extend(DocumentArray(docs)[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
@@ -328,3 +326,7 @@ class BaseGetSetDelMixin(ABC):
     def sync(self):
         if hasattr(self, '_offset2ids'):
             self._save_offset2ids()
+
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                da.sync()
