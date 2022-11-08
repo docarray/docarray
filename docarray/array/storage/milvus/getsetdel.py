@@ -5,7 +5,11 @@ import numpy as np
 from docarray import DocumentArray
 from docarray.array.storage.base.getsetdel import BaseGetSetDelMixin
 from docarray.array.storage.base.helper import Offset2ID
-from docarray.array.storage.milvus.backend import _always_true_expr, _ids_to_milvus_expr
+from docarray.array.storage.milvus.backend import (
+    _always_true_expr,
+    _ids_to_milvus_expr,
+    _batch_list,
+)
 
 if TYPE_CHECKING:
     from docarray import Document, DocumentArray
@@ -26,7 +30,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
     def _load_offset2ids(self):
         collection = self._offset2id_collection
-        kwargs = self._update_consistency_level(**dict())
+        kwargs = self._update_kwargs_from_config('consistency_level', **dict())
         with self.loaded_collection(collection):
             res = collection.query(
                 expr=_always_true_expr('document_id'),
@@ -51,38 +55,47 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _get_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         if not ids:
             return DocumentArray()
-        kwargs = self._update_consistency_level(**kwargs)
+        ids = list(ids)
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
+        kwargs = self._update_kwargs_from_config('batch_size', **kwargs)
         with self.loaded_collection():
-            res = self._collection.query(
-                expr=f'document_id in {_ids_to_milvus_expr(ids)}',
-                output_fields=['serialized'],
-                **kwargs,
-            )
-        if not res:
-            raise KeyError(f'No documents found for ids {ids}')
-        docs = self._docs_from_query_response(res)
+            docs = DocumentArray()
+            for id_batch in _batch_list(ids, kwargs['batch_size']):
+                res = self._collection.query(
+                    expr=f'document_id in {_ids_to_milvus_expr(id_batch)}',
+                    output_fields=['serialized'],
+                    **kwargs,
+                )
+            if not res:
+                raise KeyError(f'No documents found for ids {ids}')
+            docs.extend(self._docs_from_query_response(res))
         # sort output docs according to input id sorting
         id_to_index = {id_: i for i, id_ in enumerate(ids)}
         return DocumentArray(sorted(docs, key=lambda d: id_to_index[d.id]))
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
-        kwargs = self._update_consistency_level(**kwargs)
-        self._collection.delete(
-            expr=f'document_id in {_ids_to_milvus_expr(ids)}', **kwargs
-        )
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
+        kwargs = self._update_kwargs_from_config('batch_size', **kwargs)
+        for id_batch in _batch_list(list(ids), kwargs['batch_size']):
+            self._collection.delete(
+                expr=f'document_id in {_ids_to_milvus_expr(id_batch)}', **kwargs
+            )
 
     def _set_docs_by_ids(
         self, ids, docs: 'Iterable[Document]', mismatch_ids: 'Dict', **kwargs
     ):
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
+        kwargs = self._update_kwargs_from_config('batch_size', **kwargs)
         # delete old entries
-        kwargs = self._update_consistency_level(**kwargs)
-        self._collection.delete(
-            expr=f'document_id in {_ids_to_milvus_expr(ids)}',
-            **kwargs,
-        )
-        # insert new entries
-        payload = self._docs_to_milvus_payload(docs)
-        self._collection.insert(payload, **kwargs)
+        for id_batch in _batch_list(list(ids), kwargs['batch_size']):
+            self._collection.delete(
+                expr=f'document_id in {_ids_to_milvus_expr(id_batch)}',
+                **kwargs,
+            )
+        for docs_batch in _batch_list(list(docs), kwargs['batch_size']):
+            # insert new entries
+            payload = self._docs_to_milvus_payload(docs_batch)
+            self._collection.insert(payload, **kwargs)
 
     def _clear_storage(self):
         self._collection.drop()

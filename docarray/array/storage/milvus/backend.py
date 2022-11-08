@@ -12,7 +12,6 @@ from pymilvus import (
     DataType,
     CollectionSchema,
     has_collection,
-    MilvusException,
     loading_progress,
 )
 
@@ -50,6 +49,16 @@ def _ids_to_milvus_expr(ids):
     return '[' + ','.join(ids) + ']'
 
 
+def _batch_list(l: List, batch_size: int):
+    """Iterates over a list in batches of size batch_size"""
+    if batch_size < 1:
+        yield l
+        return
+    l_len = len(l)
+    for ndx in range(0, l_len, batch_size):
+        yield l[ndx : min(ndx + batch_size, l_len)]
+
+
 def _sanitize_collection_name(name):
     """Removes all chars that are not allowed in a Milvus collection name.
     Thus, it removes all chars that are not alphanumeric or an underscore.
@@ -81,6 +90,7 @@ class MilvusConfig:
     )  # passed to milvus at collection creation time
     serialize_config: Dict = field(default_factory=dict)
     consistency_level: str = 'Session'
+    batch_size: int = -1
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
 
 
@@ -265,16 +275,16 @@ class BackendMixin(BaseBackendMixin):
             )
         return das
 
-    def _update_consistency_level(self, **kwargs):
-        kwargs_consistency_level = kwargs.get('consistency_level', None)
-        config_consistency_level = self._config.consistency_level
+    def _update_kwargs_from_config(self, field_to_update, **kwargs):
+        kwargs_field_value = kwargs.get(field_to_update, None)
+        config_field_value = getattr(self._config, field_to_update, None)
 
         if (
-            kwargs_consistency_level or not config_consistency_level
+            kwargs_field_value is not None or config_field_value is None
         ):  # no need to update
             return kwargs
 
-        kwargs['consistency_level'] = config_consistency_level
+        kwargs[field_to_update] = config_field_value
         return kwargs
 
     def _map_embedding(self, embedding):

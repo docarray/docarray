@@ -117,19 +117,20 @@ da.summary()
 
 The following configs can be set:
 
-| Name                | Description                                                                                                                                                                                                                                   | Default                                              |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
-| `n_dim`             | Number of dimensions of embeddings to be stored and retrieved                                                                                                                                                                                 | **This is always required**                          |
-| `collection_name`   | Qdrant collection name client                                                                                                                                                                                                                 | **Random collection name generated**                 |
-| `host`              | Hostname of the Milvus server                                                                                                                                                                                                                 | 'localhost'                                          |
-| `port`              | Port of the Milvus server                                                                                                                                                                                                                     | 6333                                                 |
-| `distance`          | [Distance metric](https://milvus.io/docs/v2.1.x/metric.md) to be used during search. Can be 'IP', 'L2', 'JACCARD', 'TANIMOTO', 'HAMMING', 'SUPERSTRUCTURE' or 'SUBSTRUCTURE'.                                                                                                            | 'IP' (inner product)                                 |
+| Name                | Description                                                                                                                                                                                                                       | Default                                              |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------|
+| `n_dim`             | Number of dimensions of embeddings to be stored and retrieved                                                                                                                                                                     | **This is always required**                          |
+| `collection_name`   | Qdrant collection name client                                                                                                                                                                                                     | **Random collection name generated**                 |
+| `host`              | Hostname of the Milvus server                                                                                                                                                                                                     | 'localhost'                                          |
+| `port`              | Port of the Milvus server                                                                                                                                                                                                         | 6333                                                 |
+| `distance`          | [Distance metric](https://milvus.io/docs/v2.1.x/metric.md) to be used during search. Can be 'IP', 'L2', 'JACCARD', 'TANIMOTO', 'HAMMING', 'SUPERSTRUCTURE' or 'SUBSTRUCTURE'.                                                     | 'IP' (inner product)                                 |
 | `index_type`        | Type of the (ANN) search index. Can be 'HNSW', 'FLAT', 'ANNOY', or one of multiple variants of IVF and RHNSW. Refer to the [list of supported index types](https://milvus.io/docs/v2.1.x/build_index.md#Prepare-index-parameter). | 'HNSW'                                               |
-| `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                         | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
-| `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                                   | {}                                                   |
-| `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                                      | {}                                                   |
- | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | 'Session'                                            |
-| `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                                   | None                                                 |
+| `index_params`      | A dictionary of parameters used for index building. The [allowed parameters](https://milvus.io/docs/v2.1.x/index.md) depend on the index type.                                                                                    | {'M': 4, 'efConstruction': 200} (assumes HNSW index) |
+| `collection_config` | Configuration for the Milvus collection. Passed as **kwargs during collection creation (`Collection(...)`).                                                                                                                       | {}                                                   |
+| `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                          | {}                                                   |
+ | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                       | 'Session'                                            |
+| `batch_size`        | Default batch size for CRUD operations.                                                                                                                                                                                           | -1 (no batching)                                     |
+| `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                       | None                                                 |
 
 ## Minimal example
 
@@ -337,6 +338,32 @@ da.append(
 
 Currently, dynamically setting a consistency level is supported for the following operations:
 `.append()`, `.extend()`, `.find()`, and `.insert()`.
+
+### Setting a batch size
+
+You can configure your DocumentArray to, on every relevant operation, send Documents to the Milvus database in batches.
+This default `batch_size` can be specified in the DocumentArray {ref}`config <milvus-config>`.
+
+If you do not specify a default batch size, no batching will be performed.
+
+
+When performing a specific operation, you can override this default batch size by passing a `batch_size` parameter:
+
+```python
+from docarray import DocumentArray, Document
+import numpy as np
+
+da = DocumentArray(
+    storage='milvus',
+    config={'batch_size': 100, 'n_dim': 3},
+)
+
+da.append(Document(tensor=np.random.rand(3)))  # batch size is 100
+da.append(Document(tensor=np.random.rand(3)), batch_size=5)  # batch size is 5
+```
+
+Currently, dynamically setting a consistency level is supported for the following operations:
+`.append()`, `.extend()`, and `.insert()`.
 
 ### Passing search parameters
 

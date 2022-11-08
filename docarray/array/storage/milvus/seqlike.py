@@ -1,5 +1,6 @@
 from typing import Iterable, Iterator, Union, TYPE_CHECKING
 from docarray.array.storage.base.seqlike import BaseSequenceLikeMixin
+from docarray.array.storage.milvus.backend import _batch_list
 from docarray import Document
 
 
@@ -49,7 +50,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         docs = list(values)
         if not docs:
             return
-        kwargs = self._update_consistency_level(**kwargs)
-        payload = self._docs_to_milvus_payload(docs)
-        self._collection.insert(payload, **kwargs)
-        self._offset2ids.extend([doc.id for doc in docs])
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
+        kwargs = self._update_kwargs_from_config('batch_size', **kwargs)
+        for docs_batch in _batch_list(list(docs), kwargs['batch_size']):
+            payload = self._docs_to_milvus_payload(docs_batch)
+            self._collection.insert(payload, **kwargs)
+            self._offset2ids.extend([doc.id for doc in docs_batch])

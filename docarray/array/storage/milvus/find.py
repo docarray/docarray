@@ -31,7 +31,7 @@ class FindMixin:
         """
         if param is None:
             param = dict()
-        kwargs = self._update_consistency_level(**kwargs)
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
         with self.loaded_collection():
             results = self._collection.search(
                 data=query,
@@ -45,7 +45,7 @@ class FindMixin:
         return self._docs_from_search_response(results)
 
     def _filter(self, filter, limit=10, **kwargs):
-        kwargs = self._update_consistency_level(**kwargs)
+        kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
         with self.loaded_collection():
             results = self._collection.query(
                 expr=filter,
