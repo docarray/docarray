@@ -1,3 +1,4 @@
+import copy
 import uuid
 from dataclasses import dataclass, field, asdict
 from typing import (
@@ -99,6 +100,7 @@ class BackendMixin(BaseBackendMixin):
             raise an error if both are provided
         """
 
+        config = copy.deepcopy(config)
         if not config:
             config = WeaviateConfig()
         elif isinstance(config, dict):

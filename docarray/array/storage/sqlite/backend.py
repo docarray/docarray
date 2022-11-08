@@ -1,3 +1,4 @@
+import copy
 import sqlite3
 import warnings
 from dataclasses import dataclass, field
@@ -51,6 +52,7 @@ class BackendMixin(BaseBackendMixin):
         config: Optional[Union[SqliteConfig, Dict]] = None,
         **kwargs,
     ):
+        config = copy.deepcopy(config)
         if not config:
             config = SqliteConfig()
 
