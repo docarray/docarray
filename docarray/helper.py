@@ -502,3 +502,15 @@ def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
 def logout():
     """Log out of Hubble account."""
     hubble.logout()
+
+
+def in_notebook() -> bool:
+    """
+    A helper function to determine if script is executed from notebook or not.
+    :return: True if executed from notebook else False.
+    """
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False

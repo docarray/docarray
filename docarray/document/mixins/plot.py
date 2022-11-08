@@ -4,6 +4,7 @@ from typing import Optional
 import numpy as np
 
 from docarray.document.mixins.mesh import Mesh
+from docarray.helper import in_notebook
 
 
 class PlotMixin:
@@ -120,10 +121,7 @@ class PlotMixin:
 
         if self.tensor is not None:
             # point cloud from tensor
-            from IPython import get_ipython
-
-            in_notebook = get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
-            if in_notebook:
+            if in_notebook():
                 pc = trimesh.points.PointCloud(
                     vertices=self.tensor,
                     colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
