@@ -356,6 +356,7 @@ array([[7., 7., 7.],
        [4., 4., 4.]])
 ```
 
+(backend-context-mngr)=
 ## Persistence, mutations and context manager
 
 Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.

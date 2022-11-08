@@ -130,7 +130,7 @@ The following configs can be set:
 | `serialize_config`  | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                                                                                                                      | {}                                                   |
  | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                                   | 'Session'                                            |
 | `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                                   | None                                                 |
-l
+
 ## Minimal example
 
 Download `docker-compose.yml`:
@@ -402,7 +402,14 @@ with da:
 # index is released from memory
 ```
 
-Not using the `with da:` context manager will return the same results for the same operations, but will incur significant performance penalties:
+The `with da:` context manager also {ref}`manages persistence of the list-like interface <backend-context-mngr>` of a DocumentArray,
+which can introduce a small overhead when leaving the context.
+
+If you want to _only_ manage the loading and releasing behavior of your DocumentArray, you can use the `with da.loaded_collection()`
+context manager instead.
+In the example above it can be used as a drop-in replacement.
+
+Not using the `with da:` or `with da.loaded_collection()` context manager will return the same results for the same operations, but will incur significant performance penalties:
 
 ````{dropdown} ⚠️ Bad code
 
