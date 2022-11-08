@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, Literal
 
 import numpy as np
+import trimesh
 
 if TYPE_CHECKING:  # pragma: no cover
     from docarray.typing import T
@@ -19,6 +20,19 @@ class Mesh:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
+    def load_mesh(
+        uri, force: Literal['mesh', 'force'] = None
+    ) -> Union[trimesh.Trimesh, trimesh.Scene]:
+        """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`."""
+        import urllib.parse
+
+        scheme = urllib.parse.urlparse(uri).scheme
+        loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
+
+        mesh = loader(uri, force=force)
+
+        return mesh
+
     def load_uri_to_point_cloud_tensor(
         self: 'T', samples: int, as_chunks: bool = False
     ) -> 'T':
@@ -30,23 +44,18 @@ class MeshDataMixin:
 
         :return: itself after processed
         """
-        import trimesh
-        import urllib.parse
-
-        scheme = urllib.parse.urlparse(self.uri).scheme
-        loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
 
         if as_chunks:
             from docarray.document import Document
 
             # try to coerce everything into a scene
-            scene = loader(self.uri, force='scene')
+            scene = self.load_mesh(force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
                 self.chunks.append(Document(tensor=np.array(geo.sample(samples))))
         else:
             # combine a scene into a single mesh
-            mesh = loader(self.uri, force='mesh')
+            mesh = self.load_mesh(force='mesh')
             self.tensor = np.array(mesh.sample(samples))
 
         return self
@@ -56,15 +65,9 @@ class MeshDataMixin:
 
         :return: itself after processed
         """
-
-        import trimesh
-        import urllib.parse
         from docarray.document import Document
 
-        scheme = urllib.parse.urlparse(self.uri).scheme
-        loader = trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
-
-        mesh = loader(self.uri, force='mesh')
+        mesh = self.load_mesh(force='mesh')
 
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)
@@ -82,8 +85,6 @@ class MeshDataMixin:
         :param samples: number of points to sample from the mesh
         :return: itself after processed
         """
-        import trimesh
-
         vertices = None
         faces = None
 

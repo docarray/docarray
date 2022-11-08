@@ -4,7 +4,6 @@ from typing import Optional
 import numpy as np
 
 from docarray.document.mixins.mesh import Mesh
-from docarray.helper import in_notebook
 
 
 class PlotMixin:
@@ -136,14 +135,7 @@ class PlotMixin:
 
         elif self.uri:
             # mesh from uri
-            import urllib.parse
-
-            scheme = urllib.parse.urlparse(self.uri).scheme
-            loader = (
-                trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
-            )
-
-            mesh = loader(self.uri)
+            mesh = self.load_mesh(self.uri)
             display(mesh.show())
 
         elif self.chunks is not None:
