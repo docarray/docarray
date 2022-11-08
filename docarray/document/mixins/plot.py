@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.helper import deprecate_by
+from docarray.document.mixins.mesh import MESH_FILE_EXTENSIONS
 
 
 class PlotMixin:
@@ -76,10 +76,13 @@ class PlotMixin:
 
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
+
+        if self._is_3d():
+            self.display_3d()
+            return
+
         if not from_:
-            if len(self.chunks) >= 6 and 'vertices' in self.chunks[0].tags.values():
-                from_ = 'chunks'
-            elif self.uri:
+            if self.uri:
                 from_ = 'uri'
             elif self.tensor is not None:
                 from_ = 'tensor'
@@ -90,55 +93,66 @@ class PlotMixin:
             self.display_uri()
         elif from_ == 'tensor':
             self.display_tensor()
-        elif from_ == 'chunks':
-            self.display_chunks()
         else:
             self.summary()
 
-    def display_chunks(self) -> None:
-        """Plot 3d mesh data from :attr:`.chunks`"""
+    def _is_3d(self) -> bool:
+        """
+        Tells if Document stores a 3D object saved as point cloud or vertices and face.
+        :return: bool.
+        """
+        if self.uri and self.uri.endswith(tuple(MESH_FILE_EXTENSIONS)):
+            return True
+        elif self.tensor is not None and self.tensor.shape[1] == 3:
+            return True
+        elif self.chunks is not None:
+            name_tags = [c.tags['name'] for c in self.chunks]
+            if 'vertices' in name_tags and 'faces' in name_tags:
+                return True
+        else:
+            return False
+
+    def display_3d(self) -> None:
+        """Plot 3d data."""
+        from IPython.display import display
         import trimesh
-        from PIL import Image
 
-        vertices = None
-        faces = None
-        uv_mapping = None
-        uv_image = None
-        face_colors = None
-        vertex_colors = None
+        if self.tensor is not None:
+            # point cloud from tensor
+            from IPython import get_ipython
 
-        for chunk in self.chunks:
-            if 'vertices' in chunk.tags.values():
-                vertices = chunk.tensor
-            elif 'faces' in chunk.tags.values():
-                faces = chunk.tensor
-            elif 'uv_mapping' in chunk.tags.values():
-                uv_mapping = chunk.tensor
-            elif 'uv_image' in chunk.tags.values():
-                uv_image = chunk.tensor
-                if uv_image is not None:
-                    mode = 'RGBA' if uv_image.shape[-1] == 4 else 'RGB'
-                    uv_image = Image.fromarray(uv_image, mode=mode)
-            elif 'face_colors' in chunk.tags.values():
-                face_colors = chunk.tensor
-            elif 'vertex_colors' in chunk.tags.values():
-                vertex_colors = chunk.tensor
+            in_notebook = get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
+            if in_notebook:
+                pc = trimesh.points.PointCloud(
+                    vertices=self.tensor,
+                    colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
+                )
+                s = trimesh.Scene(geometry=pc)
+                display(s.show())
+            else:
+                pc = trimesh.points.PointCloud(vertices=self.tensor)
+                display(pc.show())
 
-        visual = None
-        if uv_image is not None:
-            visual = trimesh.visual.texture.TextureVisuals(
-                uv=uv_mapping, image=uv_image
-            )
-        elif face_colors is not None:
-            visual = trimesh.visual.color.ColorVisuals(
-                face_colors=face_colors, vertex_colors=vertex_colors
+        elif self.uri:
+            # mesh from uri
+            import urllib.parse
+
+            scheme = urllib.parse.urlparse(self.uri).scheme
+            loader = (
+                trimesh.load_remote if scheme in ['http', 'https'] else trimesh.load
             )
 
-        mesh = trimesh.Trimesh(vertices=vertices, faces=faces, visual=visual)
+            mesh = loader(self.uri)
+            display(mesh.show())
 
-        from IPython.core.display import display
-
-        display(mesh.show())
+        elif self.chunks is not None:
+            # mesh from chunks
+            vertices = [c.tensor for c in self.chunks if c.tags['name'] == 'vertices'][
+                -1
+            ]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == 'faces'][-1]
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+            display(mesh.show())
 
     def display_tensor(self) -> None:
         """Plot image data from :attr:`.tensor`"""
