@@ -42,7 +42,7 @@ d1 = Document(text='hello')
 d2 = Document(blob=b'\f1')
 d3 = Document(tensor=numpy.array([1, 2, 3]))
 d4 = Document(
-    uri='https://jina.ai',
+    uri='https://docarray.jina.ai',
     mime_type='text/plain',
     granularity=1,
     adjacency=3,
@@ -81,15 +81,22 @@ When you `print()` a Document, you get a string representation such as `<Documen
 One can also wrap the keyword arguments into `dict`. The following ways of initialization have the same effect:
 
 ```python
-d1 = Document(uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3)
+d1 = Document(
+    uri='https://docarray.jina.ai', mime_type='text/plain', granularity=1, adjacency=3
+)
 
 d2 = Document(
-    dict(uri='https://jina.ai', mime_type='text/plain', granularity=1, adjacency=3)
+    dict(
+        uri='https://docarray.jina.ai',
+        mime_type='text/plain',
+        granularity=1,
+        adjacency=3,
+    )
 )
 
 d3 = Document(
     {
-        'uri': 'https://jina.ai',
+        'uri': 'https://docarray.jina.ai',
         'mime_type': 'text/plain',
         'granularity': 1,
         'adjacency': 3,
