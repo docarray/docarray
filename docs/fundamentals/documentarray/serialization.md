@@ -115,7 +115,7 @@ da_r.summary()
 ```
 
 ```{tip}
-If you go with the default `protcol` and `compress` settings, you can simply use `bytes(da)`, which is more Pythonic.
+If you go with the default `protocol` and `compress` settings, you can simply use `bytes(da)`, which is more Pythonic.
 ```
 
 The table below summarize the supported serialization protocols and compressions:
