@@ -369,21 +369,9 @@ class BackendMixin(BaseBackendMixin):
                 **extra_columns,
             },
             class_name=self._class_name,
-            uuid=self._map_id(value.id),
+            uuid=value.id,
             vector=self._map_embedding(value.embedding),
         )
-
-    def _map_id(self, doc_id: str):
-        """the function maps doc id to weaviate id
-
-        :param doc_id: id of the document
-        :return: weaviate object id
-        """
-        # appending class name to doc id to handle the case:
-        # daw1 = DocumentArrayWeaviate([Document(id=str(i), text='hi') for i in range(3)])
-        # daw2 = DocumentArrayWeaviate([Document(id=str(i), text='bye') for i in range(3)])
-        # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
-        return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
 
     def _map_embedding(self, embedding: 'ArrayType'):
         if embedding is not None:
