@@ -38,7 +38,7 @@ setup(
     long_description=_long_description,
     long_description_content_type='text/markdown',
     zip_safe=False,
-    install_requires=['numpy', 'rich>=12.0.0', 'jina-hubble-sdk>=0.13.1'],
+    install_requires=['numpy', 'rich>=12.0.0', 'jina-hubble-sdk>=0.24.0'],
     extras_require={
         # req usage, please see https://docarray.jina.ai/#install
         'common': [
