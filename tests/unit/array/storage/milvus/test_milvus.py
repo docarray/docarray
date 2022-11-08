@@ -123,3 +123,47 @@ def test_consistency_level(start_storage, mocker, method, meth_input, mock_respo
         for args, kwargs in mock_meth.call_args_list:
             if 'consistency_level' in kwargs:
                 assert kwargs['consistency_level'] == new_consistency
+
+
+@pytest.mark.parametrize(
+    'method,meth_input',
+    [
+        ('append', [Document(embedding=np.random.random([10]))]),
+        ('extend', [[Document(embedding=np.random.random([10]))]]),
+        ('insert', [0, Document(embedding=np.random.random([10]))]),
+    ],
+)
+def test_batching(start_storage, mocker, method, meth_input, mock_response):
+    init_batch_size = 5
+    da = DocumentArrayMilvus(
+        config={
+            'n_dim': 10,
+            'batch_size': init_batch_size,
+        },
+    )
+
+    # patch Milvus collection
+    patch_methods = ['insert', 'search', 'delete', 'query']
+    for m in patch_methods:
+        setattr(da._collection, m, mocker.Mock(return_value=mock_response))
+
+    # test batch_size set in config
+    getattr(da, method)(*meth_input)
+    for m in patch_methods:
+        mock_meth = getattr(da._collection, m)
+        for args, kwargs in mock_meth.call_args_list:
+            if 'batch_size' in kwargs:
+                assert kwargs['batch_size'] == init_batch_size
+
+    # reset the mocks
+    for m in patch_methods:
+        setattr(da._collection, m, mocker.Mock(return_value=mock_response))
+
+    # test dynamic consistency level
+    new_batch_size = 100
+    getattr(da, method)(*meth_input, batch_size=new_batch_size)
+    for m in patch_methods:
+        mock_meth = getattr(da._collection, m)
+        for args, kwargs in mock_meth.call_args_list:
+            if 'batch_size' in kwargs:
+                assert kwargs['batch_size'] == new_batch_size
