@@ -58,6 +58,7 @@ jobs:
           pip install --no-cache-dir ".[weaviate]"
           pip install --no-cache-dir ".[elasticsearch]"
           pip install --no-cache-dir ".[redis]"
+          git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
           bash makedoc.sh development
