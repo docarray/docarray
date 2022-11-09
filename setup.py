@@ -30,7 +30,7 @@ setup(
     version=__version__,
     include_package_data=True,
     description='The data structure for unstructured data',
-    author='Jina AI',
+    author='DocArray team',
     author_email='hello@jina.ai',
     license='Apache 2.0',
     url='https://github.com/jina-ai/docarray',
@@ -52,6 +52,9 @@ setup(
         ],
         'full': [
             'protobuf>=3.13.0',
+            'grpcio>=1.46.0,<1.48.1',
+            'grpcio-reflection>=1.46.0,<1.48.1',
+            'grpcio-health-checking>=1.46.0,<1.48.1',
             'lz4',
             'requests',
             'matplotlib',
@@ -64,7 +67,7 @@ setup(
             'strawberry-graphql',
         ],
         'qdrant': [
-            'qdrant-client==0.8.0',
+            'qdrant-client~=0.10.3',
         ],
         'annlite': [
             'annlite',
@@ -83,6 +86,7 @@ setup(
             'seaborn',
         ],
         'test': [
+            'protobuf>=3.13.0,<=3.20.0',  # pip dependency resolution does not respect this restriction from paddle
             'pytest',
             'pytest-timeout',
             'pytest-mock',
@@ -93,7 +97,7 @@ setup(
             'pytest-custom_exit_code',
             'black==22.3.0',
             'tensorflow==2.7.0',
-            'paddlepaddle==2.2.0',
+            'paddlepaddle',
             'torch==1.9.0',
             'torchvision==0.10.0',
             'datasets',
