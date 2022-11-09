@@ -1,18 +1,21 @@
+import os
 import re
 from dataclasses import fields
+from pathlib import Path
+
 from docarray.document.data import DocumentData
 
 with open('../docarray/document/mixins/_property.py', 'w') as fp:
     fp.write(
-        f'''# auto-generated from {__file__}
+        f'''# auto-generated from {os.path.relpath(__file__, start=Path(__file__).parent.parent.parent)}
 from typing import TYPE_CHECKING, Dict, List, Optional, Union, Any
 
 if TYPE_CHECKING:
-    from ...score import NamedScore
-    from ...array.match import MatchArray
-    from ...array.chunk import ChunkArray
-    from ... import DocumentArray
-    from ...typing import ArrayType, StructValueType, DocumentContentType
+    from docarray.score import NamedScore
+    from docarray.array.match import MatchArray
+    from docarray.array.chunk import ChunkArray
+    from docarray import DocumentArray
+    from docarray.typing import ArrayType, StructValueType, DocumentContentType
 
 
 class _PropertyMixin:

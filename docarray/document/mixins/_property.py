@@ -1,12 +1,12 @@
-# auto-generated from /Users/marco/code/opensource/docarray/scripts/gen_doc_property_mixin.py
+# auto-generated from docarray/scripts/gen_doc_property_mixin.py
 from typing import TYPE_CHECKING, Dict, List, Optional, Union, Any
 
 if TYPE_CHECKING:
-    from ...score import NamedScore
-    from ...array.match import MatchArray
-    from ...array.chunk import ChunkArray
-    from ... import DocumentArray
-    from ...typing import ArrayType, StructValueType, DocumentContentType
+    from docarray.score import NamedScore
+    from docarray.array.match import MatchArray
+    from docarray.array.chunk import ChunkArray
+    from docarray import DocumentArray
+    from docarray.typing import ArrayType, StructValueType, DocumentContentType
 
 
 class _PropertyMixin:
@@ -117,6 +117,15 @@ class _PropertyMixin:
     @tags.setter
     def tags(self, value: Dict[str, Any]):
         self._data.tags = value
+
+    @property
+    def _metadata(self) -> Optional[Dict[str, 'StructValueType']]:
+        self._data._set_default_value_if_none('_metadata')
+        return self._data._metadata
+
+    @_metadata.setter
+    def _metadata(self, value: Dict[str, 'StructValueType']):
+        self._data._metadata = value
 
     @property
     def offset(self) -> Optional[float]:
