@@ -415,7 +415,7 @@ favours the backends that use the resources efficiently. Therefore, some backend
 GRPC instead of HTTP, or use batch operations. We're okay with that, as long as it benefits the DocArray and Jina 
 user.
 * **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and 
-updating the benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/jina-ai/docarray/issues/new/choose). We're open to your contributions!
+updating the benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
 
 ### Incompleteness on the stores
 
