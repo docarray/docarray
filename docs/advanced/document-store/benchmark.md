@@ -9,7 +9,7 @@
 :scale: 0 %
 ```
 
-We create a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the following document stores.
+We create a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects of 128d and using l2 distance metrics, and benchmark the document stores summarized below.
 
 This includes classic database and vector database, all under the same DocumentArray API:
 
@@ -25,11 +25,11 @@ This includes classic database and vector database, all under the same DocumentA
 
 We focus on the following tasks:
 
-1. **Create**: add one million Documents to the document store via {meth}`~docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend`.
+1. **Create**: add one million Documents to the document store via {meth}`~docarray.array.storage.base.seqlike.BaseSequenceLikeMixin.extend` and backend capabilities when applicable.
 2. **Read**: retrieve existing Documents from the document store by `.id`, i.e. `da['some_id']`.
 3. **Update**: update existing Documents in the document store by `.id`, i.e. `da['some_id'] = Document(...)`.
 4. **Delete**: delete Documents from the document store by `.id`, i.e. `del da['some_id']`
-5. **Find by condition**: search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters, as described in {ref}`find-documentarray`.
+5. **Find by condition**: search existing Documents by `.tags` via {meth}`~docarray.array.mixins.find` in the document store by boolean filters and use backend side filtering when possible, as described in {ref}`find-documentarray`.
 6. **Find by vector**: retrieve existing Documents by `.embedding` via {meth}`~docarray.array.mixins.find`  using  nearest neighbor search or approximate nearest neighbor search, as described in {ref}`match-documentarray`.
 
 The above tasks are often atomic operations in high-level DocArray API. Hence, understanding their performance gives user a good estimation of the experience when using DocumentArray with different backends.
@@ -40,7 +40,7 @@ We are interested in the single query performance on the above tasks, which mean
 ```{attention}
 
 * **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you can spot bottlenecks we would be thrilled to know about and improve our code.
-* **We use similar underlying search algorithms but different implementations**: In this benchmark we focus on setting only parameters `ef`, `ef_construct` and `max_connections` from HNSW. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
+* **We use similar underlying search algorithms but different implementations**: In this benchmark we try a set of parameters ef, ef_construct and max_connections from HNSW applied equally on all backends. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
 * **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
 ```
 
@@ -203,7 +203,7 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 
-When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better (except for `Recall@10`). 
+When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better. 
 
 ````{tab} In-Memory in QPS
 
@@ -404,8 +404,7 @@ Our benchmark is based on the following principles:
 * **Cover the most important operations**: We understand that some backends are better at some operations than others, and 
 some offer better quality. Therefore, we try to benchmark on 6 operations (CRUD + Find by vector + Find by condition)
 and report quality measurement (`Recall@K`).
-* **Not just speed, but also quality**: Since some backends offer better performance and some offer better quality, we make sure to report the quality measurement for the approximate nearest neighbor search. This will allow users to 
-choose the backend that best suits their cases.
+* **Not just speed, but also quality**: We show the trade-off between quality and speed as you tune your parameters in each document store.
 * **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the 
 same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support 
 approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client 
@@ -433,9 +432,6 @@ If you're experimenting on a dataset with fewer than 10,000 Documents, you can u
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
 
-```{tip}
-SQLite store is omitted because SQLite is too slow to fit into the figure chart.
-```
-
 AnnLite offers good speed in CRUD and vector search operations, but keep in mind that AnnLite is a library and does not follow a client-server design. This means that AnnLite operations do not include network overhead unlike other backends.
+
 Moreover, AnnLite is a local monolithic package and does not offer scaling. However, you can still scale using [Jina's scaling features](https://docs.jina.ai/how-to/scale-out/).
