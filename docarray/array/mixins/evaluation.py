@@ -264,8 +264,8 @@ class EvaluationMixin:
             Paddle for embedding `self` and `index_data`.
         :param embed_funcs: As an alternative to embedding models, custom embedding
             functions can be provided.
-        :param device: the computational device for `embed_models`, can be either
-            `cpu` or `cuda`.
+        :param device: the computational device for `embed_models`, and the matching
+            can be either `cpu` or `cuda`.
         :param batch_size: Number of documents in a batch for embedding.
         :param collate_fns: For each embedding function the respective collate
             function creates a mini-batch of input(s) from the given `DocumentArray`.
@@ -417,6 +417,7 @@ class EvaluationMixin:
                 exclude_self=exclude_self,
                 use_scipy=use_scipy,
                 num_worker=num_worker,
+                device=device,
                 batch_size=int(len(batch) / num_worker) if num_worker > 1 else None,
                 only_id=True,
             )
