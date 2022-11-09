@@ -231,6 +231,7 @@ class EvaluationMixin:
         normalization: Optional[Tuple[float, float]] = None,
         exclude_self: bool = False,
         use_scipy: bool = False,
+        num_worker: int = 1,
         match_batch_size: int = 100_000,
         query_sample_size: int = 1_000,
         **kwargs,
@@ -263,8 +264,8 @@ class EvaluationMixin:
             Paddle for embedding `self` and `index_data`.
         :param embed_funcs: As an alternative to embedding models, custom embedding
             functions can be provided.
-        :param device: the computational device for `embed_models`, can be either
-            `cpu` or `cuda`.
+        :param device: the computational device for `embed_models`, and the matching
+            can be either `cpu` or `cuda`.
         :param batch_size: Number of documents in a batch for embedding.
         :param collate_fns: For each embedding function the respective collate
             function creates a mini-batch of input(s) from the given `DocumentArray`.
@@ -279,6 +280,8 @@ class EvaluationMixin:
             as the left-hand values will not be considered as matches.
         :param use_scipy: if set, use ``scipy`` as the computation backend. Note,
             ``scipy`` does not support distance on sparse matrix.
+        :param num_worker: Specifies the number of workers for the execution of the
+            match function.
         :parma match_batch_size: The number of documents which are embedded and
             matched at once. Set this value to a lower value, if you experience high
             memory consumption.
@@ -413,6 +416,9 @@ class EvaluationMixin:
                 normalization=normalization,
                 exclude_self=exclude_self,
                 use_scipy=use_scipy,
+                num_worker=num_worker,
+                device=device,
+                batch_size=int(len(batch) / num_worker) if num_worker > 1 else None,
                 only_id=True,
             )
 
@@ -437,6 +443,7 @@ class EvaluationMixin:
             metrics=metrics,
             metric_names=metric_names,
             strict=strict,
+            label_tag=label_tag,
             **kwargs,
         )
 
