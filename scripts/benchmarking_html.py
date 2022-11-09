@@ -17,13 +17,13 @@ for storage in storages:
     df_tmp.sort_values(by=['Recall@10'], inplace=True)
     df = pd.concat([df, df_tmp])
 
-fig = px.line(
+fig = px.scatter(
     df,
     x="Recall@10",
     y="QPS",
     color='Storage Backend',
-    markers=True,
     hover_data=['Max_Connections', 'EF_Construct', 'EF'],
+    trendline="lowess",
 )
 
 fig.write_html('benchmark.html', include_plotlyjs='cdn', full_html=False)
