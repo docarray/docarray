@@ -20,7 +20,9 @@ class Mesh:
 class MeshDataMixin:
     """Provide helper functions for :class:`Document` to support 3D mesh data and point cloud."""
 
-    def load_mesh(self, force: str = None) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
+    def _load_mesh(
+        self, force: str = None
+    ) -> Union['trimesh.Trimesh', 'trimesh.Scene']:
         """Load a trimesh.Mesh or trimesh.Scene object from :attr:`.uri`.
 
         :param force: str or None. For 'mesh' try to coerce scenes into a single mesh. For 'scene'
@@ -54,13 +56,13 @@ class MeshDataMixin:
             from docarray.document import Document
 
             # try to coerce everything into a scene
-            scene = self.load_mesh(force='scene')
+            scene = self._load_mesh(force='scene')
             for geo in scene.geometry.values():
                 geo: trimesh.Trimesh
                 self.chunks.append(Document(tensor=np.array(geo.sample(samples))))
         else:
             # combine a scene into a single mesh
-            mesh = self.load_mesh(force='mesh')
+            mesh = self._load_mesh(force='mesh')
             self.tensor = np.array(mesh.sample(samples))
 
         return self
@@ -72,7 +74,7 @@ class MeshDataMixin:
         """
         from docarray.document import Document
 
-        mesh = self.load_mesh(force='mesh')
+        mesh = self._load_mesh(force='mesh')
 
         vertices = mesh.vertices.view(np.ndarray)
         faces = mesh.faces.view(np.ndarray)
