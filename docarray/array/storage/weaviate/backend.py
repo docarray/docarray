@@ -369,9 +369,18 @@ class BackendMixin(BaseBackendMixin):
                 **extra_columns,
             },
             class_name=self._class_name,
-            uuid=value.id,
+            uuid=self._map_id(value.id),
             vector=self._map_embedding(value.embedding),
         )
+
+    @staticmethod
+    def _map_id(doc_id: str):
+        # if doc_id is a random ID in hex format, just translate back to UUID str
+        # otherwise, create UUID5 from doc_id
+        try:
+            return str(uuid.UUID(hex=doc_id))
+        except ValueError:
+            return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id))
 
     def _map_embedding(self, embedding: 'ArrayType'):
         if embedding is not None:

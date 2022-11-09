@@ -32,7 +32,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :param _id: the id of the document
         :return: the retrieved document from weaviate
         """
-        return self._getitem(_id)
+        return self._getitem(self._map_id(_id))
 
     def _set_doc_by_id(self, _id: str, value: 'Document', flush: bool = True):
         """Concrete implementation of base class' ``_set_doc_by_id``
@@ -62,8 +62,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param _id: the id of the document to delete
         """
-        if self._client.data_object.exists(_id, class_name=self._class_name):
-            self._client.data_object.delete(_id, class_name=self._class_name)
+        if self._client.data_object.exists(
+            self._map_id(_id), class_name=self._class_name
+        ):
+            self._client.data_object.delete(
+                self._map_id(_id), class_name=self._class_name
+            )
 
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
