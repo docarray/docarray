@@ -30,7 +30,7 @@ setup(
     version=__version__,
     include_package_data=True,
     description='The data structure for unstructured data',
-    author='Jina AI',
+    author='DocArray team',
     author_email='hello@jina.ai',
     license='Apache 2.0',
     url='https://github.com/jina-ai/docarray',
