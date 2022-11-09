@@ -18,6 +18,7 @@ class PlotMixin:
         yield f":page_facing_up: [b]Document[/b]: [cyan]{self.id}[cyan]"
         from rich.table import Table
         from rich import box
+        from rich.text import Text
 
         my_table = Table(
             'Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True
@@ -27,7 +28,7 @@ class PlotMixin:
                 continue
             elif f in ('text', 'blob', 'uri') and len(getattr(self, f)) > 100:
                 v = getattr(self, f)
-                my_table.add_row(f, str(v)[:100] + f'... [dim](length: {len(v)})')
+                my_table.add_row(f, Text(str(v)[:100] + f'... [dim](length: {len(v)})'))
             elif f in ('embedding', 'tensor'):
                 from docarray.math.ndarray import to_numpy_array
 
@@ -42,7 +43,7 @@ class PlotMixin:
                     v = f'{type(getattr(self, f))} in shape {v.shape}, dtype: {v.dtype}'
                 my_table.add_row(f, v)
             elif f not in ('id', 'chunks', 'matches'):
-                my_table.add_row(f, str(getattr(self, f)))
+                my_table.add_row(f, Text(str(getattr(self, f))))
         if my_table.rows:
             yield my_table
 
