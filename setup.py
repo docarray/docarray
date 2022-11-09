@@ -30,7 +30,7 @@ setup(
     version=__version__,
     include_package_data=True,
     description='The data structure for unstructured data',
-    author='Jina AI',
+    author='DocArray team',
     author_email='hello@jina.ai',
     license='Apache 2.0',
     url='https://github.com/jina-ai/docarray',
@@ -73,7 +73,7 @@ setup(
             'annlite',
         ],
         'weaviate': [
-            'weaviate-client~=3.3.0',
+            'weaviate-client~=3.9.0',
         ],
         'elasticsearch': [
             'elasticsearch>=8.2.0',
@@ -108,7 +108,7 @@ setup(
             'onnxruntime',
             'jupyterlab',
             'transformers>=4.16.2',
-            'weaviate-client~=3.3.0',
+            'weaviate-client~=3.9.0',
             'annlite',
             'elasticsearch>=8.2.0',
             'redis>=4.3.0',

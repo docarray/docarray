@@ -174,6 +174,7 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
         assert d.evaluations[metric_fn].value == 0.0
 
 
+@pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
 @pytest.mark.parametrize(
     'metric_fn, metric_score',
     [
@@ -187,11 +188,11 @@ def test_eval_mixin_zero_labeled(storage, config, metric_fn, start_storage, kwar
         ('dcg_at_k', (1.0 + 1.0 + 0.6309) / 3),
     ],
 )
-def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score):
-    da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
+    da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
     for d in da:
         d.matches = da
-    r = da.evaluate([metric_fn])[metric_fn]
+    r = da.evaluate([metric_fn], label_tag=label_tag)[metric_fn]
     assert abs(r - metric_score) < 0.001
 
 
@@ -534,10 +535,14 @@ def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage)
 
 
 @pytest.mark.parametrize(
-    'use_index, expected',
+    'use_index, expected, label_tag',
     [
-        (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}),
-        (True, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0}),
+        (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}, 'label'),
+        (
+            True,
+            {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0},
+            'custom_tag',
+        ),
     ],
 )
 @pytest.mark.parametrize(
@@ -553,7 +558,7 @@ def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage)
     ],
 )
 def test_embed_and_evaluate_labeled_dataset(
-    storage, config, start_storage, use_index, expected
+    storage, config, start_storage, use_index, expected, label_tag
 ):
     metric_fns = list(expected.keys())
 
@@ -561,7 +566,7 @@ def test_embed_and_evaluate_labeled_dataset(
         np.random.seed(0)  # makes sure that embeddings are always equal
         da[:, 'embedding'] = np.random.random((len(da), 5))
 
-    da1 = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    da1 = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
     da2 = DocumentArray(da1, storage=storage, config=config, copy=True)
 
     if (
@@ -573,6 +578,7 @@ def test_embed_and_evaluate_labeled_dataset(
             embed_funcs=emb_func,
             match_batch_size=1,
             limit=3,
+            label_tag=label_tag,
         )
     else:  # query and index are the same (embeddings of both das are equal)
         res = da2.embed_and_evaluate(
@@ -580,6 +586,7 @@ def test_embed_and_evaluate_labeled_dataset(
             embed_funcs=emb_func,
             match_batch_size=1,
             limit=3,
+            label_tag=label_tag,
         )
     for key in metric_fns:
         assert key in res

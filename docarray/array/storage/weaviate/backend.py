@@ -37,7 +37,7 @@ class WeaviateConfig:
     # vectorIndexConfig parameters
     ef: Optional[int] = None
     ef_construction: Optional[int] = None
-    timeout_config: Optional[Tuple[int, int]] = None
+    timeout_config: Optional[Tuple[int, int]] = field(default=(10, 60))
     max_connections: Optional[int] = None
     dynamic_ef_min: Optional[int] = None
     dynamic_ef_max: Optional[int] = None
@@ -48,6 +48,13 @@ class WeaviateConfig:
     skip: Optional[bool] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
     distance: Optional[str] = None
+    # weaviate python client parameters
+    batch_size: Optional[int] = field(default=50)
+    dynamic_batching: Optional[bool] = field(default=False)
+
+    def __post_init__(self):
+        if isinstance(self.timeout_config, list):
+            self.timeout_config = tuple(self.timeout_config)
 
 
 _banned_classname_chars = [
@@ -98,7 +105,6 @@ class BackendMixin(BaseBackendMixin):
         :raises ValueError: only one of name or docs can be used for initialization,
             raise an error if both are provided
         """
-
         config = copy.deepcopy(config)
         if not config:
             config = WeaviateConfig()
@@ -367,17 +373,14 @@ class BackendMixin(BaseBackendMixin):
             vector=self._map_embedding(value.embedding),
         )
 
-    def _map_id(self, doc_id: str):
-        """the function maps doc id to weaviate id
-
-        :param doc_id: id of the document
-        :return: weaviate object id
-        """
-        # appending class name to doc id to handle the case:
-        # daw1 = DocumentArrayWeaviate([Document(id=str(i), text='hi') for i in range(3)])
-        # daw2 = DocumentArrayWeaviate([Document(id=str(i), text='bye') for i in range(3)])
-        # daw2[0, 'text'] == 'hi' # this will be False if we don't append class name
-        return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id + self._class_name))
+    @staticmethod
+    def _map_id(doc_id: str):
+        # if doc_id is a random ID in hex format, just translate back to UUID str
+        # otherwise, create UUID5 from doc_id
+        try:
+            return str(uuid.UUID(hex=doc_id))
+        except ValueError:
+            return str(uuid.uuid5(uuid.NAMESPACE_URL, doc_id))
 
     def _map_embedding(self, embedding: 'ArrayType'):
         if embedding is not None:

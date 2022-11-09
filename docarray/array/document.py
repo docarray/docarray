@@ -1,3 +1,4 @@
+from contextlib import ExitStack
 from typing import Optional, overload, TYPE_CHECKING, Dict, Union
 
 from docarray.array.base import BaseDocumentArray
@@ -152,13 +153,18 @@ class DocumentArray(AllMixins, BaseDocumentArray):
         ...
 
     def __enter__(self):
+        self._exit_stack = ExitStack()
+        # Ensure that we sync the data to the storage backend when exiting the context manager
+        self._exit_stack.callback(self.sync)
+        # Enter (and then exit) context of all subindices
+        if getattr(self, '_subindices', None):
+            for selector, da in self._subindices.items():
+                self._exit_stack.enter_context(da)
         return self
 
     def __exit__(self, *args, **kwargs):
-        """
-        Ensures that we sync the data to the storage backend when exiting the context manager
-        """
-        self.sync()
+        # Trigger all __exit__()s and callbacks added in self.__enter__()
+        self._exit_stack.close()
 
     def __new__(cls, *args, storage: str = 'memory', **kwargs):
         if cls is DocumentArray:
