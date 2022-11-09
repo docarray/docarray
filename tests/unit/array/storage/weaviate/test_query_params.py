@@ -6,13 +6,14 @@ def find_random(da, target_certainty):
     return da.find(
         DocumentArray([Document(embedding=np.random.randint(10, size=10))]),
         query_params={"certainty": target_certainty},
+        additional=['certainty'],
     )[0]
 
 
 def test_certainty_filter(start_storage):
     nrof_docs = 100
     target_certainty = 0.98
-    da = DocumentArray(storage="weaviate", config={"n_dim": 10})
+    da = DocumentArray(storage='weaviate', config={'n_dim': 10, 'distance': 'cosine'})
 
     with da:
         da.extend(
