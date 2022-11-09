@@ -48,9 +48,13 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         :return: True if ``x`` is contained in self
         """
         if isinstance(x, str):
-            return self._client.data_object.exists(self._map_id(x))
+            return self._client.data_object.exists(
+                self._map_id(x), class_name=self._class_name
+            )
         elif isinstance(x, Document):
-            return self._client.data_object.exists(self._map_id(x.id))
+            return self._client.data_object.exists(
+                self._map_id(x.id), class_name=self._class_name
+            )
         else:
             return False
 
@@ -65,7 +69,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :param values: Documents to be added
         """
-        with self._client.batch(batch_size=50) as _b:
+        with self._client.batch(
+            batch_size=self._config.batch_size, dynamic=self._config.dynamic_batching
+        ) as _b:
             for d in values:
                 _b.add_data_object(**self._doc2weaviate_create_payload(d))
                 self._offset2ids.append(d.id)
