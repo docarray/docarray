@@ -87,9 +87,14 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def _extend(self, docs: Iterable['Document'], **kwargs):
         docs = list(docs)
         successful_indexed_ids = self._upload_batch(docs, **kwargs)
-        self._offset2ids.extend(
-            [_id for _id in successful_indexed_ids if _id not in self._offset2ids.ids]
-        )
+        if self._list_like:
+            self._offset2ids.extend(
+                [
+                    _id
+                    for _id in successful_indexed_ids
+                    if _id not in self._offset2ids.ids
+                ]
+            )
 
         if len(successful_indexed_ids) != len(docs):
             doc_ids = [doc.id for doc in docs]
