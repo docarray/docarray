@@ -200,8 +200,9 @@ def test_find_by_text_and_filter(storage, config, filter, start_storage):
 
     results = da.find('pizza', filter=filter)
 
-    assert all([int(r.id) < 10 for r in results]) == True
-    assert all([r.tags['i'] < 10 for r in results]) == True
+    assert len(results) > 0
+    assert all([int(r.id) < 10 for r in results])
+    assert all([r.tags['i'] < 10 for r in results])
 
 
 @pytest.mark.parametrize(
