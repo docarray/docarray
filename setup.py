@@ -83,7 +83,9 @@ setup(
         ],
         'benchmark': [
             'pandas',
+            'matplotlib',
             'seaborn',
+            'h5py',
         ],
         'test': [
             'protobuf>=3.13.0,<=3.20.0',  # pip dependency resolution does not respect this restriction from paddle
