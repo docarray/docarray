@@ -2,7 +2,7 @@ import mimetypes
 import os
 from collections import defaultdict
 from dataclasses import dataclass, field, fields
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union, Any
 
 from docarray.math.ndarray import check_arraylike_equality
 
@@ -70,7 +70,7 @@ class DocumentData:
     content: Optional['DocumentContentType'] = None
     weight: Optional[float] = None
     uri: Optional[str] = None
-    tags: Optional[Dict[str, 'StructValueType']] = None
+    tags: Optional[Dict[str, Any]] = None
     _metadata: Optional[Dict[str, 'StructValueType']] = None
     offset: Optional[float] = None
     location: Optional[List[float]] = None

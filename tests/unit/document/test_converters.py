@@ -6,8 +6,10 @@ import pytest
 
 from docarray import Document
 from docarray.document.generators import from_files
+from docarray.document.mixins.mesh import Mesh
 
 __windows__ = sys.platform == 'win32'
+
 
 cur_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -258,6 +260,7 @@ def test_convert_uri_to_data_uri(uri, mimetype):
 @pytest.mark.parametrize(
     'uri, chunk_num',
     [
+        (os.path.join(cur_dir, 'toydata/cube.ply'), 1),
         (os.path.join(cur_dir, 'toydata/test.glb'), 1),
         (
             'https://github.com/jina-ai/docarray/raw/main/tests/unit/document/toydata/test.glb',
@@ -276,19 +279,33 @@ def test_glb_converters(uri, chunk_num):
     assert doc.chunks[0].tensor.shape == (2000, 3)
 
 
-@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+@pytest.mark.parametrize(
+    'uri',
+    [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
+        (os.path.join(cur_dir, 'toydata/test.glb')),
+        (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
+    ],
+)
 def test_load_uri_to_vertices_and_faces(uri):
     doc = Document(uri=uri)
     doc.load_uri_to_vertices_and_faces()
 
     assert len(doc.chunks) == 2
-    assert doc.chunks[0].tags['name'] == 'vertices'
+    assert doc.chunks[0].tags['name'] == Mesh.VERTICES
     assert doc.chunks[0].tensor.shape[1] == 3
-    assert doc.chunks[1].tags['name'] == 'faces'
+    assert doc.chunks[1].tags['name'] == Mesh.FACES
     assert doc.chunks[1].tensor.shape[1] == 3
 
 
-@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+@pytest.mark.parametrize(
+    'uri',
+    [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
+        (os.path.join(cur_dir, 'toydata/test.glb')),
+        (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
+    ],
+)
 def test_load_vertices_and_faces_to_point_cloud(uri):
     doc = Document(uri=uri)
     doc.load_uri_to_vertices_and_faces()
@@ -298,7 +315,14 @@ def test_load_vertices_and_faces_to_point_cloud(uri):
     assert isinstance(doc.tensor, np.ndarray)
 
 
-@pytest.mark.parametrize('uri', [(os.path.join(cur_dir, 'toydata/test.glb'))])
+@pytest.mark.parametrize(
+    'uri',
+    [
+        (os.path.join(cur_dir, 'toydata/cube.ply')),
+        (os.path.join(cur_dir, 'toydata/test.glb')),
+        (os.path.join(cur_dir, 'toydata/tetrahedron.obj')),
+    ],
+)
 def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
     doc = Document(uri=uri)
 
