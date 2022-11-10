@@ -140,7 +140,7 @@ jobs:
 
   prep-testbed:
     runs-on: ubuntu-latest
-    needs: [commit-lint, lint-flake-8, check-black, import-test]
+    needs: [lint-flake-8, check-black, import-test]
     steps:
       - uses: actions/checkout@v2.5.0
       - id: set-matrix
@@ -257,7 +257,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test, docarray-oldproto-test]
+    needs: [commit-lint, docarray-test, docarray-oldproto-test]
     if: always()
     runs-on: ubuntu-latest
     steps:
