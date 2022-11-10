@@ -18,7 +18,7 @@ This includes classic database and vector database, all under the same DocumentA
 | In-memory DocumentArray             | `DocumentArray()`                        | DocArray `0.18.2` | N/A              |
 | [`Sqlite`](sqlite.md)               | `DocumentArray(storage='sqlite')`        | `2.6.0`           | N/A              |
 | [`Weaviate`](weaviate.md)           | `DocumentArray(storage='weaviate')`      | `3.3.3`           | `1.13.2`         |
-| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.8.0`           | `0.8.0`          |
+| [`Qdrant`](qdrant.md)               | `DocumentArray(storage='qdrant')`        | `0.10.3`          | `0.10.1`         |
 | [`Annlite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          | N/A              |
 | [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.4.3`           | `8.2.0`          |
 | [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.4`           | `2.6.0`          |
@@ -129,22 +129,30 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
-|  16 |           64 |   32 |     0.870 |                4.67 |                   2.36 |       5198.91 |      4.73 |       16.55 |       10.05 |
-|  16 |          128 |   32 |     0.897 |                4.75 |                   2.25 |       5262.44 |      2.66 |       17.53 |       10.48 |
-|  16 |          128 |   64 |     0.959 |                5.29 |                   2.37 |       4847.50 |      4.96 |       27.86 |       17.70 |
-|  16 |          128 |  128 |     0.988 |                5.84 |                   2.40 |       4647.66 |      2.99 |       16.32 |       18.06 |
-|  16 |          128 |  256 |     0.996 |                6.91 |                   2.47 |       4551.60 |      2.77 |       27.50 |       18.22 |
-|  16 |          256 |   32 |     0.905 |                4.74 |                   2.28 |       5580.89 |      4.64 |       18.20 |       18.24 |
-|  16 |          256 |   64 |     0.965 |                5.31 |                   2.39 |       4794.40 |      2.84 |       17.99 |       18.18 |
-|  16 |          256 |  128 |     0.990 |                5.89 |                   2.46 |       4600.66 |      2.86 |       18.03 |       18.14 |
-|  16 |          256 |  256 |     0.998 |                6.85 |                   2.46 |       4511.55 |      2.93 |       17.58 |       17.69 |
-|  32 |          128 |   64 |     0.975 |                5.52 |                   2.41 |       4520.41 |      2.86 |       16.56 |       17.85 |
-|  32 |          128 |  128 |     0.993 |                6.16 |                   2.54 |       4453.26 |      2.85 |       26.57 |       18.18 |
-|  32 |          128 |  256 |     0.998 |                7.45 |                   2.43 |       4406.78 |      2.86 |       28.64 |       18.31 |
-|  32 |          256 |   32 |     0.947 |                4.92 |                   2.40 |       5981.28 |      2.65 |       30.29 |       18.32 |
-|  32 |          256 |   64 |     0.984 |                5.62 |                   2.46 |       5060.14 |      2.93 |       18.97 |       17.82 |
-|  32 |          256 |  128 |     0.996 |                6.34 |                   2.39 |       4846.96 |      5.00 |       21.84 |       26.85 |
-|  32 |          256 |  256 |     0.999 |                8.17 |                   2.64 |       5019.82 |      2.84 |       22.97 |       29.82 |
+|  16 |           64 |   32 |     0.868 |                4.75 |                   2.60 |        501.52 |      4.87 |       10.04 |       28.42 |
+|  16 |           64 |   64 |     0.941 |                5.00 |                   2.45 |        496.79 |      2.73 |        3.75 |       28.39 |
+|  16 |           64 |  128 |     0.977 |                5.35 |                   2.67 |        497.23 |      2.74 |        4.10 |       30.29 |
+|  16 |           64 |  256 |     0.986 |                6.11 |                   2.54 |        499.26 |      4.84 |       10.17 |       21.61 |
+|  16 |          128 |   32 |     0.897 |                4.79 |                   2.51 |        576.54 |      4.80 |        9.32 |       15.36 |
+|  16 |          128 |   64 |     0.959 |                5.06 |                   2.39 |        573.63 |      2.74 |        5.01 |       15.18 |
+|  16 |          128 |  128 |     0.983 |                5.49 |                   2.38 |        571.57 |      2.70 |        4.42 |       15.11 |
+|  16 |          128 |  256 |     0.997 |                6.32 |                   2.38 |        570.94 |      2.67 |        4.68 |       15.67 |
+|  16 |          256 |   32 |     0.905 |                4.84 |                   2.56 |        695.38 |      4.73 |       11.05 |       16.12 |
+|  16 |          256 |   64 |     0.965 |                4.91 |                   2.64 |        708.13 |      4.91 |       11.18 |       16.20 |
+|  16 |          256 |  128 |     0.990 |                5.53 |                   2.42 |        702.46 |      2.85 |        5.44 |       15.62 |
+|  16 |          256 |  256 |     0.998 |                6.26 |                   2.43 |        699.00 |      2.86 |        6.04 |       15.93 |
+|  32 |           64 |   32 |     0.857 |                4.82 |                   2.47 |        507.39 |      4.71 |        9.02 |       15.65 |
+|  32 |           64 |   64 |     0.952 |                5.06 |                   2.44 |        502.90 |      2.81 |        4.06 |       15.46 |
+|  32 |           64 |  128 |     0.983 |                5.50 |                   2.53 |        506.02 |      2.75 |        4.12 |       15.42 |
+|  32 |           64 |  256 |     0.993 |                6.37 |                   2.49 |        500.75 |      2.70 |        3.80 |       15.80 |
+|  32 |          128 |   32 |     0.930 |                4.88 |                   2.52 |        592.49 |      4.86 |        9.26 |       11.66 |
+|  32 |          128 |   64 |     0.975 |                5.11 |                   2.48 |        594.74 |      4.87 |        9.52 |       11.93 |
+|  32 |          128 |  128 |     0.993 |                5.78 |                   2.44 |        592.53 |      2.69 |        5.02 |        7.28 |
+|  32 |          128 |  256 |     0.998 |                6.56 |                   2.55 |        591.01 |      2.78 |        5.08 |        7.45 |
+|  32 |          256 |   32 |     0.947 |                4.79 |                   2.51 |        759.87 |      2.71 |        5.05 |       11.72 |
+|  32 |          256 |   64 |     0.984 |                5.23 |                   2.52 |        751.83 |      2.73 |        6.28 |       16.69 |
+|  32 |          256 |  128 |     0.996 |                5.97 |                   2.45 |        752.27 |      2.69 |        7.31 |        7.43 |
+|  32 |          256 |  256 |     0.999 |                6.98 |                   2.50 |        747.84 |      2.67 |        6.94 |        6.85 |
 ````
 
 ````{tab} ElasticSearch
@@ -294,22 +302,30 @@ When we consider each query as a Document, we can convert the above metrics into
 
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
-|  16 |           64 |   32 |     0.870 |            214 |               424 |       192 |    211 |     60 |    100 |
-|  16 |          128 |   32 |     0.897 |            211 |               444 |       190 |    376 |     57 |     95 |
-|  16 |          128 |   64 |     0.959 |            189 |               421 |       206 |    202 |     36 |     56 |
-|  16 |          128 |  128 |     0.988 |            171 |               417 |       215 |    334 |     61 |     55 |
-|  16 |          128 |  256 |     0.996 |            145 |               405 |       220 |    361 |     36 |     55 |
-|  16 |          256 |   32 |     0.905 |            211 |               439 |       179 |    216 |     55 |     55 |
-|  16 |          256 |   64 |     0.965 |            189 |               419 |       209 |    352 |     56 |     55 |
-|  16 |          256 |  128 |     0.990 |            170 |               406 |       217 |    349 |     55 |     55 |
-|  16 |          256 |  256 |     0.998 |            146 |               406 |       222 |    342 |     57 |     57 |
-|  32 |          128 |   64 |     0.975 |            181 |               415 |       221 |    350 |     60 |     56 |
-|  32 |          128 |  128 |     0.993 |            162 |               394 |       225 |    351 |     38 |     55 |
-|  32 |          128 |  256 |     0.998 |            134 |               412 |       227 |    350 |     35 |     55 |
-|  32 |          256 |   32 |     0.947 |            203 |               416 |       167 |    377 |     33 |     55 |
-|  32 |          256 |   64 |     0.984 |            178 |               407 |       198 |    341 |     53 |     56 |
-|  32 |          256 |  128 |     0.996 |            158 |               418 |       206 |    200 |     46 |     37 |
-|  32 |          256 |  256 |     0.999 |            122 |               379 |       199 |    353 |     44 |     34 |
+|  16 |           64 |   32 |     0.868 |            211 |               385 |     1,994 |    206 |    100 |     35 |
+|  16 |           64 |   64 |     0.941 |            200 |               409 |     2,013 |    367 |    267 |     35 |
+|  16 |           64 |  128 |     0.977 |            187 |               375 |     2,011 |    365 |    244 |     33 |
+|  16 |           64 |  256 |     0.986 |            164 |               394 |     2,003 |    207 |     98 |     46 |
+|  16 |          128 |   32 |     0.897 |            209 |               398 |     1,734 |    208 |    107 |     65 |
+|  16 |          128 |   64 |     0.959 |            198 |               418 |     1,743 |    365 |    200 |     66 |
+|  16 |          128 |  128 |     0.983 |            182 |               420 |     1,750 |    370 |    226 |     66 |
+|  16 |          128 |  256 |     0.997 |            158 |               420 |     1,752 |    375 |    214 |     64 |
+|  16 |          256 |   32 |     0.905 |            207 |               391 |     1,438 |    211 |     91 |     62 |
+|  16 |          256 |   64 |     0.965 |            204 |               380 |     1,412 |    204 |     89 |     62 |
+|  16 |          256 |  128 |     0.990 |            181 |               413 |     1,424 |    351 |    184 |     64 |
+|  16 |          256 |  256 |     0.998 |            160 |               411 |     1,431 |    350 |    166 |     63 |
+|  32 |           64 |   32 |     0.857 |            208 |               406 |     1,971 |    212 |    111 |     64 |
+|  32 |           64 |   64 |     0.952 |            198 |               411 |     1,988 |    357 |    247 |     65 |
+|  32 |           64 |  128 |     0.983 |            182 |               395 |     1,976 |    364 |    243 |     65 |
+|  32 |           64 |  256 |     0.993 |            157 |               402 |     1,997 |    371 |    263 |     63 |
+|  32 |          128 |   32 |     0.930 |            205 |               397 |     1,688 |    206 |    108 |     86 |
+|  32 |          128 |   64 |     0.975 |            196 |               403 |     1,681 |    205	|    105 |     84 |
+|  32 |          128 |  128 |     0.993 |            173 |               410 |     1,688 |    372 |    199 |    137 |
+|  32 |          128 |  256 |     0.998 |            152 |               392 |     1,692 |    360 |    197 |    134 |
+|  32 |          256 |   32 |     0.947 |            209 |               398 |     1,316 |    369 |    198 |     85 |
+|  32 |          256 |   64 |     0.984 |            191 |               397 |     1,330 |    367 |    159 |     60 |
+|  32 |          256 |  128 |     0.996 |            167 |               408 |     1,329 |    372 |    137 |    135 |
+|  32 |          256 |  256 |     0.999 |            143 |               401 |     1,337 |    374 |    144 |    146 |
 
 ````
 
@@ -448,12 +464,18 @@ user.
 * **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and 
 updating the benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
 
-### Incompleteness on the stores
+### Limitations
+
+#### Incompleteness on the storess
 
 We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, Scann**. We only benchmark backends that can be used as 
 Document stores. Actually we do not benchmark HNSW itself, but it is used by some backends internally.
 
 Other storage backends that support vector search are not integrated with DocArray yet. We're open to contributions to DocArray's repository to support them.
+
+#### Client/Server setup
+
+Although a real life scenario would be clients and server living on different machines with potentially multiple clients in parallel, we choose to keep both in the same machine and have only 1 client process to minimize network overhead.
 
 ## Conclusion
 
@@ -462,6 +484,8 @@ We hope our benchmark result can help users select the store that suits their us
 If you're experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).
 
 If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
+
+Redis offers great speed if your data fits in memory and you need an isolated server to store your data.
 
 AnnLite offers good speed in CRUD and vector search operations, but keep in mind that AnnLite is a library and does not follow a client-server design. This means that AnnLite operations do not include network overhead unlike other backends.
 
