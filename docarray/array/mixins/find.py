@@ -161,9 +161,9 @@ class FindMixin:
         elif isinstance(query, str) or (
             isinstance(query, list) and isinstance(query[0], str)
         ):
-            if filter is not None:
-                raise ValueError('cannot use filter with text search')
-            result = self._find_by_text(query, index=index, limit=limit, **kwargs)
+            result = self._find_by_text(
+                query, index=index, filter=filter, limit=limit, **kwargs
+            )
             if isinstance(query, str):
                 return result[0]
             else:
