@@ -225,6 +225,7 @@ You can find the corresponding example {ref}`here <multimodal-example>`.
 song1_title = 'Old Macdougal Had a Farm'
 
 song1 = """
+Old Macdougal had a farm, E-I-E-I-O
 And on that farm he had some dogs, E-I-E-I-O
 With a bow-wow here, and a bow-wow there,
 Here a bow, there a bow, everywhere a bow-wow.
