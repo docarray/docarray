@@ -29,7 +29,7 @@ def test_customize_metric_fn():
     'storage, config',
     [
         ('memory', None),
-        ('weaviate', {'n_dim': 32}),
+        ('weaviate', {'n_dim': 32, 'distance': 'cosine'}),
         ('annlite', {'n_dim': 32}),
         ('qdrant', {'n_dim': 32}),
         ('elasticsearch', {'n_dim': 32}),
@@ -51,7 +51,10 @@ def test_find(storage, config, limit, query, start_storage):
 
     da.extend([Document(embedding=v) for v in embeddings])
 
-    result = da.find(query, limit=limit)
+    if storage == 'weaviate':
+        result = da.find(query, limit=limit, additional=['certainty'])
+    else:
+        result = da.find(query, limit=limit)
     n_rows_query, n_dim = ndarray.get_array_rows(query)
 
     if n_rows_query == 1 and n_dim == 1:
@@ -66,14 +69,14 @@ def test_find(storage, config, limit, query, start_storage):
         assert len(result) == n_rows_query
 
     # check returned objects are sorted according to the storage backend metric
-    # weaviate uses cosine similarity by default
+    # weaviate uses distance by default
     # annlite uses cosine distance by default
     if n_dim == 1:
         if storage == 'weaviate':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
-            assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+            assert sorted(cosine_similarities, reverse=False) == cosine_similarities
         if storage == 'redis':
             cosine_distances = [t['score'].value for t in da[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
@@ -86,7 +89,7 @@ def test_find(storage, config, limit, query, start_storage):
                 cosine_similarities = [
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
-                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+                assert sorted(cosine_similarities, reverse=False) == cosine_similarities
         if storage == 'redis':
             for da in result:
                 cosine_distances = [t['score'].value for t in da[:, 'scores']]
@@ -140,6 +143,66 @@ def test_find_by_text(storage, config, start_storage):
     assert len(results[0]) == 1  # 'token4' only appears in one doc
     assert results[0][0].id == '3'  # 'token4' only appears in doc3
     assert len(results[1]) == 0  # 'token' is not present in da vocabulary
+
+
+@pytest.mark.parametrize(
+    'storage, config, filter',
+    [
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            None,
+        ),
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            {
+                'range': {
+                    'i': {
+                        'lte': 5,
+                    }
+                }
+            },
+        ),
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            [
+                {
+                    'range': {
+                        'i': {
+                            'lte': 5,
+                        }
+                    }
+                }
+            ],
+        ),
+        ('redis', {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True}, None),
+        (
+            'redis',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            '@i:[-inf 5]',
+        ),
+    ],
+)
+def test_find_by_text_and_filter(storage, config, filter, start_storage):
+    da = DocumentArray(storage=storage, config=config)
+    with da:
+        da.extend(
+            [Document(id=f'{i}', tags={'i': i}, text=f'pizza {i}') for i in range(10)]
+        )
+        da.extend(
+            [
+                Document(id=f'{i+10}', tags={'i': i}, text=f'noodles {i}')
+                for i in range(10)
+            ]
+        )
+
+    results = da.find('pizza', filter=filter)
+
+    assert len(results) > 0
+    assert all([int(r.id) < 10 for r in results])
+    assert all([r.tags['i'] < 10 for r in results])
 
 
 @pytest.mark.parametrize(

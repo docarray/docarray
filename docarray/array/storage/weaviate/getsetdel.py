@@ -17,7 +17,9 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         :return: Document
         """
         try:
-            resp = self._client.data_object.get_by_id(wid, with_vector=True)
+            resp = self._client.data_object.get_by_id(
+                wid, with_vector=True, class_name=self._class_name
+            )
             return Document.from_base64(
                 resp['properties']['_serialized'], **self._serialize_config
             )
@@ -60,9 +62,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
 
         :param _id: the id of the document to delete
         """
-        wid = self._map_id(_id)
-        if self._client.data_object.exists(wid):
-            self._client.data_object.delete(wid)
+        if self._client.data_object.exists(
+            self._map_id(_id), class_name=self._class_name
+        ):
+            self._client.data_object.delete(
+                self._map_id(_id), class_name=self._class_name
+            )
 
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
@@ -72,8 +77,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
             self._load_or_create_weaviate_schema()
 
     def _load_offset2ids(self):
-        ids, self._offset2ids_wid = self._get_offset2ids_meta()
-        self._offset2ids = Offset2ID(ids)
+        if self._list_like:
+            ids, self._offset2ids_wid = self._get_offset2ids_meta()
+            self._offset2ids = Offset2ID(ids, list_like=self._list_like)
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
-        self._update_offset2ids_meta()
+        if self._list_like:
+            self._update_offset2ids_meta()

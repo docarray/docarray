@@ -59,7 +59,7 @@ class FindMixin:
         if query_params:
             query_dict.update(query_params)
 
-        _additional = ['id', 'certainty']
+        _additional = ['id', 'distance']
         if additional:
             _additional = _additional + additional
 
@@ -70,15 +70,14 @@ class FindMixin:
             .with_near_vector(query_dict)
         )
 
-        if filter:
+        if filter is not None:
             query_builder = query_builder.with_where(filter)
 
-        if sort:
+        if sort is not None:
             query_builder = query_builder.with_sort(sort)
 
         results = query_builder.do()
 
-        docs = []
         if 'errors' in results:
             errors = '\n'.join(map(lambda error: error['message'], results['errors']))
             raise ValueError(
@@ -88,16 +87,19 @@ class FindMixin:
         found_results = results.get('data', {}).get('Get', {}).get(self._class_name, [])
 
         # The serialized document is stored in results['data']['Get'][self._class_name]
+
+        docs = []
+
         for result in found_results:
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
-            certainty = result['_additional']['certainty']
 
-            doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
+            distance = result['_additional']['distance']
+            doc.scores['cosine_similarity'] = NamedScore(value=distance)
+            doc.scores['distance'] = NamedScore(value=distance)
 
-            if certainty is None:
-                doc.scores['cosine_similarity'] = NamedScore(value=None)
-            else:
-                doc.scores['cosine_similarity'] = NamedScore(value=2 * certainty - 1)
+            certainty = result['_additional'].get('certainty', None)
+            if certainty is not None:
+                doc.scores['weaviate_certainty'] = NamedScore(value=certainty)
 
             doc.tags['wid'] = result['_additional']['id']
 

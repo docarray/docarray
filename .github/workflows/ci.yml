@@ -140,7 +140,7 @@ jobs:
 
   prep-testbed:
     runs-on: ubuntu-latest
-    needs: [commit-lint, lint-flake-8, check-black, import-test]
+    needs: [lint-flake-8, check-black, import-test]
     steps:
       - uses: actions/checkout@v2.5.0
       - id: set-matrix
@@ -174,12 +174,12 @@ jobs:
           python -m pip install wheel
           # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
           pip install --no-cache-dir ".[test]"
-          pip install --no-cache-dir ".[full]"
           pip install --no-cache-dir ".[qdrant]"
           pip install --no-cache-dir ".[annlite]"
           pip install --no-cache-dir ".[weaviate]"
           pip install --no-cache-dir ".[elasticsearch]"
           pip install --no-cache-dir ".[redis]"
+          pip install --no-cache-dir ".[full]"
           sudo apt-get install libsndfile1
       - name: Test
         id: test
@@ -238,7 +238,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "::set-output name=codecov_flag::docarray"
-        timeout-minutes: 30
+        timeout-minutes: 40
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
@@ -257,7 +257,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test, docarray-oldproto-test]
+    needs: [commit-lint, docarray-test, docarray-oldproto-test]
     if: always()
     runs-on: ubuntu-latest
     steps:

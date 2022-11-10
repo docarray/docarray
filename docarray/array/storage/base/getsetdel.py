@@ -129,7 +129,7 @@ class BaseGetSetDelMixin(ABC):
     def _del_all_docs(self):
         self._clear_subindices()
         self._clear_storage()
-        self._offset2ids = Offset2ID()
+        self._offset2ids = Offset2ID(list_like=self._list_like)
 
     def _del_docs_by_ids(self, ids):
         """This function is derived from :meth:`_del_doc_by_id`
@@ -199,15 +199,13 @@ class BaseGetSetDelMixin(ABC):
             _check_valid_values_nested_set(self[set_index], docs)
             if set_index in subindices:
                 subindex_da = subindices[set_index]
-                with subindex_da:
-                    subindex_da.clear()
-                    subindex_da.extend(docs)
+                subindex_da.clear()
+                subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
-                with subindex_da:
-                    del subindex_da[old_ids]
-                    subindex_da.extend(DocumentArray(docs)[subindex_selector])
+                del subindex_da[old_ids]
+                subindex_da.extend(DocumentArray(docs)[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
