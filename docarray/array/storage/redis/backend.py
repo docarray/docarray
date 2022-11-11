@@ -21,6 +21,7 @@ class RedisConfig:
     host: str = field(default='localhost')
     port: int = field(default=6379)
     index_name: Optional[str] = None
+    list_like: bool = True
     update_schema: bool = field(default=True)
     distance: str = field(default='COSINE')
     redis_config: Dict[str, Any] = field(default_factory=dict)
@@ -79,6 +80,7 @@ class BackendMixin(BaseBackendMixin):
         self._offset2id_key = config.index_name + '__offset2id'
         self._config = config
         self.n_dim = self._config.n_dim
+        self._list_like = config.list_like
         self._doc_prefix = config.index_name + ':'
         self._config.columns = self._normalize_columns(self._config.columns)
 

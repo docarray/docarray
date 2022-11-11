@@ -1,9 +1,9 @@
 version: "3.3"
 services:
   weaviate:
-    image: semitechnologies/weaviate:1.16.0
+    image: semitechnologies/weaviate:1.16.1
     ports:
-      - "41234:41234"
+      - "41234:8080"
     environment:
       CONTEXTIONARY_URL: contextionary:9999
       QUERY_DEFAULTS_LIMIT: 25

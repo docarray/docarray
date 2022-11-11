@@ -38,6 +38,7 @@ class QdrantConfig:
     n_dim: int
     distance: str = 'cosine'
     collection_name: Optional[str] = None
+    list_like: bool = True
     host: Optional[str] = field(default="localhost")
     port: Optional[int] = field(default=6333)
     grpc_port: Optional[int] = field(default=6334)
@@ -116,7 +117,7 @@ class BackendMixin(BaseBackendMixin):
         )
 
         self._config = config
-
+        self._list_like = config.list_like
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._config.collection_name = (
