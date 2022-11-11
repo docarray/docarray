@@ -1,1 +1,1 @@
-from docarray.array.document import DocumentArray
+from .documentarray import DocumentArray

@@ -1,3 +1,41 @@
+[tool.poetry]
+name = "docarray"
+version = '0.1.0'
+description='The data structure for unstructured data'
+authors=['Jina AI']
+license='Apache 2.0'
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pydantic = "^1.10.2"
+numpy = "^1.23.4"
+protobuf = { version = "^4.21.9", optional = true }
+
+[tool.poetry.extras]
+common = ["protobuf"]
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pre-commit = "^2.20.0"
+jupyterlab = "^3.5.0"
+mypy = "^0.990"
+types-protobuf = "^3.20.4"
+black = "^22.10.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
+
 [build-system]
-requires = ["setuptools>=18.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+exclude = ['docarray/proto']
+plugins = "pydantic.mypy"
+
+[tool.black]
+skip-string-normalization = true # equivalent to black -S
+exclude = 'docarray/proto/pb2/*'
+
+
+[tool.isort]
+skip_glob= ['docarray/proto/pb2/*']

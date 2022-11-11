@@ -151,3 +151,5 @@ output/
 # kubernetes testing
 .pytest-kind
 .kube
+
+*.ipynb

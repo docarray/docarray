@@ -1,412 +1,463 @@
-<p align="center">
-<img src="https://github.com/docarray/docarray/blob/main/docs/_static/logo-light.svg?raw=true" alt="DocArray logo: The data structure for unstructured data" width="150px">
-<br>
-<b>The data structure for unstructured multimodal data</b>
-</p>
+# DocArray v2
 
-<p align=center>
-<a href="https://pypi.org/project/docarray/"><img src="https://img.shields.io/pypi/v/docarray?style=flat-square&amp;label=Release" alt="PyPI"></a>
-<a href="https://codecov.io/gh/docarray/docarray"><img alt="Codecov branch" src="https://img.shields.io/codecov/c/github/docarray/docarray/main?logo=Codecov&logoColor=white&style=flat-square"></a>
-<a href="https://bestpractices.coreinfrastructure.org/projects/6554"><img src="https://bestpractices.coreinfrastructure.org/projects/6554/badge"></a>
-<a href="https://pypistats.org/packages/docarray"><img alt="PyPI - Downloads from official pypistats" src="https://img.shields.io/pypi/dm/docarray?style=flat-square"></a>
-<a href="https://slack.jina.ai"><img src="https://img.shields.io/badge/Slack-3.6k-blueviolet?logo=slack&amp;logoColor=white&style=flat-square"></a>
-</p>
+this repo is small PoC for the new version of DocArray. The scope of the PoC is twofolds:
 
-<!-- start elevator-pitch -->
+* Mininal pydantic like API to feel/grasp the new user interface
+* Protobuf serialization/deserialization
 
-DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the multi-modal data with a Pythonic API.
 
-🚪 **Door to cross-/multi-modal world**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data. The foundation data structure of [Jina](https://github.com/jina-ai/jina), [CLIP-as-service](https://github.com/jina-ai/clip-as-service), [DALL·E Flow](https://github.com/jina-ai/dalle-flow), [DiscoArt](https://github.com/jina-ai/discoart) etc.
+the key ideas for this new version of DocArray:
 
-🧑‍🔬 **Data science powerhouse**: greatly accelerate data scientists' work on embedding, k-NN matching, querying, visualizing, evaluating via Torch/TensorFlow/ONNX/PaddlePaddle on CPU/GPU.
+* rely on pydantic as much as possible
+* More abstract and powerful concept with predefined easy to use object
+* explicit better than implicit. (We can't afford implicit with a higher level of abstraction )
 
-🚡 **Data in transit**: optimized for network communication, ready-to-wire at anytime with fast and compressed serialization in Protobuf, bytes, base64, JSON, CSV, DataFrame. Perfect for streaming and out-of-memory data.
+## Document schema API
 
-🔎 **One-stop k-NN**: Unified and consistent API for mainstream vector databases that allows nearest neighboour search including Elasticsearch, Redis, ANNLite, Qdrant, Weaviate.
-
-👒 **For modern apps**: GraphQL support makes your server versatile on request and response; built-in data validation and JSON Schema (OpenAPI) help you build reliable webservices.
-
-🐍 **Pythonic experience**: designed to be as easy as a Python list. If you know how to Python, you know how to DocArray. Intuitive idioms and type annotation simplify the code you write.
-
-🛸 **Integrate with IDE**: pretty-print and visualization on Jupyter notebook & Google Colab; comprehensive auto-complete and type hint in PyCharm & VS Code.
-
-Read more on [why should you use DocArray](https://docarray.jina.ai/get-started/what-is/) and [comparison to alternatives](https://docarray.jina.ai/get-started/what-is/#comparing-to-alternatives).
-
-<!-- end elevator-pitch -->
-
-DocArray was released under the open-source [Apache License 2.0](https://github.com/docarray/docarray/blob/main/LICENSE) in January 2022. It is currently a sandbox project under [LF AI & Data Foundation](https://lfaidata.foundation/).
-
-## [Documentation](https://docarray.jina.ai)
-
-## Install 
-
-Requires Python 3.7+
-```shell
-pip install docarray
-```
-or via Conda:
-```shell
-conda install -c conda-forge docarray
-```
-[Commonly used features](https://docarray.jina.ai/#install) can be enabled via `pip install "docarray[common]"`.
-
-
-## Get Started
-
-DocArray consists of three simple concepts:
-
-- **Document**: a data structure for easily representing nested, unstructured data.
-- **DocumentArray**: a container for efficiently accessing, manipulating, and understanding multiple Documents.
-- **Dataclass**: a high-level API for intuitively representing multimodal data.
-
-Let's see DocArray in action with some examples.
-
-### Example 1: represent multimodal data in dataclass
-
-The following news article card can be easily represented via `docarray.dataclass` and type annotation:
-
-
-<table>
-<tr>
-<td> 
-
-<img src="https://github.com/jina-ai/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="300px">
-     
-</td>
-<td>
-
-```python
-from docarray import dataclass, Document
-from docarray.typing import Image, Text, JSON
-
-
-@dataclass
-class WPArticle:
-    banner: Image
-    headline: Text
-    meta: JSON
-
-
-a = WPArticle(
-    banner='https://.../cat-dog-flight.png',
-    headline='Everything to know about flying with pets, ...',
-    meta={
-        'author': 'Nathan Diller',
-        'Column': 'By the Way - A Post Travel Destination',
-    },
-)
-
-d = Document(a)
-```
-
-</td>
-</tr>
-</table>
-
-
-### Example 2: a 10-liners text matching
-
-Let's search for top-5 similar sentences of <kbd>she smiled too much</kbd> in "Pride and Prejudice". 
-
-```python
-from docarray import Document, DocumentArray
-
-d = Document(uri='https://www.gutenberg.org/files/1342/1342-0.txt').load_uri_to_text()
-da = DocumentArray(Document(text=s.strip()) for s in d.text.split('\n') if s.strip())
-da.apply(Document.embed_feature_hashing, backend='process')
-
-q = (
-    Document(text='she smiled too much')
-    .embed_feature_hashing()
-    .match(da, metric='jaccard', use_scipy=True)
-)
-
-print(q.matches[:5, ('text', 'scores__jaccard__value')])
-```
-
-```text
-[['but she smiled too much.', 
-  '_little_, she might have fancied too _much_.', 
-  'She perfectly remembered everything that had passed in', 
-  'tolerably detached tone. While she spoke, an involuntary glance', 
-  'much as she chooses.”'], 
-  [0.3333333333333333, 0.6666666666666666, 0.7, 0.7272727272727273, 0.75]]
-```
-
-Here the feature embedding is done by simple [feature hashing](https://en.wikipedia.org/wiki/Feature_hashing) and distance metric is [Jaccard distance](https://en.wikipedia.org/wiki/Jaccard_index). You have better embeddings? Of course you do! We look forward to seeing your results!
-
-### Example 3: external storage for out-of-memory data
-
-When your data is too big, storing in memory is probably not a good idea. DocArray supports [multiple storage backends](https://docarray.jina.ai/advanced/document-store/) such as SQLite, Weaviate, Qdrant and ANNLite. They are all unified under **the exact same user experience and API**. Take the above snippet as an example, you only need to change one line to use SQLite:
-
-```python
-da = DocumentArray(
-    (Document(text=s.strip()) for s in d.text.split('\n') if s.strip()),
-    storage='sqlite',
-)
-```
-
-The code snippet can still run **as-is**. All APIs remain the same, the code after are then running in a "in-database" manner. 
-
-Besides saving memory, one can leverage storage backends for persistence, faster retrieval (e.g. on nearest-neighbour queries).
-
-
-
-### Example 4: a complete workflow of visual search 
-
-Let's use DocArray and the [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) dataset to build a simple meme image search. The dataset contains 6,016 image-pairs stored in `/left` and `/right`. Images that share the same filename are perceptually similar. For example:
-
-<table>
-<thead>
-  <tr>
-    <th>left/00018.jpg</th>
-    <th>right/00018.jpg</th>
-    <th>left/00131.jpg</th>
-    <th>right/00131.jpg</th>
-  </tr>
-</thead>
-<tbody>
-  <tr align="center">
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-  </tr>
-</tbody>
-</table>
-
-Our problem is given an image from `/left`, can we find its most-similar image in `/right`? (without looking at the filename of course).
-
-### Load images
-
-First we load images. You *can* go to [Totally Looks Like](https://sites.google.com/view/totally-looks-like-dataset) website, unzip and load images as below:
-
-```python
-from docarray import DocumentArray
-
-left_da = DocumentArray.from_files('left/*.jpg')
-```
-
-Or you can simply pull it from Jina Cloud:
-
-```python
-left_da = DocumentArray.pull('demo-leftda', show_progress=True)
-```
-
-**Note**
-If you have more than 15GB of RAM and want to try using the whole dataset instead of just the first 1000 images, remove [:1000] when loading the files into the DocumentArrays left_da and right_da.
-
-
-You will see a running progress bar to indicate the downloading process.
-
-To get a feeling of the data you will handle, plot them in one sprite image. You will need to have matplotlib and torch installed to run this snippet:
-
-```python
-left_da.plot_image_sprites()
-```
-
-<p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
-</p>
-
-### Apply preprocessing
-
-Let's do some standard computer vision pre-processing:
+DocArray v2 is based on pydantic schema. A Document is nothing more than a Pydantic Model with a predefined Id field and a protobuf support. We provide predefined Document for different modality
 
 ```python
 from docarray import Document
 
-
-def preproc(d: Document):
-    return (
-        d.load_uri_to_image_tensor()  # load
-        .set_image_tensor_normalization()  # normalize color
-        .set_image_tensor_channel_axis(-1, 0)
-    )  # switch color axis for the PyTorch model later
-
-
-left_da.apply(preproc)
+doc = Document()
+doc
 ```
 
-Did I mention `apply` works in parallel?
 
-### Embed images
 
-Now convert images into embeddings using a pretrained ResNet50:
+
+    BaseDocument(id=UUID('88819868-54fe-4316-9bf1-4af650e0e631'))
+
+
+
+To extend a Document you need to extend the schema by creating a new class inheriting Document.
+
+This follow [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/) API.
+
+It is similar to the dataclass from the (old) docarray
+
 
 ```python
-import torchvision
+from docarray.typing import Tensor
+import numpy as np
 
-model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
-left_da.embed(model, device='cuda')  # embed via GPU to speed up
+
+class Banner(Document):
+    text: str
+    image: Tensor
+
+
+banner = Banner(text='DocArray is amazing', image=np.zeros((3, 224, 224)))
+banner
 ```
 
-This step takes ~30 seconds on GPU. Beside PyTorch, you can also use TensorFlow, PaddlePaddle, or ONNX models in `.embed(...)`.
 
-### Visualize embeddings
 
-You can visualize the embeddings via tSNE in an interactive embedding projector. You will need to have  pydantic, uvicorn and fastapi installed to run this snippet:
+
+    Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]]))
+
+
+
+Note: there is no pretty print (from rich) but it is just a PoC
+
+You can represent nester document as well 
+
 
 ```python
-left_da.plot_embeddings(image_sprites=True)
+class NestedDocument(Document):
+    title: str
+    banner: Banner
+
+
+doc = NestedDocument(title='Jina is amazing', banner=banner)
+doc
 ```
 
-<p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
-</p>
-
-Fun is fun, but recall our goal is to match left images against right images and so far we have only handled the left. Let's repeat the same procedure for the right:
 
 
-<table>
-<tr>
-<th> Pull from Cloud </th> 
-<th> Download, unzip, load from local </th>
-</tr>
-<tr>
-<td> 
+
+    NestedDocument(id=UUID('56ca3ae1-ca71-4258-a760-af9e09dea93f'), title='Jina is amazing', banner=Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]])))
+
+
+
+### Inheritance and composition
+
+Before we showed how to **compose** Document. You can as well **extend** Document by inheritance
+
 
 ```python
-right_da = (
-    DocumentArray.pull('demo-rightda', show_progress=True)
-    .apply(preproc)
-    .embed(model, device='cuda')[:1000]
+class ExtendNestedDocument(NestedDocument):
+    warning: str
+
+
+extended_doc = ExtendNestedDocument(
+    title='Jina is amazing', banner=banner, warning='hello'
 )
+extended_doc
 ```
-     
-</td>
-<td>
+
+
+
+
+    ExtendNestedDocument(id=UUID('1a973e74-7774-4387-9b26-e5b5c8a0cfe4'), title='Jina is amazing', banner=Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]])), warning='hello')
+
+
+
+
+### Predefined Document
+
+A Document has only ID has a predefined field, no more text, uri, tensor embedding. This is the user that need to construct their abstraction. Nevertheless we don't want to loose the handiness of the old Document that provide predifined fields. Therefore we provide predfined mono modals building blocks that are just predifined Document that cover common use case the same way the old Documennt was doing.
+
+This is just an example and the real predefined one need to think in depth
+
 
 ```python
-right_da = (
-    DocumentArray.from_files('right/*.jpg')[:1000]
-    .apply(preproc)
-    .embed(model, device='cuda')
-)
+from docarray import Text, Image
+
+doc_text = Text(text='hello')
+doc_text
 ```
 
-</td>
-</tr>
-</table>
 
-### Match nearest neighbours
 
-We can now match the left to the right and take the top-9 results.
+
+    Text(id=UUID('c8249d8d-473c-47e1-84fd-961aba81d74e'), text='hello', tensor=None)
+
+
+
 
 ```python
-left_da.match(right_da, limit=9)
+doc_image = Image(uri='http://jina.ai')
+doc_image
 ```
 
-Let's inspect what's inside `left_da` matches now:
+
+
+
+    Image(id=UUID('a461e508-4c8b-430b-a63f-091007743cf3'), uri=ImageUrl('http://jina.ai', scheme='http', host='jina.ai', tld='ai', host_type='domain'), tensor=None)
+
+
+
+### What about helper function ?
+
+The old way of using helper function (`doc.load_uri_to_image_tensor()`) does not work anymore because we can't operate at a Document levels since we don't know what field are in the Document. A better approach is to encode any kind of modality helper in the type directly. The assignment is then explicit, we cannot afford implicit because we technically can have multi field (embedding, tensor). S
+
 
 ```python
-for m in left_da[0].matches:
-    print(d.uri, m.uri, m.scores['cosine'].value)
+doc_image.tensor = doc_image.uri.load()
+doc_image
 ```
 
-```text
-left/02262.jpg right/03459.jpg 0.21102
-left/02262.jpg right/02964.jpg 0.13871843
-left/02262.jpg right/02103.jpg 0.18265384
-left/02262.jpg right/04520.jpg 0.16477376
+
+
+
+    Image(id=UUID('a461e508-4c8b-430b-a63f-091007743cf3'), uri=ImageUrl('http://jina.ai', scheme='http', host='jina.ai', tld='ai', host_type='domain'), tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]]))
+
+## Example: working with Embedding
+
+All of the predefined Document have a predefined Embedding field
+
+
+```python
+image = Image(embedding=np.zeros((100, 1)))
+assert image.embedding is not None
+```
+
+We can easily extend them to have multi embedding:
+
+
+
+```python
+from typing import Optional
+from docarray.typing import Embedding
+
+
+class MyExtendedImage(Image):
+    embedding2: Embedding
+    embedding3: Optional[Embedding]
+```
+
+
+```python
+image = MyExtendedImage(embedding=np.zeros((100, 1)), embedding2=np.zeros((100, 1)))
+assert image.embedding is not None
+assert image.embedding2 is not None
+assert image.embedding3 is None
+```
+
+Atm we have a couple of method that work on embedding:
+* embed
+* find/match
 ...
-```
 
-Or shorten the loop as one-liner using the element & attribute selector:
+They all work on the `embedding` field. Nevertheless we don't have nesceraly this field define. User can have Document without embedding, or have embedding that are not call embedding, or have multiple embeddings ...
 
-```python
-print(left_da['@m', ('uri', 'scores__cosine__value')])
-```
-
-Better see it.
-
-```python
-(
-    DocumentArray(left_da[8].matches, copy=True)
-    .apply(
-        lambda d: d.set_image_tensor_channel_axis(
-            0, -1
-        ).set_image_tensor_inv_normalization()
-    )
-    .plot_image_sprites()
-)
-```
-
-<p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn-left.jpeg?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/9nn.png?raw=true" alt="Visualizing top-9 matches using DocArray API" height="250px"></a>
-</p>
-
-What we did here is revert the preprocessing steps (i.e. switching axis and normalizing) on the copied matches, so that you can visualize them using image sprites.  
-
-### Quantitative evaluation
-
-Serious as you are, visual inspection is surely not enough. Let's calculate the recall@K. First we construct the groundtruth matches:
-
-```python
-groundtruth = DocumentArray(
-    Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'right'))])
-    for d in left_da
-)
-```
-
-Here we create a new DocumentArray with real matches by simply replacing the filename, e.g. `left/00001.jpg` to `right/00001.jpg`. That's all we need: if the predicted match has the identical `uri` as the groundtruth match, then it is correct.
-
-Now let's check recall rate from 1 to 5 over the full dataset:
-
-```python
-for k in range(1, 6):
-    print(
-        f'recall@{k}',
-        left_da.evaluate(
-            groundtruth, hash_fn=lambda d: d.uri, metric='recall_at_k', k=k, max_rel=1
-        ),
-    )
-```
-
-```text
-recall@1 0.02726063829787234
-recall@2 0.03873005319148936
-recall@3 0.04670877659574468
-recall@4 0.052194148936170214
-recall@5 0.0573470744680851
-```
-
-More metrics can be used such as `precision_at_k`, `ndcg_at_k`, `hit_at_k`.
-
-If you think a pretrained ResNet50 is good enough, let me tell you with [Finetuner](https://github.com/jina-ai/finetuner) you could do much better in just 10 extra lines of code. [Here is how](https://finetuner.jina.ai/notebooks/image_to_image/).
-
-
-### Save results
-
-You can save a DocumentArray to binary, JSON, dict, DataFrame, CSV or Protobuf message with/without compression. In its simplest form,
-
-```python
-left_da.save('left_da.bin')
-```
-
-To reuse it, do `left_da = DocumentArray.load('left_da.bin')`.
-
-
-If you want to transfer a DocumentArray from one machine to another or share it with your colleagues, you can do:
+The solution is the same as for Executor ( see below ). We use pick automatically an the first embedding field by default and we allow users to explicitly define the mapping if they want to
 
 
 ```python
-left_da.push('my_shared_da')
+# THIS CODE DOES NOT RUN YET
+
+da.find(da2, 'embedding:embedding1')
 ```
 
-Now anyone who knows the token `my_shared_da` can pull and work on it.
+## DocumentArray
+
+a DocumentArray is a list like container of Document. The big change with the (old) DocArray is that now DocumentArray can precise on Document Schema on which they work on. This is usefull both for type hint and for protobuf reconstruction.
+
+The old behavior where DocumentArray could contain any kind of Document is still possible (it is actually the default) because we have the a Schemaless Document.
 
 ```python
-left_da = DocumentArray.pull('my_shared_da')
+from docarray import Document, DocumentArray, Text, Image
+
+da = DocumentArray([Text(text='hello'), Image(tensor=np.zeros((3, 224, 224)))])
+da
 ```
 
-Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
 
 
-<!-- start support-pitch -->
-## Support
-- Join our [Slack community](https://slack.jina.ai) and chat with other community members about ideas.
+
+    [Text(id=UUID('b901bd1d-cd4d-4f17-b774-e6ddb8487234'), text='hello', tensor=None),
+     Image(id=UUID('1849bdb9-d1da-4b18-8670-84f1af053693'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
+             [0., 0., 0., ..., 0., 0., 0.],
+             [0., 0., 0., ..., 0., 0., 0.],
+             ...,
+
+             [0., 0., 0., ..., 0., 0., 0.],
+             [0., 0., 0., ..., 0., 0., 0.],
+             [0., 0., 0., ..., 0., 0., 0.]]]))]
 
 
-> DocArray is a trademark of LF AI Projects, LLC
+
+inside the DocumentArray there is a typed define
+
+
+```python
+da.document_type
+```
+
+
+
+
+    docarray.document.any_document.AnyDocument
+
+
+
+in this case the schema of the DocumentArray is the AnyDocument schema, i.e, it works with any Document
+
+but you can as well restraint this type
+
+
+```python
+da = DocumentArray[Text]([Text(text='hello'), Text(text='bye bye')])
+da
+```
+
+
+
+
+    [Text(id=UUID('82d422a6-2805-4d70-8f5b-cf6a8e720e3c'), text='hello', tensor=None),
+     Text(id=UUID('1a624b5e-fc7d-46b8-916e-4f5467e8cf82'), text='bye bye', tensor=None)]
+
+
+
+Note this is a experiment API, we can rely on DocumentArray(..., type=Text) in a metaclass way (like storage) otherwise. It is a proposition I like it this way better
+
+
+```python
+da.document_type
+```
+
+
+
+
+    docarray.predefined_document.text.Text
+
+
+
+This is mainly usefull for type hint:
+
+
+```python
+def do_smth_on_da(da: DocumentArray[Text]):
+
+    for doc in da:
+        print(
+            da.text
+        )  ## this will work since you expect Document Text inside the DocumentArray
+```
+
+### Nested DocumentArray inside Document
+
+(Old) Document had the chunks field to represented nested document in document. We extend this principle by allowing a field of Document to just be a DocumentArray
+
+
+```python
+from docarray import Document, Image
+
+
+class Video(Document):
+    title: str
+    frames: DocumentArray[Image]
+
+
+frames = DocumentArray([Image(tensor=np.zeros((3, 224, 224))) for _ in range(24)])
+video = Video(title='hello', frames=frames)
+video
+```
+
+
+
+
+    Video(id=UUID('4d3f3d99-a346-4152-bd81-9170136ca75b'), title='hello', frames=[Image(id=UUID('69f2c62f-bdec-4172-aaef-630029e3e974'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+
+
+            ...,
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]])), Image(id=UUID('dfc9c251-5a79-4278-8748-defa18a5bd65'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]],
+    
+           
+           [[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]])), Image(id=UUID('1e9027ce-e036-4bc2-85b2-e2f97c3a1200'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            ...,
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.],
+            [0., 0., 0., ..., 0., 0., 0.]]]))])
+
+
+
+## Jina side : Executor interoperability
+
+The API above is much more flexible than the current Document implementation. This buys us better multimodal support as well as more natural vector DB integration. On the other hand, the Executor have less structure to rely on.
+We intend to tackle this limitation in the following way:
+
+- **Every Executor expects a schema that it will work on**. This could be self-defined, or an imported ‘default’ Document:
+
+```python
+class MyExecSchema(Document):
+    text: str
+    embedding: Embedding
+
+
+class MyExec(Executor):
+    @requests
+    def foo(docs: DocumentArray[MyExecSchema], *args, **kwargs):
+        ...
+```
+
+- On the client side, the user can (**but does not have to!)** define a translation (`schema_map`, name not final) from their schema to the expected schema:
+
+```python
+class ClientDoc(Document):
+    text: str
+    first_embedding: Embedding
+    second_embedding: Embedding
+
+
+doc = ClientDoc(...)
+# map `text` to `text` and `first_embedding` to `embedding`
+client.post(doc, schema_map={'MyExec': 'text:text,first_embedding:embedding'})
+# the case of nested schema can be handle with dunder notation
+```
+
+- The **worker runtime performs the schema translation**, by simply renaming fields in the received document. That way the Executor only gets to see what it wants. We plan on doing automatic translation as well to avoid verbosity when it is not needed (see below)
+- **Defaults**: If the client schema already matches the Executor schema, no translation is necessary and no schema map needs to be passed.
+If the schemas do not match and no map is provided, the runtime can do a best effort translation based on the types. We clearly document that mechanism and avoid any surprises.
+- **Backward compatibility:** If an Executor fails to provide an expected schema, we assume the current (legacy) schema that already exists for every Document
+- Executors can receive any schema that is superset of his defined schema. Clients send to the Flow, documents with a schema that is valid to all Executors. 
+In the worker runtime, deserializing docs from a python object to protobuf should rely on the initial protobuf message, rather [than creating a new one](https://github.com/jina-ai/docarray/blob/main/docarray/proto/io/__init__.py#L41)
+
+**Automatic translation details:** 
+
+Lets say my input data follow this schema
+
+```python
+class ImageTextDocument(Document):
+    text: Text
+    image: Image
+    embedding: Embedding
+```
+
+and that my Executor follow this one
+
+```python
+class MyPhoto(Document):
+    vector: Embedding
+    photo: Image
+    description: Text
+
+
+class PhotoEmbeddingExecutor(Executor):
+    @requests
+    def encode(self, docs: DocumentArray[MyPhoto], **kwargs):
+        for doc_ in docs:
+            doc.embedding = self.image_model(doc.photo)
+```
+
+They define actually the same underlying schema but with different field name. So the way would be to do
+
+```python
+client.post(doc, schema_map={'MyExec': 'image:photo,embedding:vector,text:description'})
+```
+
+But this is too verbose for smth just translating the same schema. We will do that automatically., How ? We look at the field type and do a one by one group by.
+
+What if the matching is not exact ? i.e what if we have the two following schema ?
+
+```python
+class ClientDoc(Document):
+    text: Text
+    embedding1: Embedding
+    embedding2: Embedding
+
+
+class ExecutorDoc(Document):
+    text: Text
+    embedding: Embedding
+```
+
+ If we have collision on a field (here two embeddings) we will take the first field that correspond (in this case embedding1). This is a deterministic algorithm because fields are ordered in pydantic
+

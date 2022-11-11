@@ -1,0 +1,36 @@
+from typing import Type
+
+from docarray.proto import DocumentArrayProto, NodeProto
+
+from ..abstract_array import AbstractDocumentArray
+
+
+class ProtoArrayMixin(AbstractDocumentArray):
+    @classmethod
+    def from_protobuf(
+        cls: Type[AbstractDocumentArray], pb_msg: 'DocumentArrayProto'
+    ) -> AbstractDocumentArray:
+        """create a Document from a protobuf message"""
+
+        return cls(cls.document_type.from_protobuf(od) for od in pb_msg.docs)
+
+    def to_protobuf(self) -> 'DocumentArrayProto':
+        """Convert DocumentArray into a Protobuf message.
+
+        :param ndarray_type: can be ``list`` or ``numpy``, if set it will force all ndarray-like object from all
+            Documents to ``List`` or ``numpy.ndarray``.
+        :return: the protobuf message
+        """
+
+        dap = DocumentArrayProto()
+        for doc in self:
+            dap.docs.append(doc.to_protobuf())
+        return dap
+
+    def _to_nested_item_protobuf(self) -> 'NodeProto':
+        """Convert a DocumentArray into a nested item protobuf message. This function should be called when a DocumentArray
+        is nested into another Document that need to be converted into a protobuf
+
+        :return: the nested item protobuf message
+        """
+        return NodeProto(chunks=self.to_protobuf())

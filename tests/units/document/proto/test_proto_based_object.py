@@ -1,0 +1,41 @@
+import numpy as np
+
+from docarray.proto import DocumentProto, NdArrayProto, NodeProto
+from docarray.proto.io import flush_ndarray, read_ndarray
+
+
+def test_nested_item_proto():
+    NodeProto(text='hello')
+    NodeProto(nested=DocumentProto())
+
+
+def test_nested_optional_item_proto():
+    NodeProto()
+
+
+def test_ndarray():
+    nd_proto = NdArrayProto()
+    original_tensor = np.zeros((3, 224, 224))
+    flush_ndarray(nd_proto, value=original_tensor)
+    nested_item = NodeProto(tensor=nd_proto)
+    tensor = read_ndarray(nested_item.tensor)
+
+    assert (tensor == original_tensor).all()
+
+
+def test_document_proto_set():
+
+    data = {}
+
+    nested_item1 = NodeProto(text='hello')
+
+    nd_proto = NdArrayProto()
+    original_tensor = np.zeros((3, 224, 224))
+    flush_ndarray(nd_proto, value=original_tensor)
+
+    nested_item2 = NodeProto(tensor=nd_proto)
+
+    data['a'] = nested_item1
+    data['b'] = nested_item2
+
+    DocumentProto(data=data)

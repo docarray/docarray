@@ -13,7 +13,7 @@ repos:
   hooks:
   - id: black
     types: [python]
-    exclude: ^(docarray/proto/pb/docarray_pb2.py|docarray/proto/pb2/docarray_pb2.py|docs/|docarray/resources/)
+    exclude: ^(docarray/proto/pb/docarray_pb2.py|docarray/proto/pb/docarray_pb2.py|docs/|docarray/resources/)
     args:
       - -S
 - repo: https://github.com/asottile/blacken-docs
@@ -22,3 +22,9 @@ repos:
   - id: blacken-docs
     args:
       - -S
+-   repo: https://github.com/pycqa/isort
+    rev: 5.5.4
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        exclude: ^(docarray/proto/pb/docarray_pb2.py|docarray/proto/pb/docarray_pb2.py|docs/|docarray/resources/)
