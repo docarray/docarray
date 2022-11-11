@@ -16,6 +16,3 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     """
 
     id: Union[int, str, UUID] = Field(default_factory=lambda: os.urandom(16).hex())
-
-    class Config:
-        arbitrary_types_allowed = True
