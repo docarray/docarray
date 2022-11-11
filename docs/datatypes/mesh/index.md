@@ -7,7 +7,14 @@ This feature requires `trimesh`. You can install it via `pip install "docarray[f
 
 A 3D mesh is the structural build of a 3D model consisting of polygons. Most 3D meshes are created via professional software packages, such as commercial suites like Unity, or the free open source Blender 3D.
 
-DocArray supports .obj, .glb and .ply files.
+DocArray supports the following file formats for 3D data handling: .obj, .glb and .ply.
+
+You can explore interactive 3D data visualization with DocArray in the following Google Colab Notebook:
+<p>
+<a target="_blank" href="https://colab.research.google.com/drive/17uHgNVndRlfAAV9CAB_HEHHuRdGgsBW2?usp=sharing">
+<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+</p>
 
 ## Vertices and faces representation 
 
