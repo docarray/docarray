@@ -27,8 +27,7 @@ def start_storage():
         f"--remove-orphans"
     )
     os.system(
-        f"docker-compose -f {milvus_compose_yml} --project-directory . up  --build -d "
-        f"--remove-orphans"
+        f"docker-compose -f {milvus_compose_yml} --project-directory . up  --build -d"
     )
 
     _wait_for_es()
@@ -46,13 +45,9 @@ def start_storage():
 
 
 def restart_milvus():
+    os.system(f"docker-compose -f {milvus_compose_yml} --project-directory . down")
     os.system(
-        f"docker-compose -f {milvus_compose_yml} --project-directory . down "
-        f"--remove-orphans"
-    )
-    os.system(
-        f"docker-compose -f {milvus_compose_yml} --project-directory . up  --build -d "
-        f"--remove-orphans"
+        f"docker-compose -f {milvus_compose_yml} --project-directory . up  --build -d"
     )
     _wait_for_milvus(restart_on_failure=False)
 
