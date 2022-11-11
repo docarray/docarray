@@ -1,4 +1,4 @@
-from .image import Image
-from .text import Text
+from docarray.predefined_document.image import Image
+from docarray.predefined_document.text import Text
 
 __all__ = ['Text', 'Image']
