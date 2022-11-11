@@ -1,4 +1,4 @@
 import numpy as np
+from .tensor import Tensor
 
-Tensor = np.ndarray
 Embedding = Tensor

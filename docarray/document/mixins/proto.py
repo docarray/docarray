@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Type
 
 from docarray.proto import DocumentProto, NdArrayProto, NodeProto
-from docarray.proto.io import flush_ndarray, read_ndarray
 from docarray.typing import Tensor
 
 from ..abstract_document import AbstractDocument
@@ -32,7 +31,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             content_type = value.WhichOneof('content')
 
             if content_type == 'tensor':
-                fields[field] = read_ndarray(value.tensor)
+                fields[field] = Tensor.read_ndarray(value.tensor)
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
@@ -63,12 +62,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
             try:
                 if isinstance(value, BaseNode):
                     nested_item = value._to_nested_item_protobuf()
-
-                elif isinstance(value, Tensor):
-                    nd_proto = NdArrayProto()
-                    flush_ndarray(nd_proto, value=value)
-                    NodeProto(tensor=nd_proto)
-                    nested_item = NodeProto(tensor=nd_proto)
 
                 elif type(value) is str:
                     nested_item = NodeProto(text=value)
