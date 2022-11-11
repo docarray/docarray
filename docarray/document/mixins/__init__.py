@@ -1,1 +1,1 @@
-from .proto import ProtoMixin
+from docarray.document.mixins.proto import ProtoMixin
