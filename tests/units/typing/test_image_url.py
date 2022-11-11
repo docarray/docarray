@@ -1,3 +1,4 @@
+import numpy as np
 from pydantic.tools import parse_obj_as
 
 from docarray.typing import ImageUrl, Tensor
@@ -8,4 +9,4 @@ def test_image_url():
 
     tensor = uri.load()
 
-    assert isinstance(tensor, Tensor)
+    assert isinstance(tensor, np.ndarray)
