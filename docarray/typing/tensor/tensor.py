@@ -1,15 +1,14 @@
-from typing import Union, TypeVar, Any, TYPE_CHECKING
+from typing import Union, TypeVar, Any, TYPE_CHECKING, Type, cast
 
 import numpy as np
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
-    from pydantic import BaseConfig
+    from pydantic import BaseConfig, PydanticValueError
 
 from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NdArrayProto, NodeProto
-from pydantic import ValidationError
 
-T = TypeVar('T', bound=np.ndarray)
+T = TypeVar('T', bound='Tensor')
 
 
 class Tensor(np.ndarray, BaseNode):
@@ -21,25 +20,24 @@ class Tensor(np.ndarray, BaseNode):
         yield cls.validate
 
     @classmethod
-    def validate(cls: T, value: Union[T, Any], field: 'ModelField', config: 'BaseConfig') -> T:
+    def validate(cls: Type[T], value: Union[T, Any], field: 'ModelField', config: 'BaseConfig') -> T:
         if isinstance(value, np.ndarray):
             return cls.from_ndarray(value)
         elif isinstance(value, Tensor):
-            return value
+            return cast(T, value)
         else:
             try:
-                arr = np.ndarray(value)
+                arr: np.ndarray = np.ndarray(value)
                 return cls.from_ndarray(arr)
             except Exception:
                 pass  # handled below
-        raise ValidationError(f'Expected a numpy.ndarray, got {type(value)}')
+        raise ValueError(f'Expected a numpy.ndarray, got {type(value)}')
 
     @classmethod
-    def from_ndarray(cls, value: np.ndarray) -> T:
+    def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
 
-
-    def _to_nested_item_protobuf(self) -> 'NodeProto':
+    def _to_nested_item_protobuf(self: T) -> 'NodeProto':
         """Convert Document into a nested item protobuf message. This function should be called when the Document
         is nested into another Document that need to be converted into a protobuf
 
@@ -51,7 +49,7 @@ class Tensor(np.ndarray, BaseNode):
         return NodeProto(tensor=nd_proto)
 
     @classmethod
-    def read_ndarray(cls, pb_msg: 'NdArrayProto') -> 'Tensor':
+    def read_ndarray(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
         read ndarray from a proto msg
         :param pb_msg:
