@@ -84,7 +84,16 @@ You will need to implement the above five functions, which correspond to the log
 
 Note that DocumentArray maintains an `offset2ids` mapping to allow a list-like behaviour. This mapping is 
 inherited from the `BaseGetSetDelMixin`. Therefore, you need to implement methods to persist this mapping, in case you 
-want to also persist the ordering of Documents inside the storage.
+want to also persist the ordering of Documents inside the storage. Considered the performance issue brought by list-like
+structure implemented by Offset2id, you can disable this feature by passing a flag when constructing the backend.
+After so, the Offset2id will become a shell and do nothing.
+
+```Python
+from docarray import DocumentArray, Document
+
+da = DocumentArray(storage='qdrant', config={'n_dim':3, 'list_like':False})
+
+```
 
 Keep in mind that `_del_doc_by_id` and `_set_doc_by_id` **must not** update `offset2ids`, we handle that for you in an 
 upper level. Also, make sure that `_set_doc_by_id` performs an **upsert operation** and removes the old ID (`_id`) in case 
