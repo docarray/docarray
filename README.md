@@ -14,7 +14,7 @@
 
 <!-- start elevator-pitch -->
 
-testttttttttt DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the multi-modal data with a Pythonic API.
+teeeestttttttttt DocArray is a library for nested, unstructured, multimodal data in transit, including text, image, audio, video, 3D mesh, etc. It allows deep-learning engineers to efficiently process, embed, search, recommend, store, and transfer the multi-modal data with a Pythonic API.
 
 🚪 **Door to cross-/multi-modal world**: super-expressive data structure for representing complicated/mixed/nested text, image, video, audio, 3D mesh data. The foundation data structure of [Jina](https://github.com/jina-ai/jina), [CLIP-as-service](https://github.com/jina-ai/clip-as-service), [DALL·E Flow](https://github.com/jina-ai/dalle-flow), [DiscoArt](https://github.com/jina-ai/discoart) etc.
 
@@ -38,7 +38,7 @@ DocArray was released under the open-source [Apache License 2.0](https://github.
 
 ## [Documentation](https://docarray.jina.ai)
 
-## Install 
+## Install
 
 Requires Python 3.7+
 ```shell
