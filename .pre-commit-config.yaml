@@ -1,13 +1,4 @@
 repos:
-- repo: https://github.com/pycqa/flake8
-  rev: 4.0.1
-  hooks:
-  - id: flake8
-    exclude: ^(.git|__pycache__|docs/source/conf.py|old|build|dist|tests|jina/resources/|docarray/proto/pb/docarray_pb2.py|docarray/proto/pb/docarray_pb2_grpc.py|jina/proto/pb2/docarray_pb2.py|jina/proto/pb2/docarray_pb2_grpc.py)
-    args:
-      - --max-complexity=10
-      - --max-line-length=127
-      - --select=E9,F63,F7,F82
 - repo: https://github.com/ambv/black
   rev: 22.3.0
   hooks:
@@ -28,3 +19,8 @@ repos:
       - id: isort
         args: ["--profile", "black"]
         exclude: ^(docarray/proto/pb/docarray_pb2.py|docarray/proto/pb/docarray_pb2.py|docs/|docarray/resources/)
+
+- repo: https://github.com/charliermarsh/ruff-pre-commit
+  rev: v0.0.116
+  hooks:
+    - id: ruff
