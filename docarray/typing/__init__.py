@@ -1,5 +1,5 @@
 from docarray.typing.embedding import Embedding
 from docarray.typing.tensor import Tensor
-from docarray.typing.url import ImageUrl
+from docarray.typing.url import AnyUrl, ImageUrl
 
-__all__ = ['Tensor', 'Embedding', 'ImageUrl']
+__all__ = ['Tensor', 'Embedding', 'ImageUrl', 'AnyUrl']
