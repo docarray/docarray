@@ -1,11 +1,10 @@
 import numpy as np
 
-from docarray.typing import Tensor
 from docarray import Document
+from docarray.typing import Tensor
 
 
 def test_set_tensor():
-
     class MyDocument(Document):
         tensor: Tensor
 
