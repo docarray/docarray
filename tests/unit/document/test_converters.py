@@ -341,14 +341,14 @@ def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
         )
     ],
 )
-def test_load_chunk_uris_to_rgbd_tensor(uri_rgb, uri_depth):
+def test_load_uris_to_rgbd_tensor(uri_rgb, uri_depth):
     doc = Document(
         chunks=[
             Document(uri=uri_rgb),
             Document(uri=uri_depth),
         ]
     )
-    doc.load_chunk_uris_to_rgbd_tensor()
+    doc.load_uris_to_rgbd_tensor()
 
     assert doc.tensor.shape[-1] == 4
 
@@ -362,7 +362,7 @@ def test_load_chunk_uris_to_rgbd_tensor(uri_rgb, uri_depth):
         )
     ],
 )
-def test_load_chunk_uris_to_rgbd_tensor_different_shapes_raise_exception(
+def test_load_uris_to_rgbd_tensor_different_shapes_raise_exception(
     uri_rgb, uri_depth
 ):
     doc = Document(
@@ -375,10 +375,10 @@ def test_load_chunk_uris_to_rgbd_tensor_different_shapes_raise_exception(
         ValueError,
         match='The provided RGB image and depth image are not of the same shapes',
     ):
-        doc.load_chunk_uris_to_rgbd_tensor()
+        doc.load_uris_to_rgbd_tensor()
 
 
-def test_load_chunk_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
+def test_load_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
     doc = Document(
         chunks=[
             Document(),
@@ -389,4 +389,4 @@ def test_load_chunk_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
         ValueError,
         match='A chunk of the given Document does not provide an uri.',
     ):
-        doc.load_chunk_uris_to_rgbd_tensor()
+        doc.load_uris_to_rgbd_tensor()

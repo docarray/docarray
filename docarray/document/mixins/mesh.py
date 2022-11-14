@@ -113,7 +113,7 @@ class MeshDataMixin:
 
         return self
 
-    def load_chunk_uris_to_rgbd_tensor(self: 'T') -> 'T':
+    def load_uris_to_rgbd_tensor(self: 'T') -> 'T':
         """Load RGB image from :attr:`.uri` of :attr:`.chunks[0]` and the depth image from :attr:`.uri` of :attr:`.chunks[1]` and merge them into :attr:`.tensor`.
 
         :return: itself after processed
