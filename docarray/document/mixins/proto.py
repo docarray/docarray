@@ -1,4 +1,4 @@
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
 from pydantic.tools import parse_obj_as
 
@@ -9,16 +9,6 @@ from docarray.typing import AnyUrl, Embedding, ImageUrl, Tensor
 
 
 class ProtoMixin(AbstractDocument, BaseNode):
-    @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
-        """
-        Accessing the nested python Class define in the schema. Could be useful for
-        reconstruction of Document in serialization/deserilization
-        :param field: name of the field
-        :return:
-        """
-        return cls.__fields__[field].type_
-
     @classmethod
     def from_protobuf(cls, pb_msg: 'DocumentProto') -> 'ProtoMixin':
         """create a Document from a protobuf message"""
