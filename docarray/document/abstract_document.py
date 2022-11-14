@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Dict, Iterable, Type
 from pydantic.fields import ModelField
 
 if TYPE_CHECKING:
-    from docarray.document import BaseNode
+    from docarray.document.mixins.proto import ProtoMixin
 
 
 class AbstractDocument(Iterable):
@@ -12,5 +12,5 @@ class AbstractDocument(Iterable):
 
     @classmethod
     @abstractmethod
-    def _get_nested_document_class(cls, field: str) -> Type['BaseNode']:
+    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
         ...
