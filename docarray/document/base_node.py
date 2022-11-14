@@ -10,8 +10,8 @@ class BaseNode(ABC):
     """
 
     @abstractmethod
-    def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert itself into a nested item protobuf message. This function should
+    def _to_node_protobuf(self) -> NodeProto:
+        """Convert itself into a NodeProto message. This function should
         be called when the self is nested into another Document that need to be
         converted into a protobuf
 

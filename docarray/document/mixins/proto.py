@@ -91,8 +91,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return DocumentProto(data=data)
 
-    def _to_node_protobuf(self) -> 'NodeProto':
-        """Convert Document into a nested item protobuf message. This function should be
+    def _to_node_protobuf(self) -> NodeProto:
+        """Convert Document into a NodeProto protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf
 
