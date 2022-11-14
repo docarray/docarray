@@ -1195,6 +1195,14 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<6)"]
 
 [[package]]
+name = "ruff"
+version = "0.0.117"
+description = "An extremely fast Python linter, written in Rust."
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "send2trash"
 version = "1.8.0"
 description = "Send file to trash natively under Mac OS X, Windows and Linux."
@@ -1408,7 +1416,7 @@ common = ["protobuf"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "06ce6ab9d586fba9a5c6c9402b7193baa9fdf217a96614e2b58adbdc90cde126"
+content-hash = "554564c0d24e3fc9a7e17e1b3020fcc428dd6bdfc2f2725f5e98f1ea6bdc8270"
 
 [metadata.files]
 anyio = []
@@ -1706,6 +1714,7 @@ pyyaml = [
 ]
 pyzmq = []
 requests = []
+ruff = []
 send2trash = [
     {file = "Send2Trash-1.8.0-py3-none-any.whl", hash = "sha256:f20eaadfdb517eaca5ce077640cb261c7d2698385a6a0f072a4a5447fd49fa08"},
     {file = "Send2Trash-1.8.0.tar.gz", hash = "sha256:d2c24762fd3759860a0aff155e45871447ea58d2be6bdd39b5c8f966a0c99c2d"},

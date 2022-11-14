@@ -23,6 +23,7 @@ types-protobuf = "^3.20.4"
 black = "^22.10.0"
 isort = "^5.10.1"
 flake8 = "^5.0.4"
+ruff = "^0.0.117"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -39,3 +40,7 @@ exclude = 'docarray/proto/pb2/*'
 
 [tool.isort]
 skip_glob= ['docarray/proto/pb2/*']
+
+[tool.ruff]
+exclude = ['docarray/proto/pb2/*']
+line-length = 88

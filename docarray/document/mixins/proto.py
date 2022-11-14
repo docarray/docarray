@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Any, Dict, Type
+from typing import Any, Dict, Type
 
-from docarray.proto import DocumentProto, NdArrayProto, NodeProto
+from docarray.proto import DocumentProto, NodeProto
 from docarray.typing import Tensor
 
 from ..abstract_document import AbstractDocument
