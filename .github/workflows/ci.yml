@@ -80,7 +80,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install poetry
           poetry install --only dev 
-          poetry run black .
+          poetry run black --check .
 
         env:
           CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
