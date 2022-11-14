@@ -376,3 +376,17 @@ def test_load_chunk_uris_to_rgbd_tensor_different_shapes_raise_exception(
         match='The provided RGB image and depth image are not of the same shapes',
     ):
         doc.load_chunk_uris_to_rgbd_tensor()
+
+
+def test_load_chunk_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
+    doc = Document(
+        chunks=[
+            Document(),
+            Document(),
+        ]
+    )
+    with pytest.raises(
+        ValueError,
+        match='A chunk of the given Document does not provide an uri.',
+    ):
+        doc.load_chunk_uris_to_rgbd_tensor()
