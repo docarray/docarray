@@ -564,7 +564,8 @@ The solution is simple: use {ref}`column-selector<bulk-access>`:
 da[0, 'text'] = 'hello'
 ```
 
-### Performance Issue caused by List-like structure
+### Performance issue caused by list-like structure
+
 DocArray allows list-like behavior by adding an offset-to-id mapping structure to storage backends. Such feature (adding this structure) means the database stores, 
 along with documents, meta information about document order.
 However, list_like behavior is not useful in indexers where concurrent usage is possible and users do not need information about document location. 
