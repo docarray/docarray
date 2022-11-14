@@ -130,7 +130,7 @@ class BaseGetSetDelMixin(ABC):
     def _del_all_docs(self):
         self._clear_subindices()
         self._clear_storage()
-        self._offset2ids = Offset2ID(list_like=getattr(self, '_list_like', None))
+        self._offset2ids = Offset2ID(list_like=getattr(self, '_list_like', True))
 
     def _del_docs_by_ids(self, ids):
         """This function is derived from :meth:`_del_doc_by_id`
