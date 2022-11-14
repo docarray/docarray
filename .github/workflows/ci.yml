@@ -174,7 +174,7 @@ jobs:
 
   # just for blocking the merge until all parallel core-test are successful
   success-all-test:
-    needs: [docarray-test]
+    needs: [docarray-test, commit-lint]
     if: always()
     runs-on: ubuntu-latest
     steps:
