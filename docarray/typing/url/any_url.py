@@ -12,4 +12,4 @@ class AnyUrl(BaseAnyUrl, BaseNode):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(text=str(self))
+        return NodeProto(image_url=str(self))

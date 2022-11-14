@@ -31,7 +31,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             content_type = value.WhichOneof('content')
 
             if content_type == 'tensor':
-                fields[field] = Tensor.read_ndarray(value.tensor)
+                fields[field] = Tensor._read_from_proto(value.tensor)
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
