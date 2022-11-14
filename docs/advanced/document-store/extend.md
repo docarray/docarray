@@ -84,7 +84,19 @@ You will need to implement the above five functions, which correspond to the log
 
 Note that DocumentArray maintains an `offset2ids` mapping to allow a list-like behaviour. This mapping is 
 inherited from the `BaseGetSetDelMixin`. Therefore, you need to implement methods to persist this mapping, in case you 
-want to also persist the ordering of Documents inside the storage.
+want to also persist the ordering of Documents inside the storage. Considered the performance cost brought by list-like
+structure implemented by Offset2id, you can disable this feature by passing a flag when constructing the backend.
+After so, the Offset2id will become a shell and do nothing. Then in the `getsetdel.py` you can construct the _offset2ids 
+member variable by passing list_like flag as follows:
+
+```Python
+    def _load_offset2ids(self):
+        if self._list_like:
+            ids = self._get_offset2ids_meta()
+            self._offset2ids = Offset2ID(ids, list_like=self._list_like)
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
+```
 
 Keep in mind that `_del_doc_by_id` and `_set_doc_by_id` **must not** update `offset2ids`, we handle that for you in an 
 upper level. Also, make sure that `_set_doc_by_id` performs an **upsert operation** and removes the old ID (`_id`) in case 
@@ -156,6 +168,16 @@ Most of the interfaces come from Python standard [MutableSequence](https://docs.
 As a reference, to see how we implement for SQLite, check out {class}`~docarray.array.storage.sqlite.seqlike.SequenceLikeMixin`.
 ```
 
+For the reason to support the list-like feature, the list-like APIs should do flag checking only when the offset2id structure is called as follows:
+```python
+def _extend(self, docs: Iterable['Document']):
+    da = DocumentArray(docs)
+    for batch_of_docs in da.batch(self._config.batch_size):
+        self._upload_batch(batch_of_docs)
+        if self._list_like:
+            self._offset2ids.extend(batch_of_docs[:, 'id'])
+```
+
 ## Step 4: implement `backend.py`
 
 Your `backend.py` should look like the following:
@@ -203,6 +225,17 @@ class BackendMixin(BaseBackendMixin):
 
 `MyDocStoreConfig` is a dataclass for containing the configs. You can expose arguments of your document store to this data class and allow users to customize them. In `init_storage` function, you need to parse `config` either from `MyDocStoreConfig` object or a `Dict`.
 
+The `list-like` flag is passed into the config file as follows:
+```python
+@dataclass
+class MyDocStoreConfig:
+    config1: str
+    config2: str
+    list - like: True
+    config3: Dict
+    ...
+```
+By default, it is set to be `True`. 
 
 `_init_storage` is a very important function to be called during the DocumentArray construction.
 You will need to handle different construction & copy behaviors in this function.
