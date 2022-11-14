@@ -131,6 +131,7 @@ The following configs can be set:
  | `consistency_level` | [Consistency level](https://milvus.io/docs/v2.1.x/consistency.md#Consistency-levels) for Milvus database operations. Can be 'Session', 'Strong', 'Bounded' or 'Eventually'.                                                       | 'Session'                                            |
 | `batch_size`        | Default batch size for CRUD operations.                                                                                                                                                                                           | -1 (no batching)                                     |
 | `columns`           | Additional columns to be stored in the datbase, taken from Document `tags`.                                                                                                                                                       | None                                                 |
+| `list_like`         | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance.                                                                                            | True                                                 |
 
 ## Minimal example
 

@@ -92,6 +92,7 @@ class MilvusConfig:
     consistency_level: str = 'Session'
     batch_size: int = -1
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    list_like: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -121,6 +122,7 @@ class BackendMixin(BaseBackendMixin):
         if config.collection_name is None:
             id = uuid.uuid4().hex
             config.collection_name = 'docarray__' + id
+        self._list_like = config.list_like
         self._config = config
         self._config.columns = self._normalize_columns(self._config.columns)
 

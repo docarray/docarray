@@ -29,28 +29,30 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._set_docs_by_ids([_id], [value], None, **kwargs)
 
     def _load_offset2ids(self):
-        collection = self._offset2id_collection
-        kwargs = self._update_kwargs_from_config('consistency_level', **dict())
-        with self.loaded_collection(collection):
-            res = collection.query(
-                expr=_always_true_expr('document_id'),
-                output_fields=['offset', 'document_id'],
-                **kwargs,
-            )
-        sorted_res = sorted(res, key=lambda k: int(k['offset']))
-        self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
+        if self._list_like:
+            collection = self._offset2id_collection
+            kwargs = self._update_kwargs_from_config('consistency_level', **dict())
+            with self.loaded_collection(collection):
+                res = collection.query(
+                    expr=_always_true_expr('document_id'),
+                    output_fields=['offset', 'document_id'],
+                    **kwargs,
+                )
+            sorted_res = sorted(res, key=lambda k: int(k['offset']))
+            self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
 
     def _save_offset2ids(self):
-        # delete old entries
-        self._clear_offset2ids_milvus()
-        # insert current entries
-        ids = self._offset2ids.ids
-        if not ids:
-            return
-        offsets = [str(i) for i in range(len(ids))]
-        dummy_vectors = [np.zeros(1) for _ in range(len(ids))]
-        collection = self._offset2id_collection
-        collection.insert([offsets, ids, dummy_vectors])
+        if self._list_like:
+            # delete old entries
+            self._clear_offset2ids_milvus()
+            # insert current entries
+            ids = self._offset2ids.ids
+            if not ids:
+                return
+            offsets = [str(i) for i in range(len(ids))]
+            dummy_vectors = [np.zeros(1) for _ in range(len(ids))]
+            collection = self._offset2id_collection
+            collection.insert([offsets, ids, dummy_vectors])
 
     def _get_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         if not ids:
