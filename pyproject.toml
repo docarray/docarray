@@ -42,4 +42,3 @@ skip_glob= ['docarray/proto/pb2/*']
 
 [tool.ruff]
 exclude = ['docarray/proto/pb2/*']
-line-length = 88
