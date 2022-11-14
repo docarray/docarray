@@ -372,7 +372,7 @@ def test_load_chunk_uris_to_rgbd_tensor_different_shapes_raise_exception(
         ]
     )
     with pytest.raises(
-        AssertionError,
+        ValueError,
         match='The provided RGB image and depth image are not of the same shapes',
     ):
         doc.load_chunk_uris_to_rgbd_tensor()
