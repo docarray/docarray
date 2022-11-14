@@ -47,6 +47,8 @@ class Banner(Document):
     image: Tensor
 
 
+test
+
 banner = Banner(text='DocArray is amazing', image=np.zeros((3, 224, 224)))
 banner
 ```
