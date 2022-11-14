@@ -330,3 +330,49 @@ def test_load_to_point_cloud_without_vertices_faces_set_raise_warning(uri):
         AttributeError, match='vertices and faces chunk tensor have not been set'
     ):
         doc.load_vertices_and_faces_to_point_cloud(100)
+
+
+@pytest.mark.parametrize(
+    'uri_rgb, uri_depth',
+    [
+        (
+            os.path.join(cur_dir, 'toydata/test_rgb.jpg'),
+            os.path.join(cur_dir, 'toydata/test_depth.png'),
+        )
+    ],
+)
+def test_load_chunk_uris_to_rgbd_tensor(uri_rgb, uri_depth):
+    doc = Document(
+        chunks=[
+            Document(uri=uri_rgb),
+            Document(uri=uri_depth),
+        ]
+    )
+    doc.load_chunk_uris_to_rgbd_tensor()
+
+    assert doc.tensor.shape[-1] == 4
+
+
+@pytest.mark.parametrize(
+    'uri_rgb, uri_depth',
+    [
+        (
+            os.path.join(cur_dir, 'toydata/test.png'),
+            os.path.join(cur_dir, 'toydata/test_depth.png'),
+        )
+    ],
+)
+def test_load_chunk_uris_to_rgbd_tensor_different_shapes_raise_exception(
+    uri_rgb, uri_depth
+):
+    doc = Document(
+        chunks=[
+            Document(uri=uri_rgb),
+            Document(uri=uri_depth),
+        ]
+    )
+    with pytest.raises(
+        AssertionError,
+        match='The provided RGB image and depth image are not of the same shapes',
+    ):
+        doc.load_chunk_uris_to_rgbd_tensor()
