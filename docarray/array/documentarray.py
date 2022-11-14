@@ -1,8 +1,7 @@
 from typing import Iterable, Type
 
-from docarray.document import AnyDocument, BaseDocument
+from docarray.document import AnyDocument, BaseDocument, BaseNode
 from docarray.document.abstract_document import AbstractDocument
-from docarray.typing import BaseNode
 
 from .abstract_array import AbstractDocumentArray
 from .mixins import ProtoArrayMixin
