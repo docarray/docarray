@@ -39,5 +39,6 @@ The following configs can be set:
 | `table_name`       | SQLite table name                                                                                                | a random name |
 | `serialize_config` | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                            | None |
 | `conn_config`      | [Connection config pass to `sqlite3.connect`](https://docs.python.org/3/library/sqlite3.html#sqlite3.Connection) | None |
-| `journal_mode`      | [SQLite Pragma: journal mode](https://www.sqlite.org/pragma.html#pragma_journal_mode)                                                                                   | `'DELETE'` |
+| `journal_mode`     | [SQLite Pragma: journal mode](https://www.sqlite.org/pragma.html#pragma_journal_mode)                                                                                   | `'DELETE'` |
 | `synchronous`      | [SQLite Pragma: synchronous](https://www.sqlite.org/pragma.html#pragma_synchronous) | `'OFF'` |
+| `list_like`        | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                          |
