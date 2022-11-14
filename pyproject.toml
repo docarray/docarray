@@ -22,7 +22,6 @@ mypy = "^0.990"
 types-protobuf = "^3.20.4"
 black = "^22.10.0"
 isort = "^5.10.1"
-flake8 = "^5.0.4"
 ruff = "^0.0.117"
 
 [build-system]
