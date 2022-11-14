@@ -1,4 +1,4 @@
-from typing import Union, TypeVar, Any, TYPE_CHECKING, Type, cast
+from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -40,8 +40,8 @@ class Tensor(np.ndarray, BaseNode):
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
 
-    def _to_nested_item_protobuf(self: T) -> 'NodeProto':
-        """Convert Document into a nested item protobuf message. This function should
+    def _to_node_protobuf(self: T) -> NodeProto:
+        """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
 
