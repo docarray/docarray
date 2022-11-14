@@ -18,7 +18,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     id: ID = Field(default_factory=lambda: ID.validate(os.urandom(16).hex()))
 
     @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type[ProtoMixin]:
+    def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:
         """
         Accessing the nested python Class define in the schema. Could be useful for
         reconstruction of Document in serialization/deserilization
