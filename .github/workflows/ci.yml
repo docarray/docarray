@@ -119,7 +119,7 @@ jobs:
 
 #  prep-testbed:
 #    runs-on: ubuntu-latest
-#    needs: [lint-flake-8, check-black, import-test]
+#    needs: [lint-ruff, check-black, import-test]
 #    steps:
 #      - uses: actions/checkout@v2.5.0
 #      - id: set-matrix
@@ -131,7 +131,7 @@ jobs:
 #      matrix: ${{ steps.set-matrix.outputs.matrix }}
 
   docarray-test:
-    needs: [lint-flake-8, check-black, import-test]
+    needs: [lint-ruff, check-black, import-test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
