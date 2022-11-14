@@ -2,44 +2,64 @@ from typing import Iterator, Dict
 
 
 class Offset2ID:
-    def __init__(self, ids=None):
+    def __init__(self, ids=None, list_like=True):
         self.ids = ids or []
+        self._list_like = list_like
 
     def get_id(self, idx):
+        if not self._list_like:
+            raise ValueError(
+                "The offset2id is not enabled for list-like indexes. To avoid this error, configure the "
+                "`list_like` to True"
+            )
         return self.ids[idx]
 
     def append(self, data):
-        self.ids.append(data)
+        if self._list_like:
+            self.ids.append(data)
 
     def extend(self, data):
-        self.ids.extend(data)
+        if self._list_like:
+            self.ids.extend(data)
 
     def update(self, position, data_id):
-        self.ids[position] = data_id
+        if self._list_like:
+            self.ids[position] = data_id
 
     def delete_by_id(self, _id):
-        del self.ids[self.ids.index(_id)]
+        if self._list_like:
+            del self.ids[self.ids.index(_id)]
 
     def index(self, _id):
+        if not self._list_like:
+            raise ValueError(
+                "The offset2id is not enabled for list-like indexes. To avoid this error, configure the "
+                "`list_like` to True"
+            )
         return self.ids.index(_id)
 
     def delete_by_offset(self, position):
-        del self.ids[position]
+        if self._list_like:
+            del self.ids[position]
 
     def insert(self, position, data_id):
-        self.ids.insert(position, data_id)
+        if self._list_like:
+            self.ids.insert(position, data_id)
 
     def clear(self):
-        self.ids.clear()
+        if self._list_like:
+            self.ids.clear()
 
     def delete_by_ids(self, ids):
-        ids = set(ids)
-        self.ids = list(filter(lambda _id: _id not in ids, self.ids))
+        if self._list_like:
+            ids = set(ids)
+            self.ids = list(filter(lambda _id: _id not in ids, self.ids))
 
     def update_ids(self, _ids_map: Dict[str, str]):
-        for i in range(len(self.ids)):
-            if self.ids[i] in _ids_map:
-                self.ids[i] = _ids_map[self.ids[i]]
+        if self._list_like:
+            for i in range(len(self.ids)):
+                if self.ids[i] in _ids_map:
+                    self.ids[i] = _ids_map[self.ids[i]]
 
     def save(self):
         pass

@@ -123,11 +123,15 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 break
 
     def _load_offset2ids(self):
-        ids = self._get_offset2ids_meta()
-        self._offset2ids = Offset2ID(ids)
+        if self._list_like:
+            ids = self._get_offset2ids_meta()
+            self._offset2ids = Offset2ID(ids, list_like=self._list_like)
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
-        self._update_offset2ids_meta()
+        if self._list_like:
+            self._update_offset2ids_meta()
 
     def _clear_storage(self):
         self.client.recreate_collection(

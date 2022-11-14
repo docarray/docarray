@@ -147,6 +147,66 @@ def test_find_by_text(storage, config, start_storage):
 
 
 @pytest.mark.parametrize(
+    'storage, config, filter',
+    [
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            None,
+        ),
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            {
+                'range': {
+                    'i': {
+                        'lte': 5,
+                    }
+                }
+            },
+        ),
+        (
+            'elasticsearch',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            [
+                {
+                    'range': {
+                        'i': {
+                            'lte': 5,
+                        }
+                    }
+                }
+            ],
+        ),
+        ('redis', {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True}, None),
+        (
+            'redis',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            '@i:[-inf 5]',
+        ),
+    ],
+)
+def test_find_by_text_and_filter(storage, config, filter, start_storage):
+    da = DocumentArray(storage=storage, config=config)
+    with da:
+        da.extend(
+            [Document(id=f'{i}', tags={'i': i}, text=f'pizza {i}') for i in range(10)]
+        )
+        da.extend(
+            [
+                Document(id=f'{i+10}', tags={'i': i}, text=f'noodles {i}')
+                for i in range(10)
+            ]
+        )
+
+    results = da.find('pizza', filter=filter)
+
+    assert len(results) > 0
+    assert all([int(r.id) < 10 for r in results])
+    assert all([r.tags['i'] < 10 for r in results])
+
+
+@pytest.mark.parametrize(
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),

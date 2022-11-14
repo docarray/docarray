@@ -3,7 +3,7 @@ from typing import Optional
 
 import numpy as np
 
-from docarray.helper import deprecate_by
+from docarray.document.mixins.mesh import Mesh
 
 
 class PlotMixin:
@@ -18,6 +18,7 @@ class PlotMixin:
         yield f":page_facing_up: [b]Document[/b]: [cyan]{self.id}[cyan]"
         from rich.table import Table
         from rich import box
+        from rich.text import Text
 
         my_table = Table(
             'Attribute', 'Value', width=80, box=box.ROUNDED, highlight=True
@@ -27,7 +28,7 @@ class PlotMixin:
                 continue
             elif f in ('text', 'blob', 'uri') and len(getattr(self, f)) > 100:
                 v = getattr(self, f)
-                my_table.add_row(f, str(v)[:100] + f'... [dim](length: {len(v)})')
+                my_table.add_row(f, Text(str(v)[:100] + f'... [dim](length: {len(v)})'))
             elif f in ('embedding', 'tensor'):
                 from docarray.math.ndarray import to_numpy_array
 
@@ -42,7 +43,7 @@ class PlotMixin:
                     v = f'{type(getattr(self, f))} in shape {v.shape}, dtype: {v.dtype}'
                 my_table.add_row(f, v)
             elif f not in ('id', 'chunks', 'matches'):
-                my_table.add_row(f, str(getattr(self, f)))
+                my_table.add_row(f, Text(str(getattr(self, f))))
         if my_table.rows:
             yield my_table
 
@@ -73,26 +74,81 @@ class PlotMixin:
     def display(self, from_: Optional[str] = None):
         """
         Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
-
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
+        if self._is_3d():
+            self.display_3d()
+        else:
+            if not from_:
+                if self.uri:
+                    from_ = 'uri'
+                elif self.tensor is not None:
+                    from_ = 'tensor'
+                else:
+                    self.summary()
 
-        if not from_:
-            if self.uri:
-                from_ = 'uri'
-            elif self.tensor is not None:
-                from_ = 'tensor'
+            if from_ == 'uri':
+                self.display_uri()
+            elif from_ == 'tensor':
+                self.display_tensor()
             else:
                 self.summary()
 
-        if from_ == 'uri':
-            self.display_uri()
-        elif from_ == 'tensor':
-            self.display_tensor()
+    def _is_3d(self) -> bool:
+        """
+        Tells if Document stores a 3D object saved as point cloud or vertices and face.
+        :return: bool.
+        """
+        if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
+            return True
+        elif (
+            self.tensor is not None
+            and self.tensor.shape[1] == 3
+            and self.tensor.ndim == 2
+        ):
+            return True
+        elif self.chunks is not None:
+            name_tags = [c.tags['name'] for c in self.chunks]
+            if Mesh.VERTICES in name_tags and Mesh.FACES in name_tags:
+                return True
         else:
-            self.summary()
+            return False
 
-    def display_tensor(self):
+    def display_3d(self) -> None:
+        """Plot 3d data."""
+        from IPython.display import display
+        import trimesh
+
+        if self.tensor is not None:
+            # point cloud from tensor
+            from hubble.utils.notebook import is_notebook
+
+            if is_notebook():
+                pc = trimesh.points.PointCloud(
+                    vertices=self.tensor,
+                    colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
+                )
+                s = trimesh.Scene(geometry=pc)
+                display(s.show())
+            else:
+                pc = trimesh.points.PointCloud(vertices=self.tensor)
+                display(pc.show())
+
+        elif self.uri:
+            # mesh from uri
+            mesh = self._load_mesh()
+            display(mesh.show())
+
+        elif self.chunks is not None:
+            # mesh from chunks
+            vertices = [
+                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
+            ][-1]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+            display(mesh.show())
+
+    def display_tensor(self) -> None:
         """Plot image data from :attr:`.tensor`"""
         if self.tensor is None:
             raise ValueError(

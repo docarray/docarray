@@ -567,6 +567,42 @@ The solution is simple: use {ref}`column-selector<bulk-access>`:
 da[0, 'text'] = 'hello'
 ```
 
+### Performance Issue caused by List-like structure
+DocArray allows list-like behavior by adding an offset-to-id mapping structure to storage backends. Such feature (adding this structure) means the database stores, 
+along with documents, meta information about document order.
+However, list_like behavior is not useful in indexers where concurrent usage is possible and users do not need information about document location. 
+Besides, updating list-like operation comes with a cost.
+You can disable list-like behavior in the config as follows
+```python
+from docarray import DocumentArray
+
+da = DocumentArray(storage='annlite', config={'n_dim': 2, 'list_like': False})
+```
+
+When list_like is disabled, all the list-like operations will not be allowed and raise errors.
+like this:
+```python
+from docarray import DocumentArray, Document
+import numpy as np
+
+
+def docs():
+    d1 = Document(embedding=np.array([10, 0]))
+    d2 = Document(embedding=np.array([0, 10]))
+    d3 = Document(embedding=np.array([-10, -10]))
+    yield d1, d2, d3
+
+
+da = DocumentArray(docs, storage='annlite', config={'n_dim': 2, 'list_like': False})
+da[0]  # This will raise an error.
+```
+
+```{admonition} Hint
+By default, `list_like` will be true.
+```
+
+
+
 ### Elements access is slower
 
 Obviously, a DocumentArray with on-disk storage is slower than in-memory DocumentArray. However, if you choose to use on-disk storage, then often your concern of persistence overwhelms the concern of efficiency.

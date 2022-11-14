@@ -32,6 +32,7 @@ class WeaviateConfig:
     port: Optional[int] = field(default=8080)
     protocol: Optional[str] = field(default='http')
     name: Optional[str] = None
+    list_like: bool = True
     serialize_config: Dict = field(default_factory=dict)
     n_dim: Optional[int] = None  # deprecated, not used anymore since weaviate 1.10
     # vectorIndexConfig parameters
@@ -128,7 +129,7 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._schemas = self._load_or_create_weaviate_schema()
-
+        self._list_like = config.list_like
         _REGISTRY[self.__class__.__name__][self._class_name].append(self)
 
         super()._init_storage(_docs, **kwargs)
