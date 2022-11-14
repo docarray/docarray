@@ -61,7 +61,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
         for field, value in self:
             try:
                 if isinstance(value, BaseNode):
-                    nested_item = value._to_nested_item_protobuf()
+                    nested_item = value._to_node_protobuf()
 
                 elif type(value) is str:
                     nested_item = NodeProto(text=value)
@@ -91,7 +91,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return DocumentProto(data=data)
 
-    def _to_nested_item_protobuf(self) -> 'NodeProto':
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert Document into a nested item protobuf message. This function should be
         called when the Document is nest into another Document that need to be
         converted into a protobuf

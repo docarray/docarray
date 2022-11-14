@@ -28,7 +28,7 @@ class ProtoArrayMixin(AbstractDocumentArray):
             dap.docs.append(doc.to_protobuf())
         return dap
 
-    def _to_nested_item_protobuf(self) -> 'NodeProto':
+    def _to_node_protobuf(self) -> 'NodeProto':
         """Convert a DocumentArray into a nested item protobuf message.
          This function should be called when a DocumentArray
         is nested into another Document that need to be converted into a protobuf
