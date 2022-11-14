@@ -42,4 +42,4 @@ class ID(str, BaseNode):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(text=self)
+        return NodeProto(id=self)

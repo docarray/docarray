@@ -5,7 +5,7 @@ from pydantic.tools import parse_obj_as
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
-from docarray.typing import AnyUrl, Embedding, ImageUrl, Tensor
+from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor
 
 
 class ProtoMixin(AbstractDocument, BaseNode):
@@ -31,6 +31,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 fields[field] = parse_obj_as(AnyUrl, value.any_url)
             elif content_type == 'image_url':
                 fields[field] = parse_obj_as(ImageUrl, value.image_url)
+            elif content_type == 'id':
+                fields[field] = parse_obj_as(ID, value.id)
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':

@@ -53,6 +53,8 @@ message NodeProto {
 
     string image_url = 8;
 
+    string id = 9;
+
   }
 
 }

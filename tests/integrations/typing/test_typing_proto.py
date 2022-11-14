@@ -22,6 +22,4 @@ def test_proto_all_types():
     new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
 
     for field, value in new_doc:
-
-        if field != 'id':
-            assert isinstance(value, doc._get_nested_document_class(field))
+        assert isinstance(value, doc._get_nested_document_class(field))
