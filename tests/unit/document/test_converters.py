@@ -362,9 +362,7 @@ def test_load_uris_to_rgbd_tensor(uri_rgb, uri_depth):
         )
     ],
 )
-def test_load_uris_to_rgbd_tensor_different_shapes_raise_exception(
-    uri_rgb, uri_depth
-):
+def test_load_uris_to_rgbd_tensor_different_shapes_raise_exception(uri_rgb, uri_depth):
     doc = Document(
         chunks=[
             Document(uri=uri_rgb),
