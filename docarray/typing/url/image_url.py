@@ -12,7 +12,7 @@ class ImageUrl(AnyUrl):
 
         :return: the nested item protobuf message
         """
-        return NodeProto(any_url=str(self))
+        return NodeProto(image_url=str(self))
 
     def load(self) -> np.ndarray:
         """
