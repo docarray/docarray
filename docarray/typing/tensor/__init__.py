@@ -1,1 +1,3 @@
-from .tensor import Tensor
+from docarray.typing.tensor.tensor import Tensor
+
+__all__ = ['Tensor']

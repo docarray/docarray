@@ -15,7 +15,8 @@ class AnyDocument(BaseDocument):
     @classmethod
     def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:
         """
-        Accessing the nested python Class define in the schema. Could be useful for reconstruction of Document in
+        Accessing the nested python Class define in the schema.
+        Could be useful for reconstruction of Document in
         serialization/deserilization
         :param field: name of the field
         :return:

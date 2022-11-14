@@ -1,12 +1,13 @@
 from typing import Union, TypeVar, Any, TYPE_CHECKING, Type, cast
 
 import numpy as np
+
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
-    from pydantic import BaseConfig, PydanticValueError
+    from pydantic import BaseConfig
 
 from docarray.document.base_node import BaseNode
-from docarray.proto import DocumentProto, NdArrayProto, NodeProto
+from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='Tensor')
 
@@ -20,7 +21,9 @@ class Tensor(np.ndarray, BaseNode):
         yield cls.validate
 
     @classmethod
-    def validate(cls: Type[T], value: Union[T, Any], field: 'ModelField', config: 'BaseConfig') -> T:
+    def validate(
+        cls: Type[T], value: Union[T, Any], field: 'ModelField', config: 'BaseConfig'
+    ) -> T:
         if isinstance(value, np.ndarray):
             return cls.from_ndarray(value)
         elif isinstance(value, Tensor):
@@ -38,8 +41,9 @@ class Tensor(np.ndarray, BaseNode):
         return value.view(cls)
 
     def _to_nested_item_protobuf(self: T) -> 'NodeProto':
-        """Convert Document into a nested item protobuf message. This function should be called when the Document
-        is nested into another Document that need to be converted into a protobuf
+        """Convert Document into a nested item protobuf message. This function should
+        be called when the Document is nested into another Document that need to be
+        converted into a protobuf
 
         :return: the nested item protobuf message
         """
