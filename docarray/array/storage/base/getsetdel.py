@@ -121,6 +121,7 @@ class BaseGetSetDelMixin(ABC):
     def _del_docs_by_mask(self, mask: Sequence[bool]):
         """This function is derived and may not have the most efficient implementation.
         Override this function if there is a more efficient logic
+
         :param mask: the boolean mask used for indexing
         """
         ids = list(itertools.compress(self._offset2ids, (_i for _i in mask)))
