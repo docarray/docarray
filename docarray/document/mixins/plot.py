@@ -96,15 +96,14 @@ class PlotMixin:
 
     def _is_3d(self) -> bool:
         """
-        Tells if Document stores a 3D object saved as point cloud or vertices and face.
+        Tells if Document stores a 3D object saved as point cloud, RGB-D image or vertices and faces.
         :return: bool.
         """
         if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
             return True
-        elif (
-            self.tensor is not None
-            and self.tensor.shape[1] == 3
-            and self.tensor.ndim == 2
+        elif self.tensor is not None and (
+            (self.tensor.shape[-1] == 3 and self.tensor.ndim == 2)
+            or (self.tensor.shape[-1] == 4 and self.tensor.ndim == 3)
         ):
             return True
         elif self.chunks is not None:
@@ -117,22 +116,12 @@ class PlotMixin:
     def display_3d(self) -> None:
         """Plot 3d data."""
         from IPython.display import display
-        import trimesh
 
         if self.tensor is not None:
-            # point cloud from tensor
-            from hubble.utils.notebook import is_notebook
-
-            if is_notebook():
-                pc = trimesh.points.PointCloud(
-                    vertices=self.tensor,
-                    colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
-                )
-                s = trimesh.Scene(geometry=pc)
-                display(s.show())
+            if self.tensor.shape[-1] == 4 and self.tensor.ndim == 3:
+                self.display_rgbd_tensor()
             else:
-                pc = trimesh.points.PointCloud(vertices=self.tensor)
-                display(pc.show())
+                self.display_point_cloud_tensor()
 
         elif self.uri:
             # mesh from uri
@@ -141,6 +130,8 @@ class PlotMixin:
 
         elif self.chunks is not None:
             # mesh from chunks
+            import trimesh
+
             vertices = [
                 c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
             ][-1]
@@ -168,6 +159,43 @@ class PlotMixin:
             import matplotlib.pyplot as plt
 
             plt.matshow(self.tensor)
+
+    def display_point_cloud_tensor(self) -> None:
+        """Plot interactive point cloud from :attr:`.tensor`"""
+        import trimesh
+        from IPython.display import display
+        from hubble.utils.notebook import is_notebook
+
+        if is_notebook():
+            pc = trimesh.points.PointCloud(
+                vertices=self.tensor,
+                colors=np.tile(np.array([0, 0, 0, 1]), (len(self.tensor), 1)),
+            )
+            s = trimesh.Scene(geometry=pc)
+            display(s.show())
+        else:
+            pc = trimesh.points.PointCloud(vertices=self.tensor)
+            display(pc.show())
+
+    def display_rgbd_tensor(self) -> None:
+        """Plot an RGB-D image and a corresponding depth image from :attr:`.tensor`"""
+        import matplotlib.pyplot as plt
+
+        rgb_img = self.tensor[:, :, :3]
+
+        depth_img = self.tensor[:, :, -1]
+        depth_img = depth_img / np.max(depth_img) * 255
+        depth_img = depth_img.astype(np.uint8)
+
+        f, ax = plt.subplots(1, 2, figsize=(16, 6))
+
+        ax[0].imshow(rgb_img)
+        ax[1].imshow(depth_img, cmap='gray')
+
+        ax[0].set_title('RGB image\n', fontsize=16)
+        ax[1].set_title('Depth image\n', fontsize=16)
+
+        plt.show()
 
     def display_uri(self):
         """Plot image data from :attr:`.uri`"""

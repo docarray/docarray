@@ -121,17 +121,23 @@ class MeshDataMixin:
         from PIL import Image
 
         if len(self.chunks) != 2:
-            raise ValueError(f'The provided Document does not have 2 chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.')
+            raise ValueError(
+                f'The provided Document does not have 2 chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.'
+            )
         for chunk in self.chunks:
             if chunk.uri == '':
-                raise ValueError('A chunk of the given Document does not provide an uri.')
+                raise ValueError(
+                    'A chunk of the given Document does not provide an uri.'
+                )
 
         rgb_img = np.array(Image.open(self.chunks[0].uri).convert('RGB'))
-        depth_img = np.array(Image.open(self.chunks[1].uri).convert('L'))
+        depth_img = np.array(Image.open(self.chunks[1].uri))
 
         if rgb_img.shape[0:2] != depth_img.shape:
-            raise ValueError(f'The provided RGB image and depth image are not of the same shapes: {rgb_img.shape[0:2]} != {depth_img.shape}')
+            raise ValueError(
+                f'The provided RGB image and depth image are not of the same shapes: {rgb_img.shape[0:2]} != {depth_img.shape}'
+            )
 
-        depth_img_ext = np.expand_dims(depth_img, axis=2)
-        self.tensor = np.append(rgb_img, depth_img_ext, axis=2)
+        self.tensor = np.append(rgb_img, np.expand_dims(depth_img, axis=2), axis=2)
+
         return self
