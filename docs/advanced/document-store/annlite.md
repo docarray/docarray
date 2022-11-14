@@ -38,15 +38,16 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name              | Description                                                                                             | Default                                                       |
-|-------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
-| `n_dim`           | Number of dimensions of embeddings to be stored and retrieved                                           | **This is always required**                                   |
-| `data_path`       | The data folder where the data is located                                                               | **A random temp folder**                                      |
-| `metric`          | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean'                         | 'cosine'                                                      |
-| `ef_construction` | The size of the dynamic list for the nearest neighbors (used during the construction)                   | `None`, defaults to the default value in the AnnLite package* |
-| `ef_search`       | The size of the dynamic list for the nearest neighbors (used during the search)                         | `None`, defaults to the default value in the AnnLite package* |
-| `max_connection`  | The number of bi-directional links created for every new element during construction.                   | `None`, defaults to the default value in the AnnLite package* |
-| `n_components`    | The output dimension of PCA model. Should be a positive number and less than `n_dim` if it's not `None` | `None`, defaults to the default value in the AnnLite package* |
+| Name              | Description                                                                                                                            | Default                                                       |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
+| `n_dim`           | Number of dimensions of embeddings to be stored and retrieved                                                                          | **This is always required**                                   |
+| `data_path`       | The data folder where the data is located                                                                                              | **A random temp folder**                                      |
+| `metric`          | Distance metric to be used during search. Can be 'cosine', 'dot' or 'euclidean'                                                        | 'cosine'                                                      |
+| `ef_construction` | The size of the dynamic list for the nearest neighbors (used during the construction)                                                  | `None`, defaults to the default value in the AnnLite package* |
+| `ef_search`       | The size of the dynamic list for the nearest neighbors (used during the search)                                                        | `None`, defaults to the default value in the AnnLite package* |
+| `max_connection`  | The number of bi-directional links created for every new element during construction.                                                  | `None`, defaults to the default value in the AnnLite package* |
+| `n_components`    | The output dimension of PCA model. Should be a positive number and less than `n_dim` if it's not `None`                                | `None`, defaults to the default value in the AnnLite package* |
+| `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                          |
 
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 
