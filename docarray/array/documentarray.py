@@ -39,6 +39,7 @@ class DocumentArray(
                 return property(lambda self: self._get_documents_attribute(val))
 
             setattr(_DocumenArrayTyped, field, _proprety_generator(field))
+            # this generates property on the fly based on the schema of the item
 
         _DocumenArrayTyped.__name__ = f'DocumentArray{item.__name__}'
 
