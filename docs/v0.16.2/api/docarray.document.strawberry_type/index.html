@@ -3,19 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
 <meta property="og:title" content="docarray.document.strawberry_type module" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.document.strawberry_type/" />
-  
 <meta property="og:site_name" content="DocArray 0.16.2 Documentation" />
-  
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  
 <meta property="og:image:alt" content="DocArray 0.16.2 Documentation" />
-  
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,7 +26,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.document.strawberry_type.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
@@ -188,7 +182,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -387,7 +381,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon"
+                    <label class="toc-overlay-icon toc-content-icon no-toc"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -398,210 +392,8 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="module-docarray.document.strawberry_type">
-<span id="docarray-document-strawberry-type-module"></span><h1>docarray.document.strawberry_type module<a class="headerlink" href="#module-docarray.document.strawberry_type" title="Permalink to this heading">#</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.strawberry_type.</span></span><span class="sig-name descname"><span class="pre">StrawberryDocument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/strawberry_type/#StrawberryDocument"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseStrawberryDocumentInterface</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.evaluations">
-<span class="sig-name descname"><span class="pre">evaluations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_NameScoreItem</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.evaluations" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.scores">
-<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_NameScoreItem</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.scores" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.chunks">
-<span class="sig-name descname"><span class="pre">chunks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument" title="docarray.document.strawberry_type.StrawberryDocument"><span class="pre">StrawberryDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.chunks" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.matches">
-<span class="sig-name descname"><span class="pre">matches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument" title="docarray.document.strawberry_type.StrawberryDocument"><span class="pre">StrawberryDocument</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.matches" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.adjacency">
-<span class="sig-name descname"><span class="pre">adjacency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.adjacency" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.blob">
-<span class="sig-name descname"><span class="pre">blob</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22410&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.blob" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.embedding">
-<span class="sig-name descname"><span class="pre">embedding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22490&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.embedding" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.granularity">
-<span class="sig-name descname"><span class="pre">granularity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.granularity" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.location" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.mime_type">
-<span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.mime_type" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.modality">
-<span class="sig-name descname"><span class="pre">modality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.modality" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.offset" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.parent_id">
-<span class="sig-name descname"><span class="pre">parent_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.parent_id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.tags">
-<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22390&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.tags" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.tensor">
-<span class="sig-name descname"><span class="pre">tensor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22490&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.tensor" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.text">
-<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.text" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.uri">
-<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.uri" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocument.weight">
-<span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocument.weight" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.document.strawberry_type.</span></span><span class="sig-name descname"><span class="pre">StrawberryDocumentInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">granularity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mime_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modality</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/document/strawberry_type/#StrawberryDocumentInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseStrawberryDocumentInterface</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.evaluations">
-<span class="sig-name descname"><span class="pre">evaluations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_NameScoreItemInput</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.evaluations" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.scores">
-<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">_NameScoreItemInput</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.scores" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.chunks">
-<span class="sig-name descname"><span class="pre">chunks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput" title="docarray.document.strawberry_type.StrawberryDocumentInput"><span class="pre">StrawberryDocumentInput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.chunks" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.matches">
-<span class="sig-name descname"><span class="pre">matches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput" title="docarray.document.strawberry_type.StrawberryDocumentInput"><span class="pre">StrawberryDocumentInput</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.matches" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.adjacency">
-<span class="sig-name descname"><span class="pre">adjacency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.adjacency" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.blob">
-<span class="sig-name descname"><span class="pre">blob</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22410&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.blob" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.embedding">
-<span class="sig-name descname"><span class="pre">embedding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22490&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.embedding" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.granularity">
-<span class="sig-name descname"><span class="pre">granularity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.granularity" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.location" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.mime_type">
-<span class="sig-name descname"><span class="pre">mime_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.mime_type" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.modality">
-<span class="sig-name descname"><span class="pre">modality</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.modality" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.offset">
-<span class="sig-name descname"><span class="pre">offset</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.offset" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.parent_id">
-<span class="sig-name descname"><span class="pre">parent_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.parent_id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.tags">
-<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22390&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.tags" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.tensor">
-<span class="sig-name descname"><span class="pre">tensor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ScalarWrapper</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fe81cb22490&gt;]</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.tensor" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.text">
-<span class="sig-name descname"><span class="pre">text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.text" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.uri">
-<span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.uri" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="docarray.document.strawberry_type.StrawberryDocumentInput.weight">
-<span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.document.strawberry_type.StrawberryDocumentInput.weight" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+                    <section id="docarray-document-strawberry-type-module">
+<h1>docarray.document.strawberry_type module<a class="headerlink" href="#docarray-document-strawberry-type-module" title="Permalink to this heading">#</a></h1>
 </section>
 
                 </article>
@@ -617,7 +409,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 28, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -637,70 +429,8 @@
                 
             </footer>
         </div>
-        <aside class="toc-drawer">
+        <aside class="toc-drawer no-toc">
             
-            
-            <div class="toc-sticky toc-scroll">
-                <div class="toc-title-container">
-          <span class="toc-title">
-            Contents
-          </span>
-                </div>
-                <div class="toc-tree-container">
-                    <div class="toc-tree">
-                        <ul>
-<li><a class="reference internal" href="#">docarray.document.strawberry_type module</a><ul>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument</span></code></a><ul>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.evaluations"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.evaluations</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.scores"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.scores</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.chunks"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.chunks</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.matches"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.matches</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.adjacency"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.adjacency</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.blob"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.blob</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.embedding"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.embedding</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.granularity"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.granularity</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.id"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.id</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.location"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.location</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.mime_type"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.mime_type</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.modality"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.modality</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.offset"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.offset</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.parent_id"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.parent_id</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.tags"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.tags</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.tensor"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.tensor</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.text"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.text</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.uri"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.uri</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocument.weight"><code class="docutils literal notranslate"><span class="pre">StrawberryDocument.weight</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput</span></code></a><ul>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.evaluations"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.evaluations</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.scores"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.scores</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.chunks"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.chunks</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.matches"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.matches</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.adjacency"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.adjacency</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.blob"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.blob</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.embedding"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.embedding</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.granularity"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.granularity</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.id"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.id</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.location"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.location</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.mime_type"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.mime_type</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.modality"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.modality</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.offset"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.offset</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.parent_id"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.parent_id</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.tags"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.tags</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.tensor"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.tensor</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.text"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.text</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.uri"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.uri</span></code></a></li>
-<li><a class="reference internal" href="#docarray.document.strawberry_type.StrawberryDocumentInput.weight"><code class="docutils literal notranslate"><span class="pre">StrawberryDocumentInput.weight</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-                    </div>
-                </div>
-            </div>
             
             
         </aside>

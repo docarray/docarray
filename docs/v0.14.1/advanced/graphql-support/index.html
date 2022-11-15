@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
 <meta property="og:title" content="GraphQL" />
-  
 <meta property="og:type" content="website" />
-  
-<meta property="og:url" content="https://docarray.jina.ai/advanced/graphql-support/index/" />
-  
+<meta property="og:url" content="https://docarray.jina.ai/advanced/graphql-support/" />
 <meta property="og:site_name" content="DocArray 0.14.1 Documentation" />
-  
 <meta property="og:description" content="DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need:.embedding is too big and too verbose, then don’t query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server. When..." />
-  
-<meta property="og:image" content="https://docarray.jina.ai/advanced/_images/gql-ui.png" />
-  
+<meta property="og:image" content="https://docarray.jina.ai/_images/gql-ui.png" />
 <meta property="og:image:alt" content="DocArray 0.14.1 Documentation" />
-  
+<meta name="description" content="DocArray supports GraphQL. You can use GraphQL to query a DocumentArray and get exactly the fields you need:.embedding is too big and too verbose, then don’t query it. Comparing to the REST API, clients using GraphQL are fast and stable because they control the data they get, not the server. When..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,7 +28,8 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Python API" href="../../api/" /><link rel="prev" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Python API" href="../../api/" /><link rel="prev" title="FastAPI/Pydantic" href="../../fundamentals/fastapi-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/advanced/graphql-support/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-4.5.0, furo 2022.09.29"/>
@@ -459,7 +453,7 @@
 <span class="n">schema</span> <span class="o">=</span> <span class="n">strawberry</span><span class="o">.</span><span class="n">Schema</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Query</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Notice how I leverage <a class="reference internal" href="../../api/docarray.document.strawberry_type/#docarray.document.strawberry_type.StrawberryDocument" title="docarray.document.strawberry_type.StrawberryDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrawberryDocument</span></code></a> and use <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_strawberry_type()</span></code> to convert the type in the resolver before returning the result.</p>
+<p>Notice how I leverage <code class="xref py py-class docutils literal notranslate"><span class="pre">StrawberryDocument</span></code> and use <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_strawberry_type()</span></code> to convert the type in the resolver before returning the result.</p>
 <p>In practice, <code class="docutils literal notranslate"><span class="pre">da</span></code> could be your final search results, or some DocumentArray after embedding or preprocessing. Here I just use the dummy matches I created before to serve as the results.</p>
 <p>Finally, save all code snippets above into <code class="docutils literal notranslate"><span class="pre">toy.py</span></code> and run it from the console via:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strawberry server toy
@@ -538,7 +532,7 @@
                         <div class="copyright">
                             Copyright &#169; Jina AI Limited. All rights reserved.
                         </div><div class="last-updated">
-                            Last updated on Oct 28, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
