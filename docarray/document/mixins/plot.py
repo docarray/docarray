@@ -203,7 +203,7 @@ class PlotMixin:
         rgb_img = self.tensor[:, :, :3]
 
         depth_img = self.tensor[:, :, -1]
-        depth_img = depth_img / np.max(depth_img) * 255
+        depth_img = depth_img / (np.max(depth_img) + 1e-08) * 255
         depth_img = depth_img.astype(np.uint8)
 
         f, ax = plt.subplots(1, 2, figsize=(16, 6))
