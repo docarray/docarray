@@ -87,6 +87,8 @@ inherited from the `BaseGetSetDelMixin`. Therefore, you need to implement method
 want to also persist the ordering of Documents inside the storage. However, the list-like
 structure implemented by Offset2id can introduce performance bottlenecks, so you can disable this feature by passing a flag when constructing the backend.
 
+In step 4 you will see how you should read in this flag (`list_like`) from the user. Here you have to use it do adapt some operations.
+
 In your backend implementations, in `getsetdel.py`, you have to construct the _offset2ids 
 member variable by passing list_like flag as follows:
 
