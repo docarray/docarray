@@ -1,10 +1,6 @@
-from typing import TypeVar
+from docarray.typing.embedding import Embedding
+from docarray.typing.id import ID
+from docarray.typing.tensor import Tensor
+from docarray.typing.url import AnyUrl, ImageUrl
 
-from docarray.document.base_node import BaseNode
-
-from .ndarray import Embedding, Tensor
-from .url import ImageUrl
-
-T = TypeVar('T')
-
-__all__ = ['Tensor', 'Embedding', 'BaseNode']
+__all__ = ['Tensor', 'Embedding', 'ImageUrl', 'AnyUrl', 'ID']

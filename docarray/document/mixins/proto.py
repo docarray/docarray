@@ -1,23 +1,14 @@
-from typing import TYPE_CHECKING, Any, Dict, Type
+from typing import Any, Dict
 
-from docarray.proto import DocumentProto, NdArrayProto, NodeProto
-from docarray.typing import Tensor
+from pydantic.tools import parse_obj_as
 
-from ..abstract_document import AbstractDocument
-from ..base_node import BaseNode
+from docarray.document.abstract_document import AbstractDocument
+from docarray.document.base_node import BaseNode
+from docarray.proto import DocumentProto, NodeProto
+from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor
 
 
 class ProtoMixin(AbstractDocument, BaseNode):
-    @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
-        """
-        Accessing the nested python Class define in the schema. Could be useful for reconstruction of Document in
-        serialization/deserilization
-        :param field: name of the field
-        :return:
-        """
-        return cls.__fields__[field].type_
-
     @classmethod
     def from_protobuf(cls, pb_msg: 'DocumentProto') -> 'ProtoMixin':
         """create a Document from a protobuf message"""
@@ -30,8 +21,18 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
             content_type = value.WhichOneof('content')
 
+            # this if else statement need to be refactored it is too long
+            # the check should be delegated to the type level
             if content_type == 'tensor':
-                fields[field] = Tensor.read_ndarray(value.tensor)
+                fields[field] = Tensor._read_from_proto(value.tensor)
+            elif content_type == 'embedding':
+                fields[field] = Embedding._read_from_proto(value.embedding)
+            elif content_type == 'any_url':
+                fields[field] = parse_obj_as(AnyUrl, value.any_url)
+            elif content_type == 'image_url':
+                fields[field] = parse_obj_as(ImageUrl, value.image_url)
+            elif content_type == 'id':
+                fields[field] = parse_obj_as(ID, value.id)
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
@@ -61,7 +62,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
         for field, value in self:
             try:
                 if isinstance(value, BaseNode):
-                    nested_item = value._to_nested_item_protobuf()
+                    nested_item = value._to_node_protobuf()
 
                 elif type(value) is str:
                     nested_item = NodeProto(text=value)
@@ -78,8 +79,10 @@ class ProtoMixin(AbstractDocument, BaseNode):
             except RecursionError as ex:
                 if len(ex.args) >= 1:
                     ex.args = (
-                        f'Field `{field}` contains cyclic reference in memory. '
-                        f'Could it be your Document is referring to itself?',
+                        (
+                            f'Field `{field}` contains cyclic reference in memory. '
+                            'Could it be your Document is referring to itself?'
+                        ),
                     )
                 raise
             except Exception as ex:
@@ -89,9 +92,10 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
         return DocumentProto(data=data)
 
-    def _to_nested_item_protobuf(self) -> 'NodeProto':
-        """Convert Document into a nested item protobuf message. This function should be called when the Document
-        is nest into another Document that need to be converted into a protobuf
+    def _to_node_protobuf(self) -> NodeProto:
+        """Convert Document into a NodeProto protobuf message. This function should be
+        called when the Document is nest into another Document that need to be
+        converted into a protobuf
 
         :return: the nested item protobuf message
         """

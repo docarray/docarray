@@ -16,9 +16,9 @@ def test_nested_optional_item_proto():
 def test_ndarray():
     nd_proto = NdArrayProto()
     original_tensor = np.zeros((3, 224, 224))
-    Tensor.flush_ndarray(nd_proto, value=original_tensor)
+    Tensor._flush_tensor_to_proto(nd_proto, value=original_tensor)
     nested_item = NodeProto(tensor=nd_proto)
-    tensor = Tensor.read_ndarray(nested_item.tensor)
+    tensor = Tensor._read_from_proto(nested_item.tensor)
 
     assert (tensor == original_tensor).all()
 
@@ -31,7 +31,7 @@ def test_document_proto_set():
 
     nd_proto = NdArrayProto()
     original_tensor = np.zeros((3, 224, 224))
-    Tensor.flush_ndarray(nd_proto, value=original_tensor)
+    Tensor._flush_tensor_to_proto(nd_proto, value=original_tensor)
 
     nested_item2 = NodeProto(tensor=nd_proto)
 
