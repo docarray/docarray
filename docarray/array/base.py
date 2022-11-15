@@ -14,5 +14,6 @@ class BaseDocumentArray(MutableSequence[Document]):
 
     def __add__(self: 'T', other: Union['Document', Iterable['Document']]) -> 'T':
         v = type(self)(self)
+        print(f' hey')
         v.extend(other)
         return v
