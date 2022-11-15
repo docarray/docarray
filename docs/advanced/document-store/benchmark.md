@@ -57,15 +57,12 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 
 
 ````{tab} In-Memory
-
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|------------:|
 | N/A |          N/A |  N/A |     1.000 |               2.37 |                 11.17 |          1.06 |      0.17 |       0.05  |        0.14 |
-
 ````
 
 ````{tab} Annlite
-
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.873 |                1.42 |                   0.40 |        114.30 |      0.36 |       12.93 |       18.01 |
@@ -92,11 +89,9 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 |  32 |          256 |   64 |     0.984 |                1.62 |                   0.37 |        211.81 |      0.35 |       32.65 |       35.15 |
 |  32 |          256 |  128 |     0.996 |                1.88 |                   0.37 |        194.97 |      0.33 |       12.72 |       13.93 |
 |  32 |          256 |  256 |     0.999 |                2.25 |                   0.37 |        204.65 |      0.35 |       22.13 |       31.54 |
-
 ````
 
 ````{tab} Qdrant
-
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.965 |                3.50 |                 403.70 |        448.99 |      3.74 |        1.88 |        3.74 |
@@ -126,7 +121,6 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 ````{tab} Weaviate
-
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.871 |                4.84 |                   2.30 |        574.92 |      7.80 |        4.88 |       19.43 |
@@ -156,7 +150,6 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 ````
 
 ````{tab} ElasticSearch
-
 |  m  | ef_construct |  ef  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.889 |                4.39 |                   7.50 |        508.94 |     14.04 |       70.96 |       69.41 |
@@ -183,7 +176,6 @@ The following chart and table summarize the result. The chart depicts Recall@10 
 |  32 |          256 |   64 |     0.987 |                6.08 |                   7.51 |      1,506.04 |     15.66 |       66.59 |       55.46 |
 |  32 |          256 |  128 |     0.997 |                8.02 |                   6.63 |      1,408.87 |     11.89 |       72.99 |       65.46 |
 |  32 |          256 |  256 |     0.999 |               11.55 |                   7.69 |      1,487.95 |     13.37 |       50.19 |       58.59 |
-
 ````
 
 ````{tab} Redis
