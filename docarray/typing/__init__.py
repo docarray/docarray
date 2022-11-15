@@ -1,6 +1,6 @@
-from docarray.document.base_node import BaseNode
+from docarray.typing.embedding import Embedding
+from docarray.typing.id import ID
+from docarray.typing.tensor import Tensor
+from docarray.typing.url import AnyUrl, ImageUrl
 
-from docarray.typing.ndarray import Embedding, Tensor
-from docarray.typing.url import ImageUrl
-
-__all__ = ['Tensor', 'Embedding', 'BaseNode', 'ImageUrl']
+__all__ = ['Tensor', 'Embedding', 'ImageUrl', 'AnyUrl', 'ID']

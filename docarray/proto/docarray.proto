@@ -46,6 +46,15 @@ message NodeProto {
 
     // a sub DocumentArray
     DocumentArrayProto chunks = 5;
+
+    NdArrayProto embedding = 6;
+
+    string any_url = 7;
+
+    string image_url = 8;
+
+    string id = 9;
+
   }
 
 }

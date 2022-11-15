@@ -40,20 +40,19 @@ class Tensor(np.ndarray, BaseNode):
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
 
-    def _to_node_protobuf(self: T) -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
-
+        :param field: field in which to store the content in the node proto
         :return: the nested item protobuf message
         """
         nd_proto = NdArrayProto()
-        self.flush_ndarray(nd_proto, value=self)
-        NodeProto(tensor=nd_proto)
-        return NodeProto(tensor=nd_proto)
+        self._flush_tensor_to_proto(nd_proto, value=self)
+        return NodeProto(**{field: nd_proto})
 
     @classmethod
-    def read_ndarray(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
+    def _read_from_proto(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
         read ndarray from a proto msg
         :param pb_msg:
@@ -69,7 +68,7 @@ class Tensor(np.ndarray, BaseNode):
             raise ValueError(f'proto message {pb_msg} cannot be cast to a Tensor')
 
     @staticmethod
-    def flush_ndarray(pb_msg: 'NdArrayProto', value: 'Tensor'):
+    def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'Tensor'):
         pb_msg.dense.buffer = value.tobytes()
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))

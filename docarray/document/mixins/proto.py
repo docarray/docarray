@@ -1,23 +1,14 @@
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
+from pydantic.tools import parse_obj_as
+
+from docarray.document.abstract_document import AbstractDocument
+from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
-from docarray.typing import Tensor
-
-from ..abstract_document import AbstractDocument
-from ..base_node import BaseNode
+from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor
 
 
 class ProtoMixin(AbstractDocument, BaseNode):
-    @classmethod
-    def _get_nested_document_class(cls, field: str) -> Type['ProtoMixin']:
-        """
-        Accessing the nested python Class define in the schema. Could be useful for
-        reconstruction of Document in serialization/deserilization
-        :param field: name of the field
-        :return:
-        """
-        return cls.__fields__[field].type_
-
     @classmethod
     def from_protobuf(cls, pb_msg: 'DocumentProto') -> 'ProtoMixin':
         """create a Document from a protobuf message"""
@@ -30,8 +21,18 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
             content_type = value.WhichOneof('content')
 
+            # this if else statement need to be refactored it is too long
+            # the check should be delegated to the type level
             if content_type == 'tensor':
-                fields[field] = Tensor.read_ndarray(value.tensor)
+                fields[field] = Tensor._read_from_proto(value.tensor)
+            elif content_type == 'embedding':
+                fields[field] = Embedding._read_from_proto(value.embedding)
+            elif content_type == 'any_url':
+                fields[field] = parse_obj_as(AnyUrl, value.any_url)
+            elif content_type == 'image_url':
+                fields[field] = parse_obj_as(ImageUrl, value.image_url)
+            elif content_type == 'id':
+                fields[field] = parse_obj_as(ID, value.id)
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
