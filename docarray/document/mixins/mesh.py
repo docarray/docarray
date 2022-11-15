@@ -122,7 +122,7 @@ class MeshDataMixin:
 
         if len(self.chunks) != 2:
             raise ValueError(
-                f'The provided Document does not have 2 chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.'
+                f'The provided Document does not have two chunks but instead {len(self.chunks)}. To load uris to RGBD tensor, the Document needs to have two chunks, with the first one providing the RGB image uri, and the second one providing the depth image uri.'
             )
         for chunk in self.chunks:
             if chunk.uri == '':
