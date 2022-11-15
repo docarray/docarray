@@ -480,4 +480,4 @@ Redis offers great speed if your data fits in memory and you need an isolated se
 
 AnnLite offers good speed in CRUD and vector search operations, but keep in mind that AnnLite is a library and does not follow a client-server design. This means that AnnLite operations do not include network overhead unlike other backends.
 
-Moreover, AnnLite is a local monolithic package and does not offer scaling. However, you can still scale using [Jina's scaling features](https://docs.jina.ai/how-to/scale-out/).
+Moreover, AnnLite is a local monolithic package and does not offer scaling. However, you can still scale using [Jina's scaling features](https://docs.jina.ai/how-to/scale-out/). 
