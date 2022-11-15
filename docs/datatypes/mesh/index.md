@@ -2574,3 +2574,38 @@ function animate(){requestAnimationFrame(animate);controls.update();}
 function render(){tracklight.position.copy(camera.position);renderer.render(scene,camera);}
 init();</script></body>
 </html>" width="100%" height="500px" style="border:none;"></iframe
+
+
+## RGB-D image representation
+
+The RGB-D image representation includes an RGB image of shape (w, h, 3) and a corresponding depth image (w, h). The depth image describes the distance between the image plane and the corresponding object for each pixel in the RGB image. Since the RGB and depth image are of identical width and height, they can be easily concatenated and stored in a tensor of shape (w, h, 4). Due to their fixed size RGB-D images are a suited 3d data representation for input of machine learning models. 
+
+With DocArray you can store the uris of an RGB image and its corresponding depth image to the `.uri` attribute of a Document's `.chunks`. You can then load the uris to the Document's `.tensor` attribute at top-level as follows: 
+
+```python
+from docarray import Document
+
+doc = Document(chunks=[Document(uri='rgb_000.jpg'), Document(uri='depth_000.jpg')])
+doc.load_uris_to_rgbd_tensor()
+
+doc.summary()
+```
+
+```text
+<Document ('id', 'chunks', 'tensor') at 7f907d786d6c11ec840a1e008a366d49>
+    └─ chunks
+          ├─ <Document ('id', 'parent_id', 'granularity', 'uri') at 7f907ab26d6c11ec840a1e008a366d49>
+          └─ <Document ('id', 'parent_id', 'granularity', 'uri') at 7f907c106d6c11ec840a1e008a366d49>
+```
+
+You can display the RGB image and its corresponding depth image via:
+
+```python
+doc.display()
+```
+
+
+```{figure} rgbd_chair.png
+:align: center
+:scale: 90%
+```
