@@ -76,8 +76,12 @@ class PlotMixin:
         Plot image data from :attr:`.uri` or from :attr:`.tensor` if :attr:`.uri` is empty .
         :param from_: an optional string to decide if a document should display using either the uri or the tensor field.
         """
-        if self._is_3d():
-            self.display_3d()
+        if self._is_3d_point_cloud():
+            self.display_point_cloud_tensor()
+        elif self._is_3d_rgbd():
+            self.display_rgbd_tensor()
+        elif self._is_3d_vertices_and_faces():
+            self.display_vertices_and_faces()
         else:
             if not from_:
                 if self.uri:
@@ -94,50 +98,45 @@ class PlotMixin:
             else:
                 self.summary()
 
-    def _is_3d(self) -> bool:
+    def _is_3d_point_cloud(self):
         """
-        Tells if Document stores a 3D object saved as point cloud, RGB-D image or vertices and faces.
+        Tells if Document stores a 3D object saved as point cloud tensor.
         :return: bool.
         """
-        if self.uri and self.uri.endswith(tuple(Mesh.FILE_EXTENSIONS)):
-            return True
-        elif self.tensor is not None and (
-            (self.tensor.shape[-1] == 3 and self.tensor.ndim == 2)
-            or (self.tensor.shape[-1] == 4 and self.tensor.ndim == 3)
+        if (
+            self.tensor is not None
+            and self.tensor.ndim == 2
+            and self.tensor.shape[-1] == 3
         ):
             return True
-        elif self.chunks is not None:
+        else:
+            return False
+
+    def _is_3d_rgbd(self):
+        """
+        Tells if Document stores a 3D object saved as RGB-D image tensor.
+        :return: bool.
+        """
+        if (
+            self.tensor is not None
+            and self.tensor.ndim == 3
+            and self.tensor.shape[-1] == 4
+        ):
+            return True
+        else:
+            return False
+
+    def _is_3d_vertices_and_faces(self):
+        """
+        Tells if Document stores a 3D object saved as vertices and faces.
+        :return: bool.
+        """
+        if self.chunks is not None:
             name_tags = [c.tags['name'] for c in self.chunks]
             if Mesh.VERTICES in name_tags and Mesh.FACES in name_tags:
                 return True
         else:
             return False
-
-    def display_3d(self) -> None:
-        """Plot 3d data."""
-        from IPython.display import display
-
-        if self.tensor is not None:
-            if self.tensor.shape[-1] == 4 and self.tensor.ndim == 3:
-                self.display_rgbd_tensor()
-            else:
-                self.display_point_cloud_tensor()
-
-        elif self.uri:
-            # mesh from uri
-            mesh = self._load_mesh()
-            display(mesh.show())
-
-        elif self.chunks is not None:
-            # mesh from chunks
-            import trimesh
-
-            vertices = [
-                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
-            ][-1]
-            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
-            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
-            display(mesh.show())
 
     def display_tensor(self) -> None:
         """Plot image data from :attr:`.tensor`"""
@@ -159,6 +158,26 @@ class PlotMixin:
             import matplotlib.pyplot as plt
 
             plt.matshow(self.tensor)
+
+    def display_vertices_and_faces(self):
+        """Plot mesh consisting of vertices and faces."""
+        from IPython.display import display
+
+        if self.uri:
+            # mesh from uri
+            mesh = self._load_mesh()
+            display(mesh.show())
+
+        else:
+            # mesh from chunks
+            import trimesh
+
+            vertices = [
+                c.tensor for c in self.chunks if c.tags['name'] == Mesh.VERTICES
+            ][-1]
+            faces = [c.tensor for c in self.chunks if c.tags['name'] == Mesh.FACES][-1]
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces)
+            display(mesh.show())
 
     def display_point_cloud_tensor(self) -> None:
         """Plot interactive point cloud from :attr:`.tensor`"""
