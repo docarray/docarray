@@ -2606,6 +2606,5 @@ doc.display()
 
 
 ```{figure} rgbd_chair.png
-:align: center
-:scale: 90%
+:align: hei
 ```
