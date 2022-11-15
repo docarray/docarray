@@ -4,7 +4,7 @@
 One can use [Milvus](https://milvus.io/) as the Document store for DocumentArray. It is useful when one wants to have faster Document retrieval on embeddings, i.e. `.match()`, `.find()`.
 
 ````{tip}
-This feature requires `pymilvus`. You can install it via `pip install "docarray[milvus]".` 
+This feature requires `pymilvus`. You can install it via `pip install "docarray[milvus]"`. 
 ````
 
 ## Usage
@@ -91,7 +91,7 @@ da = DocumentArray(storage='milvus', config={'n_dim': 10})
 
 Here, `config` is configuration for the new Milvus collection,
 and `n_dim` is a mandatory field that specifies the dimensionality of stored embeddings.
-For more information about the Milvus `config`, refer to the {ref}`specification <milvus-config>`.
+For more information about the Milvus `config`, refer to the {ref}`config <milvus-config>`.
 
 To access a previously persisted DocumentArray, specify the `collection_name`, the `host`,  and the `port`. 
 
@@ -370,7 +370,7 @@ Currently, dynamically setting a consistency level is supported for the followin
 
 In Milvus you can [pass parameters to the search operation](https://milvus.io/docs/v2.1.x/search.md#Conduct-a-vector-search) which [depend on the used index type](https://milvus.io/docs/v2.1.x/index.md).
 
-In DocumentArray, this ability is exposed through the `param` argument in the `.find()` method:
+In DocumentArray, this ability is exposed through the `param` argument in the `~docarray.array.mixins.find` method:
 
 ```python
 import numpy as np
