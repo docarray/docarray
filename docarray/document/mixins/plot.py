@@ -199,6 +199,7 @@ class PlotMixin:
     def display_rgbd_tensor(self) -> None:
         """Plot an RGB-D image and a corresponding depth image from :attr:`.tensor`"""
         import matplotlib.pyplot as plt
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
 
         rgb_img = self.tensor[:, :, :3]
 
@@ -208,10 +209,14 @@ class PlotMixin:
 
         f, ax = plt.subplots(1, 2, figsize=(16, 6))
 
-        ax[0].imshow(rgb_img)
-        ax[1].imshow(depth_img, cmap='gray')
-
+        ax[0].imshow(rgb_img, interpolation='None')
         ax[0].set_title('RGB image\n', fontsize=16)
+
+        im2 = ax[1].imshow(self.tensor[:, :, -1], cmap='gray')
+        cax = make_axes_locatable(ax[1]).append_axes('right', size='5%', pad=0.05)
+        f.colorbar(im2, cax=cax, orientation='vertical', label='Depth')
+
+        ax[1].imshow(depth_img, cmap='gray')
         ax[1].set_title('Depth image\n', fontsize=16)
 
         plt.show()
