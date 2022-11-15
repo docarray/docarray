@@ -33,6 +33,13 @@ class DocumentArray(
         class _DocumenArrayTyped(DocumentArray):
             document_type = item
 
+        for field in _DocumenArrayTyped.document_type.__fields__.keys():
+
+            def _proprety_generator(val: str):
+                return property(lambda self: self._get_documents_attribute(val))
+
+            setattr(_DocumenArrayTyped, field, _proprety_generator(field))
+
         _DocumenArrayTyped.__name__ = f'DocumentArray{item.__name__}'
 
         return _DocumenArrayTyped
