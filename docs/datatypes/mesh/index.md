@@ -2604,7 +2604,5 @@ You can display the RGB image and its corresponding depth image via:
 doc.display()
 ```
 
-
 ```{figure} rgbd_chair.png
-:width: 90%
 ```
