@@ -385,6 +385,6 @@ def test_load_uris_to_rgbd_tensor_doc_wo_uri_raise_exception():
     )
     with pytest.raises(
         ValueError,
-        match='A chunk of the given Document does not provide an uri.',
+        match='A chunk of the given Document does not provide a uri.',
     ):
         doc.load_uris_to_rgbd_tensor()
