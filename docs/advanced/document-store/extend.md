@@ -231,7 +231,7 @@ The `list-like` flag is passed into the config file as follows:
 class MyDocStoreConfig:
     config1: str
     config2: str
-    list - like: True
+    list_like: bool
     config3: Dict
     ...
 ```
