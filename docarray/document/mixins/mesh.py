@@ -138,6 +138,8 @@ class MeshDataMixin:
                 f'The provided RGB image and depth image are not of the same shapes: {rgb_img.shape[0:2]} != {depth_img.shape}'
             )
 
-        self.tensor = np.append(rgb_img, np.expand_dims(depth_img, axis=2), axis=2)
+        self.tensor = np.concatenate(
+            (rgb_img, np.expand_dims(depth_img, axis=2)), axis=-1
+        )
 
         return self
