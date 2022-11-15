@@ -46,7 +46,7 @@ You can also display your 3d object and interact with it in the cell, whether yo
 ```{figure} mesh-point-cloud.png
 ```
 
-Additionally, you can also display an RGB image and its corresponding depth image.
+Additionally, you can also display an RGB image and its corresponding depth image:
 
 ```{figure} image-rgbd.png
 ```
