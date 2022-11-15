@@ -127,7 +127,7 @@ class MeshDataMixin:
         for chunk in self.chunks:
             if chunk.uri == '':
                 raise ValueError(
-                    'A chunk of the given Document does not provide an uri.'
+                    'A chunk of the given Document does not provide a uri.'
                 )
 
         rgb_img = np.array(Image.open(self.chunks[0].uri).convert('RGB'))
