@@ -1,15 +1,15 @@
 from typing import Iterable, Type
 
+from docarray.array.abstract_array import AbstractDocumentArray
+from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
 from docarray.document.abstract_document import AbstractDocument
-
-from .abstract_array import AbstractDocumentArray
-from .mixins import ProtoArrayMixin
 
 
 class DocumentArray(
     list,
     ProtoArrayMixin,
+    GetAttributeArrayMixin,
     AbstractDocumentArray,
     BaseNode,
 ):
