@@ -51,7 +51,7 @@ chunk.tags = {'name': 'faces'}
 ```
 
 
-You can display your 3d object and interact with it via:
+You can display your 3D object and interact with it via:
 ```python
 doc.display()
 ```
@@ -1321,7 +1321,7 @@ print(doc.tensor.shape)
 (1000, 3)
 ```
 
-You can display your 3d object and interact with it via:
+You can display your 3D object and interact with it via:
 
 ```python
 doc.display()
@@ -2578,9 +2578,9 @@ init();</script></body>
 
 ## RGB-D image representation
 
-The RGB-D image representation includes an RGB image of shape (w, h, 3) and a corresponding depth image (w, h). The depth image describes the distance between the image plane and the corresponding object for each pixel in the RGB image. Since the RGB and depth image are of identical width and height, they can be easily concatenated and stored in a tensor of shape (w, h, 4). Due to their fixed size RGB-D images are a suited 3d data representation for input of machine learning models. 
+The RGB-D image representation includes an RGB image of shape (w, h, 3) and a corresponding depth image (w, h). The depth image describes the distance between the image plane and the corresponding object for each pixel in the RGB image. Since the RGB and depth image are of identical width and height, they can be easily concatenated and stored in a tensor of shape (w, h, 4). Due to their fixed size, RGB-D images are suitable for 3D data representations for input to machine learning models.
 
-With DocArray you can store the uris of an RGB image and its corresponding depth image to the `.uri` attribute of a Document's `.chunks`. You can then load the uris to the Document's `.tensor` attribute at top-level as follows: 
+With DocArray you can store the uris of an RGB image and its corresponding depth image to the `.uri` attribute of a Document's `.chunks`. You can then load the uris to the Document's `.tensor` attribute at top-level: 
 
 ```python
 from docarray import Document
@@ -2598,7 +2598,7 @@ doc.summary()
           └─ <Document ('id', 'parent_id', 'granularity', 'uri') at 7f907c106d6c11ec840a1e008a366d49>
 ```
 
-You can display the RGB image and its corresponding depth image via:
+To display the RGB image and its corresponding depth image:
 
 ```python
 doc.display()
