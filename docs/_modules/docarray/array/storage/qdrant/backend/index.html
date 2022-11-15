@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/storage/qdrant/backend.html" />
 
     <link rel="shortcut icon" href="../../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.storage.qdrant.backend - DocArray 0.18.2 documentation</title>
+        <title>docarray.array.storage.qdrant.backend - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -278,10 +278,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../../fundamentals/cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
@@ -368,7 +372,9 @@
                 </div>
                 <article role="main">
                     <h1>Source code for docarray.array.storage.qdrant.backend</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">asdict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Optional</span><span class="p">,</span>
@@ -388,6 +394,7 @@
     <span class="n">PointsList</span><span class="p">,</span>
     <span class="n">PointStruct</span><span class="p">,</span>
     <span class="n">HnswConfigDiff</span><span class="p">,</span>
+    <span class="n">VectorParams</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -405,8 +412,13 @@
     <span class="n">n_dim</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">distance</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span>
     <span class="n">collection_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">list_like</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">)</span>
     <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">6333</span><span class="p">)</span>
+    <span class="n">grpc_port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">6334</span><span class="p">)</span>
+    <span class="n">prefer_grpc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">https</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">serialize_config</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">scroll_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span>
     <span class="n">ef_construct</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -416,6 +428,21 @@
 
 
 <div class="viewcode-block" id="BackendMixin"><a class="viewcode-back" href="../../../../../../api/docarray.array.storage.qdrant.backend/#docarray.array.qdrant.BackendMixin">[docs]</a><span class="k">class</span> <span class="nc">BackendMixin</span><span class="p">(</span><span class="n">BaseBackendMixin</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QdrantClient&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">collection_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Distance&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_tmp_collection_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span>
@@ -434,7 +461,7 @@
 <span class="sd">        :raises ValueError: only one of name or docs can be used for initialization,</span>
 <span class="sd">            raise an error if both are provided</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_schemas</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="p">:</span>
@@ -454,10 +481,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_distance</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">distance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">serialize_config</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">prefer_grpc</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">prefer_grpc</span><span class="p">,</span>
+            <span class="n">grpc_port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">grpc_port</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_key</span><span class="p">,</span>
+            <span class="n">https</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">https</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_list_like</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">list_like</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_columns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">collection_name</span> <span class="o">=</span> <span class="p">(</span>
@@ -502,13 +536,13 @@
                 <span class="n">full_scan_threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">full_scan_threshold</span><span class="p">,</span>
                 <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">collections_api</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">recreate_collection</span><span class="p">(</span>
                 <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span>
-                <span class="n">create_collection</span><span class="o">=</span><span class="n">CreateCollection</span><span class="p">(</span>
-                    <span class="n">vector_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dim</span><span class="p">,</span>
-                    <span class="n">distance</span><span class="o">=</span><span class="n">DISTANCES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_distance</span><span class="p">],</span>
-                    <span class="n">hnsw_config</span><span class="o">=</span><span class="n">hnsw_config</span><span class="p">,</span>
+                <span class="n">vectors_config</span><span class="o">=</span><span class="n">VectorParams</span><span class="p">(</span>
+                    <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_dim</span><span class="p">,</span>
+                    <span class="n">distance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">,</span>
                 <span class="p">),</span>
+                <span class="n">hnsw_config</span><span class="o">=</span><span class="n">hnsw_config</span><span class="p">,</span>
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_collection_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">):</span>
@@ -533,38 +567,36 @@
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">QdrantClient</span><span class="p">(</span>
-            <span class="n">host</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">port</span>
+            <span class="n">host</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="n">port</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="n">prefer_grpc</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">prefer_grpc</span><span class="p">,</span>
+            <span class="n">grpc_port</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">grpc_port</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">api_key</span><span class="p">,</span>
+            <span class="n">https</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">https</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span>
-            <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s1">&#39;offset2id&#39;</span><span class="p">,</span> <span class="p">[]</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;offset2id&#39;</span><span class="p">,</span> <span class="p">[])</span>
 
     <span class="k">def</span> <span class="nf">_update_offset2ids_meta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collection_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">recreate_collection</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">,</span>
-                <span class="n">vector_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">distance</span><span class="o">=</span><span class="n">Distance</span><span class="o">.</span><span class="n">COSINE</span><span class="p">,</span>
+                <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">,</span>
+                <span class="n">vectors_config</span><span class="o">=</span><span class="p">{},</span>  <span class="c1"># no vectors</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">points_api</span><span class="o">.</span><span class="n">upsert_points</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span>
             <span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name_meta</span><span class="p">,</span>
+            <span class="n">points</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">PointStruct</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;offset2id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">ids</span><span class="p">},</span> <span class="n">vector</span><span class="o">=</span><span class="p">{}</span>
+                <span class="p">)</span>
+            <span class="p">],</span>
             <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">point_insert_operations</span><span class="o">=</span><span class="n">PointsList</span><span class="p">(</span>
-                <span class="n">points</span><span class="o">=</span><span class="p">[</span>
-                    <span class="n">PointStruct</span><span class="p">(</span>
-                        <span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;offset2id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset2ids</span><span class="o">.</span><span class="n">ids</span><span class="p">},</span> <span class="n">vector</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="p">)</span>
-                <span class="p">]</span>
-            <span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_map_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding</span><span class="p">:</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
@@ -583,7 +615,8 @@
 
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">embedding</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
             <span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span> <span class="o">+</span> <span class="n">EPSILON</span>
-        <span class="k">return</span> <span class="n">embedding</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
+
+        <span class="k">return</span> <span class="n">embedding</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
 </pre></div>
                 </article>
             </div>
@@ -596,9 +629,9 @@
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

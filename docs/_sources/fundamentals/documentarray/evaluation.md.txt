@@ -227,6 +227,7 @@ Let's write a custom metric function, which counts the number of relevant docume
 def count_relevant(binary_relevance):
     return sum(binary_relevance)
 
+
 da_prediction.evaluate(ground_truth=da_original, metrics=[count_relevant])
 ```
 
@@ -251,4 +252,87 @@ da_prediction.evaluate(
 
 ```text
 {'#Relevant': 9.0, 'Precision@K': 0.47368421052631576}
+```
+
+## Embed, match & evaluate at once
+
+Instead of executing the functions {meth}`~docarray.array.mixins.embed.EmbedMixin.embed`, {meth}`~docarray.array.mixins.match.MatchMixin.match`, and {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.evaluate` separately from each other, you can also execute them all at once by using {meth}`~docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate`.
+To demonstrate this, we constuct two labeled DocumentArrays `example_queries` and `example_index`.
+The second one `example_index` should be matched with `example_queries` and afterwards, we want to evaluate the reciprocal rank based on the labels of the matches in `example_queries`.
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+example_queries = DocumentArray([Document(tags={'label': (i % 2)}) for i in range(10)])
+example_index = DocumentArray([Document(tags={'label': (i % 2)}) for i in range(10)])
+
+
+def embedding_function(da):
+    da[:, 'embedding'] = np.random.random((len(da), 5))
+
+
+result = example_queries.embed_and_evaluate(
+    'reciprocal_rank', index_da=example_index, embed_funcs=embedding_function
+)
+print(result)
+```
+
+```text
+{'reciprocal_rank': 0.7583333333333333}
+```
+
+### Batch-wise matching
+
+The ``embed_and_evaluate`` function is especially useful, when you need to evaluate the queries on a very large document collection (`example_index` in the code snippet above), which is too large to store the embeddings of all documents in main-memory.
+In this case, ``embed_and_evaluate`` matches the queries to batches of the document collection.
+After the batch is processed all embeddings are deleted.
+By default, the batch size for the matching (`match_batch_size`) is set to `100_000`.
+If you want to reduce the memory footprint, you can set it to a lower value.
+
+### Sampling Queries
+
+If you want to evaluate a large dataset, it might be useful to sample query documents.
+Since the metric values returned by the `embed_and_evaluate` are mean values, sampling should not change the result significantly if the sample is large enough.
+By default, sampling is applied for `DocumentArray` objects with more than 1,000 documents.
+However, it is only applied on the `DocumentArray` itself and not on the document provided in `index_data`.
+If you want to change the number of samples, you can ajust the `query_sample_size` argument.
+In the following code block an evaluation is done with 100 samples:
+
+```python
+import numpy as np
+from docarray import Document, DocumentArray
+
+
+def emb_func(da):
+    for d in da:
+        np.random.seed(int(d.text))
+        d.embedding = np.random.random(5)
+
+
+da = DocumentArray(
+    [Document(text=str(i), tags={'label': i % 10}) for i in range(1_000)]
+)
+
+da.embed_and_evaluate(
+    metrics=['precision_at_k'], embed_funcs=emb_func, query_sample_size=100
+)
+```
+
+```text
+{'precision_at_k': 0.13649999999999998}
+```
+
+Please note that in this way only documents which are actually evaluated obtain an `.evaluations` attribute.
+
+To test how close it is to the exact result, we execute the function again with `query_sample_size` set to 1,000:
+
+```python
+da.embed_and_evaluate(
+    metrics=['precision_at_k'], embed_funcs=emb_func, query_sample_size=1_000
+)
+```
+
+```text
+{'precision_at_k': 0.14245}
 ```

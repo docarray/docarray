@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/evaluation.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.mixins.evaluation - DocArray 0.18.2 documentation</title>
+        <title>docarray.array.mixins.evaluation - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -278,10 +278,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
@@ -369,7 +373,7 @@
                 <article role="main">
                     <h1>Source code for docarray.array.mixins.evaluation</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 
@@ -380,6 +384,8 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+    <span class="kn">from</span> <span class="nn">docarray.array.mixins.embed</span> <span class="kn">import</span> <span class="n">CollateFnType</span>
+    <span class="kn">from</span> <span class="nn">docarray.typing</span> <span class="kn">import</span> <span class="n">ArrayType</span><span class="p">,</span> <span class="n">AnyDNN</span>
 
 
 <span class="k">def</span> <span class="nf">_evaluate_deprecation</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -464,7 +470,7 @@
 <span class="sd">        This method will fill the `evaluations` field of Documents inside this</span>
 <span class="sd">        `DocumentArray` and will return the average of the computations</span>
 
-<span class="sd">        :param metrics: list of metric names or metric functions to be computed</span>
+<span class="sd">        :param metrics: List of metric names or metric functions to be computed</span>
 <span class="sd">        :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`</span>
 <span class="sd">            compares to.</span>
 <span class="sd">        :param hash_fn: For the evaluation against a `ground_truth` DocumentArray,</span>
@@ -574,7 +580,248 @@
         <span class="k">return</span> <span class="p">{</span>
             <span class="n">metric_name</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="p">}</span></div></div>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="EvaluationMixin.embed_and_evaluate"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">embed_and_evaluate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+        <span class="n">index_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metric_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">label_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;label&#39;</span><span class="p">,</span>
+        <span class="n">embed_models</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;AnyDNN&#39;</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;AnyDNN&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyDNN&#39;</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">embed_funcs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
+        <span class="n">collate_fns</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;CollateFnType&#39;</span><span class="p">],</span>
+            <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;CollateFnType&#39;</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;CollateFnType&#39;</span><span class="p">]],</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">distance</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+            <span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;ArrayType&#39;</span><span class="p">,</span> <span class="s1">&#39;ArrayType&#39;</span><span class="p">],</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">normalization</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exclude_self</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_scipy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_worker</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">match_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100_000</span><span class="p">,</span>
+        <span class="n">query_sample_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1_000</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>  <span class="c1"># average for each metric</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes ranking evaluation metrics for a given `DocumentArray`. This</span>
+<span class="sd">        function does embedding and matching in the same turn. Thus, you don&#39;t need to</span>
+<span class="sd">        call ``embed`` and ``match`` before it. Instead, it embeds the documents in</span>
+<span class="sd">        `self` (and `index_data` when provided`) and compute the nearest neighbour</span>
+<span class="sd">        itself. This might be done in batches for the `index_data` object to reduce</span>
+<span class="sd">        the memory consumption of the evlauation process. The evaluation itself can be</span>
+<span class="sd">        done against a `ground_truth` DocumentArray or on the basis of labels like it</span>
+<span class="sd">        is possible with the :func:``evaluate`` function.</span>
+
+<span class="sd">        :param metrics: List of metric names or metric functions to be computed</span>
+<span class="sd">        :param index_data: The other DocumentArray  to match against, if not given,</span>
+<span class="sd">            `self` will be matched against itself. This means that every document in</span>
+<span class="sd">            will be compared to all other documents in `self` to determine the nearest</span>
+<span class="sd">            neighbors.</span>
+<span class="sd">        :param ground_truth: The ground_truth `DocumentArray` that the `DocumentArray`</span>
+<span class="sd">            compares to.</span>
+<span class="sd">        :param metric_names: If provided, the results of the metrics computation will be</span>
+<span class="sd">            stored in the `evaluations` field of each Document with this names. If not</span>
+<span class="sd">            provided, the names will be derived from the metric function names.</span>
+<span class="sd">        :param strict: If set, then left and right sides are required to be fully</span>
+<span class="sd">            aligned: on the length, and on the semantic of length. These are preventing</span>
+<span class="sd">            you to evaluate on irrelevant matches accidentally.</span>
+<span class="sd">        :param label_tag: Specifies the tag which contains the labels.</span>
+<span class="sd">        :param embed_models: One or two embedding model written in Keras / Pytorch /</span>
+<span class="sd">            Paddle for embedding `self` and `index_data`.</span>
+<span class="sd">        :param embed_funcs: As an alternative to embedding models, custom embedding</span>
+<span class="sd">            functions can be provided.</span>
+<span class="sd">        :param device: the computational device for `embed_models`, and the matching</span>
+<span class="sd">            can be either `cpu` or `cuda`.</span>
+<span class="sd">        :param batch_size: Number of documents in a batch for embedding.</span>
+<span class="sd">        :param collate_fns: For each embedding function the respective collate</span>
+<span class="sd">            function creates a mini-batch of input(s) from the given `DocumentArray`.</span>
+<span class="sd">            If not provided a default built-in collate_fn uses the `tensors` of the</span>
+<span class="sd">            documents to create input batches.</span>
+<span class="sd">        :param distance: The distance metric.</span>
+<span class="sd">        :param limit: The maximum number of matches, when not given defaults to 20.</span>
+<span class="sd">        :param normalization: A tuple [a, b] to be used with min-max normalization,</span>
+<span class="sd">            the min distance will be rescaled to `a`, the max distance will be</span>
+<span class="sd">            rescaled to `b` all values will be rescaled into range `[a, b]`.</span>
+<span class="sd">        :param exclude_self: If set, Documents in ``index_data`` with same ``id``</span>
+<span class="sd">            as the left-hand values will not be considered as matches.</span>
+<span class="sd">        :param use_scipy: if set, use ``scipy`` as the computation backend. Note,</span>
+<span class="sd">            ``scipy`` does not support distance on sparse matrix.</span>
+<span class="sd">        :param num_worker: Specifies the number of workers for the execution of the</span>
+<span class="sd">            match function.</span>
+<span class="sd">        :parma match_batch_size: The number of documents which are embedded and</span>
+<span class="sd">            matched at once. Set this value to a lower value, if you experience high</span>
+<span class="sd">            memory consumption.</span>
+<span class="sd">        :param kwargs: Additional keyword arguments to be passed to the metric</span>
+<span class="sd">            functions.</span>
+<span class="sd">        :param query_sample_size: For a large number of documents in `self` the</span>
+<span class="sd">            evaluation becomes infeasible, especially, if `index_data` is large.</span>
+<span class="sd">            Therefore, queries are sampled if the number of documents in `self` exceeds</span>
+<span class="sd">            `query_sample_size`. Usually, this has only small impact on the mean metric</span>
+<span class="sd">            values returned by this function. To prevent sampling, you can set</span>
+<span class="sd">            `query_sample_size` to None.</span>
+<span class="sd">        :return: A dictionary which stores for each metric name the average evaluation</span>
+<span class="sd">            score.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">query_sample_size</span><span class="p">:</span>
+            <span class="n">query_sample_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">query_data</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">only_one_dataset</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">index_data</span>
+        <span class="n">apply_sampling</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">query_sample_size</span>
+
+        <span class="k">if</span> <span class="n">only_one_dataset</span><span class="p">:</span>
+            <span class="c1"># if the user does not provide a separate set of documents for indexing,</span>
+            <span class="c1"># the matching is done on the documents itself</span>
+            <span class="n">copy_flag</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">apply_sampling</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">embed_funcs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">((</span><span class="n">embed_funcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">embed_models</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">index_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">copy_flag</span> <span class="k">else</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="n">apply_sampling</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
+            <span class="n">query_data</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+                <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">query_sample_size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ground_truth</span> <span class="ow">and</span> <span class="n">apply_sampling</span><span class="p">:</span>
+            <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">ground_truth</span><span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">query_data</span> <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">ground_truth</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">query_data</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;The DocumentArray provided in the ground_truth attribute does &#39;</span>
+                    <span class="s1">&#39;not contain all the documents in self.&#39;</span>
+                <span class="p">)</span>
+
+        <span class="n">index_data_labels</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ground_truth</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Either a ground_truth `DocumentArray` or labels are &#39;</span>
+                    <span class="s1">&#39;required for the evaluation.&#39;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">label_tag</span> <span class="ow">in</span> <span class="n">index_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;The `DocumentArray` provided in `index_data` misses &#39;</span> <span class="s1">&#39;labels.&#39;</span>
+                <span class="p">)</span>
+            <span class="n">index_data_labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">id_value</span><span class="p">,</span> <span class="n">tags</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">index_data</span><span class="p">[:,</span> <span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">index_data</span><span class="p">[:,</span> <span class="s1">&#39;tags&#39;</span><span class="p">]):</span>
+                <span class="n">index_data_labels</span><span class="p">[</span><span class="n">id_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">tags</span><span class="p">[</span><span class="n">label_tag</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">embed_funcs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># derive embed function from embed model</span>
+            <span class="k">if</span> <span class="n">embed_models</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s1">&#39;For embedding the documents you need to provide either embedding &#39;</span>
+                    <span class="s1">&#39;model(s) or embedding function(s)&#39;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">embed_models</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span><span class="p">:</span>
+                    <span class="n">embed_models</span> <span class="o">=</span> <span class="p">(</span><span class="n">embed_models</span><span class="p">,</span> <span class="n">embed_models</span><span class="p">)</span>
+                <span class="n">embed_args</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s1">&#39;embed_model&#39;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+                        <span class="s1">&#39;device&#39;</span><span class="p">:</span> <span class="n">device</span><span class="p">,</span>
+                        <span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="n">batch_size</span><span class="p">,</span>
+                        <span class="s1">&#39;collate_fn&#39;</span><span class="p">:</span> <span class="n">collate_fns</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">collate_fns</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span>
+                        <span class="k">else</span> <span class="n">collate_fns</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">docs</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                        <span class="nb">zip</span><span class="p">(</span><span class="n">embed_models</span><span class="p">,</span> <span class="p">(</span><span class="n">query_data</span><span class="p">,</span> <span class="n">index_data</span><span class="p">))</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">embed_funcs</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span><span class="p">:</span>
+                <span class="n">embed_funcs</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">embed_funcs</span><span class="p">,</span>
+                    <span class="n">embed_funcs</span><span class="p">,</span>
+                <span class="p">)</span>  <span class="c1"># use the same embedding function for queries and index</span>
+
+        <span class="c1"># embed queries:</span>
+        <span class="k">if</span> <span class="n">embed_funcs</span><span class="p">:</span>
+            <span class="n">embed_funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">query_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query_data</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="o">**</span><span class="n">embed_args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">:</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="n">local_queries</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">query_data</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">fuse_matches</span><span class="p">(</span><span class="n">global_matches</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">local_matches</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">):</span>
+            <span class="n">global_matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">local_matches</span><span class="p">)</span>
+            <span class="n">global_matches</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">global_matches</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="n">distance</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">)[:</span><span class="n">limit</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">DocumentArray</span><span class="p">(</span><span class="n">global_matches</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">index_data</span><span class="o">.</span><span class="n">batch</span><span class="p">(</span><span class="n">match_batch_size</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">apply_sampling</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">embedding</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="n">embed_funcs</span><span class="p">:</span>
+                    <span class="n">embed_funcs</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">batch</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">batch</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="o">**</span><span class="n">embed_args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="n">local_queries</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
+                <span class="n">batch</span><span class="p">,</span>
+                <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                <span class="n">metric</span><span class="o">=</span><span class="n">distance</span><span class="p">,</span>
+                <span class="n">normalization</span><span class="o">=</span><span class="n">normalization</span><span class="p">,</span>
+                <span class="n">exclude_self</span><span class="o">=</span><span class="n">exclude_self</span><span class="p">,</span>
+                <span class="n">use_scipy</span><span class="o">=</span><span class="n">use_scipy</span><span class="p">,</span>
+                <span class="n">num_worker</span><span class="o">=</span><span class="n">num_worker</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_worker</span><span class="p">)</span> <span class="k">if</span> <span class="n">num_worker</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">only_id</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">local_queries</span><span class="p">:</span>
+                <span class="n">query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fuse_matches</span><span class="p">(</span>
+                    <span class="n">query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span>
+                    <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">batch</span><span class="o">.</span><span class="n">embeddings</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># set labels if necessary</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ground_truth</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">query_data</span><span class="p">):</span>
+                <span class="n">new_matches</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="n">label_tag</span><span class="p">:</span> <span class="n">index_data_labels</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">]}</span>
+                    <span class="n">new_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+                <span class="n">query_data</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_matches</span>
+
+        <span class="n">metrics_resp</span> <span class="o">=</span> <span class="n">query_data</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+            <span class="n">ground_truth</span><span class="o">=</span><span class="n">ground_truth</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+            <span class="n">metric_names</span><span class="o">=</span><span class="n">metric_names</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+            <span class="n">label_tag</span><span class="o">=</span><span class="n">label_tag</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">metrics_resp</span></div></div>
 </pre></div>
                 </article>
             </div>
@@ -587,9 +834,9 @@
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

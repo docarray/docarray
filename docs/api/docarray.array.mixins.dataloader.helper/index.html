@@ -3,19 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
 <meta property="og:title" content="docarray.array.mixins.dataloader.helper module" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.mixins.dataloader.helper/" />
-  
-<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:site_name" content="DocArray 0.19.0 Documentation" />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  
-<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:image:alt" content="DocArray 0.19.0 Documentation" />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,11 +26,12 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.mixins.dataloader.helper.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.mixins.dataloader.helper module - DocArray 0.18.2 documentation</title>
+        <title>docarray.array.mixins.dataloader.helper module - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -309,10 +303,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
@@ -407,21 +405,89 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply" title="Permalink to this definition">#</a></dt>
-<dd><p># noqa: DAR102
-# noqa: DAR101
-# noqa: DAR201
-:rtype: T
-:return: a new <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+<dd><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to every Document in itself, return itself after modification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> as input and outputs <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p></li>
+<li><p><strong>backend</strong> – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
+In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
+in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
+the multiprocessing backend passes the variable via pickle and works in another process. The passed object
+and the original object do <strong>not</strong> share the same memory.</p>
+</div>
+</p></li>
+<li><p><strong>num_worker</strong> – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
+<li><p><strong>pool</strong> – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+<li><p><strong>show_progress</strong> – show a progress bar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>itself after modification</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply_batch">
 <span class="sig-name descname"><span class="pre">apply_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.mixins.dataloader.helper.DocumentArrayLoader.apply_batch" title="Permalink to this definition">#</a></dt>
-<dd><p># noqa: DAR102
-# noqa: DAR101
-# noqa: DAR201
-:rtype: T
-:return: a new <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+<dd><p>Batches itself into mini-batches, applies <cite>func</cite> to every mini-batch, and return itself after the modifications.</p>
+<p>EXAMPLE USAGE</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;The cake is a lie&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)])</span>
+
+
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">da</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">apply_batch</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;]
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> as input and outputs <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p></li>
+<li><p><strong>backend</strong> – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
+In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
+in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
+the multiprocessing backend passes the variable via pickle and works in another process. The passed object
+and the original object do <strong>not</strong> share the same memory.</p>
+</div>
+</p></li>
+<li><p><strong>num_worker</strong> – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
+<li><p><strong>batch_size</strong> – Size of each generated batch (except the last batch, which might be smaller). Default: 32</p></li>
+<li><p><strong>shuffle</strong> – If set, shuffle the Documents before dividing into minibatches.</p></li>
+<li><p><strong>show_progress</strong> – show a progress bar</p></li>
+<li><p><strong>pool</strong> – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>itself after modification</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -485,20 +551,21 @@ Note, that the last batch might be smaller than <cite>batch_size</cite>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[Document], T]) – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> as input and outputs anything. You can either modify elements
 in-place (only with <cite>thread</cite> backend) or work later on return elements.</p></li>
-<li><p><strong>backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>if to use multi-<cite>process</cite> or multi-<cite>thread</cite> as the parallelization backend. In general, if your
-<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then perhaps <cite>thread</cite> is good enough. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound then you may use <cite>process</cite>.
+<li><p><strong>backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
 In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
 in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
-the multiprocessing backing pass the variable via pickle and work in another process. The passed object
+the multiprocessing backing passes the variable via pickle and works in another process. The passed object
 and the original object do <strong>not</strong> share the same memory.</p>
 </div>
 </p></li>
 <li><p><strong>num_worker</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show a progress bar</p></li>
-<li><p><strong>pool</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[Pool, ThreadPool, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – use an existing/external pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+<li><p><strong>pool</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[Pool, ThreadPool, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yield<span class="colon">:</span></dt>
@@ -592,9 +659,9 @@ return an empty dict.</p>
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

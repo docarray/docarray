@@ -3,19 +3,12 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
 <meta property="og:title" content="docarray.array.elastic module" />
-  
 <meta property="og:type" content="website" />
-  
 <meta property="og:url" content="https://docarray.jina.ai/api/docarray.array.elastic/" />
-  
-<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:site_name" content="DocArray 0.19.0 Documentation" />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  
-<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:image:alt" content="DocArray 0.19.0 Documentation" />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -33,11 +26,12 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" />
         <link rel="canonical" href="https://docarray.jina.ai/api/docarray.array.elastic.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.elastic module - DocArray 0.18.2 documentation</title>
+        <title>docarray.array.elastic module - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -170,7 +164,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -309,10 +303,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fundamentals/cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
@@ -444,21 +442,89 @@ vector search engine and storage.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.elastic.DocumentArrayElastic.apply">
 <span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.elastic.DocumentArrayElastic.apply" title="Permalink to this definition">#</a></dt>
-<dd><p># noqa: DAR102
-# noqa: DAR101
-# noqa: DAR201
-:rtype: T
-:return: a new <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+<dd><p>Apply <code class="docutils literal notranslate"><span class="pre">func</span></code> to every Document in itself, return itself after modification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> as input and outputs <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>.</p></li>
+<li><p><strong>backend</strong> – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
+In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
+in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
+the multiprocessing backend passes the variable via pickle and works in another process. The passed object
+and the original object do <strong>not</strong> share the same memory.</p>
+</div>
+</p></li>
+<li><p><strong>num_worker</strong> – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
+<li><p><strong>pool</strong> – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+<li><p><strong>show_progress</strong> – show a progress bar</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>itself after modification</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.elastic.DocumentArrayElastic.apply_batch">
 <span class="sig-name descname"><span class="pre">apply_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.elastic.DocumentArrayElastic.apply_batch" title="Permalink to this definition">#</a></dt>
-<dd><p># noqa: DAR102
-# noqa: DAR101
-# noqa: DAR201
-:rtype: T
-:return: a new <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></p>
+<dd><p>Batches itself into mini-batches, applies <cite>func</cite> to every mini-batch, and return itself after the modifications.</p>
+<p>EXAMPLE USAGE</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
+
+<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="p">([</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;The cake is a lie&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)])</span>
+
+
+<span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">da</span>
+
+
+<span class="n">da</span><span class="o">.</span><span class="n">apply_batch</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">da</span><span class="o">.</span><span class="n">texts</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[&#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;]
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code> as input and outputs <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code>.</p></li>
+<li><p><strong>backend</strong> – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
+In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
+in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
+the multiprocessing backend passes the variable via pickle and works in another process. The passed object
+and the original object do <strong>not</strong> share the same memory.</p>
+</div>
+</p></li>
+<li><p><strong>num_worker</strong> – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
+<li><p><strong>batch_size</strong> – Size of each generated batch (except the last batch, which might be smaller). Default: 32</p></li>
+<li><p><strong>shuffle</strong> – If set, shuffle the Documents before dividing into minibatches.</p></li>
+<li><p><strong>show_progress</strong> – show a progress bar</p></li>
+<li><p><strong>pool</strong> – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>T</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>itself after modification</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -667,17 +733,22 @@ and the original object do <strong>not</strong> share the same memory.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="docarray.array.elastic.DocumentArrayElastic.embed">
 <span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_numpy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.elastic.DocumentArrayElastic.embed" title="Permalink to this definition">#</a></dt>
-<dd><p>Fill <a class="reference internal" href="../docarray.document/#docarray.document.Document.embedding" title="docarray.document.Document.embedding"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code></a> of Documents inplace by using <cite>embed_model</cite></p>
+<dd><p>Fill <a class="reference internal" href="../docarray.document/#docarray.document.Document.embedding" title="docarray.document.Document.embedding"><code class="xref py py-attr docutils literal notranslate"><span class="pre">embedding</span></code></a> of Documents inplace by using <cite>embed_model</cite>
+For the evaluation of a model, one can directly use the
+<a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed_and_evaluate()</span></code></a>
+function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embed_model</strong> (<em>AnyDNN</em>) – the embedding model written in Keras/Pytorch/Paddle</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the computational device for <cite>embed_model</cite>, can be either
+<li><p><strong>embed_model</strong> (<em>AnyDNN</em>) – The embedding model written in Keras/Pytorch/Paddle</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The computational device for <cite>embed_model</cite>, can be either
 <cite>cpu</cite> or <cite>cuda</cite>.</p></li>
-<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – number of Documents in a batch for embedding</p></li>
-<li><p><strong>to_numpy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if to store embeddings back to Document in <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or original framework format.</p></li>
-<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[CollateFnType]) – create a mini-batch of Input(s) from the given <cite>DocumentArray</cite>.  Default built-in collate_fn
-is to use the <cite>tensors</cite> of the documents.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of Documents in a batch for embedding</p></li>
+<li><p><strong>to_numpy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If to store embeddings back to Document in <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
+or original framework format.</p></li>
+<li><p><strong>collate_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[CollateFnType]) – create a mini-batch of Input(s) from the given
+<cite>DocumentArray</cite>. Default built-in collate_fn is to use the <cite>tensors</cite>
+of the documents.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -685,6 +756,81 @@ is to use the <cite>tensors</cite> of the documents.</p></li>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>itself after modified.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="docarray.array.elastic.DocumentArrayElastic.embed_and_evaluate">
+<span class="sig-name descname"><span class="pre">embed_and_evaluate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'label'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_funcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collate_fns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.elastic.DocumentArrayElastic.embed_and_evaluate" title="Permalink to this definition">#</a></dt>
+<dd><p>Computes ranking evaluation metrics for a given <cite>DocumentArray</cite>. This
+function does embedding and matching in the same turn. Thus, you don’t need to
+call <code class="docutils literal notranslate"><span class="pre">embed</span></code> and <code class="docutils literal notranslate"><span class="pre">match</span></code> before it. Instead, it embeds the documents in
+<cite>self</cite> (and <cite>index_data</cite> when provided`) and compute the nearest neighbour
+itself. This might be done in batches for the <cite>index_data</cite> object to reduce
+the memory consumption of the evlauation process. The evaluation itself can be
+done against a <cite>ground_truth</cite> DocumentArray or on the basis of labels like it
+is possible with the :func:<code class="docutils literal notranslate"><span class="pre">evaluate</span></code> function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – List of metric names or metric functions to be computed</p></li>
+<li><p><strong>index_data</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>]) – The other DocumentArray  to match against, if not given,
+<cite>self</cite> will be matched against itself. This means that every document in
+will be compared to all other documents in <cite>self</cite> to determine the nearest
+neighbors.</p></li>
+<li><p><strong>ground_truth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>]) – The ground_truth <cite>DocumentArray</cite> that the <cite>DocumentArray</cite>
+compares to.</p></li>
+<li><p><strong>metric_names</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – If provided, the results of the metrics computation will be
+stored in the <cite>evaluations</cite> field of each Document with this names. If not
+provided, the names will be derived from the metric function names.</p></li>
+<li><p><strong>strict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If set, then left and right sides are required to be fully
+aligned: on the length, and on the semantic of length. These are preventing
+you to evaluate on irrelevant matches accidentally.</p></li>
+<li><p><strong>label_tag</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies the tag which contains the labels.</p></li>
+<li><p><strong>embed_models</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[AnyDNN, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[AnyDNN, AnyDNN], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – One or two embedding model written in Keras / Pytorch /
+Paddle for embedding <cite>self</cite> and <cite>index_data</cite>.</p></li>
+<li><p><strong>embed_funcs</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – As an alternative to embedding models, custom embedding
+functions can be provided.</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the computational device for <cite>embed_models</cite>, and the matching
+can be either <cite>cpu</cite> or <cite>cuda</cite>.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Number of documents in a batch for embedding.</p></li>
+<li><p><strong>collate_fns</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[CollateFnType, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[CollateFnType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[CollateFnType]]]) – For each embedding function the respective collate
+function creates a mini-batch of input(s) from the given <cite>DocumentArray</cite>.
+If not provided a default built-in collate_fn uses the <cite>tensors</cite> of the
+documents to create input batches.</p></li>
+<li><p><strong>distance</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[ArrayType, ArrayType], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]) – The distance metric.</p></li>
+<li><p><strong>limit</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – The maximum number of matches, when not given defaults to 20.</p></li>
+<li><p><strong>normalization</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – A tuple [a, b] to be used with min-max normalization,
+the min distance will be rescaled to <cite>a</cite>, the max distance will be
+rescaled to <cite>b</cite> all values will be rescaled into range <cite>[a, b]</cite>.</p></li>
+<li><p><strong>exclude_self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If set, Documents in <code class="docutils literal notranslate"><span class="pre">index_data</span></code> with same <code class="docutils literal notranslate"><span class="pre">id</span></code>
+as the left-hand values will not be considered as matches.</p></li>
+<li><p><strong>use_scipy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, use <code class="docutils literal notranslate"><span class="pre">scipy</span></code> as the computation backend. Note,
+<code class="docutils literal notranslate"><span class="pre">scipy</span></code> does not support distance on sparse matrix.</p></li>
+<li><p><strong>num_worker</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Specifies the number of workers for the execution of the
+match function.</p></li>
+<li><p><strong>kwargs</strong> – Additional keyword arguments to be passed to the metric
+functions.</p></li>
+<li><p><strong>query_sample_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – For a large number of documents in <cite>self</cite> the
+evaluation becomes infeasible, especially, if <cite>index_data</cite> is large.
+Therefore, queries are sampled if the number of documents in <cite>self</cite> exceeds
+<cite>query_sample_size</cite>. Usually, this has only small impact on the mean metric
+values returned by this function. To prevent sampling, you can set
+<cite>query_sample_size</cite> to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parma match_batch_size<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of documents which are embedded and
+matched at once. Set this value to a lower value, if you experience high
+memory consumption.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary which stores for each metric name the average evaluation
+score.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -738,7 +884,7 @@ matches properties.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – list of metric names or metric functions to be computed</p></li>
+<li><p><strong>metrics</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – List of metric names or metric functions to be computed</p></li>
 <li><p><strong>ground_truth</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../docarray.array.document/#docarray.array.document.DocumentArray" title="docarray.array.document.DocumentArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentArray</span></code></a>]) – The ground_truth <cite>DocumentArray</cite> that the <cite>DocumentArray</cite>
 compares to.</p></li>
 <li><p><strong>hash_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="../docarray.document/#docarray.document.Document" title="docarray.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>], <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – For the evaluation against a <cite>ground_truth</cite> DocumentArray,
@@ -1190,20 +1336,21 @@ names defined in Document.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[Document], T]) – a function that takes <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> as input and outputs anything. You can either modify elements
 in-place (only with <cite>thread</cite> backend) or work later on return elements.</p></li>
-<li><p><strong>backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>if to use multi-<cite>process</cite> or multi-<cite>thread</cite> as the parallelization backend. In general, if your
-<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then perhaps <cite>thread</cite> is good enough. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound then you may use <cite>process</cite>.
+<li><p><strong>backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p><cite>thread</cite> for multi-threading and <cite>process</cite> for multi-processing. Defaults to <cite>thread</cite>.
+In general, if your
+<code class="docutils literal notranslate"><span class="pre">func</span></code> is IO-bound then <cite>thread</cite> is a good choice. If your <code class="docutils literal notranslate"><span class="pre">func</span></code> is CPU-bound, then you may use <cite>process</cite>.
 In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements
 in-place, regardless of IO/CPU-bound, you should always use <cite>thread</cite> backend.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>When using <cite>process</cite> backend, you should not expect <code class="docutils literal notranslate"><span class="pre">func</span></code> modify elements in-place. This is because
-the multiprocessing backing pass the variable via pickle and work in another process. The passed object
+the multiprocessing backing passes the variable via pickle and works in another process. The passed object
 and the original object do <strong>not</strong> share the same memory.</p>
 </div>
 </p></li>
 <li><p><strong>num_worker</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the number of parallel workers. If not given, then the number of CPUs in the system will be used.</p></li>
 <li><p><strong>show_progress</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show a progress bar</p></li>
-<li><p><strong>pool</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[Pool, ThreadPool, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – use an existing/external pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
+<li><p><strong>pool</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[Pool, ThreadPool, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – use an existing/external process or thread pool. If given, <cite>backend</cite> is ignored and you will be responsible for closing the pool.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Yield<span class="colon">:</span></dt>
@@ -1264,6 +1411,9 @@ and the original object do <strong>not</strong> share the same memory.</p>
 <span class="sig-name descname"><span class="pre">match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">darray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude_self</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_scipy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#docarray.array.elastic.DocumentArrayElastic.match" title="Permalink to this definition">#</a></dt>
 <dd><p>Compute embedding based nearest neighbour in <cite>another</cite> for each Document in <cite>self</cite>,
 and store results in <cite>matches</cite>.
+For the purpose of evaluation, one can also directly use the
+<a class="reference internal" href="../docarray.array.mixins.evaluation/#docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate" title="docarray.array.mixins.evaluation.EvaluationMixin.embed_and_evaluate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">embed_and_evaluate()</span></code></a>
+function.
 .. note:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&#39;cosine&#39;, &#39;euclidean&#39;, &#39;sqeuclidean&#39; are supported natively without extra dependency.
 You can use other distance metric provided by ``scipy``, such as `braycurtis`, `canberra`, `chebyshev`,
@@ -2008,7 +2158,7 @@ with all Documents, that are reached by the path.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="docarray.array.elastic.ElasticConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.elastic.</span></span><span class="sig-name descname"><span class="pre">ElasticConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance='cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hosts='http://localhost:9200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_text=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_indices=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ef_construction=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/elastic/backend/#ElasticConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.elastic.ElasticConfig" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">docarray.array.elastic.</span></span><span class="sig-name descname"><span class="pre">ElasticConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance='cosine'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hosts='http://localhost:9200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_name=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_like=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">es_config=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_text=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_indices=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ef_construction=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/docarray/array/storage/elastic/backend/#ElasticConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#docarray.array.elastic.ElasticConfig" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.elastic.ElasticConfig.n_dim">
@@ -2028,6 +2178,11 @@ with all Documents, that are reached by the path.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="docarray.array.elastic.ElasticConfig.index_name">
 <span class="sig-name descname"><span class="pre">index_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#docarray.array.elastic.ElasticConfig.index_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="docarray.array.elastic.ElasticConfig.list_like">
+<span class="sig-name descname"><span class="pre">list_like</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#docarray.array.elastic.ElasticConfig.list_like" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -2080,9 +2235,9 @@ with all Documents, that are reached by the path.</p>
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -2133,6 +2288,7 @@ with all Documents, that are reached by the path.</p>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.count"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.count()</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.dataloader"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.dataloader()</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.embed"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.embed()</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.embed_and_evaluate"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.embed_and_evaluate()</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.embeddings"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.embeddings</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.empty"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.empty()</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.DocumentArrayElastic.evaluate"><code class="docutils literal notranslate"><span class="pre">DocumentArrayElastic.evaluate()</span></code></a></li>
@@ -2207,6 +2363,7 @@ with all Documents, that are reached by the path.</p>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.distance"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.distance</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.hosts"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.hosts</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.index_name"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.index_name</span></code></a></li>
+<li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.list_like"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.list_like</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.es_config"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.es_config</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.index_text"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.index_text</span></code></a></li>
 <li><a class="reference internal" href="#docarray.array.elastic.ElasticConfig.tag_indices"><code class="docutils literal notranslate"><span class="pre">ElasticConfig.tag_indices</span></code></a></li>

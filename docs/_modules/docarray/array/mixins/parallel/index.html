@@ -6,7 +6,7 @@
         <link rel="canonical" href="https://docarray.jina.ai/_modules/docarray/array/mixins/parallel.html" />
 
     <link rel="shortcut icon" href="../../../../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>docarray.array.mixins.parallel - DocArray 0.18.2 documentation</title>
+        <title>docarray.array.mixins.parallel - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css" />
@@ -139,7 +139,7 @@
         </div>
         <div class="header-center">
             <a href="../../../../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -278,10 +278,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../../../fundamentals/cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../fundamentals/cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../fundamentals/fastapi-support/">FastAPI/Pydantic</a></li>
@@ -394,6 +398,7 @@
 <div class="viewcode-block" id="ParallelMixin"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin">[docs]</a><span class="k">class</span> <span class="nc">ParallelMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Helper functions that provide parallel map to :class:`DocumentArray`&quot;&quot;&quot;</span>
 
+    <span class="c1"># overload_inject_start_apply</span>
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
@@ -403,33 +408,56 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
+        <span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
-<span class="sd">        :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your</span>
-<span class="sd">            ``func`` is IO-bound then perhaps `thread` is good enough. If your ``func`` is CPU-bound then you may use `process`.</span>
+<span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
+<span class="sd">            In general, if your</span>
+<span class="sd">            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.</span>
 <span class="sd">            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements</span>
 <span class="sd">            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.</span>
 
 <span class="sd">            .. warning::</span>
 <span class="sd">                When using `process` backend, you should not expect ``func`` modify elements in-place. This is because</span>
-<span class="sd">                the multiprocessing backing pass the variable via pickle and work in another process. The passed object</span>
+<span class="sd">                the multiprocessing backend passes the variable via pickle and works in another process. The passed object</span>
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
-<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
+<span class="sd">        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
+
+    <span class="c1"># overload_inject_end_apply</span>
 
 <div class="viewcode-block" id="ParallelMixin.apply"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        # noqa: DAR102</span>
-<span class="sd">        # noqa: DAR101</span>
-<span class="sd">        # noqa: DAR201</span>
-<span class="sd">        :return: a new :class:`DocumentArray`</span>
+        <span class="c1"># implementation_stub_inject_start_apply</span>
+
+        <span class="sd">&quot;&quot;&quot;Apply ``func`` to every Document in itself, return itself after modification.</span>
+
+<span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
+<span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
+<span class="sd">            In general, if your</span>
+<span class="sd">            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.</span>
+<span class="sd">            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements</span>
+<span class="sd">            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.</span>
+
+<span class="sd">            .. warning::</span>
+<span class="sd">                When using `process` backend, you should not expect ``func`` modify elements in-place. This is because</span>
+<span class="sd">                the multiprocessing backend passes the variable via pickle and works in another process. The passed object</span>
+<span class="sd">                and the original object do **not** share the same memory.</span>
+
+<span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
+<span class="sd">        :return: itself after modification</span>
+
+<span class="sd">        .. # noqa: DAR102</span>
+<span class="sd">        .. # noqa: DAR202</span>
+<span class="sd">        .. # noqa: DAR101</span>
+<span class="sd">        .. # noqa: DAR003</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># implementation_stub_inject_end_apply</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -450,19 +478,20 @@
 
 <span class="sd">        :param func: a function that takes :class:`Document` as input and outputs anything. You can either modify elements</span>
 <span class="sd">            in-place (only with `thread` backend) or work later on return elements.</span>
-<span class="sd">        :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your</span>
-<span class="sd">            ``func`` is IO-bound then perhaps `thread` is good enough. If your ``func`` is CPU-bound then you may use `process`.</span>
+<span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
+<span class="sd">            In general, if your</span>
+<span class="sd">            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.</span>
 <span class="sd">            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements</span>
 <span class="sd">            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.</span>
 
 <span class="sd">            .. warning::</span>
 <span class="sd">                When using `process` backend, you should not expect ``func`` modify elements in-place. This is because</span>
-<span class="sd">                the multiprocessing backing pass the variable via pickle and work in another process. The passed object</span>
+<span class="sd">                the multiprocessing backing passes the variable via pickle and works in another process. The passed object</span>
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
-<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
+<span class="sd">        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 
 <span class="sd">        :yield: anything return from ``func``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -484,6 +513,7 @@
             <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">x</span></div>
 
+    <span class="c1"># overload_inject_start_apply_batch</span>
     <span class="nd">@overload</span>
     <span class="k">def</span> <span class="nf">apply_batch</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span>
@@ -495,35 +525,102 @@
         <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">pool</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Pool&#39;</span><span class="p">,</span> <span class="s1">&#39;ThreadPool&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply each element in itself with ``func``, return itself after modified.</span>
+        <span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
 
-<span class="sd">        :param func: a function that takes :class:`Document` as input and outputs :class:`Document`.</span>
-<span class="sd">        :param backend: if to use multi-`process` or multi-`thread` as the parallelization backend. In general, if your</span>
-<span class="sd">            ``func`` is IO-bound then perhaps `thread` is good enough. If your ``func`` is CPU-bound then you may use `process`.</span>
+<span class="sd">        EXAMPLE USAGE</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from docarray import Document, DocumentArray</span>
+
+<span class="sd">            da = DocumentArray([Document(text=&#39;The cake is a lie&#39;) for _ in range(100)])</span>
+
+
+<span class="sd">            def func(doc):</span>
+<span class="sd">                da.texts = [t.upper() for t in da.texts]</span>
+<span class="sd">                return da</span>
+
+
+<span class="sd">            da.apply_batch(func, batch_size=10)</span>
+<span class="sd">            print(da.texts[:3])</span>
+
+<span class="sd">        .. code-block:: text</span>
+
+<span class="sd">            [&#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;]</span>
+
+<span class="sd">        :param func: a function that takes :class:`DocumentArray` as input and outputs :class:`DocumentArray`.</span>
+<span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
+<span class="sd">            In general, if your</span>
+<span class="sd">            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.</span>
 <span class="sd">            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements</span>
 <span class="sd">            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.</span>
 
 <span class="sd">            .. warning::</span>
 <span class="sd">                When using `process` backend, you should not expect ``func`` modify elements in-place. This is because</span>
-<span class="sd">                the multiprocessing backing pass the variable via pickle and work in another process. The passed object</span>
+<span class="sd">                the multiprocessing backend passes the variable via pickle and works in another process. The passed object</span>
 <span class="sd">                and the original object do **not** share the same memory.</span>
 
 <span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
-<span class="sd">        :param batch_size: Size of each generated batch (except the last one, which might be smaller, default: 32)</span>
+<span class="sd">        :param batch_size: Size of each generated batch (except the last batch, which might be smaller). Default: 32</span>
 <span class="sd">        :param shuffle: If set, shuffle the Documents before dividing into minibatches.</span>
 <span class="sd">        :param show_progress: show a progress bar</span>
-<span class="sd">        :param pool: use an existing/external pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
+<span class="sd">        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span>
+
+    <span class="c1"># overload_inject_end_apply_batch</span>
 
 <div class="viewcode-block" id="ParallelMixin.apply_batch"><a class="viewcode-back" href="../../../../../api/docarray.array.mixins.parallel/#docarray.array.mixins.parallel.ParallelMixin.apply_batch">[docs]</a>    <span class="k">def</span> <span class="nf">apply_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        # noqa: DAR102</span>
-<span class="sd">        # noqa: DAR101</span>
-<span class="sd">        # noqa: DAR201</span>
-<span class="sd">        :return: a new :class:`DocumentArray`</span>
+        <span class="c1"># implementation_stub_inject_start_apply_batch</span>
+
+        <span class="sd">&quot;&quot;&quot;Batches itself into mini-batches, applies `func` to every mini-batch, and return itself after the modifications.</span>
+
+<span class="sd">        EXAMPLE USAGE</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from docarray import Document, DocumentArray</span>
+
+<span class="sd">            da = DocumentArray([Document(text=&#39;The cake is a lie&#39;) for _ in range(100)])</span>
+
+
+<span class="sd">            def func(doc):</span>
+<span class="sd">                da.texts = [t.upper() for t in da.texts]</span>
+<span class="sd">                return da</span>
+
+
+<span class="sd">            da.apply_batch(func, batch_size=10)</span>
+<span class="sd">            print(da.texts[:3])</span>
+
+<span class="sd">        .. code-block:: text</span>
+
+<span class="sd">            [&#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;, &#39;THE CAKE IS A LIE&#39;]</span>
+
+<span class="sd">        :param func: a function that takes :class:`DocumentArray` as input and outputs :class:`DocumentArray`.</span>
+<span class="sd">        :param backend: `thread` for multi-threading and `process` for multi-processing. Defaults to `thread`.</span>
+<span class="sd">            In general, if your</span>
+<span class="sd">            ``func`` is IO-bound then `thread` is a good choice. If your ``func`` is CPU-bound, then you may use `process`.</span>
+<span class="sd">            In practice, you should try yourselves to figure out the best value. However, if you wish to modify the elements</span>
+<span class="sd">            in-place, regardless of IO/CPU-bound, you should always use `thread` backend.</span>
+
+<span class="sd">            .. warning::</span>
+<span class="sd">                When using `process` backend, you should not expect ``func`` modify elements in-place. This is because</span>
+<span class="sd">                the multiprocessing backend passes the variable via pickle and works in another process. The passed object</span>
+<span class="sd">                and the original object do **not** share the same memory.</span>
+
+<span class="sd">        :param num_worker: the number of parallel workers. If not given, then the number of CPUs in the system will be used.</span>
+<span class="sd">        :param batch_size: Size of each generated batch (except the last batch, which might be smaller). Default: 32</span>
+<span class="sd">        :param shuffle: If set, shuffle the Documents before dividing into minibatches.</span>
+<span class="sd">        :param show_progress: show a progress bar</span>
+<span class="sd">        :param pool: use an existing/external process or thread pool. If given, `backend` is ignored and you will be responsible for closing the pool.</span>
+<span class="sd">        :return: itself after modification</span>
+
+<span class="sd">        .. # noqa: DAR102</span>
+<span class="sd">        .. # noqa: DAR202</span>
+<span class="sd">        .. # noqa: DAR101</span>
+<span class="sd">        .. # noqa: DAR003</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># implementation_stub_inject_end_apply_batch</span>
         <span class="k">for</span> <span class="n">_b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_batch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="bp">self</span><span class="p">[[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">_b</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_b</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -631,9 +728,9 @@
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">

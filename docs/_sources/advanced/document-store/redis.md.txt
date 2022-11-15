@@ -117,25 +117,26 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name              | Description                                                                                       | Default                                           |
-|-------------------|---------------------------------------------------------------------------------------------------|-------------------------------------------------- |
-| `host`            | Host address of the Redis server                                                                  | `'localhost'`                                     |
-| `port`            | Port of the Redis Server                                                                          | `6379`                                            |
-| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`| `{}`                                              |
-| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                         | `None`                                            |
-| `n_dim`           | Dimensionality of the embeddings                                                                  | `None`                                            |
-| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                     | `True`                                            |
-| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                          | `'COSINE'`                                        |
-| `batch_size`      | Batch size used to handle storage updates                                                         | `64`                                              |
-| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                               | `'HNSW'`                                          |
-| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`  | `None`                                            |
-| `tag_indices`     | List of tags to index as text field                                                               | `[]`                                              |
-| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                       | `200`                                             |
-| `m`               | Optional parameter for Redis HNSW algorithm                                                       | `16`                                              |
-| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                       | `10`                                              |
-| `block_size`      | Optional parameter for Redis FLAT algorithm                                                       | `1048576`                                         |
-| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                              | `None`, defaults to the default value in Redis    |
-| `columns`         | Other fields to store in Document and build schema                                                | `None`                                            |
+| Name              | Description                                                                                                                            | Default                                           |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------- |
+| `host`            | Host address of the Redis server                                                                                                       | `'localhost'`                                     |
+| `port`            | Port of the Redis Server                                                                                                               | `6379`                                            |
+| `redis_config`    | Other Redis configs in a Dict and pass to `Redis` client constructor, e.g. `socket_timeout`, `ssl`                                     | `{}`                                              |
+| `index_name`      | Redis index name; the name of RedisSearch index to set this DocumentArray                                                              | `None`                                            |
+| `n_dim`           | Dimensionality of the embeddings                                                                                                       | `None`                                            |
+| `update_schema`   | Boolean flag indicating whether to update Redis Search schema                                                                          | `True`                                            |
+| `distance`        | Similarity distance metric in Redis, one of {`'L2'`, `'IP'`, `'COSINE'`}                                                               | `'COSINE'`                                        |
+| `batch_size`      | Batch size used to handle storage updates                                                                                              | `64`                                              |
+| `method`          | Vector similarity index algorithm in Redis, either `FLAT` or `HNSW`                                                                    | `'HNSW'`                                          |
+| `index_text`      | Boolean flag indicating whether to index `.text`. `True` will enable full text search on `.text`                                       | `None`                                            |
+| `tag_indices`     | List of tags to index as text field                                                                                                    | `[]`                                              |
+| `ef_construction` | Optional parameter for Redis HNSW algorithm                                                                                            | `200`                                             |
+| `m`               | Optional parameter for Redis HNSW algorithm                                                                                            | `16`                                              |
+| `ef_runtime`      | Optional parameter for Redis HNSW algorithm                                                                                            | `10`                                              |
+| `block_size`      | Optional parameter for Redis FLAT algorithm                                                                                            | `1048576`                                         |
+| `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                                                                   | `None`, defaults to the default value in Redis    |
+| `columns`         | Other fields to store in Document and build schema                                                                                     | `None`                                            |
+| `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                              |
 
 You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py).
 For vector search configurations, default values are those of the database backend, which you can find in the [Redis documentation](https://redis.io/docs/stack/search/reference/vectors/).

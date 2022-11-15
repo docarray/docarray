@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
-<meta property="og:title" content="Jina" />
-  
+<meta property="og:title" content=" Cloud Support" />
 <meta property="og:type" content="website" />
-  
-<meta property="og:url" content="https://docarray.jina.ai/fundamentals/jina-support/index/" />
-  
-<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
-  
-<meta property="og:description" content="DocArray is an upstream dependency of Jina. Without DocArray, Jina can not run. DocArray focuses on the local & monolith developer experience. Jina scales DocArray to the Cloud. DocArray is also the default transit format in Jina, Executors talk to each other via serialized DocArray. The picture ..." />
-  
+<meta property="og:url" content="https://docarray.jina.ai/fundamentals/cloud-support/" />
+<meta property="og:site_name" content="DocArray 0.19.0 Documentation" />
+<meta property="og:description" content="Cloud Support: Log in to Jina AI Cloud using DocArray Log in to Jina AI Cloud to use and manage your cloud resources using DocArray. Manage Data on Jina AI Cloud Push, pull, and manage DocumentArray objects on Jina AI Cloud. Jina AI Cloud is the portal and single entry point to manage all your Ji..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  
-<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:image:alt" content="DocArray 0.19.0 Documentation" />
+<meta name="description" content="Cloud Support: Log in to Jina AI Cloud using DocArray Log in to Jina AI Cloud to use and manage your cloud resources using DocArray. Manage Data on Jina AI Cloud Push, pull, and manage DocumentArray objects on Jina AI Cloud. Jina AI Cloud is the portal and single entry point to manage all your Ji..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,11 +28,12 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Jupyter Notebook/Colab" href="../notebook-support/" /><link rel="prev" title="One Million Scale Benchmark" href="../../advanced/document-store/benchmark/" />
-        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/jina-support/index.html" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="Authentication" href="login/" /><link rel="prev" title="One Million Scale Benchmark" href="../../advanced/document-store/benchmark/" />
+        <link rel="canonical" href="https://docarray.jina.ai/fundamentals/cloud-support/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>Jina - DocArray 0.18.2 documentation</title>
+        <title>Cloud Support - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -190,7 +184,7 @@
                     </svg>
                 </button>
             </div>
-            <label class="toc-overlay-icon toc-header-icon" for="__toc">
+            <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
                 <div class="visually-hidden">Toggle table of contents sidebar</div>
                 <i class="icon">
                     <svg>
@@ -267,7 +261,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../document/">Document</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../document/construct/">Construct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../document/serialization/">Serialization</a></li>
@@ -311,10 +305,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
-<ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Jina</a></li>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../fastapi-support/">FastAPI/Pydantic</a></li>
@@ -389,7 +387,7 @@
                             </svg>
                         </button>
                     </div>
-                    <label class="toc-overlay-icon toc-content-icon"
+                    <label class="toc-overlay-icon toc-content-icon no-toc"
                            for="__toc">
                         <div class="visually-hidden">Toggle table of contents sidebar</div>
                         <i class="icon">
@@ -400,173 +398,34 @@
                     </label>
                 </div>
                 <article role="main">
-                    <section id="jina">
-<span id="jina-support"></span><h1>Jina<a class="headerlink" href="#jina" title="Permalink to this heading">#</a></h1>
-<p>DocArray is an upstream dependency of Jina. Without DocArray, Jina can not run.</p>
-<p>DocArray focuses on the local &amp; monolith developer experience. <a class="reference external" href="https://github.com/jina-ai/jina">Jina</a> scales DocArray to the Cloud. DocArray is also the default transit format in Jina, Executors talk to each other via serialized DocArray. The picture below shows their relations.</p>
-<figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/position-jina-docarray.svg"><img alt="../../_images/position-jina-docarray.svg" src="../../_images/position-jina-docarray.svg" width="80%" /></a>
-</figure>
-<p>The next picture summarizes your development journey with DocArray and Jina. With a new project, first move horizontally left with DocArray, that often means improving quality and completing logics on a local environment. When you are ready, move vertically up with Jina, equipping your application with service endpoint, scalability and cloud-native features. Finally, you reach the point your service is ready for production.</p>
-<figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/position-jina-docarray-2.svg"><img alt="../../_images/position-jina-docarray-2.svg" src="../../_images/position-jina-docarray-2.svg" width="80%" /></a>
-</figure>
-<section id="package-dependency">
-<h2>Package dependency<a class="headerlink" href="#package-dependency" title="Permalink to this heading">#</a></h2>
-<p>If you are a Jina 3 user, you don’t need to install <code class="docutils literal notranslate"><span class="pre">docarray</span></code> independently, as it is included in <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jina</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">-v</span></code> in the terminal to check if you are using <code class="docutils literal notranslate"><span class="pre">3.x</span></code>.</p>
-<p>When starting a Jina project, you can write imports either as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
-<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
-</pre></div>
+                    <section id="svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-rocket-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m14-064-0a8-75-8-75-0-00-6-187-2-563l-459-458c-314-314-616-641-904-979h3-31a1-75-1-75-0-00-1-49-833l-11-7-607a-75-75-0-00-418-1-11l3-102-954c-037-051-079-1-124-145l2-429-2-428c-046-046-094-088-145-125l-954-3-102a-75-75-0-001-11-418l2-774-1-707a1-75-1-75-0-00-833-1-49v9-485c-338-288-665-59-979-904l-458-459a8-75-8-75-0-0016-1-936v1-75a1-75-1-75-0-0014-25-0h-186zm10-5-10-625c-088-06-177-118-266-175l-2-35-1-521-548-1-783-1-949-1-2a-25-25-0-00-119-213v-2-066zm3-678-8-116l5-2-5-766c-058-09-117-178-176-266h3-309a-25-25-0-00-213-119l-1-2-1-95-1-782-547zm5-26-4-493a7-25-7-25-0-0114-063-1-5h-186a-25-25-0-01-25-25v-186a7-25-7-25-0-01-2-123-5-127l-459-458a15-21-15-21-0-01-2-499-2-02l-2-317-1-5-2-143-2-143-1-5-2-317a15-25-15-25-0-012-02-2-5l-458-458h-002zm12-5a1-1-0-11-2-0-1-1-0-012-0zm-8-44-9-56a1-5-1-5-0-10-2-12-2-12c-734-73-1-047-2-332-1-15-3-003a-23-23-0-00-265-265c-671-103-2-273-416-3-005-1-148z-path-svg-cloud-support">
+<h1><svg version="1.1" width="1.0em" height="1.0em" class="sd-octicon sd-octicon-rocket" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z"></path></svg> Cloud Support<a class="headerlink" href="#svg-version-1-1-width-1-0em-height-1-0em-class-sd-octicon-sd-octicon-rocket-viewbox-0-0-16-16-aria-hidden-true-path-fill-rule-evenodd-d-m14-064-0a8-75-8-75-0-00-6-187-2-563l-459-458c-314-314-616-641-904-979h3-31a1-75-1-75-0-00-1-49-833l-11-7-607a-75-75-0-00-418-1-11l3-102-954c-037-051-079-1-124-145l2-429-2-428c-046-046-094-088-145-125l-954-3-102a-75-75-0-001-11-418l2-774-1-707a1-75-1-75-0-00-833-1-49v9-485c-338-288-665-59-979-904l-458-459a8-75-8-75-0-0016-1-936v1-75a1-75-1-75-0-0014-25-0h-186zm10-5-10-625c-088-06-177-118-266-175l-2-35-1-521-548-1-783-1-949-1-2a-25-25-0-00-119-213v-2-066zm3-678-8-116l5-2-5-766c-058-09-117-178-176-266h3-309a-25-25-0-00-213-119l-1-2-1-95-1-782-547zm5-26-4-493a7-25-7-25-0-0114-063-1-5h-186a-25-25-0-01-25-25v-186a7-25-7-25-0-01-2-123-5-127l-459-458a15-21-15-21-0-01-2-499-2-02l-2-317-1-5-2-143-2-143-1-5-2-317a15-25-15-25-0-012-02-2-5l-458-458h-002zm12-5a1-1-0-11-2-0-1-1-0-012-0zm-8-44-9-56a1-5-1-5-0-10-2-12-2-12c-734-73-1-047-2-332-1-15-3-003a-23-23-0-00-265-265c-671-103-2-273-416-3-005-1-148z-path-svg-cloud-support" title="Permalink to this heading">#</a></h1>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-person" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2.5a5.5 5.5 0 00-3.096 10.047 9.005 9.005 0 00-5.9 8.18.75.75 0 001.5.045 7.5 7.5 0 0114.993 0 .75.75 0 101.499-.044 9.005 9.005 0 00-5.9-8.181A5.5 5.5 0 0012 2.5zM8 8a4 4 0 118 0 4 4 0 01-8 0z"></path></svg> Log in to Jina AI Cloud using DocArray</div>
+<p class="sd-card-text">Log in to Jina AI Cloud to use and manage your cloud resources using DocArray.</p>
 </div>
-<p>Or as,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="n">Document</span>
-</pre></div>
+<a class="sd-stretched-link reference internal" href="login/"><span class="doc"></span></a></div>
 </div>
-<p>They work exactly same. You will be using the same install of <code class="docutils literal notranslate"><span class="pre">docarray</span></code> in your system. This is because <code class="docutils literal notranslate"><span class="pre">jina</span></code> package exposes <code class="docutils literal notranslate"><span class="pre">DocumentArray</span></code> and <code class="docutils literal notranslate"><span class="pre">Document</span></code> from <code class="docutils literal notranslate"><span class="pre">docarray</span></code> package.</p>
-<p>You can update DocArray package without updating Jina via <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">docarray</span></code>. This often works unless otherwise specified in the release note of Jina.</p>
-</section>
-<section id="direct-invoke-jina-hub-executor">
-<h2>Direct invoke Jina/Hub Executor<a class="headerlink" href="#direct-invoke-jina-hub-executor" title="Permalink to this heading">#</a></h2>
-<p>As described <a class="reference internal" href="../documentarray/post-external/#da-post"><span class="std std-ref">here</span></a>, one can simply use an external Jina Flow/Executor as a regular function to process a DocumentArray.</p>
-</section>
-<section id="local-code-as-a-service">
-<h2>Local code as a service<a class="headerlink" href="#local-code-as-a-service" title="Permalink to this heading">#</a></h2>
-<p>Considering the example below, where we use DocArray to pre-process an image DocumentArray:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">da</span> <span class="o">=</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;**/*.png&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">preproc</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Document</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>  <span class="c1"># load</span>
-        <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>  <span class="c1"># normalize color</span>
-        <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="p">)</span>  <span class="c1"># switch color axis for the PyTorch model later</span>
-
-
-<span class="n">da</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">preproc</span><span class="p">)</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="n">channel_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-fold-up" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M11.47 5.22a.75.75 0 011.06 0l3.25 3.25a.75.75 0 01-1.06 1.06L12 6.81 9.28 9.53a.75.75 0 01-1.06-1.06l3.25-3.25z"></path><path fill-rule="evenodd" d="M12 5.5a.75.75 0 01.75.75v8a.75.75 0 01-1.5 0v-8A.75.75 0 0112 5.5zM10.75 18a.75.75 0 01.75-.75h1a.75.75 0 010 1.5h-1a.75.75 0 01-.75-.75zm-8 0a.75.75 0 01.75-.75h1a.75.75 0 010 1.5h-1a.75.75 0 01-.75-.75zm12 0a.75.75 0 01.75-.75h1a.75.75 0 010 1.5h-1a.75.75 0 01-.75-.75zm-8 0a.75.75 0 01.75-.75h1a.75.75 0 010 1.5h-1a.75.75 0 01-.75-.75zm12 0a.75.75 0 01.75-.75h1a.75.75 0 010 1.5h-1a.75.75 0 01-.75-.75z"></path></svg> Manage Data on Jina AI Cloud</div>
+<p class="sd-card-text">Push, pull, and manage DocumentArray objects on Jina AI Cloud.</p>
 </div>
-<p>The code can be run as-is. It will give you a plot like the following (depending on how many images you have):</p>
-<figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/docarray-img.png"><img alt="../../_images/docarray-img.png" src="../../_images/docarray-img.png" style="width: 50%;" /></a>
-</figure>
-<p>When writing it with Jina, the code is slightly refactored into the Executor-style:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Executor</span><span class="p">,</span> <span class="n">requests</span>
-
-
-<span class="k">class</span> <span class="nc">MyExecutor</span><span class="p">(</span><span class="n">Executor</span><span class="p">):</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">preproc</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Document</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">load_uri_to_image_tensor</span><span class="p">()</span>  <span class="c1"># load</span>
-            <span class="o">.</span><span class="n">set_image_tensor_normalization</span><span class="p">()</span>  <span class="c1"># normalize color</span>
-            <span class="o">.</span><span class="n">set_image_tensor_channel_axis</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="p">)</span>  <span class="c1"># switch color axis for the PyTorch model later</span>
-
-    <span class="nd">@requests</span>
-    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">DocumentArray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">docs</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preproc</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>To summarize, you need to do three changes:</p>
-<ul class="simple">
-<li><p>Import <code class="docutils literal notranslate"><span class="pre">Executor</span></code> and subclass it;</p></li>
-<li><p>Wrap you functions into class methods;</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">&#64;request</span></code> decorator the logic functions.</p></li>
-</ul>
-<p>Now you can feed data to it via:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;**/*.png&#39;</span><span class="p">),</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">r</span><span class="o">.</span><span class="n">plot_image_sprites</span><span class="p">(</span><span class="n">channel_axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You get the same results as before with some extra output from the console:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>           Flow@26202[I]:🎉 Flow is ready to use!
-	🔗 Protocol: 		GRPC
-	🏠 Local access:	0.0.0.0:57050
-	🔒 Private network:	192.168.0.102:57050
-	🌐 Public address:	84.172.88.250:57050
-⠋       DONE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╸ 0:00:05 100% ETA: 0 seconds 80 steps done in 5 seconds
-</pre></div>
-</div>
-</section>
-<section id="three-good-reasons-to-use-jina">
-<h2>Three good reasons to use Jina<a class="headerlink" href="#three-good-reasons-to-use-jina" title="Permalink to this heading">#</a></h2>
-<p>Okay, so I refactor the code from 10 lines to 24 lines, what’s the deal? Here are three reasons to use Jina:</p>
-<section id="a-client-server-architecture">
-<h3>A client-server architecture<a class="headerlink" href="#a-client-server-architecture" title="Permalink to this heading">#</a></h3>
-<p>One immediate consequence is now your logic works as a service. You can host it remotely on a server and start client to query it:</p>
-<div class="tab-set docutils">
-<input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Server</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<input class="tab-input" id="tab-set--0-input--2" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--2">Client</label><div class="tab-content docutils">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
-<span class="n">c</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;**/*.png&#39;</span><span class="p">),</span> <span class="n">show_progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
+<a class="sd-stretched-link reference internal" href="data/"><span class="doc"></span></a></div>
 </div>
 </div>
 </div>
-<p>You can also use <code class="docutils literal notranslate"><span class="pre">websockets</span></code>, <code class="docutils literal notranslate"><span class="pre">http</span></code>, GraphQL API to query it. More details can be found in <a class="reference external" href="https://docs.jina.ai/">Jina Documentation</a>.</p>
-</section>
-<section id="scale-it-out">
-<h3>Scale it out<a class="headerlink" href="#scale-it-out" title="Permalink to this heading">#</a></h3>
-<p>Scaling your server is as easy as adding <code class="docutils literal notranslate"><span class="pre">replicas</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="n">MyExecutor</span><span class="p">,</span> <span class="n">replicas</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
-</pre></div>
+<p>Jina AI Cloud is the <strong>portal</strong> and <strong>single entry point</strong> to manage <strong>all</strong> your Jina AI resources.
+Read more about <a class="reference external" href="https://docs.jina.ai/jina-ai-cloud/">Jina AI Cloud</a>.</p>
+<div class="toctree-wrapper compound">
 </div>
-<p>This will start three parallels can improve the overall throughput. <a class="reference external" href="https://docs.jina.ai/fundamentals/flow/create-flow/#replicate-executors">More details can be found here.</a></p>
-</section>
-<section id="share-and-reuse-it">
-<h3>Share and reuse it<a class="headerlink" href="#share-and-reuse-it" title="Permalink to this heading">#</a></h3>
-<p>One can share and reuse it via <a class="reference external" href="https://cloud.jina.ai">Hub</a>. Save your Executor in a folder say <code class="docutils literal notranslate"><span class="pre">foo</span></code> and then:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina hub push foo
-</pre></div>
-</div>
-<p>This will upload your Executor logic to Jina Hub and allows you and other people to reuse it via Sandbox (as a hosted-microservice), Docker image or source. For example, after <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">hub</span> <span class="pre">push</span></code>, you will get:</p>
-<figure class="align-default">
-<a class="reference internal image-reference" href="../../_images/jinahub-push.png"><img alt="../../_images/jinahub-push.png" src="../../_images/jinahub-push.png" style="width: 60%;" /></a>
-</figure>
-<p>Say if you want to use it as a Sandbox, you can change your Flow to:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">DocumentArray</span>
-
-<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;jinahub+sandbox://mp0pe477&#39;</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="n">DocumentArray</span><span class="o">.</span><span class="n">from_files</span><span class="p">(</span><span class="s1">&#39;**/*.png&#39;</span><span class="p">),</span> <span class="n">show_progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>In this case, the Executor is running remotely and managed by Jina Cloud. It does not use any of your local resources.</p>
-<p>A single Executor can do very limited things. You can combine multiple Executors together in a Flow to accomplish a task, some of them are written by you; some of them are shared from the Hub; some may run remotely; some may run in local Docker. Little you have to worry about, all you need is to keep doing <code class="docutils literal notranslate"><span class="pre">.add()</span></code> Executor to your Flow.</p>
-</section>
-</section>
-<section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">#</a></h2>
-<p>If you start something new, start with DocArray. If you want to scale it out and make it a public available cloud-service, then use Jina.</p>
-</section>
 </section>
 
                 </article>
@@ -574,12 +433,12 @@
             <footer>
                 
                 <div class="related-pages">
-                    <a class="next-page" href="../notebook-support/">
+                    <a class="next-page" href="login/">
                         <div class="page-info">
                             <div class="context">
                                 <span>Next</span>
                             </div>
-                            <div class="title">Jupyter Notebook/Colab</div>
+                            <div class="title">Authentication</div>
                         </div>
                         <svg class="furo-related-icon">
                             <use href="#svg-arrow-right"></use>
@@ -602,9 +461,9 @@
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -624,36 +483,8 @@
                 
             </footer>
         </div>
-        <aside class="toc-drawer">
+        <aside class="toc-drawer no-toc">
             
-            
-            <div class="toc-sticky toc-scroll">
-                <div class="toc-title-container">
-          <span class="toc-title">
-            Contents
-          </span>
-                </div>
-                <div class="toc-tree-container">
-                    <div class="toc-tree">
-                        <ul>
-<li><a class="reference internal" href="#">Jina</a><ul>
-<li><a class="reference internal" href="#package-dependency">Package dependency</a></li>
-<li><a class="reference internal" href="#direct-invoke-jina-hub-executor">Direct invoke Jina/Hub Executor</a></li>
-<li><a class="reference internal" href="#local-code-as-a-service">Local code as a service</a></li>
-<li><a class="reference internal" href="#three-good-reasons-to-use-jina">Three good reasons to use Jina</a><ul>
-<li><a class="reference internal" href="#a-client-server-architecture">A client-server architecture</a></li>
-<li><a class="reference internal" href="#scale-it-out">Scale it out</a></li>
-<li><a class="reference internal" href="#share-and-reuse-it">Share and reuse it</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
-</ul>
-</li>
-</ul>
-
-                    </div>
-                </div>
-            </div>
             
             
         </aside>

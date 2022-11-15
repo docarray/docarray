@@ -3,21 +3,14 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
 <meta property="og:title" content="FastAPI/Pydantic" />
-  
 <meta property="og:type" content="website" />
-  
-<meta property="og:url" content="https://docarray.jina.ai/fundamentals/fastapi-support/index/" />
-  
-<meta property="og:site_name" content="DocArray 0.18.2 Documentation" />
-  
-<meta property="og:description" content="Long story short, DocArray supports pydantic data model via PydanticDocument and PydanticDocumentArray. But this is probably too short to make any sense. So let’s take a step back and see what does this mean. When you want to send/receive Document or DocumentArray object via REST API, you can use..." />
-  
+<meta property="og:url" content="https://docarray.jina.ai/fundamentals/fastapi-support/" />
+<meta property="og:site_name" content="DocArray 0.19.0 Documentation" />
+<meta property="og:description" content="DocArray supports the pydantic data model via PydanticDocument and PydanticDocumentArray. Let’s take a look at what this means. When you want to send or receive Document or DocumentArray objects via the REST API, you can use from_json()/ to_json() to convert the Document or DocumentArray object i..." />
 <meta property="og:image" content="https://docarray.jina.ai/_static/banner.png" />
-  
-<meta property="og:image:alt" content="DocArray 0.18.2 Documentation" />
-  
+<meta property="og:image:alt" content="DocArray 0.19.0 Documentation" />
+<meta name="description" content="DocArray supports the pydantic data model via PydanticDocument and PydanticDocumentArray. Let’s take a look at what this means. When you want to send or receive Document or DocumentArray objects via the REST API, you can use from_json()/ to_json() to convert the Document or DocumentArray object i..." />
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
 <meta name="twitter:creator" content="@JinaAI_">
@@ -35,11 +28,12 @@
 </script>
 
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-    <link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GraphQL" href="../../advanced/graphql-support/" /><link rel="prev" title="PyTorch/Deep Learning Frameworks" href="../../advanced/torch-support/" />
+    
+<link rel="index" title="Index" href="../../genindex/" /><link rel="search" title="Search" href="../../search/" /><link rel="next" title="GraphQL" href="../../advanced/graphql-support/" /><link rel="prev" title="PyTorch/Deep Learning Frameworks" href="../../advanced/torch-support/" />
         <link rel="canonical" href="https://docarray.jina.ai/fundamentals/fastapi-support/index.html" />
 
     <link rel="shortcut icon" href="../../_static/favicon.png"/><meta name="generator" content="sphinx-5.3.0, furo 2022.09.29"/>
-        <title>FastAPI/Pydantic - DocArray 0.18.2 documentation</title>
+        <title>FastAPI/Pydantic - DocArray 0.19.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
@@ -172,7 +166,7 @@
         </div>
         <div class="header-center">
             <a href="../../">
-                <div class="brand">DocArray 0.18.2 documentation</div>
+                <div class="brand">DocArray 0.19.0 documentation</div>
             </a>
         </div>
         <div class="header-right">
@@ -311,10 +305,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../../advanced/document-store/benchmark/">One Million Scale Benchmark</a></li>
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cloud-support/"><svg aria-hidden="true" class="sd-octicon sd-octicon-rocket" height="1.0em" version="1.1" viewbox="0 0 16 16" width="1.0em"><path d="M14.064 0a8.75 8.75 0 00-6.187 2.563l-.459.458c-.314.314-.616.641-.904.979H3.31a1.75 1.75 0 00-1.49.833L.11 7.607a.75.75 0 00.418 1.11l3.102.954c.037.051.079.1.124.145l2.429 2.428c.046.046.094.088.145.125l.954 3.102a.75.75 0 001.11.418l2.774-1.707a1.75 1.75 0 00.833-1.49V9.485c.338-.288.665-.59.979-.904l.458-.459A8.75 8.75 0 0016 1.936V1.75A1.75 1.75 0 0014.25 0h-.186zM10.5 10.625c-.088.06-.177.118-.266.175l-2.35 1.521.548 1.783 1.949-1.2a.25.25 0 00.119-.213v-2.066zM3.678 8.116L5.2 5.766c.058-.09.117-.178.176-.266H3.309a.25.25 0 00-.213.119l-1.2 1.95 1.782.547zm5.26-4.493A7.25 7.25 0 0114.063 1.5h.186a.25.25 0 01.25.25v.186a7.25 7.25 0 01-2.123 5.127l-.459.458a15.21 15.21 0 01-2.499 2.02l-2.317 1.5-2.143-2.143 1.5-2.317a15.25 15.25 0 012.02-2.5l.458-.458h.002zM12 5a1 1 0 11-2 0 1 1 0 012 0zm-8.44 9.56a1.5 1.5 0 10-2.12-2.12c-.734.73-1.047 2.332-1.15 3.003a.23.23 0 00.265.265c.671-.103 2.273-.416 3.005-1.148z" fill-rule="evenodd"></path></svg> Cloud Support</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cloud-support/login/">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cloud-support/data/">Data Management</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Integrations</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../jina-support/">Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebook-support/">Jupyter Notebook/Colab</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../advanced/torch-support/">PyTorch/Deep Learning Frameworks</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">FastAPI/Pydantic</a></li>
@@ -402,20 +400,20 @@
                 <article role="main">
                     <section id="fastapi-pydantic">
 <span id="fastapi-support"></span><h1>FastAPI/Pydantic<a class="headerlink" href="#fastapi-pydantic" title="Permalink to this heading">#</a></h1>
-<p>Long story short, DocArray supports <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic data model</a> via <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code>.</p>
-<p>But this is probably too short to make any sense. So let’s take a step back and see what does this mean.</p>
-<p>When you want to send/receive Document or DocumentArray object via REST API, you can use <code class="docutils literal notranslate"><span class="pre">.from_json</span></code>/<code class="docutils literal notranslate"><span class="pre">.to_json</span></code> that convert the Document/DocumentArray object into JSON. This has been introduced in the <a class="reference internal" href="../documentarray/serialization/#docarray-serialization"><span class="std std-ref">Serialization</span></a> section.</p>
-<p>This way, although quite intuitive to many data scientists, is <em>not</em> the modern way of building API services. Your engineer friends won’t be happy if you give them a service like this. The main problem here is the <strong>data validation</strong>.</p>
-<p>Of course, you can include data validation inside your service logic, but it is often brainfuck as you will need to check field by field and repeat things like <code class="docutils literal notranslate"><span class="pre">isinstance(field,</span> <span class="pre">int)</span></code>, not even to mention handling nested JSON.</p>
-<p>Modern web frameworks validate the data <em>before</em> it enters the core logic. For example, <a class="reference external" href="https://fastapi.tiangolo.com/">FastAPI</a> leverages <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic</a> to validate input &amp; output data.</p>
-<p>This chapter will introduce how to leverage DocArray’s pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won’t repeat them here again.</p>
+<p>DocArray supports the <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic data model</a> via <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code>.
+Let’s take a look at what this means.</p>
+<p>When you want to send or receive Document or DocumentArray objects via the REST API, you can use <a class="reference internal" href="../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.from_json" title="docarray.array.mixins.io.json.JsonIOMixin.from_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_json()</span></code></a>/<a class="reference internal" href="../../api/docarray.array.mixins.io.json/#docarray.array.mixins.io.json.JsonIOMixin.to_json" title="docarray.array.mixins.io.json.JsonIOMixin.to_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_json()</span></code></a> to convert the Document or DocumentArray object into JSON. This has been introduced in the <a class="reference internal" href="../documentarray/serialization/#docarray-serialization"><span class="std std-ref">Serialization</span></a> section.</p>
+<p>This method, although quite intuitive to many data scientists, is <em>not</em> the modern way of building API services. Your engineer friends won’t be happy if you give them a service like this. The main problem is <strong>data validation</strong>.</p>
+<p>Of course, you can include data validation in your service logic, but this can be difficult as you will need to check field by field and repeat things like <code class="docutils literal notranslate"><span class="pre">isinstance(field,</span> <span class="pre">int)</span></code>, not to mention handling nested JSON.</p>
+<p>Modern web frameworks validate the data <em>before</em> it enters the core logic. For example, <a class="reference external" href="https://fastapi.tiangolo.com/">FastAPI</a> leverages <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic</a> to validate input and output data.</p>
+<p>This chapter will introduce how to use DocArray’s pydantic support in a FastAPI service to build a modern API service. The fundamentals of FastAPI can be learned from its docs. I won’t repeat them here again.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Features introduced in this chapter require <code class="docutils literal notranslate"><span class="pre">fastapi</span></code> and <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> as dependency, please do <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to enable it.</p>
+<p>Features introduced in this chapter require <code class="docutils literal notranslate"><span class="pre">fastapi</span></code> and <code class="docutils literal notranslate"><span class="pre">pydantic</span></code> as dependencies. Please run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;docarray[full]&quot;</span></code> to enable it.</p>
 </div>
 <section id="json-schema">
 <span id="schema-gen"></span><h2>JSON Schema<a class="headerlink" href="#json-schema" title="Permalink to this heading">#</a></h2>
-<p>You can get <a class="reference external" href="https://json-schema.org/">JSON Schema</a> (OpenAPI itself is based on JSON Schema) of Document and DocumentArray by <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema" title="docarray.array.mixins.pydantic.PydanticMixin.get_json_schema"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_json_schema()</span></code></a>.</p>
+<p>You can get the <a class="reference external" href="https://json-schema.org/">JSON Schema</a> (OpenAPI itself is based on JSON Schema) of a Document or DocumentArray using the <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.get_json_schema" title="docarray.array.mixins.pydantic.PydanticMixin.get_json_schema"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_json_schema()</span></code></a> method.</p>
 <div class="tab-set docutils">
 <input checked="True" class="tab-input" id="tab-set--0-input--1" name="tab-set--0" type="radio"><label class="tab-label" for="tab-set--0-input--1">Document</label><div class="tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -458,10 +456,10 @@
 </div>
 </div>
 </div>
-<p>Give them to your engineer friends, they will be happy as now they can understand what data format you are working with. These schemas also help them to easily integrate DocArray into any webservice.</p>
+<p>When you give this schema to your engineer friends, they’ll be able to understand the data format you’re working with. These schemas also help them to easily integrate DocArray into any webservice.</p>
 </section>
-<section id="validate-incoming-document-and-documentarray">
-<h2>Validate incoming Document and DocumentArray<a class="headerlink" href="#validate-incoming-document-and-documentarray" title="Permalink to this heading">#</a></h2>
+<section id="validate-incoming-document-and-documentarray-objects">
+<h2>Validate incoming Document and DocumentArray objects<a class="headerlink" href="#validate-incoming-document-and-documentarray-objects" title="Permalink to this heading">#</a></h2>
 <p>You can import <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> pydantic data models, and use them to type hint your endpoint. This will enable the data validation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray.document.pydantic_model</span> <span class="kn">import</span> <span class="n">PydanticDocument</span><span class="p">,</span> <span class="n">PydanticDocumentArray</span>
 <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
@@ -495,11 +493,11 @@
 </section>
 <section id="convert-between-pydantic-model-and-docarray-objects">
 <h2>Convert between pydantic model and DocArray objects<a class="headerlink" href="#convert-between-pydantic-model-and-docarray-objects" title="Permalink to this heading">#</a></h2>
-<p><a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> are mainly for data validation. When you want to implement real logics, you need to convert it into Document or DocumentArray. This can be easily achieved via <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_pydantic_model()</span></code></a>. When you are done with processing and want to send back, you can call <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pydantic_model()</span></code></a>.</p>
+<p><a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> and <code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocumentArray</span></code> are mainly for data validation. When you want to implement real logic, you need to convert them into a Document or DocumentArray. This can be easily achieved via the <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.from_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_pydantic_model()</span></code></a> method. When you are done with processing and want to send a <a class="reference internal" href="../../api/docarray.document.pydantic_model/#docarray.document.pydantic_model.PydanticDocument" title="docarray.document.pydantic_model.PydanticDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">PydanticDocument</span></code></a> back, you can call <a class="reference internal" href="../../api/docarray.array.mixins.pydantic/#docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model" title="docarray.array.mixins.pydantic.PydanticMixin.to_pydantic_model"><code class="xref py py-meth docutils literal notranslate"><span class="pre">to_pydantic_model()</span></code></a>.</p>
 <p>In a nutshell, the whole procedure looks like the following:</p>
 <figure class="align-default">
 <img alt="../../_images/lifetime-pydantic.svg" src="../../_images/lifetime-pydantic.svg" /></figure>
-<p>Let’s see an example,</p>
+<p>Let’s see an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentArray</span>
 
 <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;/single&#39;</span><span class="p">)</span>
@@ -521,8 +519,8 @@
 </section>
 <section id="limit-returned-fields-by-response-model">
 <h2>Limit returned fields by response model<a class="headerlink" href="#limit-returned-fields-by-response-model" title="Permalink to this heading">#</a></h2>
-<p>Supporting pydantic data model means much more beyond data validation. One useful pattern is to define a smaller data model and restrict the response to certain fields of the Document.</p>
-<p>Imagine we have a DocumentArray with <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> on the server side. But we do not want to return them to the client for some reasons (1. meaningless to users; 2. too big to transfer). One can simply define the interested fields via
+<p>Supporting the pydantic data model means much more than data validation. One useful pattern is to define a smaller data model and restrict the response to certain fields of the Document.</p>
+<p>Imagine we have a DocumentArray with <code class="docutils literal notranslate"><span class="pre">.embeddings</span></code> on the server side, but we do not want to return them to the client for various reasons (for example, they may be meaningless to users, or too big to transfer). One can simply define the fields of interest via
 <code class="docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code> and then use it in <code class="docutils literal notranslate"><span class="pre">response_model=</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 <span class="kn">from</span> <span class="nn">docarray</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -543,7 +541,7 @@
 </section>
 <section id="limit-returned-results-recursively">
 <h2>Limit returned results recursively<a class="headerlink" href="#limit-returned-results-recursively" title="Permalink to this heading">#</a></h2>
-<p>The same idea applies to DocumentArray as well. Say after <a class="reference internal" href="../documentarray/matching/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">.match()</span></code></span></a>, you are only interested in <code class="docutils literal notranslate"><span class="pre">.id</span></code> - the parent <code class="docutils literal notranslate"><span class="pre">.id</span></code> and all matches <code class="docutils literal notranslate"><span class="pre">id</span></code>. You can declare a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> as follows:</p>
+<p>The same idea applies to DocumentArray as well. Say after <a class="reference internal" href="../documentarray/matching/"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">.match()</span></code></span></a>, you are only interested in <code class="docutils literal notranslate"><span class="pre">.id</span></code>—the parent <code class="docutils literal notranslate"><span class="pre">.id</span></code> and the <code class="docutils literal notranslate"><span class="pre">.id</span></code>s of all matches. You can declare a <code class="docutils literal notranslate"><span class="pre">BaseModel</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
 
@@ -561,7 +559,7 @@
     <span class="k">return</span> <span class="n">da</span><span class="o">.</span><span class="n">to_pydantic_model</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Then you get a very nice result of <code class="docutils literal notranslate"><span class="pre">id</span></code>s of matches (potentially unlimited depth).</p>
+<p>Then you get a very nice result containing <code class="docutils literal notranslate"><span class="pre">id</span></code>s of matches (of potentially unlimited depth).</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{&#39;id&#39;: &#39;ef82e4f4756411ecb2c01e008a366d49&#39;,
   &#39;matches&#39;: [{&#39;id&#39;: &#39;ef82e4f4756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
               {&#39;id&#39;: &#39;ef82e6d4756411ecb2c01e008a366d49&#39;, &#39;matches&#39;: None},
@@ -570,13 +568,13 @@
               ...
 </pre></div>
 </div>
-<p>If <code class="docutils literal notranslate"><span class="pre">'matches':</span> <span class="pre">None</span></code> is annoying to you (they are here because you didn’t compute second-degree matches), you can further leverage FastAPI’s feature and do:</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">'matches':</span> <span class="pre">None</span></code> is annoying to you (they are here because you didn’t compute second-degree matches), you can further leverage FastAPI’s features and do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/get_match&#39;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">IdMatch</span><span class="p">],</span> <span class="n">response_model_exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_match_id_only</span><span class="p">():</span>
     <span class="o">...</span>
 </pre></div>
 </div>
-<p>Finally, you get a very clean results with ids and matches only:</p>
+<p>Finally, you get a very clean result with <code class="docutils literal notranslate"><span class="pre">id</span></code>s and matches only:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[{&#39;id&#39;: &#39;3da6383e756511ecb7cb1e008a366d49&#39;,
   &#39;matches&#39;: [{&#39;id&#39;: &#39;3da6383e756511ecb7cb1e008a366d49&#39;},
               {&#39;id&#39;: &#39;3da63a14756511ecb7cb1e008a366d49&#39;},
@@ -594,7 +592,7 @@
               ...
 </pre></div>
 </div>
-<p>More tricks and usages of pydantic model can be found in its docs. Same for FastAPI. I strongly recommend interested readers to go through their documentations.</p>
+<p>For more information about <a class="reference external" href="https://pydantic-docs.helpmanual.io/">pydantic</a> and <a class="reference external" href="https://fastapi.tiangolo.com/">FastAPI</a>, we strongly recommend reading their documentation.</p>
 </section>
 </section>
 
@@ -631,9 +629,9 @@
                 <div class="bottom-of-page">
                     <div class="left-details">
                         <div class="copyright">
-                            Copyright &#169; Jina AI Limited. All rights reserved.
+                            Copyright &#169; DocArray is a trademark of LF Projects, LLC.
                         </div><div class="last-updated">
-                            Last updated on Oct 30, 2022</div>
+                            Last updated on Nov 15, 2022</div>
                     </div>
                     <div class="right-details">
                         <div class="social-btns">
@@ -667,7 +665,7 @@
                         <ul>
 <li><a class="reference internal" href="#">FastAPI/Pydantic</a><ul>
 <li><a class="reference internal" href="#json-schema">JSON Schema</a></li>
-<li><a class="reference internal" href="#validate-incoming-document-and-documentarray">Validate incoming Document and DocumentArray</a></li>
+<li><a class="reference internal" href="#validate-incoming-document-and-documentarray-objects">Validate incoming Document and DocumentArray objects</a></li>
 <li><a class="reference internal" href="#convert-between-pydantic-model-and-docarray-objects">Convert between pydantic model and DocArray objects</a></li>
 <li><a class="reference internal" href="#limit-returned-fields-by-response-model">Limit returned fields by response model</a></li>
 <li><a class="reference internal" href="#limit-returned-results-recursively">Limit returned results recursively</a></li>
