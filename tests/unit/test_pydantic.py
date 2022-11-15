@@ -48,6 +48,9 @@ class IdMatch(BaseModel):
     matches: Optional[List['IdMatch']]
 
 
+IdMatch.update_forward_refs()
+
+
 @app.post('/single', response_model=IdOnly)
 async def create_item(item: PydanticDocument):
     return Document.from_pydantic_model(item).to_pydantic_model()
@@ -72,13 +75,13 @@ client = TestClient(app)
 
 
 def test_read_main():
-    response = client.post('/single', Document(text='hello').to_json())
+    response = client.post('/single', content=Document(text='hello').to_json())
     r = response.json()
     assert r['id']
     assert 'text' not in r
     assert len(r) == 1
 
-    response = client.post('/multi', DocumentArray.empty(2).to_json())
+    response = client.post('/multi', content=DocumentArray.empty(2).to_json())
 
     r = response.json()
     assert isinstance(r, list)
