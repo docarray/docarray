@@ -1,7 +1,5 @@
 from typing import Any, Dict, Type, TypeVar
 
-from pydantic.tools import parse_obj_as
-
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
@@ -14,7 +12,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-        from docarray import DocumentArray
 
         fields: Dict[str, Any] = {}
 
@@ -25,18 +22,18 @@ class ProtoMixin(AbstractDocument, BaseNode):
 
             # this if else statement need to be refactored it is too long
             # the check should be delegated to the type level
-            if content_type == 'tensor':
-                fields[field] = Tensor._read_from_proto(value.tensor)
-            elif content_type == 'torch_tensor':
-                fields[field] = TorchTensor._read_from_proto(value.torch_tensor)
-            elif content_type == 'embedding':
-                fields[field] = Embedding._read_from_proto(value.embedding)
-            elif content_type == 'any_url':
-                fields[field] = parse_obj_as(AnyUrl, value.any_url)
-            elif content_type == 'image_url':
-                fields[field] = parse_obj_as(ImageUrl, value.image_url)
-            elif content_type == 'id':
-                fields[field] = parse_obj_as(ID, value.id)
+            content_type_dict = dict(
+                tensor=Tensor,
+                torch_tensor=TorchTensor,
+                embedding=Embedding,
+                any_url=AnyUrl,
+                image_url=ImageUrl,
+                id=ID,
+            )
+            if content_type in content_type_dict:
+                fields[field] = content_type_dict[content_type].from_protobuf(
+                    getattr(value, content_type)
+                )
             elif content_type == 'text':
                 fields[field] = value.text
             elif content_type == 'nested':
@@ -44,6 +41,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                     value.nested
                 )  # we get to the parent class
             elif content_type == 'chunks':
+                from docarray import DocumentArray
 
                 fields[field] = DocumentArray.from_protobuf(
                     value.chunks

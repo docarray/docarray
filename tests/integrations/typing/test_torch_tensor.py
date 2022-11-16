@@ -4,7 +4,7 @@ from docarray import Document
 from docarray.typing import TorchTensor
 
 
-def test_set_tensor():
+def test_set_torch_tensor():
     class MyDocument(Document):
         tensor: TorchTensor
 
