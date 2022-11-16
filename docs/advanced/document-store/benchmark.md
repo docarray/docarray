@@ -9,9 +9,11 @@
 :scale: 0 %
 ```
 
-We created a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects (each of 128 dimensions) and using L2 distance metrics, and benchmarked the document stores as summarized below.
+## Methodology
 
-This includes classic and vector databases, all using the same DocumentArray API:
+We created a DocumentArray with one million Documents based on [sift1m](http://corpus-texmex.irisa.fr/), a dataset containing 1 million objects (each of 128 dimensions) and using L2 distance metrics. 
+
+We benchmarked the document stores as summarized below:
 
 | Name                                | Usage                                    | Client version    | Database version |
 |-------------------------------------|------------------------------------------|-------------------|------------------|
@@ -22,6 +24,8 @@ This includes classic and vector databases, all using the same DocumentArray API
 | [`AnnLite`](annlite.md)             | `DocumentArray(storage='anlite')`        | `0.3.13`          | N/A              |
 | [`ElasticSearch`](elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | `8.4.3`           | `8.2.0`          |
 | [`Redis`](redis.md)                 | `DocumentArray(storage='redis')`         | `4.3.4`           | `2.6.0`          |
+
+### Core tasks
 
 We focused on the following tasks:
 
@@ -34,26 +38,46 @@ We focused on the following tasks:
 
 The above tasks are often atomic operations in the high-level DocArray API. Hence, understanding their performance gives users a good estimation of the experience when using DocumentArray with different backends.
 
-We are interested in the single query performance on the above tasks, which means tasks 2, 3, 4, 5, and 6 are evaluated using one Document at a time, repeatedly. We report the average number.
+### Parametric combinations
+
+Most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
+
+1. `ef_construct` - the HNSW build parameter that controls the index time/index accuracy. Higher `ef_construct` leads to longer construction, but better index quality.
+2. `m` - maximum connections, the number of bi-directional links created for every new element during construction. Higher `m` works better on datasets with high intrinsic dimensionality and/or high recall, while lower `m` works better for datasets with low intrinsic dimensionality and/or low recall.
+3. `ef` - the size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accuracy but slower performance.
 
 
-```{attention}
+## Experiment setup
 
-* **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you spot bottlenecks we would be thrilled to know about them and improve our code accordingly.
-* **We use similar underlying search algorithms but different implementations**: In this benchmark we try a set of parameters `ef`, `ef_construct` and `max_connections` from HNSW applied equally on all backends. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
-* **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
+We are interested in the **single query performance** on the above six tasks with different combinations of the above three parameters. Single query performance is measured by evaluating one Document at a time, repeatedly for tasks 2, 3, 4, 5, and 6. Finally the average number is reported.
+
+We now elaborate the setup of our experiments. First some high-level statistics of the experiment:
+
+| Parameter                                       | Value     |
+|-------------------------------------------------|-----------|
+| Number of created Documents                     | 1,000,000 |
+| Number of Documents on tasks 2, 3, 4, 5, 6      | 1         |
+| Dimension of `.embedding`                       | 128       |
+| Number of results for the task "Find by vector" | 10,000    |
+
+Each Document follows the structure: 
+
+```json
+{
+  "id": "94ee6627ee7f582e5e28124e78c3d2f9",
+  "tags": {"i": 10},
+  "embedding": [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
+}
 ```
 
-## Benchmark results
+We use `Recall@K` value as an indicator of search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
 
-The following chart and tables summarize the results. The chart depicts Recall@10 (the fraction of true nearest neighbors found, on average over all queries) against QPS (find by vector queries per second). The smaller the time values and the more upper-right in the chart, the better.
+The experiments were conducted on an AWS EC2 t2.2xlarge instance (Intel Xeon CPU E5-2676 v3 @ 2.40GHz) with Python 3.10.6 and DocArray 0.18.2.
+
+As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we set them up with their official Docker images in a **single node** configuration, with 32 GB of RAM allocated. That is, only 1 replica and shard are operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the capabilities of a single instance of the server.
 
 
-## Charts
-
-```{include} benchmark.html
-```
-
+## Latency result
 
 ````{tab} In-Memory
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
@@ -217,6 +241,8 @@ The following chart and tables summarize the results. The chart depicts Recall@1
 ````
 
 
+## QPS result
+
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better. 
 
 ````{tab} In-Memory
@@ -350,7 +376,6 @@ When we consider each query as a Document, we can convert the above metrics into
 
 ````
 
-
 ````{tab} Redis
 
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
@@ -390,94 +415,42 @@ When we consider each query as a Document, we can convert the above metrics into
 
 ````
 
-## Benchmark setup
 
-Here are the parameters we used:
+## Recall@10 vs QPS
 
-| Parameter                                       | Value     |
-|-------------------------------------------------|-----------|
-| Number of created Documents                     | 1,000,000 |
-| Number of Documents on tasks 2, 3, 4, 5, 6      | 1         |
-| Dimension of `.embedding`                       | 128       |
-| Number of results for the task "Find by vector" | 10,000    |
+In particular to the find by vector queries task, the chart below depicts Recall@10 (the fraction of true nearest neighbors found, on average over all queries) against the QPS. **The smaller the time values and the more upper-right in the chart, the better.**
 
-We chose the sift1m dataset, which has been commonly used for evaluating the approximate nearest neighbour search methods.
-
-Each Document follows the structure: 
-
-```json
-{
-  "id": "94ee6627ee7f582e5e28124e78c3d2f9",
-  "tags": {"i": 10},
-  "embedding": [0.49841760378680844, 0.703959752118305, 0.6920759535687985, 0.10248648858410625, ...]
-}
+```{include} benchmark.html
 ```
 
 
-We use `Recall@K` value as an indicator of search quality. The in-memory and SQLite store **do not implement** approximate nearest neighbor search but use exhaustive search instead. Hence, they give the maximum `Recall@K` but are the slowest. 
-
-The experiments were conducted on an AWS EC2 t2.2xlarge instance (Intel Xeon CPU E5-2676 v3 @ 2.40GHz) with Python 3.10.6 and DocArray 0.18.2.
-
-As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we set them up with their official Docker images in a **single node** configuration, with 32 GB of RAM allocated. That is, only 1 replica and shard are operated during the benchmarking. We did not opt for a cluster setup because our benchmarks mainly aim to assess the capabilities of a single instance of the server.
-
-Results may include overhead coming from DocArray's side which applies equally for all backends, unless a specific backend provides a more efficient implementation.
-
-### Nearest neighbour search settings
-
-Most of these document stores use their own implementation of HNSW (an approximate nearest neighbor search algorithm) but with different parameters:
-
-1. `ef_construct` - the HNSW build parameter that controls the index time/index accuracy. Higher `ef_construct` leads to longer construction, but better index quality.
-2. `m` - maximum connections, the number of bi-directional links created for every new element during construction. Higher `m` works better on datasets with high intrinsic dimensionality and/or high recall, while lower `m` works better for datasets with low intrinsic dimensionality and/or low recall.
-3. `ef` - the size of the dynamic list for the nearest neighbors. Higher `ef` at search leads to more accuracy but slower performance.
-
-Finally, the full benchmark script is [available here](https://github.com/jina-ai/docarray/blob/main/scripts/benchmarking_sift1m.py).
-
-### Rationale on experiment design
+## Rationale on experiment design
 
 Our experiments are designed to be fair and the same across all backends while favouring document stores that benefit 
 DocArray users the most. Note that such a benchmark was impossible to set up before DocArray, as each store has its own API and the definition of a task varies. 
 
 Our benchmark is based on the following principles:
 
-* **Cover the most important operations**: We understand that some backends are better at some operations than others, and 
-some offer better quality. Therefore, we try to benchmark on six operations (CRUD + Find by vector + Find by condition)
-and report quality measurement (`Recall@K`).
+* **Cover the most important operations**: We understand that some backends are better at some operations than others, and some offer better quality. Therefore, we try to benchmark on six operations (CRUD + Find by vector + Find by condition) and report quality measurement (`Recall@K`).
 * **Not just speed, but also quality**: We show the trade-off between quality and speed as you tune your parameters in each document store.
-* **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the 
-same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support 
-approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client 
-which allows having similar network overhead. We also allocate the same resources for those Docker containers and all 
-servers are run in a single node setup.
-* **Benefit users as much as possible**: We offer the same conditions and resources to all backends, but our experiment 
-favors backends that use resources efficiently. Therefore, some backends might not use the network, or use 
-gRPC instead of HTTP, or use batch operations. We're okay with that, as long as it benefits the DocArray and Jina 
-user.
-* **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and 
-updating benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
+* **Same experiment, same API**: DocArray offers the same API across all backends and therefore we built on top of it the same benchmarking experiment. Furthermore, we made sure to run the experiment with a series of HNSW parameters for backends that support approximate nearest neighbor search. All backends are run on official Docker containers, local to the DocArray client which allows having similar network overhead. We also allocate the same resources for those Docker containers and all servers are run in a single node setup.
+* **Benefit users as much as possible**: We offer the same conditions and resources to all backends, but our experiment favors backends that use resources efficiently. Therefore, some backends might not use the network, or use gRPC instead of HTTP, or use batch operations. We're okay with that, as long as it benefits the DocArray and Jina user.
+* **Open to improvements**: We are constantly improving the performance of storage backends from the DocArray side and updating benchmarks accordingly. If you believe we missed an optimization (e.g. perform an operation in batches, benefit from a recent feature in upstream, avoid unnecessary steps), feel free to [raise a PR or issue](https://github.com/docarray/docarray). We're open to your contributions!
 
-### Limitations
 
-#### Incompleteness on the stores
+## Known limitations
 
-We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, ScaNN**. We only benchmark backends that can be used as 
-document stores. In fact, we do not benchmark HNSW itself, but it is used by some backends internally.
+* **Incompleteness on the stores**: We do not benchmark algorithms or ANN libraries like **Faiss, Annoy, ScaNN**. We only benchmark backends that can be used as document stores. In fact, we do not benchmark HNSW itself, but it is used by some backends internally. Other storage backends that support vector search are not yet integrated with DocArray. We're open to contributions to DocArray's repository to support them.
+* **Client/server setup**: Although a real-life scenario would be the clients and server living on different machines with potentially multiple clients in parallel, we chose to keep both on the same machine and have only one client process to minimize network overhead.
+* **Benchmarks are conducted end-to-end**: We benchmark function calls from DocArray, not just the underlying backend vector database. Therefore, results for a particular backend can be influenced (positively or negatively) by our interface. If you spot bottlenecks we would be thrilled to know about them and improve our code accordingly.
+* **We use similar underlying search algorithms but different implementations**: In this benchmark we try a set of parameters `ef`, `ef_construct` and `max_connections` from HNSW applied equally on all backends. Note that there might be other parameters that storage backends can fix than might or might not be accessible and can have a big impact on performance. This means that even similar configurations cannot be easily compared.
+* **Benchmark is for DocArray users, not for research**: This benchmark showcases what a user can expect to get from DocArray without tuning hyper-parameters of a vector database. In practice, we strongly recommend tuning them to achieve high quality results.
 
-Other storage backends that support vector search are not yet integrated with DocArray. We're open to contributions to DocArray's repository to support them.
-
-#### Client/server setup
-
-Although a real-life scenario would be the clients and server living on different machines with potentially multiple clients in parallel, we chose to keep both on the same machine and have only one client process to minimize network overhead.
 
 ## Conclusions
 
-We hope our benchmark result can help users select the store that suits their use cases. Depending on the dataset size and the desired quality, some stores may be preferable than others. 
+We hope our benchmark result can help users select the store that suits their use cases. Depending on the dataset size and the desired quality, some stores may be preferable than others. Here are some of our conclusions:
 
-If you're experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).
-
-If your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use `sqlite` as storage.
-
-Redis offers great speed if your data fits in memory and you need an isolated server to store your data.
-
-AnnLite offers good speed in CRUD and vector search operations, but keep in mind that AnnLite is a library and does not follow a client-server design. This means that AnnLite operations do not include network overhead unlike other backends.
-
-Moreover, AnnLite is a local monolithic package and does not offer scaling. However, you can still scale using [Jina's scaling features](https://docs.jina.ai/how-to/scale-out/).
+* If you're experimenting on a dataset with fewer than 10,000 Documents, you can use the in-memory DocumentArray as-is to enjoy the best quality for nearest neighbor search with reasonable latency (say, less than 20 ms/query).
+* If your dataset is large but still fits into memory (say 1 million Documents), Redis and AnnLite offer great speed in CRUD and vector search operations. In particular, AnnLite is designed as a monolithic package, which saves a lot network overhead unlike other backends. Unfortunately, this also means one can not scale-out AnnLite natively. Nonetheless, if you are using DocArray with Jina together, you can always leverage Jina’s sharding features, an agnostic solution to scale out any document store. This of course also includes AnnLite.
+* Finally, if your dataset does not fit in memory, and you **do not** care much about the speed of nearest neighbor search, you can use SQLite as storage. Otherwise, Weaviate, Qdrant and Elasticsearch are good options.
