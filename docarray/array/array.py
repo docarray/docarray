@@ -3,11 +3,10 @@ from typing import Iterable, Type
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.document.abstract_document import AbstractDocument
 
 
 class DocumentArray(
-    list[AbstractDocument],
+    list,
     ProtoArrayMixin,
     GetAttributeArrayMixin,
     AbstractDocumentArray,
