@@ -6,7 +6,7 @@ from docarray.document import AnyDocument, BaseDocument, BaseNode
 
 
 class DocumentArray(
-    list[AbstractDocument],
+    list,
     ProtoArrayMixin,
     GetAttributeArrayMixin,
     AbstractDocumentArray,
