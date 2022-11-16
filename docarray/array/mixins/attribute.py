@@ -22,6 +22,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         if issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
+            # bug reported here https://github.com/python/mypy/issues/14111
             return self.__class__.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self)
             )
