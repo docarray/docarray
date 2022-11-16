@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
 import numpy as np
-import torch
+import torch  # type: ignore
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
