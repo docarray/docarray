@@ -5,7 +5,7 @@ from docarray.document import BaseDocument
 from docarray.typing import Tensor
 
 
-def test_get_bulk_attributes():
+def test_get_bulk_attributes_function():
     class Mmdoc(BaseDocument):
         text: str
         tensor: Tensor
