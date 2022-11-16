@@ -14,7 +14,7 @@ class DocumentArray(
     BaseNode,
 ):
     """
-    a _GenericDocumentArray is a list-like container of Document of the same schema
+    a DocumentArray is a list-like container of Document of the same schema
 
     :param docs: iterable of Document
     """
