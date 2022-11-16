@@ -10,5 +10,9 @@ class AbstractDocumentArray(Iterable):
     document_type: Type[BaseDocument]
 
     @abstractmethod
-    def __init__(self, docs: Iterable[AbstractDocument]):
+    def __init__(self, docs: Iterable[BaseDocument]):
+        ...
+
+    @abstractmethod
+    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['AbstractDocument']:
         ...
