@@ -9,6 +9,8 @@ from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor, TorchTensor
 
 T = TypeVar('T', bound='ProtoMixin')
 
+T = TypeVar('T', bound='ProtoMixin')
+
 
 class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod

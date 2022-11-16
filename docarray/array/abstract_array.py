@@ -13,7 +13,5 @@ class AbstractDocumentArray(Iterable):
         ...
 
     @abstractmethod
-    def __class_getitem__(
-        cls, item: Type[BaseDocument]
-    ) -> Type['AbstractDocumentArray']:
+    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['AbstractDocument']:
         ...
