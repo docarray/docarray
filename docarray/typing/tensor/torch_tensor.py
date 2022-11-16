@@ -29,7 +29,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
     @classmethod
     def validate(
-        cls: Type[T], value: Union[T, Any], field: 'ModelField', config: 'BaseConfig'
+        cls: Type[T], value: Union[T, nd.ndarray, Any], field: 'ModelField', config: 'BaseConfig'
     ) -> T:
         if isinstance(value, TorchTensor):
             return cast(T, value)
