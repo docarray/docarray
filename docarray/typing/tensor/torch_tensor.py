@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
 
-import torch
 import numpy as np
+import torch
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -12,11 +12,14 @@ from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
 
+
 class metaTorchAndNode(type(torch.Tensor), type(BaseNode)):
     pass
 
+
 class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
-    # Subclassing torch.Tensor following the advice from here: https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
+    # Subclassing torch.Tensor following the advice from here:
+    # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
@@ -94,4 +97,3 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))
         pb_msg.dense.dtype = value.dtype.str
-        x = 3
