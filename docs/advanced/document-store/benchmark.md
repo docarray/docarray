@@ -202,7 +202,6 @@ As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we
 ````
 
 ````{tab} Redis
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (ms) | Find by condition (ms) | Create 1M (s) | Read (ms) | Update (ms) | Delete (ms) |
 |-----|-------------:|-----:|----------:|--------------------:|-----------------------:|--------------:|----------:|------------:|------------:|
 |  16 |           64 |   32 |     0.872 |                1.67 |                   0.63 |        563.15 |      1.00 |        1.88 |       25.58 |
@@ -229,15 +228,12 @@ As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we
 |  32 |          256 |   64 |     0.984 |                2.28 |                   0.79 |       1489.83 |      1.05 |        4.92 |       29.27 |
 |  32 |          256 |  128 |     0.996 |                2.75 |                   0.79 |       1511.17 |      1.05 |        4.03 |       28.48 |
 |  32 |          256 |  256 |     0.999 |                3.15 |                   0.63 |       1534.68 |      1.03 |        3.26 |       28.19 |
-
 ````
 
 ````{tab} SQLite
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector (s) | Find by condition (s) | Create 1M (s) | Read (ms) | Update (ms) | Delete (s) |
 |-----|-------------:|-----:|----------:|-------------------:|----------------------:|--------------:|----------:|------------:|-----------:|
 | N/A |          N/A |  N/A |     1.000 |              54.32 |                 78.63 |     16,421.51 |      1.09 |       0.40  |      28.87 |
-
 ````
 
 
@@ -246,15 +242,12 @@ As Weaviate, Qdrant, ElasticSearch, and Redis follow a client/server pattern, we
 When we consider each query as a Document, we can convert the above metrics into query/document per second, i.e. QPS/DPS. Higher values are better. 
 
 ````{tab} In-Memory
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 | N/A |          N/A |  N/A |     1.000 |           0.42 |              0.09 |   947,284 |  6,061 | 21,505 |  7,246 |
-
 ````
 
 ````{tab} AnnLite
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.873 |            706 |             2,519 |     8,749 |  2,762 |     77 |     56 |
@@ -281,11 +274,9 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.984 |            618 |             2,703 |     4,721 |  2,874 |     31 |     28 |
 |  32 |          256 |  128 |     0.996 |            531 |             2,734 |     5,129 |  3,040 |     79 |     72 |
 |  32 |          256 |  256 |     0.999 |            445 |             2,740 |     4,886 |  2,874 |     45 |     32 |
-
 ````
 
 ````{tab} Qdrant
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.965 |            286 |              2.48 |     2,227 |    267 |    532 |    267 |
@@ -312,11 +303,9 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.997 |            252 |              2.52 |     2,161 |    685 |    535 |    255 |
 |  32 |          256 |  128 |     0.999 |            262 |              2.66 |     2,154 |    687 |    560 |    253 |
 |  32 |          256 |  256 |     0.999 |            226 |              2.62 |     2,163 |    676 |    598 |    261 |
-
 ````
 
 ````{tab} Weaviate
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.871 |            207 |               436 |     1,739 |    128 |    205 |     51 |
@@ -346,7 +335,6 @@ When we consider each query as a Document, we can convert the above metrics into
 ````
 
 ````{tab} ElasticSearch
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.889 |            228 |               133 |     1,965 |     71 |     14 |     14 |
@@ -373,11 +361,9 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.987 |            165 |               133 |       664 |     64 |     15 |     18 |
 |  32 |          256 |  128 |     0.997 |            125 |               151 |       710 |     84 |     14 |     15 |
 |  32 |          256 |  256 |     0.999 |             87 |               130 |       672 |     75 |     20 |     17 |
-
 ````
 
 ````{tab} Redis
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 |  16 |           64 |   32 |     0.872 |            600 |             1,585 |     1,776 |  1,001 |    533 |     39 |
@@ -404,15 +390,12 @@ When we consider each query as a Document, we can convert the above metrics into
 |  32 |          256 |   64 |     0.984 |            438 |             1,266 |       671 |    951 |    203 |     34 |
 |  32 |          256 |  128 |     0.996 |            364 |             1,263 |       662 |    952 |    248 |     35 |
 |  32 |          256 |  256 |     0.999 |            318 |             1,600 |       652 |    971 |    306 |     35 |
-
 ````
 
 ````{tab} SQLite
-
 |  `m`  | `ef_construct` |  `ef`  | Recall@10 | Find by vector | Find by condition | Create 1M |  Read  | Update | Delete |
 |-----|-------------:|-----:|----------:|---------------:|------------------:|----------:|-------:|-------:|-------:|
 | N/A |          N/A |  N/A |     1.000 |           0.02 |              0.01 |        61 |    915 |  2,476 |   0.03 |
-
 ````
 
 
