@@ -60,7 +60,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         """
         return cls.from_native_torch_tensor(torch.from_numpy(value))
 
-    def _to_node_protobuf(self: T, field: str = 'torch_embedding') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'torch_tensor') -> NodeProto:
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
@@ -94,3 +94,4 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))
         pb_msg.dense.dtype = value.dtype.str
+        x = 3
