@@ -55,7 +55,7 @@ message NodeProto {
 
     string id = 9;
 
-    NdArrayProto torch_embedding = 10;
+    NdArrayProto torch_tensor = 10;
 
   }
 
