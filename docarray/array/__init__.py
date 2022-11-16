@@ -1,3 +1,3 @@
-from docarray.array.documentarray import DocumentArray
+from docarray.array.array import DocumentArray
 
 __all__ = ['DocumentArray']

@@ -1,8 +1,7 @@
 from typing import Type
 
+from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.proto import DocumentArrayProto, NodeProto
-
-from ..abstract_array import AbstractDocumentArray
 
 
 class ProtoArrayMixin(AbstractDocumentArray):

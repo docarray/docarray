@@ -1,20 +1,20 @@
 from typing import Iterable, Type
 
+from docarray.array.abstract_array import AbstractDocumentArray
+from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
 from docarray.document.abstract_document import AbstractDocument
-
-from .abstract_array import AbstractDocumentArray
-from .mixins import ProtoArrayMixin
 
 
 class DocumentArray(
     list,
     ProtoArrayMixin,
+    GetAttributeArrayMixin,
     AbstractDocumentArray,
     BaseNode,
 ):
     """
-    a _GenericDocumentArray is a list-like container of Document of the same schema
+    a DocumentArray is a list-like container of Document of the same schema
 
     :param docs: iterable of Document
     """
@@ -32,6 +32,14 @@ class DocumentArray(
 
         class _DocumenArrayTyped(DocumentArray):
             document_type = item
+
+        for field in _DocumenArrayTyped.document_type.__fields__.keys():
+
+            def _proprety_generator(val: str):
+                return property(lambda self: self._get_documents_attribute(val))
+
+            setattr(_DocumenArrayTyped, field, _proprety_generator(field))
+            # this generates property on the fly based on the schema of the item
 
         _DocumenArrayTyped.__name__ = f'DocumentArray{item.__name__}'
 
