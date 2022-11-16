@@ -2,7 +2,6 @@ from abc import abstractmethod
 from typing import Iterable, Type
 
 from docarray.document import BaseDocument
-from docarray.document.abstract_document import AbstractDocument
 
 
 class AbstractDocumentArray(Iterable):
@@ -14,5 +13,7 @@ class AbstractDocumentArray(Iterable):
         ...
 
     @abstractmethod
-    def __class_getitem__(cls, item: Type[BaseDocument]) -> Type['AbstractDocument']:
+    def __class_getitem__(
+        cls, item: Type[BaseDocument]
+    ) -> Type['AbstractDocumentArray']:
         ...
