@@ -6,6 +6,7 @@ import torch
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
+    import numpy as np
 
 from docarray.document.base_node import BaseNode
 from docarray.proto import NdArrayProto, NodeProto
@@ -29,7 +30,10 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
     @classmethod
     def validate(
-        cls: Type[T], value: Union[T, nd.ndarray, Any], field: 'ModelField', config: 'BaseConfig'
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, TorchTensor):
             return cast(T, value)
