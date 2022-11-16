@@ -72,7 +72,9 @@ def test_proto_with_nested_doc_pytorch():
         text: str
         inner: CustomInnerDoc
 
-    doc = CustomDoc(text='hello', inner=CustomInnerDoc(tensor=torch.zeros((3, 224, 224))))
+    doc = CustomDoc(
+        text='hello', inner=CustomInnerDoc(tensor=torch.zeros((3, 224, 224)))
+    )
 
     CustomDoc.from_protobuf(doc.to_protobuf())
 

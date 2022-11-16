@@ -13,8 +13,11 @@ from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
 
+torch_base = type(torch.Tensor)  # type: Any
+node_base = type(BaseNode)  # type: Any
 
-class metaTorchAndNode(type(torch.Tensor), type(BaseNode)):
+
+class metaTorchAndNode(torch_base, node_base):
     pass
 
 
@@ -56,7 +59,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         :return: a TorchTensor
         """
         value.__class__ = cls
-        return value
+        return cast(T, value)
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
@@ -96,8 +99,8 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
     @staticmethod
     def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'TorchTensor'):
-        value = value.detach().cpu().numpy()
-        pb_msg.dense.buffer = value.tobytes()
+        value_np = value.detach().cpu().numpy()
+        pb_msg.dense.buffer = value_np.tobytes()
         pb_msg.dense.ClearField('shape')
-        pb_msg.dense.shape.extend(list(value.shape))
-        pb_msg.dense.dtype = value.dtype.str
+        pb_msg.dense.shape.extend(list(value_np.shape))
+        pb_msg.dense.dtype = value_np.dtype.str
