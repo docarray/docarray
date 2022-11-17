@@ -299,7 +299,7 @@ for embedding, price in zip(results.embeddings, results[:, 'tags__price']):
 ```
 This prints:
 
-```
+```text
 
 Points with "price" at most 7:
 
