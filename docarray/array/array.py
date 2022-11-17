@@ -3,7 +3,6 @@ from typing import Iterable, Type
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.document.abstract_document import AbstractDocument
 
 
 class DocumentArray(
@@ -21,7 +20,7 @@ class DocumentArray(
 
     document_type: Type[BaseDocument] = AnyDocument
 
-    def __init__(self, docs: Iterable[AbstractDocument]):
+    def __init__(self, docs: Iterable[BaseDocument]):
         super().__init__(doc_ for doc_ in docs)
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
@@ -31,7 +30,7 @@ class DocumentArray(
             )
 
         class _DocumenArrayTyped(DocumentArray):
-            document_type = item
+            document_type: Type[BaseDocument] = item
 
         for field in _DocumenArrayTyped.document_type.__fields__.keys():
 

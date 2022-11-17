@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Type, TypeVar
 
 from pydantic.tools import parse_obj_as
 
@@ -7,10 +7,12 @@ from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
 from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor, TorchTensor
 
+T = TypeVar('T', bound='ProtoMixin')
+
 
 class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
-    def from_protobuf(cls, pb_msg: 'DocumentProto') -> 'ProtoMixin':
+    def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
         from docarray import DocumentArray
 
