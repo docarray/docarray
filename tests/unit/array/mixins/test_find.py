@@ -949,3 +949,43 @@ def test_find_subindex_multimodal(storage, config):
     assert (closest_docs[0].embedding == np.array([3, 3])).all()
     for d in closest_docs:
         assert d.id.endswith('_2')
+
+
+def test_find_return_root(start_storage):
+    with DocumentArray(
+        storage='redis',
+        config={
+            'n_dim': 128,
+            'index_name': 'idx',
+        },
+        subindex_configs={'@c': {'n_dim': 3}, '@cc': {'n_dim': 3, 'root_id': True}},
+    ) as da:
+        da.extend(
+            [
+                Document(
+                    id=f'{i}',
+                    chunks=[
+                        Document(
+                            id=f'sub{i}_0',
+                            chunks=[
+                                Document(
+                                    id=f'sub2_{i}_0', embedding=np.random.random(3)
+                                )
+                            ],
+                        ),
+                        Document(
+                            id=f'sub{i}_1',
+                            chunks=[
+                                Document(
+                                    id=f'sub2_{i}_1', embedding=np.random.random(3)
+                                )
+                            ],
+                        ),
+                    ],
+                )
+                for i in range(10)
+            ]
+        )
+        res = da.find(np.random.random(3), on='@cc', return_root=True, limit=5)
+        assert len(res) == 5
+        assert all(d.id in [f'{i}' for i in range(10)] for d in res)

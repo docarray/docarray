@@ -10,6 +10,13 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
     def _update_subindices_append_extend(self, value):
         if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
+
+                if getattr(da, '_config', None):
+                    if da._config.root_id:
+                        for i in range(len(value)):
+                            for doc in DocumentArray(value[i])[selector]:
+                                doc.tags['root_id'] = value[i].id
+
                 docs_selector = DocumentArray(value)[selector]
                 if len(docs_selector) > 0:
                     da.extend(docs_selector)

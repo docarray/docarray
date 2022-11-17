@@ -35,6 +35,7 @@ class RedisConfig:
     block_size: Optional[int] = None
     initial_cap: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = False
 
 
 class BackendMixin(BaseBackendMixin):

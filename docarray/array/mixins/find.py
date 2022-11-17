@@ -99,6 +99,7 @@ class FindMixin:
         filter: Optional[Dict] = None,
         only_id: bool = False,
         index: str = 'text',
+        return_root: Optional[bool] = False,
         on: Optional[str] = None,
         **kwargs,
     ) -> Union['DocumentArray', List['DocumentArray']]:
@@ -131,9 +132,11 @@ class FindMixin:
 
         :return: a list of DocumentArrays containing the closest Document objects for each of the queries in `query`.
         """
+        from docarray import Document, DocumentArray
+
         index_da = self._get_index(subindex_name=on)
         if index_da is not self:
-            return index_da.find(
+            results = index_da.find(
                 query,
                 metric,
                 limit,
@@ -144,7 +147,16 @@ class FindMixin:
                 index,
                 on=None,
             )
-        from docarray import Document, DocumentArray
+
+            # print(results[:, 'id'])
+
+            if return_root:
+                da = self[results[:, 'tags__root_id']]
+                return da
+
+            # print(da[:,'id'])
+
+            return results
 
         if isinstance(query, dict):
             if filter is None:
