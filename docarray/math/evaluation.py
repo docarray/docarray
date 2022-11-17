@@ -58,6 +58,7 @@ def hit_at_k(binary_relevance: List[int], k: Optional[int] = None, **kwargs) -> 
     :return: hit @k if hit return 1 else 0
     """
     _check_k(k)
+    print('testing...')
     return 1 if np.sum(binary_relevance[:k]) > 0 else 0
 
 
