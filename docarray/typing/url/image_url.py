@@ -153,8 +153,8 @@ def _png_to_buffer_1d(arr: np.ndarray, width: int, height: int) -> bytes:
 def _pillow_image_to_buffer(image, image_format: str) -> bytes:
     img_byte_arr = io.BytesIO()
     image.save(img_byte_arr, format=image_format)
-    img_byte_arr = img_byte_arr.getvalue()
-    return img_byte_arr
+    img_bytes = img_byte_arr.getvalue()
+    return img_bytes
 
 
 def _move_channel_axis(

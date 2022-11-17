@@ -12,6 +12,7 @@ numpy = "^1.23.4"
 protobuf = { version = "^4.21.9", optional = true }
 torch = { version = "^1.0.0", optional = true }
 pillow = {version = "^9.3.0", extras = ["image"]}
+types-pillow = {version = "^9.3.0.1", extras = ["image"]}
 
 [tool.poetry.extras]
 common = ["protobuf"]

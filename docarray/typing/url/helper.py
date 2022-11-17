@@ -32,43 +32,6 @@ def _get_file_context(file):
     return file_ctx
 
 
-def _to_datauri(
-    mimetype, data, charset: str = 'utf-8', base64: bool = False, binary: bool = True
-) -> str:
-    """
-    Convert data to data URI.
-
-    :param mimetype: MIME types (e.g. 'text/plain','image/png' etc.)
-    :param data: Data representations.
-    :param charset: Charset may be any character set registered with IANA
-    :param base64: Used to encode arbitrary octet sequences into a form that satisfies
-        the rules of 7bit. Designed to be efficient for non-text 8 bit and binary data.
-        Sometimes used for text data that frequently uses non-US-ASCII characters.
-    :param binary: True if from binary data False for other data (e.g. text)
-    :return: URI data
-    """
-    parts = ['data:', mimetype]
-    if charset is not None:
-        parts.extend([';charset=', charset])
-    if base64:
-        parts.append(';base64')
-        from base64 import encodebytes as encode64
-
-        if binary:
-            encoded_data = encode64(data).decode(charset).replace('\n', '').strip()
-        else:
-            encoded_data = encode64(data).strip()
-    else:
-        from urllib.parse import quote, quote_from_bytes
-
-        if binary:
-            encoded_data = quote_from_bytes(data)
-        else:
-            encoded_data = quote(data)
-    parts.extend([',', encoded_data])
-    return ''.join(parts)
-
-
 def _is_uri(value: str) -> bool:
     scheme = urllib.parse.urlparse(value).scheme
     return (
