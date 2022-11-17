@@ -29,6 +29,7 @@ class SqliteConfig:
     conn_config: Dict = field(default_factory=dict)
     journal_mode: str = 'WAL'
     synchronous: str = 'OFF'
+    root_id: bool = False
 
 
 class BackendMixin(BaseBackendMixin):

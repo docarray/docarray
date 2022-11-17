@@ -51,6 +51,7 @@ class QdrantConfig:
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = False
 
 
 class BackendMixin(BaseBackendMixin):

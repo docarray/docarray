@@ -46,6 +46,7 @@ class ElasticConfig:
     ef_construction: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = False
 
 
 _banned_indexname_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
