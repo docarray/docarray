@@ -55,6 +55,8 @@ message NodeProto {
 
     string id = 9;
 
+    NdArrayProto torch_tensor = 10;
+
   }
 
 }

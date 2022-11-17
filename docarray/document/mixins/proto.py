@@ -5,7 +5,7 @@ from pydantic.tools import parse_obj_as
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
-from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor
+from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor, TorchTensor
 
 
 class ProtoMixin(AbstractDocument, BaseNode):
@@ -25,6 +25,8 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # the check should be delegated to the type level
             if content_type == 'tensor':
                 fields[field] = Tensor._read_from_proto(value.tensor)
+            elif content_type == 'torch_tensor':
+                fields[field] = TorchTensor._read_from_proto(value.torch_tensor)
             elif content_type == 'embedding':
                 fields[field] = Embedding._read_from_proto(value.embedding)
             elif content_type == 'any_url':

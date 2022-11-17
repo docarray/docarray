@@ -1,10 +1,11 @@
 from typing import Optional
 
 import numpy as np
+import torch
 
 from docarray import DocumentArray
 from docarray.document import BaseDocument
-from docarray.typing import Tensor
+from docarray.typing import Tensor, TorchTensor
 
 
 def test_proto_simple():
@@ -53,6 +54,43 @@ def test_proto_with_chunks_doc():
         text='hello',
         chunks=DocumentArray[CustomInnerDoc](
             [CustomInnerDoc(tensor=np.zeros((3, 224, 224))) for _ in range(5)],
+        ),
+    )
+
+    new_doc = CustomDoc.from_protobuf(doc.to_protobuf())
+
+    for chunk1, chunk2 in zip(doc.chunks, new_doc.chunks):
+
+        assert (chunk1.tensor == chunk2.tensor).all()
+
+
+def test_proto_with_nested_doc_pytorch():
+    class CustomInnerDoc(BaseDocument):
+        tensor: TorchTensor
+
+    class CustomDoc(BaseDocument):
+        text: str
+        inner: CustomInnerDoc
+
+    doc = CustomDoc(
+        text='hello', inner=CustomInnerDoc(tensor=torch.zeros((3, 224, 224)))
+    )
+
+    CustomDoc.from_protobuf(doc.to_protobuf())
+
+
+def test_proto_with_chunks_doc_pytorch():
+    class CustomInnerDoc(BaseDocument):
+        tensor: TorchTensor
+
+    class CustomDoc(BaseDocument):
+        text: str
+        chunks: DocumentArray[CustomInnerDoc]
+
+    doc = CustomDoc(
+        text='hello',
+        chunks=DocumentArray[CustomInnerDoc](
+            [CustomInnerDoc(tensor=torch.zeros((3, 224, 224))) for _ in range(5)],
         ),
     )
 
