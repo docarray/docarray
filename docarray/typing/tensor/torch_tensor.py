@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
@@ -50,6 +50,11 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
             except Exception:
                 pass  # handled below
         raise ValueError(f'Expected a torch.Tensor, got {type(value)}')
+
+    @classmethod
+    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+        # this is needed to dump to json
+        field_schema.update(type='string', format='uuidhello')
 
     @classmethod
     def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -39,6 +39,11 @@ class Tensor(np.ndarray, BaseNode):
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:
         return value.view(cls)
+
+    @classmethod
+    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+        # this is needed to dump to json
+        field_schema.update(type='string', format='uuidhello')
 
     def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
         """Convert Document into a NodeProto protobuf message. This function should
