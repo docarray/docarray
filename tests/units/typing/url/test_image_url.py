@@ -2,6 +2,7 @@ import os
 import urllib
 
 import numpy as np
+import PIL
 import pytest
 from pydantic.tools import parse_obj_as
 
@@ -108,9 +109,9 @@ def test_load_timeout():
     ],
 )
 def test_load_to_bytes(image_format, path_to_img):
+    w, h = 224, 224
     url = parse_obj_as(ImageUrl, path_to_img)
-    _bytes = url.load_to_bytes()
+    _bytes = url.load_to_bytes(width=w, height=h)
     assert isinstance(_bytes, bytes)
-
-
-# TODO(johannes) test to_bytes more thoroughly
+    img = PIL.Image.frombytes(mode='1', size=(w, h), data=_bytes)
+    assert isinstance(img, PIL.Image.Image)

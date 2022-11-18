@@ -1,12 +1,15 @@
 import io
 import struct
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
 
 from docarray.proto import NodeProto
 from docarray.typing.url.any_url import AnyUrl
 from docarray.typing.url.helper import _uri_to_blob
+
+if TYPE_CHECKING:
+    import PIL
 
 IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
@@ -150,7 +153,7 @@ def _png_to_buffer_1d(arr: np.ndarray, width: int, height: int) -> bytes:
     return png_bytes
 
 
-def _pillow_image_to_buffer(image, image_format: str) -> bytes:
+def _pillow_image_to_buffer(image: 'PIL.Image.Image', image_format: str) -> bytes:
     img_byte_arr = io.BytesIO()
     image.save(img_byte_arr, format=image_format)
     img_bytes = img_byte_arr.getvalue()
