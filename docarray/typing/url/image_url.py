@@ -84,7 +84,7 @@ class ImageUrl(AnyUrl):
             img_tensor = doc.img_url.load(height=224, width=224)
             assert img_tensor.shape == (224, 224, 3)
 
-            layout = ("C", "W", "H")
+            layout = ('C', 'W', 'H')
             img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
             assert img_tensor.shape == (3, 200, 100)
 
