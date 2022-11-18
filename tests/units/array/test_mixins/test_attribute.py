@@ -51,3 +51,19 @@ def test_get_bulk_attributes():
     assert len(texts) == N
     for i, text in enumerate(texts):
         assert text == f'hello{i}'
+
+
+def test_get_bulk_attributes_document():
+    class InnerDoc(BaseDocument):
+        text: str
+
+    class Mmdoc(BaseDocument):
+        inner: InnerDoc
+
+    N = 10
+
+    da = DocumentArray[Mmdoc](
+        (Mmdoc(inner=InnerDoc(text=f'hello{i}')) for i in range(N))
+    )
+
+    assert isinstance(da.inner, DocumentArray)
