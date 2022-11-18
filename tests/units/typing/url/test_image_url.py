@@ -115,3 +115,25 @@ def test_load_to_bytes(image_format, path_to_img):
     assert isinstance(_bytes, bytes)
     img = PIL.Image.frombytes(mode='1', size=(w, h), data=_bytes)
     assert isinstance(img, PIL.Image.Image)
+
+
+@pytest.mark.parametrize(
+    'image_format,path_to_img',
+    [
+        ('png', IMAGE_PATHS['png']),
+        ('jpg', IMAGE_PATHS['jpg']),
+        ('jpeg', IMAGE_PATHS['jpeg']),
+        ('jpg', REMOTE_JPG),
+        ('illegal', 'illegal'),
+        ('illegal', 'https://www.google.com'),
+        ('illegal', 'my/local/text/file.txt'),
+    ],
+)
+def test_validation(image_format, path_to_img):
+    if image_format == 'illegal':
+        with pytest.raises(ValueError):
+            parse_obj_as(ImageUrl, path_to_img)
+    else:
+        url = parse_obj_as(ImageUrl, path_to_img)
+        assert isinstance(url, ImageUrl)
+        assert isinstance(url, str)

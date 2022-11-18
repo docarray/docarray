@@ -1,6 +1,6 @@
 import io
 import struct
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
 
 import numpy as np
 
@@ -10,6 +10,10 @@ from docarray.typing.url.helper import _uri_to_blob
 
 if TYPE_CHECKING:
     import PIL
+    from pydantic import BaseConfig
+    from pydantic.fields import ModelField
+
+T = TypeVar('T', bound='ImageUrl')
 
 IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
@@ -24,7 +28,22 @@ class ImageUrl(AnyUrl):
         """
         return NodeProto(image_url=str(self))
 
-    # TODO(johannes) add validation for image URI
+    @classmethod
+    def validate(
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
+    ) -> T:
+
+        url = super().validate(value, field, config)  # basic url validation
+        has_image_extension = any(url.endswith(ext) for ext in IMAGE_FILE_FORMATS)
+        if not has_image_extension:
+            raise ValueError(
+                f'Image URL must have one of the following extensions:'
+                f'{IMAGE_FILE_FORMATS}'
+            )
+        return cls(str(url), scheme=None)
 
     def load(
         self,
