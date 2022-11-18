@@ -1,6 +1,6 @@
 import io
 import struct
-from typing import TYPE_CHECKING, Any, Optional, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
 
@@ -49,7 +49,7 @@ class ImageUrl(AnyUrl):
         self,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        channel_axis: int = -1,
+        axis_layout: Tuple[str, str, str] = ('H', 'W', 'C'),
         timeout: Optional[float] = None,
     ) -> np.ndarray:
         """
@@ -57,19 +57,16 @@ class ImageUrl(AnyUrl):
 
         :param width: width of the image tensor.
         :param height: height of the image tensor.
-        :param channel_axis: axis where to put the image color channel;
-            ``-1`` indicates the color channel info at the last axis
+        :param axis_layout: ordering of the different image axes.
+            'H' = height, 'W' = width, 'C' = color channel
         :param timeout: timeout (sec) for urlopen network request.
             Only relevant if URL is not local
         :return: np.ndarray representing the image as RGB values
         """
-        # TODO(johannes) the axis argument is confusing, because it if it is not -1,
-        #  it is unclear where width and height end up
-        # instead we should allow the user to pass an axis for width, height, and axis
 
         buffer = _uri_to_blob(self, timeout=timeout)
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
-        return _move_channel_axis(tensor, target_channel_axis=channel_axis)
+        return _move_channel_axis(tensor, axis_layout=axis_layout)
 
     def load_to_bytes(
         self,
@@ -88,10 +85,7 @@ class ImageUrl(AnyUrl):
             Only relevant if URL is not local
         :return: The image as bytes (buffer).
         """
-        channel_axis = -1
-        image_tensor = self.load(
-            width=width, height=height, channel_axis=channel_axis, timeout=timeout
-        )
+        image_tensor = self.load(width=width, height=height, timeout=timeout)
         return _image_tensor_to_bytes(image_tensor, image_format=image_format)
 
 
@@ -180,12 +174,12 @@ def _pillow_image_to_buffer(image: 'PIL.Image.Image', image_format: str) -> byte
 
 
 def _move_channel_axis(
-    tensor: np.ndarray, original_channel_axis: int = -1, target_channel_axis: int = -1
+    tensor: np.ndarray, axis_layout: Tuple[str, str, str] = ('H', 'W', 'C')
 ) -> np.ndarray:
     """Moves channel axis around."""
-    if original_channel_axis != target_channel_axis:
-        tensor = np.moveaxis(tensor, original_channel_axis, target_channel_axis)
-    return tensor
+    channel_to_offset = {'H': 0, 'W': 1, 'C': 2}
+    permutation = tuple(channel_to_offset[axis] for axis in axis_layout)
+    return np.transpose(tensor, permutation)
 
 
 def _to_image_tensor(

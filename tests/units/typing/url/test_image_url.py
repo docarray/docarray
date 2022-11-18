@@ -82,15 +82,26 @@ def test_load_width_height(image_format, path_to_img, width, height):
         ('remote-jpg', REMOTE_JPG),
     ],
 )
-@pytest.mark.parametrize('channel_axis', [0, 1, 2, -1])
-def test_load_channel_axis(image_format, path_to_img, channel_axis):
+@pytest.mark.parametrize(
+    'axis_layout',
+    [
+        ('H', 'W', 'C'),
+        ('H', 'C', 'W'),
+        ('C', 'H', 'W'),
+        ('C', 'W', 'H'),
+        ('W', 'C', 'H'),
+        ('W', 'H', 'C'),
+    ],
+)
+def test_load_channel_axis(image_format, path_to_img, axis_layout):
+    sizes = {'H': 100, 'W': 200, 'C': 3}
     url = parse_obj_as(ImageUrl, path_to_img)
-    tensor = url.load(channel_axis=channel_axis)
+    tensor = url.load(axis_layout=axis_layout, height=sizes['H'], width=sizes['W'])
     assert isinstance(tensor, np.ndarray)
 
     shape = tensor.shape
-    assigned_channel_axis = 2 if channel_axis == -1 else channel_axis
-    assert shape[assigned_channel_axis] == 3
+    for axis, axis_name in enumerate(axis_layout):
+        assert shape[axis] == sizes[axis_name]
 
 
 def test_load_timeout():
