@@ -19,6 +19,11 @@ IMAGE_FILE_FORMATS = ('png', 'jpeg', 'jpg')
 
 
 class ImageUrl(AnyUrl):
+    """ "
+    URL to a .png, .jpeg, or .jpg file.
+    Cane be remote (web) URL, or a local file path.
+    """
+
     def _to_node_protobuf(self) -> NodeProto:
         """Convert Document into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to
@@ -55,6 +60,35 @@ class ImageUrl(AnyUrl):
         """
         Load the data from the url into a numpy.ndarray image tensor
 
+        EXAMPLE USAGE
+
+        .. code-block:: python
+
+            from docarray import Document
+            from docarray.typing import ImageUrl
+            import numpy as np
+
+
+            class MyDoc(Document):
+                img_url: ImageUrl
+
+
+            doc = MyDoc(
+                img_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
+                "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+            )
+
+            img_tensor = doc.img_url.load()
+            assert isinstance(img_tensor, np.ndarray)
+
+            img_tensor = doc.img_url.load(height=224, width=224)
+            assert img_tensor.shape == (224, 224, 3)
+
+            layout = ("C", "W", "H")
+            img_tensor = doc.img_url.load(height=100, width=200, axis_layout=layout)
+            assert img_tensor.shape == (3, 200, 100)
+
+
         :param width: width of the image tensor.
         :param height: height of the image tensor.
         :param axis_layout: ordering of the different image axes.
@@ -76,6 +110,27 @@ class ImageUrl(AnyUrl):
         timeout: Optional[float] = None,
     ) -> bytes:
         """Load image at URL to bytes (buffer).
+
+        EXAMPLE USAGE
+
+        .. code-block:: python
+
+            from docarray import Document
+            from docarray.typing import ImageUrl
+            import numpy as np
+
+
+            class MyDoc(Document):
+                img_url: ImageUrl
+
+
+            doc = MyDoc(
+                img_url="https://upload.wikimedia.org/wikipedia/commons/8/80/"
+                "Dag_Sebastian_Ahlander_at_G%C3%B6teborg_Book_Fair_2012b.jpg"
+            )
+
+            img_tensor = doc.img_url.load_to_bytes(image_format='jpg')
+            assert isinstance(img_tensor, bytes)
 
         :param image_format: File format of the file located the the url.
             Supported formats are `png`, `jpg`, and `jpeg`.
