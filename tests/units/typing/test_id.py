@@ -1,6 +1,8 @@
+import json
 from uuid import UUID
 
 import pytest
+from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
 from docarray.typing import ID
@@ -14,3 +16,12 @@ def test_id_validation(id):
     parsed_id = parse_obj_as(ID, id)
 
     assert parsed_id == str(id)
+
+
+def test_json_schema():
+    schema_json_of(ID)
+
+
+def test_dump_json(json_encoder):
+    id = parse_obj_as(ID, 1234)
+    json.dumps(id, cls=json_encoder)

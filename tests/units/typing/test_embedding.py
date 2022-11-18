@@ -1,11 +1,22 @@
+import json
+
 import numpy as np
-from pydantic.tools import parse_obj_as
+from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.typing import Embedding
 
 
 def test_proto_embedding():
 
-    uri = parse_obj_as(Embedding, np.zeros((3, 224, 224)))
+    embedding = parse_obj_as(Embedding, np.zeros((3, 224, 224)))
 
-    uri._to_node_protobuf()
+    embedding._to_node_protobuf()
+
+
+def test_json_schema():
+    schema_json_of(Embedding)
+
+
+def test_dump_json(json_encoder):
+    tensor = parse_obj_as(Embedding, np.zeros((3, 224, 224)))
+    json.dumps(tensor, cls=json_encoder)

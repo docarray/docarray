@@ -56,6 +56,13 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         # this is needed to dump to json
         field_schema.update(type='string', format='uuidhello')
 
+    def _to_json_compatible(self):
+        """
+        Convert tensor into a json compatible object
+        :return: a list representation of the tensor
+        """
+        return self.tolist()
+
     @classmethod
     def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:
         """Create a TorchTensor from a native torch.Tensor

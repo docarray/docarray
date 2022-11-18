@@ -45,8 +45,15 @@ class Tensor(np.ndarray, BaseNode):
         # this is needed to dump to json
         field_schema.update(type='string', format='uuidhello')
 
+    def _to_json_compatible(self):
+        """
+        Convert tensor into a json compatible object
+        :return: a list representation of the tensor
+        """
+        return self.tolist()
+
     def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
-        """Convert Document into a NodeProto protobuf message. This function should
+        """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
         :param field: field in which to store the content in the node proto
