@@ -53,9 +53,11 @@ message NodeProto {
 
     string image_url = 8;
 
-    string id = 9;
+    string text_url = 9;
 
-    NdArrayProto torch_tensor = 10;
+    string id = 10;
+
+    NdArrayProto torch_tensor = 11;
 
   }
 
