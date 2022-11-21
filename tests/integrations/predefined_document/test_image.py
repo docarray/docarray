@@ -10,8 +10,8 @@ REMOTE_JPG = (
 
 def test_image():
 
-    image = Image(uri=REMOTE_JPG)
+    image = Image(url=REMOTE_JPG)
 
-    image.tensor = image.uri.load()
+    image.tensor = image.url.load()
 
     assert isinstance(image.tensor, np.ndarray)
