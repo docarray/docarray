@@ -11,6 +11,7 @@ pydantic = "^1.10.2"
 numpy = "^1.23.4"
 protobuf = { version = "^4.21.9", optional = true }
 torch = { version = "^1.0.0", optional = true }
+orjson = "^3.8.2"
 
 [tool.poetry.extras]
 common = ["protobuf"]

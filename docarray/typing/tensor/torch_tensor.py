@@ -63,6 +63,35 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         """
         return self.tolist()
 
+    def unwrap(self) -> torch.Tensor:
+        """
+        Return the original ndarray without any memory copy
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray.typing import TorchTensor
+            import torch
+
+            t = Tensor.validate(torch.zeros(3, 224, 224), None, None)
+            # here t is a docarray Tensor
+            t = t.unwrap()
+            # here t is a pure torch Tensor
+
+
+        :return: a torch Tensor
+        """
+        ## might need to  check device later
+        value = torch.tensor(self)
+        value.__class__ = torch.Tensor
+        return value
+
+    def _to_json_compatible(self) -> np.ndarray:
+        """
+        Convert torch Tensor into a json compatible object
+        :return: a list representation of the torch tensor
+        """
+        return self.numpy()  ## might need to  check device later
+
     @classmethod
     def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:
         """Create a TorchTensor from a native torch.Tensor

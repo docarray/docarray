@@ -20,3 +20,13 @@ def test_json_schema():
 def test_dump_json(json_encoder):
     tensor = parse_obj_as(Tensor, np.zeros((3, 224, 224)))
     json.dumps(tensor, cls=json_encoder)
+
+
+def test_unwrap():
+    tensor = parse_obj_as(Tensor, np.zeros((3, 224, 224)))
+    ndarray = tensor.unwrap()
+
+    assert not isinstance(ndarray, Tensor)
+    assert isinstance(ndarray, np.ndarray)
+    assert isinstance(tensor, Tensor)
+    assert (ndarray == np.zeros((3, 224, 224))).all()

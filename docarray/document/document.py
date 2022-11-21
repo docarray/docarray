@@ -1,7 +1,7 @@
 import os
-from json import JSONEncoder
 from typing import Type
 
+import orjson
 from pydantic import BaseModel, Field
 
 from docarray.document.abstract_document import AbstractDocument
@@ -11,17 +11,23 @@ from docarray.typing import ID
 from .mixins import ProtoMixin
 
 
-class _DocumentJsonEncoder(JSONEncoder):
+def _default_orjson(obj):
     """
-    This is a custom JSONEncoder that will call the
-    _to_json_compatible method of type. This Encoder will be
-    used when calling doc.json()
+    default option for orjson dumps. It will call _to_json_compatible
+    from docarray typing object that expose such method.
+    :param obj:
+    :return: return a json compatible object
     """
 
-    def default(self, obj):
-        if hasattr(obj, '_to_json_compatible'):
-            return obj._to_json_compatible()
-        return JSONEncoder.default(self, obj)
+    if getattr(obj, '_to_json_compatible'):
+        return obj._to_json_compatible()
+
+
+def _orjson_dumps(v, *, default):
+    # orjson.dumps returns bytes, to match standard json.dumps we need to decode
+    return orjson.dumps(
+        v, default=_default_orjson, option=orjson.OPT_SERIALIZE_NUMPY
+    ).decode()
 
 
 class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
@@ -32,7 +38,8 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     id: ID = Field(default_factory=lambda: ID.validate(os.urandom(16).hex()))
 
     class Config:
-        json_loads = _DocumentJsonEncoder
+        json_loads = orjson.loads
+        json_dumps = _orjson_dumps
 
     @classmethod
     def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:

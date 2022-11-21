@@ -22,7 +22,10 @@ class Tensor(np.ndarray, BaseNode):
 
     @classmethod
     def validate(
-        cls: Type[T], value: Union[T, Any], field: 'ModelField', config: 'BaseConfig'
+        cls: Type[T],
+        value: Union[T, np.ndarray, Any],
+        field: 'ModelField',
+        config: 'BaseConfig',
     ) -> T:
         if isinstance(value, np.ndarray):
             return cls.from_ndarray(value)
@@ -45,12 +48,31 @@ class Tensor(np.ndarray, BaseNode):
         # this is needed to dump to json
         field_schema.update(type='string', format='uuidhello')
 
-    def _to_json_compatible(self):
+    def _to_json_compatible(self) -> np.ndarray:
         """
         Convert tensor into a json compatible object
         :return: a list representation of the tensor
         """
-        return self.tolist()
+        return self.unwrap()
+
+    def unwrap(self) -> np.ndarray:
+        """
+        Return the original ndarray without any memory copy
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray.typing import Tensor
+            import numpy as np
+
+            t = Tensor.validate(np.zeros((3, 224, 224)), None, None)
+            # here t is a docarray Tensor
+            t = t.unwrap()
+            # here t is a pure np.ndarray
+
+
+        :return: a numpy ndarray
+        """
+        return self.view(np.ndarray)
 
     def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
         """Convert itself into a NodeProto protobuf message. This function should
