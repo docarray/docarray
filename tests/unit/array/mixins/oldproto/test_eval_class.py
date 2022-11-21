@@ -193,6 +193,34 @@ def test_eval_mixin_one_of_n_labeled(metric_fn, metric_score, label_tag):
     assert abs(r - metric_score) < 0.001
 
 
+@pytest.mark.parametrize('label_tag', ['label', 'custom_tag'])
+@pytest.mark.parametrize(
+    'metric_fn, metric_score',
+    [
+        ('recall_at_k', 1.0),
+        ('f1_score_at_k', 0.5),
+    ],
+)
+def test_max_rel_per_label(metric_fn, metric_score, label_tag):
+    da = DocumentArray([Document(text=str(i), tags={label_tag: i}) for i in range(3)])
+    max_rel_per_label = {i: 1 for i in range(3)}
+    for d in da:
+        d.matches = da
+    r = da.evaluate(
+        [metric_fn], label_tag=label_tag, max_rel_per_label=max_rel_per_label
+    )[metric_fn]
+    assert abs(r - metric_score) < 0.001
+
+
+def test_missing_max_rel_should_raise():
+    da = DocumentArray([Document(text=str(i), tags={'label': i}) for i in range(3)])
+    max_rel_per_label = {i: 1 for i in range(2)}
+    for d in da:
+        d.matches = da
+    with pytest.raises(ValueError):
+        da.evaluate(['recall_at_k'], max_rel_per_label=max_rel_per_label)
+
+
 @pytest.mark.parametrize(
     'storage, config',
     [
@@ -528,7 +556,11 @@ def test_embed_and_evaluate_two_das(storage, config, sample_size, start_storage)
         (False, {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 1.0}, 'label'),
         (
             True,
-            {'precision_at_k': 1.0 / 3, 'reciprocal_rank': 11.0 / 18.0},
+            {
+                'precision_at_k': 1.0 / 3,
+                'reciprocal_rank': 11.0 / 18.0,
+                'recall_at_k': 1.0,
+            },
             'custom_tag',
         ),
     ],
