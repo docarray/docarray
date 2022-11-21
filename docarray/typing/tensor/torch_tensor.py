@@ -82,7 +82,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         return NodeProto(**{field: nd_proto})
 
     @classmethod
-    def _read_from_proto(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
+    def from_protobuf(cls: Type[T], pb_msg: 'NdArrayProto') -> 'T':
         """
         read ndarray from a proto msg
         :param pb_msg:

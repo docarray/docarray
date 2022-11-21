@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Optional, Type, TypeVar, Union
+from typing import Optional, Type, TypeVar, Union
 from uuid import UUID
+
+from pydantic import BaseConfig, parse_obj_as
+from pydantic.fields import ModelField
 
 from docarray.document.base_node import BaseNode
 from docarray.proto import NodeProto
-
-if TYPE_CHECKING:
-    from pydantic import BaseConfig
-    from pydantic.fields import ModelField
-
 
 T = TypeVar('T', bound='ID')
 
@@ -43,3 +41,12 @@ class ID(str, BaseNode):
         :return: the nested item protobuf message
         """
         return NodeProto(id=self)
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+        """
+        read ndarray from a proto msg
+        :param pb_msg:
+        :return: a string
+        """
+        return parse_obj_as(cls, pb_msg)
