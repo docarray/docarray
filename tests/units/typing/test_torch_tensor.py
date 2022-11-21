@@ -1,6 +1,7 @@
 import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import TorchTensor
 
 
@@ -15,9 +16,9 @@ def test_json_schema():
     schema_json_of(TorchTensor)
 
 
-# def test_dump_json(json_encoder):
-#     tensor = parse_obj_as(Tensor, torch.zeros(3, 224, 224))
-#     json.dumps(tensor, cls=json_encoder)
+def test_dump_json():
+    tensor = parse_obj_as(TorchTensor, torch.zeros(3, 224, 224))
+    orjson_dumps(tensor)
 
 
 def test_unwrap():

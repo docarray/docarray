@@ -1,8 +1,7 @@
-import json
-
 import numpy as np
 from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import ImageUrl
 
 
@@ -25,6 +24,6 @@ def test_json_schema():
     schema_json_of(ImageUrl)
 
 
-def test_dump_json(json_encoder):
+def test_dump_json():
     url = parse_obj_as(ImageUrl, 'http://jina.ai/img.png')
-    json.dumps(url, cls=json_encoder)
+    orjson_dumps(url)

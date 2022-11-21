@@ -1,8 +1,7 @@
-import json
-
 import numpy as np
 from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import Tensor
 
 
@@ -17,9 +16,9 @@ def test_json_schema():
     schema_json_of(Tensor)
 
 
-def test_dump_json(json_encoder):
+def test_dump_json():
     tensor = parse_obj_as(Tensor, np.zeros((3, 224, 224)))
-    json.dumps(tensor, cls=json_encoder)
+    orjson_dumps(tensor)
 
 
 def test_unwrap():

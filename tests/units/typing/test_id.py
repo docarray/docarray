@@ -1,10 +1,10 @@
-import json
 from uuid import UUID
 
 import pytest
 from pydantic import schema_json_of
 from pydantic.tools import parse_obj_as
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import ID
 
 
@@ -22,6 +22,6 @@ def test_json_schema():
     schema_json_of(ID)
 
 
-def test_dump_json(json_encoder):
+def test_dump_json():
     id = parse_obj_as(ID, 1234)
-    json.dumps(id, cls=json_encoder)
+    orjson_dumps(id)
