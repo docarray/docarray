@@ -200,6 +200,12 @@ class BaseGetSetDelMixin(ABC):
             _check_valid_values_nested_set(self[set_index], docs)
             if set_index in subindices:
                 subindex_da = subindices[set_index]
+
+                if getattr(subindex_da, '_config', None):
+                    if subindex_da._config.root_id:
+                        for i in range(len(docs)):
+                            docs[i].tags['root_id'] = subindex_da[i].tags['root_id']
+
                 subindex_da.clear()
                 subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
