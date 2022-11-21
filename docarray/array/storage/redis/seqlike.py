@@ -1,3 +1,4 @@
+import warnings
 from typing import Iterable, Union
 
 from docarray import Document, DocumentArray
@@ -59,6 +60,17 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def _extend(self, docs: Iterable['Document']):
         da = DocumentArray(docs)
+
+        if (
+            self._config.root_id
+            and self._config.index_name.find('_subindex_') != -1
+            and not all([doc.tags.get('root_id', None) for doc in da])
+        ):
+            warnings.warn(
+                "Not all documents have root_id set. This may cause unexpected behavior.",
+                UserWarning,
+            )
+
         for batch_of_docs in da.batch(self._config.batch_size):
             self._upload_batch(batch_of_docs)
             if self._list_like:
