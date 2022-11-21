@@ -149,6 +149,11 @@ class FindMixin:
             )
 
             if return_root:
+                if not all(results[:, 'tags__root_id']):
+                    raise ValueError(
+                        f'Not all Documents in the subindex {on} have the "tags__root_id" attribute set.'
+                    )
+
                 da = self[results[:, 'tags__root_id']]
                 da[:, 'scores'] = results[:, 'scores']
                 return da
