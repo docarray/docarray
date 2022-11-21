@@ -148,14 +148,10 @@ class FindMixin:
                 on=None,
             )
 
-            # print(results[:, 'id'])
-
             if return_root:
                 da = self[results[:, 'tags__root_id']]
                 da[:, 'scores'] = results[:, 'scores']
                 return da
-
-            # print(da[:,'id'])
 
             return results
 
