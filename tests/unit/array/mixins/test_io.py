@@ -6,9 +6,11 @@ import pytest
 
 from docarray import Document, DocumentArray
 from docarray.array.memory import DocumentArrayInMemory
+from docarray.array.opensearch import DocumentArrayOpenSearch
 from docarray.array.qdrant import DocumentArrayQdrant
 from docarray.array.sqlite import DocumentArraySqlite
 from docarray.array.annlite import DocumentArrayAnnlite, AnnliteConfig
+from docarray.array.storage.opensearch import OpenSearchConfig
 from docarray.array.storage.qdrant import QdrantConfig
 from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
@@ -36,6 +38,7 @@ def docs():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=10)),
     ],
@@ -80,6 +83,7 @@ def test_document_save_load(
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=10)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=10)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=10)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=10)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=10)),
     ],
@@ -101,6 +105,7 @@ def test_da_csv_write(docs, flatten_tags, tmp_path, da_cls, config, start_storag
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=256)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=256)),
     ],
@@ -120,6 +125,7 @@ def test_from_ndarray(da_cls, config, start_storage):
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=256)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
         # (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=256)),  # fails on CI but nowhere else
     ],
@@ -162,6 +168,7 @@ def test_from_files_exclude():
         (DocumentArrayWeaviate, lambda: WeaviateConfig(n_dim=256)),
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=256)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=256)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=256)),
     ],
@@ -183,6 +190,7 @@ def test_from_ndjson(da_cls, config, start_storage):
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=3)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=3)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=3)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=3)),
     ],
 )
 def test_from_to_pd_dataframe(da_cls, config, start_storage):
@@ -213,6 +221,7 @@ def test_from_to_pd_dataframe(da_cls, config, start_storage):
         (DocumentArrayElastic, ElasticConfig(n_dim=3)),
         (DocumentArrayRedis, RedisConfig(n_dim=3)),
         (DocumentArrayMilvus, MilvusConfig(n_dim=3)),
+        (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=3)),
     ],
 )
 def test_from_to_bytes(da_cls, config, start_storage):
@@ -257,6 +266,7 @@ def test_from_to_bytes(da_cls, config, start_storage):
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=256)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=256)),
         (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=256)),
+        (DocumentArrayOpenSearch, lambda: OpenSearchConfig(n_dim=256)),
     ],
 )
 def test_push_pull_io(da_cls, config, show_progress, start_storage):
@@ -296,6 +306,7 @@ def test_push_pull_io(da_cls, config, show_progress, start_storage):
         (DocumentArrayInMemory, None),
         (DocumentArraySqlite, None),
         (DocumentArrayWeaviate, WeaviateConfig(n_dim=3)),
+        # (DocumentArrayOpenSearch, OpenSearchConfig(n_dim=10)),
         # (DocumentArrayAnnlite, PqliteConfig(n_dim=3)), # TODO: enable this
         # (DocumentArrayQdrant, QdrantConfig(n_dim=3)),
         # (DocumentArrayElastic, ElasticConfig(n_dim=3)), # Elastic needs config
