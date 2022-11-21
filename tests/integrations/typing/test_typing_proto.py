@@ -19,7 +19,7 @@ def test_proto_all_types():
         torch_tensor=torch.zeros((3, 224, 224)),
         embedding=np.zeros((100, 1)),
         any_url='http://jina.ai',
-        image_url='http://jina.ai',
+        image_url='http://jina.ai/bla.jpg',
     )
 
     new_doc = AnyDocument.from_protobuf(doc.to_protobuf())
