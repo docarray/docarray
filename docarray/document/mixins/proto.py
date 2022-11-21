@@ -3,7 +3,15 @@ from typing import Any, Dict, Type, TypeVar
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
 from docarray.proto import DocumentProto, NodeProto
-from docarray.typing import ID, AnyUrl, Embedding, ImageUrl, Tensor, TorchTensor
+from docarray.typing import (
+    ID,
+    AnyUrl,
+    Embedding,
+    ImageUrl,
+    Tensor,
+    TextUrl,
+    TorchTensor,
+)
 
 T = TypeVar('T', bound='ProtoMixin')
 
@@ -27,6 +35,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
                 torch_tensor=TorchTensor,
                 embedding=Embedding,
                 any_url=AnyUrl,
+                text_url=TextUrl,
                 image_url=ImageUrl,
                 id=ID,
             )
