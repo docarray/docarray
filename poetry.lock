@@ -951,7 +951,7 @@ name = "pillow"
 version = "9.3.0"
 description = "Python Imaging Library (Fork)"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.extras]
@@ -1386,7 +1386,7 @@ name = "types-pillow"
 version = "9.3.0.1"
 description = "Typing stubs for Pillow"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [[package]]
@@ -1489,12 +1489,13 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 
 [extras]
 common = ["protobuf"]
+image = ["pillow", "types-pillow"]
 torch = ["torch"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0201f4bdbde6e9967c2e3c780af1848d148b502f5d8ae098ffead54c2df3d6bc"
+content-hash = "7fabdc150fb15e67a5eff53967ccf3846e464d78544b12784953635d2866a64a"
 
 [metadata.files]
 anyio = [
