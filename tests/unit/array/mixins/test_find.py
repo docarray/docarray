@@ -951,41 +951,43 @@ def test_find_subindex_multimodal(storage, config):
         assert d.id.endswith('_2')
 
 
-def test_find_return_root(start_storage):
-    with DocumentArray(
-        storage='redis',
-        config={
-            'n_dim': 128,
-            'index_name': 'idx',
-        },
-        subindex_configs={'@c': {'n_dim': 3}, '@cc': {'n_dim': 3, 'root_id': True}},
-    ) as da:
+@pytest.mark.parametrize(
+    'storage, config, subindex_configs',
+    [
+        (
+            'weaviate',
+            {
+                'n_dim': 3,
+            },
+            {'@c': {'n_dim': 3}},
+        ),
+        ('annlite', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+    ],
+)
+def test_find_return_root(storage, config, subindex_configs, start_storage):
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
         da.extend(
             [
                 Document(
                     id=f'{i}',
                     chunks=[
-                        Document(
-                            id=f'sub{i}_0',
-                            chunks=[
-                                Document(
-                                    id=f'sub2_{i}_0', embedding=np.random.random(3)
-                                )
-                            ],
-                        ),
-                        Document(
-                            id=f'sub{i}_1',
-                            chunks=[
-                                Document(
-                                    id=f'sub2_{i}_1', embedding=np.random.random(3)
-                                )
-                            ],
-                        ),
+                        Document(id=f'sub{i}_0', embedding=np.random.random(3)),
+                        Document(id=f'sub{i}_1', embedding=np.random.random(3)),
                     ],
                 )
-                for i in range(10)
+                for i in range(5)
             ]
         )
-        res = da.find(np.random.random(3), on='@cc', return_root=True, limit=5)
-        assert len(res) == 5
-        assert all(d.id in [f'{i}' for i in range(10)] for d in res)
+
+    res = da.find(np.random.random(3), on='@c', return_root=True, limit=5)
+    assert len(res) == 5
+    assert all(d.id in [f'{i}' for i in range(10)] for d in res)
