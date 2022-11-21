@@ -11,16 +11,16 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
 
+                value = DocumentArray(value)
+
                 if getattr(da, '_config', None) and da._config.root_id:
-                    for i in range(len(value)):
-                        for doc in DocumentArray(value[i])[selector]:
+                    for v in value:
+                        for doc in DocumentArray(v)[selector]:
                             doc.tags['root_id'] = (
-                                doc.tags['root_id']
-                                if 'root_id' in doc.tags
-                                else value[i].id
+                                doc.tags['root_id'] if 'root_id' in doc.tags else v.id
                             )
 
-                docs_selector = DocumentArray(value)[selector]
+                docs_selector = value[selector]
                 if len(docs_selector) > 0:
                     da.extend(docs_selector)
 
