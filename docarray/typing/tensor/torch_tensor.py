@@ -56,12 +56,12 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         # this is needed to dump to json
         field_schema.update(type='string', format='uuidhello')
 
-    def _to_json_compatible(self):
+    def _to_json_compatible(self) -> np.ndarray:
         """
-        Convert tensor into a json compatible object
-        :return: a list representation of the tensor
+        Convert torch Tensor into a json compatible object
+        :return: a list representation of the torch tensor
         """
-        return self.tolist()
+        return self.numpy()  ## might need to  check device later
 
     def unwrap(self) -> torch.Tensor:
         """
@@ -84,13 +84,6 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         value = torch.tensor(self)
         value.__class__ = torch.Tensor
         return value
-
-    def _to_json_compatible(self) -> np.ndarray:
-        """
-        Convert torch Tensor into a json compatible object
-        :return: a list representation of the torch tensor
-        """
-        return self.numpy()  ## might need to  check device later
 
     @classmethod
     def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:
