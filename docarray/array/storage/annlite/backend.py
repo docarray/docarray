@@ -31,7 +31,7 @@ class AnnliteConfig:
     max_connection: Optional[int] = None
     n_components: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
-    root_id: bool = False
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
