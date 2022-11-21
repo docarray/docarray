@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type, TypeVar
 
 from pydantic import AnyUrl as BaseAnyUrl
-from pydantic import errors
+from pydantic import errors, parse_obj_as
 
 from docarray.document.base_node import BaseNode
 from docarray.proto import NodeProto
 
 if TYPE_CHECKING:
     from pydantic.networks import Parts
+
+T = TypeVar('T', bound='AnyUrl')
 
 
 class AnyUrl(BaseAnyUrl, BaseNode):
@@ -46,3 +48,12 @@ class AnyUrl(BaseAnyUrl, BaseNode):
             raise errors.UrlUserInfoError()
 
         return parts
+
+    @classmethod
+    def from_protobuf(cls: Type[T], pb_msg: 'str') -> T:
+        """
+        read url from a proto msg
+        :param pb_msg:
+        :return: url
+        """
+        return parse_obj_as(cls, pb_msg)

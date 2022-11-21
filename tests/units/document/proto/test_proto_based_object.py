@@ -18,7 +18,7 @@ def test_ndarray():
     original_tensor = np.zeros((3, 224, 224))
     Tensor._flush_tensor_to_proto(nd_proto, value=original_tensor)
     nested_item = NodeProto(tensor=nd_proto)
-    tensor = Tensor._read_from_proto(nested_item.tensor)
+    tensor = Tensor.from_protobuf(nested_item.tensor)
 
     assert (tensor == original_tensor).all()
 
