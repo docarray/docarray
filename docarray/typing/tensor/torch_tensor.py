@@ -1,3 +1,4 @@
+from copy import copy
 from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
 
 import numpy as np
@@ -85,8 +86,8 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
         :return: a torch Tensor
         """
-        ## might need to  check device later
-        value = torch.tensor(self)
+        value = copy(self)  ## as intuitivly as it sounds this
+        # does not do any memory copy just shallow reference copy
         value.__class__ = torch.Tensor
         return value
 

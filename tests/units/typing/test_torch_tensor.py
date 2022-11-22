@@ -29,4 +29,6 @@ def test_unwrap():
     assert isinstance(tensor, TorchTensor)
     assert isinstance(ndarray, torch.Tensor)
 
+    assert tensor.data_ptr() == ndarray.data_ptr()
+
     assert (ndarray == torch.zeros(3, 224, 224)).all()
