@@ -33,8 +33,8 @@ class Tensor(np.ndarray, BaseNode):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
-                arr: np.ndarray = np.asarray(value)
-                return cls.from_ndarray(arr)
+                arr_from_list: np.ndarray = np.asarray(value)
+                return cls.from_ndarray(arr_from_list)
             except Exception:
                 pass  # handled below
         else:
