@@ -201,17 +201,6 @@ class BaseGetSetDelMixin(ABC):
             if set_index in subindices:
                 subindex_da = subindices[set_index]
 
-                if (
-                    getattr(subindex_da, '_config', None)
-                    and subindex_da._config.root_id
-                ):
-                    for doc, subindex_doc in zip(docs, subindex_da):
-                        doc.tags['root_id'] = (
-                            doc.tags['root_id']
-                            if 'root_id' in doc.tags
-                            else subindex_doc.tags['root_id']
-                        )
-
                 subindex_da.clear()
                 subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
