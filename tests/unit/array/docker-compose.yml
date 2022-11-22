@@ -31,6 +31,7 @@ services:
     image: redislabs/redisearch:2.6.0
     ports:
       - "6379:6379"
+
       
 networks:
   elastic:

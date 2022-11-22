@@ -7,6 +7,7 @@ from docarray.array.annlite import AnnliteConfig, DocumentArrayAnnlite
 from docarray.array.qdrant import QdrantConfig
 from docarray.array.elastic import ElasticConfig
 from docarray.array.redis import RedisConfig
+from docarray.array.milvus import MilvusConfig
 
 
 @pytest.fixture
@@ -30,6 +31,7 @@ def indices():
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_getter_int_str(docs, storage, config, start_storage):
@@ -64,6 +66,7 @@ def test_getter_int_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123)),
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_setter_int_str(docs, storage, config, start_storage):
@@ -95,6 +98,7 @@ def test_setter_int_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_del_int_str(docs, storage, config, start_storage, indices):
@@ -131,6 +135,7 @@ def test_del_int_str(docs, storage, config, start_storage, indices):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_slice(docs, storage, config, start_storage):
@@ -171,6 +176,7 @@ def test_slice(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_bool_index(docs, storage, config, start_storage):
@@ -219,6 +225,7 @@ def test_sequence_bool_index(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_int(docs, nparray, storage, config, start_storage):
@@ -257,6 +264,7 @@ def test_sequence_int(docs, nparray, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_sequence_str(docs, storage, config, start_storage):
@@ -293,6 +301,7 @@ def test_sequence_str(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_docarray_list_tuple(docs, storage, config, start_storage):
@@ -315,6 +324,7 @@ def test_docarray_list_tuple(docs, storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_path_syntax_indexing(storage, config, start_storage):
@@ -330,19 +340,19 @@ def test_path_syntax_indexing(storage, config, start_storage):
             da = DocumentArray(da, storage=storage, config=config)
         else:
             da = DocumentArray(da, storage=storage)
-
-    assert len(da['@c']) == 3 * 5
-    assert len(da['@c:1']) == 3
-    assert len(da['@c-1:']) == 3
-    assert len(da['@c1']) == 3
-    assert len(da['@c-2:']) == 3 * 2
-    assert len(da['@c1:3']) == 3 * 2
-    assert len(da['@c1:3c']) == (3 * 2) * 3
-    assert len(da['@c1:3,c1:3c']) == (3 * 2) + (3 * 2) * 3
-    assert len(da['@c 1:3 , c 1:3 c']) == (3 * 2) + (3 * 2) * 3
-    assert len(da['@cc']) == 3 * 5 * 3
-    assert len(da['@cc,m']) == 3 * 5 * 3 + 3 * 7
-    assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
+    with da:
+        assert len(da['@c']) == 3 * 5
+        assert len(da['@c:1']) == 3
+        assert len(da['@c-1:']) == 3
+        assert len(da['@c1']) == 3
+        assert len(da['@c-2:']) == 3 * 2
+        assert len(da['@c1:3']) == 3 * 2
+        assert len(da['@c1:3c']) == (3 * 2) * 3
+        assert len(da['@c1:3,c1:3c']) == (3 * 2) + (3 * 2) * 3
+        assert len(da['@c 1:3 , c 1:3 c']) == (3 * 2) + (3 * 2) * 3
+        assert len(da['@cc']) == 3 * 5 * 3
+        assert len(da['@cc,m']) == 3 * 5 * 3 + 3 * 7
+        assert len(da['@r:1cc,m']) == 1 * 5 * 3 + 3 * 7
 
 
 @pytest.mark.parametrize(
@@ -356,6 +366,7 @@ def test_path_syntax_indexing(storage, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 @pytest.mark.parametrize('use_subindex', [False, True])
@@ -382,44 +393,48 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
             da, storage=storage, subindex_configs={'@c': None} if use_subindex else None
         )
 
-    assert da['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c', 'text'] == repeat('a', 3 * 5)
-    if use_subindex:
-        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c:1', 'text'] == repeat('a', 3)
-    assert da['@c-1:', 'text'] == repeat('a', 3)
-    assert da['@c1', 'text'] == repeat('a', 3)
-    assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3c', 'text'] == repeat('a', (3 * 2) * 3)
-    assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
-    assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
-    assert da['@cc', 'text'] == repeat('a', 3 * 5 * 3)
-    assert da['@cc,m', 'text'] == repeat('a', 3 * 5 * 3 + 3 * 7)
-    assert da['@r:1cc,m', 'text'] == repeat('a', 1 * 5 * 3 + 3 * 7)
-    assert da[0, 'text'] == 'a'
-    assert da[[True for _ in da], 'text'] == repeat('a', 3)
+    with da:
+        assert da['@c'].texts == repeat('a', 3 * 5)
+        assert da['@c', 'text'] == repeat('a', 3 * 5)
+        if use_subindex:
+            assert da._subindices['@c'].texts == repeat('a', 3 * 5)
+        assert da['@c:1', 'text'] == repeat('a', 3)
+        assert da['@c-1:', 'text'] == repeat('a', 3)
+        assert da['@c1', 'text'] == repeat('a', 3)
+        assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
+        assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
+        assert da['@c1:3c', 'text'] == repeat('a', (3 * 2) * 3)
+        assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
+        assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2) + (3 * 2) * 3)
+        assert da['@cc', 'text'] == repeat('a', 3 * 5 * 3)
+        assert da['@cc,m', 'text'] == repeat('a', 3 * 5 * 3 + 3 * 7)
+        assert da['@r:1cc,m', 'text'] == repeat('a', 1 * 5 * 3 + 3 * 7)
+        assert da[0, 'text'] == 'a'
+        assert da[[True for _ in da], 'text'] == repeat('a', 3)
 
     da['@m,cc', 'text'] = repeat('b', 3 + 5 * 3 + 7 * 3 + 3 * 5 * 3)
 
-    assert da['@c', 'text'] == repeat('a', 3 * 5)
-    if use_subindex:
-        assert da._subindices['@c'].texts == repeat('a', 3 * 5)
-    assert da['@c:1', 'text'] == repeat('a', 3)
-    assert da['@c-1:', 'text'] == repeat('a', 3)
-    assert da['@c1', 'text'] == repeat('a', 3)
-    assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
-    assert da['@c1:3c', 'text'] == repeat('b', (3 * 2) * 3)
-    assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2)) + repeat('b', (3 * 2) * 3)
-    assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2)) + repeat(
-        'b', (3 * 2) * 3
-    )
-    assert da['@cc', 'text'] == repeat('b', 3 * 5 * 3)
-    assert da['@cc,m', 'text'] == repeat('b', 3 * 5 * 3 + 3 * 7)
-    assert da['@r:1cc,m', 'text'] == repeat('b', 1 * 5 * 3 + 3 * 7)
-    assert da[0, 'text'] == 'a'
-    assert da[[True for _ in da], 'text'] == repeat('a', 3)
+    with da:
+        assert da['@c', 'text'] == repeat('a', 3 * 5)
+        if use_subindex:
+            assert da._subindices['@c'].texts == repeat('a', 3 * 5)
+        assert da['@c:1', 'text'] == repeat('a', 3)
+        assert da['@c-1:', 'text'] == repeat('a', 3)
+        assert da['@c1', 'text'] == repeat('a', 3)
+        assert da['@c-2:', 'text'] == repeat('a', 3 * 2)
+        assert da['@c1:3', 'text'] == repeat('a', 3 * 2)
+        assert da['@c1:3c', 'text'] == repeat('b', (3 * 2) * 3)
+        assert da['@c1:3,c1:3c', 'text'] == repeat('a', (3 * 2)) + repeat(
+            'b', (3 * 2) * 3
+        )
+        assert da['@c 1:3 , c 1:3 c', 'text'] == repeat('a', (3 * 2)) + repeat(
+            'b', (3 * 2) * 3
+        )
+        assert da['@cc', 'text'] == repeat('b', 3 * 5 * 3)
+        assert da['@cc,m', 'text'] == repeat('b', 3 * 5 * 3 + 3 * 7)
+        assert da['@r:1cc,m', 'text'] == repeat('b', 1 * 5 * 3 + 3 * 7)
+        assert da[0, 'text'] == 'a'
+        assert da[[True for _ in da], 'text'] == repeat('a', 3)
 
     da[1, 'text'] = 'd'
     assert da[1, 'text'] == 'd'
@@ -431,12 +446,13 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     assert da[doc_id].text == 'e'
 
     # setting matches is only possible if the IDs are the same
-    da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
-    assert da['@m', 'text'] == repeat('c', 3 * 7)
+    with da:
+        da['@m'] = [Document(id=f'm{i}', text='c') for i in range(3 * 7)]
+        assert da['@m', 'text'] == repeat('c', 3 * 7)
 
-    # setting by traversal paths with different IDs is not supported
-    with pytest.raises(ValueError):
-        da['@m'] = [Document() for _ in range(3 * 7)]
+        # setting by traversal paths with different IDs is not supported
+        with pytest.raises(ValueError):
+            da['@m'] = [Document() for _ in range(3 * 7)]
 
     da[2, ['text', 'id']] = ['new_text', 'new_id']
     assert da[2].text == 'new_text'
@@ -454,6 +470,7 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
         ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', ElasticConfig(n_dim=123)),
         ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_getset_subindex(storage, config, start_storage):
@@ -462,31 +479,34 @@ def test_getset_subindex(storage, config, start_storage):
         config=config,
         subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
     )
-    assert len(da['@c']) == 15
-    assert len(da._subindices['@c']) == 15
-    # set entire subindex
-    chunks_ids = [c.id for c in da['@c']]
-    new_chunks = [Document(id=cid, text=f'{i}') for i, cid in enumerate(chunks_ids)]
-    da['@c'] = new_chunks
-    new_chunks = DocumentArray(new_chunks)
-    assert da['@c'] == new_chunks
-    assert da._subindices['@c'] == new_chunks
-    collected_chunks = DocumentArray.empty(0)
-    for d in da:
-        collected_chunks.extend(d.chunks)
-    assert collected_chunks == new_chunks
-    # set part of a subindex
-    chunks_ids = [c.id for c in da['@c:3']]
-    new_chunks = [Document(id=cid, text=f'{2*i}') for i, cid in enumerate(chunks_ids)]
-    da['@c:3'] = new_chunks
-    new_chunks = DocumentArray(new_chunks)
-    assert da['@c:3'] == new_chunks
-    for d in new_chunks:
-        assert d in da._subindices['@c']
-    collected_chunks = DocumentArray.empty(0)
-    for d in da:
-        collected_chunks.extend(d.chunks[:3])
-    assert collected_chunks == new_chunks
+    with da:
+        assert len(da['@c']) == 15
+        assert len(da._subindices['@c']) == 15
+        # set entire subindex
+        chunks_ids = [c.id for c in da['@c']]
+        new_chunks = [Document(id=cid, text=f'{i}') for i, cid in enumerate(chunks_ids)]
+        da['@c'] = new_chunks
+        new_chunks = DocumentArray(new_chunks)
+        assert da['@c'] == new_chunks
+        assert da._subindices['@c'] == new_chunks
+        collected_chunks = DocumentArray.empty(0)
+        for d in da:
+            collected_chunks.extend(d.chunks)
+        assert collected_chunks == new_chunks
+        # set part of a subindex
+        chunks_ids = [c.id for c in da['@c:3']]
+        new_chunks = [
+            Document(id=cid, text=f'{2*i}') for i, cid in enumerate(chunks_ids)
+        ]
+        da['@c:3'] = new_chunks
+        new_chunks = DocumentArray(new_chunks)
+        assert da['@c:3'] == new_chunks
+        for d in new_chunks:
+            assert d in da._subindices['@c']
+        collected_chunks = DocumentArray.empty(0)
+        for d in da:
+            collected_chunks.extend(d.chunks[:3])
+        assert collected_chunks == new_chunks
 
 
 @pytest.mark.parametrize('size', [1, 5])
@@ -501,6 +521,7 @@ def test_getset_subindex(storage, config, start_storage):
         ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
+        ('milvus', lambda: MilvusConfig(n_dim=123)),
     ],
 )
 def test_attribute_indexing(storage, config_gen, start_storage, size):
@@ -541,6 +562,7 @@ def test_attribute_indexing(storage, config_gen, start_storage, size):
         ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
         ('redis', lambda: RedisConfig(n_dim=10)),
+        ('milvus', lambda: MilvusConfig(n_dim=10)),
     ],
 )
 def test_tensor_attribute_selector(storage, config_gen, start_storage):
@@ -603,6 +625,7 @@ def test_advance_selector_mixed(storage):
         ('qdrant', lambda: QdrantConfig(n_dim=10, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=10)),
         ('redis', lambda: RedisConfig(n_dim=10)),
+        ('milvus', lambda: MilvusConfig(n_dim=10)),
     ],
 )
 def test_single_boolean_and_padding(storage, config_gen, start_storage):
@@ -637,6 +660,7 @@ def test_single_boolean_and_padding(storage, config_gen, start_storage):
         ('qdrant', lambda: QdrantConfig(n_dim=123, prefer_grpc=True)),
         ('elasticsearch', lambda: ElasticConfig(n_dim=123)),
         ('redis', lambda: RedisConfig(n_dim=123)),
+        ('milvus', lambda: MilvusConfig(n_dim=123)),
     ],
 )
 def test_edge_case_two_strings(storage, config_gen, start_storage):
@@ -710,6 +734,10 @@ def test_edge_case_two_strings(storage, config_gen, start_storage):
     'storage,config',
     [
         ('annlite', AnnliteConfig(n_dim=123)),
+        ('qdrant', QdrantConfig(n_dim=123)),
+        ('elasticsearch', ElasticConfig(n_dim=123)),
+        ('redis', RedisConfig(n_dim=123)),
+        ('milvus', MilvusConfig(n_dim=123)),
     ],
 )
 def test_offset2ids_persistence(storage, config):

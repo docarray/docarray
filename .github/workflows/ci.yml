@@ -187,7 +187,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "codecov_flag=docarray" >> $GITHUB_OUTPUT
-        timeout-minutes: 45
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
@@ -238,7 +238,7 @@ jobs:
           pytest --suppress-no-test-exit-code --cov=docarray --cov-report=xml \
             -v -s -m "not gpu" ${{ matrix.test-path }}
           echo "::set-output name=codecov_flag::docarray"
-        timeout-minutes: 40
+        timeout-minutes: 60
         env:
           JINA_AUTH_TOKEN: "${{ secrets.JINA_AUTH_TOKEN }}"
       - name: Check codecov file
