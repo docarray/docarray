@@ -78,16 +78,20 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         # TODO whether to add warning for DocumentArrayInMemory
         from docarray.array.memory import DocumentArrayInMemory
 
-        if (
-            getattr(self, '_is_subindex', False)
-            and not isinstance(self, DocumentArrayInMemory)
-            and self._config.root_id
-            and not all([doc.tags.get('root_id', None) for doc in values])
-        ):
-            warnings.warn(
-                "root_id is enabled but not all documents have root_id set. This may cause unexpected behavior.",
-                UserWarning,
-            )
+        if getattr(self, '_is_subindex', False):
+            if isinstance(self, DocumentArrayInMemory):
+                if not all([getattr(doc, 'parent_id', None) for doc in values]):
+                    warnings.warn(
+                        "Not all documents have parent_id set. This may cause unexpected behavior.",
+                        UserWarning,
+                    )
+            elif self._config.root_id and not all(
+                [doc.tags.get('root_id', None) for doc in values]
+            ):
+                warnings.warn(
+                    "root_id is enabled but not all documents have root_id set. This may cause unexpected behavior.",
+                    UserWarning,
+                )
 
         self._extend(values, **kwargs)
         self._update_subindices_append_extend(values)

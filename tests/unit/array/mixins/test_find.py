@@ -992,6 +992,7 @@ def test_find_subindex_multimodal(storage, config, start_storage):
 @pytest.mark.parametrize(
     'storage, config, subindex_configs',
     [
+        ('memory', None, {'@c': None}),
         (
             'weaviate',
             {
@@ -1006,7 +1007,7 @@ def test_find_subindex_multimodal(storage, config, start_storage):
         ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
     ],
 )
-def test_find_return_root(storage, config, subindex_configs):
+def test_find_return_root(storage, config, subindex_configs, start_storage):
     da = DocumentArray(
         storage=storage,
         config=config,
@@ -1036,7 +1037,8 @@ def test_find_return_root(storage, config, subindex_configs):
         ],
     )
 
-    assert all(d.tags['root_id'] in [f'{i}' for i in range(1, 6)] for d in da['@c'])
+    if storage != 'memory':
+        assert all(d.tags['root_id'] in [f'{i}' for i in range(1, 6)] for d in da['@c'])
 
     res = da.find(np.random.random(3), on='@c', return_root=True)
     assert len(res) > 0
@@ -1047,6 +1049,7 @@ def test_find_return_root(storage, config, subindex_configs):
 @pytest.mark.parametrize(
     'storage, config, subindex_configs',
     [
+        ('memory', None, {'@c': None}),
         (
             'weaviate',
             {
