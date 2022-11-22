@@ -86,8 +86,8 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
         :return: a torch Tensor
         """
-        value = copy(self)  ## as intuitivly as it sounds this
-        # does not do any memory copy just shallow reference copy
+        value = copy(self)  # as unintuitive as it sounds, this
+        # does not do any relevant memory copying, just shallow reference to the torch data
         value.__class__ = torch.Tensor
         return value
 
