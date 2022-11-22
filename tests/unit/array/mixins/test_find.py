@@ -962,12 +962,13 @@ def test_find_subindex_multimodal(storage, config):
             {'@c': {'n_dim': 3}},
         ),
         ('annlite', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('sqlite', dict(), {'@c': dict()}),
         ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
     ],
 )
-def test_find_return_root(storage, config, subindex_configs, start_storage):
+def test_find_return_root(storage, config, subindex_configs):
     da = DocumentArray(
         storage=storage,
         config=config,
@@ -988,6 +989,67 @@ def test_find_return_root(storage, config, subindex_configs, start_storage):
             ]
         )
 
-    res = da.find(np.random.random(3), on='@c', return_root=True, limit=5)
-    assert len(res) == 5
-    assert all(d.id in [f'{i}' for i in range(10)] for d in res)
+    da[0] = Document(
+        id='5',
+        embedding=np.random.random(3),
+        chunks=[
+            Document(id=f'sub5_0', embedding=np.random.random(3)),
+            Document(id=f'sub5_1', embedding=np.random.random(3)),
+        ],
+    )
+
+    assert all(d.tags['root_id'] in [f'{i}' for i in range(1, 6)] for d in da['@c'])
+
+    res = da.find(np.random.random(3), on='@c', return_root=True)
+    assert len(res) > 0
+    assert all(d.id in [f'{i}' for i in range(1, 6)] for d in res)
+    assert len(res[:, 'scores'][0]) > 0
+
+
+@pytest.mark.parametrize(
+    'storage, config, subindex_configs',
+    [
+        (
+            'weaviate',
+            {
+                'n_dim': 3,
+            },
+            {'@c': {'n_dim': 3}},
+        ),
+        ('annlite', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('sqlite', dict(), {'@c': dict()}),
+        ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+    ],
+)
+def test_subindex_root_id(storage, config, subindex_configs, start_storage):
+    da = DocumentArray(
+        storage=storage,
+        config=config,
+        subindex_configs=subindex_configs,
+    )
+
+    with da:
+        da.extend(
+            [
+                Document(
+                    id=f'{i}',
+                    chunks=[
+                        Document(id=f'sub{i}_0', embedding=np.random.random(3)),
+                        Document(id=f'sub{i}_1', embedding=np.random.random(3)),
+                    ],
+                )
+                for i in range(5)
+            ]
+        )
+
+    with pytest.warns(UserWarning):
+        new_da = DocumentArray(
+            [Document(id=f'temp{i}', embedding=np.random.random(3)) for i in range(10)]
+        )
+        new_da[:, 'id'] = da['@c'][:, 'id']
+        da['@c'] = new_da
+
+    with pytest.warns(UserWarning):
+        da['@c'].extend([Document(id='sub_extra', embedding=np.random.random(3))])
