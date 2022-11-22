@@ -11,6 +11,8 @@ def _default_orjson(obj):
 
     if getattr(obj, '_to_json_compatible'):
         return obj._to_json_compatible()
+    else:
+        return obj
 
 
 def orjson_dumps(v, *, default=None):
