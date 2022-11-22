@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
 
@@ -23,7 +23,7 @@ class Tensor(np.ndarray, BaseNode):
     @classmethod
     def validate(
         cls: Type[T],
-        value: Union[T, np.ndarray, Any],
+        value: Union[T, np.ndarray, List[Any], Tuple[Any], Any],
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
@@ -31,13 +31,19 @@ class Tensor(np.ndarray, BaseNode):
             return cls.from_ndarray(value)
         elif isinstance(value, Tensor):
             return cast(T, value)
+        elif isinstance(value, list) or isinstance(value, tuple):
+            try:
+                arr: np.ndarray = np.asarray(value)
+                return cls.from_ndarray(arr)
+            except Exception:
+                pass  # handled below
         else:
             try:
                 arr: np.ndarray = np.ndarray(value)
                 return cls.from_ndarray(arr)
             except Exception:
                 pass  # handled below
-        raise ValueError(f'Expected a numpy.ndarray, got {type(value)}')
+        raise ValueError(f'Expected a numpy.ndarray compatible type, got {type(value)}')
 
     @classmethod
     def from_ndarray(cls: Type[T], value: np.ndarray) -> T:

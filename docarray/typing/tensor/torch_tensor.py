@@ -49,7 +49,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
                 return cls.from_native_torch_tensor(arr)
             except Exception:
                 pass  # handled below
-        raise ValueError(f'Expected a torch.Tensor, got {type(value)}')
+        raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
 
     @classmethod
     def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
