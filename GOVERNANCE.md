@@ -20,7 +20,7 @@ The committer role enables the contributor to commit code directly to the reposi
 
 ### Process for becoming a committer
 
-* At the moment (2022 Sept), only Jina AI employees are committers. This can be changed in the future.
+* To become a committer you have to be approved by the TSC (Technical steering committee) of DocArray. If you want to become a committer, reach out to sami.jaghouar@gmail.com. 
 
 # Release Process
 
