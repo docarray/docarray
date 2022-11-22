@@ -201,10 +201,16 @@ class BaseGetSetDelMixin(ABC):
             if set_index in subindices:
                 subindex_da = subindices[set_index]
 
-                if getattr(subindex_da, '_config', None):
-                    if subindex_da._config.root_id:
-                        for i in range(len(docs)):
-                            docs[i].tags['root_id'] = subindex_da[i].tags['root_id']
+                if (
+                    getattr(subindex_da, '_config', None)
+                    and subindex_da._config.root_id
+                ):
+                    for doc, subindex_doc in zip(docs, subindex_da):
+                        doc.tags['root_id'] = (
+                            doc.tags['root_id']
+                            if 'root_id' in doc.tags
+                            else subindex_doc.tags['root_id']
+                        )
 
                 subindex_da.clear()
                 subindex_da.extend(docs)
@@ -212,7 +218,20 @@ class BaseGetSetDelMixin(ABC):
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
                 del subindex_da[old_ids]
-                subindex_da.extend(DocumentArray(docs)[subindex_selector])
+
+                value = DocumentArray(docs)
+
+                if (
+                    getattr(subindex_da, '_config', None)
+                    and subindex_da._config.root_id
+                ):
+                    for v in value:
+                        for doc in DocumentArray(v)[subindex_selector]:
+                            doc.tags['root_id'] = (
+                                doc.tags['root_id'] if 'root_id' in doc.tags else v.id
+                            )
+
+                subindex_da.extend(value[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
