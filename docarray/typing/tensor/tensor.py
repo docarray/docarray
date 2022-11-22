@@ -63,17 +63,22 @@ class Tensor(np.ndarray, BaseNode):
 
     def unwrap(self) -> np.ndarray:
         """
-        Return the original ndarray without any memory copy
+        Return the original ndarray without any memory copy.
+
+        The original view rest intact and is still a Document Tensor
+        but the return object is a pure np.ndarray but both object share
+        the same memory layout.
 
         EXAMPLE USAGE
         .. code-block:: python
             from docarray.typing import Tensor
             import numpy as np
 
-            t = Tensor.validate(np.zeros((3, 224, 224)), None, None)
+            t1 = Tensor.validate(np.zeros((3, 224, 224)), None, None)
             # here t is a docarray Tensor
-            t = t.unwrap()
-            # here t is a pure np.ndarray
+            t2 = t.unwrap()
+            # here t2 is a pure np.ndarray but t1 is still a Docarray Tensor
+            # But both share the same underlying memory
 
 
         :return: a numpy ndarray

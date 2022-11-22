@@ -65,7 +65,11 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
     def unwrap(self) -> torch.Tensor:
         """
-        Return the original ndarray without any memory copy
+        Return the original torch.Tensor without any memory copy.
+
+        The original view rest intact and is still a Document Tensor
+        but the return object is a pure torch Tensor but both object share
+        the same memory layout.
 
         EXAMPLE USAGE
         .. code-block:: python
@@ -74,8 +78,9 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
 
             t = Tensor.validate(torch.zeros(3, 224, 224), None, None)
             # here t is a docarray Tensor
-            t = t.unwrap()
-            # here t is a pure torch Tensor
+            t2 = t.unwrap()
+            # here t2 is a pure torch.Tensor but t1 is still a Docarray Tensor
+            # But both share the same underlying memory
 
 
         :return: a torch Tensor
