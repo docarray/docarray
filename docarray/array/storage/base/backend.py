@@ -41,6 +41,7 @@ class BaseBackendMixin(ABC):
                     config, config_subindex, config_joined, name
                 )
                 self._subindices[name] = self.__class__(config=config_joined)
+                self._subindices[name]._is_subindex = True
                 if _docs:
                     from docarray import DocumentArray
 

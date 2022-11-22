@@ -1,5 +1,6 @@
+import warnings
 from abc import abstractmethod
-from typing import Iterator, Iterable, MutableSequence
+from typing import Iterable, Iterator, MutableSequence
 
 from docarray import Document, DocumentArray
 
@@ -72,6 +73,21 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         return len(self) > 0
 
     def extend(self, values: Iterable['Document'], **kwargs) -> None:
+
+        # TODO whether to add warning for DocumentArrayInMemory
+        from docarray.array.memory import DocumentArrayInMemory
+
+        if (
+            getattr(self, '_is_subindex', False)
+            and not isinstance(self, DocumentArrayInMemory)
+            and self._config.root_id
+            and not all([doc.tags.get('root_id', None) for doc in values])
+        ):
+            warnings.warn(
+                "root_id is enabled but not all documents have root_id set. This may cause unexpected behavior.",
+                UserWarning,
+            )
+
         self._extend(values, **kwargs)
         self._update_subindices_append_extend(values)
 
