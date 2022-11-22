@@ -96,7 +96,7 @@ class FindMixin:
         limit: Optional[Union[int, float]] = 20,
         metric_name: Optional[str] = None,
         exclude_self: bool = False,
-        filter: Optional[Dict] = None,
+        filter: Union[Dict, str, None] = None,
         only_id: bool = False,
         index: str = 'text',
         return_root: Optional[bool] = False,

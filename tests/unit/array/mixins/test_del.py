@@ -119,9 +119,10 @@ def test_del_da_attribute():
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
-def test_del_subindex(storage, config):
+def test_del_subindex(storage, config, start_storage):
 
     n_dim = 3
     subindex_configs = (

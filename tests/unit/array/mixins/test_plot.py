@@ -15,6 +15,7 @@ from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.storage.annlite import AnnliteConfig
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 @pytest.mark.parametrize('keep_aspect_ratio', [True, False])
@@ -29,6 +30,7 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
         (DocumentArrayQdrant, QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        # (DocumentArrayMilvus, MilvusConfig(n_dim=128)),  # tensor is too large to handle
     ],
 )
 def test_sprite_fail_tensor_success_uri(
@@ -68,6 +70,7 @@ def test_sprite_fail_tensor_success_uri(
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=128, scroll_batch_size=8)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=128)),
+        # (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize('canvas_size', [50, 512])
@@ -118,6 +121,7 @@ def da_and_dam(start_storage):
             (DocumentArrayAnnlite, {'config': {'n_dim': 3}}),
             (DocumentArrayQdrant, {'config': {'n_dim': 3}}),
             (DocumentArrayRedis, {'config': {'n_dim': 3}}),
+            (DocumentArrayMilvus, {'config': {'n_dim': 3}}),
         ]
     ]
 
@@ -135,7 +139,8 @@ def test_plot_sprites(tmpdir):
 
 
 def _test_plot_embeddings(da):
-    p = da.plot_embeddings(start_server=False)
+    with da:
+        p = da.plot_embeddings(start_server=False)
     assert os.path.exists(p)
     assert os.path.exists(os.path.join(p, 'config.json'))
     with open(os.path.join(p, 'config.json')) as fp:
@@ -154,6 +159,7 @@ def _test_plot_embeddings(da):
         (DocumentArrayQdrant, lambda: QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, lambda: ElasticConfig(n_dim=5)),
         (DocumentArrayRedis, lambda: RedisConfig(n_dim=5)),
+        (DocumentArrayMilvus, lambda: MilvusConfig(n_dim=5)),
     ],
 )
 def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
@@ -163,10 +169,12 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
     else:
         da1 = da_cls.empty(100)
         da2 = da_cls.empty(768)
-    da1.embeddings = np.random.random([100, 5])
-    p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
-    da2.embeddings = np.random.random([768, 5])
-    p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
+    with da1:
+        da1.embeddings = np.random.random([100, 5])
+        p1 = da1.plot_embeddings(start_server=False, path=tmpdir)
+    with da2:
+        da2.embeddings = np.random.random([768, 5])
+        p2 = da2.plot_embeddings(start_server=False, path=tmpdir)
     assert p1 == p2
     assert os.path.exists(p1)
     with open(os.path.join(p1, 'config.json')) as fp:
@@ -184,6 +192,7 @@ def test_plot_embeddings_same_path(tmpdir, da_cls, config_gen, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_summary_homo_hetero(da_cls, config, start_storage):
@@ -191,14 +200,16 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         da = da_cls.empty(100, config=config)
     else:
         da = da_cls.empty(100)
-    da._get_attributes()
-    da.summary()
-    da._get_raw_summary()
+    with da:
+        da._get_attributes()
+        da.summary()
+        da._get_raw_summary()
 
     da[0].pop('id')
-    da.summary()
+    with da:
+        da.summary()
 
-    da._get_raw_summary()
+        da._get_raw_summary()
 
 
 @pytest.mark.parametrize(
@@ -211,6 +222,7 @@ def test_summary_homo_hetero(da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_empty_get_attributes(da_cls, config, start_storage):

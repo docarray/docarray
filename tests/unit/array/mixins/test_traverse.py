@@ -10,6 +10,7 @@ from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.annlite import DocumentArrayAnnlite
 from docarray.array.elastic import DocumentArrayElastic
 from docarray.array.redis import DocumentArrayRedis
+from docarray.array.milvus import DocumentArrayMilvus
 from tests import random_docs
 
 # some random prime number for sanity check
@@ -44,11 +45,13 @@ def doc_req():
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = doc_req.traverse('r', filter_fn=filter_fn)
+    with doc_req:  # speed up milvus by loading collection
+        ds = doc_req.traverse('r', filter_fn=filter_fn)
     assert isinstance(ds, types.GeneratorType)
     assert isinstance(list(ds)[0], DocumentArray)
 
@@ -64,11 +67,13 @@ def test_traverse_type(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('r', filter_fn=filter_fn))
     assert len(ds) == 1
     assert len(ds[0]) == num_docs
 
@@ -84,11 +89,13 @@ def test_traverse_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('c', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('c', filter_fn=filter_fn))
     assert len(ds) == num_docs
     assert len(ds[0]) == num_chunks_per_doc
 
@@ -104,11 +111,13 @@ def test_traverse_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('c,r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + 1
     assert len(ds[0]) == num_chunks_per_doc
     assert len(ds[-1]) == num_docs
@@ -125,11 +134,13 @@ def test_traverse_root_plus_chunk(doc_req, filter_fn, da_cls, kwargs, start_stor
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('r,c', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('r,c', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs
     assert len(ds[-1]) == num_chunks_per_doc
     assert len(ds[0]) == num_docs
@@ -146,11 +157,13 @@ def test_traverse_chunk_plus_root(doc_req, filter_fn, da_cls, kwargs, start_stor
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('m', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('m', filter_fn=filter_fn))
     assert len(ds) == num_docs
     assert len(ds[0]) == num_matches_per_doc
 
@@ -166,11 +179,13 @@ def test_traverse_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('cm', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
     assert len(ds[0]) == num_matches_per_chunk
 
@@ -186,11 +201,13 @@ def test_traverse_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage)
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse('r,c,m,cm', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == 1 + num_docs + num_docs + num_docs * num_chunks_per_doc
 
 
@@ -205,11 +222,13 @@ def test_traverse_root_match_chunk(doc_req, filter_fn, da_cls, kwargs, start_sto
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    flattened_results = doc_req.traverse_flat('r,c', filter_fn=filter_fn)
+    with doc_req:  # speed up milvus by loading collection
+        flattened_results = doc_req.traverse_flat('r,c', filter_fn=filter_fn)
     ds = flattened_results.embeddings
     assert ds.shape == (num_docs + num_chunks_per_doc * num_docs, 10)
 
@@ -225,11 +244,13 @@ def test_traverse_flatten_embedding(doc_req, filter_fn, da_cls, kwargs, start_st
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('r', filter_fn=filter_fn))
     assert len(ds) == num_docs
 
 
@@ -244,11 +265,13 @@ def test_traverse_flatten_root(doc_req, filter_fn, da_cls, kwargs, start_storage
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('c', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('c', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc
 
 
@@ -263,13 +286,15 @@ def test_traverse_flatten_chunk(doc_req, filter_fn, da_cls, kwargs, start_storag
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root_plus_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('c,r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('c,r', filter_fn=filter_fn))
     assert len(ds) == num_docs + num_docs * num_chunks_per_doc
 
 
@@ -284,11 +309,13 @@ def test_traverse_flatten_root_plus_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_storage):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('m', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('m', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_matches_per_doc
 
 
@@ -303,13 +330,15 @@ def test_traverse_flatten_match(doc_req, filter_fn, da_cls, kwargs, start_storag
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_match_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('cm', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('cm', filter_fn=filter_fn))
     assert len(ds) == num_docs * num_chunks_per_doc * num_matches_per_chunk
 
 
@@ -324,13 +353,15 @@ def test_traverse_flatten_match_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flatten_root_match_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
     assert (
         len(ds)
         == num_docs
@@ -351,13 +382,17 @@ def test_traverse_flatten_root_match_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_embedding(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    flattened_results = list(doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        flattened_results = list(
+            doc_req.traverse_flat_per_path('r,c', filter_fn=filter_fn)
+        )
     ds = flattened_results[0].embeddings
     assert ds.shape == (num_docs, 10)
 
@@ -376,13 +411,15 @@ def test_traverse_flattened_per_path_embedding(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat_per_path('r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat_per_path('r', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs
 
 
@@ -397,13 +434,15 @@ def test_traverse_flattened_per_path_root(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat_per_path('c', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat_per_path('c', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_chunks_per_doc
 
 
@@ -418,13 +457,15 @@ def test_traverse_flattened_per_path_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root_plus_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat_per_path('c,r', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat_per_path('c,r', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_chunks_per_doc
     assert len(ds[1]) == num_docs
 
@@ -440,13 +481,15 @@ def test_traverse_flattened_per_path_root_plus_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_match(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat_per_path('m', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat_per_path('m', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs * num_matches_per_doc
 
 
@@ -461,13 +504,15 @@ def test_traverse_flattened_per_path_match(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flattened_per_path_root_match_chunk(
     doc_req, filter_fn, da_cls, kwargs, start_storage
 ):
     doc_req = da_cls(doc_req, **kwargs)
-    ds = list(doc_req.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
+    with doc_req:  # speed up milvus by loading collection
+        ds = list(doc_req.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds[0]) == num_docs
     assert len(ds[1]) == num_chunks_per_doc * num_docs
     assert len(ds[2]) == num_matches_per_doc * num_docs
@@ -485,18 +530,20 @@ def test_traverse_flattened_per_path_root_match_chunk(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_docuset_traverse_over_iterator_HACKY(da_cls, kwargs, filter_fn):
     # HACKY USAGE DO NOT RECOMMEND: can also traverse over "runtime"-documentarray
     da = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs)
-
-    ds = da.traverse('r', filter_fn=filter_fn)
+    with da:  # speed up milvus by loading collection
+        ds = da.traverse('r', filter_fn=filter_fn)
     assert len(list(list(ds)[0])) == num_docs
 
-    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
-        'c', filter_fn=filter_fn
-    )
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs)
+
+    with ds:  # speed up milvus by loading collection
+        ds = ds.traverse('c', filter_fn=filter_fn)
     ds = list(ds)
     assert len(ds) == num_docs
     assert len(ds[0]) == num_chunks_per_doc
@@ -513,20 +560,21 @@ def test_docuset_traverse_over_iterator_HACKY(da_cls, kwargs, filter_fn):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_docuset_traverse_over_iterator_CAVEAT(da_cls, kwargs, filter_fn):
     # HACKY USAGE's CAVEAT: but it can not iterate over an iterator twice
-    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
-        'r,c', filter_fn=filter_fn
-    )
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs)
+    with ds:
+        ds = ds.traverse('r,c', filter_fn=filter_fn)
     # note that random_docs is a generator and can be only used once,
     # therefore whoever comes first wil get iterated, and then it becomes empty
     assert len(list(ds)) == 1 + num_docs
 
-    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs).traverse(
-        'c,r', filter_fn=filter_fn
-    )
+    ds = da_cls(random_docs(num_docs, num_chunks_per_doc), **kwargs)
+    with ds:
+        ds = ds.traverse('c,r', filter_fn=filter_fn)
     assert len(list(ds)) == num_docs + 1
 
 
@@ -580,6 +628,7 @@ def test_traverse_chunkarray(filter_fn):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 @pytest.mark.parametrize(
@@ -611,7 +660,8 @@ def test_filter_fn_traverse_flat(
     filter_fn, docs_len, doc_req, da_cls, kwargs, tmp_path
 ):
     docs = da_cls(doc_req, **kwargs)
-    ds = list(docs.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
+    with docs:
+        ds = list(docs.traverse_flat('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == docs_len
     assert all(isinstance(d, Document) for d in ds)
 
@@ -626,6 +676,7 @@ def test_filter_fn_traverse_flat(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 @pytest.mark.parametrize(
@@ -661,7 +712,8 @@ def test_filter_fn_traverse_flat_per_path(
     filter_fn, doc_req, docs_len, da_cls, kwargs, tmp_path
 ):
     docs = da_cls(doc_req, **kwargs)
-    ds = list(docs.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
+    with docs:
+        ds = list(docs.traverse_flat_per_path('r,c,m,cm', filter_fn=filter_fn))
     assert len(ds) == 4
     for seq, length in zip(ds, docs_len):
         assert isinstance(seq, DocumentArray)
@@ -678,13 +730,15 @@ def test_filter_fn_traverse_flat_per_path(
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traversal_path(da_cls, kwargs):
     da = da_cls([Document() for _ in range(6)], **kwargs)
     assert len(da) == 6
 
-    da.traverse_flat('r')
+    with da:
+        da.traverse_flat('r')
 
 
 @pytest.mark.parametrize(
@@ -697,11 +751,13 @@ def test_traversal_path(da_cls, kwargs):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_traverse_flat_root_itself(da_cls, kwargs):
     da = da_cls([Document() for _ in range(100)], **kwargs)
-    res = da.traverse_flat('r')
+    with da:
+        res = da.traverse_flat('r')
     assert id(res) == id(da)
 
 
@@ -720,11 +776,13 @@ def da_and_dam(N):
         (DocumentArrayQdrant, {'config': {'n_dim': 10}}),
         (DocumentArrayElastic, {'config': {'n_dim': 10}}),
         (DocumentArrayRedis, {'config': {'n_dim': 10}}),
+        (DocumentArrayMilvus, {'config': {'n_dim': 10}}),
     ],
 )
 def test_flatten(da_cls, kwargs):
     da = da_cls(random_docs(100), **kwargs)
-    daf = da.flatten()
+    with da:
+        daf = da.flatten()
     assert len(daf) == 600
     assert isinstance(daf, DocumentArray)
     assert len(set(d.id for d in daf)) == 600
