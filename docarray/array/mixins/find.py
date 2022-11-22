@@ -154,8 +154,9 @@ class FindMixin:
                         f'Not all Documents in the subindex {on} have the "tags__root_id" attribute set.'
                     )
 
-                da = self[results[:, 'tags__root_id']]
-                da[:, 'scores'] = results[:, 'scores']
+                da = DocumentArray(self[results[:, 'tags__root_id']])
+                for d, s in zip(da, results[:, 'scores']):
+                    d.scores = s
                 return da
 
             return results
