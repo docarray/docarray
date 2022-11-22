@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -12,7 +13,9 @@ async def test_fast_api():
         text: Text
         title: str
 
-    input_doc = Mmdoc(img=Image(), text=Text(), title='hello')
+    input_doc = Mmdoc(
+        img=Image(tensor=np.zeros((3, 224, 224))), text=Text(), title='hello'
+    )
 
     app = FastAPI()
 
