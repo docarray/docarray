@@ -5,14 +5,14 @@ from httpx import AsyncClient
 from docarray import Document, Image, Text
 
 
-class Mmdoc(Document):
-    img: Image
-    text: Text
-    title: str
-
-
 @pytest.mark.asyncio
 async def test_fast_api():
+    class Mmdoc(Document):
+        img: Image
+        text: Text
+        title: str
+
+    input_doc = Mmdoc(img=Image(), text=Text(), title='hello')
 
     app = FastAPI()
 
@@ -21,10 +21,10 @@ async def test_fast_api():
         return doc
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        # response = await ac.get("/doc")
-        response2 = await ac.get("/docs")
+        response = await ac.post("/doc/", data=input_doc.json())
+        resp_doc = await ac.get("/docs")
+        resp_redoc = await ac.get("/redoc")
 
-    # assert response.status_code == 200
-    assert response2.status_code == 200
-
-    # assert response.json() == {"message": "Tomato"}
+    assert response.status_code == 200
+    assert resp_doc.status_code == 200
+    assert resp_redoc.status_code == 200
