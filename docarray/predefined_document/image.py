@@ -6,9 +6,63 @@ from docarray.typing import Embedding, ImageUrl, Tensor
 
 class Image(BaseDocument):
     """
-    base Document for Image handling
+    Document for handling images.
+    It can contain an ImageUrl (`Image.url`), a Tensor (`Image.tensor`),
+    and an Embedding (`Image.embedding`).
+
+    EXAMPLE USAGE:
+
+    You can use this Document directly:
+
+    .. code-block:: python
+
+        from docarray import Image
+
+        # use it directly
+        image = Image(url='http://www.jina.ai/image.jpg')
+        image.tensor = image.url.load()
+        model = MyEmbeddingModel()
+        image.embedding = MyEmbeddingModel(image.tensor)
+
+    You can extend this Document:
+
+    .. code-block:: python
+
+        from docarray import Image
+        from docarray.typing import Embedding
+        from typing import Optional
+
+        # extend it
+        class MyImage(Image):
+            second_embedding: Optional[Embedding]
+
+
+        image = MyImage(url='http://www.jina.ai/image.jpg')
+        image.tensor = image.url.load()
+        model = MyEmbeddingModel()
+        image.embedding = MyEmbeddingModel(image.tensor)
+        image.second_embedding = MyEmbeddingModel(image.tensor)
+
+
+    You can use this Document for composition:
+
+    .. code-block:: python
+
+        from docarray import Document, Image, Text
+
+        # compose it
+        class MultiModalDoc(Document):
+            image: Image
+            text: Text
+
+
+        mmdoc = MultiModalDoc(
+            image=Image(url="http://www.jina.ai/image.jpg"),
+            text=Text(text="hello world, how are you doing?"),
+        )
+        mmdoc.image.tensor = mmdoc.image.url.load()
     """
 
-    uri: Optional[ImageUrl]
+    url: Optional[ImageUrl]
     tensor: Optional[Tensor]
     embedding: Optional[Embedding]
