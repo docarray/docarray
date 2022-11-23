@@ -11,6 +11,7 @@ pydantic = "^1.10.2"
 numpy = "^1.23.4"
 protobuf = { version = "^4.21.9", optional = true }
 torch = { version = "^1.0.0", optional = true }
+orjson = "^3.8.2"
 pillow = {version = "^9.3.0", optional = true }
 types-pillow = {version = "^9.3.0.1", optional = true }
 
@@ -20,7 +21,7 @@ torch = ["torch"]
 image = ["pillow", "types-pillow"]
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.1"
 pre-commit = "^2.20.0"
 jupyterlab = "^3.5.0"
 mypy = "^0.990"
@@ -28,6 +29,12 @@ types-protobuf = "^3.20.4"
 black = "^22.10.0"
 isort = "^5.10.1"
 ruff = "^0.0.117"
+
+[tool.poetry.group.dev.dependencies]
+fastapi = "^0.87.0"
+uvicorn = "^0.19.0"
+httpx = "^0.23.0"
+pytest-asyncio = "^0.20.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -2,8 +2,9 @@ import os
 import urllib
 
 import pytest
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import TextUrl
 
 REMOTE_TXT = 'https://de.wikipedia.org/wiki/Brixen'
@@ -43,3 +44,12 @@ def test_load_timeout():
         _ = url.load(timeout=0.001)
     with pytest.raises(urllib.error.URLError):
         _ = url.load_to_bytes(timeout=0.001)
+
+
+def test_json_schema():
+    schema_json_of(TextUrl)
+
+
+def test_dump_json():
+    url = parse_obj_as(TextUrl, REMOTE_TXT)
+    orjson_dumps(url)

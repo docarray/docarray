@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Type, TypeVar, Union, cast
+from copy import copy
+from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
@@ -49,7 +50,47 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
                 return cls.from_native_torch_tensor(arr)
             except Exception:
                 pass  # handled below
-        raise ValueError(f'Expected a torch.Tensor, got {type(value)}')
+        raise ValueError(f'Expected a torch.Tensor compatible type, got {type(value)}')
+
+    @classmethod
+    def __modify_schema__(cls, field_schema: Dict[str, Any]) -> None:
+        # this is needed to dump to json
+        field_schema.update(type='string', format='tensor')
+
+    def _to_json_compatible(self) -> np.ndarray:
+        """
+        Convert torch Tensor into a json compatible object
+        :return: a list representation of the torch tensor
+        """
+        return self.numpy()  ## might need to  check device later
+
+    def unwrap(self) -> torch.Tensor:
+        """
+        Return the original torch.Tensor without any memory copy.
+
+        The original view rest intact and is still a Document Tensor
+        but the return object is a pure torch Tensor but both object share
+        the same memory layout.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray.typing import TorchTensor
+            import torch
+
+            t = Tensor.validate(torch.zeros(3, 224, 224), None, None)
+            # here t is a docarray Tensor
+            t2 = t.unwrap()
+            # here t2 is a pure torch.Tensor but t1 is still a Docarray Tensor
+            # But both share the same underlying memory
+
+
+        :return: a torch Tensor
+        """
+        value = copy(self)  # as unintuitive as it sounds, this
+        # does not do any relevant memory copying, just shallow
+        # reference to the torch data
+        value.__class__ = torch.Tensor  # type: ignore
+        return value
 
     @classmethod
     def from_native_torch_tensor(cls: Type[T], value: torch.Tensor) -> T:

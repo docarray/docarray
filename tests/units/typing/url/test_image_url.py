@@ -4,8 +4,9 @@ import urllib
 import numpy as np
 import PIL
 import pytest
-from pydantic.tools import parse_obj_as
+from pydantic.tools import parse_obj_as, schema_json_of
 
+from docarray.document.io.json import orjson_dumps
 from docarray.typing import ImageUrl
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +35,15 @@ def test_proto_image_url():
     uri = parse_obj_as(ImageUrl, REMOTE_JPG)
 
     uri._to_node_protobuf()
+
+
+def test_json_schema():
+    schema_json_of(ImageUrl)
+
+
+def test_dump_json():
+    url = parse_obj_as(ImageUrl, 'http://jina.ai/img.png')
+    orjson_dumps(url)
 
 
 @pytest.mark.parametrize(
