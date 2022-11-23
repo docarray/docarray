@@ -22,10 +22,7 @@ def tmpfile(tmpdir):
 
 @pytest.fixture(scope='module')
 def start_storage():
-    os.system(
-        f"docker-compose -f {compose_yml} --project-directory . up  --build -d "
-        f"--remove-orphans"
-    )
+    os.system(f"docker-compose -f {compose_yml} --project-directory . up  --build -d")
     os.system(
         f"docker-compose -f {milvus_compose_yml} --project-directory . up  --build -d"
     )
