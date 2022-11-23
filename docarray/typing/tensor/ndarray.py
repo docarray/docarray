@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 from docarray.document.base_node import BaseNode
 from docarray.proto import NdArrayProto, NodeProto
 
-T = TypeVar('T', bound='Tensor')
+T = TypeVar('T', bound='NdArray')
 
 
-class Tensor(np.ndarray, BaseNode):
+class NdArray(np.ndarray, BaseNode):
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
@@ -29,7 +29,7 @@ class Tensor(np.ndarray, BaseNode):
     ) -> T:
         if isinstance(value, np.ndarray):
             return cls.from_ndarray(value)
-        elif isinstance(value, Tensor):
+        elif isinstance(value, NdArray):
             return cast(T, value)
         elif isinstance(value, list) or isinstance(value, tuple):
             try:
@@ -65,19 +65,19 @@ class Tensor(np.ndarray, BaseNode):
         """
         Return the original ndarray without any memory copy.
 
-        The original view rest intact and is still a Document Tensor
+        The original view rest intact and is still a Document NdArray
         but the return object is a pure np.ndarray but both object share
         the same memory layout.
 
         EXAMPLE USAGE
         .. code-block:: python
-            from docarray.typing import Tensor
+            from docarray.typing import NdArray
             import numpy as np
 
-            t1 = Tensor.validate(np.zeros((3, 224, 224)), None, None)
-            # here t is a docarray Tensor
+            t1 = NdArray.validate(np.zeros((3, 224, 224)), None, None)
+            # here t is a docarray TenNdArray
             t2 = t.unwrap()
-            # here t2 is a pure np.ndarray but t1 is still a Docarray Tensor
+            # here t2 is a pure np.ndarray but t1 is still a Docarray NdArray
             # But both share the same underlying memory
 
 
@@ -85,7 +85,7 @@ class Tensor(np.ndarray, BaseNode):
         """
         return self.view(np.ndarray)
 
-    def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
+    def _to_node_protobuf(self: T, field: str = 'ndarray') -> NodeProto:
         """Convert itself into a NodeProto protobuf message. This function should
         be called when the Document is nested into another Document that need to be
         converted into a protobuf
@@ -110,10 +110,10 @@ class Tensor(np.ndarray, BaseNode):
         elif len(source.shape) > 0:
             return cls.from_ndarray(np.zeros(source.shape))
         else:
-            raise ValueError(f'proto message {pb_msg} cannot be cast to a Tensor')
+            raise ValueError(f'proto message {pb_msg} cannot be cast to a NdArray')
 
     @staticmethod
-    def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'Tensor'):
+    def _flush_tensor_to_proto(pb_msg: 'NdArrayProto', value: 'NdArray'):
         pb_msg.dense.buffer = value.tobytes()
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))

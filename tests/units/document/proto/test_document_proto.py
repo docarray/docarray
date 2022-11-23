@@ -5,7 +5,7 @@ import torch
 
 from docarray import DocumentArray
 from docarray.document import BaseDocument
-from docarray.typing import Tensor, TorchTensor
+from docarray.typing import NdArray, TorchTensor
 
 
 def test_proto_simple():
@@ -19,7 +19,7 @@ def test_proto_simple():
 
 def test_proto_ndarray():
     class CustomDoc(BaseDocument):
-        tensor: Tensor
+        tensor: NdArray
 
     tensor = np.zeros((3, 224, 224))
     doc = CustomDoc(tensor=tensor)
@@ -31,7 +31,7 @@ def test_proto_ndarray():
 
 def test_proto_with_nested_doc():
     class CustomInnerDoc(BaseDocument):
-        tensor: Tensor
+        tensor: NdArray
 
     class CustomDoc(BaseDocument):
         text: str
@@ -44,7 +44,7 @@ def test_proto_with_nested_doc():
 
 def test_proto_with_chunks_doc():
     class CustomInnerDoc(BaseDocument):
-        tensor: Tensor
+        tensor: NdArray
 
     class CustomDoc(BaseDocument):
         text: str

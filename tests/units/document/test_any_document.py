@@ -1,13 +1,13 @@
 import numpy as np
 
 from docarray.document import AnyDocument, BaseDocument
-from docarray.typing import Tensor
+from docarray.typing import NdArray
 
 
 def test_any_doc():
     class InnerDocument(BaseDocument):
         text: str
-        tensor: Tensor
+        tensor: NdArray
 
     class CustomDoc(BaseDocument):
         inner: InnerDocument
