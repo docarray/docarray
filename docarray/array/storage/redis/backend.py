@@ -90,7 +90,7 @@ class BackendMixin(BaseBackendMixin):
             **self._config.redis_config,
         )
 
-        self._initialize_redis_index()
+        self._build_index()
 
         super()._init_storage()
 
@@ -101,7 +101,7 @@ class BackendMixin(BaseBackendMixin):
         elif isinstance(_docs, Document):
             self.append(_docs)
 
-    def _initialize_redis_index(self, rebuild: bool = False):
+    def _build_index(self, rebuild: bool = False):
         if self._config.update_schema or rebuild:
             if self._config.index_name.encode() in self._client.execute_command(
                 'FT._LIST'
