@@ -89,7 +89,7 @@ class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
         value = copy(self)  # as unintuitive as it sounds, this
         # does not do any relevant memory copying, just shallow
         # reference to the torch data
-        value.__class__ = torch.Tensor
+        value.__class__ = torch.Tensor  # type: ignore
         return value
 
     @classmethod
