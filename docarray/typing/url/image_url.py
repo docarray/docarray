@@ -1,6 +1,6 @@
 import io
 import struct
-from typing import TYPE_CHECKING, Any, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Optional, Tuple, TypeVar, Union, Type, Any
 
 import numpy as np
 
@@ -40,7 +40,6 @@ class ImageUrl(AnyUrl):
         field: 'ModelField',
         config: 'BaseConfig',
     ) -> T:
-
         url = super().validate(value, field, config)  # basic url validation
         has_image_extension = any(url.endswith(ext) for ext in IMAGE_FILE_FORMATS)
         if not has_image_extension:
