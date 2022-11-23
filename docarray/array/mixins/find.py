@@ -127,6 +127,7 @@ class FindMixin:
                       parameter is ignored. By default, the Document `text` attribute will be used for search,
                       otherwise the tag field specified by `index` will be used. You can only use this parameter if the
                       storage backend supports searching by text.
+        :param return_root: if set, then the root-level DocumentArray will be returned
         :param on: specifies a subindex to search on. If set, the returned DocumentArray will be retrieved from the given subindex.
         :param kwargs: other kwargs.
 
