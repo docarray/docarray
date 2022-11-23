@@ -93,6 +93,7 @@ class MilvusConfig:
     batch_size: int = -1
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
     list_like: bool = True
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):

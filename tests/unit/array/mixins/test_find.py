@@ -1005,6 +1005,7 @@ def test_find_subindex_multimodal(storage, config, start_storage):
         ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('milvus', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
     ],
 )
 def test_find_return_root(storage, config, subindex_configs, start_storage):
@@ -1043,7 +1044,6 @@ def test_find_return_root(storage, config, subindex_configs, start_storage):
     res = da.find(np.random.random(3), on='@c', return_root=True)
     assert len(res) > 0
     assert all(d.id in [f'{i}' for i in range(1, 6)] for d in res)
-    assert len(res[:, 'scores'][0]) > 0
 
 
 @pytest.mark.parametrize(
@@ -1062,6 +1062,7 @@ def test_find_return_root(storage, config, subindex_configs, start_storage):
         ('qdrant', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('elasticsearch', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
         ('redis', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
+        ('milvus', {'n_dim': 3}, {'@c': {'n_dim': 3}}),
     ],
 )
 def test_subindex_root_id(storage, config, subindex_configs, start_storage):
