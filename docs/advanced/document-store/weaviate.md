@@ -465,7 +465,7 @@ This should return something similar to:
 ```bash
 Only results that have a 'weaviate_certainty' of higher than 0.9 should show:
          text=['Persist Documents with Weaviate.']
-         scores=[{'weaviate_certainty': {'value': 1.0000001}, 'cosine_similarity': {'value': 1.0000002000000001}}]
+         scores=[{'distance': {'value': -3.5762787e-07}}]
 ```
 
 ## Include additional properties in the return
