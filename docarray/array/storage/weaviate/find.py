@@ -94,7 +94,7 @@ class FindMixin:
             doc = Document.from_base64(result['_serialized'], **self._serialize_config)
 
             distance = result['_additional']['distance']
-            doc.scores['score'] = NamedScore(value=distance)
+            doc.scores['distance'] = NamedScore(value=distance)
 
             certainty = result['_additional'].get('certainty', None)
             if certainty is not None:
