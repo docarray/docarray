@@ -136,7 +136,7 @@ The following configs can be set:
 | `block_size`      | Optional parameter for Redis FLAT algorithm                                                                                            | `1048576`                                         |
 | `initial_cap`     | Optional parameter for Redis HNSW and FLAT algorithm                                                                                   | `None`, defaults to the default value in Redis    |
 | `columns`         | Other fields to store in Document and build schema                                                                                     | `None`                                            |
-| `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                              |
+| `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | `True`                                            |
 
 You can check the default values in [the docarray source code](https://github.com/jina-ai/docarray/blob/main/docarray/array/storage/redis/backend.py).
 For vector search configurations, default values are those of the database backend, which you can find in the [Redis documentation](https://redis.io/docs/stack/search/reference/vectors/).
