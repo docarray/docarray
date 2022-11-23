@@ -1,13 +1,14 @@
 import os
 from typing import Type
 
+import orjson
 from pydantic import BaseModel, Field
 
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
+from docarray.document.io.json import orjson_dumps
+from docarray.document.mixins import ProtoMixin
 from docarray.typing import ID
-
-from .mixins import ProtoMixin
 
 
 class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
@@ -16,6 +17,10 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     """
 
     id: ID = Field(default_factory=lambda: ID.validate(os.urandom(16).hex()))
+
+    class Config:
+        json_loads = orjson.loads
+        json_dumps = orjson_dumps
 
     @classmethod
     def _get_nested_document_class(cls, field: str) -> Type['BaseDocument']:
