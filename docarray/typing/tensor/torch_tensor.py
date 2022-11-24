@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
 import numpy as np
 import torch  # type: ignore
 
+from docarray.typing.abstract_type import AbstractType
+
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
@@ -22,7 +24,7 @@ class metaTorchAndNode(torch_base, node_base):
     pass
 
 
-class TorchTensor(torch.Tensor, BaseNode, metaclass=metaTorchAndNode):
+class TorchTensor(AbstractType, torch.Tensor, metaclass=metaTorchAndNode):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
     @classmethod
