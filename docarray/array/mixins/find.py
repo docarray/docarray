@@ -1,15 +1,13 @@
 import abc
-from typing import overload, Optional, Union, Dict, List, Tuple, Callable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Tuple, Union, overload
 
 import numpy as np
-
 from docarray.math import ndarray
 from docarray.score import NamedScore
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray.typing import T, ArrayType
-
     from docarray import Document, DocumentArray
+    from docarray.typing import ArrayType, T
 
 
 class FindMixin:
@@ -151,16 +149,7 @@ class FindMixin:
 
             if return_root:
                 from docarray.array.memory import DocumentArrayInMemory
-
-                def get_root_docs(da, docs):
-                    root_da_flat = da[...]
-                    da = DocumentArray()
-                    for doc in docs:
-                        result = doc
-                        while getattr(result, 'parent_id', None):
-                            result = root_da_flat[result.parent_id]
-                        da.append(result)
-                    return da
+                from docarray.helper import get_root_docs
 
                 if isinstance(self, DocumentArrayInMemory):
                     da = get_root_docs(self, results)

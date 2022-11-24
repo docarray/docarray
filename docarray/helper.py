@@ -491,6 +491,19 @@ def _get_array_info(da: 'DocumentArray'):
     return is_homo, _nested_in, _nested_items, attr_counter, all_attrs_names
 
 
+def get_root_docs(da: 'DocumentArray', docs: 'DocumentArray'):
+    from docarray import DocumentArray
+
+    root_da_flat = da[...]
+    da = DocumentArray()
+    for doc in docs:
+        result = doc
+        while getattr(result, 'parent_id', None):
+            result = root_da_flat[result.parent_id]
+        da.append(result)
+    return da
+
+
 def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):
     """Login to Jina AI Cloud account.
     :param interactive: If set to true, login will support notebook environments, otherwise the enviroment will be inferred.
