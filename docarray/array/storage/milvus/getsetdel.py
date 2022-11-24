@@ -40,6 +40,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 )
             sorted_res = sorted(res, key=lambda k: int(k['offset']))
             self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
         if self._list_like:
