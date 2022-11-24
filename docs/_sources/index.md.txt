@@ -41,13 +41,13 @@ fundamentals/document/index
 fundamentals/documentarray/index
 fundamentals/dataclass/index
 advanced/document-store/index
+fundamentals/cloud-support/index
 ```
 
 ```{toctree}
 :caption: Integrations
 :hidden:
 
-fundamentals/cloud-support/index
 fundamentals/jina-support/index
 fundamentals/notebook-support/index
 advanced/torch-support/index
