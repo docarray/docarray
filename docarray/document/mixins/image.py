@@ -194,9 +194,15 @@ class ImageDataMixin:
         if isinstance(tensor, np.ndarray):
             self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
         elif isinstance(tensor, List):
-            n_imgs = len(tensor)
             self.chunks = DocumentArray(
-                [Document(tensor=tensor[i]) for i in range(n_imgs)]
+                [
+                    Document(
+                        tensor=_move_channel_axis(
+                            tensor[i], original_channel_axis=channel_axis
+                        )
+                    )
+                    for i in range(len(tensor))
+                ]
             )
 
         return self
