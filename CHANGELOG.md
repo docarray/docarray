@@ -139,6 +139,7 @@
 
 
 
+
 <a name=release-note-0-1-1></a>
 ## Release Note (`0.1.1`)
 
@@ -3393,4 +3394,23 @@
  - [[```524aee18```](https://github.com/jina-ai/docarray/commit/524aee183b6dd244ef555774ea06a16fc22c864e)] __-__ remove label issue link from contributing  (#578) (*Joan Fontanals*)
  - [[```afb84fb2```](https://github.com/jina-ai/docarray/commit/afb84fb2d4195f04bb97e231a6f9e188f06d2307)] __-__ fix docs website template (*Han Xiao*)
  - [[```d9af0c23```](https://github.com/jina-ai/docarray/commit/d9af0c235af28bc5724b2e53cbd9801272781fd4)] __-__ __version__: the next version will be 0.17.1 (*Jina Dev Bot*)
+
+<a name=release-note-0-19-1></a>
+## Release Note (`0.19.1`)
+
+> Release time: 2022-11-24 08:53:45
+
+
+
+🙇 We'd like to thank all contributors for this new release! In particular,
+ Sami Jaghouar,  samsja,  🙇
+
+
+### 🐞 Bug fixes
+
+ - [[```369e2f99```](https://github.com/jina-ai/docarray/commit/369e2f99c4f910f174e513939072e656b48b42b1)] __-__ pull docarray with username/da-name format (#807) (#812) (*samsja*)
+
+### 🍹 Other Improvements
+
+ - [[```12772a2c```](https://github.com/jina-ai/docarray/commit/12772a2cb0f15436bdcef4e2be5256bd6435ef9e)] __-__ bump docarray version (*Sami Jaghouar*)
 
