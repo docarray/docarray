@@ -8,7 +8,7 @@ from docarray import Document
 class SequenceLikeMixin(BaseSequenceLikeMixin):
     """Implement sequence-like methods"""
 
-    def extend(self, values: Iterable['Document']) -> None:
+    def _extend(self, values: Iterable['Document']) -> None:
         docs = DocumentArrayInMemory(values)
         if len(docs) == 0:
             return
@@ -19,9 +19,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._annlite.index(docs)
         self._offset2ids.extend([doc.id for doc in docs])
 
-        self._update_subindices_append_extend(docs)
-
-    def append(self, value: 'Document'):
+    def _append(self, value: 'Document'):
         self.extend([value])
 
     def __eq__(self, other):
