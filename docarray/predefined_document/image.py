@@ -22,7 +22,7 @@ class Image(BaseDocument):
         image = Image(url='http://www.jina.ai/image.jpg')
         image.tensor = image.url.load()
         model = MyEmbeddingModel()
-        image.embedding = MyEmbeddingModel(image.tensor)
+        image.embedding = model(image.tensor)
 
     You can extend this Document:
 
@@ -40,8 +40,8 @@ class Image(BaseDocument):
         image = MyImage(url='http://www.jina.ai/image.jpg')
         image.tensor = image.url.load()
         model = MyEmbeddingModel()
-        image.embedding = MyEmbeddingModel(image.tensor)
-        image.second_embedding = MyEmbeddingModel(image.tensor)
+        image.embedding = model(image.tensor)
+        image.second_embedding = model(image.tensor)
 
 
     You can use this Document for composition:
