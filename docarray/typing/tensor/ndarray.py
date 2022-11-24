@@ -2,17 +2,18 @@ from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Type, TypeVar, Union, 
 
 import numpy as np
 
+from docarray.typing.abstract_type import AbstractType
+
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
     from pydantic import BaseConfig
 
-from docarray.document.base_node import BaseNode
 from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='NdArray')
 
 
-class NdArray(np.ndarray, BaseNode):
+class NdArray(np.ndarray, AbstractType):
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the

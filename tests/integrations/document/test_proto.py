@@ -1,6 +1,16 @@
 import numpy as np
+import torch
 
-from docarray import DocumentArray, Document, Image, Text
+from docarray import Document, Image, Text
+from docarray.typing import (
+    AnyUrl,
+    Embedding,
+    ImageUrl,
+    NdArray,
+    Tensor,
+    TextUrl,
+    TorchTensor,
+)
 
 
 def test_multi_modal_doc_proto():
@@ -17,3 +27,40 @@ def test_multi_modal_doc_proto():
     )
 
     MyMultiModalDoc.from_protobuf(doc.to_protobuf())
+
+
+def test_all_types():
+    class MyDoc(Document):
+        img_url: ImageUrl
+        txt_url: TextUrl
+        any_url: AnyUrl
+        torch_tensor: TorchTensor
+        np_array: NdArray
+        generic_nd_array: Tensor
+        generic_torch_tensor: Tensor
+        embedding: Embedding
+
+    doc = MyDoc(
+        img_url='test.png',
+        txt_url='test.txt',
+        any_url='www.jina.ai',
+        torch_tensor=torch.zeros((3, 224, 224)),
+        np_array=np.zeros((3, 224, 224)),
+        generic_nd_array=np.zeros((3, 224, 224)),
+        generic_torch_tensor=torch.zeros((3, 224, 224)),
+        embedding=np.zeros((3, 224, 224)),
+    )
+    doc = MyDoc.from_protobuf(doc.to_protobuf())
+
+    assert doc.img_url == 'test.png'
+    assert doc.txt_url == 'test.txt'
+    assert doc.any_url == 'www.jina.ai'
+    assert (doc.torch_tensor == torch.zeros((3, 224, 224))).all()
+    assert isinstance(doc.torch_tensor, torch.Tensor)
+    assert (doc.np_array == np.zeros((3, 224, 224))).all()
+    assert isinstance(doc.np_array, np.ndarray)
+    assert (doc.generic_nd_array == np.zeros((3, 224, 224))).all()
+    assert isinstance(doc.generic_nd_array, np.ndarray)
+    assert (doc.generic_torch_tensor == torch.zeros((3, 224, 224))).all()
+    assert isinstance(doc.generic_torch_tensor, torch.Tensor)
+    assert (doc.embedding == np.zeros((3, 224, 224))).all()
