@@ -247,12 +247,11 @@ top_level_matches = da.find(query=np.random.rand(512), on='@c', return_root=True
 
 ````{admonition} Note
 :class: note
-When you add more Documents to nested level, the `root_id` of new Documents should be set manually for `return_root=True` to work:
+When you add or change Documents on nested level directly, the `_root_id_` (or `parent_id` for DocumentArrayInMemory) of new Documents should be set manually for `return_root=True` to work:
 
 ```python
 da['@c'].extend(
-    Document(embedding=np.random.random(512), tags={'root_id': 'your_root_id'})
+    Document(embedding=np.random.random(512), tags={'_root_id_': 'your_root_id'})
 )
 ```
-
 ````
