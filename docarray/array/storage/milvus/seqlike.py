@@ -47,8 +47,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._offset2ids.append(value.id)
 
     def _extend(self, values: Iterable['Document'], **kwargs):
-        print('VALUES IN EXTEND:')
-        print(values)
         docs = list(values)
         if not docs:
             return
@@ -56,7 +54,5 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         kwargs = self._update_kwargs_from_config('batch_size', **kwargs)
         for docs_batch in _batch_list(list(docs), kwargs['batch_size']):
             payload = self._docs_to_milvus_payload(docs_batch)
-            print('PAYLOAD IN EXTEND:')
-            print(payload)
             self._collection.insert(payload, **kwargs)
             self._offset2ids.extend([doc.id for doc in docs_batch])

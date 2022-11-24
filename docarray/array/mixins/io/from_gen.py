@@ -37,9 +37,6 @@ class FromGeneratorMixin:
 
         from_fn = getattr(generators, meth)
         da_like = cls(**kwargs)
-        print('FROM GENERATOR')
-        print('EXTEND INPUTS')
-        print(from_fn(*args, **kwargs))
         da_like.extend(from_fn(*args, **kwargs))
         return da_like
 
