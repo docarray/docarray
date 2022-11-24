@@ -20,6 +20,7 @@ class BaseBackendMixin(ABC):
         *args,
         **kwargs,
     ):
+        self._is_subindex = False
         self._load_offset2ids()
 
     def _init_subindices(
