@@ -77,6 +77,7 @@ def doc_lists_to_doc_arrays(doc_lists, *args, **kwargs):
         ('qdrant', {'n_dim': 3}),
         ('weaviate', {'n_dim': 3}),
         ('redis', {'n_dim': 3}),
+        ('milvus', {'n_dim': 3}),
     ],
 )
 @pytest.mark.parametrize('limit', [1, 2, 3])
@@ -777,6 +778,7 @@ def embeddings_eq(emb1, emb2):
         ('elasticsearch', {'n_dim': 3, 'distance': 'l2_norm'}),
         ('sqlite', dict()),
         ('redis', {'n_dim': 3, 'distance': 'L2'}),
+        ('milvus', {'n_dim': 3, 'distance': 'L2'}),
     ],
 )
 def test_match_subindex(storage, config):

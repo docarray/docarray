@@ -10,6 +10,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 @pytest.mark.parametrize(
@@ -22,6 +23,7 @@ from docarray.array.redis import DocumentArrayRedis, RedisConfig
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ],
 )
 @pytest.mark.parametrize(
@@ -34,6 +36,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ]:
         da = cls(config={'n_dim': 3})
     else:
@@ -51,6 +54,7 @@ def test_content_empty_getter_return_none(cls, content_attr, start_storage):
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ],
 )
 @pytest.mark.parametrize(
@@ -70,6 +74,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         DocumentArrayQdrant,
         DocumentArrayElastic,
         DocumentArrayRedis,
+        DocumentArrayMilvus,
     ]:
         da = cls(config={'n_dim': 3})
     else:
@@ -88,6 +93,7 @@ def test_content_empty_setter(cls, content_attr, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 @pytest.mark.parametrize(
@@ -123,6 +129,7 @@ def test_content_getter_setter(cls, content_attr, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=128)),
         (DocumentArrayElastic, ElasticConfig(n_dim=128)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=128)),
     ],
 )
 def test_content_empty(da_len, da_cls, config, start_storage):
@@ -161,6 +168,7 @@ def test_content_empty(da_len, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=5)),
         (DocumentArrayElastic, ElasticConfig(n_dim=5)),
         (DocumentArrayRedis, RedisConfig(n_dim=128)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=5)),
     ],
 )
 def test_embeddings_setter(da_len, da_cls, config, start_storage):

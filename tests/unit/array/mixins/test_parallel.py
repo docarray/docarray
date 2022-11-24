@@ -13,6 +13,7 @@ from docarray.array.storage.weaviate import WeaviateConfig
 from docarray.array.weaviate import DocumentArrayWeaviate
 from docarray.array.elastic import DocumentArrayElastic, ElasticConfig
 from docarray.array.redis import DocumentArrayRedis, RedisConfig
+from docarray.array.milvus import DocumentArrayMilvus, MilvusConfig
 
 
 def foo(d: Document):
@@ -54,6 +55,7 @@ def test_parallel_map_apply_external_pool(pytestconfig, pool):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['process', 'thread'])
@@ -111,6 +113,7 @@ def test_parallel_map(
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread'])
@@ -183,6 +186,7 @@ def test_parallel_map_batch(
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_map_lambda(pytestconfig, da_cls, config, start_storage):
@@ -212,6 +216,7 @@ def test_map_lambda(pytestconfig, da_cls, config, start_storage):
         (DocumentArrayQdrant, QdrantConfig(n_dim=10)),
         (DocumentArrayElastic, ElasticConfig(n_dim=10)),
         (DocumentArrayRedis, RedisConfig(n_dim=10)),
+        (DocumentArrayMilvus, MilvusConfig(n_dim=10)),
     ],
 )
 def test_apply_partial(pytestconfig, da_cls, config, start_storage):
@@ -242,6 +247,7 @@ def test_apply_partial(pytestconfig, da_cls, config, start_storage):
         ('qdrant', QdrantConfig(n_dim=256)),
         ('elasticsearch', ElasticConfig(n_dim=256)),
         ('redis', RedisConfig(n_dim=256)),
+        ('milvus', MilvusConfig(n_dim=256)),
     ],
 )
 @pytest.mark.parametrize('backend', ['thread', 'process'])
