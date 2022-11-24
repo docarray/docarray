@@ -166,7 +166,7 @@ class FindMixin:
                     results[:, 'tags__root_id']
                 ):
                     raise ValueError(
-                        f'Not all Documents in the subindex {on} have the "tags__root_id" attribute set.'
+                        f'Not all Documents in the subindex {on} have the "root_id" attribute set in all `tags`.'
                     )
 
                 if isinstance(self, DocumentArrayInMemory):
