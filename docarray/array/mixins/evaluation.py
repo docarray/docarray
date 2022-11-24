@@ -168,12 +168,16 @@ class EvaluationMixin:
         for d, gd in zip(self, ground_truth):
             if caller_max_rel:
                 max_rel = caller_max_rel
-            elif max_rel_per_label and ground_truth_type == 'labels':
-                max_rel = max_rel_per_label.get(d.tags[label_tag], None)
-                if max_rel is None:
-                    raise ValueError(
-                        '`max_rel_per_label` misses the label ' + str(d.tags[label_tag])
-                    )
+            elif ground_truth_type == 'labels':
+                if max_rel_per_label:
+                    max_rel = max_rel_per_label.get(d.tags[label_tag], None)
+                    if max_rel is None:
+                        raise ValueError(
+                            '`max_rel_per_label` misses the label '
+                            + str(d.tags[label_tag])
+                        )
+                else:
+                    max_rel = None
             else:
                 max_rel = len(gd.matches)
             if strict and hash_fn(d) != hash_fn(gd):
