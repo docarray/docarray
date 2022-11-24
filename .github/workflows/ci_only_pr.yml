@@ -50,14 +50,8 @@ jobs:
           pip install -r requirements.txt
           python -m pip install wheel
           cd ..
-          # pip does not properly resolve dependency versions with syntax pip install --no-cache-dir ".[test,full]"
-          pip install --no-cache-dir ".[test]"
-          pip install --no-cache-dir ".[full]"
-          pip install --no-cache-dir ".[qdrant]"
-          pip install --no-cache-dir ".[annlite]"
-          pip install --no-cache-dir ".[weaviate]"
-          pip install --no-cache-dir ".[elasticsearch]"
-          pip install --no-cache-dir ".[redis]"
+          pip install poetry
+          poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi  --all-extras        
           git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
