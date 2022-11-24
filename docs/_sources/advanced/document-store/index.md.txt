@@ -10,6 +10,7 @@ qdrant
 elasticsearch
 weaviate
 redis
+milvus
 extend
 benchmark
 ```
@@ -168,6 +169,7 @@ DocArray supports multiple storage backends with different search features. The 
 | [`AnnLite`](./annlite.md)             | `DocumentArray(storage='annlite')`       | ✅             | ✅                      | ✅      |
 | [`ElasticSearch`](./elasticsearch.md) | `DocumentArray(storage='elasticsearch')` | ✅             | ✅                      | ✅      |
 | [`Redis`](./redis.md)                 | `DocumentArray(storage='redis')`         | ✅             | ✅                      | ✅      |
+| [`Milvus`](./milvus.md)               | `DocumentArray(storage='milvus')`        | ✅             | ✅                      | ✅      |
 
 The right backend choice depends on the scale of your data, the required performance and the desired ease of setup. For most use cases we recommend starting with [`AnnLite`](./annlite.md).
 [**Check our One Million Scale Benchmark for more details**](./benchmark#conclusion).
@@ -354,6 +356,7 @@ array([[7., 7., 7.],
        [4., 4., 4.]])
 ```
 
+(backend-context-mngr)=
 ## Persistence, mutations and context manager
 
 Having DocumentArrays that are backed by a document store introduces an extra consideration into the way you think about DocumentArrays.
