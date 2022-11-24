@@ -3,6 +3,7 @@ from typing import Type
 
 import orjson
 from pydantic import BaseModel, Field
+from pydantic import parse_obj_as
 
 from docarray.document.abstract_document import AbstractDocument
 from docarray.document.base_node import BaseNode
@@ -16,7 +17,7 @@ class BaseDocument(BaseModel, ProtoMixin, AbstractDocument, BaseNode):
     The base class for Document
     """
 
-    id: ID = Field(default_factory=lambda: ID.validate(os.urandom(16).hex()))
+    id: ID = Field(default_factory=lambda: parse_obj_as(ID, os.urandom(16).hex()))
 
     class Config:
         json_loads = orjson.loads

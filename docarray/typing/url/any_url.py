@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Type, TypeVar
 from pydantic import AnyUrl as BaseAnyUrl
 from pydantic import errors, parse_obj_as
 
-from docarray.document.base_node import BaseNode
 from docarray.proto import NodeProto
+from docarray.typing.abstract_type import AbstractType
 
 if TYPE_CHECKING:
     from pydantic.networks import Parts
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 T = TypeVar('T', bound='AnyUrl')
 
 
-class AnyUrl(BaseAnyUrl, BaseNode):
+class AnyUrl(BaseAnyUrl, AbstractType):
     host_required = (
         False  # turn off host requirement to allow passing of local paths as URL
     )

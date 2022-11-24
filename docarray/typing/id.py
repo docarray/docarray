@@ -1,16 +1,15 @@
-from typing import Optional, Type, TypeVar, Union
+from typing import Type, TypeVar, Union
 from uuid import UUID
-
 from pydantic import BaseConfig, parse_obj_as
 from pydantic.fields import ModelField
 
-from docarray.document.base_node import BaseNode
 from docarray.proto import NodeProto
+from docarray.typing.abstract_type import AbstractType
 
 T = TypeVar('T', bound='ID')
 
 
-class ID(str, BaseNode):
+class ID(str, AbstractType):
     """
     Represent an unique ID
     """
@@ -23,8 +22,8 @@ class ID(str, BaseNode):
     def validate(
         cls: Type[T],
         value: Union[str, int, UUID],
-        field: Optional['ModelField'] = None,
-        config: Optional['BaseConfig'] = None,
+        field: 'ModelField',
+        config: 'BaseConfig',
     ) -> T:
 
         try:
