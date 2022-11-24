@@ -22,7 +22,7 @@ As in element selector, one can use attribute selector to **get/set/delete** att
 | `da[..., 'id']`                              | all `.id` from all flattened Documents (root, chunks, and matches) in a List                                                                                |
 | `da['@m', 'id']`                             | all `.id` from all Documents `.matches`                                                                                       |
 | `da[1:3, ('id', 'scores')]`                  | a list of two list, first is all `.id` from the first three Documents, second is all `.scores` from the first three Documents |
-| `da[:, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
+| `da[1:3, 'scores__cosine__value']`             | all `.scores['cosine'].value` from the first three Documents                                                                  |
 | `da[1:3, 'embedding']`, `da[1:3].embeddings` | a NdArray-like object of the first three Documents embeddings                                                                 |
 | `da[:, 'tensor']`, `da.tensors`              | a NdArray-like object of the all top-level Documents tensors                                                                  |
 
