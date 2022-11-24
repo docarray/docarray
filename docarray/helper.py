@@ -12,7 +12,7 @@ from collections import Counter
 import hubble
 
 if TYPE_CHECKING:  # pragma: no cover
-    from docarray import DocumentArray
+    from docarray import Document, DocumentArray
 
 __resources_path__ = os.path.join(
     os.path.dirname(
@@ -502,6 +502,29 @@ def get_root_docs(da: 'DocumentArray', docs: 'DocumentArray'):
             result = root_da_flat[result.parent_id]
         da.append(result)
     return da
+
+
+def check_root_id(da: 'DocumentArray', value: Union['Document', Sequence['Document']]):
+
+    from docarray import Document
+    from docarray.array.memory import DocumentArrayInMemory
+
+    if isinstance(value, Document):
+        value = [value]
+
+    if isinstance(da, DocumentArrayInMemory):
+        if not all([getattr(doc, 'parent_id', None) for doc in value]):
+            warnings.warn(
+                "Not all documents have parent_id set. This may cause unexpected behavior.",
+                UserWarning,
+            )
+    elif da._config.root_id and not all(
+        [doc.tags.get('_root_id_', None) for doc in value]
+    ):
+        warnings.warn(
+            "root_id is enabled but not all documents have _root_id_ set. This may cause unexpected behavior.",
+            UserWarning,
+        )
 
 
 def login(interactive: Optional[bool] = None, force: bool = False, **kwargs):

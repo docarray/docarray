@@ -1080,8 +1080,8 @@ def test_subindex_root_id(storage, config, subindex_configs, start_storage):
                 Document(
                     id=f'{i}',
                     chunks=[
-                        Document(id=f'sub{i}_0', embedding=np.random.random(3)),
-                        Document(id=f'sub{i}_1', embedding=np.random.random(3)),
+                        Document(id=f'sub{i}_0'),
+                        Document(id=f'sub{i}_1'),
                     ],
                 )
                 for i in range(5)
@@ -1089,11 +1089,14 @@ def test_subindex_root_id(storage, config, subindex_configs, start_storage):
         )
 
     with pytest.warns(UserWarning):
-        new_da = DocumentArray(
-            [Document(id=f'temp{i}', embedding=np.random.random(3)) for i in range(10)]
-        )
+        new_da = DocumentArray([Document(id=f'temp{i}') for i in range(10)])
         new_da[:, 'id'] = da['@c'][:, 'id']
         da['@c'] = new_da
-
     with pytest.warns(UserWarning):
-        da['@c'].extend([Document(id='sub_extra', embedding=np.random.random(3))])
+        da['@c'].extend([Document(id='sub_extra')])
+    with pytest.warns(UserWarning):
+        da['@c']['sub0_0'] = Document(id='sub0_new')
+    with pytest.warns(UserWarning):
+        da['@c'][0] = Document(id='sub0_new')
+    with pytest.warns(UserWarning):
+        da['@c'][0:] = [Document(id='sub0_new'), Document(id='sub0_new2')]
