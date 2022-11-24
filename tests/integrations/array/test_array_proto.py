@@ -1,13 +1,13 @@
 import numpy as np
 
-from docarray import DocumentArray, Document, Image, Text
-from docarray.typing import Tensor
+from docarray import Document, DocumentArray, Image, Text
+from docarray.typing import NdArray
 
 
 def test_simple_proto():
     class CustomDoc(Document):
         text: str
-        tensor: Tensor
+        tensor: NdArray
 
     da = DocumentArray(
         [CustomDoc(text='hello', tensor=np.zeros((3, 224, 224))) for _ in range(10)]

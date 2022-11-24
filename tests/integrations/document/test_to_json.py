@@ -2,12 +2,12 @@ import numpy as np
 import torch
 
 from docarray.document import BaseDocument
-from docarray.typing import AnyUrl, Tensor, TorchTensor
+from docarray.typing import AnyUrl, NdArray, TorchTensor
 
 
 def test_to_json():
     class Mmdoc(BaseDocument):
-        img: Tensor
+        img: NdArray
         url: AnyUrl
         txt: str
         torch_tensor: TorchTensor
@@ -23,7 +23,7 @@ def test_to_json():
 
 def test_from_json():
     class Mmdoc(BaseDocument):
-        img: Tensor
+        img: NdArray
         url: AnyUrl
         txt: str
         torch_tensor: TorchTensor

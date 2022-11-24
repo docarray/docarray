@@ -8,7 +8,7 @@ from docarray.typing import (
     AnyUrl,
     Embedding,
     ImageUrl,
-    Tensor,
+    NdArray,
     TextUrl,
     TorchTensor,
 )
@@ -31,7 +31,7 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # this if else statement need to be refactored it is too long
             # the check should be delegated to the type level
             content_type_dict = dict(
-                tensor=Tensor,
+                ndarray=NdArray,
                 torch_tensor=TorchTensor,
                 embedding=Embedding,
                 any_url=AnyUrl,

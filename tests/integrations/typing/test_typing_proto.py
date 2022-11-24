@@ -3,12 +3,12 @@ import torch
 
 from docarray import Document
 from docarray.document import AnyDocument
-from docarray.typing import AnyUrl, Embedding, ImageUrl, Tensor, TextUrl, TorchTensor
+from docarray.typing import AnyUrl, Embedding, ImageUrl, NdArray, TextUrl, TorchTensor
 
 
 def test_proto_all_types():
     class Mymmdoc(Document):
-        tensor: Tensor
+        tensor: NdArray
         torch_tensor: TorchTensor
         embedding: Embedding
         any_url: AnyUrl
