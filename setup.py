@@ -82,7 +82,7 @@ setup(
             'redis>=4.3.0',
         ],
         'milvus': [
-            'pymilvus==2.1.3',
+            'pymilvus~=2.1.0',
         ],
         'benchmark': [
             'pandas',
