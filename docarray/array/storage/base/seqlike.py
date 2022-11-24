@@ -17,9 +17,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
                 if getattr(da, '_config', None) and da._config.root_id:
                     for v in value:
                         for doc in DocumentArray(v)[selector]:
-                            doc.tags['root_id'] = (
-                                doc.tags['root_id'] if 'root_id' in doc.tags else v.id
-                            )
+                            doc.tags['_root_id_'] = v.id
 
                 docs_selector = value[selector]
                 if len(docs_selector) > 0:
@@ -86,10 +84,10 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
                         UserWarning,
                     )
             elif self._config.root_id and not all(
-                [doc.tags.get('root_id', None) for doc in values]
+                [doc.tags.get('_root_id_', None) for doc in values]
             ):
                 warnings.warn(
-                    "root_id is enabled but not all documents have root_id set. This may cause unexpected behavior.",
+                    "root_id is enabled but not all documents have _root_id_ set. This may cause unexpected behavior.",
                     UserWarning,
                 )
 

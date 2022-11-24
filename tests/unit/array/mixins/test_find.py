@@ -1039,7 +1039,9 @@ def test_find_return_root(storage, config, subindex_configs, start_storage):
     )
 
     if storage != 'memory':
-        assert all(d.tags['root_id'] in [f'{i}' for i in range(1, 6)] for d in da['@c'])
+        assert all(
+            d.tags['_root_id_'] in [f'{i}' for i in range(1, 6)] for d in da['@c']
+        )
 
     res = da.find(np.random.random(3), on='@c', return_root=True)
     assert len(res) > 0

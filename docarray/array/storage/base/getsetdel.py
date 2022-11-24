@@ -216,9 +216,7 @@ class BaseGetSetDelMixin(ABC):
                 ):
                     for v in value:
                         for doc in DocumentArray(v)[subindex_selector]:
-                            doc.tags['root_id'] = (
-                                doc.tags['root_id'] if 'root_id' in doc.tags else v.id
-                            )
+                            doc.tags['_root_id_'] = v.id
 
                 subindex_da.extend(value[subindex_selector])
 

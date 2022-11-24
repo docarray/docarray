@@ -163,16 +163,16 @@ class FindMixin:
                     return da
 
                 if not isinstance(self, DocumentArrayInMemory) and not all(
-                    results[:, 'tags__root_id']
+                    results[:, 'tags___root_id_']
                 ):
                     raise ValueError(
-                        f'Not all Documents in the subindex {on} have the "root_id" attribute set in all `tags`.'
+                        f'Not all Documents in the subindex {on} have the "_root_id_" attribute set in all `tags`.'
                     )
 
                 if isinstance(self, DocumentArrayInMemory):
                     da = get_root_docs(self, results)
                 else:
-                    da = DocumentArray(self[results[:, 'tags__root_id']])
+                    da = DocumentArray(self[results[:, 'tags___root_id_']])
 
                 for d, s in zip(da, results[:, 'scores']):
                     d.scores = s
