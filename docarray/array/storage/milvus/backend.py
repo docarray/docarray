@@ -197,6 +197,15 @@ class BackendMixin(BaseBackendMixin):
             'params': self._config.index_params,
         }
         self._collection.create_index(field_name='embedding', index_params=index_params)
+        if self._list_like:
+            offset_index_params = {
+                'metric_type': 'L2',
+                'index_type': 'IVF_FLAT',
+                'params': {'nlist': 1024},
+            }
+            self._offset2id_collection.create_index(
+                field_name='dummy_vector', index_params=offset_index_params
+            )
 
     def _create_or_reuse_offset2id_collection(self):
         if has_collection(
