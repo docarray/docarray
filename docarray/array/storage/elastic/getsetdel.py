@@ -121,6 +121,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
     def _clear_storage(self):
         """Concrete implementation of base class' ``_clear_storage``"""
         self._client.indices.delete(index=self._config.index_name)
+        self._build_index()
 
     def _load_offset2ids(self):
         if self._list_like:

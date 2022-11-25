@@ -125,4 +125,5 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._client.ft(index_name=self._config.index_name).dropindex(
             delete_documents=True
         )
+        self._build_index(rebuild=True)
         self._client.delete(self._offset2id_key)
