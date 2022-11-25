@@ -59,10 +59,11 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         return _ParametrizedTensor
 
     def __class_getitem__(cls, item):
-        if not isinstance(item, tuple):
-            if isinstance(item, int):
-                item = (item,)
-            else:
-                raise TypeError(f'{item} is not a valid tensor shape.')
+        if isinstance(item, int):
+            item = (item,)
+        try:
+            item = tuple(item)
+        except TypeError:
+            raise TypeError(f'{item} is not a valid tensor shape.')
 
         return cls._create_parametrized_type(item)
