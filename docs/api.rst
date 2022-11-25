@@ -10,13 +10,13 @@ For further details, please refer to the full :ref:`user guide <document>`.
 :mod:`docarray` - Document and DocumentArray
 --------------------
 
-.. currentmodule:: docarray
+.. currentmodule:: docarray.document
 
 .. autosummary::
    :nosignatures:
    :template: class.rst
 
-   document.BaseDocument
+   BaseDocument
 
 
 
