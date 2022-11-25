@@ -496,8 +496,9 @@ def check_root_id(da: 'DocumentArray', value: Union['Document', Sequence['Docume
     from docarray import Document
     from docarray.array.memory import DocumentArrayInMemory
 
-    if not isinstance(value, Document) or (
-        isinstance(value, Sequence) and not isinstance(value[0], Document)
+    if not (
+        isinstance(value, Document)
+        or (isinstance(value, Sequence) and isinstance(value[0], Document))
     ):
         return
 
