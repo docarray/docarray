@@ -55,7 +55,7 @@ jobs:
           git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
-          bash makedoc.sh development
+          bash makedoc.sh 
           netlify deploy --dir=_build/dirhtml --alias="ft-${{ env.BRANCH_NAME }}" --message="Deploying docs to ${{ env.BRANCH_NAME }} branch"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN1 }}
