@@ -148,18 +148,7 @@ class FindMixin:
             )
 
             if return_root:
-                from docarray.array.memory import DocumentArrayInMemory
-                from docarray.helper import get_root_docs
-
-                if isinstance(self, DocumentArrayInMemory):
-                    da = get_root_docs(self, results)
-                else:
-                    if not all(results[:, 'tags___root_id_']):
-                        raise ValueError(
-                            f'Not all Documents in the subindex {on} have the "_root_id_" attribute set in all `tags`.'
-                        )
-                    da = DocumentArray(self[results[:, 'tags___root_id_']])
-
+                da = self._get_root_docs(results)
                 for d, s in zip(da, results[:, 'scores']):
                     d.scores = s
 
@@ -322,3 +311,15 @@ class FindMixin:
         raise NotImplementedError(
             f'Search by text is not supported with this backend {self.__class__.__name__}'
         )
+
+    def _get_root_docs(self, docs: 'DocumentArray') -> 'DocumentArray':
+        """Get the root documents of the current DocumentArray.
+
+        :return: a `DocumentArray` containing the root documents.
+        """
+
+        if not all(docs[:, 'tags___root_id_']):
+            raise ValueError(
+                f'Not all Documents in this subindex have the "_root_id_" attribute set in all `tags`.'
+            )
+        return self[docs[:, 'tags___root_id_']]
