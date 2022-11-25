@@ -1,5 +1,6 @@
+import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Generic, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
@@ -24,7 +25,12 @@ class metaTorchAndNode(torch_base, node_base):
     pass
 
 
-class TorchTensor(AbstractType, torch.Tensor, metaclass=metaTorchAndNode):
+ShapeT = TypeVar('ShapeT')
+
+
+class TorchTensor(
+    AbstractType, torch.Tensor, Generic[ShapeT], metaclass=metaTorchAndNode
+):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
     @classmethod
@@ -33,6 +39,47 @@ class TorchTensor(AbstractType, torch.Tensor, metaclass=metaTorchAndNode):
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
+
+    def __class_getitem__(cls, item):
+        if not isinstance(item, tuple):
+            if isinstance(item, int):
+                item = (item,)
+            else:
+                raise TypeError(f'{item} is not a valid tensor shape.')
+
+        class _ParametrizedTorchTensor(TorchTensor, metaclass=metaTorchAndNode):
+            _docaray_shape = item
+
+            @classmethod
+            def validate(
+                cls: Type[T],
+                value: Union[T, np.ndarray, Any],
+                field: 'ModelField',
+                config: 'BaseConfig',
+            ) -> T:
+                t = super().validate(value, field, config)
+                if t.shape == cls._docaray_shape:
+                    return t
+                else:
+                    warnings.warn(
+                        f'Tensor shape mismatch. Reshaping tensor '
+                        f'of shape {t.shape} to shape {cls._docaray_shape}'
+                    )
+                    try:
+                        return cls.from_native_torch_tensor(
+                            torch.reshape(t, cls._docaray_shape)
+                        )
+                    except RuntimeError:
+                        raise ValueError(
+                            f'Cannot reshape tensor of '
+                            f'shape {t.shape} to shape {cls._docaray_shape}'
+                        )
+
+        # set class name
+        shape_str = ', '.join([str(s) for s in item])
+        _ParametrizedTorchTensor.__name__ = f'TorchTensor[{shape_str}]'
+        _ParametrizedTorchTensor.__qualname__ = f'TorchTensor[{shape_str}]'
+        return _ParametrizedTorchTensor
 
     @classmethod
     def validate(
