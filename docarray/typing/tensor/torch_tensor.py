@@ -16,6 +16,7 @@ from docarray.document.base_node import BaseNode
 from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
+ShapeT = TypeVar('ShapeT')
 
 torch_base = type(torch.Tensor)  # type: Any
 node_base = type(BaseNode)  # type: Any
@@ -23,9 +24,6 @@ node_base = type(BaseNode)  # type: Any
 
 class metaTorchAndNode(torch_base, node_base):
     pass
-
-
-ShapeT = TypeVar('ShapeT')
 
 
 class TorchTensor(
@@ -43,7 +41,7 @@ class TorchTensor(
     __parametrized_meta__ = metaTorchAndNode
 
     @classmethod
-    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
+    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
         if t.shape == shape:
             return t
         else:
@@ -52,7 +50,8 @@ class TorchTensor(
                 f'of shape {t.shape} to shape {shape}'
             )
             try:
-                return cls.from_native_torch_tensor(torch.reshape(t, shape))
+                value = cls.from_native_torch_tensor(torch.reshape(t, shape))
+                return cast(T, value)
             except RuntimeError:
                 raise ValueError(
                     f'Cannot reshape tensor of ' f'shape {t.shape} to shape {shape}'
