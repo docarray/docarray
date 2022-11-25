@@ -92,7 +92,7 @@ class TorchTensor(
                 f'of shape {t.shape} to shape {shape}'
             )
             try:
-                value = cls.from_native_torch_tensor(torch.reshape(t, shape))
+                value = cls.from_native_torch_tensor(t.view(shape))
                 return cast(T, value)
             except RuntimeError:
                 raise ValueError(
