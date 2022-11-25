@@ -71,6 +71,12 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         if doc.text:
             extra_columns['text'] = doc.text
 
+        if self._config.tag_indices:
+            for index in self._config.tag_indices:
+                text = doc.tags.get(index)
+                if text is not None:
+                    extra_columns[index] = text
+
         return PointStruct(
             id=self._map_id(doc.id),
             payload=dict(

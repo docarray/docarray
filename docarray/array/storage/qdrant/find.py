@@ -145,7 +145,7 @@ class FindMixin:
         self,
         query: Union[str, List[str]],
         index: str = 'text',
-        filter: Union[dict, list] = None,
+        filter: Optional[Dict] = None,
         limit: int = 10,
     ):
         if isinstance(query, str):
@@ -165,7 +165,7 @@ class FindMixin:
         self,
         query: str,
         index: str = 'text',
-        filter: Union[dict, list] = None,
+        filter: Optional[Dict] = None,
         limit: int = 10,
     ):
         """
@@ -176,19 +176,26 @@ class FindMixin:
            the closest Document objects for each of the queries in `query`.
         """
 
+        if filter:
+            filter = models.Filter(**filter)
+        else:
+            filter = models.Filter()
+
+        if not filter.must:
+            filter.must = []
+
+        filter.must.append(
+            models.FieldCondition(key=index, match=models.MatchText(text=query))
+        )
+
         hits, _offset = self.client.scroll(
             collection_name=self.collection_name,
-            scroll_filter=models.Filter(
-                must=[
-                    models.FieldCondition(key=index, match=models.MatchText(text=query))
-                ]
-            ),
+            scroll_filter=filter,
             with_payload=True,
-            limit=10,
+            limit=limit,
         )
 
         docs = []
-
         for hit in hits:
             doc = Document.from_base64(
                 hit.payload['_serialized'], **self.serialize_config

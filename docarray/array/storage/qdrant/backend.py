@@ -48,6 +48,7 @@ class QdrantConfig:
     https: Optional[bool] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
     index_text: Optional[bool] = field(default=False)
+    tag_indices: List[str] = field(default_factory=list)
     scroll_batch_size: int = 64
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
@@ -180,9 +181,16 @@ class BackendMixin(BaseBackendMixin):
                     field_schema=models.TextIndexParams(
                         type="text",
                         tokenizer=models.TokenizerType.WORD,
-                        # min_token_len=2,
-                        # max_token_len=15,
-                        # lowercase=True,
+                    ),
+                )
+
+            for index in self._config.tag_indices:
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name=index,
+                    field_schema=models.TextIndexParams(
+                        type="text",
+                        tokenizer=models.TokenizerType.WORD,
                     ),
                 )
 
