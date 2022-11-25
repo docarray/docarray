@@ -75,7 +75,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
 
         from docarray.helper import check_root_id
 
-        if getattr(self, '_is_subindex', False):
+        if self._is_subindex:
             check_root_id(self, values)
 
         self._extend(values, **kwargs)

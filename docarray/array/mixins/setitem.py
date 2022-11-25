@@ -65,7 +65,7 @@ class SetItemMixin:
     ):
         from docarray.helper import check_root_id
 
-        if getattr(self, '_is_subindex', False):
+        if self._is_subindex:
             check_root_id(self, value)
 
         self._update_subindices_set(index, value)
