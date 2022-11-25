@@ -50,8 +50,7 @@ jobs:
           pip install -r requirements.txt
           python -m pip install wheel
           cd ..
-          pip install poetry
-          poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi  --all-extras        
+          pip install .      
           git fetch origin
           cd docs
           export NUM_RELEASES=2 # only 2 last tags to save build time
