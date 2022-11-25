@@ -20,7 +20,7 @@ Log in to Jina AI Cloud to use and manage your cloud resources using DocArray.
 :link: data
 :link-type: doc
 
-Push, pull, and manage DocumentArray objects on Jina AI Cloud.
+Push, ppull, and manage DocumentArray objects on Jina AI Cloud.
 ::::
 
 
