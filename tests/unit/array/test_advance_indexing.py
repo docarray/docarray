@@ -459,25 +459,10 @@ def test_path_syntax_indexing_set(storage, config, use_subindex, start_storage):
     assert da[2].id == 'new_id'
 
 
-@pytest.mark.parametrize(
-    'storage,config',
-    [
-        ('memory', None),
-        ('sqlite', None),
-        ('weaviate', WeaviateConfig(n_dim=123)),
-        ('annlite', AnnliteConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123)),
-        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True)),
-        ('elasticsearch', ElasticConfig(n_dim=123)),
-        ('redis', RedisConfig(n_dim=123)),
-        ('milvus', MilvusConfig(n_dim=123)),
-    ],
-)
-def test_getset_subindex(storage, config, start_storage):
+def test_getset_subindex():
     da = DocumentArray(
         [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
-        config=config,
-        subindex_configs={'@c': {'n_dim': 123}} if config else {'@c': None},
+        subindex_configs={'@c': None},
     )
     with da:
         assert len(da['@c']) == 15
@@ -507,6 +492,42 @@ def test_getset_subindex(storage, config, start_storage):
         for d in da:
             collected_chunks.extend(d.chunks[:3])
         assert collected_chunks == new_chunks
+
+
+@pytest.mark.parametrize(
+    'storage,config,subindex_config',
+    [
+        ('memory', None, None),
+        ('sqlite', None, None),
+        ('weaviate', WeaviateConfig(n_dim=123), {'n_dim': 123}),
+        ('annlite', AnnliteConfig(n_dim=123), {'n_dim': 123}),
+        ('qdrant', QdrantConfig(n_dim=123), {'n_dim': 123}),
+        ('qdrant', QdrantConfig(n_dim=123, prefer_grpc=True), {'n_dim': 123}),
+        ('elasticsearch', ElasticConfig(n_dim=123), {'n_dim': 123}),
+        ('redis', RedisConfig(n_dim=123), {'n_dim': 123}),
+        ('milvus', MilvusConfig(n_dim=123), {'n_dim': 123}),
+    ],
+)
+def test_getset_subindex_in_store(storage, config, subindex_config, start_storage):
+    da = DocumentArray(
+        [Document(chunks=[Document() for _ in range(5)]) for _ in range(3)],
+        storage=storage,
+        config=config,
+        subindex_configs={'@c': subindex_config},
+    )
+    with da:
+        assert len(da['@c']) == 15
+        assert len(da._subindices['@c']) == 15
+
+        chunks_ids = [c.id for c in da['@c']]
+        new_chunks = [
+            Document(id=cid, embedding=np.ones(123) * i)
+            for i, cid in enumerate(chunks_ids)
+        ]
+        da['@c'] = new_chunks
+
+        res = da.find(np.random.random(123), on='@c')
+        assert len(res) > 0
 
 
 @pytest.mark.parametrize('size', [1, 5])
