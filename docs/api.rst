@@ -16,7 +16,8 @@ For further details, please refer to the full :ref:`user guide <document>`.
    :nosignatures:
    :template: class.rst
 
-   Document
+   document.BaseDocument
+
 
 
 
