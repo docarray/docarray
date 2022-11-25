@@ -16,42 +16,10 @@ For further details, please refer to the full :ref:`user guide <document>`.
    :nosignatures:
    :template: class.rst
 
-   document.Document
-   array.document.DocumentArray
-   array.chunk.ChunkArray
-   array.match.MatchArray
+   Document
 
 
 
-:mod:`docarray.dataclasses` - Dataclass
---------------------
-
-.. currentmodule:: docarray.dataclasses
-
-.. autosummary::
-   :nosignatures:
-   :template: class.rst
-
-   types.dataclass
-   types.is_multimodal
-   types.field
-   
-   
-:mod:`docarray.array` - Document stores
---------------------
-
-.. currentmodule:: docarray.array
-
-.. autosummary::
-   :nosignatures:
-   :template: class.rst
-
-   memory.DocumentArrayInMemory
-   sqlite.DocumentArraySqlite
-   annlite.DocumentArrayAnnlite
-   weaviate.DocumentArrayWeaviate
-   qdrant.DocumentArrayQdrant
-   elastic.DocumentArrayElastic
 
 
 
