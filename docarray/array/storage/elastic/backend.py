@@ -286,4 +286,7 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = self._build_client()
+        self._client = Elasticsearch(
+            hosts=self._config.hosts,
+            **self._config.es_config,
+        )
