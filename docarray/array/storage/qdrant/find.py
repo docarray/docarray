@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, TypeVar, Union
 from docarray import Document, DocumentArray
 from docarray.math import ndarray
 from docarray.score import NamedScore
-from qdrant_client.http import models as rest
+from qdrant_client.http import models
 from qdrant_client.http.models.models import Distance
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -59,7 +59,7 @@ class FindMixin:
             query_filter=filter,
             search_params=None
             if not search_params
-            else rest.SearchParams(**search_params),
+            else models.SearchParams(**search_params),
             limit=limit,
             append_payload=['_serialized'],
         )
@@ -117,7 +117,7 @@ class FindMixin:
     ):
         list_of_points, _offset = self.client.scroll(
             collection_name=self.collection_name,
-            scroll_filter=rest.Filter(**filter),
+            scroll_filter=models.Filter(**filter),
             with_payload=True,
             limit=limit,
         )
@@ -140,3 +140,59 @@ class FindMixin:
         """
 
         return self._find_with_filter(filter, limit=limit)
+
+    def _find_by_text(
+        self,
+        query: Union[str, List[str]],
+        index: str = 'text',
+        filter: Union[dict, list] = None,
+        limit: int = 10,
+    ):
+        if isinstance(query, str):
+            query = [query]
+
+        return [
+            self._find_similar_documents_from_text(
+                q,
+                index=index,
+                filter=filter,
+                limit=limit,
+            )
+            for q in query
+        ]
+
+    def _find_similar_documents_from_text(
+        self,
+        query: str,
+        index: str = 'text',
+        filter: Union[dict, list] = None,
+        limit: int = 10,
+    ):
+        """
+        Return keyword matches for the input query
+        :param query: text used for keyword search
+        :param limit: number of items to be retrieved
+        :return: DocumentArray containing the closest documents to the query if it is a single query, otherwise a list of DocumentArrays containing
+           the closest Document objects for each of the queries in `query`.
+        """
+
+        hits, _offset = self.client.scroll(
+            collection_name=self.collection_name,
+            scroll_filter=models.Filter(
+                must=[
+                    models.FieldCondition(key=index, match=models.MatchText(text=query))
+                ]
+            ),
+            with_payload=True,
+            limit=10,
+        )
+
+        docs = []
+
+        for hit in hits:
+            doc = Document.from_base64(
+                hit.payload['_serialized'], **self.serialize_config
+            )
+            docs.append(doc)
+
+        return DocumentArray(docs)

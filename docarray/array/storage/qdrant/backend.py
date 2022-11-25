@@ -14,6 +14,7 @@ from typing import (
 
 import numpy as np
 from qdrant_client import QdrantClient
+from qdrant_client.http import models
 from qdrant_client.http.models.models import (
     Distance,
     CreateCollection,
@@ -46,6 +47,7 @@ class QdrantConfig:
     api_key: Optional[str] = field(default=None)
     https: Optional[bool] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
+    index_text: Optional[bool] = field(default=False)
     scroll_batch_size: int = 64
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
@@ -170,6 +172,19 @@ class BackendMixin(BaseBackendMixin):
                 ),
                 hnsw_config=hnsw_config,
             )
+
+            if self._config.index_text:
+                self.client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name="text",
+                    field_schema=models.TextIndexParams(
+                        type="text",
+                        tokenizer=models.TokenizerType.WORD,
+                        # min_token_len=2,
+                        # max_token_len=15,
+                        # lowercase=True,
+                    ),
+                )
 
     def _collection_exists(self, collection_name):
         resp = self.client.get_collections()
