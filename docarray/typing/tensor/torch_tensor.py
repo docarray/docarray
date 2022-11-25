@@ -31,6 +31,48 @@ class TorchTensor(
 ):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
+    """
+    Subclass of torch.Tensor, intended for use in a Document.
+    This enables (de)serialization from/to protobuf and json, data validation,
+    and coersion from compatible types like numpy.ndarray.
+
+    This type can also be used in a parametrized way,
+    specifying the shape of the tensor.
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import Document
+        from docarray.typing import TorchTensor
+        import torch
+
+
+        class MyDoc(Document):
+            tensor: TorchTensor
+            image_tensor: TorchTensor[3, 224, 224]
+
+
+        # create a document with tensors
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(3, 224, 224),
+        )
+
+        # automatic shape conversion
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
+        )
+
+        # !! The following will raise an error due to shape mismatch !!
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(224, 224),  # this will fail validation
+        )
+
+    """
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
