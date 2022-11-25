@@ -392,7 +392,12 @@ def _to_image_tensor(
         new_height = height or raw_img.height
 
     # support multi page tiff images
-    if raw_img.n_frames > 1:
+    try:
+        n_frames = raw_img.n_frames
+    except AttributeError:
+        n_frames = 1
+
+    if n_frames > 1:
 
         frames = []
         for i in range(raw_img.n_frames):
