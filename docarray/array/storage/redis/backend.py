@@ -84,12 +84,7 @@ class BackendMixin(BaseBackendMixin):
         self._doc_prefix = config.index_name + ':'
         self._config.columns = self._normalize_columns(self._config.columns)
 
-        self._client = Redis(
-            host=self._config.host,
-            port=self._config.port,
-            **self._config.redis_config,
-        )
-
+        self._client = self._build_client()
         self._build_index()
 
         super()._init_storage()
@@ -100,6 +95,14 @@ class BackendMixin(BaseBackendMixin):
             self.extend(_docs)
         elif isinstance(_docs, Document):
             self.append(_docs)
+
+    def _build_client(self):
+        client = Redis(
+            host=self._config.host,
+            port=self._config.port,
+            **self._config.redis_config,
+        )
+        return client
 
     def _build_index(self, rebuild: bool = False):
         if self._config.update_schema or rebuild:
@@ -196,8 +199,4 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = Redis(
-            host=self._config.host,
-            port=self._config.port,
-            **self._config.redis_config,
-        )
+        self._client = self._build_client()

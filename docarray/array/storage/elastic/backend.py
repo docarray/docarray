@@ -95,11 +95,7 @@ class BackendMixin(BaseBackendMixin):
         self.n_dim = self._config.n_dim
         self._list_like = self._config.list_like
 
-        self._client = Elasticsearch(
-            hosts=self._config.hosts,
-            **self._config.es_config,
-        )
-
+        self._client = self._build_client()
         self._build_index()
         self._build_offset2id_index()
 
@@ -171,6 +167,14 @@ class BackendMixin(BaseBackendMixin):
                 'index_options'
             ] = index_options
         return da_schema
+
+    def _build_client(self):
+        client = Elasticsearch(
+            hosts=self._config.hosts,
+            **self._config.es_config,
+        )
+
+        return client
 
     def _build_index(self):
         schema = self._build_schema_from_elastic_config(self._config)
@@ -286,7 +290,4 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = Elasticsearch(
-            hosts=self._config.hosts,
-            **self._config.es_config,
-        )
+        self._client = self._build_client()
