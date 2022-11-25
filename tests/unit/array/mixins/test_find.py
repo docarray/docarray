@@ -106,6 +106,7 @@ def test_find(storage, config, limit, query, start_storage):
     [
         ('elasticsearch', {'n_dim': 32, 'index_text': True}),
         ('redis', {'n_dim': 32, 'index_text': True}),
+        ('qdrant', {'n_dim': 32, 'index_text': True}),
     ],
 )
 def test_find_by_text(storage, config, start_storage):
@@ -126,6 +127,17 @@ def test_find_by_text(storage, config, start_storage):
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '2'}
 
+    results = da.find(['token4', 'token'])
+    assert isinstance(results, list)
+    assert len(results) == 2  # len(input) = len(output)
+    assert len(results[0]) == 1  # 'token4' only appears in one doc
+    assert results[0][0].id == '3'  # 'token4' only appears in doc3
+    assert len(results[1]) == 0  # 'token' is not present in da vocabulary
+
+    # qdrant full-text search will satisfy all the words in the query text, so the following tests doesn't apply to qdrant
+    if storage == 'qdrant':
+        return
+
     results = da.find('token2 token3')
     assert isinstance(results, DocumentArray)
     assert len(results) == 3
@@ -137,13 +149,6 @@ def test_find_by_text(storage, config, start_storage):
     assert set(results[:, 'id']) == {'1', '3'}
     results = da.find('token3 token4', limit=1)
     assert len(results) == 1
-
-    results = da.find(['token4', 'token'])
-    assert isinstance(results, list)
-    assert len(results) == 2  # len(input) = len(output)
-    assert len(results[0]) == 1  # 'token4' only appears in one doc
-    assert results[0][0].id == '3'  # 'token4' only appears in doc3
-    assert len(results[1]) == 0  # 'token' is not present in da vocabulary
 
 
 @pytest.mark.parametrize(
@@ -184,6 +189,12 @@ def test_find_by_text(storage, config, start_storage):
             {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
             '@i:[-inf 5]',
         ),
+        ('qdrant', {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True}, None),
+        (
+            'qdrant',
+            {'n_dim': 32, 'columns': {'i': 'int'}, 'index_text': True},
+            {'must': [{'key': 'i', 'range': {'lte': 5}}]},
+        ),
     ],
 )
 def test_find_by_text_and_filter(storage, config, filter, start_storage):
@@ -193,10 +204,7 @@ def test_find_by_text_and_filter(storage, config, filter, start_storage):
             [Document(id=f'{i}', tags={'i': i}, text=f'pizza {i}') for i in range(10)]
         )
         da.extend(
-            [
-                Document(id=f'{i+10}', tags={'i': i}, text=f'noodles {i}')
-                for i in range(10)
-            ]
+            [Document(id=f'{i+10}', tags={'i': i}, text=f'rice {i}') for i in range(10)]
         )
 
     results = da.find('pizza', filter=filter)
@@ -211,10 +219,8 @@ def test_find_by_text_and_filter(storage, config, filter, start_storage):
     'storage, config',
     [
         ('elasticsearch', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
-        (
-            'redis',
-            {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']},
-        ),
+        ('redis', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
+        ('qdrant', {'n_dim': 32, 'tag_indices': ['attr1', 'attr2', 'attr3']}),
     ],
 )
 def test_find_by_tag(storage, config, start_storage):
@@ -249,18 +255,9 @@ def test_find_by_tag(storage, config, start_storage):
         ]
     )
 
-    results = da.find('token1 token2', index='attr1')
-    assert isinstance(results, DocumentArray)
+    results = da.find('token1', index='attr1')
     assert len(results) == 2
-    assert results[0].id == '1'
-    assert results[1].id == '2'
-
-    results = da.find('token1 token2', index='attr1', limit=1)
-    assert len(results) == 1
-
-    results = da.find('token2 token4', index='attr1')
-    assert len(results) == 2
-    assert set(results[:, 'id']) == {'1', '3'}
+    assert set(results[:, 'id']) == {'1', '2'}
 
     results = da.find('token4', index='attr2')
     assert len(results) == 1
@@ -277,11 +274,6 @@ def test_find_by_tag(storage, config, start_storage):
     assert len(results) == 2
     assert set(results[:, 'id']) == {'1', '3'}
     assert all(['token5' in r.tags['attr3'] for r in results]) == True
-
-    results = da.find('token1', index='attr3')
-    assert len(results) == 1
-    assert results[0].id == '3'
-    assert all(['token1' in r.tags['attr3'] for r in results]) == True
 
     results = da.find(['token1 token2'], index='attr1')
     assert isinstance(results, list)
