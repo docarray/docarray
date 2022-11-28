@@ -2,13 +2,13 @@ import numpy as np
 
 from docarray.array import DocumentArray
 from docarray.document import BaseDocument
-from docarray.typing import Tensor
+from docarray.typing import NdArray
 
 
 def test_get_bulk_attributes_function():
     class Mmdoc(BaseDocument):
         text: str
-        tensor: Tensor
+        tensor: NdArray
 
     N = 10
 
@@ -32,7 +32,7 @@ def test_get_bulk_attributes_function():
 def test_get_bulk_attributes():
     class Mmdoc(BaseDocument):
         text: str
-        tensor: Tensor
+        tensor: NdArray
 
     N = 10
 

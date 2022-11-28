@@ -36,15 +36,14 @@ This follow [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/) 
 
 It is similar to the dataclass from the (old) docarray
 
-
 ```python
-from docarray.typing import Tensor
+from docarray.typing import NdArray
 import numpy as np
 
 
 class Banner(Document):
     text: str
-    image: Tensor
+    image: NdArray
 
 
 banner = Banner(text='DocArray is amazing', image=np.zeros((3, 224, 224)))

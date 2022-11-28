@@ -36,7 +36,7 @@ message NodeProto {
     bytes blob = 1;
 
     // the ndarray of the image/audio/video document
-    NdArrayProto tensor = 2;
+    NdArrayProto ndarray = 2;
 
     // a text
     string text = 3;

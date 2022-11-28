@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from httpx import AsyncClient
 
 from docarray import Document, Image, Text
-from docarray.typing import Tensor
+from docarray.typing import NdArray
 
 
 @pytest.mark.asyncio
@@ -40,8 +40,8 @@ async def test_image():
         img: Image
 
     class OutputDoc(Document):
-        embedding_clip: Tensor
-        embedding_bert: Tensor
+        embedding_clip: NdArray
+        embedding_bert: NdArray
 
     input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
 
@@ -70,8 +70,8 @@ async def test_sentence_to_embeddings():
         text: str
 
     class OutputDoc(Document):
-        embedding_clip: Tensor
-        embedding_bert: Tensor
+        embedding_clip: NdArray
+        embedding_bert: NdArray
 
     input_doc = InputDoc(text='hello')
 
