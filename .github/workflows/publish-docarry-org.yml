@@ -1,0 +1,44 @@
+name: Manual Publish DocArray
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_token:
+        description: 'Your release token'
+        required: true
+
+jobs:
+  token-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check release token
+        id: token-check
+        run: |
+          touch SUCCESS
+        if: inputs.release_token == env.release_token
+        env:
+          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
+      - name: Fail release token
+        run: |
+          [[ -f SUCCESS ]]
+
+  copy-readme:
+    needs: token-check
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          path: docarray
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+          repository: docarray/docarray.github.io
+          path: docarray.github.io
+      - name: Check out DocArray page
+        run: |
+          cd ${GITHUB_WORKSPACE}/docarray.github.io
+          cp ${GITHUB_WORKSPACE}/docarray/README.md .
+          git config --local user.email "${{ inputs.git_config_email }}"
+          git config --local user.name "${{ inputs.git_config_name }}"
+          git add README.md && git commit -m -s "chore(docs): sync up README from docarray"
+          git push
