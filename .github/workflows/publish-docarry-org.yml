@@ -43,5 +43,5 @@ jobs:
           cp ${GITHUB_WORKSPACE}/docarray/README.md .
           git config --local user.email "${{ inputs.git_config_email }}"
           git config --local user.name "${{ inputs.git_config_name }}"
-          git add README.md && git commit -m -s "chore(docs): sync up README from docarray"
+          git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
           git push
