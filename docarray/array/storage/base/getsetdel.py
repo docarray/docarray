@@ -211,7 +211,7 @@ class BaseGetSetDelMixin(ABC):
                 value = DocumentArray(docs)
 
                 if (
-                    getattr(subindex_da, '_config', None)
+                    getattr(subindex_da, '_config', None)  # checks if in-memory da
                     and subindex_da._config.root_id
                 ):
                     for v in value:
