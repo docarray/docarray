@@ -121,8 +121,8 @@ class BackendMixin(BaseBackendMixin):
             config = dataclass_from_dict(MilvusConfig, config)
 
         if config.collection_name is None:
-            id = uuid.uuid4().hex
-            config.collection_name = 'docarray__' + id
+            _id = uuid.uuid4().hex
+            config.collection_name = 'docarray__' + _id
         self._list_like = config.list_like
         self._config = config
         self._config.columns = self._normalize_columns(self._config.columns)

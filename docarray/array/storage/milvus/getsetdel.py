@@ -103,6 +103,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
         self._collection.drop()
         self._create_or_reuse_collection()
         self._clear_offset2ids_milvus()
+        self._build_index()
 
     def _clear_offset2ids_milvus(self):
         self._offset2id_collection.drop()
