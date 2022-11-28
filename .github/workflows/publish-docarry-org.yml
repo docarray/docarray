@@ -41,7 +41,7 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/docarray.github.io
           cp ${GITHUB_WORKSPACE}/docarray/README.md .
-          git config --local user.email "${{ inputs.git_config_email }}"
-          git config --local user.name "${{ inputs.git_config_name }}"
+          git config --local user.email "Jina Dev Bot"
+          git config --local user.name "dev-bot@jina.ai"
           git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
           git push
