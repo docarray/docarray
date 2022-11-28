@@ -296,4 +296,6 @@ jobs:
   publish-docarray-org:
     needs: check-readme-modification
     uses: ./.github/workflows/publish-docarry-org.yml
+    with:
+      release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
     secrets: inherit
