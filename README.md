@@ -37,8 +37,10 @@ doc.embedding = CLIPImageEncoder()(
 ```
 
 - **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a single, unified data structure, the `Document`
-  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focussed features
-- Use pre-defined `Document`s for common use cases:
+  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focussed features 
+
+### Use pre-defined `Document`s for common use cases:
+
 ```python
 from docarray import Image
 
@@ -50,7 +52,8 @@ doc.embedding = CLIPImageEncoder()(
     doc.image_tensor
 )  # create and store embedding using model of your choice
 ```
-- Compose nested Documents:
+### Compose nested Documents:
+
 ```python
 from docarray import Image, Text, Document
 import numpy as np
@@ -66,7 +69,7 @@ doc = MultiModalDocument(
 )
 ```
 
-- Collect multiple `Documents` into a `DocumentArray`:
+### Collect multiple `Documents` into a `DocumentArray`:
 ```python
 from docarray import Image, DocumentArray
 
