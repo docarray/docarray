@@ -7,10 +7,6 @@ on:
         description: 'Your release token'
         required: true
   workflow_call:
-    inputs:
-      release_token:
-        description: 'Your release token'
-        required: true
     secrets:
       JINA_DEV_BOT:
         required: True
@@ -32,6 +28,10 @@ jobs:
         if: inputs.release_token == env.release_token
         env:
           release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
+      - name: Check trigger event
+        run: | 
+          touch SUCCESS
+        if: github.event_name == 'pull_request'
       - name: Fail release token
         run: |
           [[ -f SUCCESS ]]
