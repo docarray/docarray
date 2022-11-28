@@ -20,7 +20,7 @@ The committer role enables the contributor to commit code directly to the reposi
 
 ### Process for becoming a committer
 
-* To become a committer you have to be approved by the TSC (Technical steering committee) of DocArray. If you want to become a committer, reach out to sami.jaghouar@gmail.com. 
+* To become a committer you have to be approved by the TSC (Technical steering committee) of DocArray. If you want to become a committer, reach out to docarray@jina.ai . 
 
 # Release Process
 
