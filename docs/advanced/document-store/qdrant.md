@@ -216,7 +216,10 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[4. 4. 4.],	 price=4
 ```
 
+````{admonition} Note
+:class: note
 For Qdrant, the distance scores can be accessed in the Document's `.scores` dictionary by the key `f'{distance_metric}_similarity'`. For example, for `distance = 'euclidean'` the key would be `'euclidean_similarity'`.
+````
 
 ### Example of `.filter` with a filter
 The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.

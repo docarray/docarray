@@ -193,7 +193,12 @@ Consider we want the nearest vectors to the embedding `[8. 8. 8.]`, with the res
 prices must follow a filter. As an example, let's consider that retrieved documents must have `price` value lower
 or equal than `max_price`. We can encode this information in ElasticSearch using `filter = {'range': {'price': {'lte': max_price}}}`.
 
-Then the search with the proposed filter can be implemented and used with the following code. Note: For Elasticsearch, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+Then the search with the proposed filter can be implemented and used with the following code. 
+
+````{admonition} Note
+:class: note
+For Elasticsearch, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
 
 ```python
 max_price = 7
