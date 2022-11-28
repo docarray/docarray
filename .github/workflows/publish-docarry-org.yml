@@ -7,6 +7,11 @@ on:
         description: 'Your release token'
         required: true
   # uncomment this line for testing in PR
+  workflow_call:
+    inputs:
+      release_token:
+        description: 'Your release token'
+        required: true
   push:
 
 jobs:
