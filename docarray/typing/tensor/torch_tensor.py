@@ -1,5 +1,5 @@
-from docarray.typing.tensor import Tensor
+from docarray.typing.tensor import NdArray
 
 
-class TorchTensor(Tensor):
+class TorchTensor(NdArray):
     pass

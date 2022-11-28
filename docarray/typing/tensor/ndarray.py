@@ -1,8 +1,20 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Type, TypeVar, Union, cast
+import warnings
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 
-from docarray.typing.abstract_type import AbstractType
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -11,15 +23,75 @@ if TYPE_CHECKING:
 from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='NdArray')
+ShapeT = TypeVar('ShapeT')
 
 
-class NdArray(np.ndarray, AbstractType):
+class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
+    """
+    Subclass of np.ndarray, intended for use in a Document.
+    This enables (de)serialization from/to protobuf and json, data validation,
+    and coersion from compatible types like torch.Tensor.
+
+    This type can also be used in a parametrized way, specifying the shape of the array.
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import Document
+        from docarray.typing import NdArray
+        import numpy as np
+
+
+        class MyDoc(Document):
+            arr: NdArray
+            image_arr: NdArray[3, 224, 224]
+
+
+        # create a document with tensors
+        doc = MyDoc(
+            arr=np.zeros((128,)),
+            image_arr=np.zeros((3, 224, 224)),
+        )
+        assert doc.image_arr.shape == (3, 224, 224)
+
+        # automatic shape conversion
+        doc = MyDoc(
+            arr=np.zeros((128,)),
+            image_arr=np.zeros((224, 224, 3)),  # will reshape to (3, 224, 224)
+        )
+        assert doc.image_arr.shape == (3, 224, 224)
+
+        # !! The following will raise an error due to shape mismatch !!
+        doc = MyDoc(
+            arr=np.zeros((128,)),
+            image_arr=np.zeros((224, 224)),  # this will fail validation
+        )
+    """
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
+
+    @classmethod
+    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
+        if t.shape == shape:
+            return t
+        else:
+            warnings.warn(
+                f'Tensor shape mismatch. Reshaping array '
+                f'of shape {t.shape} to shape {shape}'
+            )
+            try:
+                value = cls.from_ndarray(np.reshape(t, shape))
+                return cast(T, value)
+            except RuntimeError:
+                raise ValueError(
+                    f'Cannot reshape array of shape {t.shape} to shape {shape}'
+                )
 
     @classmethod
     def validate(
