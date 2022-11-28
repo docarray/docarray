@@ -190,7 +190,7 @@ left_da = DocumentArray.from_files('left/*.jpg')
 Or you can simply pull it from Jina Cloud:
 
 ```python
-left_da = DocumentArray.pull('demo-leftda', show_progress=True)
+left_da = DocumentArray.pull('jina-ai/demo-leftda', show_progress=True)
 ```
 
 **Note**
@@ -268,7 +268,7 @@ Fun is fun, but recall our goal is to match left images against right images and
 
 ```python
 right_da = (
-    DocumentArray.pull('demo-rightda', show_progress=True)
+    DocumentArray.pull('jina-ai/demo-rightda', show_progress=True)
     .apply(preproc)
     .embed(model, device='cuda')[:1000]
 )
@@ -398,7 +398,7 @@ left_da.push('my_shared_da')
 Now anyone who knows the token `my_shared_da` can pull and work on it.
 
 ```python
-left_da = DocumentArray.pull('my_shared_da')
+left_da = DocumentArray.pull('<username>/my_shared_da')
 ```
 
 Intrigued? That's only scratching the surface of what DocArray is capable of. [Read our docs to learn more](https://docarray.jina.ai).
