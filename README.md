@@ -1,6 +1,6 @@
 # DocArray - Version 2
 
-_**NOTE**: This readme refers to version 2 of DocArray, a rewrite that is currently at alpha stage.
+_**NOTE**: This introduction refers to version 2 of DocArray, a rewrite that is currently at alpha stage.
 Not all features that are mentioned here are already implemented.
 If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
 for the (already released) version 1 of DocArray
