@@ -13,7 +13,8 @@
 :hidden:
 :maxdepth: 1
 
-api
+api_public
+api/docarray
 ```
 
 

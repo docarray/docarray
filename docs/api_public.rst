@@ -5,20 +5,31 @@
 This section includes the API documentation from the `docarray` codebase, as extracted from the `docstrings <https://peps.python.org/pep-0257/>`_ in the code.
 
 
-:mod:`docarray` - Document and DocumentArray
+:mod:`docarray` - Document
 --------------------
 
-.. currentmodule:: docarray.document
+.. currentmodule:: docarray
 
 .. autosummary::
    :nosignatures:
    :template: class.rst
 
-   BaseDocument
+   document.BaseDocument
 
 
 
 
+
+:mod:`docarray` - Document
+--------------------
+
+.. currentmodule:: docarray
+
+.. autosummary::
+   :nosignatures:
+   :template: class.rst
+
+   array.DocumentArray
 
 
 
