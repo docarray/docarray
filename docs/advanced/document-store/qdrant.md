@@ -19,7 +19,7 @@ server. Create `docker-compose.yml` as follows:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.10.1
+    image: qdrant/qdrant:v0.11.3
     ports:
       - "6333:6333"
       - "6334:6334"
@@ -106,7 +106,7 @@ Create `docker-compose.yml`:
 version: '3.4'
 services:
   qdrant:
-    image: qdrant/qdrant:v0.10.1
+    image: qdrant/qdrant:v0.11.3
     ports:
       - "6333:6333"
       - "6334:6334"

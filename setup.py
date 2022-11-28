@@ -117,7 +117,7 @@ setup(
             'pymilvus==2.1.3',
             'jina',
             'pytest-mock',
-            'httpx==0.23.0',
+            'httpx==0.23.0',  # for qdrant test
         ],
     },
     classifiers=[
