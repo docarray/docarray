@@ -37,6 +37,7 @@ jobs:
           fetch-depth: 1
           repository: docarray/docarray.github.io
           path: docarray.github.io
+          token: ${{ secrets.JINA_DEV_BOT }}
       - name: Check out DocArray page
         run: |
           cd ${GITHUB_WORKSPACE}/docarray.github.io
