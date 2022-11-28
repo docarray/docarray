@@ -6,6 +6,8 @@ on:
       release_token:
         description: 'Your release token'
         required: true
+  # uncomment this line for testing in PR
+  push:
 
 jobs:
   token-check:
