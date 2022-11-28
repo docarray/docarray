@@ -14,10 +14,8 @@ This section includes the API documentation from the `docarray` codebase, as ext
    :nosignatures:
    :template: class.rst
 
-    document.BaseDocument
+    BaseDocument
     document.AnyDocument
-
-
 
 :mod:`docarray` - DocumentArray
 --------------------
@@ -30,7 +28,7 @@ This section includes the API documentation from the `docarray` codebase, as ext
 
    array.DocumentArray
 
-:mod:`docarray` - PredefinedDocument
+:mod:`docarray` - Predefined Document
 --------------------
 
 .. currentmodule:: docarray

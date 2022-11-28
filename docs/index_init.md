@@ -4,9 +4,6 @@
 :hidden:
 :maxdepth: 1
 
-README
-
-
 api_public
 api/docarray
 ```
