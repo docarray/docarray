@@ -253,6 +253,7 @@ match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', t
 
 - [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
 - [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
+- [Submit ideas, feature requests, and discussions](https://github.com/docarray/docarray/discussions)
 - ["Legacy" DocArray github page](https://github.com/docarray/docarray)
 - ["Legacy" DocArray documentation](https://docarray.jina.ai/)
 
