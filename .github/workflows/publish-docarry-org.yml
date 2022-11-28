@@ -8,6 +8,9 @@ on:
         required: true
   # uncomment this line for testing in PR
   workflow_call:
+    secrets:
+      JINA_DEV_BOT:
+        required: True
   push:
 
 jobs:
