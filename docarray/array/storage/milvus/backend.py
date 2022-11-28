@@ -135,7 +135,7 @@ class BackendMixin(BaseBackendMixin):
         self._collection = self._create_or_reuse_collection()
         self._offset2id_collection = self._create_or_reuse_offset2id_collection()
         self._build_index()
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         # To align with Sqlite behavior; if `docs` is not `None` and table name
         # is provided, :class:`DocumentArraySqlite` will clear the existing

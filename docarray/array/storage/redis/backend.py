@@ -88,7 +88,7 @@ class BackendMixin(BaseBackendMixin):
         self._client = self._build_client()
         self._build_index()
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

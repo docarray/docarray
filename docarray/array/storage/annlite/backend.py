@@ -105,7 +105,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._annlite = AnnLite(self.n_dim, lock=False, **filter_dict(config))
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

@@ -101,7 +101,7 @@ class BackendMixin(BaseBackendMixin):
         self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

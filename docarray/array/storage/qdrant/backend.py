@@ -129,7 +129,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._initialize_qdrant_schema()
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if docs is None and config.collection_name:
             return
