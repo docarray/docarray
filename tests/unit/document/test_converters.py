@@ -56,6 +56,18 @@ def test_uri_to_tensor():
     assert doc.mime_type == 'image/png'
 
 
+def test_uri_to_tensors_with_multi_page_tiff():
+    doc = Document(uri=os.path.join(cur_dir, 'toydata/multi-page.tif'))
+    doc.load_uri_to_image_tensor()
+
+    assert doc.tensor is None
+    assert len(doc.chunks) == 3
+    for chunk in doc.chunks:
+        assert isinstance(chunk.tensor, np.ndarray)
+        assert chunk.tensor.ndim == 3
+        assert chunk.tensor.shape[-1] == 3
+
+
 def test_datauri_to_tensor():
     doc = Document(uri=os.path.join(cur_dir, 'toydata/test.png'))
     doc.convert_uri_to_datauri()
