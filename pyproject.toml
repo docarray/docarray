@@ -53,4 +53,4 @@ exclude = 'docarray/proto/pb2/*'
 skip_glob= ['docarray/proto/pb2/*']
 
 [tool.ruff]
-exclude = ['docarray/proto/pb2/*']
+exclude = ['docarray/proto/pb2/*', 'docs/*']
