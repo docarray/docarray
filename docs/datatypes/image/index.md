@@ -33,7 +33,7 @@ print(d.tensor, d.tensor.shape)
 (618, 641, 3)
 ```
 
-DocArray also supports loading multi-page tiff files. In this case, the image tensors are being stored to the `.tensor` attributes at chunk level instead of top level.
+DocArray also supports loading multi-page tiff files. In this case, the image tensors are stored to the `.tensor` attributes at the chunk-level instead of the top-level.
 
 ```python
 from docarray import Document
