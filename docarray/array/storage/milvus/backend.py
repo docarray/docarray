@@ -13,6 +13,7 @@ from pymilvus import (
     CollectionSchema,
     has_collection,
     loading_progress,
+    MilvusException,
 )
 
 from docarray import Document, DocumentArray
@@ -351,12 +352,22 @@ class BackendMixin(BaseBackendMixin):
                 self._connection_alias = connection_alias
 
             def __enter__(self):
-                self._loaded_when_enter = (
-                    loading_progress(
-                        self._collection.name, using=self._connection_alias
-                    )['loading_progress']
-                    != '0%'
-                )
+                try:
+                    self._loaded_when_enter = (
+                        loading_progress(
+                            self._collection.name, using=self._connection_alias
+                        )['loading_progress']
+                        != '0%'
+                    )
+                except MilvusException as e:
+                    # this try/except should not be necessary
+                    # but it is a workaround for a bug in Milvus as of v2.2.0
+                    # https://github.com/milvus-io/milvus/issues/20867
+                    if e.code == 1:
+                        self._loaded_when_enter = False
+                    else:
+                        raise e
+
                 self._collection.load()
                 return self
 
