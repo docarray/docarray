@@ -1,10 +1,11 @@
+import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Type, TypeVar, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
 
 import numpy as np
 import torch  # type: ignore
 
-from docarray.typing.abstract_type import AbstractType
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
 
 if TYPE_CHECKING:
     from pydantic.fields import ModelField
@@ -15,6 +16,7 @@ from docarray.document.base_node import BaseNode
 from docarray.proto import NdArrayProto, NodeProto
 
 T = TypeVar('T', bound='TorchTensor')
+ShapeT = TypeVar('ShapeT')
 
 torch_base = type(torch.Tensor)  # type: Any
 node_base = type(BaseNode)  # type: Any
@@ -24,15 +26,78 @@ class metaTorchAndNode(torch_base, node_base):
     pass
 
 
-class TorchTensor(AbstractType, torch.Tensor, metaclass=metaTorchAndNode):
+class TorchTensor(
+    AbstractTensor, torch.Tensor, Generic[ShapeT], metaclass=metaTorchAndNode
+):
     # Subclassing torch.Tensor following the advice from here:
     # https://pytorch.org/docs/stable/notes/extending.html#subclassing-torch-tensor
+    """
+    Subclass of torch.Tensor, intended for use in a Document.
+    This enables (de)serialization from/to protobuf and json, data validation,
+    and coersion from compatible types like numpy.ndarray.
+
+    This type can also be used in a parametrized way,
+    specifying the shape of the tensor.
+
+    EXAMPLE USAGE
+
+    .. code-block:: python
+
+        from docarray import Document
+        from docarray.typing import TorchTensor
+        import torch
+
+
+        class MyDoc(Document):
+            tensor: TorchTensor
+            image_tensor: TorchTensor[3, 224, 224]
+
+
+        # create a document with tensors
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(3, 224, 224),
+        )
+
+        # automatic shape conversion
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(224, 224, 3),  # will reshape to (3, 224, 224)
+        )
+
+        # !! The following will raise an error due to shape mismatch !!
+        doc = MyDoc(
+            tensor=torch.zeros(128),
+            image_tensor=torch.zeros(224, 224),  # this will fail validation
+        )
+
+    """
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
+
+    __parametrized_meta__ = metaTorchAndNode
+
+    @classmethod
+    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
+        if t.shape == shape:
+            return t
+        else:
+            warnings.warn(
+                f'Tensor shape mismatch. Reshaping tensor '
+                f'of shape {t.shape} to shape {shape}'
+            )
+            try:
+                value = cls.from_native_torch_tensor(t.view(shape))
+                return cast(T, value)
+            except RuntimeError:
+                raise ValueError(
+                    f'Cannot reshape tensor of ' f'shape {t.shape} to shape {shape}'
+                )
 
     @classmethod
     def validate(

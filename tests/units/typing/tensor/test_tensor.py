@@ -1,5 +1,6 @@
 import numpy as np
 import orjson
+import pytest
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
@@ -47,3 +48,27 @@ def test_unwrap():
     assert isinstance(ndarray, np.ndarray)
     assert isinstance(tensor, NdArray)
     assert (ndarray == np.zeros((3, 224, 224))).all()
+
+
+def test_parametrized():
+    # correct shape, single axis
+    tensor = parse_obj_as(NdArray[128], np.zeros(128))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (128,)
+
+    # correct shape, multiple axis
+    tensor = parse_obj_as(NdArray[3, 224, 224], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    # wrong but reshapable shape
+    tensor = parse_obj_as(NdArray[3, 224, 224], np.zeros((3, 224, 224)))
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (3, 224, 224)
+
+    # wrong and not reshapable shape
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArray[3, 224, 224], np.zeros((224, 224)))
