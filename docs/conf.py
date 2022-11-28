@@ -2,6 +2,7 @@ import os
 import re
 import sys
 from os import path
+from typing import Tuple, Any, Iterator
 
 sys.path.insert(0, path.abspath('..'))
 
@@ -134,7 +135,7 @@ apidoc_excluded_paths = ['tests', 'legacy', 'hub', 'toy*', 'setup.py']
 apidoc_separate_modules = True
 apidoc_extra_args = ['-t', 'template/']
 autodoc_member_order = 'bysource'
-autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'torch', 'scipy']
+autodoc_mock_imports = ['argparse', 'numpy', 'np', 'tensorflow', 'scipy']
 autoclass_content = 'both'
 set_type_checking_flag = False
 html_last_updated_fmt = ''
@@ -244,3 +245,66 @@ def setup(app):
         rebuild='',
     )
     app.connect('builder-inited', configure_qa_bot_ui)
+
+
+from sphinx.ext.autodoc.mock import _make_subclass
+
+
+# This is a very ugly ugly hack but otherwise autodoc is failing with our meta class
+# for TorchTensor
+class _MockObjectTorchMeta:
+
+    """Used by autodoc_mock_imports."""
+
+    __display_name__ = '_MockObject'
+    __name__ = ''
+    __sphinx_mock__ = True
+    __sphinx_decorator_args__: Tuple[Any, ...] = ()
+
+    def __new__(cls, *args: Any, **kwargs: Any) -> Any:
+        if len(args) == 3 and isinstance(args[1], tuple):
+            superclass = args[1][-1].__class__
+            if superclass is cls:
+                # subclassing MockObject
+                return _make_subclass(
+                    args[0],
+                    superclass.__display_name__,
+                    superclass=superclass,
+                    attributes=args[2],
+                )
+        try:
+            return super().__new__(cls)
+        except TypeError:
+            return super().__new__(cls, name='torch', bases=(), namespace={})
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.__qualname__ = self.__name__
+
+    def __len__(self) -> int:
+        return 0
+
+    def __contains__(self, key: str) -> bool:
+        return False
+
+    def __iter__(self) -> Iterator:
+        return iter([])
+
+    def __mro_entries__(self, bases: Tuple) -> Tuple:
+        return (self.__class__,)
+
+    def __getitem__(self, key: Any) -> "_MockObject":
+        return _make_subclass(str(key), self.__display_name__, self.__class__)()
+
+    def __getattr__(self, key: str) -> "_MockObject":
+        return _make_subclass(key, self.__display_name__, self.__class__)()
+
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        call = self.__class__()
+        call.__sphinx_decorator_args__ = args
+        return call
+
+    def __repr__(self) -> str:
+        return self.__display_name__
+
+
+sys.modules['torch'] = _MockObjectTorchMeta()
