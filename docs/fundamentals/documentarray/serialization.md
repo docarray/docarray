@@ -384,7 +384,7 @@ Then on your local laptop, simply pull it:
 ```python
 from docarray import DocumentArray
 
-da = DocumentArray.pull('myda123', show_progress=True)
+da = DocumentArray.pull('<username>/myda123', show_progress=True)
 ```
 
 Now you can continue the work at local, analyzing `da` or visualizing it. Your friends & colleagues who know the token `myda123` can also pull that DocumentArray. It's useful when you want to quickly share the results with your colleagues & friends.

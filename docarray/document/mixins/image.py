@@ -3,7 +3,7 @@ import io
 import math
 import struct
 import warnings
-from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING
+from typing import Optional, Tuple, Union, BinaryIO, TYPE_CHECKING, List
 
 import numpy as np
 
@@ -186,10 +186,25 @@ class ImageDataMixin:
 
         :return: itself after processed
         """
+        from docarray import Document, DocumentArray
 
         buffer = _uri_to_blob(self.uri, **kwargs)
         tensor = _to_image_tensor(io.BytesIO(buffer), width=width, height=height)
-        self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
+
+        if isinstance(tensor, np.ndarray):
+            self.tensor = _move_channel_axis(tensor, original_channel_axis=channel_axis)
+        elif isinstance(tensor, List):
+            self.chunks = DocumentArray(
+                [
+                    Document(
+                        tensor=_move_channel_axis(
+                            tensor[i], original_channel_axis=channel_axis
+                        )
+                    )
+                    for i in range(len(tensor))
+                ]
+            )
+
         return self
 
     def set_image_tensor_inv_normalization(
@@ -359,26 +374,53 @@ def _to_image_tensor(
     source,
     width: Optional[int] = None,
     height: Optional[int] = None,
-) -> 'np.ndarray':
+) -> Union[np.ndarray, List[np.array]]:
     """
-    Convert an image blob to tensor
+    Convert an image blob to tensor or List of image tensors, if multiple images are stored in file.
 
     :param source: binary blob or file path
     :param width: the width of the image tensor.
     :param height: the height of the tensor.
-    :return: image tensor
+    :return: image tensor or list of image tensors
     """
     from PIL import Image
 
     raw_img = Image.open(source)
+
     if width or height:
         new_width = width or raw_img.width
         new_height = height or raw_img.height
-        raw_img = raw_img.resize((new_width, new_height))
+
+    # support multi page tiff images
     try:
-        return np.array(raw_img.convert('RGB'))
-    except:
-        return np.array(raw_img)
+        n_frames = raw_img.n_frames
+    except AttributeError:
+        n_frames = 1
+
+    if n_frames > 1:
+
+        frames = []
+        for i in range(raw_img.n_frames):
+            raw_img.seek(i)
+            try:
+                img = raw_img.convert('RGB')
+            except:
+                img = raw_img
+
+            if width or height:
+                frames.append(np.array(img.resize((new_width, new_height))))
+            else:
+                frames.append(np.array(img))
+
+        return frames
+
+    else:
+        if width or height:
+            raw_img = raw_img.resize((new_width, new_height))
+        try:
+            return np.array(raw_img.convert('RGB'))
+        except:
+            return np.array(raw_img)
 
 
 def _to_image_buffer(arr: 'np.ndarray', image_format: str) -> bytes:
