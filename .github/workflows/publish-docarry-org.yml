@@ -6,17 +6,20 @@ on:
       release_token:
         description: 'Your release token'
         required: true
-  # uncomment this line for testing in PR
   workflow_call:
     secrets:
       JINA_DEV_BOT:
         required: True
-  push:
+# uncomment this line for testing in PR
+#  push:
 
 jobs:
   token-check:
     runs-on: ubuntu-latest
     steps:
+      - name: debug
+        run: |
+          echo ${{ github.event_name }} event triggered this action
       - name: Check release token
         id: token-check
         run: |
