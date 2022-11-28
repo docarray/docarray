@@ -295,7 +295,7 @@ jobs:
 
   publish-docarray-org:
     needs: check-readme-modification
-    uses: ./.github/workflows/publish-docarry-org.yml@ci-add-readme-syncup-1128
+    uses: ./.github/workflows/publish-docarry-org.yml
     with:
       release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
 
