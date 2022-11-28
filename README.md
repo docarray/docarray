@@ -1,6 +1,6 @@
 # DocArray v2
 
-this repo is small PoC for the new version of DocArray. The scope of the PoC is twofolds:
+this repo is a PoC for the new version of DocArray. The scope of the PoC is twofolds:
 
 * Mininal pydantic like API to feel/grasp the new user interface
 * Protobuf serialization/deserialization
