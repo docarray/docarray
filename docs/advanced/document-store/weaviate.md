@@ -468,7 +468,7 @@ Only results that have a 'weaviate_certainty' of higher than 0.9 should show:
          scores=[{'distance': {'value': -3.5762787e-07}}]
 ```
 
-It is noted, that for Weaviate, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'distance'`.
+Note: For Weaviate, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'distance'`.
 
 ## Include additional properties in the return
 
