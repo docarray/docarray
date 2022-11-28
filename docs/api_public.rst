@@ -14,13 +14,12 @@ This section includes the API documentation from the `docarray` codebase, as ext
    :nosignatures:
    :template: class.rst
 
-   document.BaseDocument
+    document.BaseDocument
+    document.AnyDocument
 
 
 
-
-
-:mod:`docarray` - Document
+:mod:`docarray` - DocumentArray
 --------------------
 
 .. currentmodule:: docarray
@@ -30,6 +29,38 @@ This section includes the API documentation from the `docarray` codebase, as ext
    :template: class.rst
 
    array.DocumentArray
+
+:mod:`docarray` - PredefinedDocument
+--------------------
+
+.. currentmodule:: docarray
+
+.. autosummary::
+   :nosignatures:
+   :template: class.rst
+
+   predefined_document.Image
+   predefined_document.Text
+
+:mod:`docarray` - Typing
+--------------------
+
+.. currentmodule:: docarray
+
+.. autosummary::
+   :nosignatures:
+   :template: class.rst
+
+    typing.TorchTensor
+    typing.NdArray
+    typing.ImageUrl
+    typing.TextUrl
+    typing.AnyUrl
+    typing.ID
+    typing.Embedding
+    typing.Tensor
+    typing.tensor.Ndarray
+    typing.tensor.TorchTensor
 
 
 
