@@ -143,11 +143,11 @@ This gives the following advantages:
 If you come from Pydantic, you can see Documents as juiced up models, and DocArray as a collection of goodies around them.
 
 - **ML focussed types**: Tensor, TorchTensor, TFTensor, Embedding, ...
-- **Types that are alive**: ImageUrl can .load() a URL to image tensor, TextUrl can load and tokenize text documents, etc.
+- **Types that are alive**: ImageUrl can `.load()` a URL to image tensor, TextUrl can load and tokenize text documents, etc.
 - **Pre-built Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio, ... Note that all of these will be valid Pydantic models!
 - The concepts of **DocumentArray and DocumentStore**
 - Cloud ready: Serialization to **Protobuf** for use with microservices and **gRPC**
-- Support for **vector search functionalities**, such as find() and embed()
+- Support for **vector search functionalities**, such as `find()` and `embed()`
 
 ## Coming from FastAPI
 
