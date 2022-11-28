@@ -72,8 +72,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 raise KeyError(f'No documents found for ids {ids}')
             docs.extend(self._docs_from_query_response(res))
         # sort output docs according to input id sorting
-        id_to_index = {id_: i for i, id_ in enumerate(ids)}
-        return DocumentArray(sorted(docs, key=lambda d: id_to_index[d.id]))
+        return DocumentArray([docs[d] for d in ids])
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
