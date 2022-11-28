@@ -1021,31 +1021,36 @@ def test_find_return_root(storage, config, subindex_configs, start_storage):
                 Document(
                     id=f'{i}',
                     chunks=[
-                        Document(id=f'sub{i}_0', embedding=np.random.random(3)),
-                        Document(id=f'sub{i}_1', embedding=np.random.random(3)),
+                        Document(id=f'sub{i}', embedding=np.random.random(3)),
                     ],
                 )
-                for i in range(5)
+                for i in range(9)
             ]
         )
 
     da[0] = Document(
-        id='5',
+        id='9',
         embedding=np.random.random(3),
         chunks=[
-            Document(id=f'sub5_0', embedding=np.random.random(3)),
-            Document(id=f'sub5_1', embedding=np.random.random(3)),
+            Document(id=f'sub9', embedding=np.random.random(3)),
         ],
     )
 
     if storage != 'memory':
         assert all(
-            d.tags['_root_id_'] in [f'{i}' for i in range(1, 6)] for d in da['@c']
+            d.tags['_root_id_'] in [f'{i}' for i in range(1, 10)] for d in da['@c']
         )
 
-    res = da.find(np.random.random(3), on='@c', return_root=True)
-    assert len(res) > 0
-    assert all(d.id in [f'{i}' for i in range(1, 6)] for d in res)
+    query = np.random.random(3)
+    res = da.find(query, on='@c')
+    root_level_res = da.find(query, on='@c', return_root=True)
+
+    res_root_id = [i.id[3] for i in res]
+    assert res_root_id == root_level_res[:, 'id']
+    assert res[:, 'scores'] == root_level_res[:, 'scores']
+
+    assert len(root_level_res) > 0
+    assert all(d.id in [f'{i}' for i in range(1, 10)] for d in root_level_res)
 
 
 @pytest.mark.parametrize(
