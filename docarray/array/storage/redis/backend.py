@@ -85,6 +85,8 @@ class BackendMixin(BaseBackendMixin):
         self._config.columns = self._normalize_columns(self._config.columns)
 
         self._client = self._build_client()
+        self._build_index()
+
         super()._init_storage()
 
         if _docs is None:
@@ -100,18 +102,20 @@ class BackendMixin(BaseBackendMixin):
             port=self._config.port,
             **self._config.redis_config,
         )
+        return client
 
-        if self._config.update_schema:
-            if self._config.index_name.encode() in client.execute_command('FT._LIST'):
-                client.ft(index_name=self._config.index_name).dropindex()
+    def _build_index(self, rebuild: bool = False):
+        if self._config.update_schema or rebuild:
+            if self._config.index_name.encode() in self._client.execute_command(
+                'FT._LIST'
+            ):
+                self._client.ft(index_name=self._config.index_name).dropindex()
 
             schema = self._build_schema_from_redis_config()
             idef = IndexDefinition(prefix=[self._doc_prefix])
-            client.ft(index_name=self._config.index_name).create_index(
+            self._client.ft(index_name=self._config.index_name).create_index(
                 schema, definition=idef
             )
-
-        return client
 
     def _ensure_unique_config(
         self,
@@ -195,8 +199,4 @@ class BackendMixin(BaseBackendMixin):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._client = Redis(
-            host=self._config.host,
-            port=self._config.port,
-            **self._config.redis_config,
-        )
+        self._client = self._build_client()
