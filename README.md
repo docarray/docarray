@@ -1,462 +1,259 @@
-# DocArray v2
+# DocArray - Version 2
 
-this repo is a PoC for the new version of DocArray. The scope of the PoC is twofolds:
+_**NOTE**: This introduction refers to version 2 of DocArray, a rewrite that is currently at alpha stage.
+Not all features that are mentioned here are already implemented.
+If you are looking for the version 2 implementation roadmap see [here](https://github.com/docarray/docarray/issues/780),
+for the (already released) version 1 of DocArray
+see [here](https://github.com/docarray/docarray)._
 
-* Mininal pydantic like API to feel/grasp the new user interface
-* Protobuf serialization/deserialization
+DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
+**Neural Search**.
 
+This means that DocArray lets you do the following things:
 
-the key ideas for this new version of DocArray:
-
-* rely on pydantic as much as possible
-* More abstract and powerful concept with predefined easy to use object
-* explicit better than implicit. (We can't afford implicit with a higher level of abstraction )
-
-## Document schema API
-
-DocArray v2 is based on pydantic schema. A Document is nothing more than a Pydantic Model with a predefined Id field and a protobuf support. We provide predefined Document for different modality
+## Represent
 
 ```python
 from docarray import Document
+from docarray.typing import TorchTensor, ImageUrl
+from typing import Optional
 
-doc = Document()
-doc
+
+class MyDocument(Document):
+    description: str
+    image_url: ImageUrl
+    image_tensor: Optional[TorchTensor[3, 224, 224]]
+    embedding: Optional[TorchTensor[768]]
+
+
+doc = MyDocument(
+    description="This is a photo of a mountain",
+    image_url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+)
+doc.image_tensor = doc.image_url.load()  # load image tensor from URL
+doc.embedding = CLIPImageEncoder()(
+    doc.image_tensor
+)  # create and store embedding using model of your choice
 ```
 
+- **Model** data of any type (audio, video, text, images, 3D meshes, raw tensors, etc) as a single, unified data structure, the `Document`
+  - A `Document` is a juiced-up [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/), inheriting all the benefits, while extending it with ML focussed features 
 
-
-
-    BaseDocument(id=UUID('88819868-54fe-4316-9bf1-4af650e0e631'))
-
-
-
-To extend a Document you need to extend the schema by creating a new class inheriting Document.
-
-This follow [Pydantic Model](https://pydantic-docs.helpmanual.io/usage/models/) API.
-
-It is similar to the dataclass from the (old) docarray
+### Use pre-defined `Document`s for common use cases:
 
 ```python
-from docarray.typing import NdArray
+from docarray import Image
+
+doc = Image(
+    url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+)
+doc.image_tensor = doc.url.load()  # load image tensor from URL
+doc.embedding = CLIPImageEncoder()(
+    doc.image_tensor
+)  # create and store embedding using model of your choice
+```
+### Compose nested Documents:
+
+```python
+from docarray import Image, Text, Document
 import numpy as np
 
 
-class Banner(Document):
-    text: str
-    image: NdArray
+class MultiModalDocument(Document):
+    image_doc: Image
+    text_doc: Text
 
 
-banner = Banner(text='DocArray is amazing', image=np.zeros((3, 224, 224)))
-banner
-```
-
-
-
-
-    Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]]))
-
-
-
-Note: there is no pretty print (from rich) but it is just a PoC
-
-You can represent nester document as well 
-
-
-```python
-class NestedDocument(Document):
-    title: str
-    banner: Banner
-
-
-doc = NestedDocument(title='Jina is amazing', banner=banner)
-doc
-```
-
-
-
-
-    NestedDocument(id=UUID('56ca3ae1-ca71-4258-a760-af9e09dea93f'), title='Jina is amazing', banner=Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]])))
-
-
-
-### Inheritance and composition
-
-Before we showed how to **compose** Document. You can as well **extend** Document by inheritance
-
-
-```python
-class ExtendNestedDocument(NestedDocument):
-    warning: str
-
-
-extended_doc = ExtendNestedDocument(
-    title='Jina is amazing', banner=banner, warning='hello'
+doc = MultiModalDocument(
+    image_doc=Image(tensor=np.zeros((3, 224, 224))), text_doc=Text(text='hi!')
 )
-extended_doc
+```
+
+### Collect multiple `Documents` into a `DocumentArray`:
+```python
+from docarray import Image, DocumentArray
+
+da = DocumentArray(
+    [
+        Image(
+            url="https://upload.wikimedia.org/wikipedia/commons/2/2f/Alpamayo.jpg",
+        )
+        for _ in range(100)
+    ]
+)
 ```
 
 
-
-
-    ExtendNestedDocument(id=UUID('1a973e74-7774-4387-9b26-e5b5c8a0cfe4'), title='Jina is amazing', banner=Banner(id=UUID('873604ed-c164-4fe5-8427-9b4e698b8dfb'), text='DocArray is amazing', image=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]])), warning='hello')
-
-
-
-
-### Predefined Document
-
-A Document has only ID has a predefined field, no more text, uri, tensor embedding. This is the user that need to construct their abstraction. Nevertheless we don't want to loose the handiness of the old Document that provide predifined fields. Therefore we provide predfined mono modals building blocks that are just predifined Document that cover common use case the same way the old Documennt was doing.
-
-This is just an example and the real predefined one need to think in depth
-
+## Send
+- **Serialize** any `Document` or `DocumentArray` into _protobuf_, _json_, _jsonschema_, _bytes_ or _base64_
+- Use in **microservice** architecture: Send over **HTTP** or **gRPC**
+- Integrate seamlessly with **FastAPI** and **Jina**
 
 ```python
-from docarray import Text, Image
+from docarray import Image
+from httpx import AsyncClient
+import numpy as np
 
-doc_text = Text(text='hello')
-doc_text
+doc = Image(tensor=np.zeros((3, 224, 224)))
+
+# JSON over HTTP
+async with AsyncClient(app=app, base_url="http://test") as ac:
+    response = await ac.post("/doc/", data=input_doc.json())
+
+# (de)serialize from/to protobuf
+Image.from_protobuf(doc.to_protobuf())
 ```
 
-
-
-
-    Text(id=UUID('c8249d8d-473c-47e1-84fd-961aba81d74e'), text='hello', tensor=None)
-
-
-
+## Store
+- Persist and `DocumentArray` using a **`DocumentStore`**
+- Store your Documents in any supported (vector) database: **Elasticsearch**, **Qdrant**, **Weaviate**, **Redis**, **Milvus**, **ANNLite** or **SQLite**
+- Leverage DocumentStores to **perform vector search on your multi-modal data**
 
 ```python
-doc_image = Image(uri='http://jina.ai')
-doc_image
+# NOTE: DocumentStores are not yet implemented in version 2
+from docarray import DocumentArray, Image, DocumentStore
+import numpy as np
+
+da = DocumentArray([Image(embedding=np.zeros((128,))) for _ in range(1000)])
+store = DocumentStore[Image](
+    storage='qdrant'
+)  # create a DocumentStore with Qdrant as backend
+store.insert(da)  # insert the DocumentArray into the DocumentStore
+# find the 10 most similar images based on the 'embedding' field
+match = store.find(Image(embedding=np.zeros((128,))), field='embedding', top_k=10)
 ```
 
+If you want to get a deeper understanding of DocArray v2, it is best to do so on the basis of your
+use case and background:
 
+## Coming from DocArray
 
+If you are already using DocArray, you will be familiar with its [dataclass API](https://docarray.jina.ai/fundamentals/dataclass/).
 
-    Image(id=UUID('a461e508-4c8b-430b-a63f-091007743cf3'), uri=ImageUrl('http://jina.ai', scheme='http', host='jina.ai', tld='ai', host_type='domain'), tensor=None)
+_DocArray v2 is that idea, taken seriously._ Every `Document` is created through dataclass-like interface,
+courtesy of [Pydantic](https://pydantic-docs.helpmanual.io/usage/models/).
 
+This gives the following advantages:
+- **Flexibility:** No need to conform to a fixed set of fields, your data defines the schema
+- **Multi-modality:** Easily store multiple modalities and multiple embeddings in the same Document
+- **Language agnostic:** At its core, Documents are just dictionaries. This makes it easy to create and send them from any language, not just Python.
 
+## Coming from Pydantic
 
-### What about helper function ?
+If you come from Pydantic, you can see Documents as juiced up models, and DocArray as a collection of goodies around them.
 
-The old way of using helper function (`doc.load_uri_to_image_tensor()`) does not work anymore because we can't operate at a Document levels since we don't know what field are in the Document. A better approach is to encode any kind of modality helper in the type directly. The assignment is then explicit, we cannot afford implicit because we technically can have multi field (embedding, tensor). S
+- **ML focussed types**: Tensor, TorchTensor, TFTensor, Embedding, ...
+- **Types that are alive**: ImageUrl can .load() a URL to image tensor, TextUrl can load and tokenize text documents, etc.
+- **Pre-built Documents** for different data modalities: Image, Text, 3DMesh, Video, Audio, ... Note that all of these will be valid Pydantic models!
+- The concepts of **DocumentArray and DocumentStore**
+- Cloud ready: Serialization to **Protobuf** for use with microservices and **gRPC**
+- Support for **vector search functionalities**, such as find() and embed()
 
+## Coming from FastAPI
 
-```python
-doc_image.tensor = doc_image.uri.load()
-doc_image
-```
-
-
-
-
-    Image(id=UUID('a461e508-4c8b-430b-a63f-091007743cf3'), uri=ImageUrl('http://jina.ai', scheme='http', host='jina.ai', tld='ai', host_type='domain'), tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]]))
-
-## Example: working with Embedding
-
-All of the predefined Document have a predefined Embedding field
-
+Documents are Pydantic Models (with a twist), and as such they are fully compatible with FastAPI:
 
 ```python
-image = Image(embedding=np.zeros((100, 1)))
-assert image.embedding is not None
-```
+import numpy as np
+from fastapi import FastAPI
+from httpx import AsyncClient
 
-We can easily extend them to have multi embedding:
-
-
-
-```python
-from typing import Optional
-from docarray.typing import Embedding
-
-
-class MyExtendedImage(Image):
-    embedding2: Embedding
-    embedding3: Optional[Embedding]
-```
-
-
-```python
-image = MyExtendedImage(embedding=np.zeros((100, 1)), embedding2=np.zeros((100, 1)))
-assert image.embedding is not None
-assert image.embedding2 is not None
-assert image.embedding3 is None
-```
-
-Atm we have a couple of method that work on embedding:
-* embed
-* find/match
-...
-
-They all work on the `embedding` field. Nevertheless we don't have nesceraly this field define. User can have Document without embedding, or have embedding that are not call embedding, or have multiple embeddings ...
-
-The solution is the same as for Executor ( see below ). We use pick automatically an the first embedding field by default and we allow users to explicitly define the mapping if they want to
-
-
-```python
-# THIS CODE DOES NOT RUN YET
-
-da.find(da2, 'embedding:embedding1')
-```
-
-## DocumentArray
-
-a DocumentArray is a list like container of Document. The big change with the (old) DocArray is that now DocumentArray can precise on Document Schema on which they work on. This is usefull both for type hint and for protobuf reconstruction.
-
-The old behavior where DocumentArray could contain any kind of Document is still possible (it is actually the default) because we have the a Schemaless Document.
-
-```python
-from docarray import Document, DocumentArray, Text, Image
-
-da = DocumentArray([Text(text='hello'), Image(tensor=np.zeros((3, 224, 224)))])
-da
-```
-
-
-
-
-    [Text(id=UUID('b901bd1d-cd4d-4f17-b774-e6ddb8487234'), text='hello', tensor=None),
-     Image(id=UUID('1849bdb9-d1da-4b18-8670-84f1af053693'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
-             [0., 0., 0., ..., 0., 0., 0.],
-             [0., 0., 0., ..., 0., 0., 0.],
-             ...,
-
-             [0., 0., 0., ..., 0., 0., 0.],
-             [0., 0., 0., ..., 0., 0., 0.],
-             [0., 0., 0., ..., 0., 0., 0.]]]))]
-
-
-
-inside the DocumentArray there is a typed define
-
-
-```python
-da.document_type
-```
-
-
-
-
-    docarray.document.any_document.AnyDocument
-
-
-
-in this case the schema of the DocumentArray is the AnyDocument schema, i.e, it works with any Document
-
-but you can as well restraint this type
-
-
-```python
-da = DocumentArray[Text]([Text(text='hello'), Text(text='bye bye')])
-da
-```
-
-
-
-
-    [Text(id=UUID('82d422a6-2805-4d70-8f5b-cf6a8e720e3c'), text='hello', tensor=None),
-     Text(id=UUID('1a624b5e-fc7d-46b8-916e-4f5467e8cf82'), text='bye bye', tensor=None)]
-
-
-
-Note this is a experiment API, we can rely on DocumentArray(..., type=Text) in a metaclass way (like storage) otherwise. It is a proposition I like it this way better
-
-
-```python
-da.document_type
-```
-
-
-
-
-    docarray.predefined_document.text.Text
-
-
-
-This is mainly usefull for type hint:
-
-
-```python
-def do_smth_on_da(da: DocumentArray[Text]):
-
-    for doc in da:
-        print(
-            da.text
-        )  ## this will work since you expect Document Text inside the DocumentArray
-```
-
-### Nested DocumentArray inside Document
-
-(Old) Document had the chunks field to represented nested document in document. We extend this principle by allowing a field of Document to just be a DocumentArray
-
-
-```python
 from docarray import Document, Image
+from docarray.typing import NdArray
 
 
-class Video(Document):
-    title: str
-    frames: DocumentArray[Image]
+class InputDoc(Document):
+    img: Image
 
 
-frames = DocumentArray([Image(tensor=np.zeros((3, 224, 224))) for _ in range(24)])
-video = Video(title='hello', frames=frames)
-video
+class OutputDoc(Document):
+    embedding_clip: NdArray
+    embedding_bert: NdArray
+
+
+input_doc = InputDoc(img=Image(tensor=np.zeros((3, 224, 224))))
+
+app = FastAPI()
+
+
+@app.post("/doc/", response_model=OutputDoc)
+async def create_item(doc: InputDoc) -> OutputDoc:
+    ## call my fancy model to generate the embeddings
+    return OutputDoc(
+        embedding_clip=np.zeros((100, 1)), embedding_bert=np.zeros((100, 1))
+    )
+
+
+async with AsyncClient(app=app, base_url="http://test") as ac:
+    response = await ac.post("/doc/", data=input_doc.json())
+    resp_doc = await ac.get("/docs")
+    resp_redoc = await ac.get("/redoc")
 ```
 
+The big advantage here is **first-class support for ML centric data**, such as {Torch, TF, ...}Tensor, Embedding, etc.
 
-
-
-    Video(id=UUID('4d3f3d99-a346-4152-bd81-9170136ca75b'), title='hello', frames=[Image(id=UUID('69f2c62f-bdec-4172-aaef-630029e3e974'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-
-
-            ...,
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]])), Image(id=UUID('dfc9c251-5a79-4278-8748-defa18a5bd65'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]],
-    
-           
-           [[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]])), Image(id=UUID('1e9027ce-e036-4bc2-85b2-e2f97c3a1200'), uri=None, tensor=array([[[0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            ...,
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.],
-            [0., 0., 0., ..., 0., 0., 0.]]]))])
-
-
-
-## Jina side : Executor interoperability
-
-The API above is much more flexible than the current Document implementation. This buys us better multimodal support as well as more natural vector DB integration. On the other hand, the Executor have less structure to rely on.
-We intend to tackle this limitation in the following way:
-
-- **Every Executor expects a schema that it will work on**. This could be self-defined, or an imported ‘default’ Document:
-
+This includes handy features such as validating the shape of a tensor:
 ```python
-class MyExecSchema(Document):
-    text: str
-    embedding: Embedding
+from docarray import Document
+from docarray.typing import TorchTensor
+import torch
 
 
-class MyExec(Executor):
-    @requests
-    def foo(docs: DocumentArray[MyExecSchema], *args, **kwargs):
-        ...
+class MyDoc(Document):
+    tensor: TorchTensor[3, 224, 224]
+
+
+doc = MyDoc(tensor=torch.zeros(3, 224, 224))  # works
+doc = MyDoc(tensor=torch.zeros(224, 224, 3))  # works by reshaping
+doc = MyDoc(tensor=torch.zeros(224))  # fails validation
 ```
 
-- On the client side, the user can (**but does not have to!)** define a translation (`schema_map`, name not final) from their schema to the expected schema:
+## Coming from a vector database
+
+If you came across docarray as a universal vector DB client, you can best think of it as **a new kind of ORM for vector databases**.
+
+DocArray's job is to take multi-modal, nested and domain-specific data and to map it to a vector database,
+store it there, and thus make it searchable:
 
 ```python
-class ClientDoc(Document):
-    text: str
-    first_embedding: Embedding
-    second_embedding: Embedding
+# NOTE: DocumentStores are not yet implemented in version 2
+from docarray import DocumentArray, Image, Text, DocumentStore, Document
+import numpy as np
 
 
-doc = ClientDoc(...)
-# map `text` to `text` and `first_embedding` to `embedding`
-client.post(doc, schema_map={'MyExec': 'text:text,first_embedding:embedding'})
-# the case of nested schema can be handle with dunder notation
-```
-
-- The **worker runtime performs the schema translation**, by simply renaming fields in the received document. That way the Executor only gets to see what it wants. We plan on doing automatic translation as well to avoid verbosity when it is not needed (see below)
-- **Defaults**: If the client schema already matches the Executor schema, no translation is necessary and no schema map needs to be passed.
-If the schemas do not match and no map is provided, the runtime can do a best effort translation based on the types. We clearly document that mechanism and avoid any surprises.
-- **Backward compatibility:** If an Executor fails to provide an expected schema, we assume the current (legacy) schema that already exists for every Document
-- Executors can receive any schema that is superset of his defined schema. Clients send to the Flow, documents with a schema that is valid to all Executors. 
-In the worker runtime, deserializing docs from a python object to protobuf should rely on the initial protobuf message, rather [than creating a new one](https://github.com/jina-ai/docarray/blob/main/docarray/proto/io/__init__.py#L41)
-
-**Automatic translation details:** 
-
-Lets say my input data follow this schema
-
-```python
-class ImageTextDocument(Document):
-    text: Text
+class MyDoc(Document):
     image: Image
-    embedding: Embedding
-```
-
-and that my Executor follow this one
-
-```python
-class MyPhoto(Document):
-    vector: Embedding
-    photo: Image
-    description: Text
-
-
-class PhotoEmbeddingExecutor(Executor):
-    @requests
-    def encode(self, docs: DocumentArray[MyPhoto], **kwargs):
-        for doc_ in docs:
-            doc.embedding = self.image_model(doc.photo)
-```
-
-They define actually the same underlying schema but with different field name. So the way would be to do
-
-```python
-client.post(doc, schema_map={'MyExec': 'image:photo,embedding:vector,text:description'})
-```
-
-But this is too verbose for smth just translating the same schema. We will do that automatically., How ? We look at the field type and do a one by one group by.
-
-What if the matching is not exact ? i.e what if we have the two following schema ?
-
-```python
-class ClientDoc(Document):
     text: Text
-    embedding1: Embedding
-    embedding2: Embedding
+    description: str
 
 
-class ExecutorDoc(Document):
-    text: Text
-    embedding: Embedding
+def _random_my_doc():
+    return MyDoc(
+        image=Image(embedding=np.random.random((256,))),
+        text=Text(embedding=np.random.random((128,))),
+        description='this is a random document',
+    )
+
+
+da = DocumentArray([_random_my_doc() for _ in range(1000)])  # create some data
+store = DocumentStore[MyDoc](
+    storage='qdrant'
+)  # create a DocumentStore with Qdrant as backend
+store.insert(da)  # insert the DocumentArray into the DocumentStore
+
+# find the 10 most similar images based on the image embedding field
+match = store.find(
+    Image(embedding=np.zeros((256,))), field='image__embedding', top_k=10
+)
+# find the 10 most similar images based on the image embedding field
+match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', top_k=10)
 ```
 
- If we have collision on a field (here two embeddings) we will take the first field that correspond (in this case embedding1). This is a deterministic algorithm because fields are ordered in pydantic
+## Further reading
+
+- [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
+- [Donation to Linux Foundation AI&Data blog post](https://jina.ai/news/donate-docarray-lf-for-inclusive-standard-multimodal-data-model/)
+- [Submit ideas, feature requests, and discussions](https://github.com/docarray/docarray/discussions)
+- ["Legacy" DocArray github page](https://github.com/docarray/docarray)
+- ["Legacy" DocArray documentation](https://docarray.jina.ai/)
 
