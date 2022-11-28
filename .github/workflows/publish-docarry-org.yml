@@ -1,4 +1,4 @@
-name: Manual Publish DocArray
+name: Manual Publish DocArray[dot]org
 
 on:
   workflow_dispatch:
@@ -10,22 +10,23 @@ on:
   push:
 
 jobs:
-  token-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check release token
-        id: token-check
-        run: |
-          touch SUCCESS
-        if: inputs.release_token == env.release_token
-        env:
-          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
-      - name: Fail release token
-        run: |
-          [[ -f SUCCESS ]]
+#  token-check:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check release token
+#        id: token-check
+#        run: |
+#          touch SUCCESS
+#        if: inputs.release_token == env.release_token
+#        env:
+#          release_token: ${{ secrets.DOCARRAY_RELEASE_TOKEN }}
+#      - name: Fail release token
+#        run: |
+#          [[ -f SUCCESS ]]
 
   copy-readme:
-    needs: token-check
+#    needs: token-check
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
