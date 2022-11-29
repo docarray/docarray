@@ -70,7 +70,7 @@ The following news article card can be easily represented via `docarray.dataclas
 <tr>
 <td> 
 
-<img src="https://github.com/jina-ai/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="300px">
+<img src="https://github.com/docarray/docarray/blob/main/docs/fundamentals/dataclass/img/image-mmdoc-example.png?raw=true" alt="A example multimodal document" width="300px">
      
 </td>
 <td>
