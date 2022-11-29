@@ -9,17 +9,6 @@ see [here](https://github.com/docarray/docarray)._
 DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
 **Neural Search**.
 
-## Install the alpha
-
-to try out the alpha you can install it via git:
-```shell
-pip install git+https://github.com/docarray/docarray@alphav2-0.1
-```
-or from the latest development branch
-```shell
-pip install git+https://github.com/docarray/docarray@feat-rewrite-v2
-```
-
 This means that DocArray lets you do the following things:
 
 ## Represent
@@ -258,6 +247,17 @@ match = store.find(
 )
 # find the 10 most similar images based on the image embedding field
 match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', top_k=10)
+```
+
+## Install the alpha
+
+to try out the alpha you can install it via git:
+```shell
+pip install "git+https://github.com/docarray/docarra@alphav2-0.1#egg=docarray[common,torch,image]"
+```
+or from the latest development branch
+```shell
+pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[common,torch,image]"
 ```
 
 ## Further reading
