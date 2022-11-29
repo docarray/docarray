@@ -54,6 +54,7 @@ class QdrantConfig:
     full_scan_threshold: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 class BackendMixin(BaseBackendMixin):
@@ -131,7 +132,7 @@ class BackendMixin(BaseBackendMixin):
 
         self._initialize_qdrant_schema()
 
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if docs is None and config.collection_name:
             return
