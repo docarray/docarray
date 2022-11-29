@@ -9,6 +9,17 @@ see [here](https://github.com/docarray/docarray)._
 DocArray is a library for **representing, sending and storing multi-modal data**, with a focus on applications in **ML** and
 **Neural Search**.
 
+## Install the alpha
+
+to try out the alpha you can install it via git:
+```shell
+pip install git+https://github.com/docarray/docarray@alphav2-0.1
+```
+or from the latest development branch
+```shell
+pip install git+https://github.com/docarray/docarray@feat-rewrite-v2
+```
+
 This means that DocArray lets you do the following things:
 
 ## Represent
