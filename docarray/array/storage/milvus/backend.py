@@ -18,6 +18,7 @@ from pymilvus import (
 from docarray import Document, DocumentArray
 from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.helper import dataclass_from_dict, _safe_cast_int
+from docarray.score import NamedScore
 
 if TYPE_CHECKING:
     from docarray.typing import (
@@ -271,11 +272,12 @@ class BackendMixin(BaseBackendMixin):
     ) -> 'List[DocumentArray]':
         das = []
         for r in responses:
-            das.append(
-                DocumentArray(
-                    [Document.from_base64(hit.entity.get('serialized')) for hit in r]
-                )
-            )
+            da = []
+            for hit in r:
+                doc = Document.from_base64(hit.entity.get('serialized'))
+                doc.scores[f'score'] = NamedScore(value=hit.score)
+                da.append(doc)
+            das.append(DocumentArray(da))
         return das
 
     def _update_kwargs_from_config(self, field_to_update, **kwargs):
