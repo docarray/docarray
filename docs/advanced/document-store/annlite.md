@@ -48,6 +48,7 @@ The following configs can be set:
 | `max_connection`  | The number of bi-directional links created for every new element during construction.                                                  | `None`, defaults to the default value in the AnnLite package* |
 | `n_components`    | The output dimension of PCA model. Should be a positive number and less than `n_dim` if it's not `None`                                | `None`, defaults to the default value in the AnnLite package* |
 | `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                          |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                                          |
 
 *You can check the default values in [the AnnLite source code](https://github.com/jina-ai/annlite/blob/main/annlite/core/index/hnsw/index.py)
 

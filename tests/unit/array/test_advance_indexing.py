@@ -273,12 +273,13 @@ def test_sequence_str(docs, storage, config, start_storage):
     else:
         docs = DocumentArray(docs, storage=storage)
     # getter
-    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2, 1]]
 
     assert len(docs[idx]) == len(idx)
     assert len(docs[tuple(idx)]) == len(idx)
 
     # setter
+    idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
     docs[idx] = [Document(text='repl') for _ in range(len(idx))]
     idx = [d.id for d in docs[1, 3, 5, 7, -1, -2]]
     for _id in idx:
