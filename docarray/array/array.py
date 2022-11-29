@@ -29,7 +29,7 @@ class DocumentArray(
                 f'DocumentArray[item] item should be a Document not a {item} '
             )
 
-        class _DocumenArrayTyped(DocumentArray):
+        class _DocumenArrayTyped(cls):  # type: ignore
             document_type: Type[BaseDocument] = item
 
         for field in _DocumenArrayTyped.document_type.__fields__.keys():
