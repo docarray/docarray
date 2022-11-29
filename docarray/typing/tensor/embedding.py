@@ -30,4 +30,4 @@ class TorchEmbedding(TorchTensor, EmbeddingMixin):
     alternative_type = TorchTensor
 
 
-Embedding = Union[TorchEmbedding, NdArrayEmbedding]
+Embedding = Union[NdArrayEmbedding, TorchEmbedding]
