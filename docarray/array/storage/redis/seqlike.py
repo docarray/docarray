@@ -26,8 +26,12 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
         :return: the length of this :class:`DocumentArrayRedis` object
         """
-        try:
+        if self._list_like:
             return len(self._offset2ids)
+        try:
+            lua_script = f'return #redis.pcall("keys", "{self._config.index_name}:*")'
+            cmd = self._client.register_script(lua_script)
+            return cmd()
         except:
             return 0
 
