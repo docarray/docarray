@@ -46,6 +46,7 @@ class ElasticConfig:
     ef_construction: Optional[int] = None
     m: Optional[int] = None
     columns: Optional[Union[List[Tuple[str, str]], Dict[str, str]]] = None
+    root_id: bool = True
 
 
 _banned_indexname_chars = ['[', ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', ']']
@@ -100,7 +101,7 @@ class BackendMixin(BaseBackendMixin):
         self._build_offset2id_index()
 
         # Note super()._init_storage() calls _load_offset2ids which calls _get_offset2ids_meta
-        super()._init_storage()
+        super()._init_storage(**kwargs)
 
         if _docs is None:
             return

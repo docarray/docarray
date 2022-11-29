@@ -200,13 +200,25 @@ class BaseGetSetDelMixin(ABC):
             _check_valid_values_nested_set(self[set_index], docs)
             if set_index in subindices:
                 subindex_da = subindices[set_index]
+
                 subindex_da.clear()
                 subindex_da.extend(docs)
         else:  # root level set, update subindices iteratively
             for subindex_selector, subindex_da in subindices.items():
                 old_ids = DocumentArray(self[set_index])[subindex_selector, 'id']
                 del subindex_da[old_ids]
-                subindex_da.extend(DocumentArray(docs)[subindex_selector])
+
+                value = DocumentArray(docs)
+
+                if (
+                    getattr(subindex_da, '_config', None)  # checks if in-memory da
+                    and subindex_da._config.root_id
+                ):
+                    for v in value:
+                        for doc in DocumentArray(v)[subindex_selector]:
+                            doc.tags['_root_id_'] = v.id
+
+                subindex_da.extend(value[subindex_selector])
 
     def _set_docs(self, ids, docs: Iterable['Document']):
         docs = list(docs)
