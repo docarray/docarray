@@ -253,6 +253,25 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
 ```
+
+````{admonition} Note
+:class: note
+For Milvus, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
+You can access the scores as follows:
+
+````python
+for doc in results:
+    print(f"score = {doc.scores['score'].value}")
+````
+
+```
+score = 3.0
+score = 12.0
+score = 27.0
+score = 48.0
+```
+
 ### Example of `.find` with only a filter
 
 The following example shows how to use DocArray with Milvus Document Store in order to filter text documents.
