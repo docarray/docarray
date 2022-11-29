@@ -212,15 +212,3 @@ class TorchTensor(
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value_np.shape))
         pb_msg.dense.dtype = value_np.dtype.str
-
-
-class TorchEmbedding(TorchTensor):
-    @classmethod
-    def __validate_getitem__(cls, item: Any) -> Tuple[int]:
-        shape = super().__validate_getitem__(item)
-        if len(shape) > 1:
-            raise ValueError(
-                '`TorchEmbedding` can only have a single dimension/axis.'
-                'You can use `TorchTensor` as a general tensor instead.'
-            )
-        return shape
