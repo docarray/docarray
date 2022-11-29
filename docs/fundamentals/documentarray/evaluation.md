@@ -69,7 +69,7 @@ da_prediction['@m'].summary()
 To evaluate the matches against a ground truth array, you simply provide a DocumentArray to the evaluate function like `da_groundtruth` in the call below:
 
 ```python
-da_predict.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
+da_prediction.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
 ```
 
 Thereby, `da_groundtruth` should contain the same documents as in `da_prediction` where each `matches` attribute contains exactly those documents which are relevant to the respective root document.
@@ -215,6 +215,50 @@ da_prediction.evaluate(
 
 In this case, the keyword argument `k` is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.
 
+### The max-rel parameter
+
+Some metric functions shown in the table above require a `max_rel` parameter.
+This parameter should be set to the number of relevant documents in the document collection.
+Without the knowledge of this number, metrics like `recall_at_k` and `f1_score_at_k` can be calculated.
+
+In the `evaluate` function, one can provide a keyword argument `max_rel`, which is then used for all queries.
+In the example below, we can use the datasets `da_prediction` and `da_original` from the beginning, where each query has nine relevant documents.
+Therefore, we set `max_rel=9`.
+
+```python
+da_prediction.evaluate(ground_truth=da_original, metrics=['recall_at_k'], max_rel=9)
+```
+
+```text
+{'recall_at_k': 1.0}
+```
+
+Since all relevant documents are in the matches, the recall is one.
+However, this only makes sense if the number of relevant documents is equal for each query.
+If one provides a `ground_truth` parameter to the `evaluate` function, `max_rel` is set to the number of matches of the query document.
+
+```python
+da_prediction.evaluate(ground_truth=da_original, metrics=['recall_at_k'])
+```
+```text
+{'recall_at_k': 1.0}
+```
+
+For labeled datasets, this is not possible.
+Here, one can set the `num_relevant_documents_per_label` parameter of `evaluate`.
+It accepts a dictionary that contains the number of relevant documents for each label.
+In this way, the function can set `max_rel` to the correct value for each query document.
+
+```python
+example_da.evaluate(
+    metrics=['recall_at_k'], num_relevant_documents_per_label={0: 5, 1: 5}
+)
+```
+
+```text
+{'recall_at_k': 1.0}
+```
+
 ### Custom metrics
 
 If the pre-defined metrics do not fit your use-case, you can define a custom metric function.
@@ -281,6 +325,8 @@ print(result)
 ```text
 {'reciprocal_rank': 0.7583333333333333}
 ```
+
+For metric functions which require a `max_rel` parameter, the `embed_and_evaluate` function (described later in this section) automatically constructs the dictionary for `num_relevant_documents_per_label` based on the `index_data` argument.
 
 ### Batch-wise matching
 
