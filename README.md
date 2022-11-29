@@ -249,6 +249,17 @@ match = store.find(
 match = store.find(Image(embedding=np.zeros((128,))), field='text__embedding', top_k=10)
 ```
 
+## Install the alpha
+
+to try out the alpha you can install it via git:
+```shell
+pip install "git+https://github.com/docarray/docarra@alphav2-0.1#egg=docarray[common,torch,image]"
+```
+or from the latest development branch
+```shell
+pip install "git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray[common,torch,image]"
+```
+
 ## Further reading
 
 - [V2 announcement blog post](https://github.com/docarray/notes/blob/main/blog/01-announcement.md)
