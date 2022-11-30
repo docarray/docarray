@@ -10,6 +10,5 @@ def test_set_embedding():
 
     d = MyDocument(embedding=np.zeros((3, 224, 224)))
 
-    assert isinstance(d.embedding, Embedding)
     assert isinstance(d.embedding, np.ndarray)
     assert (d.embedding == np.zeros((3, 224, 224))).all()
