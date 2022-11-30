@@ -100,7 +100,7 @@ class VideoDataMixin:
     def load_uri_to_video_tensor(
         self: 'T', only_keyframes: bool = False, **kwargs
     ) -> 'T':
-        """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.
+        """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor` and store the indices of the key frames in :attr:`.tags`.
 
         :param only_keyframes: only keep the keyframes in the video
         :param kwargs: supports all keyword arguments that are being supported by av.open() as
@@ -110,16 +110,36 @@ class VideoDataMixin:
         import av
 
         with av.open(self.uri, **kwargs) as container:
-            if only_keyframes:
-                stream = container.streams.video[0]
-                stream.codec_context.skip_frame = 'NONKEY'
+            stream = container.streams.video[0]
+            stream.codec_context.skip_frame = 'NONKEY'
 
-            frames = []
+            key_frames = []
             for frame in container.decode(video=0):
+                img = frame.to_image()
+                key_frames.append(img)
+
+        with av.open(self.uri, **kwargs) as container:
+            i = 0
+            curr_key_frame = key_frames[i]
+            key_frame_indices = []
+            frames = []
+            for j, frame in enumerate(container.decode(video=0)):
                 img = frame.to_image()
                 frames.append(np.asarray(img))
 
-        self.tensor = np.moveaxis(np.stack(frames), 1, 2)
+                if (np.asarray(img) == np.asarray(curr_key_frame)).all():
+                    key_frame_indices.append(j)
+                    i += 1
+                    if i < len(key_frames):
+                        curr_key_frame = key_frames[i]
+
+        self.tags['key_frame_indices'] = key_frame_indices
+
+        if only_keyframes:
+            self.tensor = np.moveaxis(np.stack(key_frames), 1, 2)
+        else:
+            self.tensor = np.moveaxis(np.stack(frames), 1, 2)
+
         return self
 
     def save_video_tensor_to_file(
