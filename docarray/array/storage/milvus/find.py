@@ -42,7 +42,7 @@ class FindMixin:
                 output_fields=['serialized'],
                 **kwargs,
             )
-        return self._docs_from_search_response(results)
+        return self._docs_from_search_response(results, distance=self._config.distance)
 
     def _filter(self, filter, limit=10, **kwargs):
         kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)
