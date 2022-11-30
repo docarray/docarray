@@ -69,10 +69,10 @@ da_prediction['@m'].summary()
 To evaluate the matches against a ground truth array, you simply provide a DocumentArray to the evaluate function like `da_groundtruth` in the call below:
 
 ```python
-da_predict.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
+da_prediction.evaluate(ground_truth=da_groundtruth, metrics=['...'], **kwargs)
 ```
 
-Thereby, `da_groundtruth` should contain the same documents as in `da_prediction` where each `matches` attribute contains exactly those documents which are relevant to the respective root document.
+Thereby, `da_groundtruth` should contain the same Documents as in `da_prediction` where each `matches` attribute contains exactly those Documents which are relevant to the respective root Document.
 The `metrics` argument determines the metric you want to use for your evaluation, e.g., `precision_at_k`.
 
 In the code cell below, we evaluate the array `da_prediction` with the noisy matches against the original one `da_original`:
@@ -111,7 +111,8 @@ for d in da_prediction:
 Note that the evaluation against a ground truth DocumentArray only works if both DocumentArrays have the same length and their nested structure is the same.
 It makes no sense to evaluate with a completely different DocumentArray.
 
-While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, it simply uses {attr}`~docarray.Document.id`. One can customize this behavior by specifying `hash_fn`.
+While evaluating, Document pairs are recognized as correct if they share the same identifier. By default, it simply uses {attr}`~docarray.Document.id`.
+You can customize this behavior by specifying `hash_fn`.
 
 Let's see an example by creating two DocumentArrays with some matches with identical texts.
 
@@ -157,8 +158,8 @@ It is correct as we define the evaluation as checking if the first two character
 
 ## Evaluation via labels
 
-Alternatively, you can add labels to your documents to evaluate them.
-In this case, a match is considered relevant to its root document if it has the same label:
+Alternatively, you can add labels to your Documents to evaluate them.
+In this case, a match is considered relevant to its root Document if it has the same label:
 
 ```python
 import numpy as np
@@ -198,7 +199,7 @@ Some of those metrics accept additional arguments as `kwargs` which you can simp
 ```{danger}
 These metric scores might change if the `limit` argument of the match function is set differently.
 
-**Note:** Not all of these metrics can be applied to a Top-K result, i.e., `ndcg_at_k` and `r_precision` are calculated correctly only if the limit is set equal or higher than the number of documents in the `DocumentArray` provided to the match function.
+**Note:** Not all of these metrics can be applied to a Top-K result, i.e., `ndcg_at_k` and `r_precision` are calculated correctly only if the limit is set equal or higher than the number of Documents in the `DocumentArray` provided to the match function.
 ```
 
 You can evaluate multiple metric functions at once, as you can see below:
@@ -215,13 +216,57 @@ da_prediction.evaluate(
 
 In this case, the keyword argument `k` is passed to all metric functions, even though it does not fulfill any specific function for the calculation of the reciprocal rank.
 
+### The max_rel parameter
+
+Some metric functions shown in the table above require a `max_rel` parameter.
+This parameter should be set to the number of relevant Documents in the Document collection.
+Without the knowledge of this number, metrics like `recall_at_k` and `f1_score_at_k` cannot be calculated.
+
+In the `evaluate` function, you can provide a keyword argument `max_rel`, which is then used for all queries.
+In the example below, we can use the datasets `da_prediction` and `da_original` from the beginning, where each query has nine relevant Documents.
+Therefore, we set `max_rel=9`.
+
+```python
+da_prediction.evaluate(ground_truth=da_original, metrics=['recall_at_k'], max_rel=9)
+```
+
+```text
+{'recall_at_k': 1.0}
+```
+
+Since all relevant Documents are in the matches, the recall is one.
+However, this only makes sense if the number of relevant Documents is equal for each query.
+If you provide a `ground_truth` parameter to the `evaluate` function, `max_rel` is set to the number of matches of the query Document.
+
+```python
+da_prediction.evaluate(ground_truth=da_original, metrics=['recall_at_k'])
+```
+```text
+{'recall_at_k': 1.0}
+```
+
+For labeled datasets, this is not possible.
+Here, you can set the `num_relevant_documents_per_label` parameter of `evaluate`.
+It accepts a dictionary that contains the number of relevant Documents for each label.
+In this way, the function can set `max_rel` to the correct value for each query Document.
+
+```python
+example_da.evaluate(
+    metrics=['recall_at_k'], num_relevant_documents_per_label={0: 5, 1: 5}
+)
+```
+
+```text
+{'recall_at_k': 1.0}
+```
+
 ### Custom metrics
 
 If the pre-defined metrics do not fit your use-case, you can define a custom metric function.
 It should take as input a list of binary relevance judgements of a query (`1` and `0` values).
 The evaluate function already calculates this binary list from the `matches` attribute so that each number represents the relevancy of a match.
 
-Let's write a custom metric function, which counts the number of relevant documents per query:
+Let's write a custom metric function, which counts the number of relevant Documents per query:
 
 ```python
 def count_relevant(binary_relevance):
@@ -282,20 +327,22 @@ print(result)
 {'reciprocal_rank': 0.7583333333333333}
 ```
 
+For metric functions which require a `max_rel` parameter, the `embed_and_evaluate` function (described later in this section) automatically constructs the dictionary for `num_relevant_documents_per_label` based on the `index_data` argument.
+
 ### Batch-wise matching
 
-The ``embed_and_evaluate`` function is especially useful, when you need to evaluate the queries on a very large document collection (`example_index` in the code snippet above), which is too large to store the embeddings of all documents in main-memory.
-In this case, ``embed_and_evaluate`` matches the queries to batches of the document collection.
+The ``embed_and_evaluate`` function is especially useful, when you need to evaluate the queries on a very large Document collection (`example_index` in the code snippet above), which is too large to store the embeddings of all Documents in main-memory.
+In this case, ``embed_and_evaluate`` matches the queries to batches of the Document collection.
 After the batch is processed all embeddings are deleted.
 By default, the batch size for the matching (`match_batch_size`) is set to `100_000`.
 If you want to reduce the memory footprint, you can set it to a lower value.
 
 ### Sampling Queries
 
-If you want to evaluate a large dataset, it might be useful to sample query documents.
+If you want to evaluate a large dataset, it might be useful to sample query Documents.
 Since the metric values returned by the `embed_and_evaluate` are mean values, sampling should not change the result significantly if the sample is large enough.
-By default, sampling is applied for `DocumentArray` objects with more than 1,000 documents.
-However, it is only applied on the `DocumentArray` itself and not on the document provided in `index_data`.
+By default, sampling is applied for `DocumentArray` objects with more than 1,000 Documents.
+However, it is only applied on the `DocumentArray` itself and not on the Documents provided in `index_data`.
 If you want to change the number of samples, you can ajust the `query_sample_size` argument.
 In the following code block an evaluation is done with 100 samples:
 
@@ -323,7 +370,7 @@ da.embed_and_evaluate(
 {'precision_at_k': 0.13649999999999998}
 ```
 
-Please note that in this way only documents which are actually evaluated obtain an `.evaluations` attribute.
+Please note that in this way only Documents which are actually evaluated obtain an `.evaluations` attribute.
 
 To test how close it is to the exact result, we execute the function again with `query_sample_size` set to 1,000:
 
