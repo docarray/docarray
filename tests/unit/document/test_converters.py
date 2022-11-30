@@ -23,6 +23,20 @@ def test_video_convert_pipe(pytestconfig, tmpdir):
     assert os.path.exists(fname)
 
 
+@pytest.mark.parametrize('only_keyframes', [True, False])
+def test_video_convert_pipe_key_frame_indices(pytestconfig, only_keyframes, tmpdir):
+    num_d = 0
+    fname = str(tmpdir / f'tmp{num_d}.mp4')
+    d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
+    d.load_uri_to_video_tensor(only_keyframes=only_keyframes)
+    d.save_video_tensor_to_file(fname)
+
+    assert os.path.exists(fname)
+    assert 'key_frame_indices' in d.tags.keys()
+    assert len(d.tags['key_frame_indices']) == 2
+    np.testing.assert_array_equal(d.tags['key_frame_indices'][0], d.tensor[0])
+
+
 def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     for d in from_files(f'{cur_dir}/toydata/*.wav'):
