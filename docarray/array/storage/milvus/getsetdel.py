@@ -40,6 +40,8 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 )
             sorted_res = sorted(res, key=lambda k: int(k['offset']))
             self._offset2ids = Offset2ID([r['document_id'] for r in sorted_res])
+        else:
+            self._offset2ids = Offset2ID([], list_like=self._list_like)
 
     def _save_offset2ids(self):
         if self._list_like:
@@ -72,8 +74,7 @@ class GetSetDelMixin(BaseGetSetDelMixin):
                 raise KeyError(f'No documents found for ids {ids}')
             docs.extend(self._docs_from_query_response(res))
         # sort output docs according to input id sorting
-        id_to_index = {id_: i for i, id_ in enumerate(ids)}
-        return DocumentArray(sorted(docs, key=lambda d: id_to_index[d.id]))
+        return DocumentArray([docs[d] for d in ids])
 
     def _del_docs_by_ids(self, ids: 'Iterable[str]', **kwargs) -> 'DocumentArray':
         kwargs = self._update_kwargs_from_config('consistency_level', **kwargs)

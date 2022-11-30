@@ -73,6 +73,8 @@ def test_memory_cntxt_mngr(start_storage):
 @pytest.fixture()
 def mock_response():
     class MockHit:
+        score = 1.0
+
         @property
         def entity(self):
             return {'serialized': Document().to_base64()}

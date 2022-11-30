@@ -20,7 +20,7 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
         self._offset2ids.extend([doc.id for doc in docs])
 
     def _append(self, value: 'Document'):
-        self.extend([value])
+        self._extend([value])
 
     def __eq__(self, other):
         """In annlite backend, data are considered as identical if configs point to the same database source"""
