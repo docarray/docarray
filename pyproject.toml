@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "docarray"
-version = '0.1.0'
+version = '2022.11.29.alpha'
 description='The data structure for unstructured data'
-authors=['Jina AI']
+authors=['DocArray']
 license='Apache 2.0'
 
 [tool.poetry.dependencies]
