@@ -267,15 +267,13 @@ class BackendMixin(BaseBackendMixin):
         return DocumentArray([Document.from_base64(d['serialized']) for d in response])
 
     @staticmethod
-    def _docs_from_search_response(
-        responses,
-    ) -> 'List[DocumentArray]':
+    def _docs_from_search_response(responses, distance: str) -> 'List[DocumentArray]':
         das = []
         for r in responses:
             da = []
             for hit in r:
                 doc = Document.from_base64(hit.entity.get('serialized'))
-                doc.scores[f'score'] = NamedScore(value=hit.score)
+                doc.scores[distance] = NamedScore(value=hit.score)
                 da.append(doc)
             das.append(DocumentArray(da))
         return das
