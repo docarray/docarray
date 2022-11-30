@@ -33,8 +33,8 @@ def test_video_convert_pipe_key_frame_indices(pytestconfig, only_keyframes, tmpd
 
     assert os.path.exists(fname)
     assert 'key_frame_indices' in d.tags.keys()
+    assert d.tags['key_frame_indices'][0] == 0
     assert len(d.tags['key_frame_indices']) == 2
-    np.testing.assert_array_equal(d.tags['key_frame_indices'][0], d.tensor[0])
 
 
 def test_audio_convert_pipe(pytestconfig, tmpdir):
