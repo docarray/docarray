@@ -1,5 +1,7 @@
 from abc import ABC
-from typing import Any, Tuple, TypeVar, Union
+from typing import Any, Optional, Tuple, Type, TypeVar, Union
+
+import torch
 
 from docarray.typing.tensor.abstract_tensor import AbstractTensor
 from docarray.typing.tensor.ndarray import NdArray
@@ -9,7 +11,7 @@ T = TypeVar('T', bound='Embedding')
 
 
 class EmbeddingMixin(AbstractTensor, ABC):
-    alternative_type = None
+    alternative_type: Optional[Type] = None
 
     @classmethod
     def __validate_getitem__(cls, item: Any) -> Tuple[int]:
@@ -26,7 +28,15 @@ class NdArrayEmbedding(NdArray, EmbeddingMixin):
     alternative_type = NdArray
 
 
-class TorchEmbedding(TorchTensor, EmbeddingMixin):
+torch_base = type(torch.Tensor)  # type: Any
+embedding_base = type(EmbeddingMixin)  # type: Any
+
+
+class metaTorchAndEmbedding(torch_base, embedding_base):
+    pass
+
+
+class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
     alternative_type = TorchTensor
 
 
