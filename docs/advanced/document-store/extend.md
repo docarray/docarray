@@ -289,6 +289,7 @@ class FindMixin:
         ...
 ```
 
+Make sure to store the distance scores in the `.scores` dictionary of the Documents that are being returned with the `distance` value as key.
 
 ## Step 6: summarize everything in `__init__.py`.
 
