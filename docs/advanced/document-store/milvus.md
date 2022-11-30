@@ -254,15 +254,11 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[4. 4. 4.],	 price=4
 ```
 
-````{admonition} Note
-:class: note
-For Milvus, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
-````
 You can access the scores as follows:
 
 ````python
 for doc in results:
-    print(f"score = {doc.scores['score'].value}")
+    print(f"score = {doc.scores[distance].value}")
 ````
 
 ```
