@@ -50,7 +50,7 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         ...
 
     def __len__(self):
-        return len(self._offset2ids)
+        ...
 
     def __iter__(self) -> Iterator['Document']:
         for _id in self._offset2ids:

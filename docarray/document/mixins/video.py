@@ -102,7 +102,8 @@ class VideoDataMixin:
     ) -> 'T':
         """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.
 
-        :param only_keyframes: only keep the keyframes in the video
+        :param only_keyframes: if True keep only the keyframes, if False keep all frames and store the
+            indices of the keyframes in :attr:`.tags`
         :param kwargs: supports all keyword arguments that are being supported by av.open() as
             described in: https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
         :return: Document itself after processed
@@ -115,11 +116,18 @@ class VideoDataMixin:
                 stream.codec_context.skip_frame = 'NONKEY'
 
             frames = []
-            for frame in container.decode(video=0):
+            keyframe_indices = []
+            for i, frame in enumerate(container.decode(video=0)):
+
                 img = frame.to_image()
-                frames.append(np.asarray(img))
+                frames.append(img)
+                if not only_keyframes and frame.key_frame == 1:
+                    keyframe_indices.append(i)
 
         self.tensor = np.moveaxis(np.stack(frames), 1, 2)
+        if not only_keyframes:
+            self.tags['keyframe_indices'] = keyframe_indices
+
         return self
 
     def save_video_tensor_to_file(

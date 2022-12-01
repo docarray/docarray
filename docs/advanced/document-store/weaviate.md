@@ -453,10 +453,10 @@ results = da.find(
         model,
         collate_fn=collate_fn,
     ),
-    query_params={"certainty": 0.9},
+    query_params={"certainty": 0.995},
 )
 
-print("Only results that have a 'weaviate_certainty' of higher than 0.9 should show:")
+print("Only results that have a 'weaviate_certainty' of higher than 0.995 should show:")
 for res in results:
     print(f"\t text={res[:, 'text']}")
     print(f"\t scores={res[:, 'scores']}")
@@ -467,8 +467,13 @@ This should return something similar to:
 ```bash
 Only results that have a 'weaviate_certainty' of higher than 0.9 should show:
          text=['Persist Documents with Weaviate.']
-         scores=[{'weaviate_certainty': {'value': 1.0000001}, 'cosine_similarity': {'value': 1.0000002000000001}}]
+         scores=[{'distance': {'value': -3.5762787e-07}}]
 ```
+
+````{admonition} Note
+:class: note
+For Weaviate, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'distance'`.
+````
 
 ## Include additional properties in the return
 
