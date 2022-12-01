@@ -80,7 +80,7 @@ for idx, c in enumerate(d.tensor):
 ```
 
 
-Additionally, when `only_keyframes=False` the indices of the keyframes are being stored in `.tags['keyframe_indices']` when calling `.load_uri_to_video_tensor`. This way, one can easily access selected scenes: 
+Additionally, if `only_keyframes=False` the keyframe indices will be stored in `.tags['keyframe_indices']` when you call `.load_uri_to_video_tensor()`. This way, you can easily access selected scenes: 
 ````python
 from docarray import Document
 
