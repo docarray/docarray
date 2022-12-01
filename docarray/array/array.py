@@ -103,6 +103,3 @@ class DocumentArray(
     remove = _stack_mode_blocker(list.remove)
     reverse = _stack_mode_blocker(list.reverse)
     sort = _stack_mode_blocker(list.sort)
-
-    def copy(self) -> 'DocumentArray':
-        return super().copy()
