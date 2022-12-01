@@ -167,10 +167,10 @@ Let's use DocArray and the [Totally Looks Like](https://sites.google.com/view/to
 </thead>
 <tbody>
   <tr align="center">
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
-    <td><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/left-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/right-00018.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/left-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
+    <td><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/right-00131.jpg?raw=true" alt="Visualizing top-9 matches using DocArray API" width="50%"></td>
   </tr>
 </tbody>
 </table>
@@ -206,7 +206,7 @@ left_da.plot_image_sprites()
 ```
 
 <p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/sprite.png?raw=true" alt="Load totally looks like dataset with docarray API" width="60%"></a>
 </p>
 
 ### Apply preprocessing
@@ -252,7 +252,7 @@ left_da.plot_embeddings(image_sprites=True)
 ```
 
 <p align="center">
-<a href="https://docarray.jina.ai"><img src="https://github.com/jina-ai/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
+<a href="https://docarray.jina.ai"><img src="https://github.com/docarray/docarray/blob/main/.github/README-img/tsne.gif?raw=true" alt="Visualizing embedding via tSNE and embedding projector" width="90%"></a>
 </p>
 
 Fun is fun, but recall our goal is to match left images against right images and so far we have only handled the left. Let's repeat the same procedure for the right:

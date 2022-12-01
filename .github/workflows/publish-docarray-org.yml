@@ -31,7 +31,7 @@ jobs:
       - name: Check trigger event
         run: | 
           touch SUCCESS
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
       - name: Fail release token
         run: |
           [[ -f SUCCESS ]]
