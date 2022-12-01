@@ -110,32 +110,28 @@ class VideoDataMixin:
         import av
 
         with av.open(self.uri, **kwargs) as container:
-            stream = container.streams.video[0]
-            stream.codec_context.skip_frame = 'NONKEY'
+            if only_keyframes:
+                stream = container.streams.video[0]
+                stream.codec_context.skip_frame = 'NONKEY'
 
-            key_frames = []
+            frames = []
             for frame in container.decode(video=0):
                 img = frame.to_image()
-                key_frames.append(img)
+                frames.append(img)
 
             if only_keyframes:
-                self.tensor = np.moveaxis(np.stack(key_frames), 1, 2)
+                self.tensor = np.moveaxis(np.stack(frames), 1, 2)
                 return self
 
-        with av.open(self.uri, **kwargs) as container:
-            i = 0
-            curr_key_frame = key_frames[i]
-            key_frame_indices = []
-            frames = []
-            for j, frame in enumerate(container.decode(video=0)):
-                img = frame.to_image()
-                frames.append(np.asarray(img))
+        key_frame_indices = []
+        input = av.open(self.uri, **kwargs)
+        for i, packet in enumerate(input.demux(video=0)):
 
-                if (np.asarray(img) == np.asarray(curr_key_frame)).all():
-                    key_frame_indices.append(j)
-                    i += 1
-                    if i < len(key_frames):
-                        curr_key_frame = key_frames[i]
+            if packet.dts is None:
+                continue
+
+            if packet.stream.type == 'video' and packet.is_keyframe:
+                key_frame_indices.append(i)
 
         self.tensor = np.moveaxis(np.stack(frames), 1, 2)
         self.tags['key_frame_indices'] = key_frame_indices
