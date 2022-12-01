@@ -8,7 +8,8 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
     """Helpers that provide attributes getter in bulk"""
 
     def _get_documents_attribute(
-        self, field: str
+        self,
+        field: str,
     ) -> Union[List, AbstractDocumentArray]:
         """Return all values of the fields from all docs this array contains
 
@@ -16,7 +17,6 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         :return: Returns a list of the field value for each document
         in the array like container
         """
-
         field_type = self.__class__.document_type._get_nested_document_class(field)
 
         if issubclass(field_type, BaseDocument):
@@ -26,5 +26,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
             return self.__class__.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self)
             )
+        elif field in self._tensor_columns.keys():
+            return self._tensor_columns[field]
         else:
             return [getattr(doc, field) for doc in self]
