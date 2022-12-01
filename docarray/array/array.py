@@ -87,13 +87,21 @@ class DocumentArray(
     def unstacked(self):
         if self.is_stack():
 
-            for field in self._tensor_columns.keys():
+            for field in list(self._tensor_columns.keys()):
+                # list needed here otherwise we are modifying the dict while iterating
                 del self._tensor_columns[field]
 
             self._tensor_columns = dict()
 
     def is_stack(self) -> bool:
-        return self._tensor_columns != dict()
+        if self._tensor_columns != dict():
+            return all(
+                self._tensor_columns[field] is not None
+                for field in self._tensor_columns.keys()
+            )
+
+        else:
+            return False
 
     append = _stack_mode_blocker(list.append)
     extend = _stack_mode_blocker(list.extend)
