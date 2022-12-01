@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from docarray import Document, DocumentArray
@@ -36,3 +37,17 @@ def test_unstack():
 
     for doc in batch:
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
+
+
+def test_stack_runtime_error():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch.stacked()
+
+    with pytest.raises(RuntimeError):
+        batch.append([])

@@ -1,4 +1,5 @@
 from collections import defaultdict
+from functools import wraps
 from typing import Dict, Iterable, List, Optional, Type
 
 import torch
@@ -7,6 +8,18 @@ from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
 from docarray.typing import TorchTensor
+
+
+def _stack_mode_blocker(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if self.is_stack():
+            raise RuntimeError(
+                f'Cannot call {func.__name__} when the document array is in stack mode'
+            )
+        return func(self, *args, **kwargs)
+
+    return wrapper
 
 
 class DocumentArray(
@@ -32,8 +45,6 @@ class DocumentArray(
         for field_name, field in self.document_type.__fields__.items():
             if issubclass(field.type_, TorchTensor):
                 self._tensor_columns[field_name] = None
-        else:
-            self._tensor_columns = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -59,7 +70,7 @@ class DocumentArray(
 
     def stacked(self):
 
-        if self.is_stack():
+        if not (self.is_stack()):
             tensors_to_stack: Dict[str, List[TorchTensor]] = defaultdict(list)
             for doc in self:
                 for tensor_field in self._tensor_columns.keys():
@@ -79,7 +90,19 @@ class DocumentArray(
             for field in self._tensor_columns.keys():
                 del self._tensor_columns[field]
 
-            self._tensor_columns = None
+            self._tensor_columns = dict()
 
     def is_stack(self) -> bool:
-        return self._tensor_columns is not None
+        return self._tensor_columns != dict()
+
+    append = _stack_mode_blocker(list.append)
+    extend = _stack_mode_blocker(list.extend)
+    clear = _stack_mode_blocker(list.clear)
+    insert = _stack_mode_blocker(list.insert)
+    pop = _stack_mode_blocker(list.pop)
+    remove = _stack_mode_blocker(list.remove)
+    reverse = _stack_mode_blocker(list.reverse)
+    sort = _stack_mode_blocker(list.sort)
+
+    def copy(self) -> 'DocumentArray':
+        return super().copy()
