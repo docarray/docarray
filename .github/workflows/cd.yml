@@ -146,8 +146,6 @@ jobs:
 
   check-readme-modification:
     runs-on: ubuntu-latest
-    outputs:
-      readme_changed: ${{ steps.step_output.outputs.readme_changed }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -161,13 +159,6 @@ jobs:
             README.md
 
       - name: Check if README is modified
-        id: step_output
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        run: |
-          echo "readme_changed=true" >> $GITHUB_OUTPUT
-
-  publish-docarray-org:
-    needs: check-readme-modification
-    if: jobs.check-readme-modification.outputs.readme_changed == "true"
-    uses: ./.github/workflows/publish-docarray-org.yml
-    secrets: inherit
+        uses: ./.github/workflows/publish-docarray-org.yml
+        secrets: inherit
