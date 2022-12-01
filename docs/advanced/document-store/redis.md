@@ -204,7 +204,13 @@ Consider the case where you want the nearest vectors to the embedding `[8.,  8.,
 @price:[-inf {max_price}] @color:{color} @stock:[1 1]
 ```
 
-Then the search with the proposed filter can be used as follows:
+Then the search with the proposed filter can be used as follows. 
+
+````{admonition} Note
+:class: note
+For Redis, the distance scores can be accessed in the Document's `.scores` dictionary under the key `'score'`.
+````
+
 ```python
 max_price = 7
 color = "blue"

@@ -74,31 +74,55 @@ def test_find(storage, config, limit, query, start_storage):
     # annlite uses cosine distance by default
     if n_dim == 1:
         if storage == 'weaviate':
+            distances = [t['distance'].value for t in result[:, 'scores']]
+            assert sorted(distances, reverse=False) == distances
+            assert len(distances) == limit
+        elif storage == 'qdrant':
             cosine_similarities = [
                 t['cosine_similarity'].value for t in result[:, 'scores']
             ]
-            assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
-            cosine_distances = [t['score'].value for t in da[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True)
+            assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            cosine_similarities = [t['score'].value for t in result[:, 'scores']]
+            assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+            assert len(cosine_similarities) == limit
+        elif storage == 'redis':
+            cosine_distances = [t['score'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
-            cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
+            assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
+            cosine_distances = [t['cosine'].value for t in result[:, 'scores']]
             assert sorted(cosine_distances, reverse=False) == cosine_distances
+            assert len(cosine_distances) == limit
     else:
         if storage == 'weaviate':
+            for da in result:
+                distances = [t['distance'].value for t in da[:, 'scores']]
+                assert sorted(distances, reverse=False) == distances
+                assert len(distances) == limit
+        elif storage == 'qdrant':
             for da in result:
                 cosine_similarities = [
                     t['cosine_similarity'].value for t in da[:, 'scores']
                 ]
-                assert sorted(cosine_similarities, reverse=False) == cosine_similarities
-        if storage == 'redis':
+                assert sorted(cosine_similarities, reverse=True)
+                assert len(cosine_similarities) == limit
+        elif storage == 'elasticsearch':
+            for da in result:
+                cosine_similarities = [t['score'].value for t in da[:, 'scores']]
+                assert sorted(cosine_similarities, reverse=True) == cosine_similarities
+                assert len(cosine_similarities) == limit
+        elif storage == 'redis':
             for da in result:
                 cosine_distances = [t['score'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
-        elif storage in ['memory', 'annlite', 'elasticsearch']:
+                assert len(cosine_distances) == limit
+        elif storage in ['memory', 'annlite']:
             for da in result:
                 cosine_distances = [t['cosine'].value for t in da[:, 'scores']]
                 assert sorted(cosine_distances, reverse=False) == cosine_distances
+                assert len(cosine_distances) == limit
 
 
 @pytest.mark.parametrize(
