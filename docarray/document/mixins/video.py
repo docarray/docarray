@@ -100,9 +100,10 @@ class VideoDataMixin:
     def load_uri_to_video_tensor(
         self: 'T', only_keyframes: bool = False, **kwargs
     ) -> 'T':
-        """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor` and store the indices of the keyframes in :attr:`.tags` if only_keyframes=False.
+        """Convert a :attr:`.uri` to a video ndarray :attr:`.tensor`.
 
-        :param only_keyframes: only keep the keyframes in the video
+        :param only_keyframes: if true keep only the keyframes in the video, if false keep all frames and store the
+            indices of the keyframes in :attr:`.tags`
         :param kwargs: supports all keyword arguments that are being supported by av.open() as
             described in: https://pyav.org/docs/stable/api/_globals.html?highlight=open#av.open
         :return: Document itself after processed
