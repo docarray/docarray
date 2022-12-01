@@ -3,7 +3,7 @@ import torch
 from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
-from docarray.typing import TorchTensor
+from docarray.typing import TorchEmbedding, TorchTensor
 
 
 def test_proto_tensor():
@@ -57,3 +57,19 @@ def test_parametrized():
     # wrong and not reshapable shape
     with pytest.raises(ValueError):
         parse_obj_as(TorchTensor[3, 224, 224], torch.zeros(224, 224))
+
+
+def test_torch_embedding():
+    # correct shape
+    tensor = parse_obj_as(TorchEmbedding[128], torch.zeros(128))
+    assert isinstance(tensor, TorchEmbedding)
+    assert isinstance(tensor, torch.Tensor)
+    assert tensor.shape == (128,)
+
+    # wrong shape at data setting time
+    with pytest.raises(ValueError):
+        parse_obj_as(TorchEmbedding[128], torch.zeros(256))
+
+    # illegal shape at class creation time
+    with pytest.raises(ValueError):
+        parse_obj_as(TorchEmbedding[128, 128], torch.zeros(128, 128))

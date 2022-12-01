@@ -20,8 +20,12 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     @abc.abstractmethod
     def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
         """Every tensor has to implement this method in order to
-        enbale syntax of the form Tensor[shape].
-        The intended behavoiour is as follows:
+        enable syntax of the form Tensor[shape].
+
+        It is called when a tensor is assigned to a field of this type.
+        i.e. when a tensor is passed to a Document field of type Tensor[shape].
+
+        The intended behaviour is as follows:
         - If the shape of `t` is equal to `shape`, return `t`.
         - If the shape of `t` is not equal to `shape`,
             but can be reshaped to `shape`, return `t` reshaped to `shape`.
@@ -33,6 +37,32 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         :return: The validated tensor.
         """
         ...
+
+    @classmethod
+    def __validate_getitem__(cls, item: Any) -> Tuple[int]:
+        """This method validates the input to __class_getitem__.
+
+        It is called at "class creation time",
+        i.e. when a class is created with syntax of the form Tensor[shape].
+
+        The default implementation tries to cast any `item` to a tuple of ints.
+        A subclass can override this method to implement custom validation logic.
+
+        The output of this is eventually passed to
+        {ref}`AbstractTensor.__validate_shape__` as its `shape` argument.
+
+        Raises `ValueError` if the input `item` does not pass validation.
+
+        :param item: The item to validate, passed to __class_getitem__ (`Tensor[item]`).
+        :return: The validated item == the target shape of this tensor.
+        """
+        if isinstance(item, int):
+            item = (item,)
+        try:
+            item = tuple(item)
+        except TypeError:
+            raise TypeError(f'{item} is not a valid tensor shape.')
+        return item
 
     @classmethod
     def _create_parametrized_type(cls: Type[T], shape: Tuple[int]):
@@ -58,12 +88,6 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
         return _ParametrizedTensor
 
-    def __class_getitem__(cls, item):
-        if isinstance(item, int):
-            item = (item,)
-        try:
-            item = tuple(item)
-        except TypeError:
-            raise TypeError(f'{item} is not a valid tensor shape.')
-
-        return cls._create_parametrized_type(item)
+    def __class_getitem__(cls, item: Any):
+        target_shape = cls.__validate_getitem__(item)
+        return cls._create_parametrized_type(target_shape)

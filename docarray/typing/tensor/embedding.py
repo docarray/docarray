@@ -1,18 +1,41 @@
-from typing import TypeVar
+from abc import ABC
+from typing import Any, Optional, Tuple, Type, TypeVar, Union
 
-from docarray.proto import NodeProto
-from docarray.typing.tensor import NdArray
+from docarray.typing.tensor.abstract_tensor import AbstractTensor
+from docarray.typing.tensor.ndarray import NdArray
+from docarray.typing.tensor.torch_tensor import TorchTensor
 
 T = TypeVar('T', bound='Embedding')
 
 
-class Embedding(NdArray):
-    def _to_node_protobuf(self: T, field: str = 'tensor') -> NodeProto:
-        """Convert Document into a NodeProto protobuf message. This function should
-        be called when the Document is nested into another Document that need to be
-        converted into a protobuf
-        :param field: field in which to store the content in the node proto
-        :return: the nested item protobuf message
-        """
+class EmbeddingMixin(AbstractTensor, ABC):
+    alternative_type: Optional[Type] = None
 
-        return super()._to_node_protobuf(field='embedding')
+    @classmethod
+    def __validate_getitem__(cls, item: Any) -> Tuple[int]:
+        shape = super().__validate_getitem__(item)
+        if len(shape) > 1:
+            error_msg = f'`{cls}` can only have a single dimension/axis.'
+            if cls.alternative_type:
+                error_msg += f' Consider using {cls.alternative_type} instead.'
+            raise ValueError(error_msg)
+        return shape
+
+
+class NdArrayEmbedding(NdArray, EmbeddingMixin):
+    alternative_type = NdArray
+
+
+torch_base = type(TorchTensor)  # type: Any
+embedding_base = type(EmbeddingMixin)  # type: Any
+
+
+class metaTorchAndEmbedding(torch_base, embedding_base):
+    pass
+
+
+class TorchEmbedding(TorchTensor, EmbeddingMixin, metaclass=metaTorchAndEmbedding):
+    alternative_type = TorchTensor
+
+
+Embedding = Union[NdArrayEmbedding, TorchEmbedding]

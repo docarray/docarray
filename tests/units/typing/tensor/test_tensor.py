@@ -5,6 +5,7 @@ from pydantic.tools import parse_obj_as, schema_json_of
 
 from docarray.document.io.json import orjson_dumps
 from docarray.typing import NdArray
+from docarray.typing.tensor import NdArrayEmbedding
 
 
 def test_proto_tensor():
@@ -72,3 +73,20 @@ def test_parametrized():
     # wrong and not reshapable shape
     with pytest.raises(ValueError):
         parse_obj_as(NdArray[3, 224, 224], np.zeros((224, 224)))
+
+
+def test_np_embedding():
+    # correct shape
+    tensor = parse_obj_as(NdArrayEmbedding[128], np.zeros((128,)))
+    assert isinstance(tensor, NdArrayEmbedding)
+    assert isinstance(tensor, NdArray)
+    assert isinstance(tensor, np.ndarray)
+    assert tensor.shape == (128,)
+
+    # wrong shape at data setting time
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArrayEmbedding[128], np.zeros((256,)))
+
+    # illegal shape at class creation time
+    with pytest.raises(ValueError):
+        parse_obj_as(NdArrayEmbedding[128, 128], np.zeros((128, 128)))

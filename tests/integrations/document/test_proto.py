@@ -9,8 +9,10 @@ from docarray.typing import (
     NdArray,
     Tensor,
     TextUrl,
+    TorchEmbedding,
     TorchTensor,
 )
+from docarray.typing.tensor import NdArrayEmbedding
 
 
 def test_multi_modal_doc_proto():
@@ -41,6 +43,8 @@ def test_all_types():
         generic_nd_array: Tensor
         generic_torch_tensor: Tensor
         embedding: Embedding
+        torch_embedding: TorchEmbedding[128]
+        np_embedding: NdArrayEmbedding[128]
 
     doc = MyDoc(
         img_url='test.png',
@@ -53,6 +57,8 @@ def test_all_types():
         generic_nd_array=np.zeros((3, 224, 224)),
         generic_torch_tensor=torch.zeros((3, 224, 224)),
         embedding=np.zeros((3, 224, 224)),
+        torch_embedding=torch.zeros((128,)),
+        np_embedding=np.zeros((128,)),
     )
     doc = MyDoc.from_protobuf(doc.to_protobuf())
 
@@ -77,5 +83,11 @@ def test_all_types():
 
     assert (doc.generic_torch_tensor == torch.zeros((3, 224, 224))).all()
     assert isinstance(doc.generic_torch_tensor, torch.Tensor)
+
+    assert (doc.torch_embedding == torch.zeros((128,))).all()
+    assert isinstance(doc.torch_embedding, torch.Tensor)
+
+    assert (doc.np_embedding == np.zeros((128,))).all()
+    assert isinstance(doc.np_embedding, np.ndarray)
 
     assert (doc.embedding == np.zeros((3, 224, 224))).all()
