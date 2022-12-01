@@ -146,6 +146,7 @@ jobs:
 
   check-readme-modification:
     runs-on: ubuntu-latest
+    secrets: inherit
     steps:
       - uses: actions/checkout@v3
         with:
@@ -161,4 +162,3 @@ jobs:
       - name: Check if README is modified
         if: steps.changed-files-specific.outputs.any_changed == 'true'
         uses: ./.github/workflows/publish-docarray-org.yml
-        secrets: inherit
