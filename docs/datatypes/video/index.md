@@ -79,7 +79,6 @@ for idx, c in enumerate(d.tensor):
 :width: 40%
 ```
 
-Makes sense, right?
 
 Additionally, when `only_keyframes=False` the indices of the keyframes are being stored in `.tags['keyframe_indices']` when calling `.load_uri_to_video_tensor`. This way, one can easily access selected scenes: 
 ````python
