@@ -115,26 +115,18 @@ class VideoDataMixin:
                 stream.codec_context.skip_frame = 'NONKEY'
 
             frames = []
-            for frame in container.decode(video=0):
+            keyframe_indices = []
+            for i, frame in enumerate(container.decode(video=0)):
+
                 img = frame.to_image()
                 frames.append(img)
-
-            if only_keyframes:
-                self.tensor = np.moveaxis(np.stack(frames), 1, 2)
-                return self
-
-        keyframe_indices = []
-        input = av.open(self.uri, **kwargs)
-        for i, packet in enumerate(input.demux(video=0)):
-
-            if packet.dts is None:
-                continue
-
-            if packet.stream.type == 'video' and packet.is_keyframe:
-                keyframe_indices.append(i)
+                if not only_keyframes and frame.key_frame == 1:
+                    keyframe_indices.append(i)
 
         self.tensor = np.moveaxis(np.stack(frames), 1, 2)
-        self.tags['keyframe_indices'] = keyframe_indices
+        if not only_keyframes:
+            self.tags['keyframe_indices'] = keyframe_indices
+
         return self
 
     def save_video_tensor_to_file(
