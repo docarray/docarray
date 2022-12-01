@@ -409,6 +409,7 @@ The following configs can be set:
 | `tag_indices`     | List of tags to index                                                                                                                  | False                                                  |
 | `batch_size`      | Batch size used to handle storage refreshes/updates                                                                                    | 64                                                     |
 | `list_like`       | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                                   |
+| `root_id`         | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                                   |
 
 ```{tip}
 You can read more about HNSW parameters and their default values [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/dense-vector.html#dense-vector-params)

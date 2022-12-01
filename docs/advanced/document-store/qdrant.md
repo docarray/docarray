@@ -94,6 +94,9 @@ The following configs can be set:
 | `m`                   | Number of edges per node in the index graph. Larger = more accurate search, more space required                                        | `None`, defaults to the default value in Qdrant* |
 | `columns`             | Other fields to store in Document                                                                                                      | `None`                                           |
 | `list_like`           | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                             |
+| `root_id`             | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                             |
+
+
 
 *You can read more about the HNSW parameters and their default values [here](https://qdrant.tech/documentation/indexing/#vector-index)
 

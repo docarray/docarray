@@ -25,9 +25,14 @@ def docs():
 )
 def test_disable_offset2id(docs, storage, config, start_storage):
     if config:
-        da = DocumentArray(docs, storage=storage, config=config)
+        da = DocumentArray(storage=storage, config=config)
     else:
-        da = DocumentArray(docs, storage=storage)
+        da = DocumentArray(storage=storage)
+
+    assert len(da) == 0
+
+    da.extend(docs)
+    assert len(da) == 3
 
     with pytest.raises(ValueError):
         da[0]

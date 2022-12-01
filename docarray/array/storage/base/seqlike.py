@@ -1,5 +1,6 @@
+import warnings
 from abc import abstractmethod
-from typing import Iterator, Iterable, MutableSequence
+from typing import Iterable, Iterator, MutableSequence
 
 from docarray import Document, DocumentArray
 
@@ -10,7 +11,15 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
     def _update_subindices_append_extend(self, value):
         if getattr(self, '_subindices', None):
             for selector, da in self._subindices.items():
-                docs_selector = DocumentArray(value)[selector]
+
+                value = DocumentArray(value)
+
+                if getattr(da, '_config', None) and da._config.root_id:
+                    for v in value:
+                        for doc in DocumentArray(v)[selector]:
+                            doc.tags['_root_id_'] = v.id
+
+                docs_selector = value[selector]
                 if len(docs_selector) > 0:
                     da.extend(docs_selector)
 
@@ -63,6 +72,12 @@ class BaseSequenceLikeMixin(MutableSequence[Document]):
         return len(self) > 0
 
     def extend(self, values: Iterable['Document'], **kwargs) -> None:
+
+        from docarray.helper import check_root_id
+
+        if self._is_subindex:
+            check_root_id(self, values)
+
         self._extend(values, **kwargs)
         self._update_subindices_append_extend(values)
 
