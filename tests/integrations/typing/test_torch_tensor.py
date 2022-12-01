@@ -7,13 +7,19 @@ from docarray.typing import TorchEmbedding, TorchTensor
 def test_set_torch_tensor():
     class MyDocument(Document):
         tensor: TorchTensor
-        embedding: TorchEmbedding
 
-    d = MyDocument(tensor=torch.zeros((3, 224, 224)), embedding=torch.zeros((128,)))
+    d = MyDocument(tensor=torch.zeros((3, 224, 224)))
 
     assert isinstance(d.tensor, TorchTensor)
     assert isinstance(d.tensor, torch.Tensor)
     assert (d.tensor == torch.zeros((3, 224, 224))).all()
+
+
+def test_set_torch_embedding():
+    class MyDocument(Document):
+        embedding: TorchEmbedding
+
+    d = MyDocument(embedding=torch.zeros((128,)))
 
     assert isinstance(d.embedding, TorchTensor)
     assert isinstance(d.embedding, TorchEmbedding)
