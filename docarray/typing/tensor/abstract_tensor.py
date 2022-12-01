@@ -22,7 +22,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         """Every tensor has to implement this method in order to
         enable syntax of the form Tensor[shape].
 
-        It is called at "data setting time",
+        It is called when a tensor is assigned to a field of this type.
         i.e. when a tensor is passed to a Document field of type Tensor[shape].
 
         The intended behaviour is as follows:
