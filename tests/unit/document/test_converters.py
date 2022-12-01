@@ -31,9 +31,9 @@ def test_video_convert_pipe_key_frame_indices(pytestconfig, tmpdir):
     d.save_video_tensor_to_file(fname)
 
     assert os.path.exists(fname)
-    assert 'key_frame_indices' in d.tags.keys()
-    assert len(d.tags['key_frame_indices']) == 2
-    assert d.tags['key_frame_indices'] == [0, 95]
+    assert 'keyframe_indices' in d.tags.keys()
+    assert len(d.tags['keyframe_indices']) == 2
+    assert d.tags['keyframe_indices'] == [0, 95]
 
 
 def test_audio_convert_pipe(pytestconfig, tmpdir):
