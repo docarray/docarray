@@ -76,25 +76,26 @@ Other functions behave the same as in-memory DocumentArray.
 
 The following configs can be set:
 
-| Name                  | Description                                                                                                                              | Default                                          |
-|-----------------------|------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
-| `n_dim`               | Number of dimensions of embeddings to be stored and retrieved                                                                            | **This is always required**                      |
-| `collection_name`     | Qdrant collection name client                                                                                                            | **Random collection name generated**             |
-| `distance`            | Distance metric to use during search. Can be 'cosine', 'dot' or 'euclidean'                                                              | `'cosine'`                                       |
-| `host`                | Hostname of the Qdrant server                                                                                                            | `'localhost'`                                    |
-| `port`                | Port of the Qdrant server                                                                                                                | `6333`                                           |
-| `grpc_port`           | Port of the Qdrant gRPC interface                                                                                                        | `6334`                                           |
-| `prefer_grpc`         | Set `True` to use gPRC interface whenever possible in custom methods                                                                     | `False`                                          |
-| `api_key`             | API key for authentication in Qdrant Cloud                                                                                               | `None`                                           |
-| `https`               | Set `True` to use HTTPS(SSL) protocol                                                                                                    | `None`                                           |
-| `serialize_config`    | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                                 | `None`                                           |
-| `scroll_batch_size`   | Batch size used when scrolling over the storage                                                                                          | `64`                                             |
-| `ef_construct`        | Number of neighbours to consider during the index building.  Larger = more accurate search, more time to build index                     | `None`, defaults to the default value in Qdrant* |
-| `full_scan_threshold` | Minimal size (in KiloBytes) of vectors for additional payload-based indexing                                                             | `None`, defaults to the default value in Qdrant* |
-| `m`                   | Number of edges per node in the index graph. Larger = more accurate search, more space required                                          | `None`, defaults to the default value in Qdrant* |
-| `columns`             | Other fields to store in Document                                                                                                        | `None`                                           |
-| `list_like`           | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance.   | True                                             |
-| `root_id`             | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                  | True                                             |
+| Name                  | Description                                                                                                                            | Default                                          |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|
+| `n_dim`               | Number of dimensions of embeddings to be stored and retrieved                                                                          | **This is always required**                      |
+| `collection_name`     | Qdrant collection name client                                                                                                          | **Random collection name generated**             |
+| `distance`            | Distance metric to use during search. Can be 'cosine' (similarity), 'dot' or 'euclidean'                                               | `'cosine'`                                       |
+| `host`                | Hostname of the Qdrant server                                                                                                          | `'localhost'`                                    |
+| `port`                | Port of the Qdrant server                                                                                                              | `6333`                                           |
+| `grpc_port`           | Port of the Qdrant gRPC interface                                                                                                      | `6334`                                           |
+| `prefer_grpc`         | Set `True` to use gPRC interface whenever possible in custom methods                                                                   | `False`                                          |
+| `api_key`             | API key for authentication in Qdrant Cloud                                                                                             | `None`                                           |
+| `https`               | Set `True` to use HTTPS(SSL) protocol                                                                                                  | `None`                                           |
+| `serialize_config`    | [Serialization config of each Document](../../../fundamentals/document/serialization.md)                                               | `None`                                           |
+| `scroll_batch_size`   | Batch size used when scrolling over the storage                                                                                        | `64`                                             |
+| `ef_construct`        | Number of neighbours to consider during the index building.  Larger = more accurate search, more time to build index                   | `None`, defaults to the default value in Qdrant* |
+| `full_scan_threshold` | Minimal size (in KiloBytes) of vectors for additional payload-based indexing                                                           | `None`, defaults to the default value in Qdrant* |
+| `m`                   | Number of edges per node in the index graph. Larger = more accurate search, more space required                                        | `None`, defaults to the default value in Qdrant* |
+| `columns`             | Other fields to store in Document                                                                                                      | `None`                                           |
+| `list_like`           | Controls if ordering of Documents is persisted in the Database. Disabling this breaks list-like features, but can improve performance. | True                                             |
+| `root_id`             | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                             |
+
 
 
 *You can read more about the HNSW parameters and their default values [here](https://qdrant.tech/documentation/indexing/#vector-index)
@@ -217,6 +218,12 @@ Embeddings Nearest Neighbours with "price" at most 7:
 	embedding=[5. 5. 5.],	 price=5
 	embedding=[4. 4. 4.],	 price=4
 ```
+
+````{admonition} Note
+:class: note
+For Qdrant, the distance scores can be accessed in the Document's `.scores` dictionary by the key `f'{distance_metric}_similarity'`. For example, for `distance = 'euclidean'` the key would be `'euclidean_similarity'`.
+````
+
 ### Example of `.filter` with a filter
 The following example shows how to use DocArray with Qdrant Document Store in order to filter text documents.
 Consider Documents have the tag `price` with a value of `i`. We can create these with the following code:
