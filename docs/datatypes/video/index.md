@@ -81,6 +81,22 @@ for idx, c in enumerate(d.tensor):
 
 Makes sense, right?
 
+Additionally, the indices of the key frames are always being stored in `.tags['key_frame_indices']` when calling `.load_uri_to_video_tensor`. This way, one can easily access selected scenes: 
+````python
+from docarray import Document
+
+d = Document(uri='toy.mp4')
+d.load_uri_to_video_tensor()
+first_scene = d.tensor[d.tags['key_frame_indices'][0]: d.tags['key_frame_indices'][1]]
+
+print(first_scene.shape)
+````
+
+```text
+(95, 320, 176, 3)
+```
+
+
 ## Save as video file
 
 One can also save a Document `.tensor` as a video file. In this example, we load our `.mp4` video and store it into a 60fps video.
