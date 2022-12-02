@@ -19,14 +19,14 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
 
-        if issubclass(field_type, BaseDocument):
+        if self._columns is not None and field in self._columns.keys():
+            return self._columns[field]
+        elif issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
             # bug reported here https://github.com/python/mypy/issues/14111
             return self.__class__.__class_getitem__(field_type)(
                 (getattr(doc, field) for doc in self)
             )
-        elif self._tensor_columns is not None and field in self._tensor_columns.keys():
-            return self._tensor_columns[field]
         else:
             return [getattr(doc, field) for doc in self]

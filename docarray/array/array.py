@@ -1,6 +1,6 @@
 from collections import defaultdict
 from functools import wraps
-from typing import Dict, Iterable, List, Optional, Type
+from typing import Dict, Iterable, List, Optional, Type, Union
 
 import torch
 
@@ -40,7 +40,7 @@ class DocumentArray(
     def __init__(self, docs: Iterable[BaseDocument]):
         super().__init__(doc_ for doc_ in docs)
 
-        self._tensor_columns: Optional[Dict[str, Optional[TorchTensor]]] = None
+        self._columns: Optional[Dict[str, Optional[TorchTensor]]] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -68,36 +68,59 @@ class DocumentArray(
 
         if not (self.is_stack()):
 
-            self._tensor_columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
+            self._columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
 
             for field_name, field in self.document_type.__fields__.items():
-                if issubclass(field.type_, TorchTensor):
-                    self._tensor_columns[field_name] = None
+                if issubclass(field.type_, TorchTensor) or issubclass(
+                    field.type_, BaseDocument
+                ):
+                    self._columns[field_name] = None
 
-            tensors_to_stack: Dict[str, List[TorchTensor]] = defaultdict(list)
+            columns_to_stack: Dict[
+                str, Union[List[TorchTensor], List[BaseDocument]]
+            ] = defaultdict(list)
             for doc in self:
-                for tensor_field in self._tensor_columns.keys():
-                    tensors_to_stack[tensor_field].append(getattr(doc, tensor_field))
-                    setattr(doc, tensor_field, None)
+                for field_to_stack in self._columns.keys():
+                    columns_to_stack[field_to_stack].append(
+                        getattr(doc, field_to_stack)
+                    )
+                    if issubclass(
+                        self.document_type.__fields__[field_to_stack].type_, TorchTensor
+                    ):
+                        self._columns[field_to_stack] = None
+                    setattr(doc, field_to_stack, None)
 
-            for tensor_field, to_stack in tensors_to_stack.items():
-                self._tensor_columns[tensor_field] = torch.stack(to_stack)
+            for field_to_stack, to_stack in columns_to_stack.items():
+                type_ = self.document_type.__fields__[field_to_stack].type_
+                if issubclass(type_, TorchTensor):
+                    self._columns[field_to_stack] = torch.stack(to_stack)
+                elif issubclass(type_, BaseDocument):
+                    self._columns[field_to_stack] = DocumentArray[type_](
+                        to_stack
+                    ).stacked()
 
             for i, doc in enumerate(self):
-                for tensor_field in self._tensor_columns.keys():
-                    setattr(doc, tensor_field, self._tensor_columns[tensor_field][i])
+                for field_to_stack in self._columns.keys():
+                    if issubclass(
+                        self.document_type.__fields__[field_to_stack].type_, TorchTensor
+                    ):
+                        setattr(doc, field_to_stack, self._columns[field_to_stack][i])
+
+        return self
 
     def unstacked(self):
         if self.is_stack():
 
-            for field in list(self._tensor_columns.keys()):
+            for field in list(self._columns.keys()):
                 # list needed here otherwise we are modifying the dict while iterating
-                del self._tensor_columns[field]
+                del self._columns[field]
 
-            self._tensor_columns = dict()
+            self._columns = dict()
+
+        return self
 
     def is_stack(self) -> bool:
-        return self._tensor_columns is not None
+        return self._columns is not None
 
     append = _stacked_mode_blocker(list.append)
     extend = _stacked_mode_blocker(list.extend)

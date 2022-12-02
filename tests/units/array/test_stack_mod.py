@@ -15,12 +15,37 @@ def test_stack():
 
     batch.stacked()
 
-    assert (batch._tensor_columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
+    assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
-    assert batch._tensor_columns['tensor'].data_ptr() == batch.tensor.data_ptr()
+    assert batch._columns['tensor'].data_ptr() == batch.tensor.data_ptr()
 
     for doc, tensor in zip(batch, batch.tensor):
         assert doc.tensor.data_ptr() == tensor.data_ptr()
+
+
+def test_stack_mod_nested_document():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    class MMdoc(Document):
+        img: Image
+
+    batch = DocumentArray[MMdoc](
+        [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
+    )
+
+    batch.stacked()
+
+    assert (
+        batch._columns['img']._columns['tensor'] == torch.zeros(10, 3, 224, 224)
+    ).all()
+
+    assert (batch.img.tensor == torch.zeros(10, 3, 224, 224)).all()
+
+    assert (
+        batch._columns['img']._columns['tensor'].data_ptr()
+        == batch.img.tensor.data_ptr()
+    )
 
 
 def test_unstack():
@@ -37,6 +62,22 @@ def test_unstack():
 
     for doc in batch:
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
+
+
+def test_unstack_nested_document():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    class MMdoc(Document):
+        img: Image
+
+    batch = DocumentArray[MMdoc](
+        [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
+    )
+
+    batch.stacked()
+
+    batch.unstacked()
 
 
 def test_stack_runtime_error():
