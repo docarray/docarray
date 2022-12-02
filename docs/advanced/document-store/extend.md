@@ -145,6 +145,9 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
     def __add__(self, other: Union['Document', Iterable['Document']]):
         ...
 
+    def __len__(self):
+        ...
+
     def insert(self, index: int, value: 'Document'):
         # Optional. By default, this will add a new item and update offset2id
         # if you want to customize this, make sure to handle offset2id
@@ -156,10 +159,6 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
 
     def _extend(self, values: Iterable['Document']) -> None:
         # Optional. Override this if you have better implementation than appending one by one
-        ...
-
-    def __len__(self):
-        # Optional. By default, this will rely on offset2id to get the length
         ...
 
     def __iter__(self) -> Iterator['Document']:
