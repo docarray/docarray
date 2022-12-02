@@ -1,4 +1,5 @@
 from collections import defaultdict
+from contextlib import contextmanager
 from functools import wraps
 from typing import Dict, Iterable, List, Optional, Type, Union
 
@@ -13,7 +14,7 @@ from docarray.typing import TorchTensor
 def _stacked_mode_blocker(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
-        if self.is_stack():
+        if self.is_stacked():
             raise RuntimeError(
                 f'Cannot call {func.__name__} when the document array is in stack mode'
             )
@@ -64,9 +65,9 @@ class DocumentArray(
 
         return _DocumentArrayTyped
 
-    def stacked(self):
+    def stack(self):
 
-        if not (self.is_stack()):
+        if not (self.is_stacked()):
 
             self._columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
 
@@ -97,7 +98,7 @@ class DocumentArray(
                 elif issubclass(type_, BaseDocument):
                     self._columns[field_to_stack] = DocumentArray[type_](
                         to_stack
-                    ).stacked()
+                    ).stack()
 
             for i, doc in enumerate(self):
                 for field_to_stack in self._columns.keys():
@@ -108,18 +109,32 @@ class DocumentArray(
 
         return self
 
-    def unstacked(self):
-        if self.is_stack():
+    @contextmanager
+    def stacked_mode(self):
+        try:
+            yield self.stack()
+        finally:
+            self.unstack()
+
+    @contextmanager
+    def unstacked_mode(self):
+        try:
+            yield self.unstack()
+        finally:
+            self.stack()
+
+    def unstack(self):
+        if self.is_stacked():
 
             for field in list(self._columns.keys()):
                 # list needed here otherwise we are modifying the dict while iterating
                 del self._columns[field]
 
-            self._columns = dict()
+            self._columns = None
 
         return self
 
-    def is_stack(self) -> bool:
+    def is_stacked(self) -> bool:
         return self._columns is not None
 
     append = _stacked_mode_blocker(list.append)

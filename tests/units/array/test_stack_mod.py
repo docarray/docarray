@@ -13,7 +13,7 @@ def test_stack():
         [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    batch.stacked()
+    batch.stack()
 
     assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
@@ -34,7 +34,7 @@ def test_stack_mod_nested_document():
         [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
-    batch.stacked()
+    batch.stack()
 
     assert (
         batch._columns['img']._columns['tensor'] == torch.zeros(10, 3, 224, 224)
@@ -56,9 +56,9 @@ def test_unstack():
         [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    batch.stacked()
+    batch.stack()
 
-    batch.unstacked()
+    batch.unstack()
 
     for doc in batch:
         assert (doc.tensor == torch.zeros(3, 224, 224)).all()
@@ -75,9 +75,9 @@ def test_unstack_nested_document():
         [MMdoc(img=Image(tensor=torch.zeros(3, 224, 224))) for _ in range(10)]
     )
 
-    batch.stacked()
+    batch.stack()
 
-    batch.unstacked()
+    batch.unstack()
 
 
 def test_stack_runtime_error():
@@ -88,7 +88,39 @@ def test_stack_runtime_error():
         [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
     )
 
-    batch.stacked()
+    batch.stack()
 
     with pytest.raises(RuntimeError):
         batch.append([])
+
+
+def test_context_stack():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    assert not (batch.is_stacked())
+    with batch.stacked_mode():
+        assert batch.is_stacked()
+
+    assert not (batch.is_stacked())
+
+
+def test_context_not_stack():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch.stack()
+
+    assert batch.is_stacked()
+    with batch.unstacked_mode():
+        assert not (batch.is_stacked())
+
+    assert batch.is_stacked()
