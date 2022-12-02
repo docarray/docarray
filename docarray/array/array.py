@@ -65,6 +65,15 @@ class DocumentArray(
 
         return _DocumentArrayTyped
 
+    def __getitem__(self, item):
+        if self.is_stacked():
+            doc = super().__getitem__(item)
+            for field in self._columns.keys():
+                setattr(doc, field, self._columns[field][item])
+            return doc
+        else:
+            return super().__getitem__(item)
+
     def stack(self):
 
         if not (self.is_stacked()):

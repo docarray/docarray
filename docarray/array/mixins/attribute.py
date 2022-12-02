@@ -2,15 +2,16 @@ from typing import List, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import BaseDocument
+from docarray.typing import TorchTensor
 
 
 class GetAttributeArrayMixin(AbstractDocumentArray):
     """Helpers that provide attributes getter in bulk"""
 
-    def _get_documents_attribute(
+    def _get_array_attribute(
         self,
         field: str,
-    ) -> Union[List, AbstractDocumentArray]:
+    ) -> Union[List, AbstractDocumentArray, TorchTensor]:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -19,7 +20,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
 
-        if self._columns is not None and field in self._columns.keys():
+        if self.is_stacked() and field in self._columns.keys():
             return self._columns[field]
         elif issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
@@ -30,3 +31,19 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
             )
         else:
             return [getattr(doc, field) for doc in self]
+
+    def _set_array_attribute(
+        self,
+        field: str,
+        values: Union[List, AbstractDocumentArray, TorchTensor],
+    ):
+        """Set all document if this DocumentArray with the passed values
+
+        :param field: name of the fields to extract
+        :values: the values to set at the document array level
+        """
+        if self.is_stacked() and field in self._columns.keys():
+            self._columns[field] = values
+        else:
+            for doc, value in zip(self, values):
+                setattr(doc, field, value)

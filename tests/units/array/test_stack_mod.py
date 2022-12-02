@@ -124,3 +124,18 @@ def test_context_not_stack():
         assert not (batch.is_stacked())
 
     assert batch.is_stacked()
+
+
+def test_stack_setter():
+    class Image(Document):
+        tensor: TorchTensor[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch.stack()
+
+    batch.tensor = torch.ones(10, 3, 224, 224)
+
+    assert (batch.tensor == torch.ones(10, 3, 224, 224)).all()
