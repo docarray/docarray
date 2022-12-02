@@ -10,7 +10,7 @@ from docarray.document import AnyDocument, BaseDocument, BaseNode
 from docarray.typing import TorchTensor
 
 
-def _stack_mode_blocker(func):
+def _stacked_mode_blocker(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if self.is_stack():
@@ -99,11 +99,11 @@ class DocumentArray(
     def is_stack(self) -> bool:
         return self._tensor_columns is not None
 
-    append = _stack_mode_blocker(list.append)
-    extend = _stack_mode_blocker(list.extend)
-    clear = _stack_mode_blocker(list.clear)
-    insert = _stack_mode_blocker(list.insert)
-    pop = _stack_mode_blocker(list.pop)
-    remove = _stack_mode_blocker(list.remove)
-    reverse = _stack_mode_blocker(list.reverse)
-    sort = _stack_mode_blocker(list.sort)
+    append = _stacked_mode_blocker(list.append)
+    extend = _stacked_mode_blocker(list.extend)
+    clear = _stacked_mode_blocker(list.clear)
+    insert = _stacked_mode_blocker(list.insert)
+    pop = _stacked_mode_blocker(list.pop)
+    remove = _stacked_mode_blocker(list.remove)
+    reverse = _stacked_mode_blocker(list.reverse)
+    sort = _stacked_mode_blocker(list.sort)
