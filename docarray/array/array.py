@@ -48,21 +48,21 @@ class DocumentArray(
                 f'DocumentArray[item] item should be a Document not a {item} '
             )
 
-        class _DocumenArrayTyped(cls):  # type: ignore
+        class _DocumentArrayTyped(cls):  # type: ignore
             document_type: Type[BaseDocument] = item
 
-        for field in _DocumenArrayTyped.document_type.__fields__.keys():
+        for field in _DocumentArrayTyped.document_type.__fields__.keys():
 
             def _property_generator(val: str):
                 return property(lambda self: self._get_documents_attribute(val))
 
-            setattr(_DocumenArrayTyped, field, _property_generator(field))
+            setattr(_DocumentArrayTyped, field, _property_generator(field))
             # this generates property on the fly based on the schema of the item
 
-        _DocumenArrayTyped.__name__ = f'DocumentArray[{item.__name__}]'
-        _DocumenArrayTyped.__qualname__ = f'DocumentArray[{item.__name__}]'
+        _DocumentArrayTyped.__name__ = f'DocumentArray[{item.__name__}]'
+        _DocumentArrayTyped.__qualname__ = f'DocumentArray[{item.__name__}]'
 
-        return _DocumenArrayTyped
+        return _DocumentArrayTyped
 
     def stacked(self):
 
