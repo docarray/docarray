@@ -40,11 +40,7 @@ class DocumentArray(
     def __init__(self, docs: Iterable[BaseDocument]):
         super().__init__(doc_ for doc_ in docs)
 
-        self._tensor_columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
-
-        for field_name, field in self.document_type.__fields__.items():
-            if issubclass(field.type_, TorchTensor):
-                self._tensor_columns[field_name] = None
+        self._tensor_columns: Optional[Dict[str, Optional[TorchTensor]]] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -71,6 +67,13 @@ class DocumentArray(
     def stacked(self):
 
         if not (self.is_stack()):
+
+            self._tensor_columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
+
+            for field_name, field in self.document_type.__fields__.items():
+                if issubclass(field.type_, TorchTensor):
+                    self._tensor_columns[field_name] = None
+
             tensors_to_stack: Dict[str, List[TorchTensor]] = defaultdict(list)
             for doc in self:
                 for tensor_field in self._tensor_columns.keys():
@@ -94,14 +97,7 @@ class DocumentArray(
             self._tensor_columns = dict()
 
     def is_stack(self) -> bool:
-        if self._tensor_columns != dict():
-            return all(
-                self._tensor_columns[field] is not None
-                for field in self._tensor_columns.keys()
-            )
-
-        else:
-            return False
+        return self._tensor_columns is not None
 
     append = _stack_mode_blocker(list.append)
     extend = _stack_mode_blocker(list.extend)
