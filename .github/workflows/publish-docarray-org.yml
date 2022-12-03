@@ -6,10 +6,19 @@ on:
       release_token:
         description: 'Your release token'
         required: true
+      ref:
+        description: 'The branch, tag or SHA to checkout'
+        required: false
+        default: ''
   workflow_call:
+    inputs:
+      ref:
+        description: 'The branch, tag or SHA to checkout'
+        required: false
+        default: ''
     secrets:
       JINA_DEV_BOT:
-        required: True
+        required: true
 
 # uncomment this line for testing in PR
 #  push:
@@ -44,6 +53,7 @@ jobs:
         with:
           fetch-depth: 1
           path: docarray
+          ref: inputs.ref
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
@@ -56,5 +66,7 @@ jobs:
           cp ${GITHUB_WORKSPACE}/docarray/README.md .
           git config --local user.email "Jina Dev Bot"
           git config --local user.name "dev-bot@jina.ai"
-          git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
-          git push
+          if [[ `git status --porcelain` ]]; then
+            git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
+            git push
+          fi
