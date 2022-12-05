@@ -79,7 +79,22 @@ for idx, c in enumerate(d.tensor):
 :width: 40%
 ```
 
-Makes sense, right?
+
+Additionally, if `only_keyframes=False` the keyframe indices will be stored in `.tags['keyframe_indices']` when you call `.load_uri_to_video_tensor()`. This way, you can easily access selected scenes: 
+````python
+from docarray import Document
+
+d = Document(uri='toy.mp4')
+d.load_uri_to_video_tensor()
+first_scene = d.tensor[d.tags['keyframe_indices'][0]: d.tags['keyframe_indices'][1]]
+
+print(first_scene.shape)
+````
+
+```text
+(95, 320, 176, 3)
+```
+
 
 ## Save as video file
 
