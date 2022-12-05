@@ -7,9 +7,7 @@ area/testing:
   - tests/**/*
 
 area/setup:
-  - setup.py
-  - extra-requirements.txt
-  - requirements.txt
+  - pyproject.toml
   - MANIFEST.in
 
 area/core:
@@ -32,7 +30,7 @@ area/docker:
   - ./.dockerignore
 
 area/typing:
-  - script/**/*
+  - docarray/typing/**/*
 
 component/array:
   - docarray/array/**/*
