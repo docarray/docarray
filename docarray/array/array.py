@@ -32,9 +32,70 @@ class DocumentArray(
     BaseNode,
 ):
     """
-    a DocumentArray is a list-like container of Document of the same schema
+    a DocumentArray is a container of Document.
 
     :param docs: iterable of Document
+
+
+    A DocumentArray can only contain Document that follow the same schema. To precise
+    this schema you can use the `DocumentArray[Document]` syntax. This will create a
+    DocumentArray that can only contain Document of the type Document. (Note that there
+    exist a special schema (AnySchema) that allow any Document to be stored in the
+    DocumentArray, but this is not recommended to use and exist here mostly for
+    serialization purpose with protobuf when the receiver does not know the schema of
+    DocumentArray but still want to deserialize it).
+
+    EXAMPLE USAGE
+    .. code-block:: python
+        from docarray import Document, DocumentArray
+        from docarray.typing import NdArray, ImageUrl
+
+        class Image(Document):
+            tensor: Optional[NdArray[100]]
+            url: ImageUrl
+
+        da = DocumentArray[Image](Image(url='http://url.com') for _ in range(10))
+
+
+    DocumentArray define setter and getter for each field of the Document schema. These
+    getter and setter are defined dynamically at runtime. This allows to access the
+    field of the Document in a natural way. For example, if you have a DocumentArray of
+    Image you can do: `da.tensor` to get the tensor of all the Image in the
+    DocumentArray. You can also do `da.tensor = np.random.random([10, 100])` to set the
+    tensor of all the Image.
+
+
+    DocumentArray can be in two mode: row and stack.
+
+
+    By default, it is in row mode (or unstacked mode), a DocumentArray is almost just a
+    list of Document. You can append Document to it, iterate over it, etc. Each Document
+    owns its data. You can see it as a row based datastructure. In this case
+    the getter and setter shown above will return a list of the field of each Document
+    (or a DocumentArray if the field is a nested Document) This list/DocumentArray will
+    be created in the fly. The setter will set the field of each Document to the value
+    of the list/DocumentArray/Tensor passed as parameters.
+
+    Nevertheless, this list-like behavior is not always optimal especially when you want
+    to process you data in batch and do operation which involves matrix computation,
+    like in deep learning or to compute the cosine similarly of embeddings, in this case
+    you want to stack all the tensor in a single batch. This is where the stack mode of
+    the DocumentArray comes in handy.
+    In stacked mode each field which are Tensor are stored as a column in a tensor of
+    batch the size of the DocumentArray. This allows to do operation on the whole batch
+    instead of iterating over the DocumentArray.
+    In this mode the Document inside in the Document don't own the data anymore but just
+    reference to the data in the tensor. But For the user they are no difference it
+    looks and feel the same.
+    In stacked mode the getter and setter just replace the tensor of the DocumentArray
+    of the given field.
+    Finally, in stacked mode operation like `da.append` are not allowed anymore because
+    they are too slow and not recommended to use. You should rather use the unstacked
+    mode.
+
+    To switch from stacked mode to unstacked mode you need to call `da.unstack()` and
+    `da.stack`. There are as well two context manager to for these modes.
+    `with da.stack_mode():` and `with da.unstack_mode():`
     """
 
     document_type: Type[BaseDocument] = AnyDocument
@@ -194,8 +255,8 @@ class DocumentArray(
         only method if the DocumentArray is already in stacked mode. (Calling it while
         being in unstacked mode will have no effect)
 
-        Unstack will unstack all the columns of the DocumentArray and put the data back
-        in each Document of the DocumentArray.
+        Calling unstack will unstack all the columns of the DocumentArray and put the
+        data back in each Document of the DocumentArray.
 
         In unstacked mode DocumentArray behaves like a normal python list of Documents.
         This means that you can call append, insert, index etc without problem.
