@@ -43,7 +43,7 @@ class DocumentArray(
         super().__init__(doc_ for doc_ in docs)
 
         self._columns: Optional[
-            Dict[str, Union[TorchTensor, DocumentArray, NdArray, None]]
+            Dict[str, Union[TorchTensor, AbstractDocumentArray, NdArray, None]]
         ] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):

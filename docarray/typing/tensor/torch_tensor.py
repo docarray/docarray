@@ -5,7 +5,7 @@ from typing import (
     Any,
     Dict,
     Generic,
-    Sequence,
+    List,
     Tuple,
     Type,
     TypeVar,
@@ -225,6 +225,6 @@ class TorchTensor(
         pb_msg.dense.dtype = value_np.dtype.str
 
     @classmethod
-    def __docarray_stack__(cls, seq: Sequence[T]) -> T:
+    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of ndarray into a single ndarray."""
         return cls.from_native_torch_tensor(torch.stack(seq))

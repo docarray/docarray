@@ -1,6 +1,6 @@
 import abc
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Generic, Sequence, Tuple, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
 
 from docarray.typing.abstract_type import AbstractType
 
@@ -96,7 +96,8 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 =======
 >>>>>>> feat: embedding type (#877)
     @classmethod
-    def __docarray_stack__(cls, seq: Sequence[T]) -> T:
+    @abc.abstractmethod
+    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         ...
     def __class_getitem__(cls, item: Any):

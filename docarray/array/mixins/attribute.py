@@ -1,8 +1,10 @@
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.document import BaseDocument
-from docarray.typing import TorchTensor
+
+if TYPE_CHECKING:
+    from docarray.typing import NdArray, TorchTensor
 
 
 class GetAttributeArrayMixin(AbstractDocumentArray):
@@ -11,7 +13,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
     def _get_array_attribute(
         self,
         field: str,
-    ) -> Union[List, AbstractDocumentArray, TorchTensor]:
+    ) -> Union[List, AbstractDocumentArray, 'TorchTensor', 'NdArray']:
         """Return all values of the fields from all docs this array contains
 
         :param field: name of the fields to extract
@@ -35,7 +37,7 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
     def _set_array_attribute(
         self,
         field: str,
-        values: Union[List, AbstractDocumentArray, TorchTensor],
+        values: Union[List, AbstractDocumentArray, 'TorchTensor', 'NdArray'],
     ):
         """Set all document if this DocumentArray with the passed values
 
