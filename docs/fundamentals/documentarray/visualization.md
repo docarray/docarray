@@ -91,3 +91,8 @@ da.plot_embeddings(image_sprites=True)
 ```{figure} images/embedding-projector.gif
 :align: center
 ```
+
+````{admonition} Note
+:class: note
+If you have large amounts of metadata, the plotting might be slowed down since the metadata is stored in a corresponding csv file. With the `exclude_fields` parameter you can speed up plotting by excluding fields, such as `chunks` or `matches`, from storing to the csv metadata file.
+````
