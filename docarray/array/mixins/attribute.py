@@ -22,8 +22,20 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         """
         field_type = self.__class__.document_type._get_nested_document_class(field)
 
-        if self.is_stacked() and field in self._columns.keys():
-            return self._columns[field]
+        if (
+            self.is_stacked()
+            and field in self._column_fields()
+            and self._columns is not None
+        ):
+            attributes = self._columns[field]
+            if attributes is not None:
+                return attributes
+            else:
+                raise ValueError(
+                    f'The column is not set for the field {field} even though '
+                    f'it is in stacked mode'
+                )
+
         elif issubclass(field_type, BaseDocument):
             # calling __class_getitem__ ourselves is a hack otherwise mypy complain
             # most likely a bug in mypy though
@@ -44,7 +56,12 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         :param field: name of the fields to extract
         :values: the values to set at the document array level
         """
-        if self.is_stacked() and field in self._columns.keys():
+        if (
+            self.is_stacked()
+            and self._columns is not None
+            and field in self._column_fields()
+            and not isinstance(values, List)
+        ):
             self._columns[field] = values
         else:
             for doc, value in zip(self, values):

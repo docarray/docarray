@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Dict, Iterable, Optional, Type, Union
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Type, Union
 
 from docarray.document import BaseDocument
 
@@ -26,7 +26,8 @@ class AbstractDocumentArray(Iterable):
 
     @abstractmethod
     def is_stacked(self) -> bool:
-        """
-        Return True if the document array is in stack mode
-        """
+        ...
+
+    @abstractmethod
+    def _column_fields(self) -> List[str]:
         ...

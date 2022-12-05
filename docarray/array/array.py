@@ -131,6 +131,17 @@ class DocumentArray(
 
         return self
 
+    def unstack(self):
+        if self.is_stacked():
+
+            for field in list(self._columns.keys()):
+                # list needed here otherwise we are modifying the dict while iterating
+                del self._columns[field]
+
+            self._columns = None
+
+        return self
+
     @contextmanager
     def stacked_mode(self):
         try:
@@ -145,19 +156,22 @@ class DocumentArray(
         finally:
             self.stack()
 
-    def unstack(self):
-        if self.is_stacked():
-
-            for field in list(self._columns.keys()):
-                # list needed here otherwise we are modifying the dict while iterating
-                del self._columns[field]
-
-            self._columns = None
-
-        return self
-
     def is_stacked(self) -> bool:
+        """
+        Return True if the document array is in stack mode
+        """
         return self._columns is not None
+
+    def _column_fields(self) -> List[str]:
+        """
+        return the field store as columns
+        :return: the list of keys of the columns
+        """
+        if self.is_stacked() and self._columns is not None:
+            # need to repeat myself here bc of mypy
+            return list(self._columns.keys())
+        else:
+            return []
 
     append = _stacked_mode_blocker(list.append)
     extend = _stacked_mode_blocker(list.extend)
