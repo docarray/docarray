@@ -86,6 +86,62 @@ class DocumentArray(
             return super().__getitem__(item)
 
     def stack(self):
+        """
+        Calling this method will make the DocumentArray enter in stacked mode
+
+        This mode will stack all the Tensor and Nested fields of the documents in the
+        array into columns. This is useful when you want to perform operations on the
+        whole array at once. Especially when it involves working on Tensor directly
+        where you want to avoid for loops and work on batch directly.
+
+        By default, a DocumentArray is not in stack mode, it means that each Document
+        holds its own data and that the DocumentArray is just a python list of
+        Documents. When you access fields of the DocumentArray you actually loop over
+        the list of Documents and access the field of each Document.
+
+        In stack mode, accessing or setting fields of the DocumentArray will access or
+        set the column of the array.
+
+        When entering stack mode the DocumentArray will create a column for each field
+        of the Document that are Tensor or that are Nested Document that contains at
+        least one Tensor field.
+
+        IMPORTANT: in stacked_mode you cannot add or remove Document from the array.
+        You can only modify the fields of the DocumentArray. This is intentionally done
+        to avoid inconsistencies between the columns and the list of Documents and
+        because adding to a column is slow. If you need to do so please use the unstack
+        method to exit stacked mode.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray import Document, DocumentArray
+            from docarray.typing import NdArray
+
+
+            class Image(Document):
+                tensor: NdArray[100]
+
+
+            batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
+                for _ in range(10)])
+
+            batch.stack()
+
+            print(batch[0].tensor[0])
+            # >>> 0
+
+            print(batch.tensor.shape)
+            # >>> (10, 3, 224, 224)
+
+            batch.tensor = np.ones((10, 100))
+
+            print(batch[0].tensor[0])
+            # >>> 1
+
+            batch.append(Image(tensor=np.zeros((100))))
+            # >>> raise RuntimeError('Cannot call append when the document array is in
+            # >>> stack mode'
+        """
 
         if not (self.is_stacked()):
 
@@ -132,6 +188,58 @@ class DocumentArray(
         return self
 
     def unstack(self):
+        """
+        Calling this method will make the DocumentArray enter in unstack mode.
+        This is the default mode of any DocumentArray. This means you should call this
+        only method if the DocumentArray is already in stacked mode. (Calling it while
+        being in unstacked mode will have no effect)
+
+        Unstack will unstack all the columns of the DocumentArray and put the data back
+        in each Document of the DocumentArray.
+
+        In unstacked mode DocumentArray behaves like a normal python list of Documents.
+        This means that you can call append, insert, index etc without problem.
+
+
+        You can still access DocumentArray fields in unstacked mode. This will return
+        a list of the fields of each Document in the array (or A DocumentArray if the
+        field contains Document and not type). This list/DocumentsArray will be
+        created on the fly and will not be stored in the DocumentArray. If you want to
+        do heavy operations on the fields of the DocumentArray you should use the stack
+        mode.
+
+        You can use setter as well to set the fields of the DocumentArray. This will
+        iterate over the list/DocumentsArray/Ndarray and set the field of each Document
+        accordingly.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            from docarray import Document, DocumentArray, Text
+            from docarray.typing import NdArray
+
+
+            class Image(Document):
+                tensor: NdArray[100]
+
+            batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
+                for _ in range(10)])
+
+            batch.stack()
+            batch.unstack()
+            print(type(batch.tensor))
+            # >>> list
+            print(len(batch.tensor))
+            # >>> 10
+
+            batch.append(Image(tensor=np.zeros((100))))
+            # this work just fine
+
+            batch.tensor = np.ones((10, 100))
+            # this iterate over the ndarray and assign the row to each Document
+
+            print(batch[0].tensor[0])
+            # >>> 1
+        """
         if self.is_stacked():
 
             for field in list(self._columns.keys()):
