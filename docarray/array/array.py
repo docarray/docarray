@@ -55,7 +55,14 @@ class DocumentArray(
         for field in _DocumentArrayTyped.document_type.__fields__.keys():
 
             def _property_generator(val: str):
-                return property(lambda self: self._get_array_attribute(val))
+                def _getter(self):
+                    return self._get_array_attribute(val)
+
+                def _setter(self, value):
+                    self._set_array_attribute(val, value)
+
+                # need docstring for the property
+                return property(fget=_getter, fset=_setter)
 
             setattr(_DocumentArrayTyped, field, _property_generator(field))
             # this generates property on the fly based on the schema of the item
