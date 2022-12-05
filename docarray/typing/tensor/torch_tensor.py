@@ -225,6 +225,8 @@ class TorchTensor(
         pb_msg.dense.dtype = value_np.dtype.str
 
     @classmethod
-    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+    def __docarray_stack__(
+        cls: Type[T], seq: Union[Tuple['TorchTensor'], List['TorchTensor']]
+    ) -> T:
         """Stack a sequence of ndarray into a single ndarray."""
-        return cls.from_native_torch_tensor(torch.stack(seq))
+        return cls.from_native_torch_tensor(torch.stack(seq))  # type: ignore

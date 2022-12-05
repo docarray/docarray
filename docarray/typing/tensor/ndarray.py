@@ -193,6 +193,8 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         pb_msg.dense.dtype = value.dtype.str
 
     @classmethod
-    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+    def __docarray_stack__(
+        cls: Type[T], seq: Union[List['NdArray'], Tuple['NdArray']]
+    ) -> T:
         """Stack a sequence of ndarray into a single ndarray."""
         return cls.from_ndarray(np.stack(seq))
