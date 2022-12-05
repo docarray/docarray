@@ -141,7 +141,7 @@ class PlotMixin:
         :param channel_axis: only used when `image_sprites=True`. the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param start_server: if set, start a HTTP server and open the frontend directly. Otherwise, you need to rely on ``return`` path and serve by yourself.
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
-        :param exclude_fields_metas: specify if you want to exclude fields from metadata csv file
+        :param exclude_fields_metas: specify the fields that you want to exclude from metadata csv file
         :return: the path to the embeddings visualization info.
         """
         from docarray.helper import random_port, __resources_path__
