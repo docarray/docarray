@@ -48,9 +48,11 @@ class DocumentArray(
         from docarray import Document, DocumentArray
         from docarray.typing import NdArray, ImageUrl
 
+
         class Image(Document):
             tensor: Optional[NdArray[100]]
             url: ImageUrl
+
 
         da = DocumentArray[Image](Image(url='http://url.com') for _ in range(10))
 
@@ -184,7 +186,7 @@ class DocumentArray(
 
 
             batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                for _ in range(10)])
+                        for _ in range(10)])
 
             batch.stack()
 
@@ -235,7 +237,7 @@ class DocumentArray(
                     self._columns[field_to_stack] = TorchTensor.__docarray_stack__(
                         to_stack
                     )
-                if issubclass(type_, NdArray):
+                elif issubclass(type_, NdArray):
                     self._columns[field_to_stack] = NdArray.__docarray_stack__(to_stack)
                 elif issubclass(type_, BaseDocument):
                     self._columns[field_to_stack] = DocumentArray[type_](
@@ -284,8 +286,9 @@ class DocumentArray(
             class Image(Document):
                 tensor: NdArray[100]
 
+
             batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                for _ in range(10)])
+                    for _ in range(10)])
 
             batch.stack()
             batch.unstack()
