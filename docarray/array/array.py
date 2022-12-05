@@ -37,13 +37,11 @@ class DocumentArray(
     :param docs: iterable of Document
 
 
-    A DocumentArray can only contain Document that follow the same schema. To precise
+    A DocumentArray can only contain Documents that follow the same schema. To precise
     this schema you can use the `DocumentArray[Document]` syntax. This will create a
     DocumentArray that can only contain Document of the type Document. (Note that there
-    exist a special schema (AnySchema) that allow any Document to be stored in the
-    DocumentArray, but this is not recommended to use and exist here mostly for
-    serialization purpose with protobuf when the receiver does not know the schema of
-    DocumentArray but still want to deserialize it).
+    exists a special schema (AnySchema) that allows any Document to be stored in the
+    DocumentArray, but this is not recommended to use).
 
     EXAMPLE USAGE
     .. code-block:: python
@@ -57,15 +55,15 @@ class DocumentArray(
         da = DocumentArray[Image](Image(url='http://url.com') for _ in range(10))
 
 
-    DocumentArray define setter and getter for each field of the Document schema. These
-    getter and setter are defined dynamically at runtime. This allows to access the
+    DocumentArray defines setter and getter for each field of the Document schema. These
+    getters and setters are defined dynamically at runtime. This allows to access the
     field of the Document in a natural way. For example, if you have a DocumentArray of
     Image you can do: `da.tensor` to get the tensor of all the Image in the
     DocumentArray. You can also do `da.tensor = np.random.random([10, 100])` to set the
     tensor of all the Image.
 
 
-    DocumentArray can be in two mode: row and stack.
+    A DocumentArray can be in one of two modes: row mode and stacked mode.
 
 
     By default, it is in row mode (or unstacked mode), a DocumentArray is almost just a
@@ -150,7 +148,7 @@ class DocumentArray(
 
     def stack(self):
         """
-        Calling this method will make the DocumentArray enter in stacked mode
+        Calling this method will make the DocumentArray enter stacked mode
 
         This mode will stack all the Tensor and Nested fields of the documents in the
         array into columns. This is useful when you want to perform operations on the
