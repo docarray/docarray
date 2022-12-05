@@ -94,5 +94,5 @@ da.plot_embeddings(image_sprites=True)
 
 ````{admonition} Note
 :class: note
-If you have a lot of metadata, plotting may be slow since that metadata is stored in a corresponding CSV file. You can speed up plotting with the `exclude_fields` parameter, preventing fields (like `chunks` or `matches`) from being written to the CSV.
+If you have a lot of metadata, plotting may be slow since that metadata is stored in a corresponding TSV file. You can speed up plotting with the `exclude_fields_metas` parameter, preventing fields (like `chunks` or `matches`) from being written to the TSV.
 ````
