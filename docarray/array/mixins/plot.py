@@ -180,9 +180,9 @@ class PlotMixin:
 
         self.save_embeddings_csv(os.path.join(path, emb_fn), delimiter='\t')
 
-        _exclude_fields = ['embedding', 'tensor', 'scores']
-        if exclude_fields_metas:
-            _exclude_fields = _exclude_fields + exclude_fields_metas
+        _exclude_fields = ['embedding', 'tensor', 'scores'] + (
+            exclude_fields_metas or []
+        )
 
         with_header = True
         if len(set(self[0].non_empty_fields).difference(set(_exclude_fields))) <= 1:
