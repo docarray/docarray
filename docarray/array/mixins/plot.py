@@ -126,7 +126,7 @@ class PlotMixin:
         host: str = '127.0.0.1',
         port: Optional[int] = None,
         image_source: str = 'tensor',
-        exclude_fields_metas: Optional[List[str]] = None,
+        exclude_fields: Optional[List[str]] = None,
     ) -> str:
         """Interactively visualize :attr:`.embeddings` using the Embedding Projector.
 
@@ -141,7 +141,7 @@ class PlotMixin:
         :param channel_axis: only used when `image_sprites=True`. the axis id of the color channel, ``-1`` indicates the color channel info at the last axis
         :param start_server: if set, start a HTTP server and open the frontend directly. Otherwise, you need to rely on ``return`` path and serve by yourself.
         :param image_source: specify where the image comes from, can be ``uri`` or ``tensor``. empty tensor will fallback to uri
-        :param exclude_fields_metas: specify the fields that you want to exclude from metadata csv file
+        :param exclude_fields: specify the fields that you want to exclude from metadata csv file
         :return: the path to the embeddings visualization info.
         """
         from docarray.helper import random_port, __resources_path__
@@ -180,9 +180,7 @@ class PlotMixin:
 
         self.save_embeddings_csv(os.path.join(path, emb_fn), delimiter='\t')
 
-        _exclude_fields = ['embedding', 'tensor', 'scores'] + (
-            exclude_fields_metas or []
-        )
+        _exclude_fields = ['embedding', 'tensor', 'scores'] + (exclude_fields or [])
 
         with_header = True
         if len(set(self[0].non_empty_fields).difference(set(_exclude_fields))) <= 1:
