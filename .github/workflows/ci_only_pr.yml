@@ -28,7 +28,6 @@ jobs:
   deploy-to-netlify:
     runs-on: ubuntu-latest
     needs: [assign-label-to-pr]
-    if: ${{ needs.assign-label-to-pr.outputs.docs == 'true' }}
     steps:
       - run: |
           echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV

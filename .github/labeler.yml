@@ -31,7 +31,7 @@ area/docker:
   - Dockerfiles/**/*
   - ./.dockerignore
 
-area/script:
+area/typing:
   - script/**/*
 
 component/array:
@@ -39,9 +39,6 @@ component/array:
 
 component/document:
   - docarray/document/**/*
-
-component/math:
-  - docarray/math/**/*
 
 component/proto:
   - docarray/proto/**/*
