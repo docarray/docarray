@@ -75,6 +75,7 @@ class DocumentArray(
     def __getitem__(self, item):
         if self.is_stacked():
             doc = super().__getitem__(item)
+            # NOTE: this could be speed up by using a cache
             for field in self._columns.keys():
                 setattr(doc, field, self._columns[field][item])
             return doc

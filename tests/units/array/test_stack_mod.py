@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 import torch
 
@@ -139,3 +141,17 @@ def test_stack_setter():
     batch.tensor = torch.ones(10, 3, 224, 224)
 
     assert (batch.tensor == torch.ones(10, 3, 224, 224)).all()
+
+
+def test_stack_optional():
+    class Image(Document):
+        tensor: Optional[TorchTensor[3, 224, 224]]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=torch.zeros(3, 224, 224)) for _ in range(10)]
+    )
+
+    batch.stack()
+
+    assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
+    assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
