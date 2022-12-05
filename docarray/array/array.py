@@ -96,6 +96,8 @@ class DocumentArray(
     To switch from stacked mode to unstacked mode you need to call `da.unstack()` and
     `da.stack`. There are as well two context manager to for these modes.
     `with da.stack_mode():` and `with da.unstack_mode():`
+
+    see {meth}`.stack` and {meth}`.unstack` for more information.
     """
 
     document_type: Type[BaseDocument] = AnyDocument
@@ -202,6 +204,8 @@ class DocumentArray(
             batch.append(Image(tensor=np.zeros((100))))
             # >>> raise RuntimeError('Cannot call append when the document array is in
             # >>> stack mode'
+
+        see {meth}`.unstack` for more information on how to switch to unstack mode
         """
 
         if not (self.is_stacked()):
@@ -300,6 +304,8 @@ class DocumentArray(
 
             print(batch[0].tensor[0])
             # >>> 1
+
+        see {meth}`.stack` for more information on how to switch to stack mode
         """
         if self.is_stacked():
 
