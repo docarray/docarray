@@ -12,7 +12,7 @@ class AbstractDocumentArray(Iterable):
     document_type: Type[BaseDocument]
     _columns: Optional[
         Dict[str, Union['TorchTensor', 'AbstractDocumentArray', 'NdArray', None]]
-    ]
+    ]  # here columns are the holder of the data in tensor modes
 
     @abstractmethod
     def __init__(self, docs: Iterable[BaseDocument]):
