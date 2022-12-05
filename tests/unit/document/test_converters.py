@@ -23,6 +23,19 @@ def test_video_convert_pipe(pytestconfig, tmpdir):
     assert os.path.exists(fname)
 
 
+def test_video_convert_pipe_key_frame_indices(pytestconfig, tmpdir):
+    num_d = 0
+    fname = str(tmpdir / f'tmp{num_d}.mp4')
+    d = Document(uri=os.path.join(cur_dir, 'toydata/mov_bbb.mp4'))
+    d.load_uri_to_video_tensor()
+    d.save_video_tensor_to_file(fname)
+
+    assert os.path.exists(fname)
+    assert 'keyframe_indices' in d.tags.keys()
+    assert len(d.tags['keyframe_indices']) == 2
+    assert d.tags['keyframe_indices'] == [0, 95]
+
+
 def test_audio_convert_pipe(pytestconfig, tmpdir):
     num_d = 0
     for d in from_files(f'{cur_dir}/toydata/*.wav'):

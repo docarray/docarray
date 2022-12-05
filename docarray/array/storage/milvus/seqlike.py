@@ -58,9 +58,14 @@ class SequenceLikeMixin(BaseSequenceLikeMixin):
             self._offset2ids.extend([doc.id for doc in docs_batch])
 
     def __len__(self):
-        with self.loaded_collection():
-            res = self._collection.query(
-                expr=_always_true_expr('document_id'),
-                output_fields=['document_id'],
-            )
-            return len(res)
+        if self._list_like:
+            return len(self._offset2ids)
+        else:
+            # Milvus has no native way to get num of entities
+            # so only use it as fallback option
+            with self.loaded_collection():
+                res = self._collection.query(
+                    expr=_always_true_expr('document_id'),
+                    output_fields=['document_id'],
+                )
+                return len(res)

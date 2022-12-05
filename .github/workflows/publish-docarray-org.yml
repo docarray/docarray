@@ -9,7 +9,7 @@ on:
   workflow_call:
     secrets:
       JINA_DEV_BOT:
-        required: True
+        required: true
 
 # uncomment this line for testing in PR
 #  push:
@@ -56,5 +56,7 @@ jobs:
           cp ${GITHUB_WORKSPACE}/docarray/README.md .
           git config --local user.email "Jina Dev Bot"
           git config --local user.name "dev-bot@jina.ai"
-          git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
-          git push
+          if [[ `git status --porcelain` ]]; then
+            git add README.md && git commit -s -m "chore(docs): sync up README from docarray"
+            git push
+          fi
