@@ -5,6 +5,7 @@ from typing import (
     Dict,
     Generic,
     List,
+    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -191,3 +192,8 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value.shape))
         pb_msg.dense.dtype = value.dtype.str
+
+    @classmethod
+    def __docarray_stack__(cls, seq: Sequence[T]) -> T:
+        """Stack a sequence of ndarray into a single ndarray."""
+        return cls.from_ndarray(np.stack(seq))

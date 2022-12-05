@@ -1,10 +1,7 @@
 from collections import defaultdict
 from contextlib import contextmanager
 from functools import wraps
-from typing import Dict, Iterable, List, Optional, Type, Union
-
-import numpy as np
-import torch
+from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
@@ -22,6 +19,9 @@ def _stacked_mode_blocker(func):
         return func(self, *args, **kwargs)
 
     return wrapper
+
+
+T = TypeVar('T', bound='DocumentArray')
 
 
 class DocumentArray(
@@ -113,9 +113,11 @@ class DocumentArray(
             for field_to_stack, to_stack in columns_to_stack.items():
                 type_ = self.document_type.__fields__[field_to_stack].type_
                 if issubclass(type_, TorchTensor):
-                    self._columns[field_to_stack] = torch.stack(to_stack)
+                    self._columns[field_to_stack] = TorchTensor.__docarray_stack__(
+                        to_stack
+                    )
                 if issubclass(type_, NdArray):
-                    self._columns[field_to_stack] = np.stack(to_stack)
+                    self._columns[field_to_stack] = NdArray.__docarray_stack__(to_stack)
                 elif issubclass(type_, BaseDocument):
                     self._columns[field_to_stack] = DocumentArray[type_](
                         to_stack

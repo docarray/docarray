@@ -1,6 +1,17 @@
 import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import torch  # type: ignore
@@ -212,3 +223,8 @@ class TorchTensor(
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value_np.shape))
         pb_msg.dense.dtype = value_np.dtype.str
+
+    @classmethod
+    def __docarray_stack__(cls, seq: Sequence[T]) -> T:
+        """Stack a sequence of ndarray into a single ndarray."""
+        return cls.from_native_torch_tensor(torch.stack(seq))
