@@ -3,12 +3,13 @@ from contextlib import contextmanager
 from functools import wraps
 from typing import Dict, Iterable, List, Optional, Type, Union
 
+import numpy as np
 import torch
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.typing import TorchTensor
+from docarray.typing import NdArray, TorchTensor
 
 
 def _stacked_mode_blocker(func):
@@ -41,7 +42,9 @@ class DocumentArray(
     def __init__(self, docs: Iterable[BaseDocument]):
         super().__init__(doc_ for doc_ in docs)
 
-        self._columns: Optional[Dict[str, Optional[TorchTensor]]] = None
+        self._columns: Optional[
+            Dict[str, Union[TorchTensor, DocumentArray, NdArray, None]]
+        ] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
         if not issubclass(item, BaseDocument):
@@ -86,32 +89,33 @@ class DocumentArray(
 
         if not (self.is_stacked()):
 
-            self._columns: Optional[Dict[str, Optional[TorchTensor]]] = dict()
+            self._columns = dict()
 
             for field_name, field in self.document_type.__fields__.items():
-                if issubclass(field.type_, TorchTensor) or issubclass(
-                    field.type_, BaseDocument
+                if (
+                    issubclass(field.type_, TorchTensor)
+                    or issubclass(field.type_, BaseDocument)
+                    or issubclass(field.type_, NdArray)
                 ):
                     self._columns[field_name] = None
 
             columns_to_stack: Dict[
-                str, Union[List[TorchTensor], List[BaseDocument]]
+                str, Union[List[TorchTensor], List[NdArray], List[BaseDocument]]
             ] = defaultdict(list)
+
             for doc in self:
                 for field_to_stack in self._columns.keys():
                     columns_to_stack[field_to_stack].append(
                         getattr(doc, field_to_stack)
                     )
-                    if issubclass(
-                        self.document_type.__fields__[field_to_stack].type_, TorchTensor
-                    ):
-                        self._columns[field_to_stack] = None
                     setattr(doc, field_to_stack, None)
 
             for field_to_stack, to_stack in columns_to_stack.items():
                 type_ = self.document_type.__fields__[field_to_stack].type_
                 if issubclass(type_, TorchTensor):
                     self._columns[field_to_stack] = torch.stack(to_stack)
+                if issubclass(type_, NdArray):
+                    self._columns[field_to_stack] = np.stack(to_stack)
                 elif issubclass(type_, BaseDocument):
                     self._columns[field_to_stack] = DocumentArray[type_](
                         to_stack
@@ -119,9 +123,8 @@ class DocumentArray(
 
             for i, doc in enumerate(self):
                 for field_to_stack in self._columns.keys():
-                    if issubclass(
-                        self.document_type.__fields__[field_to_stack].type_, TorchTensor
-                    ):
+                    type_ = self.document_type.__fields__[field_to_stack].type_
+                    if issubclass(type_, TorchTensor) or issubclass(type_, NdArray):
                         setattr(doc, field_to_stack, self._columns[field_to_stack][i])
 
         return self

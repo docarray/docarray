@@ -1,10 +1,11 @@
 from typing import Optional
 
+import numpy as np
 import pytest
 import torch
 
 from docarray import Document, DocumentArray
-from docarray.typing import TorchTensor
+from docarray.typing import NdArray, TorchTensor
 
 
 def test_stack():
@@ -155,3 +156,20 @@ def test_stack_optional():
 
     assert (batch._columns['tensor'] == torch.zeros(10, 3, 224, 224)).all()
     assert (batch.tensor == torch.zeros(10, 3, 224, 224)).all()
+
+
+def test_stack_numpy():
+    class Image(Document):
+        tensor: NdArray[3, 224, 224]
+
+    batch = DocumentArray[Image](
+        [Image(tensor=np.zeros((3, 224, 224))) for _ in range(10)]
+    )
+
+    batch.stack()
+
+    assert (batch._columns['tensor'] == np.zeros((10, 3, 224, 224))).all()
+    assert (batch.tensor == np.zeros((10, 3, 224, 224))).all()
+    assert batch.tensor.ctypes.data == batch._columns['tensor'].ctypes.data
+
+    batch.unstack()
