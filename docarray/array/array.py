@@ -175,10 +175,10 @@ class DocumentArray(
         :return: itself
 
         When entering stacked mode DocumentArray creates a column for:
-        
+
          - Each Tensor field of each Document
-         - Nested Documents that contain at least one Tensor field. 
-         
+         - Nested Documents that contain at least one Tensor field.
+
         This is useful to perform operations on the whole
         array at once. In stacked mode, accessing or setting the DocumentArray's fields
         accesses or sets the columns of the array.
