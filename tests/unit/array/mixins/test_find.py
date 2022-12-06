@@ -665,7 +665,12 @@ def test_filtering(
 @pytest.mark.parametrize(
     'columns',
     [
-        # [('price', 'float'), ('category', 'str'), ('info', 'text'), ('location', 'geo')],
+        [
+            ('price', 'float'),
+            ('category', 'str'),
+            ('info', 'text'),
+            ('location', 'geo'),
+        ],
         {'price': 'float', 'category': 'str', 'info': 'text', 'location': 'geo'},
     ],
 )
@@ -729,7 +734,7 @@ def test_qdrant_filter_query(filter, checker, columns, start_storage):
                 tags={
                     'price': i + 0.5,
                     'category': 'Shoes',
-                    'info': 'shoes {i}',
+                    'info': f'shoes {i}',
                     'location': {"lon": -98.17 + i, "lat": 38.93 + i},
                 },
             )
@@ -754,7 +759,6 @@ def test_qdrant_filter_query(filter, checker, columns, start_storage):
     )
 
     results = da.find(np.random.rand(n_dim), filter=filter)
-    print(results[:, 'id'])
     assert len(results) > 0
     assert all([checker(r) for r in results])
 
