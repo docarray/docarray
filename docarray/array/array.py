@@ -65,31 +65,28 @@ class DocumentArray(
     tensor of all the Image.
 
 
-    A DocumentArray can be in one of two modes: row mode and stacked mode.
+    A DocumentArray can be in one of two modes: unstacked mode and stacked mode.
 
 
-    By default, it is in row mode (or unstacked mode), a DocumentArray is almost just a
-    list of Document. You can append Document to it, iterate over it, etc. Each Document
-    owns its data. You can see it as a row based datastructure. In this case
-    the getter and setter shown above will return a list of the field of each Document
-    (or a DocumentArray if the field is a nested Document) This list/DocumentArray will
-    be created in the fly. The setter will set the field of each Document to the value
+    **Unstacked mode (default)**:
+    In this case a DocumentArray is a list of Document and each Document owns its data.
+    The getter and setter shown above will return a list of the fields of each Document
+    (or a DocumentArray if the field is a nested Document). This list/DocumentArray will
+    be created on the fly. The setter will set the field of each Document to the value
     of the list/DocumentArray/Tensor passed as parameters.
 
     Nevertheless, this list-like behavior is not always optimal especially when you want
-    to process you data in batch and do operation which involves matrix computation,
-    like in deep learning or to compute the cosine similarly of embeddings, in this case
-    you want to stack all the tensor in a single batch. This is where the stack mode of
-    the DocumentArray comes in handy.
-    In stacked mode each field which are Tensor are stored as a column in a tensor of
-    batch the size of the DocumentArray. This allows to do operation on the whole batch
-    instead of iterating over the DocumentArray.
+    to process you data in batch and do operation which involves matrix computation,This
+    is where the stack mode of the DocumentArray comes in handy.
+
+    In **stacked mode** each field which are Tensor are stored as a column in a tensor
+    of batch the size of the DocumentArray. This allows to do operation on the whole
+    batch instead of iterating over the DocumentArray.
     In this mode the Document inside in the Document don't own the data anymore but just
-    reference to the data in the tensor. But For the user they are no difference it
-    looks and feel the same.
+    reference to the data in the tensor of the DocumentArray.
     In stacked mode the getter and setter just replace the tensor of the DocumentArray
     of the given field.
-    Finally, in stacked mode operation like `da.append` are not allowed anymore because
+    Operation like `da.append` are not allowed anymore because
     they are too slow and not recommended to use. You should rather use the unstacked
     mode.
 
@@ -150,30 +147,22 @@ class DocumentArray(
 
     def stack(self):
         """
-        Calling this method will make the DocumentArray enter stacked mode
-
-        This mode will stack all the Tensor and Nested fields of the documents in the
-        array into columns. This is useful when you want to perform operations on the
-        whole array at once. Especially when it involves working on Tensor directly
-        where you want to avoid for loops and work on batch directly.
-
-        By default, a DocumentArray is not in stack mode, it means that each Document
-        holds its own data and that the DocumentArray is just a python list of
-        Documents. When you access fields of the DocumentArray you actually loop over
-        the list of Documents and access the field of each Document.
-
-        In stack mode, accessing or setting fields of the DocumentArray will access or
-        set the column of the array.
+        Calling this method will make the DocumentArray enter stacked mode. You should
+        call this method only if the DocumentArray is already in unstacked mode
+        (the default mode). (Calling it while being already in stacked mode will have
+        no effect)
 
         When entering stack mode the DocumentArray will create a column for each field
         of the Document that are Tensor or that are Nested Document that contains at
-        least one Tensor field.
+        least one Tensor field. This is useful when you want to perform operations on
+        the whole array at once. In stack mode, accessing or setting fields of the
+        DocumentArray will access or set the column of the array.
+
 
         IMPORTANT: in stacked_mode you cannot add or remove Document from the array.
         You can only modify the fields of the DocumentArray. This is intentionally done
-        to avoid inconsistencies between the columns and the list of Documents and
-        because adding to a column is slow. If you need to do so please use the unstack
-        method to exit stacked mode.
+        because extending or inserting a column is slow. You should rather use the
+        unstack mode for such operation.
 
         EXAMPLE USAGE
         .. code-block:: python
@@ -261,21 +250,6 @@ class DocumentArray(
 
         Calling unstack will unstack all the columns of the DocumentArray and put the
         data back in each Document of the DocumentArray.
-
-        In unstacked mode DocumentArray behaves like a normal python list of Documents.
-        This means that you can call append, insert, index etc without problem.
-
-
-        You can still access DocumentArray fields in unstacked mode. This will return
-        a list of the fields of each Document in the array (or A DocumentArray if the
-        field contains Document and not type). This list/DocumentsArray will be
-        created on the fly and will not be stored in the DocumentArray. If you want to
-        do heavy operations on the fields of the DocumentArray you should use the stack
-        mode.
-
-        You can use setter as well to set the fields of the DocumentArray. This will
-        iterate over the list/DocumentsArray/Ndarray and set the field of each Document
-        accordingly.
 
         EXAMPLE USAGE
         .. code-block:: python
