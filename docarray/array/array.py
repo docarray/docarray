@@ -42,12 +42,12 @@ class DocumentArray(
 
     :param docs: iterable of Document
 
-    A DocumentArray is a list of Documents of any schema. However, many 
+    A DocumentArray is a list of Documents of any schema. However, many
     DocumentArray features are only available if these Documents are
-    homogeneous and follow the same schema. To be precise, in this schema you can use the
-    `DocumentArray[MyDocument]` syntax where MyDocument is a Document class
+    homogeneous and follow the same schema. To be precise, in this schema you can use
+    the `DocumentArray[MyDocument]` syntax where MyDocument is a Document class
     (i.e. schema). This creates a DocumentArray that can only contain Documents of
-    the type Document.
+    the type 'MyDocument'.
 
     EXAMPLE USAGE
     .. code-block:: python
@@ -60,12 +60,14 @@ class DocumentArray(
             url: ImageUrl
 
 
-        da = DocumentArray[Image](Image(url='http://url.com/foo.png') for _ in range(10))
+        da = DocumentArray[Image](
+            Image(url='http://url.com/foo.png') for _ in range(10)
+        )  # noqa: E510
 
 
-    If your DocumentArray is homogeneous (i.e. follows the same schema), you can access the
-    field at the DocumentArray level (for example `da.tensor`). You can also set them,
-    with `da.tensor = np.random.random([10, 100])`
+    If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
+    the field at the DocumentArray level (for example `da.tensor`). You can also set
+    them, with `da.tensor = np.random.random([10, 100])`
 
 
     A DocumentArray can be in one of two modes: unstacked mode and stacked mode.
@@ -74,7 +76,8 @@ class DocumentArray(
     **Unstacked mode (default)**:
     In this case a DocumentArray is a list of Documents and each Document owns its data.
     The getter and setter shown above returns a list of the fields of each Document
-    (or a DocumentArray if the field is a nested Document). This list/DocumentArray is created on the fly. The setter sets the field of each Document to the value
+    (or a DocumentArray if the field is a nested Document). This list/DocumentArray
+    is created on the fly. The setter sets the field of each Document to the value
     of the list/DocumentArray/Tensor passed as parameters.
 
     This list-like behavior is not always optimal, especially when you want
@@ -163,8 +166,8 @@ class DocumentArray(
 
         When entering stacked mode the DocumentArray creates a column for each field
         of the Document that are Tensors or nested Documents that contain at
-        least one Tensor field. This is useful when to perform operations on
-        the whole array at once. In stacked mode, accessing or setting the DocumentArray's fields
+        least one Tensor field. This is useful when to perform operations on the whole
+        array at once. In stacked mode, accessing or setting the DocumentArray's fields
         DocumentArray accesses or sets the column of the array.
 
         EXAMPLE USAGE
@@ -257,8 +260,8 @@ class DocumentArray(
         :return: itself
 
 
-        Calling unstack will unstack all the columns of the DocumentArray and restore the
-        data of each Document in the DocumentArray.
+        Calling unstack will unstack all the columns of the DocumentArray and restore
+        the data of each Document in the DocumentArray.
 
         EXAMPLE USAGE
         .. code-block:: python
