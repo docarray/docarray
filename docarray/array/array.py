@@ -318,7 +318,7 @@ class DocumentArray(
 
     def _column_fields(self) -> List[str]:
         """
-        return the field store as columns
+        return the list of fields that are columns of the DocumentArray
         :return: the list of keys of the columns
         """
         if self.is_stacked() and self._columns is not None:
