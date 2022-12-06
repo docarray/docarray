@@ -18,7 +18,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
     @classmethod
     @abc.abstractmethod
-    def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
+    def __docarray_validate_shape__(cls, t: T, shape: Tuple[int]) -> T:
         """Every tensor has to implement this method in order to
         enable syntax of the form Tensor[shape].
 
@@ -39,7 +39,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         ...
 
     @classmethod
-    def __validate_getitem__(cls, item: Any) -> Tuple[int]:
+    def __docarray_validate_getitem__(cls, item: Any) -> Tuple[int]:
         """This method validates the input to __class_getitem__.
 
         It is called at "class creation time",
@@ -65,7 +65,7 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
         return item
 
     @classmethod
-    def _create_parametrized_type(cls: Type[T], shape: Tuple[int]):
+    def _docarray_create_parametrized_type(cls: Type[T], shape: Tuple[int]):
         shape_str = ', '.join([str(s) for s in shape])
 
         class _ParametrizedTensor(
@@ -84,13 +84,13 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
                 config: 'BaseConfig',
             ):
                 t = super().validate(value, field, config)
-                return _cls.__validate_shape__(t, _cls._docarray_target_shape)
+                return _cls.__docarray_validate_shape__(t, _cls._docarray_target_shape)
 
         return _ParametrizedTensor
 
     def __class_getitem__(cls, item: Any):
-        target_shape = cls.__validate_getitem__(item)
-        return cls._create_parametrized_type(target_shape)
+        target_shape = cls.__docarray_validate_getitem__(item)
+        return cls._docarray_create_parametrized_type(target_shape)
 
     @classmethod
     @abc.abstractmethod
