@@ -218,8 +218,8 @@ class DocumentArray(
 
             columns_to_stack: DefaultDict[
                 str, Union[List[TorchTensor], List[NdArray], List[BaseDocument]]
-            ] = defaultdict(
-                list
+            ] = defaultdict(  # type: ignore
+                list  # type: ignore
             )  # type: ignore
 
             for doc in self:
