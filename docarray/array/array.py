@@ -96,6 +96,17 @@ class DocumentArray(
     `with da.stack_mode():` and `with da.unstack_mode():`
 
     see {meth}`.stack` and {meth}`.unstack` for more information.
+
+    You should use unstacked mode, if:
+
+    * You want to insert, append, delete, or shuffle Documents in your DocumentArray
+    * Intend to separate the DocumentArray into smaller batches later on
+
+    You should use stacked mode, if you:
+
+    * You want to process the entire DocumentArray as one batch
+    * Are using the DocumentArray in an ML model for training or inference
+
     """
 
     document_type: Type[BaseDocument] = AnyDocument
