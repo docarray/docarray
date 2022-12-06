@@ -79,15 +79,14 @@ class DocumentArray(
     of the list/DocumentArray/Tensor passed as parameters.
 
     This list-like behavior is not always optimal especially when you want
-    to process you data in batches or do operations which involves matrix computation. This
-    is where the stack mode of the DocumentArray comes in handy.
+    to process you data in batches or do operations which involves matrix computation.
+    This is where the stack mode of the DocumentArray comes in handy.
 
-    In **stacked mode** tensor-like fields of every Document are stored on the DocumentArray level, as one stacked tensor. This enables operations on the the entire
+    In **stacked mode** tensor-like fields of every Document are stored on the
+    DocumentArray level, as one stacked tensor. This enables operations on the entire
     batch without iterating over the DocumentArray.
     In this mode the Document inside in the Document don't own the data anymore but just
     reference to the data in the tensor of the DocumentArray.
-    In stacked mode the getter and setter just replace the tensor of the DocumentArray
-    of the given field.
     Operation like `da.append` are not allowed anymore because
     they are too slow and not recommended to use. You should rather use the unstacked
     mode.
@@ -149,10 +148,7 @@ class DocumentArray(
 
     def stack(self):
         """
-        Calling this method will make the DocumentArray enter stacked mode. You should
-        call this method only if the DocumentArray is already in unstacked mode
-        (the default mode). (Calling it while being already in stacked mode will have
-        no effect)
+        Puts the DocumentArray into stacked mode.
 
         When entering stack mode the DocumentArray will create a column for each field
         of the Document that are Tensor or that are Nested Document that contains at
@@ -243,10 +239,8 @@ class DocumentArray(
 
     def unstack(self):
         """
-        Calling this method will make the DocumentArray enter in unstack mode.
-        This is the default mode of any DocumentArray. This means you should call this
-        only method if the DocumentArray is already in stacked mode. (Calling it while
-        being in unstacked mode will have no effect)
+        Puts the DocumentArray into unstacked mode.
+
 
         Calling unstack will unstack all the columns of the DocumentArray and put the
         data back in each Document of the DocumentArray.
