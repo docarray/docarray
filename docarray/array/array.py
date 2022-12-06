@@ -175,7 +175,7 @@ class DocumentArray(
 
 
             batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                        for _ in range(10)])
+                    for _ in range(10)])
 
             batch.stack()
 
@@ -221,17 +221,14 @@ class DocumentArray(
                     setattr(doc, field_to_stack, None)
 
             for field_to_stack, to_stack in columns_to_stack.items():
+
                 type_ = self.document_type.__fields__[field_to_stack].type_
-                if issubclass(type_, TorchTensor):
-                    self._columns[field_to_stack] = TorchTensor.__docarray_stack__(
-                        to_stack
-                    )
-                elif issubclass(type_, NdArray):
-                    self._columns[field_to_stack] = NdArray.__docarray_stack__(to_stack)
-                elif issubclass(type_, BaseDocument):
+                if issubclass(type_, BaseDocument):
                     self._columns[field_to_stack] = DocumentArray[type_](
                         to_stack
                     ).stack()
+                else:
+                    self._columns[field_to_stack] = type_.__docarray_stack__(to_stack)
 
             for i, doc in enumerate(self):
                 for field_to_stack in self._columns.keys():
@@ -262,7 +259,7 @@ class DocumentArray(
 
 
             batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                    for _ in range(10)])
+                        for _ in range(10)])
 
             batch.stack()
             batch.unstack()
