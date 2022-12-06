@@ -88,18 +88,16 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
 
         return _ParametrizedTensor
 
-<<<<<<< HEAD
     def __class_getitem__(cls, item: Any):
         target_shape = cls.__validate_getitem__(item)
         return cls._create_parametrized_type(target_shape)
 
-=======
->>>>>>> feat: embedding type (#877)
     @classmethod
     @abc.abstractmethod
     def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
         """Stack a sequence of tensors into a single tensor."""
         ...
+
     def __class_getitem__(cls, item: Any):
         target_shape = cls.__validate_getitem__(item)
         return cls._create_parametrized_type(target_shape)
