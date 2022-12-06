@@ -1459,6 +1459,20 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "torch"
+version = "1.12.1"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = true
+python-versions = ">=3.7.0"
+
+[package.dependencies]
+typing-extensions = "*"
+
+[package.source]
+type = "url"
+url = "https://download.pytorch.org/whl/cpu/torch-1.12.1-cp310-none-macosx_10_9_x86_64.whl"
+[[package]]
+name = "torch"
 version = "1.13.0"
 description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
 category = "main"
@@ -1619,12 +1633,12 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [extras]
 common = ["protobuf"]
 image = ["pillow", "types-pillow"]
-torch = ["torch"]
+torch = ["torch", "torch"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "2ca8278ea521289ed49036781d3748861f7634ce2827223fe396da335ea8479a"
+content-hash = "4c668d8d72c5ff1a721779a26969920bfcddf9671cba71613519cbbc683f08a4"
 
 [metadata.files]
 anyio = [

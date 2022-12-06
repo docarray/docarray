@@ -10,7 +10,10 @@ python = "^3.8"
 pydantic = "^1.10.2"
 numpy = "^1.23.4"
 protobuf = { version = "^4.21.9", optional = true }
-torch = { version = "^1.0.0", optional = true , platform = 'linux'}
+torch = [
+    { version = "^1.0.0", optional = true , platform = 'linux'},
+    { url = "https://download.pytorch.org/whl/cpu/torch-1.12.1-cp310-none-macosx_10_9_x86_64.whl", optional = true , platform = 'darwin'}
+]
 orjson = "^3.8.2"
 pillow = {version = "^9.3.0", optional = true }
 types-pillow = {version = "^9.3.0.1", optional = true }
