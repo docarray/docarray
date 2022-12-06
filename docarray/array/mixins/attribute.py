@@ -32,8 +32,8 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
                 return attributes
             else:
                 raise ValueError(
-                    f'The column is not set for the field {field} even though '
-                    f'it is in stacked mode'
+                    f'The DocumentArray is in stacked mode, but no stacked data is '
+                    f'present for {field}. This is inconsistent'
                 )
 
         elif issubclass(field_type, BaseDocument):
