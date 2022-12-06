@@ -294,6 +294,15 @@ class DocumentArray(
 
     @contextmanager
     def stacked_mode(self):
+        """
+        Context manager to put the DocumentArray in stack mode and unstack it when
+        exiting the context manager.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            with da.stacked_mode():
+                ...
+        """
         try:
             yield self.stack()
         finally:
@@ -301,6 +310,15 @@ class DocumentArray(
 
     @contextmanager
     def unstacked_mode(self):
+        """
+        Context manager to put the DocumentArray in unstacked mode and stack it when
+        exiting the context manager.
+
+        EXAMPLE USAGE
+        .. code-block:: python
+            with da.unstacked_mode():
+                ...
+        """
         try:
             yield self.unstack()
         finally:
