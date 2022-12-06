@@ -290,7 +290,7 @@ class DocumentArray(
             print(batch[0].tensor[0])
             # >>> 1
 
-        see {meth}`.stack` for more information on how to switch to stack mode
+        see {meth}`.stack` for more information on switching to stack mode
         """
         if self.is_stacked() and self._columns:
             for field in list(self._columns.keys()):
