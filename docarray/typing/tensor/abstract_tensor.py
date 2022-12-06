@@ -1,6 +1,6 @@
 import abc
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Generic, Tuple, Type, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, List, Tuple, Type, TypeVar, Union
 
 from docarray.typing.abstract_type import AbstractType
 
@@ -91,3 +91,9 @@ class AbstractTensor(AbstractType, Generic[ShapeT], ABC):
     def __class_getitem__(cls, item: Any):
         target_shape = cls.__validate_getitem__(item)
         return cls._create_parametrized_type(target_shape)
+
+    @classmethod
+    @abc.abstractmethod
+    def __docarray_stack__(cls: Type[T], seq: Union[List[T], Tuple[T]]) -> T:
+        """Stack a sequence of tensors into a single tensor."""
+        ...

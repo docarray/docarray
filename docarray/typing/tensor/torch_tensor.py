@@ -1,6 +1,17 @@
 import warnings
 from copy import copy
-from typing import TYPE_CHECKING, Any, Dict, Generic, Tuple, Type, TypeVar, Union, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Generic,
+    List,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
 import torch  # type: ignore
@@ -73,14 +84,14 @@ class TorchTensor(
 
     """
 
+    __parametrized_meta__ = metaTorchAndNode
+
     @classmethod
     def __get_validators__(cls):
         # one or more validators may be yielded which will be called in the
         # order to validate the input, each validator will receive as an input
         # the value returned from the previous validator
         yield cls.validate
-
-    __parametrized_meta__ = metaTorchAndNode
 
     @classmethod
     def __validate_shape__(cls, t: T, shape: Tuple[int]) -> T:  # type: ignore
@@ -212,3 +223,10 @@ class TorchTensor(
         pb_msg.dense.ClearField('shape')
         pb_msg.dense.shape.extend(list(value_np.shape))
         pb_msg.dense.dtype = value_np.dtype.str
+
+    @classmethod
+    def __docarray_stack__(
+        cls: Type[T], seq: Union[Tuple['TorchTensor'], List['TorchTensor']]
+    ) -> T:
+        """Stack a sequence of ndarray into a single ndarray."""
+        return cls.from_native_torch_tensor(torch.stack(seq))  # type: ignore
