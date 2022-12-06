@@ -174,11 +174,14 @@ class DocumentArray(
         Puts the DocumentArray into stacked mode.
         :return: itself
 
-        When entering stacked mode the DocumentArray creates a column for each field
-        of the Document that are Tensors or nested Documents that contain at
-        least one Tensor field. This is useful when to perform operations on the whole
+        When entering stacked mode DocumentArray creates a column for:
+        
+         - Each Tensor field of each Document
+         - Nested Documents that contain at least one Tensor field. 
+         
+        This is useful to perform operations on the whole
         array at once. In stacked mode, accessing or setting the DocumentArray's fields
-        DocumentArray accesses or sets the column of the array.
+        accesses or sets the columns of the array.
 
         EXAMPLE USAGE
         .. code-block:: python
@@ -257,7 +260,7 @@ class DocumentArray(
         :return: itself
 
 
-        Calling unstack will unstack all the columns of the DocumentArray and restore
+        Calling unstack will unstack all columns of the DocumentArray and restore
         the data of each Document in the DocumentArray.
 
         EXAMPLE USAGE
@@ -320,7 +323,7 @@ class DocumentArray(
     @contextmanager
     def stacked_mode(self):
         """
-        Context manager to put the DocumentArray in stack mode and unstack it when
+        Context manager to put the DocumentArray in stacked mode and unstack it when
         exiting the context manager.
 
         EXAMPLE USAGE
