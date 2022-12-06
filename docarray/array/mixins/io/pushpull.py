@@ -303,10 +303,12 @@ class PushPullMixin:
             from docarray.array.mixins.io.binary import LazyRequestReader
 
             _source = LazyRequestReader(r)
-            if local_cache and os.path.exists(f'{__cache_path__}/{name}'):
-                _cache_len = os.path.getsize(f'{__cache_path__}/{name}')
+
+            cache_file = f'{__cache_path__}/{name.replace("/", "_")}.da'
+            if local_cache and os.path.exists(cache_file):
+                _cache_len = os.path.getsize(cache_file)
                 if _cache_len == _da_len:
-                    _source = f'{__cache_path__}/{name}'
+                    _source = cache_file
 
             r = cls.load_binary(
                 _source,
@@ -319,7 +321,7 @@ class PushPullMixin:
 
             if isinstance(_source, LazyRequestReader) and local_cache:
                 Path(__cache_path__).mkdir(parents=True, exist_ok=True)
-                with open(f'{__cache_path__}/{name}', 'wb') as fp:
+                with open(cache_file, 'wb') as fp:
                     fp.write(_source.content)
 
             return r
