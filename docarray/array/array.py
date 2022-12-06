@@ -72,19 +72,18 @@ class DocumentArray(
 
 
     **Unstacked mode (default)**:
-    In this case a DocumentArray is a list of Document and each Document owns its data.
+    In this case a DocumentArray is a list of Documents and each Document owns its data.
     The getter and setter shown above will return a list of the fields of each Document
     (or a DocumentArray if the field is a nested Document). This list/DocumentArray will
     be created on the fly. The setter will set the field of each Document to the value
     of the list/DocumentArray/Tensor passed as parameters.
 
-    Nevertheless, this list-like behavior is not always optimal especially when you want
-    to process you data in batch and do operation which involves matrix computation,This
+    This list-like behavior is not always optimal especially when you want
+    to process you data in batches or do operations which involves matrix computation. This
     is where the stack mode of the DocumentArray comes in handy.
 
-    In **stacked mode** each field which are Tensor are stored as a column in a tensor
-    of batch the size of the DocumentArray. This allows to do operation on the whole
-    batch instead of iterating over the DocumentArray.
+    In **stacked mode** tensor-like fields of every Document are stored on the DocumentArray level, as one stacked tensor. This enables operations on the the entire
+    batch without iterating over the DocumentArray.
     In this mode the Document inside in the Document don't own the data anymore but just
     reference to the data in the tensor of the DocumentArray.
     In stacked mode the getter and setter just replace the tensor of the DocumentArray
