@@ -25,7 +25,7 @@ from qdrant_client.http.models.models import (
 )
 
 from docarray import Document
-from docarray.array.storage.base.backend import BaseBackendMixin
+from docarray.array.storage.base.backend import BaseBackendMixin, TypeMap
 from docarray.array.storage.qdrant.helper import DISTANCES
 from docarray.helper import dataclass_from_dict, random_identity
 from docarray.math.helper import EPSILON
@@ -47,8 +47,6 @@ class QdrantConfig:
     api_key: Optional[str] = field(default=None)
     https: Optional[bool] = field(default=None)
     serialize_config: Dict = field(default_factory=dict)
-    index_text: Optional[bool] = field(default=False)
-    tag_indices: List[str] = field(default_factory=list)
     scroll_batch_size: int = 64
     ef_construct: Optional[int] = None
     full_scan_threshold: Optional[int] = None
@@ -76,6 +74,15 @@ class BackendMixin(BaseBackendMixin):
     @classmethod
     def _tmp_collection_name(cls) -> str:
         return uuid.uuid4().hex
+
+    TYPE_MAP = {
+        'int': TypeMap(type='integer', converter=int),
+        'float': TypeMap(type='float', converter=float),
+        'bool': TypeMap(type='int', converter=bool),
+        'str': TypeMap(type='keyword', converter=str),
+        'text': TypeMap(type='text', converter=str),
+        'geo': TypeMap(type='geo', converter=dict),
+    }
 
     def _init_storage(
         self,
@@ -175,25 +182,22 @@ class BackendMixin(BaseBackendMixin):
                 hnsw_config=hnsw_config,
             )
 
-            if self._config.index_text:
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name="text",
-                    field_schema=models.TextIndexParams(
-                        type="text",
-                        tokenizer=models.TokenizerType.WORD,
-                    ),
-                )
-
-            for index in self._config.tag_indices:
-                self.client.create_payload_index(
-                    collection_name=self.collection_name,
-                    field_name=index,
-                    field_schema=models.TextIndexParams(
-                        type="text",
-                        tokenizer=models.TokenizerType.WORD,
-                    ),
-                )
+            for col, coltype in self._config.columns.items():
+                if coltype == 'text':
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name=col,
+                        field_schema=models.TextIndexParams(
+                            type="text",
+                            tokenizer=models.TokenizerType.WORD,
+                        ),
+                    )
+                else:
+                    self.client.create_payload_index(
+                        collection_name=self.collection_name,
+                        field_name=col,
+                        field_schema=self._map_type(coltype),
+                    )
 
     def _collection_exists(self, collection_name):
         resp = self.client.get_collections()

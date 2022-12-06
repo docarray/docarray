@@ -663,39 +663,100 @@ def test_filtering(
 
 
 @pytest.mark.parametrize(
-    'storage,filter_gen,numeric_operators,operator',
+    'columns',
     [
-        *[
-            tuple(
-                [
-                    'qdrant',
-                    lambda operator, threshold: {
-                        'must': [{'key': 'price', 'match': {'value': threshold}}]
-                    },
-                    numeric_operators_qdrant,
-                    'eq',
-                ]
-            )
-        ],
+        # [('price', 'float'), ('category', 'str'), ('info', 'text'), ('location', 'geo')],
+        {'price': 'float', 'category': 'str', 'info': 'text', 'location': 'geo'},
     ],
 )
-@pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
-def test_qdrant_filter_function(
-    storage, filter_gen, operator, numeric_operators, start_storage, columns
-):
+@pytest.mark.parametrize(
+    'filter,checker',
+    [
+        (
+            {
+                'must': [
+                    {"key": "category", "match": {"value": "Shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['category'] == "Shoes" and r.tags['price'] >= 5.0,
+        ),
+        (
+            {
+                'must_not': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {
+                        "key": "location",
+                        "geo_radius": {
+                            "center": {"lon": -98.17, "lat": 38.71},
+                            "radius": 500.0 * 1000,
+                        },
+                    },
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") == -1
+            and (
+                haversine_distances(
+                    [
+                        [-98.17, 38.71],
+                        [r.tags['location']['lon'], r.tags['location']['lat']],
+                    ]
+                )
+                * 6371
+            )[0][1]
+            > 500.0,
+        ),
+        (
+            {
+                'should': [
+                    {"key": "info", "match": {"text": "shoes"}},
+                    {"key": "price", "range": {"gte": 5.0}},
+                ]
+            },
+            lambda r: r.tags['info'].find("shoes") != -1 or r.tags['price'] >= 5.0,
+        ),
+    ],
+)
+def test_qdrant_filter_query(filter, checker, columns, start_storage):
     n_dim = 128
     da = DocumentArray(storage='qdrant', config={'n_dim': n_dim, 'columns': columns})
-    da.extend([Document(id=f'r{i}', tags={'price': i}) for i in range(50)])
-    thresholds = [10, 20, 30]
-    for threshold in thresholds:
-        filter = filter_gen(operator, threshold)
-        results = da._filter(filter=filter)
 
-        assert len(results) > 0
+    da.extend(
+        [
+            Document(
+                id=f'r{i}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Shoes',
+                    'info': 'shoes {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
 
-        assert all(
-            [numeric_operators[operator](r.tags['price'], threshold) for r in results]
-        )
+    da.extend(
+        [
+            Document(
+                id=f'r{i+10}',
+                embedding=np.random.rand(n_dim),
+                tags={
+                    'price': i + 0.5,
+                    'category': 'Jeans',
+                    'info': 'jeans {i}',
+                    'location': {"lon": -98.17 + i, "lat": 38.93 + i},
+                },
+            )
+            for i in range(10)
+        ]
+    )
+
+    results = da.find(np.random.rand(n_dim), filter=filter)
+    print(results[:, 'id'])
+    assert len(results) > 0
+    assert all([checker(r) for r in results])
 
 
 @pytest.mark.parametrize('columns', [[('price', 'int')], {'price': 'int'}])
