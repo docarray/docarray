@@ -18,11 +18,11 @@ def _stacked_mode_blocker(func):
             )
         return func(self, *args, **kwargs)
 
-        wrapper.__doc__ = (
-            wrapper.__doc__
-            + ' \n This method is not available in stacked mode call {meth}.unstack() '
-            + 'to use it'
-        )
+    wrapper.__doc__ = (
+        wrapper.__doc__
+        + ' \n This method is not available in stacked mode call {meth}.unstack() '
+        + 'to use it'
+    )
 
     return wrapper
 
