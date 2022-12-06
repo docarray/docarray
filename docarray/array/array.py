@@ -156,12 +156,6 @@ class DocumentArray(
         the whole array at once. In stack mode, accessing or setting fields of the
         DocumentArray will access or set the column of the array.
 
-
-        IMPORTANT: in stacked_mode you cannot add or remove Document from the array.
-        You can only modify the fields of the DocumentArray. This is intentionally done
-        because extending or inserting a column is slow. You should rather use the
-        unstack mode for such operation.
-
         EXAMPLE USAGE
         .. code-block:: python
             from docarray import Document, DocumentArray
