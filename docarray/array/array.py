@@ -32,7 +32,7 @@ class DocumentArray(
     BaseNode,
 ):
     """
-    a DocumentArray is a container of Document.
+    a DocumentArray is a container of Document of the same schema.
 
     :param docs: iterable of Document
 
