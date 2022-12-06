@@ -149,7 +149,10 @@ class DocumentArray(
 
         return _DocumentArrayTyped
 
-    def __getitem__(self, item):
+    def __list_getitem__(self, item):
+        return super().__getitem__(item)
+
+    def __getitem__(self, item):  # note this should handle slices
         if self.is_stacked():
             doc = super().__getitem__(item)
             # NOTE: this could be speed up by using a cache
@@ -157,7 +160,14 @@ class DocumentArray(
                 setattr(doc, field, self._columns[field][item])
             return doc
         else:
-            return super().__getitem__(item)
+            return self.__list_getitem__(item)
+
+    def __list_iter__(self):
+        return super().__iter__()
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self[i]
 
     def stack(self: T) -> T:
         """
@@ -204,7 +214,7 @@ class DocumentArray(
         see {meth}`.unstack` for more information on how to switch to unstack mode
         """
 
-        if not (self.is_stacked()):
+        if not self.is_stacked():
 
             self._columns = dict()
 
@@ -222,8 +232,8 @@ class DocumentArray(
                 list  # type: ignore
             )  # type: ignore
 
-            for doc in self:
-                for field_to_stack in self._columns.keys():
+            for doc in self.__list_iter__():
+                for field_to_stack in self._column_fields():
                     columns_to_stack[field_to_stack].append(
                         getattr(doc, field_to_stack)
                     )
@@ -238,19 +248,6 @@ class DocumentArray(
                     ).stack()
                 else:
                     self._columns[field_to_stack] = type_.__docarray_stack__(to_stack)
-
-            for i, doc in enumerate(self):
-                for field_to_stack in self._columns.keys():
-                    type_ = self.document_type.__fields__[field_to_stack].type_
-                    if issubclass(type_, TorchTensor) or issubclass(type_, NdArray):
-                        if self._columns is not None:
-                            setattr(doc, field_to_stack, self._columns[field_to_stack])
-                        else:
-                            raise ValueError(
-                                f'The DocumentArray is in stacked mode, '
-                                f'but no stacked data is '
-                                f'present for {field_to_stack}. This is inconsistent'
-                            )
 
         return self
 
@@ -296,13 +293,29 @@ class DocumentArray(
         see {meth}`.stack` for more information on switching to stack mode
         """
         if self.is_stacked() and self._columns:
-            for field in list(self._columns.keys()):
+
+            for i, doc in enumerate(self.__list_iter__()):
+                for field in self._column_fields():
+                    val = self._columns[field]
+                    if val is not None:
+                        setattr(doc, field, val[i])
+                    else:
+                        raise RuntimeError('Internal error, one of the column is None')
+                    # NOTE: here we might need to copy the tensor
+                    # see here
+                    # https://discuss.pytorch.org/t/what-happened-to-a-view-of-a-tensor-when-the-original-tensor-is-deleted/167294 # noqa: E501
+
+            for field in self._column_fields():
                 # list needed here otherwise we are modifying the dict while iterating
                 del self._columns[field]
 
             self._columns = None
 
         return self
+
+    def a(self, x: Union[TorchTensor, NdArray, AbstractDocumentArray, None]):
+        if x is not None:
+            x[0]
 
     @contextmanager
     def stacked_mode(self):

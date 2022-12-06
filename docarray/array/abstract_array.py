@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Sequence, Type, Union
 
 from docarray.document import BaseDocument
 
@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from docarray.typing import NdArray, TorchTensor
 
 
-class AbstractDocumentArray(Iterable):
+class AbstractDocumentArray(Sequence):
 
     document_type: Type[BaseDocument]
     _columns: Optional[

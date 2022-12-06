@@ -25,6 +25,9 @@ def test_stack():
     for doc, tensor in zip(batch, batch.tensor):
         assert doc.tensor.data_ptr() == tensor.data_ptr()
 
+    for i in range(len(batch)):
+        assert batch[i].tensor.data_ptr() == batch.tensor[i].data_ptr()
+
 
 def test_stack_mod_nested_document():
     class Image(Document):
