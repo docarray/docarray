@@ -51,10 +51,10 @@ class GetAttributeArrayMixin(AbstractDocumentArray):
         field: str,
         values: Union[List, AbstractDocumentArray, 'TorchTensor', 'NdArray'],
     ):
-        """Set all document if this DocumentArray with the passed values
+        """Set all Documents in this DocumentArray using the passed values
 
         :param field: name of the fields to extract
-        :values: the values to set at the document array level
+        :values: the values to set at the DocumentArray level
         """
         if (
             self.is_stacked()

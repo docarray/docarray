@@ -196,5 +196,5 @@ class NdArray(AbstractTensor, np.ndarray, Generic[ShapeT]):
     def __docarray_stack__(
         cls: Type[T], seq: Union[List['NdArray'], Tuple['NdArray']]
     ) -> T:
-        """Stack a sequence of ndarray into a single ndarray."""
+        """Stack a sequence of ndarrays into a single ndarray."""
         return cls.from_ndarray(np.stack(seq))

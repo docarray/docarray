@@ -66,8 +66,8 @@ class DocumentArray(
 
 
     If your DocumentArray is homogeneous (i.e. follows the same schema), you can access
-    the field at the DocumentArray level (for example `da.tensor`). You can also set
-    them, with `da.tensor = np.random.random([10, 100])`
+    fields at the DocumentArray level (for example `da.tensor`). You can also set
+    fields, with `da.tensor = np.random.random([10, 100])`
 
 
     A DocumentArray can be in one of two modes: unstacked mode and stacked mode.
@@ -75,8 +75,8 @@ class DocumentArray(
 
     **Unstacked mode (default)**:
     In this case a DocumentArray is a list of Documents and each Document owns its data.
-    The getter and setter shown above returns a list of the fields of each Document
-    (or a DocumentArray if the field is a nested Document). This list/DocumentArray
+    The getter and setter shown above return a list of the fields of each Document
+    (or DocumentArray if the field is a nested Document). This list/DocumentArray
     is created on the fly. The setter sets the field of each Document to the value
     of the list/DocumentArray/Tensor passed as parameters.
 
@@ -84,30 +84,30 @@ class DocumentArray(
     to process data in batches or perform operations involving matrix computation.
     This is where the stack mode of the DocumentArray comes in handy.
 
-    In **stacked mode** tensor-like fields of every Document are stored on the
-    DocumentArray level, as one stacked tensor. This enables operations on the entire
+    In **stacked mode**, tensor-like fields of every Document are stored on the
+    DocumentArray level as one stacked tensor. This enables operations on the entire
     batch without iterating over the DocumentArray.
-    In this mode the Documents in in the Document don't own the data anymore but just
+    In this mode the Documents in the DocumentArray no longer own the data but just
     reference the data in the DocumentArray's tensor.
     Operations like `da.append` are not supported because
     they are too slow. For these operations you should use unstacked
     mode instead.
 
     To switch from stacked to unstacked mode (or vice-versa), call `da.unstack()` or
-    `da.stack`. There are also two context manager for these modes:
+    `da.stack`. There are also two context managers for these modes:
     `with da.stack_mode():` and `with da.unstack_mode():`
 
     see {meth}`.stack` and {meth}`.unstack` for more information.
 
-    You should use unstacked mode, if:
+    You should use unstacked mode if you want to:
 
-    * You want to insert, append, delete, or shuffle Documents in your DocumentArray
-    * Intend to separate the DocumentArray into smaller batches later on
+    * Insert, append, delete, or shuffle Documents in your DocumentArray.
+    * Separate the DocumentArray into smaller batches later on.
 
-    You should use stacked mode, if you:
+    You should use stacked mode if you want to:
 
-    * You want to process the entire DocumentArray as one batch
-    * Are using the DocumentArray in an ML model for training or inference
+    * Process the entire DocumentArray as one batch.
+    * Use the DocumentArray in an ML model for training or inference.
 
     """
 
