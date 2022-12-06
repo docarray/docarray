@@ -38,16 +38,16 @@ class DocumentArray(
     BaseNode,
 ):
     """
-    a DocumentArray is a container of Document of the same schema.
+    A DocumentArray is a container of Documents.
 
     :param docs: iterable of Document
 
-
-    A DocumentArray can only contain Documents that follow the same schema. To precise
-    this schema you can use the `DocumentArray[Document]` syntax. This will create a
-    DocumentArray that can only contain Document of the type Document. (Note that there
-    exists a special schema (AnySchema) that allows any Document to be stored in the
-    DocumentArray, but this is not recommended to use).
+    A DocumentArray is a list of Documents of any schema. Nevertheless, most of the
+    features of DocumentArray are only available if the contains Documents are
+    homogeneous and follow the same schema. To precise this schema you can use the
+    `DocumentArray[MyDocument]` syntax where MyDocument is a Document class
+    (i,e a schema).This will create a DocumentArray that can only contain Document of
+    the type Document.
 
     EXAMPLE USAGE
     .. code-block:: python
@@ -63,12 +63,9 @@ class DocumentArray(
         da = DocumentArray[Image](Image(url='http://url.com') for _ in range(10))
 
 
-    DocumentArray defines setter and getter for each field of the Document schema. These
-    getters and setters are defined dynamically at runtime. This allows to access the
-    field of the Document in a natural way. For example, if you have a DocumentArray of
-    Image you can do: `da.tensor` to get the tensor of all the Image in the
-    DocumentArray. You can also do `da.tensor = np.random.random([10, 100])` to set the
-    tensor of all the Image.
+    If your DocumentArray is homogeneous (i.e follow the same schema) You can access the
+    field at the DocumentArray level. Example `da.tensor`. You can set them as well.
+    by doing `da.tensor = np.random.random([10, 100])`
 
 
     A DocumentArray can be in one of two modes: unstacked mode and stacked mode.
