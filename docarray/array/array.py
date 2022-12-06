@@ -18,6 +18,11 @@ def _stacked_mode_blocker(func):
             )
         return func(self, *args, **kwargs)
 
+    (
+        wrapper.__doc__
+        + ' \n This method is not available in stacked mode call {meth}.unstack() '
+        'to use it'
+    )
     return wrapper
 
 
@@ -174,8 +179,9 @@ class DocumentArray(
                 tensor: NdArray[100]
 
 
-            batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                    for _ in range(10)])
+            batch = DocumentArray[Image](
+                [Image(tensor=np.zeros((100))) for _ in range(10)]
+            )  # noqa: E510
 
             batch.stack()
 
@@ -258,8 +264,9 @@ class DocumentArray(
                 tensor: NdArray[100]
 
 
-            batch = DocumentArray[Image]([Image(tensor=np.zeros((100))) \
-                        for _ in range(10)])
+            batch = DocumentArray[Image](
+                [Image(tensor=np.zeros((100))) for _ in range(10)]
+            )  # noqa: E510
 
             batch.stack()
             batch.unstack()
