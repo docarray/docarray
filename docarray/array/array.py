@@ -1,7 +1,7 @@
 from collections import defaultdict
 from contextlib import contextmanager
 from functools import wraps
-from typing import Dict, Iterable, List, Optional, Type, TypeVar, Union
+from typing import DefaultDict, Dict, Iterable, List, Optional, Type, TypeVar, Union
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
@@ -157,9 +157,10 @@ class DocumentArray(
         else:
             return super().__getitem__(item)
 
-    def stack(self):
+    def stack(self: T) -> T:
         """
         Puts the DocumentArray into stacked mode.
+        :return: itself
 
         When entering stack mode the DocumentArray will create a column for each field
         of the Document that are Tensor or that are Nested Document that contains at
@@ -213,9 +214,11 @@ class DocumentArray(
                 ):
                     self._columns[field_name] = None
 
-            columns_to_stack: Dict[
+            columns_to_stack: DefaultDict[
                 str, Union[List[TorchTensor], List[NdArray], List[BaseDocument]]
-            ] = defaultdict(list)
+            ] = defaultdict(
+                list
+            )  # type: ignore
 
             for doc in self:
                 for field_to_stack in self._columns.keys():
@@ -228,7 +231,7 @@ class DocumentArray(
 
                 type_ = self.document_type.__fields__[field_to_stack].type_
                 if issubclass(type_, BaseDocument):
-                    self._columns[field_to_stack] = DocumentArray[type_](
+                    self._columns[field_to_stack] = DocumentArray[type_](  # type: ignore # noqa: E501
                         to_stack
                     ).stack()
                 else:
@@ -238,13 +241,21 @@ class DocumentArray(
                 for field_to_stack in self._columns.keys():
                     type_ = self.document_type.__fields__[field_to_stack].type_
                     if issubclass(type_, TorchTensor) or issubclass(type_, NdArray):
-                        setattr(doc, field_to_stack, self._columns[field_to_stack][i])
+                        if self._columns is not None:
+                            setattr(doc, field_to_stack, self._columns[field_to_stack])
+                        else:
+                            raise ValueError(
+                                f'The DocumentArray is in stacked mode, '
+                                f'but no stacked data is '
+                                f'present for {field_to_stack}. This is inconsistent'
+                            )
 
         return self
 
-    def unstack(self):
+    def unstack(self: T) -> T:
         """
         Puts the DocumentArray into unstacked mode.
+        :return: itself
 
 
         Calling unstack will unstack all the columns of the DocumentArray and put the
@@ -282,8 +293,7 @@ class DocumentArray(
 
         see {meth}`.stack` for more information on how to switch to stack mode
         """
-        if self.is_stacked():
-
+        if self.is_stacked() and self._columns:
             for field in list(self._columns.keys()):
                 # list needed here otherwise we are modifying the dict while iterating
                 del self._columns[field]
