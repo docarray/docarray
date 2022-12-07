@@ -314,10 +314,6 @@ class DocumentArray(
 
         return self
 
-    def a(self, x: Union[TorchTensor, NdArray, AbstractDocumentArray, None]):
-        if x is not None:
-            x[0]
-
     @contextmanager
     def stacked_mode(self):
         """
