@@ -6,16 +6,15 @@ from docarray.document.base_node import BaseNode
 if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
-
-try:
-    import torch  # noqa: F401
-except ImportError:
-    torch_imported = False
-else:
-    from docarray.typing import TorchTensor
-
-    torch_imported = True
-
+from docarray.typing import (
+    ID,
+    AnyUrl,
+    Embedding,
+    ImageUrl,
+    NdArray,
+    TextUrl,
+    TorchTensor,
+)
 
 T = TypeVar('T', bound='ProtoMixin')
 
@@ -24,15 +23,6 @@ class ProtoMixin(AbstractDocument, BaseNode):
     @classmethod
     def from_protobuf(cls: Type[T], pb_msg: 'DocumentProto') -> T:
         """create a Document from a protobuf message"""
-        from docarray.typing import (  # TorchTensor,
-            ID,
-            AnyUrl,
-            Embedding,
-            ImageUrl,
-            NdArray,
-            TextUrl,
-        )
-
         fields: Dict[str, Any] = {}
 
         for field in pb_msg.data:
