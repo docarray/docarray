@@ -28,7 +28,7 @@ mypy = "^0.990"
 types-protobuf = "^3.20.4"
 black = "^22.10.0"
 isort = "^5.10.1"
-ruff = "^0.0.117"
+ruff = "^0.0.165"
 
 [tool.poetry.group.dev.dependencies]
 fastapi = "^0.87.0"
