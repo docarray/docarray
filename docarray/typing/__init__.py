@@ -3,10 +3,10 @@ from docarray.typing.tensor import NdArray, Tensor
 
 try:
     import torch  # noqa: F401
-
-    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
 except ImportError:
     pass
+else:
+    from docarray.typing.tensor import TorchEmbedding, TorchTensor  # noqa: F401
 
 from docarray.typing.tensor.embedding import Embedding
 from docarray.typing.url import AnyUrl, ImageUrl, TextUrl
