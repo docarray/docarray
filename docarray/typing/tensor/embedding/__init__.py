@@ -1,7 +1,7 @@
 try:
     import torch  # noqa: F401
 
-    from docarray.typing.tensor.torch_tensor import TorchEmbedding  # noqa: F401
+    from docarray.typing.tensor import TorchEmbedding  # type: ignore # noqa: F401
 except ImportError:
     pass
 
