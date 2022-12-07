@@ -7,6 +7,16 @@ if TYPE_CHECKING:
     from docarray.proto import DocumentProto, NodeProto
 
 
+try:
+    import torch  # noqa: F401
+except ImportError:
+    torch_imported = False
+else:
+    from docarray.typing import TorchTensor
+
+    torch_imported = True
+
+
 T = TypeVar('T', bound='ProtoMixin')
 
 
@@ -34,13 +44,16 @@ class ProtoMixin(AbstractDocument, BaseNode):
             # the check should be delegated to the type level
             content_type_dict = dict(
                 ndarray=NdArray,
-                # torch_tensor=TorchTensor,
                 embedding=Embedding,
                 any_url=AnyUrl,
                 text_url=TextUrl,
                 image_url=ImageUrl,
                 id=ID,
             )
+
+            if torch_imported:
+                content_type_dict['torch_tensor'] = TorchTensor
+
             if content_type in content_type_dict:
                 fields[field] = content_type_dict[content_type].from_protobuf(
                     getattr(value, content_type)

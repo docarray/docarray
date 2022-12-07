@@ -20,6 +20,15 @@ from docarray.document import AnyDocument, BaseDocument, BaseNode
 if TYPE_CHECKING:
     from docarray.typing import NdArray, TorchTensor
 
+try:
+    import torch
+except ImportError:
+    torch_imported = False
+else:
+    from docarray.typing import TorchTensor
+
+    torch_imported = True
+
 
 def _stacked_mode_blocker(func):
     @wraps(func)
@@ -232,10 +241,14 @@ class DocumentArray(
             self._columns = dict()
 
             for field_name, field in self.document_type.__fields__.items():
+
+                is_torch_subclass = (
+                    issubclass(field.type_, torch.Tensor) if torch_imported else False
+                )
+
                 if (
-                    # issubclass(field.type_, TorchTensor)
-                    # or issubclass(field.type_, BaseDocument)
-                    issubclass(field.type_, BaseDocument)
+                    is_torch_subclass
+                    or issubclass(field.type_, BaseDocument)
                     or issubclass(field.type_, NdArray)
                 ):
                     self._columns[field_name] = None
