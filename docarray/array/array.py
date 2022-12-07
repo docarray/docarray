@@ -1,12 +1,24 @@
 from collections import defaultdict
 from contextlib import contextmanager
 from functools import wraps
-from typing import DefaultDict, Dict, Iterable, List, Optional, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    DefaultDict,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.typing import NdArray, TorchTensor
+
+if TYPE_CHECKING:
+    from docarray.typing import NdArray, TorchTensor
 
 
 def _stacked_mode_blocker(func):
@@ -115,7 +127,7 @@ class DocumentArray(
         super().__init__(doc_ for doc_ in docs)
 
         self._columns: Optional[
-            Dict[str, Union[TorchTensor, AbstractDocumentArray, NdArray, None]]
+            Dict[str, Union['TorchTensor', AbstractDocumentArray, NdArray, None]]
         ] = None
 
     def __class_getitem__(cls, item: Type[BaseDocument]):
@@ -221,14 +233,15 @@ class DocumentArray(
 
             for field_name, field in self.document_type.__fields__.items():
                 if (
-                    issubclass(field.type_, TorchTensor)
-                    or issubclass(field.type_, BaseDocument)
+                    # issubclass(field.type_, TorchTensor)
+                    # or issubclass(field.type_, BaseDocument)
+                    issubclass(field.type_, BaseDocument)
                     or issubclass(field.type_, NdArray)
                 ):
                     self._columns[field_name] = None
 
             columns_to_stack: DefaultDict[
-                str, Union[List[TorchTensor], List[NdArray], List[BaseDocument]]
+                str, Union[List['TorchTensor'], List[NdArray], List[BaseDocument]]
             ] = defaultdict(  # type: ignore
                 list  # type: ignore
             )  # type: ignore
@@ -313,10 +326,6 @@ class DocumentArray(
             self._columns = None
 
         return self
-
-    def a(self, x: Union[TorchTensor, NdArray, AbstractDocumentArray, None]):
-        if x is not None:
-            x[0]
 
     @contextmanager
     def stacked_mode(self):
