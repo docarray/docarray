@@ -97,7 +97,6 @@ The following configs can be set:
 | `root_id`             | Boolean flag indicating whether to store `root_id` in the tags of chunk level Documents                                                | True                                             |
 
 
-
 *You can read more about the HNSW parameters and their default values [here](https://qdrant.tech/documentation/indexing/#vector-index)
 
 ## Minimum example
@@ -150,8 +149,7 @@ print(da.find(np.random.random(D), limit=10))
 (qdrant-filter)=
 ## Vector search with filter
 
-Search with `.find` can be restricted by user-defined filters. Such filters can be constructed following the guidelines 
-in [Qdrant's Documentation](https://qdrant.tech/documentation/filtering/)
+Search with `.find` can be restricted by user-defined filters. The supported tag types for filter are `'int'`, `'float'`, `'bool'`, `'str'`, `'text'` and `'geo'` as in [Qdrant](https://qdrant.tech/documentation/payload/). Such filters can be constructed following the guidelines in [Qdrant's Documentation](https://qdrant.tech/documentation/filtering/)
 
 
 ### Example of `.find` with a filter
