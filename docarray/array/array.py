@@ -16,19 +16,9 @@ from typing import (
 from docarray.array.abstract_array import AbstractDocumentArray
 from docarray.array.mixins import GetAttributeArrayMixin, ProtoArrayMixin
 from docarray.document import AnyDocument, BaseDocument, BaseNode
-from docarray.typing import NdArray
 
 if TYPE_CHECKING:
-    from docarray.typing import TorchTensor
-
-try:
-    import torch
-except ImportError:
-    torch_imported = False
-else:
-    from docarray.typing import TorchTensor
-
-    torch_imported = True
+    from docarray.typing import NdArray, TorchTensor
 
 
 def _stacked_mode_blocker(func):
@@ -248,8 +238,9 @@ class DocumentArray(
                 )
 
                 if (
-                    is_torch_subclass
-                    or issubclass(field.type_, BaseDocument)
+                    # issubclass(field.type_, TorchTensor)
+                    # or issubclass(field.type_, BaseDocument)
+                    issubclass(field.type_, BaseDocument)
                     or issubclass(field.type_, NdArray)
                 ):
                     self._columns[field_name] = None
